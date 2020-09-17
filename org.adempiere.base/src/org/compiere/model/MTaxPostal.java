@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -28,12 +29,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MTaxPostal.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MTaxPostal extends X_C_TaxPostal
+public class MTaxPostal extends X_C_TaxPostal implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7048614254051075174L;
+	private static final long serialVersionUID = 2517717028191578304L;
 
 	/**
 	 * 	Standard Constructor
@@ -88,4 +89,13 @@ public class MTaxPostal extends X_C_TaxPostal
 		copyPO(copy);
 	}
 	
+	@Override
+	public MTaxPostal markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MTaxPostal

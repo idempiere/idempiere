@@ -38,6 +38,7 @@ import org.compiere.model.X_AD_WF_Node;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -51,7 +52,7 @@ import org.idempiere.cache.ImmutablePOCache;
  * 			<li>BF [ 2815732 ] MWFNode.getWorkflow not working in trx
  * 				https://sourceforge.net/tracker/?func=detail&aid=2815732&group_id=176962&atid=879332 
  */
-public class MWFNode extends X_AD_WF_Node
+public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -89,6 +90,21 @@ public class MWFNode extends X_AD_WF_Node
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MWFNode from cache
+	 * @param ctx
+	 * @param AD_WF_Node_ID
+	 * @param trxName
+	 * @return MWFNode
+	 */
+	public static MWFNode getCopy(Properties ctx, int AD_WF_Node_ID, String trxName)
+	{
+		MWFNode node = get(AD_WF_Node_ID);
+		if (node != null)
+			node = new MWFNode(ctx, node, trxName);
+		return node;
+	}
+	
 	/**	Cache						*/
 	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50);
 	
@@ -439,9 +455,10 @@ public class MWFNode extends X_AD_WF_Node
 			return null;
 		if (m_column == null)
 		{
-			m_column = MColumn.get(getCtx(), getAD_Column_ID());
 			if (is_Immutable())
-				m_column.markImmutable();
+				m_column = MColumn.get(getCtx(), getAD_Column_ID());
+			else
+				m_column = MColumn.getCopy(getCtx(), getAD_Column_ID(), get_TrxName());
 		}
 		return m_column;
 	}	//	getColumn
@@ -575,10 +592,7 @@ public class MWFNode extends X_AD_WF_Node
 	@Override
 	public MWorkflow getAD_Workflow()
 	{
-		if (get_TrxName() == null)
-			return MWorkflow.get(getCtx(), getAD_Workflow_ID());
-		else 
-			return (MWorkflow)super.getAD_Workflow();
+		return MWorkflow.getCopy(getCtx(), getAD_Workflow_ID(), get_TrxName());
 	}
 	
 	/**
@@ -764,7 +778,10 @@ public class MWFNode extends X_AD_WF_Node
 	@Override
 	public MWFNode markImmutable() 
 	{
-		MWFNode node = (MWFNode) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_column != null)
 			m_column.markImmutable();
 		if (m_next != null && m_next.size() > 0)
@@ -772,7 +789,7 @@ public class MWFNode extends X_AD_WF_Node
 		if (m_paras != null && m_paras.length > 0)
 			Arrays.stream(m_paras).forEach(e -> e.markImmutable());
 		
-		return node;
+		return this;
 	}
 
 }	//	M_WFNext

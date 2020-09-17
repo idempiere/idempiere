@@ -21,9 +21,10 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MRefTable extends X_AD_Ref_Table
+public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -93,7 +94,7 @@ public class MRefTable extends X_AD_Ref_Table
 	
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
-		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
+		MTable table = MTable.getCopy(getCtx(), getAD_Table_ID(), get_TrxName());
 		return table;
 	}
 
@@ -143,5 +144,14 @@ public class MRefTable extends X_AD_Ref_Table
 		}
 		return null;
 	}	//	get
+
+	@Override
+	public MRefTable markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MRefTable

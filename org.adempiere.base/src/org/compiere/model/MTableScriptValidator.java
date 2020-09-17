@@ -28,6 +28,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Table Validator Scripts
@@ -39,7 +40,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 			<li>BF [ 2819654 ] Table Script Validator SeqNo is not set
  * 				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2819654&group_id=176962 
  */
-public class MTableScriptValidator extends X_AD_Table_ScriptValidator
+public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -204,4 +205,14 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator
 				.append(getEventModelValidator()).append("]");
 		return sb.toString ();
 	}	//	toString
+	
+	@Override
+	public MTableScriptValidator markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MTableScriptValidator

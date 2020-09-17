@@ -29,6 +29,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Product Model
@@ -47,7 +48,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * @author Mark Ostermann (mark_o), metas consult GmbH
  * 			<li>BF [ 2814628 ] Wrong evaluation of Product inactive in beforeSave()
  */
-public class MProduct extends X_M_Product
+public class MProduct extends X_M_Product implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -91,6 +92,21 @@ public class MProduct extends X_M_Product
 	}	//	get
 
 	/**
+	 * Get updateable copy of MProduct from cache
+	 * @param ctx
+	 * @param M_Product_ID
+	 * @param trxName
+	 * @return MProduct
+	 */
+	public static MProduct getCopy(Properties ctx, int M_Product_ID, String trxName)
+	{
+		MProduct product = get(M_Product_ID);
+		if (product != null)
+			product = new MProduct(ctx, product, trxName);
+		return product;
+	}
+	
+	/**
 	 * 	Get MProducts from db
 	 *	@param ctx context
 	 *	@param whereClause sql where clause
@@ -133,7 +149,7 @@ public class MProduct extends X_M_Product
 	}
 	
 	/**
-	 * Get Product from Cache
+	 * Get Product from Cache (immutable)
 	 * @param ctx context
 	 * @param S_Resource_ID resource ID
 	 * @param trxName
@@ -162,9 +178,9 @@ public class MProduct extends X_M_Product
 		MProduct p = new Query(ctx, Table_Name, COLUMNNAME_S_Resource_ID+"=?", trxName)
 						.setParameters(new Object[]{S_Resource_ID})
 						.firstOnly();
-		if (p != null && trxName == null)
+		if (p != null)
 		{
-			s_cache.put(p.getM_Product_ID(), p);
+			s_cache.put(p.getM_Product_ID(), p, e -> new MProduct(Env.getCtx(), e));
 		}
 		return p;
 	}
@@ -501,7 +517,7 @@ public class MProduct extends X_M_Product
 	public MAttributeSet getAttributeSet()
 	{
 		if (getM_AttributeSet_ID() != 0)
-			return MAttributeSet.get(getCtx(), getM_AttributeSet_ID());
+			return MAttributeSet.getCopy(getCtx(), getM_AttributeSet_ID(), get_TrxName());
 		return null;
 	}	//	getAttributeSet
 	
@@ -978,10 +994,13 @@ public class MProduct extends X_M_Product
 	@Override
 	public MProduct markImmutable() 
 	{
-		MProduct po = (MProduct) super.markImmutable();
+		if (is_Immutable()) 
+			return this;
+		
+		makeImmutable();
 		if (m_downloads != null && m_downloads.length > 0)
 			Arrays.stream(m_downloads).forEach(e -> e.markImmutable());
-		return po;
+		return this;
 	}
 
 }	//	MProduct

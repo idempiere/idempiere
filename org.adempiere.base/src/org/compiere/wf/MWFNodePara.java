@@ -24,6 +24,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node_Para;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,13 +33,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MWFNodePara.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MWFNodePara extends X_AD_WF_Node_Para
+public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4132254339643230238L;
-
+	private static final long serialVersionUID = -7304684637362248174L;
 
 	/**
 	 * 	Get Parameters for a node
@@ -122,7 +122,11 @@ public class MWFNodePara extends X_AD_WF_Node_Para
 	public MProcessPara getProcessPara()
 	{
 		if (m_processPara == null)
+		{
 			m_processPara = new MProcessPara (getCtx(), getAD_Process_Para_ID(), get_TrxName());
+			if (is_Immutable())
+				m_processPara.markImmutable();
+		}
 		return m_processPara;
 	}	//	getProcessPara
 	
@@ -171,4 +175,15 @@ public class MWFNodePara extends X_AD_WF_Node_Para
 		setAttributeName(null);
 	}
 	
+	@Override
+	public MWFNodePara markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		if (m_processPara != null)
+			m_processPara.markImmutable();
+		return this;
+	}
+
 }	//	MWFNodePara

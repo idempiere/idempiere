@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Account Object Entity to maintain all segment values.
@@ -35,7 +36,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
  *  @version 	$Id: MAccount.java,v 1.4 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MAccount extends X_C_ValidCombination
+public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -882,7 +883,10 @@ public class MAccount extends X_C_ValidCombination
 	
 	@Override
 	public MAccount markImmutable() {
-		super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_accountEV != null)
 			m_accountEV.markImmutable();
 		return this;

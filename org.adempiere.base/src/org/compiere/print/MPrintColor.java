@@ -28,6 +28,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	AD_PrintColor Print Color Model
@@ -35,7 +36,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintColor.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
-public class MPrintColor extends X_AD_PrintColor
+public class MPrintColor extends X_AD_PrintColor implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -249,9 +250,12 @@ public class MPrintColor extends X_AD_PrintColor
 	}	//	getRRGGBB
 	
 	@Override
-	public MPrintColor markImmutable() 
-	{
-		return (MPrintColor) super.markImmutable();
+	public MPrintColor markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 	/**

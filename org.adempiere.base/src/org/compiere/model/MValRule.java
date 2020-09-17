@@ -30,13 +30,14 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Persistent Validation Rule Model
  *  @author Carlos Ruiz
  *  @version $Id: MValRule.java
  */
-public class MValRule extends X_AD_Val_Rule
+public class MValRule extends X_AD_Val_Rule implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -61,11 +62,23 @@ public class MValRule extends X_AD_Val_Rule
 	 */
 	public static MValRule get (Properties ctx, int AD_Val_Rule_ID)
 	{
+		return get(ctx, AD_Val_Rule_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Rule from Cache (immutable)
+	 *	@param ctx context
+	 *	@param AD_Val_Rule_ID id
+	 *  @param trxName
+	 *	@return MValRule
+	 */
+	public static MValRule get (Properties ctx, int AD_Val_Rule_ID, String trxName)
+	{
 		Integer key = Integer.valueOf(AD_Val_Rule_ID);
 		MValRule retValue = s_cache.get (ctx, key, e -> new MValRule(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MValRule (ctx, AD_Val_Rule_ID, (String)null);
+		retValue = new MValRule (ctx, AD_Val_Rule_ID, trxName);
 		if (retValue.get_ID () == AD_Val_Rule_ID)
 		{
 			s_cache.put (key, retValue, e -> new MValRule(Env.getCtx(), e));
@@ -74,6 +87,21 @@ public class MValRule extends X_AD_Val_Rule
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MValRule from cache
+	 * @param ctx
+	 * @param AD_Val_Rule_ID
+	 * @param trxName
+	 * @return MValRule
+	 */
+	public static MValRule getCopy(Properties ctx, int AD_Val_Rule_ID, String trxName)
+	{
+		MValRule vr = get(ctx, AD_Val_Rule_ID, trxName);
+		if (vr != null)
+			vr = new MValRule(ctx, vr, trxName);
+		return vr;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MValRule> s_cache = new ImmutableIntPOCache<Integer,MValRule>(Table_Name, 20);
 
@@ -135,9 +163,12 @@ public class MValRule extends X_AD_Val_Rule
 	}
 	
 	@Override
-	public MValRule markImmutable() 
-	{
-		return (MValRule) super.markImmutable();
+	public MValRule markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 	/**

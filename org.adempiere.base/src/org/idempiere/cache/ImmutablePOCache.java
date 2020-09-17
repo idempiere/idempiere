@@ -43,7 +43,7 @@ import org.compiere.util.Util;
  * 
  * @author hengsin
  */
-public class ImmutablePOCache<K, V extends PO> extends CCache<K, V> {
+public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCache<K, V> {
 
 	/**
 	 * 

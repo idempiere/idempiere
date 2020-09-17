@@ -27,6 +27,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -39,12 +40,12 @@ import org.compiere.util.Msg;
  *    Carlos Ruiz - globalqss - FR [3135351] - Enable Scheduler for buttons
  */
 public class MScheduler extends X_AD_Scheduler
-	implements AdempiereProcessor, AdempiereProcessor2
+	implements AdempiereProcessor, AdempiereProcessor2, ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5106574386025319255L;
+	private static final long serialVersionUID = -2427229109274587547L;
 
 	/**
 	 * 	Get Active
@@ -359,13 +360,16 @@ public class MScheduler extends X_AD_Scheduler
 	@Override
 	public MScheduler markImmutable() 
 	{
-		MScheduler scheduler = (MScheduler) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_parameter != null && m_parameter.length > 0)
 			Arrays.stream(m_parameter).forEach(e -> e.markImmutable());
 		if (m_recipients != null && m_recipients.length > 0)
 			Arrays.stream(m_recipients).forEach(e -> e.markImmutable());
 		
-		return scheduler;
+		return this;
 	}
 
 }	//	MScheduler

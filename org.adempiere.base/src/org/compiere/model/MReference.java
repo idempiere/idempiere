@@ -29,8 +29,9 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
-public class MReference extends X_AD_Reference {
+public class MReference extends X_AD_Reference implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
@@ -133,5 +134,14 @@ public class MReference extends X_AD_Reference {
 		}
 		return null;
 	}	//	get
-	
+
+	@Override
+	public MReference markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MReference

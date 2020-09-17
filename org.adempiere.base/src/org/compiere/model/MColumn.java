@@ -41,6 +41,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Persistent Column Model
@@ -48,7 +49,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MColumn.java,v 1.6 2006/08/09 05:23:49 jjanke Exp $
  */
-public class MColumn extends X_AD_Column
+public class MColumn extends X_AD_Column implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -99,6 +100,21 @@ public class MColumn extends X_AD_Column
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MColumn from cache
+	 * @param ctx
+	 * @param AD_Column_ID
+	 * @param trxName
+	 * @return MColumn
+	 */
+	public static MColumn getCopy(Properties ctx, int AD_Column_ID, String trxName)
+	{
+		MColumn column = get(ctx, AD_Column_ID, trxName);
+		if (column != null)
+			column = new MColumn(ctx, column, trxName);
+		return column;
+	}
+	
 	/**
 	 * 	Get MColumn given TableName and ColumnName
 	 *	@param ctx context
@@ -914,7 +930,7 @@ public class MColumn extends X_AD_Column
 
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
-		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
+		MTable table = MTable.getCopy(getCtx(), getAD_Table_ID(), get_TrxName());
 		return table;
 	}
 
@@ -1240,6 +1256,15 @@ public class MColumn extends X_AD_Column
 		}
 		setColumnName(newColumnName);
 		return rvalue + " - " + sql;
+	}
+
+	@Override
+	public MColumn markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MColumn

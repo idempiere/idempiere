@@ -30,6 +30,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Product Category Model
@@ -37,7 +38,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MProductCategory.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MProductCategory extends X_M_Product_Category
+public class MProductCategory extends X_M_Product_Category implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -302,6 +303,15 @@ public class MProductCategory extends X_M_Product_Category
 		}
 		return ret;
 	}	//hasLoop
+
+	@Override
+	public MProductCategory markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 	/**
 	 * Simple class for tree nodes.

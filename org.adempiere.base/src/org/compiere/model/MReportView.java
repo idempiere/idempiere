@@ -20,8 +20,9 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
-public class MReportView extends X_AD_ReportView {
+public class MReportView extends X_AD_ReportView implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
@@ -103,4 +104,14 @@ public class MReportView extends X_AD_ReportView {
 		}
 		return retValue;
 	}	//	get
+	
+	@Override
+	public MReportView markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

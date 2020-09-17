@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -27,7 +28,7 @@ import org.idempiere.cache.ImmutablePOCache;
  *  @author Jorg Janke
  *  @version $Id: MProductCategoryAcct.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MProductCategoryAcct extends X_M_Product_Category_Acct
+public class MProductCategoryAcct extends X_M_Product_Category_Acct implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -165,7 +166,16 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct
 		checkCosting();
 		return success;
 	}	//	afterSave
-	
+
+	@Override
+	public MProductCategoryAcct markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 	/**
 	 * 	String Representation
 	 *	@return info

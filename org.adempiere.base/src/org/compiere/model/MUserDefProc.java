@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -27,7 +28,7 @@ import org.idempiere.cache.ImmutablePOCache;
  * @author raphael.gildo (devCoffee, www.devcoffee.com.br)
  *
  */
-public class MUserDefProc extends X_AD_UserDef_Proc {
+public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSupport {
 
 	/**
 	 * 
@@ -236,7 +237,11 @@ public class MUserDefProc extends X_AD_UserDef_Proc {
 
 	@Override
 	public MUserDefProc markImmutable() {
-		return (MUserDefProc) super.markImmutable();
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }

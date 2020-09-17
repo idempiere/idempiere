@@ -32,6 +32,7 @@ import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFProcess;
 
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -44,12 +45,12 @@ import org.idempiere.cache.ImmutablePOCache;
  * 			<li>BF [ 1757523 ] Server Processes are using Server's context
  * 			<li>FR [ 2214883 ] Remove SQL code and Replace for Query
  */
-public class MProcess extends X_AD_Process
+public class MProcess extends X_AD_Process implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6513362863673554047L;
+	private static final long serialVersionUID = 6928560924056836659L;
 
 	/**
 	 * 	Get MProcess from Cache (immutable)
@@ -617,10 +618,13 @@ public class MProcess extends X_AD_Process
 	@Override
 	public MProcess markImmutable() 
 	{
-		MProcess po = (MProcess) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_parameters != null && m_parameters.length > 0)
 			Arrays.stream(m_parameters).forEach(e -> e.markImmutable());
-		return po;
+		return this;
 	}
 
 }	//	MProcess

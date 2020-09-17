@@ -24,6 +24,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Charge Model
@@ -34,7 +35,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>FR [ 2214883 ] Remove SQL code and Replace for Query
  */
-public class MCharge extends X_C_Charge
+public class MCharge extends X_C_Charge implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -110,6 +111,21 @@ public class MCharge extends X_C_Charge
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MCharge from cache
+	 * @param ctx
+	 * @param C_Charge_ID
+	 * @param trxName
+	 * @return MCharge
+	 */
+	public static MCharge getCopy(Properties ctx, int C_Charge_ID, String trxName)
+	{
+		MCharge charge = get(C_Charge_ID);
+		if (charge != null)
+			charge = new MCharge(ctx, charge, trxName);
+		return charge;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer, MCharge> s_cache 
 		= new ImmutableIntPOCache<Integer, MCharge> (Table_Name, 10);
@@ -193,5 +209,14 @@ public class MCharge extends X_C_Charge
 
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MCharge markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MCharge

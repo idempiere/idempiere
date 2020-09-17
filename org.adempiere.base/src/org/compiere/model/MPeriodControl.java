@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Period Control Model	
@@ -27,7 +28,7 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MPeriodControl.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MPeriodControl extends X_C_PeriodControl
+public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -146,6 +147,15 @@ public class MPeriodControl extends X_C_PeriodControl
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	@Override
+	public MPeriodControl markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MPeriodControl
 

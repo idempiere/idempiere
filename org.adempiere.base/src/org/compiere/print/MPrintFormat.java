@@ -47,6 +47,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	AD_PrintFormat - Print Format Model.
@@ -55,7 +56,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintFormat.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
-public class MPrintFormat extends X_AD_PrintFormat
+public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -1351,12 +1352,15 @@ public class MPrintFormat extends X_AD_PrintFormat
 	@Override
 	public MPrintFormat markImmutable() 
 	{
-		MPrintFormat pf = (MPrintFormat) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_items != null && m_items.length > 0)
 			Arrays.stream(m_items).forEach(e -> e.markImmutable());
 		if (m_tFormat != null)
 			m_tFormat.markImmutable();
-		return pf;
+		return this;
 	}
 
 	/**************************************************************************

@@ -21,13 +21,14 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Request Category Model
  *  @author Jorg Janke
  *  @version $Id: MRequestCategory.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MRequestCategory extends X_R_Category
+public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -65,6 +66,21 @@ public class MRequestCategory extends X_R_Category
 		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MRequestCategory from cache
+	 * @param ctx
+	 * @param R_Category_ID
+	 * @param trxName
+	 * @return MRequestCategory
+	 */
+	public static MRequestCategory getCopy(Properties ctx, int R_Category_ID, String trxName)
+	{
+		MRequestCategory rc = get(R_Category_ID);
+		if (rc != null)
+			rc = new MRequestCategory(ctx, rc, trxName);
+		return rc;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MRequestCategory>	s_cache	
 		= new ImmutableIntPOCache<Integer,MRequestCategory>(Table_Name, 20);
@@ -122,4 +138,14 @@ public class MRequestCategory extends X_R_Category
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+
+	@Override
+	public MRequestCategory markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MCategory

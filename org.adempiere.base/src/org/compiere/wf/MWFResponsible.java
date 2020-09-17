@@ -24,6 +24,7 @@ import org.compiere.model.X_AD_WF_Responsible;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MWFResponsible.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MWFResponsible extends X_AD_WF_Responsible
+public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSupport
 {
     /**
 	 * 
@@ -70,6 +71,21 @@ public class MWFResponsible extends X_AD_WF_Responsible
 		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MWFResponsible from cache
+	 * @param ctx
+	 * @param AD_WF_Responsible_ID
+	 * @param trxName
+	 * @return MWFResponsible 
+	 */
+	public static MWFResponsible getCopy(Properties ctx, int AD_WF_Responsible_ID, String trxName)
+	{
+		MWFResponsible r = get(AD_WF_Responsible_ID);
+		if (r != null)
+			r = new MWFResponsible(ctx, r, trxName);
+		return r;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MWFResponsible>	s_cache	= new ImmutableIntPOCache<Integer,MWFResponsible>(Table_Name, 10);
 
@@ -232,7 +248,11 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	
 	@Override
 	public MWFResponsible markImmutable() {
-		return (MWFResponsible) super.markImmutable();
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MWFResponsible

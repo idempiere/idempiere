@@ -6,12 +6,13 @@ import java.util.Properties;
 import org.compiere.util.ArhRuntimeException;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * Asset Type
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MAssetType extends X_A_Asset_Type
+public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -228,9 +229,12 @@ public class MAssetType extends X_A_Asset_Type
 	}
 	
 	@Override
-	public MAssetType markImmutable() 
-	{
-		return (MAssetType) super.markImmutable();
+	public MAssetType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 	/** Callout Class */

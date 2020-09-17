@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Document Type Model
@@ -36,7 +37,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  							See https://sourceforge.net/forum/message.php?msg_id=6499893
  *  @version $Id: MDocType.java,v 1.3 2006/07/30 00:54:54 jjanke Exp $
  */
-public class MDocType extends X_C_DocType
+public class MDocType extends X_C_DocType implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -86,7 +87,7 @@ public class MDocType extends X_C_DocType
 	}	//	getOfClient
 	
 	/**
-	 * 	Get Document Type (cached)
+	 * 	Get Document Type (cached) (immutable)
 	 *	@param C_DocType_ID id
 	 *	@return document type
 	 */
@@ -96,14 +97,14 @@ public class MDocType extends X_C_DocType
 	}
 	
 	/**
-	 * 	Get Document Type (cached)
+	 * 	Get Document Type (cached) (immutable)
 	 *	@param ctx context
 	 *	@param C_DocType_ID id
 	 *	@return document type
 	 */
 	static public MDocType get (Properties ctx, int C_DocType_ID)
 	{
-		MDocType retValue = (MDocType)s_cache.get(ctx, C_DocType_ID, e -> new MDocType(ctx, e));
+		MDocType retValue = s_cache.get(ctx, C_DocType_ID, e -> new MDocType(ctx, e));
 		if (retValue != null)
 			return retValue;
 		
@@ -412,5 +413,14 @@ public class MDocType extends X_C_DocType
 		// warning: to cache this translation you need to change the cache to include language (see i.e. MWFNode)
 		return get_Translation (COLUMNNAME_Name, Env.getAD_Language(getCtx()));
 	}	//	getNameTrl
+
+	@Override
+	public MDocType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MDocType

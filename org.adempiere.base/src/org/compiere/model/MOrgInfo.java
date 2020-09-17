@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Organization Info Model
@@ -31,7 +32,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>BF [ 2107083 ] Caching of MOrgInfo issue
  */
-public class MOrgInfo extends X_AD_OrgInfo
+public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -166,4 +167,14 @@ public class MOrgInfo extends X_AD_OrgInfo
 		super(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
+	@Override
+	public MOrgInfo markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

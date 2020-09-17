@@ -196,7 +196,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	}	//	setPrecision
 
 	/**
-	 * 	Get Tax
+	 * 	Get Tax (immutable)
 	 *	@return tax
 	 */
 	protected MTax getTax()
@@ -290,5 +290,4 @@ public class MInvoiceTax extends X_C_InvoiceTax
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-
 }	//	MInvoiceTax

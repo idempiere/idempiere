@@ -28,6 +28,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Product Attribute Set
@@ -38,12 +39,12 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * @author Teo Sarca, www.arhipac.ro
  *			<li>FR [ 2214883 ] Remove SQL code and Replace for Query
  */
-public class MAttributeSet extends X_M_AttributeSet
+public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -187568054160926817L;
+	private static final long serialVersionUID = -6570475541239019293L;
 
 	/**
 	 * 	Get MAttributeSet from Cache
@@ -76,6 +77,20 @@ public class MAttributeSet extends X_M_AttributeSet
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MAttributeSet from cache
+	 * @param ctx
+	 * @param M_AttributeSet_ID
+	 * @return MAttributeSet
+	 */
+	public static MAttributeSet getCopy(Properties ctx, int M_AttributeSet_ID, String trxName)
+	{
+		MAttributeSet mas = get(M_AttributeSet_ID);
+		if (mas != null)
+			mas = new MAttributeSet(ctx, mas, trxName);
+		return mas;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MAttributeSet> s_cache
 		= new ImmutableIntPOCache<Integer,MAttributeSet> (Table_Name, 20);
@@ -499,12 +514,15 @@ public class MAttributeSet extends X_M_AttributeSet
 	
 	@Override
 	public MAttributeSet markImmutable() {
-		MAttributeSet mas = (MAttributeSet) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_instanceAttributes != null && m_instanceAttributes.length > 0)
 			Arrays.stream(m_instanceAttributes).forEach(e -> e.markImmutable());
 		if (m_productAttributes != null && m_productAttributes.length > 0)
 			Arrays.stream(m_productAttributes).forEach(e -> e.markImmutable());
-		return mas;
+		return this;
 	}
 
 }	//	MAttributeSet

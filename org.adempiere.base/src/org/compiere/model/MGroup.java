@@ -21,13 +21,14 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Request Group Model
  *  @author Jorg Janke
  *  @version $Id: MGroup.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MGroup extends X_R_Group
+public class MGroup extends X_R_Group implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -65,6 +66,21 @@ public class MGroup extends X_R_Group
 		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MGroup from cache
+	 * @param ctx
+	 * @param R_Group_ID
+	 * @param trxName
+	 * @return MGroup
+	 */
+	public static MGroup getCopy(Properties ctx, int R_Group_ID, String trxName)
+	{
+		MGroup grp = get(ctx, R_Group_ID);
+		if (grp != null)
+			grp = new MGroup(ctx, grp, trxName);
+		return grp;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MGroup> s_cache = new ImmutableIntPOCache<Integer,MGroup>(Table_Name, 20);
 	
@@ -121,5 +137,14 @@ public class MGroup extends X_R_Group
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
-	
+
+	@Override
+	public MGroup markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MGroup

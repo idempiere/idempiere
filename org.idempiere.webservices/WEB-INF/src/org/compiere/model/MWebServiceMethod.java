@@ -29,12 +29,13 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * @author hengsin
  *
  */
-public class MWebServiceMethod extends X_WS_WebServiceMethod {
+public class MWebServiceMethod extends X_WS_WebServiceMethod implements ImmutablePOSupport {
 
 	/**
 	 * 
@@ -86,4 +87,14 @@ public class MWebServiceMethod extends X_WS_WebServiceMethod {
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
+	@Override
+	public MWebServiceMethod markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

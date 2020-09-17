@@ -222,8 +222,6 @@ public class MDistribution extends X_GL_Distribution
 		//
 		retValue = new MDistribution[list.size ()];
 		retValue = list.toArray (retValue);
-		for(MDistribution md : retValue)
-			md.markImmutable();
 		s_accounts.put(key, retValue);
 		return retValue;
 	}	//	get
@@ -345,8 +343,7 @@ public class MDistribution extends X_GL_Distribution
 	public MDistributionLine[] getLines (boolean reload)
 	{
 		if (m_lines != null && !reload) {
-			if (!is_Immutable())
-				set_TrxName(m_lines, get_TrxName());
+			set_TrxName(m_lines, get_TrxName());
 			return m_lines;
 		}		
 		BigDecimal PercentTotal = Env.ZERO;
@@ -365,8 +362,6 @@ public class MDistribution extends X_GL_Distribution
 				hasNullRemainder = Env.ZERO.compareTo(dl.getPercent()) == 0;
 			}
 			dl.setParent(this);
-			if (is_Immutable())
-				dl.markImmutable();
 		}
 		//	Update Ratio when saved and difference
 		if (hasNullRemainder)
@@ -542,15 +537,4 @@ public class MDistribution extends X_GL_Distribution
 		return true;
 	}	//	beforeSave
 
-	@Override
-	public MDistribution markImmutable() {
-		super.markImmutable();
-		if (m_lines != null && m_lines.length > 0) {
-			for (MDistributionLine line : m_lines)
-				line.markImmutable();
-		}
-		return this;
-	}
-	
-	
 }	//	MDistribution

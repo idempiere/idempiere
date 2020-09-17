@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Location City Model (Value Object)
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author 	Mario Calderon / Carlos Ruiz
  */
 public class MCity extends X_C_City
-	implements Comparator<Object>, Serializable
+	implements Comparator<Object>, Serializable, ImmutablePOSupport
 {
 	/**
 	 * 
@@ -172,5 +173,14 @@ public class MCity extends X_C_City
 		Collator collator = Collator.getInstance();
 		return collator.compare(s1, s2);
 	}	//	compare
+
+	@Override
+	public MCity markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MCity

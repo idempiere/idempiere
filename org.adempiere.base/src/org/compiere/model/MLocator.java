@@ -26,6 +26,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Warehouse Locator Object
@@ -35,7 +36,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @see [ 1966333 ] New Method to get the Default Locator based in Warehouse http://sourceforge.net/tracker/index.php?func=detail&aid=1966333&group_id=176962&atid=879335
  *  @version 	$Id: MLocator.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MLocator extends X_M_Locator
+public class MLocator extends X_M_Locator implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -416,4 +417,13 @@ public class MLocator extends X_M_Locator
 		*/
 	}	//	isCanStoreProduct
 	
+	@Override
+	public MLocator markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MLocator

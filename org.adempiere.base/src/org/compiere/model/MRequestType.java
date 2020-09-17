@@ -27,6 +27,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Request Type Model
@@ -36,7 +37,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  
  *  Teo Sarca - bug fix [ 1642833 ] MRequestType minor typo bug
  */
-public class MRequestType extends X_R_RequestType
+public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 {
     /**
 	 * 
@@ -76,6 +77,21 @@ public class MRequestType extends X_R_RequestType
 		return retValue;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MRequestType from cache
+	 * @param ctx
+	 * @param R_RequestType_ID
+	 * @param trxName
+	 * @return MRequestType
+	 */
+	public static MRequestType getCopy(Properties ctx, int R_RequestType_ID, String trxName)
+	{
+		MRequestType rt = get(R_RequestType_ID);
+		if (rt != null)
+			rt = new MRequestType(ctx, rt, trxName);		
+		return rt;
+	}
+	
 	/** Static Logger					*/
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MRequestType.class);
@@ -542,5 +558,14 @@ public class MRequestType extends X_R_RequestType
 		query.setRecordCount(1);
 		return query;
 	}	//	getQuery
-	
+
+	@Override
+	public MRequestType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MRequestType

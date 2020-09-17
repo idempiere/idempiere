@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Invoice Schedule Model
@@ -33,7 +34,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MInvoiceSchedule.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MInvoiceSchedule extends X_C_InvoiceSchedule
+public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -274,5 +275,14 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule
 	//	if (INVOICEWEEKDAY_Thursday.equals(day))
 		return Calendar.THURSDAY;
 	}	//	getCalendarDay
-	
+
+	@Override
+	public MInvoiceSchedule markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MInvoiceSchedule

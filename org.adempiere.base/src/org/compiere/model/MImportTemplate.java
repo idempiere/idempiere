@@ -32,19 +32,20 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Import Template Model
  *
  *  @author Carlos Ruiz - GlobalQSS
  */
-public class MImportTemplate extends X_AD_ImportTemplate
+public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1207697938690504067L;
-
+	private static final long serialVersionUID = -4681075469110529774L;
+	
 	/**	Logger			*/
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MImportTemplate.class);
@@ -233,6 +234,15 @@ public class MImportTemplate extends X_AD_ImportTemplate
 				}
 		}
 		return is;
+	}
+
+	@Override
+	public MImportTemplate markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MImportTemplate

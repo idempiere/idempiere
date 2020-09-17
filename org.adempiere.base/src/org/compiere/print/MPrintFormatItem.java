@@ -31,6 +31,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Print Format Item Model.
@@ -40,12 +41,12 @@ import org.compiere.util.Language;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintFormatItem.java,v 1.3 2006/08/03 22:17:17 jjanke Exp $
  */
-public class MPrintFormatItem extends X_AD_PrintFormatItem
+public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7145503984951798641L;
+	private static final long serialVersionUID = 2950704375830865408L;
 
 	/**
 	 *	Constructor
@@ -776,5 +777,14 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 			return true;
 		return super.is_Changed();
 	}
-	
+
+	@Override
+	public MPrintFormatItem markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MPrintFormatItem

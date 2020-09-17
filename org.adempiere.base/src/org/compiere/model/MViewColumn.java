@@ -23,13 +23,14 @@ import org.compiere.db.Database;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MViewColumn extends X_AD_ViewColumn {
+public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7325808411400037317L;
+	private static final long serialVersionUID = 4049071242637196213L;
 
 	/**
 	 * Standard constructor
@@ -122,6 +123,15 @@ public class MViewColumn extends X_AD_ViewColumn {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public MViewColumn markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Reporting Hierarchy Model
@@ -28,7 +29,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MHierarchy.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MHierarchy extends X_PA_Hierarchy
+public class MHierarchy extends X_PA_Hierarchy implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -151,4 +152,13 @@ public class MHierarchy extends X_PA_Hierarchy
 		return 0;
 	}	//	getAD_Tree_ID
 	
+	@Override
+	public MHierarchy markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MHierarchy

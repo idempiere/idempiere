@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Performance Measure Calculation
@@ -33,7 +34,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MMeasureCalc.java,v 1.4 2006/09/25 00:59:41 jjanke Exp $
  */
-public class MMeasureCalc extends X_PA_MeasureCalc
+public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -508,5 +509,13 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		return sb.toString ();
 	}	//	toString
 	
-	
+	@Override
+	public MMeasureCalc markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MMeasureCalc

@@ -4899,12 +4899,14 @@ public abstract class PO
 	}
 
 	/**
-	 * Mark PO as Immutable
+	 * Turn on immutable check
 	 */
-	public PO markImmutable() {
+	protected void makeImmutable() {
+		if (is_Immutable()) 
+			return;
+		
 		m_isImmutable = true;
 		m_trxName = null;
-		return this;
 	}
 	
 	/**

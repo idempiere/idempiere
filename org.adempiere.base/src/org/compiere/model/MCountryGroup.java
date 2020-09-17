@@ -31,11 +31,12 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Country Group Model
  */
-public class MCountryGroup extends X_C_CountryGroup
+public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -129,6 +130,15 @@ public class MCountryGroup extends X_C_CountryGroup
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
+	}
+	
+	@Override
+	public MCountryGroup markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 	
 	public static boolean countryGroupContains(int c_CountryGroup_ID, int c_Country_ID) {

@@ -38,6 +38,7 @@ import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Client Model
@@ -51,7 +52,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1886480 ] Print Format Item Trl not updated even if not multilingual
  */
-public class MClient extends X_AD_Client
+public class MClient extends X_AD_Client implements ImmutablePOSupport
 {	
 	/**
 	 * 
@@ -245,7 +246,12 @@ public class MClient extends X_AD_Client
 	public MClientInfo getInfo()
 	{
 		if (m_info == null)
-			m_info = MClientInfo.get (getCtx(), getAD_Client_ID(), get_TrxName());
+		{
+			if (is_Immutable())
+				m_info = MClientInfo.get (getCtx(), getAD_Client_ID(), get_TrxName());
+			else
+				m_info = MClientInfo.getCopy(getCtx(), getAD_Client_ID(), get_TrxName());
+		}
 		return m_info;
 	}	//	getMClientInfo
 
@@ -481,7 +487,7 @@ public class MClient extends X_AD_Client
 		{
 			int C_AcctSchema_ID = m_info.getC_AcctSchema1_ID();
 			if (C_AcctSchema_ID != 0)
-				return MAcctSchema.get(getCtx(), C_AcctSchema_ID);
+				return MAcctSchema.getCopy(getCtx(), C_AcctSchema_ID, get_TrxName());
 		}
 		return null;
 	}	//	getMClientInfo
@@ -1184,6 +1190,17 @@ public class MClient extends X_AD_Client
 			s = "localhost";
 		return s;
 	}	//	getSMTPHost
+
+	@Override
+	public MClient markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		if (m_info != null)
+			m_info.markImmutable();
+		return this;
+	}
 
 	// IDEMPIERE-722
 	private static final String MAIL_SEND_CREDENTIALS_USER = "U";

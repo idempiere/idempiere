@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.compiere.model.X_AD_WF_Block;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -30,7 +31,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MWFBlock.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MWFBlock extends X_AD_WF_Block
+public class MWFBlock extends X_AD_WF_Block implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -126,9 +127,12 @@ public class MWFBlock extends X_AD_WF_Block
 	}
 	
 	@Override
-	public MWFBlock markImmutable() 
-	{
-		return (MWFBlock) super.markImmutable();
+	public MWFBlock markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MWFBlock

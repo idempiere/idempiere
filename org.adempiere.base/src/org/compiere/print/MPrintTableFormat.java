@@ -36,7 +36,8 @@ import org.compiere.model.X_AD_PrintTableFormat;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.idempiere.cache.POCopyCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.IntPOCopyCache;
 
 /**
  *	Table Print Format
@@ -47,7 +48,7 @@ import org.idempiere.cache.POCopyCache;
  * 	<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2011567&group_id=176962&atid=879335
  * 	@version 	$Id: MPrintTableFormat.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
-public class MPrintTableFormat extends X_AD_PrintTableFormat
+public class MPrintTableFormat extends X_AD_PrintTableFormat implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -589,8 +590,8 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	
 	/*************************************************************************/
 
-	private static POCopyCache<Integer,MPrintTableFormat>	s_cache
-		= new POCopyCache<Integer,MPrintTableFormat>(Table_Name, 3);
+	private static IntPOCopyCache<Integer,MPrintTableFormat>	s_cache
+		= new IntPOCopyCache<Integer,MPrintTableFormat>(Table_Name, 3);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MPrintTableFormat.class);
 
@@ -741,4 +742,14 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 		}
 		return m_image_water_mark;
 	}	//	getImage
+	
+	@Override
+	public MPrintTableFormat markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MPrintTableFormat

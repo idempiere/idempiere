@@ -33,9 +33,10 @@ import java.util.regex.PatternSyntaxException;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MSchedule extends X_AD_Schedule 
+public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -294,5 +295,14 @@ public class MSchedule extends X_AD_Schedule
 		
 		return 0;
 	}	//	getNextRunMS
+
+	@Override
+	public MSchedule markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }

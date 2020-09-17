@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,13 +33,13 @@ import org.compiere.util.Env;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 2012439 ] DiscountSchemaBreak: setting product & category is allowed
  */
-public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak
+public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements ImmutablePOSupport
 {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6413962940750128351L;
+	private static final long serialVersionUID = -5405425697628869517L;
 
 	/**
 	 * 	Standard Constructor
@@ -155,5 +156,14 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak
 		sb.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	@Override
+	public MDiscountSchemaBreak markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MDiscountSchemaBreak

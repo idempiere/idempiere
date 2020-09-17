@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
-import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	RfQ Model
@@ -52,7 +51,7 @@ public class MRfQ extends X_C_RfQ
 	}
 	
 	/**
-	 * 	Get MRfQ from Cache (immutable)
+	 * 	Get MRfQ from db
 	 *	@param C_RfQ_ID id
 	 *	@param trxName transaction
 	 *	@return MRfQ
@@ -63,7 +62,7 @@ public class MRfQ extends X_C_RfQ
 	}
 	
 	/**
-	 * 	Get MRfQ from Cache (immutable)
+	 * 	Get MRfQ from db
 	 *	@param ctx context
 	 *	@param C_RfQ_ID id
 	 *	@param trxName transaction
@@ -71,38 +70,14 @@ public class MRfQ extends X_C_RfQ
 	 */
 	public static MRfQ get (Properties ctx, int C_RfQ_ID, String trxName)
 	{
-		Integer key = Integer.valueOf(C_RfQ_ID);
-		MRfQ retValue = s_cache.get (ctx, key, e -> new MRfQ(ctx, e));
-		if (retValue != null)
-			return retValue;
-		retValue = new MRfQ (ctx, C_RfQ_ID, trxName);
+		MRfQ retValue = new MRfQ (ctx, C_RfQ_ID, trxName);
 		if (retValue.get_ID () == C_RfQ_ID) 
 		{
-			s_cache.put (key, retValue, e -> new MRfQ(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	}	//	get
 
-	/**
-	 * 	Get updateable copy of MRfQ instance from Cache
-	 *	@param ctx context
-	 *	@param C_RfQ_ID id
-	 *	@param trxName transaction
-	 *	@return MRfQ
-	 */
-	public static MRfQ getCopy(Properties ctx, int C_RfQ_ID, String trxName)
-	{
-		MRfQ cache = get(ctx, C_RfQ_ID, trxName);
-		if (cache != null)
-			cache = new MRfQ(ctx, cache, trxName);
-		return cache;
-	}
-	
-	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MRfQ>	s_cache	= new ImmutableIntPOCache<Integer,MRfQ>(Table_Name, 10);
-	
-	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

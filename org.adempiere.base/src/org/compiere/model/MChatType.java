@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Chat Type Model
@@ -28,7 +29,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MChatType.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MChatType extends X_CM_ChatType
+public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -124,4 +125,14 @@ public class MChatType extends X_CM_ChatType
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
+	@Override
+	public MChatType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MChatType

@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Cash Book Model
@@ -30,7 +31,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @version $Id: MCashBook.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  *  @author red1 - FR: [ 2214883 ] Remove SQL code and Replace for Query
  */
-public class MCashBook extends X_C_CashBook
+public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -38,7 +39,7 @@ public class MCashBook extends X_C_CashBook
 	private static final long serialVersionUID = -743516751730874877L;
 
 	/**
-	 * 	Get MCashBook from Cache
+	 * 	Get MCashBook from Cache (immutable))
 	 *	@param C_CashBook_ID id
 	 *	@return MCashBook
 	 */
@@ -48,7 +49,7 @@ public class MCashBook extends X_C_CashBook
 	}
 	
 	/**
-	 * 	Get MCashBook from Cache
+	 * 	Get MCashBook from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_CashBook_ID id
 	 *	@return MCashBook
@@ -59,7 +60,7 @@ public class MCashBook extends X_C_CashBook
 	}	//	get
 	
 	/**
-	 * Gets MCashBook from Cache
+	 * Gets MCashBook from Cache (immutabble)
 	 * @param ctx 				context	
 	 * @param C_CashBook_ID		id of cashbook to load
 	 * @param trxName			transaction to load mcashbook if it is not in cache
@@ -68,7 +69,7 @@ public class MCashBook extends X_C_CashBook
 	public static MCashBook get(Properties ctx, int C_CashBook_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(C_CashBook_ID);
-		MCashBook retValue = (MCashBook) s_cache.get (ctx, key, e -> (MCashBook)new MCashBook(ctx, e));
+		MCashBook retValue = s_cache.get (ctx, key, e -> new MCashBook(ctx, e));
 		if (retValue != null)
 			return retValue;
 		retValue = new MCashBook (ctx, C_CashBook_ID, trxName);
@@ -80,6 +81,21 @@ public class MCashBook extends X_C_CashBook
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MCashBook from cache
+	 * @param ctx
+	 * @param C_CashBook_ID
+	 * @param trxName
+	 * @return MCashBook 
+	 */
+	public static MCashBook getCopy(Properties ctx, int C_CashBook_ID, String trxName)
+	{
+		MCashBook cb = get(ctx, C_CashBook_ID, trxName);
+		if (cb != null)
+			cb = new MCashBook(ctx, cb, trxName);
+		return cb;
+	}
+	
 	/**
 	 * 	Get CashBook for Org and Currency
 	 *	@param ctx context
@@ -185,5 +201,14 @@ public class MCashBook extends X_C_CashBook
 
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MCashBook markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MCashBook

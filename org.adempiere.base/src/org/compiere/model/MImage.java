@@ -35,6 +35,7 @@ import javax.swing.ImageIcon;
 import org.adempiere.base.Core;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Image Model
@@ -43,7 +44,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MImage.java,v 1.5 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MImage extends X_AD_Image
+public class MImage extends X_AD_Image implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -434,4 +435,14 @@ public class MImage extends X_AD_Image
 		if (prov != null && prov.isPendingFlush())
 			prov.flush(this, provider);
 	}
+	
+	@Override
+	public MImage markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }   //  MImage

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Bank Model
@@ -28,7 +29,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MBank.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MBank extends X_C_Bank
+public class MBank extends X_C_Bank implements ImmutablePOSupport
 {	
 	/**
 	 * 
@@ -66,6 +67,21 @@ public class MBank extends X_C_Bank
 		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MBank from cache
+	 * @param ctx
+	 * @param C_Bank_ID
+	 * @param trxName
+	 * @return MBank
+	 */
+	public static MBank getCopy(Properties ctx, int C_Bank_ID, String trxName)
+	{
+		MBank bank = get(C_Bank_ID);
+		if (bank != null)
+			bank = new MBank(ctx, bank, trxName);
+		return bank;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MBank> s_cache = 
 		new ImmutableIntPOCache<Integer,MBank> (Table_Name, 3);
@@ -125,9 +141,12 @@ public class MBank extends X_C_Bank
 	}
 	
 	@Override
-	public MBank markImmutable() 
-	{
-		return (MBank) super.markImmutable();
+	public MBank markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 	/**

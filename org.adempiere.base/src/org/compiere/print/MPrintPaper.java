@@ -32,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	AD_PrintPaper Print Paper Model
@@ -48,7 +49,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 			<li>FR [ 2829019 ] Check PrintPaper on save
  * 			https://sourceforge.net/tracker/?func=detail&aid=2829019&group_id=176962&atid=879335
  */
-public class MPrintPaper extends X_AD_PrintPaper
+public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -276,7 +277,14 @@ public class MPrintPaper extends X_AD_PrintPaper
 		return true;
 	}
 
+	@Override
+	public MPrintPaper markImmutable() {
+		if (is_Immutable())
+			return this;
 
+		makeImmutable();
+		return this;
+	}
 
 	/**
 	 * 	Media Size Name 

@@ -8,12 +8,13 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**	Convention for the first year of depreciation (ex. FMCON, FYCON ...)
  *	@author Teo Sarca, SC Arhipac SRL
  *	@version $Id$
  */
-public class MDepreciationConvention extends X_A_Depreciation_Convention
+public class MDepreciationConvention extends X_A_Depreciation_Convention implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -160,4 +161,14 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 	public BigDecimal apply_FMCON(int A_Asset_ID, String PostingType, int A_Asset_Acct_ID, int Flag, int Period) {
 		return BigDecimal.ONE;
 	}
+	
+	@Override
+	public MDepreciationConvention markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

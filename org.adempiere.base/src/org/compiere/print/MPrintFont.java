@@ -28,6 +28,7 @@ import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintFont;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	AD_PrintFont Print Font Model
@@ -35,7 +36,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintFont.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
-public class MPrintFont extends X_AD_PrintFont
+public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -251,6 +252,15 @@ public class MPrintFont extends X_AD_PrintFont
 		}
 		return pf;
 	}	//	get
+
+	@Override
+	public MPrintFont markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 	/*************************************************************************/
 

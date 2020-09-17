@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Calendar Model
@@ -30,7 +31,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MCalendar.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MCalendar extends X_C_Calendar
+public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -56,7 +57,7 @@ public class MCalendar extends X_C_Calendar
 	public static MCalendar get (Properties ctx, int C_Calendar_ID)
 	{
 		Integer key = Integer.valueOf(C_Calendar_ID);
-		MCalendar retValue = (MCalendar) s_cache.get (ctx, key, e -> new MCalendar(ctx, e));
+		MCalendar retValue = s_cache.get (ctx, key, e -> new MCalendar(ctx, e));
 		if (retValue != null)
 			return retValue;
 		retValue = new MCalendar (ctx, C_Calendar_ID, (String)null);
@@ -69,6 +70,21 @@ public class MCalendar extends X_C_Calendar
 	}	//	get
 	
 	/**
+	 * Get updateable copy of MCalendar from cache
+	 * @param ctx
+	 * @param C_Calendar_ID
+	 * @param trxName
+	 * @return MCalendar 
+	 */
+	public static MCalendar getCopy(Properties ctx, int C_Calendar_ID, String trxName)
+	{
+		MCalendar calendar = get(C_Calendar_ID);
+		if (calendar != null)
+			calendar = new MCalendar(ctx, calendar, trxName);
+		return calendar;
+	}
+	
+	/**
 	 * 	Get Default Calendar for Client
 	 *	@param ctx context
 	 *	@param AD_Client_ID id
@@ -77,7 +93,7 @@ public class MCalendar extends X_C_Calendar
 	public static MCalendar getDefault (Properties ctx, int AD_Client_ID)
 	{
 		MClientInfo info = MClientInfo.get(ctx, AD_Client_ID);
-		return get (ctx, info.getC_Calendar_ID());
+		return getCopy(ctx, info.getC_Calendar_ID(), (String)null);
 	}	//	getDefault
 	
 	/**
@@ -171,9 +187,12 @@ public class MCalendar extends X_C_Calendar
 	}	//	createYear
 	
 	@Override
-	public MCalendar markImmutable() 
-	{
-		return (MCalendar) super.markImmutable();
+	public MCalendar markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MCalendar

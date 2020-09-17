@@ -27,6 +27,7 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Service Level Agreement Criteria Model
@@ -34,7 +35,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MSLACriteria.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MSLACriteria extends X_PA_SLA_Criteria
+public class MSLACriteria extends X_PA_SLA_Criteria implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -198,4 +199,13 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 		}
 	}	//	newInstance
 	
+	@Override
+	public MSLACriteria markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MSLACriteria

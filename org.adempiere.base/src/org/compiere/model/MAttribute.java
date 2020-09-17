@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Product Attribute
@@ -35,13 +36,12 @@ import org.compiere.util.Env;
  *	@author Jorg Janke
  *	@version $Id: MAttribute.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MAttribute extends X_M_Attribute
+public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7869800574413317999L;
-
+	private static final long serialVersionUID = 7513117649181926813L;
 
 	/**
 	 * 	Get Attributes Of Client
@@ -303,4 +303,13 @@ public class MAttribute extends X_M_Attribute
 		return success;
 	}	//	afterSave
 	
+	@Override
+	public MAttribute markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MAttribute

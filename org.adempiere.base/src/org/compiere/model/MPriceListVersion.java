@@ -24,6 +24,7 @@ import java.util.Properties;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Price List Version Model
@@ -31,7 +32,7 @@ import org.compiere.util.TimeUtil;
  *  @author Jorg Janke
  *  @version $Id: MPriceListVersion.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MPriceListVersion extends X_M_PriceList_Version
+public class MPriceListVersion extends X_M_PriceList_Version implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -124,9 +125,10 @@ public class MPriceListVersion extends X_M_PriceList_Version
 	{
 		if (m_pl == null && getM_PriceList_ID() != 0)
 		{
-			m_pl = MPriceList.get (getCtx(), getM_PriceList_ID(), null);
 			if (is_Immutable())
-				m_pl.markImmutable();
+				m_pl = MPriceList.get (getCtx(), getM_PriceList_ID(), null);
+			else
+				m_pl = MPriceList.getCopy(getCtx(), getM_PriceList_ID(), get_TrxName());
 		}
 		return m_pl;
 	}	//	PriceList
@@ -196,12 +198,15 @@ public class MPriceListVersion extends X_M_PriceList_Version
 	@Override
 	public MPriceListVersion markImmutable() 
 	{
-		MPriceListVersion po = (MPriceListVersion) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_pl != null)
 			m_pl.markImmutable();
 		if (m_pp != null && m_pp.length > 0)
 			Arrays.stream(m_pp).forEach(e -> e.markImmutable());
-		return po;
+		return this;
 	}
 
 }	//	MPriceListVersion

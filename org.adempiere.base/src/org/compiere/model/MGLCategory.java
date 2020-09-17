@@ -25,6 +25,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	GL Category
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MGLCategory.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MGLCategory extends X_GL_Category
+public class MGLCategory extends X_GL_Category implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -40,7 +41,7 @@ public class MGLCategory extends X_GL_Category
 	private static final long serialVersionUID = 7294511214194057235L;
 
 	/**
-	 * 	Get MGLCategory from Cache
+	 * 	Get MGLCategory from Cache (immutable)
 	 *	@param GL_Category_ID id
 	 *	@return MGLCategory
 	 */
@@ -50,7 +51,7 @@ public class MGLCategory extends X_GL_Category
 	}
 	
 	/**
-	 * 	Get MGLCategory from Cache
+	 * 	Get MGLCategory from Cache (immutable)
 	 *  @param ctx context
 	 *	@param GL_Category_ID id
 	 *	@return immutable instance of MGLCategory
@@ -212,4 +213,14 @@ public class MGLCategory extends X_GL_Category
 				.append("]");
 		return msgreturn.toString();
 	}
+	
+	@Override
+	public MGLCategory markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MGLCategory

@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Project Type Model
@@ -34,7 +35,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *	@author Jorg Janke
  *	@version $Id: MProjectType.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MProjectType extends X_C_ProjectType
+public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -352,5 +353,14 @@ public class MProjectType extends X_C_ProjectType
 		query.setRecordCount(1);
 		return query;
 	}	//	getQuery
+
+	@Override
+	public MProjectType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MProjectType

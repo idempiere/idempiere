@@ -47,7 +47,6 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
-import org.idempiere.cache.ImmutableIntPOCache;
 
 
 /**
@@ -241,7 +240,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}	//	getPDFFileName
 
 	/**
-	 * 	Get MInvoice from Cache
+	 * 	Get MInvoice from db
 	 *	@param C_Invoice_ID id
 	 *	@return MInvoice
 	 */
@@ -251,28 +250,19 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}
 	
 	/**
-	 * 	Get MInvoice from Cache
+	 * 	Get MInvoice from db
 	 *	@param C_Invoice_ID id
 	 *	@return MInvoice
 	 */
 	public static MInvoice get (Properties ctx, int C_Invoice_ID)
 	{
-		Integer key = Integer.valueOf(C_Invoice_ID);
-		MInvoice retValue = (MInvoice) s_cache.get (ctx, key, e -> new MInvoice(ctx, e));
-		if (retValue != null)
-			return retValue;
-		retValue = new MInvoice (Env.getCtx(), C_Invoice_ID, null);
+		MInvoice retValue = new MInvoice(ctx, C_Invoice_ID, (String)null);
 		if (retValue.get_ID () == C_Invoice_ID)
 		{
-			s_cache.put (key, retValue, e -> new MInvoice(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
-
-	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MInvoice>	s_cache	= new ImmutableIntPOCache<Integer,MInvoice>(Table_Name, 20, 2);	//	2 minutes
-
 
 	/**************************************************************************
 	 * 	Invoice Constructor
@@ -742,11 +732,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		if (m_lines == null || m_lines.length == 0 || requery)
 		{
 			m_lines = getLines(null);
-			if (is_Immutable() && m_lines.length > 0)
-				Arrays.stream(m_lines).forEach(e -> e.markImmutable());
 		}
-		if (!is_Immutable())
-			set_TrxName(m_lines, get_TrxName());
+		set_TrxName(m_lines, get_TrxName());
 		return m_lines;
 	}	//	getLines
 
@@ -899,8 +886,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		List<MInvoiceTax> list = new Query(getCtx(), I_C_InvoiceTax.Table_Name, whereClause, get_TrxName())
 										.setParameters(get_ID())
 										.list();
-		if (is_Immutable() && list.size() > 0)
-			list.stream().forEach(e -> e.markImmutable());
 		m_taxes = list.toArray(new MInvoiceTax[list.size()]);
 		return m_taxes;
 	}	//	getTaxes
@@ -2919,15 +2904,4 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		return getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID();
 	}
 
-	@Override
-	public MInvoice markImmutable() {
-		super.markImmutable();
-		if (m_lines != null && m_lines.length > 0)
-			Arrays.stream(m_lines).forEach(e -> e.markImmutable());
-		if (m_taxes != null && m_taxes.length > 0)
-			Arrays.stream(m_taxes).forEach(e -> e.markImmutable());
-		return this;
-	}
-	
-	
 }	//	MInvoice

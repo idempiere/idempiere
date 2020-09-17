@@ -6,12 +6,13 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * Asset Group Model
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MAssetGroup extends X_A_Asset_Group
+public class MAssetGroup extends X_A_Asset_Group implements ImmutablePOSupport
 {
 	
 	/**
@@ -105,6 +106,21 @@ public class MAssetGroup extends X_A_Asset_Group
 			return ag;
 		}
 		return null;
+	}
+	
+	/**
+	 * Get updateable copy of MAssetGroup from cache
+	 * @param ctx
+	 * @param A_Asset_Group_ID
+	 * @param trxName
+	 * @return MAssetGroup
+	 */
+	public static MAssetGroup getCopy(Properties ctx, int A_Asset_Group_ID, String trxName)
+	{
+		MAssetGroup grp = get(A_Asset_Group_ID);
+		if (grp != null)
+			grp = new MAssetGroup(ctx, grp, trxName);
+		return grp;
 	}
 	
 	/**
@@ -215,9 +231,12 @@ public class MAssetGroup extends X_A_Asset_Group
 	}
 	
 	@Override
-	public MAssetGroup markImmutable() 
-	{
-		return (MAssetGroup) super.markImmutable();
+	public MAssetGroup markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MAssetGroup

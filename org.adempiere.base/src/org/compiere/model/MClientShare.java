@@ -203,7 +203,7 @@ public class MClientShare extends X_AD_ClientShare
 	public MTable getTable()
 	{
 		if (m_table == null)
-			m_table = MTable.get(getCtx(), getAD_Table_ID());
+			m_table = MTable.getCopy(getCtx(), getAD_Table_ID(), get_TrxName());
 		return m_table;
 	}	//	getTable
 	

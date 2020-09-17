@@ -464,7 +464,7 @@ public class MGoal extends X_PA_Goal
      */
     public MColorSchema getColorSchema()
     {
-    	return MColorSchema.get(getCtx(), getPA_ColorSchema_ID());
+    	return MColorSchema.getCopy(getCtx(), getPA_ColorSchema_ID(), get_TrxName());
     }
 	
 	/**

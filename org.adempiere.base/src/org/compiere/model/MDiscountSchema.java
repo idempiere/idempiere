@@ -29,6 +29,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Discount Schema Model
@@ -36,7 +37,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MDiscountSchema.java,v 1.3 2006/07/30 00:51:04 jjanke Exp $
  */
-public class MDiscountSchema extends X_M_DiscountSchema
+public class MDiscountSchema extends X_M_DiscountSchema implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -396,7 +397,10 @@ public class MDiscountSchema extends X_M_DiscountSchema
 
 	@Override
 	public MDiscountSchema markImmutable() {
-		super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_lines != null)
 			Arrays.stream(m_lines).forEach(e -> {e.markImmutable();});
 		if (m_breaks != null)

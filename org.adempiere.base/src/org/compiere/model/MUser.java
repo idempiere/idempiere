@@ -43,6 +43,7 @@ import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  User Model
@@ -54,7 +55,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 			<li>FR [ 2788430 ] MUser.getOfBPartner add trxName parameter
  * 				https://sourceforge.net/tracker/index.php?func=detail&aid=2788430&group_id=176962&atid=879335
  */
-public class MUser extends X_AD_User
+public class MUser extends X_AD_User implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -1085,7 +1086,7 @@ public class MUser extends X_AD_User
 			rs = pstmt.executeQuery ();
 			if (rs.next())
 			{
-				retValue = MUser.get(ctx, rs.getInt(1));
+				retValue = MUser.getCopy(ctx, rs.getInt(1), (String)null);
 				if (rs.next())
 					s_log.warning ("More then one user with Name/Password = " + name);
 			}
@@ -1188,13 +1189,16 @@ public class MUser extends X_AD_User
 
 	@Override
 	public MUser markImmutable() {
-		MUser user = (MUser) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_roles != null && m_roles.length > 0)
 			Arrays.stream(m_roles).forEach(e -> e.markImmutable());
 		if (m_bpAccess != null && m_bpAccess.length > 0)
 			Arrays.stream(m_bpAccess).forEach(e -> e.markImmutable());
 		
-		return user;
+		return this;
 	}
 
 }	//	MUser

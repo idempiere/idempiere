@@ -16,7 +16,6 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,6 +25,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Zoom Condition model
@@ -33,12 +33,12 @@ import org.compiere.util.Util;
  *  @author Nico
  *  @version $Id: MZoomCondition.java
  */
-public class MZoomCondition extends X_AD_ZoomCondition
+public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3077830061348224074L;
+	private static final long serialVersionUID = -2472970418557589702L;
 
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -331,4 +331,14 @@ public class MZoomCondition extends X_AD_ZoomCondition
 		int no = DB.getSQLValue(null, builder.toString());		
 		return no == 1;
 	}
+	
+	@Override
+	public MZoomCondition markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MZoomCondition

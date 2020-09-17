@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutablePOCache;
  *  @author Jorg Janke
  *  @version $Id: MMessage.java,v 1.3 2006/07/30 00:54:54 jjanke Exp $
  */
-public class MMessage extends X_AD_Message
+public class MMessage extends X_AD_Message implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -198,4 +199,13 @@ public class MMessage extends X_AD_Message
 		copyPO(copy);
 	}
 	
+	@Override
+	public MMessage markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MMessage

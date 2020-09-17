@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -40,7 +41,7 @@ import org.idempiere.cache.ImmutablePOCache;
  * 		<li>BF [ 2861194 ] EntityType is not using normal PO framework for getting IDs
  * 			https://sourceforge.net/tracker/?func=detail&aid=2861194&group_id=176962&atid=879332
  */
-public class MEntityType extends X_AD_EntityType
+public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -228,4 +229,13 @@ public class MEntityType extends X_AD_EntityType
 		return true;
 	}	//	beforeDelete
 	
+	@Override
+	public MEntityType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MEntityType

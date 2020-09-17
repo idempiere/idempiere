@@ -26,6 +26,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.IntPOCopyCache;
 
 /**
  *	Asset Registration Attribute
@@ -33,7 +35,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MRegistrationAttribute.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MRegistrationAttribute extends X_A_RegistrationAttribute
+public class MRegistrationAttribute extends X_A_RegistrationAttribute implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -116,7 +118,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 	public static MRegistrationAttribute get (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(A_RegistrationAttribute_ID);
-		MRegistrationAttribute retValue = s_cache.get(ctx, key, e -> new MRegistrationAttribute(ctx, e));
+		MRegistrationAttribute retValue = s_cache.get(ctx, key, e -> new MRegistrationAttribute(ctx, e, trxName));
 		if (retValue == null)
 		{
 			retValue = new MRegistrationAttribute (ctx, A_RegistrationAttribute_ID, trxName);
@@ -130,6 +132,21 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 		return retValue;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MRegistrationAttribute from cache
+	 * @param ctx
+	 * @param A_RegistrationAttribute_ID
+	 * @param trxName
+	 * @return MRegistrationAttribute
+	 */
+	public static MRegistrationAttribute getCopy(Properties ctx, int A_RegistrationAttribute_ID, String trxName)
+	{
+		MRegistrationAttribute ra = get(ctx, A_RegistrationAttribute_ID, trxName);
+		if (ra != null)
+			ra = new MRegistrationAttribute(ctx, ra, trxName);
+		return ra;
+	}
+	
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MRegistrationAttribute.class);
 	/**	Cache						*/
@@ -186,4 +203,14 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
+	@Override
+	public MRegistrationAttribute markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MRegistrationAttribute

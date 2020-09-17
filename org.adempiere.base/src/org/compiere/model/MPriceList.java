@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Price List Model
@@ -33,7 +34,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2073484 ] MPriceList.getDefault is not working correctly
  */
-public class MPriceList extends X_M_PriceList
+public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -85,6 +86,21 @@ public class MPriceList extends X_M_PriceList
 		}
 		return retValue;		
 	}	//	get
+	
+	/**
+	 * Get updateable copy of MPriceList from cache
+	 * @param ctx
+	 * @param M_PriceList_ID
+	 * @param trxName
+	 * @return MPriceList 
+	 */
+	public static MPriceList getCopy(Properties ctx, int M_PriceList_ID, String trxName)
+	{
+		MPriceList pl = get(ctx, M_PriceList_ID, trxName);
+		if (pl != null)
+			pl = new MPriceList(ctx, pl, trxName);
+		return pl;
+	}
 	
 	/**
 	 * 	Get Default Price List for Client (cached)
@@ -327,10 +343,13 @@ public class MPriceList extends X_M_PriceList
 	
 	@Override
 	public MPriceList markImmutable() {
-		MPriceList pl = (MPriceList) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_plv != null)
 			m_plv.markImmutable();
-		return pl;
+		return this;
 	}
 
 }	//	MPriceList

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -28,7 +29,7 @@ import org.idempiere.cache.ImmutablePOCache;
  *
  *  @author Jorg Janke
  */
-public class MCurrency extends X_C_Currency
+public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -159,7 +160,7 @@ public class MCurrency extends X_C_Currency
 	}	
 	
 	/**
-	 * 	Get Currency
+	 * 	Get Currency (immutable)
 	 *	@param C_Currency_ID currency
 	 *	@return ISO Code
 	 */
@@ -169,7 +170,7 @@ public class MCurrency extends X_C_Currency
 	}
 	
 	/**
-	 * 	Get Currency
+	 * 	Get Currency (immutable)
 	 *	@param ctx Context
 	 *	@param C_Currency_ID currency
 	 *	@return ISO Code
@@ -178,7 +179,7 @@ public class MCurrency extends X_C_Currency
 	{
 		//	Try Cache
 		Integer key = Integer.valueOf(C_Currency_ID);
-		MCurrency retValue = (MCurrency)s_currencies.get(ctx, key, e -> new MCurrency(ctx, e));
+		MCurrency retValue = s_currencies.get(ctx, key, e -> new MCurrency(ctx, e));
 		if (retValue != null)
 			return retValue;
 
@@ -248,6 +249,15 @@ public class MCurrency extends X_C_Currency
 	public static int getCostingPrecision(Properties ctx, int C_Currency_ID) {
 		MCurrency c = get(ctx, C_Currency_ID);
 		return c.getCostingPrecision();
+	}
+
+	@Override
+	public MCurrency markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 

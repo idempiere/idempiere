@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -39,7 +40,7 @@ import org.idempiere.cache.ImmutablePOCache;
  *	
  *  @author Carlos Ruiz
  */
-public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
+public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
@@ -195,5 +196,13 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg {
 		super.setClientOrg(AD_Client_ID, AD_Org_ID);
 	}
 
-	
+	@Override
+	public MCtxHelpMsg markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		super.makeImmutable();
+		return this;
+	}
+
 }	//	MCtxHelpMsg

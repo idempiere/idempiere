@@ -35,7 +35,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
-import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *  Physical Inventory Model
@@ -61,7 +60,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	public static String	REVERSE_INDICATOR = "^";
 	
 	/**
-	 * 	Get Inventory from Cache (immutable)
+	 * 	Get Inventory
 	 *	@param M_Inventory_ID id
 	 *	@return MInventory
 	 */
@@ -71,29 +70,19 @@ public class MInventory extends X_M_Inventory implements DocAction
 	}
 	
 	/**
-	 * 	Get Inventory from Cache (immutable)
+	 * 	Get Inventory 
 	 *	@param ctx context
 	 *	@param M_Inventory_ID id
 	 *	@return MInventory
 	 */
 	public static MInventory get (Properties ctx, int M_Inventory_ID)
 	{
-		Integer key = Integer.valueOf(M_Inventory_ID);
-		MInventory retValue = s_cache.get (ctx, key, e -> new MInventory(ctx, e));
-		if (retValue != null)
-			return retValue;
-		retValue = new MInventory (ctx, M_Inventory_ID, (String)null);
-		if (retValue.get_ID () == M_Inventory_ID) 
-		{
-			s_cache.put (key, retValue, e -> new MInventory(Env.getCtx(), e));
-			return retValue;
-		}
-		return null;
+		MInventory inventory = new MInventory(ctx, M_Inventory_ID, (String)null);
+		if (inventory.get_ID() == M_Inventory_ID)
+			return inventory;
+		else
+			return null;
 	} //	get
-
-	/**	Cache						*/
-	protected static ImmutableIntPOCache<Integer,MInventory> s_cache = new ImmutableIntPOCache<Integer,MInventory>(Table_Name, 5, 5);
-
 
 	/**
 	 * 	Standard Constructor
@@ -194,8 +183,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	public MInventoryLine[] getLines (boolean requery)
 	{
 		if (m_lines != null && !requery) {
-			if (!is_Immutable())
-				set_TrxName(m_lines, get_TrxName());
+			set_TrxName(m_lines, get_TrxName());
 			return m_lines;
 		}
 		//
@@ -203,8 +191,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 										.setParameters(get_ID())
 										.setOrderBy(MInventoryLine.COLUMNNAME_Line)
 										.list();
-		if (is_Immutable() && list.size() > 0)
-			list.stream().forEach(e -> e.markImmutable());
 		m_lines = list.toArray(new MInventoryLine[list.size()]);
 		return m_lines;
 	}	//	getLines
@@ -1201,15 +1187,4 @@ public class MInventory extends X_M_Inventory implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
-	@Override
-	public MInventory markImmutable() {
-		super.markImmutable();
-		if (m_lines != null && m_lines.length > 0) {
-			for(MInventoryLine line : m_lines)
-				line.markImmutable();
-		}
-		return this;
-	}
-	
-	
 }	//	MInventory

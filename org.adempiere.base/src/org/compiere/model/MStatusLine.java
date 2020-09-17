@@ -33,6 +33,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -41,7 +42,7 @@ import org.idempiere.cache.ImmutablePOCache;
  *  @author Nicolas Micoud
  *  @version $Id: MStatusLine.java
  */
-public class MStatusLine extends X_AD_StatusLine
+public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -271,6 +272,15 @@ public class MStatusLine extends X_AD_StatusLine
 		if (filled)
 			return mf.format(arguments);
 		return null;
+	}
+
+	@Override
+	public MStatusLine markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MStatusLine

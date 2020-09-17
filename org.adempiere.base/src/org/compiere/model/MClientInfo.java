@@ -26,6 +26,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Client Info Model
@@ -33,12 +34,12 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MClientInfo.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MClientInfo extends X_AD_ClientInfo
+public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4861006368856890116L;
+	private static final long serialVersionUID = 4707948832203223893L;
 
 	/**
 	 * 	Get Client Info from cache (immutable)
@@ -245,7 +246,11 @@ public class MClientInfo extends X_AD_ClientInfo
 	public MAcctSchema getMAcctSchema1()
 	{
 		if (m_acctSchema == null && getC_AcctSchema1_ID() != 0)
+		{
 			m_acctSchema = new MAcctSchema (getCtx(), getC_AcctSchema1_ID(), get_TrxName());
+			if (is_Immutable())
+				m_acctSchema.markImmutable();
+		}
 		return m_acctSchema;
 	}	//	getMAcctSchema1
 
@@ -277,4 +282,15 @@ public class MClientInfo extends X_AD_ClientInfo
 		return saveUpdate();
 	}	//	save
 	
+	@Override
+	public MClientInfo markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		if (m_acctSchema != null)
+			m_acctSchema.markImmutable();
+		return this;
+	}
+
 }	//	MClientInfo

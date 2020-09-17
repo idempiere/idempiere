@@ -24,6 +24,7 @@ import org.compiere.util.IBAN;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MBankAccount.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MBankAccount extends X_C_BankAccount
+public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -170,7 +171,7 @@ public class MBankAccount extends X_C_BankAccount
 	 */
 	public MBank getBank()
 	{
-		return MBank.get(getCtx(), getC_Bank_ID());
+		return MBank.getCopy(getCtx(), getC_Bank_ID(), get_TrxName());
 	}	//	getBank
 	
 	/**
@@ -219,9 +220,12 @@ public class MBankAccount extends X_C_BankAccount
 	}	//	afterSave
 
 	@Override
-	public MBankAccount markImmutable() 
-	{
-		return (MBankAccount) super.markImmutable();
+	public MBankAccount markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MBankAccount

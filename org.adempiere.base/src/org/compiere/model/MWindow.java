@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -32,6 +31,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Window Model
@@ -39,7 +39,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MWindow.java,v 1.2 2006/07/30 00:58:05 jjanke Exp $
  */
-public class MWindow extends X_AD_Window
+public class MWindow extends X_AD_Window implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -319,10 +319,13 @@ public class MWindow extends X_AD_Window
 	
 	@Override
 	public MWindow markImmutable() {
-		MWindow window = (MWindow) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_tabs != null && m_tabs.length > 0)
 			Arrays.stream(m_tabs).forEach(e -> e.markImmutable());
-		return window;
+		return this;
 	}
 
 }	//	M_Window

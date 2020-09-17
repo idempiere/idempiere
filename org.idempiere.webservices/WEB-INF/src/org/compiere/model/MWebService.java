@@ -40,18 +40,19 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Web Services Model
  *	
  *  @author Carlos Ruiz
  */
-public class MWebService extends X_WS_WebService
+public class MWebService extends X_WS_WebService implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3561409141850981248L;
+	private static final long serialVersionUID = 297628235579089311L;
 
 	/**
 	 * 	Get MWebService from Cache (immutable)
@@ -261,10 +262,13 @@ public class MWebService extends X_WS_WebService
 	@Override
 	public MWebService markImmutable() 
 	{
-		MWebService ws = (MWebService) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_methods != null && m_methods.length > 0)
 			Arrays.stream(m_methods).forEach(e -> e.markImmutable());
-		return ws;
+		return this;
 	}
 
 }	//	MWebService

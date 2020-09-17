@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -29,7 +30,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MSalesRegion.java,v 1.3 2006/07/30 00:54:54 jjanke Exp $
  */
-public class MSalesRegion extends X_C_SalesRegion
+public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -159,5 +160,14 @@ public class MSalesRegion extends X_C_SalesRegion
 			delete_Tree(MTree_Base.TREETYPE_SalesRegion);
 		return success;
 	}	//	afterDelete
-	
+
+	@Override
+	public MSalesRegion markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MSalesRegion

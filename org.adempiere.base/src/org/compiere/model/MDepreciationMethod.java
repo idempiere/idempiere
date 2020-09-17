@@ -12,6 +12,7 @@ import org.compiere.util.CLogMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -19,7 +20,7 @@ import org.idempiere.cache.ImmutablePOCache;
  * ex. MDI, LDI, YDI ...
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MDepreciationMethod extends X_A_Depreciation_Method
+public class MDepreciationMethod extends X_A_Depreciation_Method implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -300,4 +301,14 @@ public class MDepreciationMethod extends X_A_Depreciation_Method
 		}
 		return periodAdjustment;
 	}
+	
+	@Override
+	public MDepreciationMethod markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

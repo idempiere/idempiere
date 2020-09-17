@@ -9,12 +9,13 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Asset Acct Model
  *	@author	Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MAssetAcct extends X_A_Asset_Acct
+public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 {
 	
 	/**
@@ -172,7 +173,7 @@ public class MAssetAcct extends X_A_Asset_Acct
 	
 	public MAcctSchema getC_AcctSchema()
 	{
-		return MAcctSchema.get(getCtx(), getC_AcctSchema_ID());
+		return MAcctSchema.getCopy(getCtx(), getC_AcctSchema_ID(), get_TrxName());
 	}
 	
 	public MAccount getP_Asset_Acct(int M_Product_ID)
@@ -193,7 +194,11 @@ public class MAssetAcct extends X_A_Asset_Acct
 	
 	@Override
 	public MAssetAcct markImmutable() {
-		return (MAssetAcct) super.markImmutable();
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	class MAssetAcct

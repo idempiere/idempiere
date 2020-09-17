@@ -27,6 +27,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.IntPOCopyCache;
 
 /**
  *	Business Partner Group Model 
@@ -34,7 +36,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MBPGroup.java,v 1.4 2006/09/23 15:54:22 jjanke Exp $
  */
-public class MBPGroup extends X_C_BP_Group
+public class MBPGroup extends X_C_BP_Group implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -85,6 +87,21 @@ public class MBPGroup extends X_C_BP_Group
 	}
 	
 	/**
+	 * Get updateable copy of MBPGroup from cache
+	 * @param ctx
+	 * @param C_BP_Group_ID
+	 * @param trxName
+	 * @return MBPGroup
+	 */
+	public static MBPGroup getCopy(Properties ctx, int C_BP_Group_ID, String trxName)
+	{
+		MBPGroup group = get(ctx, C_BP_Group_ID, trxName);
+		if (group != null)
+			group = new MBPGroup(ctx, group, trxName);
+		return group;
+	}
+	
+	/**
 	 * 	Get Default MBPGroup
 	 *	@param ctx context
 	 *	@return MBPGroup
@@ -93,7 +110,7 @@ public class MBPGroup extends X_C_BP_Group
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		Integer key = Integer.valueOf(AD_Client_ID);
-		MBPGroup retValue = s_cacheDefault.get (ctx, key, e -> new MBPGroup(ctx, e));
+		MBPGroup retValue = s_cacheDefault.get (key, e -> new MBPGroup(ctx, e));
 		if (retValue != null)
 			return retValue;
 		
@@ -176,8 +193,8 @@ public class MBPGroup extends X_C_BP_Group
 	private static ImmutableIntPOCache<Integer,MBPGroup>	s_cache
 		= new ImmutableIntPOCache<Integer,MBPGroup>(Table_Name, 10);
 	/**	Default Cache					*/
-	private static ImmutableIntPOCache<Integer,MBPGroup>	s_cacheDefault
-		= new ImmutableIntPOCache<Integer,MBPGroup>(Table_Name, MBPGroup.class.getName()+".Default", 5);
+	private static IntPOCopyCache<Integer,MBPGroup>	s_cacheDefault
+		= new IntPOCopyCache<Integer,MBPGroup>(Table_Name, MBPGroup.class.getName()+".Default", 5);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MBPGroup.class);
 	
@@ -288,9 +305,11 @@ public class MBPGroup extends X_C_BP_Group
 	}	//	afterSave
 
 	@Override
-	public MBPGroup markImmutable() 
-	{
-		return (MBPGroup) super.markImmutable();
-	}
+	public MBPGroup markImmutable() {
+		if (is_Immutable())
+			return this;
 
+		makeImmutable();
+		return this;
+	}
 }	//	MBPGroup

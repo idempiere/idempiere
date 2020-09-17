@@ -28,6 +28,7 @@ import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Tab Model
@@ -38,12 +39,12 @@ import org.compiere.util.Env;
  * <li>http://sourceforge.net/tracker/?func=detail&atid=879335&aid=2826384&group_id=176962
  *  @version $Id: MTab.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MTab extends X_AD_Tab
+public class MTab extends X_AD_Tab implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2964171360368660043L;
+	private static final long serialVersionUID = -8111075325920938135L;
 
 	/**
 	 * 	Standard Constructor
@@ -259,5 +260,13 @@ public class MTab extends X_AD_Tab
     	return parentTabID;
     }
 
+    @Override
+	public MTab markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	M_Tab

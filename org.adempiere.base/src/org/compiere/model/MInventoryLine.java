@@ -36,7 +36,7 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 1817757 ] Error on saving MInventoryLine in a custom environment
  * 			<li>BF [ 1722982 ] Error with inventory when you enter count qty in negative
  */
-public class MInventoryLine extends X_M_InventoryLine 
+public class MInventoryLine extends X_M_InventoryLine
 {
 	/**
 	 * 
@@ -190,9 +190,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			m_product = null;	//	reset
 		if (m_product == null)
 		{
-			m_product = MProduct.get(getCtx(), M_Product_ID);
-			if (is_Immutable())
-				m_product.markImmutable();
+			m_product = MProduct.getCopy(getCtx(), M_Product_ID, get_TrxName());
 		}
 		return m_product;
 	}	//	getProduct
@@ -267,11 +265,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	public MInventory getParent()
 	{
 		if (m_parent == null)
-		{
 			m_parent = new MInventory (getCtx(), getM_Inventory_ID(), get_TrxName());
-			if (is_Immutable())
-				m_parent.markImmutable();
-		}
 		return m_parent;
 	}	//	getParent
 	
@@ -503,14 +497,4 @@ public class MInventoryLine extends X_M_InventoryLine
 		return getMovementQty().signum() < 0;
 	}
 	
-	@Override
-	public MInventoryLine markImmutable() {
-		MInventoryLine il = (MInventoryLine) super.markImmutable();
-		if (m_product != null)
-			m_product.markImmutable();
-		if (m_parent != null)
-			m_parent.markImmutable();
-		return il;
-	}
-
 }	//	MInventoryLine

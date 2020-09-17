@@ -24,14 +24,14 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MViewComponent extends X_AD_ViewComponent {
-
+public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8915166706061086737L;
+	private static final long serialVersionUID = 1580063310233871896L;
 
 	/**
 	 * Standard constructor
@@ -199,10 +199,13 @@ public class MViewComponent extends X_AD_ViewComponent {
 	
 	@Override
 	public MViewComponent markImmutable() {
-		MViewComponent vc = (MViewComponent) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_columns != null && m_columns.length > 0)
 			Arrays.stream(m_columns).forEach(e -> e.markImmutable());
-		return vc;
+		return this;
 	}
 
 	/**

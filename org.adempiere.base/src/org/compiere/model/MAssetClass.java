@@ -9,13 +9,14 @@ import java.util.logging.Level;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.fa.feature.UseLifeImpl;
 
 /**	Asset Class
  *	@author Teo Sarca, SC Arhipac SRL
  *	@version $Id$
  */
-public class MAssetClass extends X_A_Asset_Class
+public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 {
 	
 	/**
@@ -254,7 +255,11 @@ public class MAssetClass extends X_A_Asset_Class
 	
 	@Override
 	public MAssetClass markImmutable() {
-		return (MAssetClass) super.markImmutable();
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }

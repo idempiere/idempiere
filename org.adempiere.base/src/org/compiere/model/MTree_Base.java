@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Base Tree Model.
@@ -30,7 +31,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MTree_Base.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MTree_Base extends X_AD_Tree
+public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -461,12 +462,14 @@ public class MTree_Base extends X_AD_Tree
 		return success;
 	}	//	afterSave
 
-	
 	@Override
 	public MTree_Base markImmutable() {
-		return (MTree_Base) super.markImmutable();
-	}
+		if (is_Immutable())
+			return this;
 
+		makeImmutable();
+		return this;
+	}
 
 	/** Returns true if should load all tree nodes immediately */
 	public static boolean isLoadAllNodesImmediately(int treeID, String trxName) {

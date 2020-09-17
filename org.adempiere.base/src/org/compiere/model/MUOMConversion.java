@@ -38,6 +38,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Unit of Measure Conversion Model
@@ -45,13 +46,12 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: MUOMConversion.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MUOMConversion extends X_C_UOM_Conversion
+public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3555218774291122619L;
-
+	private static final long serialVersionUID = 1772365359514185604L;
 
 	/**
 	 *	Convert qty to target UOM and round.
@@ -800,4 +800,13 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		return sb.toString ();
 	}	//	toString
 	
+	@Override
+	public MUOMConversion markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	UOMConversion

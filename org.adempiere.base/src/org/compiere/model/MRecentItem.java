@@ -31,6 +31,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
@@ -41,7 +42,7 @@ import org.osgi.service.event.Event;
  *
  *  @author Carlos Ruiz - GlobalQSS
  */
-public class MRecentItem extends X_AD_RecentItem
+public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -139,6 +140,21 @@ public class MRecentItem extends X_AD_RecentItem
 		return ri;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MRecentItem from cache
+	 * @param ctx
+	 * @param AD_RecentItem_ID
+	 * @param trxName
+	 * @return MRecentItem
+	 */
+	public static synchronized MRecentItem getCopy(Properties ctx, int AD_RecentItem_ID, String trxName)
+	{
+		MRecentItem ri = get(ctx, AD_RecentItem_ID);
+		if (ri != null)
+			ri = new MRecentItem(ctx, ri, trxName);
+		return ri;
+	}
+	
 	/**
 	 * 	Get Recent Item from Cache using table+recordID (immutable)
 	 *	@param ctx context
@@ -379,6 +395,15 @@ public class MRecentItem extends X_AD_RecentItem
 
 	private void clearLabel() {
 		m_label = null;
+	}
+
+	@Override
+	public MRecentItem markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 	@Override

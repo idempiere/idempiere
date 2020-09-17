@@ -310,7 +310,7 @@ public class MAsset extends X_A_Asset
 	}
 	
 	public MAssetGroup getAssetGroup() {
-		return MAssetGroup.get(getCtx(), getA_Asset_Group_ID());
+		return MAssetGroup.getCopy(getCtx(), getA_Asset_Group_ID(), get_TrxName());
 	}
 	
 	/**

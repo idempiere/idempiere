@@ -20,6 +20,7 @@ import org.compiere.model.X_AD_BroadcastMessage;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 
@@ -27,7 +28,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * @author Deepak Pansheriya
  *
  */
-public class MBroadcastMessage extends X_AD_BroadcastMessage
+public class MBroadcastMessage extends X_AD_BroadcastMessage implements ImmutablePOSupport
 {
     /**
 	 * 
@@ -168,9 +169,11 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
 	}
     
 	@Override
-	public MBroadcastMessage markImmutable() 
-	{
-		return (MBroadcastMessage) super.markImmutable();
-	}
+	public MBroadcastMessage markImmutable() {
+		if (is_Immutable())
+			return this;
 
+		makeImmutable();
+		return this;
+	}
 }

@@ -24,6 +24,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MProcessPara.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MProcessPara extends X_AD_Process_Para
+public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -352,6 +353,15 @@ public class MProcessPara extends X_AD_Process_Para
 		}
 
 		return foreignTable;
+	}
+
+	@Override
+	public MProcessPara markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MProcessPara

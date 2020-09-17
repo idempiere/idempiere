@@ -30,13 +30,14 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Warehouse Locator Type Object
  *
  * 	@author 	Carlos Ruiz - Quality Systems & Solutions - globalqss
  */
-public class MLocatorType extends X_M_LocatorType {
+public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
@@ -137,5 +138,14 @@ public class MLocatorType extends X_M_LocatorType {
 	public String toString() {
 		return getName();
 	}	//	toString
+
+	@Override
+	public MLocatorType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MLocatorType

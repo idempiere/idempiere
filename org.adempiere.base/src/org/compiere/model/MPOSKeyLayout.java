@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	POS Function Key Layout
@@ -33,7 +34,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MPOSKeyLayout.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MPOSKeyLayout extends X_C_POSKeyLayout
+public class MPOSKeyLayout extends X_C_POSKeyLayout implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -183,10 +184,13 @@ public class MPOSKeyLayout extends X_C_POSKeyLayout
 	@Override
 	public MPOSKeyLayout markImmutable() 
 	{
-		MPOSKeyLayout pkl = (MPOSKeyLayout) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_keys != null && m_keys.length > 0)
 			Arrays.stream(m_keys).forEach(e -> e.markImmutable());
-		return pkl;
+		return this;
 	}
 
 }	//	MPOSKeyLayout

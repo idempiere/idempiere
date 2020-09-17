@@ -28,6 +28,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Accounting Schema Model (base)
@@ -37,7 +38,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335  
  *  @version 	$Id: MAcctSchema.java,v 1.4 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MAcctSchema extends X_C_AcctSchema
+public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -89,6 +90,21 @@ public class MAcctSchema extends X_C_AcctSchema
 		}
 		return null;
 	}	//	get
+	
+	/**
+	 * Get updateable copy of MAcctSchema from cache
+	 * @param ctx
+	 * @param C_AcctSchema_ID
+	 * @param trxName
+	 * @return MAcctSchema
+	 */
+	public static MAcctSchema getCopy(Properties ctx, int C_AcctSchema_ID, String trxName)
+	{
+		MAcctSchema as = get(ctx, C_AcctSchema_ID, trxName);
+		if (as != null)
+			as = new MAcctSchema(ctx, as, trxName);
+		return as;
+	}
 	
 	/**
 	 *  Get AccountSchema of Client
@@ -704,12 +720,15 @@ public class MAcctSchema extends X_C_AcctSchema
 	@Override
 	public MAcctSchema markImmutable() 
 	{
-		MAcctSchema as = (MAcctSchema) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_gl != null)
 			m_gl.markImmutable();
 		if (m_default != null)
 			m_default.markImmutable();
-		return as;
+		return this;
 	}
 
 }	//	MAcctSchema

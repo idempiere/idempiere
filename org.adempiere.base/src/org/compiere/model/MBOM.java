@@ -24,13 +24,14 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	BOM Model
  *  @author Jorg Janke
  *  @version $Id: MBOM.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MBOM extends X_M_BOM
+public class MBOM extends X_M_BOM implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -68,6 +69,21 @@ public class MBOM extends X_M_BOM
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MBOM from cache
+	 * @param ctx
+	 * @param M_BOM_ID
+	 * @param trxName
+	 * @return MBOM
+	 */
+	public static MBOM getCopy(Properties ctx, int M_BOM_ID, String trxName)
+	{
+		MBOM bom = get(M_BOM_ID);
+		if (bom != null)
+			bom = new MBOM(ctx, bom, trxName);
+		return bom;
+	}
+	
 	/**
 	 * 	Get BOMs Of Product
 	 *	@param ctx context
@@ -206,9 +222,11 @@ public class MBOM extends X_M_BOM
 	}	//	beforeSave
 	
 	@Override
-	public MBOM markImmutable() 
-	{
-		return (MBOM) super.markImmutable();
-	}
+	public MBOM markImmutable() {
+		if (is_Immutable())
+			return this;
 
+		makeImmutable();
+		return this;
+	}
 }	//	MBOM

@@ -30,6 +30,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Persistent Rule Model
@@ -37,7 +38,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @version $Id: MRule.java
  *  
  */
-public class MRule extends X_AD_Rule
+public class MRule extends X_AD_Rule implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -309,5 +310,14 @@ public class MRule extends X_AD_Rule
 			return retValue;
 		}
 	}   //  convertKey
+
+	@Override
+	public MRule markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MRule

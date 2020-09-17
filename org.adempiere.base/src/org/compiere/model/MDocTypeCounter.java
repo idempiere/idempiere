@@ -25,6 +25,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -33,7 +34,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MDocTypeCounter.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MDocTypeCounter extends X_C_DocTypeCounter
+public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -322,7 +323,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	}	//	setCounter_C_DocType_ID
 	
 	/**
-	 * 	Get Doc Type
+	 * 	Get Doc Type (immutable)
 	 *	@return doc type or null if not existing
 	 */
 	public MDocType getDocType()
@@ -338,7 +339,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	}	//	getDocType
 	
 	/**
-	 * 	Get Counter Doc Type
+	 * 	Get Counter Doc Type (immutable)
 	 *	@return counter doc type or null if not existing
 	 */
 	public MDocType getCounterDocType()
@@ -446,5 +447,14 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 			 validate();
 		return true;
 	}	//	beforeSave
-	
+
+	@Override
+	public MDocTypeCounter markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MDocTypeCounter

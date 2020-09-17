@@ -29,12 +29,13 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * @author hengsin
  *
  */
-public class MStyleLine extends X_AD_StyleLine {
+public class MStyleLine extends X_AD_StyleLine implements ImmutablePOSupport {
 
 	/**
 	 * 
@@ -86,4 +87,14 @@ public class MStyleLine extends X_AD_StyleLine {
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
+	@Override
+	public MStyleLine markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

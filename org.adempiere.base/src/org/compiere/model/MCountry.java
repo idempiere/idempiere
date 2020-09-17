@@ -34,6 +34,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Location Country Model (Value Object)
@@ -45,7 +46,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 				<li>BF [ 2695078 ] Country is not translated on invoice
  */
 public class MCountry extends X_C_Country
-	implements Comparator<Object>, Serializable
+	implements Comparator<Object>, Serializable, ImmutablePOSupport
 {
 	/**
 	 * 
@@ -96,7 +97,7 @@ public class MCountry extends X_C_Country
 	}
 	
 	/**
-	 * 	Get Default Country
+	 * 	Get Default Country (immutable)
 	 *	@return Country
 	 */
 	public static MCountry getDefault ()
@@ -377,6 +378,15 @@ public class MCountry extends X_C_Country
 		}
 		return false;
 	}	//	isValidRegion
+
+	@Override
+	public MCountry markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 	/**************************************************************************
 	 * 	Insert Countries

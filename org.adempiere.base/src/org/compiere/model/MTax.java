@@ -29,6 +29,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Tax Model
@@ -39,7 +40,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  trifonnt - BF [2913276] - Allow only one Default Tax Rate per Tax Category
  *  mjmckay - BF [2948632] - Allow edits to the Default Tax Rate 
  */
-public class MTax extends X_C_Tax
+public class MTax extends X_C_Tax implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -123,6 +124,21 @@ public class MTax extends X_C_Tax
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MTax from cache
+	 * @param ctx
+	 * @param C_Tax_ID
+	 * @param trxName
+	 * @return MTax
+	 */
+	public static MTax getCopy(Properties ctx, int C_Tax_ID, String trxName)
+	{
+		MTax tax = get(C_Tax_ID);
+		if (tax != null)
+			tax = new MTax(ctx, tax, trxName);
+		return tax;
+	}
+	
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -387,13 +403,16 @@ public class MTax extends X_C_Tax
 
 	@Override
 	public MTax markImmutable() {
-		MTax tax = (MTax) super.markImmutable();
+		if (is_Immutable()) 
+			return this;
+		
+		makeImmutable();
 		if (m_childTaxes != null && m_childTaxes.length > 0)
 			Arrays.stream(m_childTaxes).forEach(e -> e.markImmutable());
 		if (m_postals != null && m_postals.length > 0)
 			Arrays.stream(m_postals).forEach(e -> e.markImmutable());
 		
-		return tax;
+		return this;
 	}
 	
 }	//	MTax

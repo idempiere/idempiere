@@ -317,7 +317,7 @@ public class MRequest extends X_R_Request
 				setR_RequestType_ID();
 				R_RequestType_ID = getR_RequestType_ID();
 			}
-			m_requestType = MRequestType.get (getCtx(), R_RequestType_ID);
+			m_requestType = MRequestType.getCopy(getCtx(), R_RequestType_ID, get_TrxName());
 		}
 		return m_requestType;
 	}	//	getRequestType
@@ -344,7 +344,7 @@ public class MRequest extends X_R_Request
 	{
 		if (getR_Category_ID() == 0)
 			return null;
-		return MRequestCategory.get(getCtx(), getR_Category_ID());
+		return MRequestCategory.getCopy(getCtx(), getR_Category_ID(), get_TrxName());
 	}	//	getCategory
 
 	/**
@@ -367,7 +367,7 @@ public class MRequest extends X_R_Request
 	{
 		if (getR_Group_ID() == 0)
 			return null;
-		return MGroup.get(getCtx(), getR_Group_ID());
+		return MGroup.getCopy(getCtx(), getR_Group_ID(), get_TrxName());
 	}	//	getGroup
 
 	/**
@@ -390,7 +390,7 @@ public class MRequest extends X_R_Request
 	{
 		if (getR_Status_ID() == 0)
 			return null;
-		return MStatus.get(getCtx(), getR_Status_ID());
+		return MStatus.getCopy(getCtx(), getR_Status_ID(), get_TrxName());
 	}	//	getStatus
 	
 	/**
@@ -413,7 +413,7 @@ public class MRequest extends X_R_Request
 	{
 		if (getR_Resolution_ID() == 0)
 			return null;
-		return MResolution.get(getCtx(), getR_Resolution_ID());
+		return MResolution.getCopy(getCtx(), getR_Resolution_ID(), get_TrxName());
 	}	//	getResolution
 	
 	/**

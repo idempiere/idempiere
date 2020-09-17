@@ -26,6 +26,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Cost Element Model
@@ -38,7 +39,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author red1
  *  		<li>FR: [ 2214883 ] Remove SQL code and Replace for Query -- JUnit tested
  */
-public class MCostElement extends X_M_CostElement
+public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -207,6 +208,20 @@ public class MCostElement extends X_M_CostElement
 		return null;
 	} //	get
 	
+	/**
+	 * Get updateable copy of MCostElement from cache
+	 * @param ctx
+	 * @param M_CostElement_ID
+	 * @param trxName
+	 * @return MCostElement
+	 */
+	public static MCostElement getCopy(Properties ctx, int M_CostElement_ID, String trxName)
+	{
+		MCostElement ce = get(M_CostElement_ID);
+		if (ce != null)
+			ce = new MCostElement(ctx, ce, trxName);
+		return ce;
+	}
 	
 	/**
 	 * Get All Cost Elements for current AD_Client_ID
@@ -514,4 +529,13 @@ public class MCostElement extends X_M_CostElement
 		return sb.toString ();
 	} //	toString
 	
+	@Override
+	public MCostElement markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MCostElement

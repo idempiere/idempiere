@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Organization Model
@@ -30,7 +31,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MOrg.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MOrg extends X_AD_Org
+public class MOrg extends X_AD_Org implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -171,8 +172,8 @@ public class MOrg extends X_AD_Org
 	 */
 	public MOrgInfo getInfo()
 	{
-		MOrgInfo orgInfo = MOrgInfo.get(Env.getCtx(), getAD_Org_ID(), get_TrxName());
-		return new MOrgInfo(getCtx(), orgInfo, get_TrxName());
+		MOrgInfo orgInfo = MOrgInfo.getCopy(Env.getCtx(), getAD_Org_ID(), get_TrxName());
+		return orgInfo;
 	}	//	getMOrgInfo
 
 
@@ -243,5 +244,14 @@ public class MOrg extends X_AD_Org
 		}
 		return m_linkedBPartner.intValue();
 	}	//	getLinkedC_BPartner_ID
-	
+
+	@Override
+	public MOrg markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MOrg

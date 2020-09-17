@@ -10,8 +10,9 @@ import java.util.logging.Logger;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.idempiere.cache.ImmutableIntPOCache;
-import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.IntPOCopyCache;
+import org.idempiere.cache.POCopyCache;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetNotSupportedException;
 import org.idempiere.fa.service.api.DepreciationDTO;
@@ -22,7 +23,7 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
  * Depreciation Engine (eg. SL, ARH_VAR ...)
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MDepreciation extends X_A_Depreciation
+public class MDepreciation extends X_A_Depreciation implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -77,11 +78,11 @@ public class MDepreciation extends X_A_Depreciation
 	}
 	
 	/**		Cache									*/
-	private static ImmutableIntPOCache<Integer,MDepreciation>
-	s_cache = new ImmutableIntPOCache<Integer,MDepreciation>(Table_Name, 5);
+	private static IntPOCopyCache<Integer,MDepreciation>
+	s_cache = new IntPOCopyCache<Integer,MDepreciation>(Table_Name, 5);
 	/**		Cache for type							*/
-	private static ImmutablePOCache<String,MDepreciation>
-	s_cache_forType = new ImmutablePOCache<String,MDepreciation>(Table_Name, Table_Name+"_DepreciationType", 5);
+	private static POCopyCache<String,MDepreciation>
+	s_cache_forType = new POCopyCache<String,MDepreciation>(Table_Name, Table_Name+"_DepreciationType", 5);
 	/**		Static logger							*/
 	private static Logger s_log = CLogger.getCLogger(MDepreciation.class);
 	/** The accuracy of calculation on depreciation */
@@ -103,7 +104,7 @@ public class MDepreciation extends X_A_Depreciation
 	}
  
 	/**
-	 * Get Depreciation method from cache (immutable)
+	 * Get Depreciation method from cache
 	 * @param A_Depreciation_ID depreciation id
 	 */
 	public static MDepreciation get(int A_Depreciation_ID)
@@ -112,13 +113,13 @@ public class MDepreciation extends X_A_Depreciation
 	}
 	
 	/**
-	 * Get Depreciation method from cache (immutable)
+	 * Get Depreciation method from cache
 	 * @param ctx
 	 * @param A_Depreciation_ID depreciation id
 	 */
 	public static MDepreciation get(Properties ctx, int A_Depreciation_ID)
 	{
-		MDepreciation depr = s_cache.get(ctx, A_Depreciation_ID, e -> new MDepreciation(ctx, e));
+		MDepreciation depr = s_cache.get(A_Depreciation_ID, e -> new MDepreciation(ctx, e));
 		if (depr != null)
 			return depr;
 		
@@ -149,7 +150,7 @@ public class MDepreciation extends X_A_Depreciation
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx); 
 		String key = "" + AD_Client_ID + "_" + depreciationType;
-		MDepreciation depr = s_cache_forType.get(ctx, key, e -> new MDepreciation(ctx, e));
+		MDepreciation depr = s_cache_forType.get(key, e -> new MDepreciation(ctx, e));
 		if (depr != null)
 			return depr;
 		
@@ -525,4 +526,14 @@ public class MDepreciation extends X_A_Depreciation
 		// TODO: Adding this method to compile correctly and future research
 		return 0;
 	}
+	
+	@Override
+	public MDepreciation markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

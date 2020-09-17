@@ -213,7 +213,7 @@ public class MRfQResponse extends X_C_RfQResponse
 	public MRfQ getRfQ()
 	{
 		if (m_rfq == null)
-			m_rfq = MRfQ.getCopy(getCtx(), getC_RfQ_ID(), get_TrxName());
+			m_rfq = MRfQ.get(getCtx(), getC_RfQ_ID(), get_TrxName());
 		
 		return m_rfq;
 	}	//	getRfQ

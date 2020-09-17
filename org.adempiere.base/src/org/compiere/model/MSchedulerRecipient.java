@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Scheduler Recipient Model
@@ -27,12 +28,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MSchedulerRecipient.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MSchedulerRecipient extends X_AD_SchedulerRecipient
+public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6521993049769786393L;
+	private static final long serialVersionUID = -4928359768598663557L;
 
 	/**
 	 * 	Standard Constructor
@@ -87,4 +88,14 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
+	@Override
+	public MSchedulerRecipient markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MSchedulerRecipient

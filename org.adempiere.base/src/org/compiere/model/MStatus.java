@@ -27,13 +27,14 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Request Status Model
  *  @author Jorg Janke
  *  @version $Id: MStatus.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MStatus extends X_R_Status
+public class MStatus extends X_R_Status implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -75,6 +76,21 @@ public class MStatus extends X_R_Status
 		return retValue;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MStatus from cache
+	 * @param ctx
+	 * @param R_Status_ID
+	 * @param trxName
+	 * @return MStatus
+	 */
+	public static MStatus getCopy(Properties ctx, int R_Status_ID, String trxName)
+	{
+		MStatus status = get(R_Status_ID);
+		if (status != null)
+			status = new MStatus(ctx, status, trxName);
+		return status;
+	}
+	
 	/**
 	 * 	Get Default Request Status
 	 *	@param ctx context
@@ -264,4 +280,13 @@ public class MStatus extends X_R_Status
 		return sb.toString ();
 	}	//	toString
 	
+	@Override
+	public MStatus markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MStatus

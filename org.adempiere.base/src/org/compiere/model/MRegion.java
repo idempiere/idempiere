@@ -30,6 +30,7 @@ import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 import static org.compiere.model.SystemIDs.*;
@@ -41,7 +42,7 @@ import static org.compiere.model.SystemIDs.*;
  *  @version 	$Id: MRegion.java,v 1.3 2006/07/30 00:58:36 jjanke Exp $
  */
 public class MRegion extends X_C_Region
-	implements Comparator<Object>, Serializable
+	implements Comparator<Object>, Serializable, ImmutablePOSupport
 {
 	/**
 	 * 
@@ -290,6 +291,15 @@ public class MRegion extends X_C_Region
 		Collator collator = Collator.getInstance();
 		return collator.compare(s1, s2);
 	}	//	compare
+
+	@Override
+	public MRegion markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 	/**
 	 * 	Test / Load

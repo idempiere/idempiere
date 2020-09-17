@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.compiere.print.MPrintColor;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Performance Color Schema
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MColorSchema.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MColorSchema extends X_PA_ColorSchema
+public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -99,7 +100,7 @@ public class MColorSchema extends X_PA_ColorSchema
 			return retValue;
 		}
 		Integer key = Integer.valueOf(PA_ColorSchema_ID);
-		MColorSchema retValue = (MColorSchema)s_cache.get (ctx, key, e -> new MColorSchema(ctx, e));
+		MColorSchema retValue = s_cache.get (ctx, key, e -> new MColorSchema(ctx, e));
 		if (retValue != null)
 			return retValue;
 		retValue = new MColorSchema (ctx, PA_ColorSchema_ID, (String)null);
@@ -111,6 +112,21 @@ public class MColorSchema extends X_PA_ColorSchema
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MColorSchema from cache
+	 * @param ctx
+	 * @param PA_ColorSchema_ID
+	 * @param trxName
+	 * @return MColorSchema
+	 */
+	public static MColorSchema getCopy(Properties ctx, int PA_ColorSchema_ID, String trxName)
+	{
+		MColorSchema cs = get(PA_ColorSchema_ID);
+		if (cs != null)
+			cs = new MColorSchema(ctx, cs, trxName);
+		return cs;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer, MColorSchema> s_cache 
 		= new ImmutableIntPOCache<Integer, MColorSchema> (Table_Name, 20);
@@ -253,4 +269,13 @@ public class MColorSchema extends X_PA_ColorSchema
 		return sb.toString ();
 	}	//	toString
 	
+	@Override
+	public MColorSchema markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MColorSchema

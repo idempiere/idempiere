@@ -26,6 +26,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Warehouse Model
@@ -37,12 +38,12 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  			<li>BF [ 1874419 ] JDBC Statement not close in a finally block
  *  @version $Id: MWarehouse.java,v 1.3 2006/07/30 00:58:05 jjanke Exp $
  */
-public class MWarehouse extends X_M_Warehouse
+public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8956497787182027905L;
+	private static final long serialVersionUID = 5425515002759989733L;
 	
 	/**
 	 * 	Get from Cache (immutable)
@@ -326,11 +327,14 @@ public class MWarehouse extends X_M_Warehouse
 	@Override
 	public MWarehouse markImmutable() 
 	{
-		MWarehouse po = (MWarehouse) super.markImmutable();
+		if (this.is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_locators != null && m_locators.length > 0)
 			Arrays.stream(m_locators).forEach(e -> e.markImmutable());
 		
-		return po;
+		return this;
 	}
 
 

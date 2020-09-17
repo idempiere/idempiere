@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MPOS.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MPOS extends X_C_POS
+public class MPOS extends X_C_POS implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -209,10 +210,13 @@ public class MPOS extends X_C_POS
 
 	@Override
 	public MPOS markImmutable() {
-		MPOS pos = (MPOS) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_template != null)
 			m_template.markImmutable();
-		return pos;
+		return this;
 	}
 
 	@Override

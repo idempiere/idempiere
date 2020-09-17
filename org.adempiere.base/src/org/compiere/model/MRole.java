@@ -46,7 +46,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
-import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.POCopyCache;
 
 /**
  *	Role Model.
@@ -59,7 +60,7 @@ import org.idempiere.cache.ImmutablePOCache;
  *  @contributor KittiU - FR [ 3062553 ] - Duplicated action in DocAction list for Multiple Role Users
  *  @version $Id: MRole.java,v 1.5 2006/08/09 16:38:47 jjanke Exp $
  */
-public final class MRole extends X_AD_Role
+public final class MRole extends X_AD_Role implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -113,7 +114,7 @@ public final class MRole extends X_AD_Role
 	}
 
 	/**
-	 * 	Get Role for User (immutable)
+	 * 	Get Role for User from cache
 	 * 	@param ctx context
 	 * 	@param AD_Role_ID role
 	 * 	@param AD_User_ID user
@@ -124,7 +125,7 @@ public final class MRole extends X_AD_Role
 	{
 		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
 		String key = AD_Role_ID + "_" + AD_User_ID;
-		MRole role = (MRole)s_roles.get (ctx, key, e -> new MRole(ctx, e));
+		MRole role = (MRole)s_roles.get (key, e -> new MRole(ctx, e));
 		if (role == null || reload)
 		{
 			role = new MRole (ctx, AD_Role_ID, null);			
@@ -248,7 +249,7 @@ public final class MRole extends X_AD_Role
 	}	//	getOf
 		
 	/** Role/User Cache			*/
-	private static ImmutablePOCache<String,MRole> s_roles = new ImmutablePOCache<String,MRole>(Table_Name, 5);
+	private static POCopyCache<String,MRole> s_roles = new POCopyCache<String,MRole>(Table_Name, 5);
 	/** Log						*/ 
 	private static CLogger			s_log = CLogger.getCLogger(MRole.class);
 	
@@ -3405,6 +3406,15 @@ public final class MRole extends X_AD_Role
 			}
 		}
 		return access;
+	}
+
+	@Override
+	public MRole markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MRole

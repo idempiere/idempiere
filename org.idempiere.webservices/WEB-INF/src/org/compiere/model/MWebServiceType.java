@@ -40,6 +40,7 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Web Services Type Model
@@ -47,12 +48,12 @@ import org.compiere.util.Env;
  *  @author Carlos Ruiz
  *  @author Deepak Pansheriya - Updated to support CreateUpdate service
  */
-public class MWebServiceType extends X_WS_WebServiceType
+public class MWebServiceType extends X_WS_WebServiceType implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2713868996404459577L;
+	private static final long serialVersionUID = -6105547694847198509L;
 
 	/**	Parameters	*/
 	private MWebServicePara[]	m_para = null;
@@ -370,4 +371,14 @@ public class MWebServiceType extends X_WS_WebServiceType
 			wsp.saveEx();	
 		}
 	}
+	
+	@Override
+	public MWebServiceType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MWebServiceType

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -28,12 +29,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MPOSKey.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MPOSKey extends X_C_POSKey
+public class MPOSKey extends X_C_POSKey implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2595668386249398840L;
+	private static final long serialVersionUID = -5138032789563975514L;
 
 	/**
 	 * 	Standard Constructor
@@ -98,6 +99,15 @@ public class MPOSKey extends X_C_POSKey
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public MPOSKey markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MPOSKey

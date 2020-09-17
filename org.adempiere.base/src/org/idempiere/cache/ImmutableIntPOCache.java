@@ -32,7 +32,7 @@ import org.compiere.model.PO;
  * @author hengsin
  *
  */
-public class ImmutableIntPOCache<K, V extends PO> extends ImmutablePOCache<Integer, V> {
+public class ImmutableIntPOCache<K, V extends PO & ImmutablePOSupport> extends ImmutablePOCache<Integer, V> {
 
 	/**
 	 * 

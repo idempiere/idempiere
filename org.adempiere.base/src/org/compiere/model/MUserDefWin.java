@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -28,7 +29,7 @@ import org.idempiere.cache.ImmutablePOCache;
  *  @version $Id$
  *  
  */
-public class MUserDefWin extends X_AD_UserDef_Win
+public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -241,7 +242,12 @@ public class MUserDefWin extends X_AD_UserDef_Win
 
 	@Override
 	public MUserDefWin markImmutable() {
-		return (MUserDefWin) super.markImmutable();
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
+
 
 }	//	MUserDefWin

@@ -46,6 +46,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
@@ -60,7 +61,7 @@ import org.idempiere.cache.ImmutablePOCache;
  * @author Silvano Trinchero, www.freepath.it
  * 			<li>IDEMPIERE-3209 changed functions to public to improve integration support
  */
-public class MWorkflow extends X_AD_Workflow
+public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -68,7 +69,7 @@ public class MWorkflow extends X_AD_Workflow
 	private static final long serialVersionUID = 727250581144217545L;
 
 	/**
-	 * 	Get Workflow from Cache
+	 * 	Get Workflow from Cache (immutable)
 	 *	@param AD_Workflow_ID id
 	 *	@return workflow
 	 */
@@ -78,7 +79,7 @@ public class MWorkflow extends X_AD_Workflow
 	}
 	
 	/**
-	 * 	Get Workflow from Cache
+	 * 	Get Workflow from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Workflow_ID id
 	 *	@return workflow
@@ -98,6 +99,20 @@ public class MWorkflow extends X_AD_Workflow
 		return null;
 	}	//	get
 	
+	/**
+	 * Get updateable copy of MWorkflow from cache
+	 * @param ctx
+	 * @param AD_Workflow_ID
+	 * @param trxName
+	 * @return MWorkflow 
+	 */
+	public static MWorkflow getCopy(Properties ctx, int AD_Workflow_ID, String trxName)
+	{
+		MWorkflow wf = get(AD_Workflow_ID);
+		if (wf != null)
+			wf = new MWorkflow(ctx, wf, trxName);
+		return wf;
+	}
 	
 	/**
 	 * 	Get Doc Value Workflow
@@ -1015,10 +1030,13 @@ public class MWorkflow extends X_AD_Workflow
 	@Override
 	public MWorkflow markImmutable() 
 	{
-		MWorkflow wf = (MWorkflow) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_nodes != null && m_nodes.size() > 0)
 			m_nodes.stream().forEach(e -> e.markImmutable()); 
-		return wf;
+		return this;
 	}
 
 	/**

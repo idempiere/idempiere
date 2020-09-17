@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,7 +33,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2736867 ] Add caching support to MActivity
  */
-public class MActivity extends X_C_Activity
+public class MActivity extends X_C_Activity implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -170,9 +171,12 @@ public class MActivity extends X_C_Activity
 	}	//	afterDelete
 
 	@Override
-	public MActivity markImmutable() 
-	{
-		return (MActivity) super.markImmutable();
+	public MActivity markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MActivity

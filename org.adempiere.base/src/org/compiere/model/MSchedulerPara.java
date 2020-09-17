@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Scheduler Parameter Model
@@ -27,12 +28,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MSchedulerPara.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MSchedulerPara extends X_AD_Scheduler_Para
+public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -703173920039087748L;
+	private static final long serialVersionUID = -9178948165437974600L;
 
 	/**
 	 * 	Standard Constructor
@@ -126,5 +127,14 @@ public class MSchedulerPara extends X_AD_Scheduler_Para
 			.append("]");
 		return sb.toString();
 	} //	toString
-	
+
+	@Override
+	public MSchedulerPara markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MSchedulerPara

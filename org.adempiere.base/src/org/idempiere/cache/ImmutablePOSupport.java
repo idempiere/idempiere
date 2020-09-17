@@ -23,49 +23,19 @@
 * - Trek Global Corporation                                           *
 * - Heng Sin Low                                                      *
 **********************************************************************/
-package org.compiere.model;
+package org.idempiere.cache;
 
-import java.sql.ResultSet;
-import java.util.Properties;
-
-import org.idempiere.cache.ImmutablePOSupport;
+import org.compiere.model.PO;
 
 /**
+ * Model class that support immutable should implement this interface
  * @author hengsin
  *
  */
-public class MUserBPAccess extends X_AD_UserBPAccess implements ImmutablePOSupport {
-
+public interface ImmutablePOSupport {
 	/**
-	 * 
+	 * mark PO as immutable
+	 * @return PO
 	 */
-	private static final long serialVersionUID = 4549943360035715233L;
-
-	/**
-	 * @param ctx
-	 * @param AD_UserBPAccess_ID
-	 * @param trxName
-	 */
-	public MUserBPAccess(Properties ctx, int AD_UserBPAccess_ID, String trxName) {
-		super(ctx, AD_UserBPAccess_ID, trxName);
-	}
-
-	/**
-	 * @param ctx
-	 * @param rs
-	 * @param trxName
-	 */
-	public MUserBPAccess(Properties ctx, ResultSet rs, String trxName) {
-		super(ctx, rs, trxName);
-	}
-
-	@Override
-	public MUserBPAccess markImmutable() {
-		if (is_Immutable())
-			return this;
-
-		makeImmutable();
-		return this;
-	}
-
+	public PO markImmutable();
 }

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -28,13 +29,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MDiscountSchemaLine.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MDiscountSchemaLine extends X_M_DiscountSchemaLine
+public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements ImmutablePOSupport
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1632154004024021493L;
+	private static final long serialVersionUID = 5145958821951855437L;
 
 	/**
 	 * 	Standard Constructor
@@ -88,5 +88,14 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
-	
+
+	@Override
+	public MDiscountSchemaLine markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MDiscountSchemaLine

@@ -489,7 +489,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	public MWFNode getNode()
 	{
 		if (m_node == null)
-			m_node = MWFNode.get (getCtx(), getAD_WF_Node_ID());
+			m_node = MWFNode.getCopy(getCtx(), getAD_WF_Node_ID(), get_TrxName());
 		return m_node;
 	}	//	getNode
 
@@ -651,7 +651,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 */
 	public MWFResponsible getResponsible()
 	{
-		MWFResponsible resp = MWFResponsible.get(getCtx(), getAD_WF_Responsible_ID());
+		MWFResponsible resp = MWFResponsible.getCopy(getCtx(), getAD_WF_Responsible_ID(), get_TrxName());
 		return resp;
 	}	//	isInvoker
 

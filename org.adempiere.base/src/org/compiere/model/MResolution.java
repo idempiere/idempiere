@@ -21,13 +21,14 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Request Resolution Model
  *  @author Jorg Janke
  *  @version $Id: MResolution.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MResolution extends X_R_Resolution
+public class MResolution extends X_R_Resolution implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -65,6 +66,21 @@ public class MResolution extends X_R_Resolution
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MResolution from cache
+	 * @param ctx
+	 * @param R_Resolution_ID
+	 * @param trxName
+	 * @return MResolution
+	 */
+	public static MResolution getCopy(Properties ctx, int R_Resolution_ID, String trxName)
+	{
+		MResolution resolution = get(R_Resolution_ID);
+		if (resolution != null)
+			resolution = new MResolution(ctx, resolution, trxName);
+		return resolution;
+	}
+	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MResolution>	s_cache	= new ImmutableIntPOCache<Integer,MResolution>(Table_Name, 10);
 	
@@ -122,4 +138,14 @@ public class MResolution extends X_R_Resolution
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+
+	@Override
+	public MResolution markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MResolution

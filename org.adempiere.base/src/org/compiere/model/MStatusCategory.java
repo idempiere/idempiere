@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Request Status Category Model
@@ -35,7 +36,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MStatusCategory.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MStatusCategory extends X_R_StatusCategory
+public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -261,10 +262,13 @@ public class MStatusCategory extends X_R_StatusCategory
 	@Override
 	public MStatusCategory markImmutable() 
 	{
-		MStatusCategory po = (MStatusCategory) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_status != null && m_status.length > 0)
 			Arrays.stream(m_status).forEach(e -> e.markImmutable());
-		return po;
+		return this;
 	}
 
 	/**

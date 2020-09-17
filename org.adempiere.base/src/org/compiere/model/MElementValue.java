@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Natural Account
@@ -33,12 +34,12 @@ import org.compiere.util.Env;
  * 			BF [ 1883533 ] Change to summary - valid combination issue
  * 			BF [ 2320411 ] Translate "Already posted to" message
  */
-public class MElementValue extends X_C_ElementValue
+public class MElementValue extends X_C_ElementValue implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4765839867934329276L;
+	private static final long serialVersionUID = 6352667759697380460L;
 
 	/**
 	 * 	Standard Constructor
@@ -309,5 +310,14 @@ public class MElementValue extends X_C_ElementValue
 			delete_Tree(MTree_Base.TREETYPE_ElementValue);
 		return success;
 	}	//	afterDelete
+
+	@Override
+	public MElementValue markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MElementValue

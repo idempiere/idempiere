@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -29,7 +30,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  @author Jorg Janke
  *  @version $Id: MField.java,v 1.2 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MField extends X_AD_Field
+public class MField extends X_AD_Field implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -226,4 +227,13 @@ public class MField extends X_AD_Field
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	public MField markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MField

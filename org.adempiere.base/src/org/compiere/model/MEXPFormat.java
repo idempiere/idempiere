@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.POCopyCache;
 
 /**
@@ -53,7 +54,7 @@ import org.idempiere.cache.POCopyCache;
  * 				<li>https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2936561&group_id=176962
  *
  */
-public class MEXPFormat extends X_EXP_Format {
+public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 
 	/**
 	 * 
@@ -267,7 +268,10 @@ public class MEXPFormat extends X_EXP_Format {
 
 	@Override
 	public MEXPFormat markImmutable() {
-		super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_lines != null && m_lines.size() > 0)
 			m_lines.stream().forEach(e -> e.markImmutable());
 		if (m_lines_unique != null && m_lines_unique.size() > 0)

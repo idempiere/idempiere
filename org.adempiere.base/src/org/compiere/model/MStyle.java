@@ -13,12 +13,13 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * @author hengsin
  *
  */
-public class MStyle extends X_AD_Style {
+public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
@@ -139,10 +140,13 @@ public class MStyle extends X_AD_Style {
 
 	@Override
 	public MStyle markImmutable() {
-		MStyle style = (MStyle) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_lines != null && m_lines.length > 0)
 			Arrays.stream(m_lines).forEach(e -> e.markImmutable());
-		return style;
+		return this;
 	}
 	
 	

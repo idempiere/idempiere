@@ -29,6 +29,7 @@ import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * PP Product BOM Model.
@@ -36,7 +37,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * @author Victor Perez www.e-evolution.com     
  * @author Teo Sarca, http://www.arhipac.ro
  */
-public class MPPProductBOM extends X_PP_Product_BOM
+public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -92,6 +93,21 @@ public class MPPProductBOM extends X_PP_Product_BOM
 			return bom;
 		}
 		return null;
+	}
+	
+	/**
+	 * Get updateable copy of MPPProductBOM from cache
+	 * @param ctx
+	 * @param PP_Product_BOM_ID
+	 * @param trxName
+	 * @return MPPProductBOM 
+	 */
+	public static MPPProductBOM getCopy(Properties ctx, int PP_Product_BOM_ID, String trxName)
+	{
+		MPPProductBOM bom = get(PP_Product_BOM_ID);
+		if (bom != null)
+			bom = new MPPProductBOM(ctx, bom, trxName);
+		return bom;
 	}
 	
 	/**
@@ -316,10 +332,13 @@ public class MPPProductBOM extends X_PP_Product_BOM
 	@Override
 	public MPPProductBOM markImmutable() 
 	{
-		MPPProductBOM bom = (MPPProductBOM) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_lines != null && m_lines.size() > 0)
 			m_lines.stream().forEach(e -> e.markImmutable());
-		return bom;
+		return this;
 	}
 
 	

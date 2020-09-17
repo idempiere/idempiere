@@ -29,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Business Partner Model
@@ -43,12 +44,12 @@ import org.compiere.util.Msg;
  *      <LI>BF [ 2041226 ] BP Open Balance should count only Completed Invoice
  *			<LI>BF [ 2498949 ] BP Get Not Invoiced Shipment Value return null
  */
-public class MBPartner extends X_C_BPartner
+public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5534148976588041343L;
+	private static final long serialVersionUID = 2256035503713773448L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -880,7 +881,7 @@ public class MBPartner extends X_C_BPartner
 			if (getC_BP_Group_ID() == 0)
 				m_group = MBPGroup.getDefault(getCtx());
 			else
-				m_group = MBPGroup.get(getCtx(), getC_BP_Group_ID(), get_TrxName());
+				m_group = MBPGroup.getCopy(getCtx(), getC_BP_Group_ID(), get_TrxName());
 		}
 		return m_group;
 	}	//	getBPGroup
@@ -1029,6 +1030,15 @@ public class MBPartner extends X_C_BPartner
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public MBPartner markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MBPartner

@@ -30,6 +30,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Location (Address)
@@ -45,7 +46,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 		<li>BF [ 3002736 ] MLocation.get cache all MLocations
  * 			https://sourceforge.net/tracker/?func=detail&aid=3002736&group_id=176962&atid=879332
  */
-public class MLocation extends X_C_Location implements Comparator<Object>
+public class MLocation extends X_C_Location implements Comparator<Object>, ImmutablePOSupport
 {
 	/**
 	 * 
@@ -285,7 +286,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 	}	//	setCountry
 
 	/**
-	 * 	Get Country
+	 * 	Get Country (immutable)
 	 *	@return country
 	 */
 	public MCountry getCountry()
@@ -888,6 +889,15 @@ public class MLocation extends X_C_Location implements Comparator<Object>
 		return ok;
 	}
 	
+	@Override
+	public MLocation markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 	/**
 	 * Create address transaction instance
 	 * @param ctx

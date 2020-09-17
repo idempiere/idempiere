@@ -36,6 +36,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -50,7 +51,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 			<li>FR [ 2905227 ] Calculate Measure based on the script to PA
  * 			<li>https://sourceforge.net/tracker/?func=detail&aid=2905227&group_id=176962&atid=879335
  */
-public class MMeasure extends X_PA_Measure
+public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -713,4 +714,14 @@ public class MMeasure extends X_PA_Measure
 		}
 		return true;
 	}	//	updateUserDefinedGoals
+	
+	@Override
+	public MMeasure markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MMeasure

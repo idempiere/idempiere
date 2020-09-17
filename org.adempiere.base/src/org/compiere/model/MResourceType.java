@@ -28,6 +28,7 @@ import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -41,7 +42,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 				<li>added manufacturing related methods (getDayStart, getDayEnd etc)
  * 				<li>BF [ 2431049 ] If Time Slot then Time Slot Start/End should be mandatory
  */
-public class MResourceType extends X_S_ResourceType
+public class MResourceType extends X_S_ResourceType implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -81,6 +82,21 @@ public class MResourceType extends X_S_ResourceType
 			return null;
 		}
 		return type;
+	}
+	
+	/**
+	 * Get updateable copy of MResourceType from cache
+	 * @param ctx
+	 * @param S_ResourceType_ID
+	 * @param trxName
+	 * @return MResourceType 
+	 */
+	public static MResourceType getCopy(Properties ctx, int S_ResourceType_ID, String trxName)
+	{
+		MResourceType rt = get(S_ResourceType_ID);
+		if (rt != null)
+			rt = new MResourceType(ctx, rt, trxName);
+		return rt;
 	}
 	
 	/**
@@ -353,4 +369,14 @@ public class MResourceType extends X_S_ResourceType
 		}
 		return sb.append("]").toString();
 	}
+	
+	@Override
+	public MResourceType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MResourceType

@@ -27,6 +27,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Interest Area.
@@ -36,8 +37,8 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *
  *  @author Jorg Janke
  *  @version $Id: MInterestArea.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
- */
-public class MInterestArea extends X_R_InterestArea
+ */ 
+public class MInterestArea extends X_R_InterestArea implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -272,5 +273,14 @@ public class MInterestArea extends X_R_InterestArea
 		//	We have a BPartner Contact
 		return m_ci.isSubscribed();
 	}	//	isSubscribed
+
+	@Override
+	public MInterestArea markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MInterestArea

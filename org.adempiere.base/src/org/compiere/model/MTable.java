@@ -42,6 +42,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Persistent Table Model
@@ -59,7 +60,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  *  			https://sourceforge.net/tracker/?func=detail&aid=3017117&group_id=176962&atid=879332
  *  @version $Id: MTable.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MTable extends X_AD_Table
+public class MTable extends X_AD_Table implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -112,6 +113,21 @@ public class MTable extends X_AD_Table
 		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MTable from cache
+	 * @param ctx
+	 * @param AD_Table_ID
+	 * @param trxName
+	 * @return MTable
+	 */
+	public static MTable getCopy(Properties ctx, int AD_Table_ID, String trxName)
+	{
+		MTable table = get(ctx, AD_Table_ID, trxName);
+		if (table != null)
+			table = new MTable(ctx, table, trxName);
+		return table;
+	}
+	
 	/**
 	 * 	Get Table from Cache
 	 *	@param ctx context
@@ -724,12 +740,15 @@ public class MTable extends X_AD_Table
 
 	@Override
 	public MTable markImmutable() {
-		MTable tbl = (MTable) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_columns != null && m_columns.length > 0)
 			Arrays.stream(m_columns).forEach(e -> e.markImmutable());
 		if (m_viewComponents != null && m_viewComponents.length > 0)
 			Arrays.stream(m_viewComponents).forEach(e -> e.markImmutable());
-		return tbl;
+		return this;
 	}
 
 	

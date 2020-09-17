@@ -204,5 +204,4 @@ public class MRfQLineQty extends X_C_RfQLineQty
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
 }	//	MRfQLineQty

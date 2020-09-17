@@ -35,6 +35,7 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Calendar Period Model
@@ -50,7 +51,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
  *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
  */
-public class MPeriod extends X_C_Period
+public class MPeriod extends X_C_Period implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -938,10 +939,13 @@ public class MPeriod extends X_C_Period
     @Override
 	public MPeriod markImmutable() 
     {
-		MPeriod period = (MPeriod) super.markImmutable();
+    	if (is_Immutable())
+    		return this;
+    	
+		makeImmutable();
 		if (m_controls != null && m_controls.length > 0)
 			Arrays.stream(m_controls).forEach(e -> e.markImmutable());
-		return period;
+		return this;
 	}
 
 }	//	MPeriod

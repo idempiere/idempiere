@@ -75,15 +75,58 @@ public class CacheTest extends AbstractTestCase {
 	 */
 	public void testTableCache() {
 		MTable table = MTable.get(Env.getCtx(), MOrder.Table_ID);
+		
+		//find table cache instance
+		@SuppressWarnings("rawtypes")
+		CCache tblCache = null;
+		CacheInterface[] cis = CacheMgt.get().getInstancesAsArray();
+		for(CacheInterface ci : cis) {
+			if (ci instanceof CCache<?, ?>) {				
+				@SuppressWarnings("rawtypes")
+				CCache ccache = (CCache) ci;
+				if (ccache.getName().equals(ccache.getTableName()) && ccache.getTableName().equals(MTable.Table_Name)) {
+					if (ccache.containsKey(MOrder.Table_ID)) {
+						tblCache = ccache;
+						break;
+					}
+				}
+			}
+		}
+			
+		if (tblCache == null)
+			fail("Table cache instance missing");
+		
+		long hit = tblCache.getHit();
+		
 		MColumn column = table.getColumn(MOrder.COLUMNNAME_C_Order_ID);
+		@SuppressWarnings("unused")
 		I_AD_Table table2 = column.getAD_Table();
-		assertTrue(table == table2);
+		assertEquals(hit+1, tblCache.getHit());
 		
 		//M_Warehouse of Client
-		table = MTable.get(Env.getCtx(), MWarehouse.Table_ID);
+		table = MTable.get(Env.getCtx(), MWarehouse.Table_ID);		
 		MRefTable refTable = MRefTable.get(Env.getCtx(), 197);
+		
+		tblCache = null;
+		for(CacheInterface ci : cis) {
+			if (ci instanceof CCache<?, ?>) {				
+				@SuppressWarnings("rawtypes")
+				CCache ccache = (CCache) ci;
+				if (ccache.getName().equals(ccache.getTableName()) && ccache.getTableName().equals(MTable.Table_Name)) {
+					if (ccache.containsKey(MWarehouse.Table_ID)) {
+						tblCache = ccache;
+						break;
+					}
+				}
+			}
+		}
+			
+		if (tblCache == null)
+			fail("Table cache instance missing");
+		
+		hit = tblCache.getHit();
 		table2 = refTable.getAD_Table();
-		assertTrue(table == table2);
+		assertEquals(hit+1, tblCache.getHit());
 	}
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})

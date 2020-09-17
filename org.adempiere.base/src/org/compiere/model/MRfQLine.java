@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
-import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	RfQ Line
@@ -42,7 +41,7 @@ public class MRfQLine extends X_C_RfQLine
 	private static final long serialVersionUID = -387372215148731148L;
 
 	/**
-	 * 	Get MRfQLine from Cache (immutable)
+	 * 	Get MRfQLine from db
 	 *	@param C_RfQLine_ID id
 	 *	@return MRfQLine
 	 */
@@ -52,7 +51,7 @@ public class MRfQLine extends X_C_RfQLine
 	}
 	
 	/**
-	 * 	Get MRfQLine from Cache (immutable)
+	 * 	Get MRfQLine from db
 	 *	@param C_RfQLine_ID id
 	 *	@param trxName transaction
 	 *	@return MRfQLine
@@ -63,7 +62,7 @@ public class MRfQLine extends X_C_RfQLine
 	}
 	
 	/**
-	 * 	Get MRfQLine from Cache (immutable)
+	 * 	Get MRfQLine from db
 	 *	@param ctx context
 	 *	@param C_RfQLine_ID id
 	 *	@param trxName transaction
@@ -71,37 +70,14 @@ public class MRfQLine extends X_C_RfQLine
 	 */
 	public static MRfQLine get (Properties ctx, int C_RfQLine_ID, String trxName)
 	{
-		Integer key = Integer.valueOf(C_RfQLine_ID);
-		MRfQLine retValue = s_cache.get (ctx, key, e -> new MRfQLine(ctx, e));
-		if (retValue != null)
-			return retValue;
-		retValue = new MRfQLine (ctx, C_RfQLine_ID, trxName);
+		MRfQLine retValue = new MRfQLine (ctx, C_RfQLine_ID, trxName);
 		if (retValue.get_ID () == C_RfQLine_ID)
 		{
-			s_cache.put (key, retValue, e -> new MRfQLine(Env.getCtx(), e));
 			return retValue;
 		}
 		return null;
 	} //	get
 
-	/**
-	 * 	Get updateable copy of MRfQLine from Cache
-	 *	@param ctx context
-	 *	@param C_RfQLine_ID id
-	 *	@param trxName transaction
-	 *	@return MRfQLine
-	 */
-	public static MRfQLine getCopy(Properties ctx, int C_RfQLine_ID, String trxName)
-	{
-		MRfQLine cache = get(ctx, C_RfQLine_ID, trxName);
-		if (cache != null)
-			cache = new MRfQLine(ctx, cache, trxName);
-		return cache;
-	}
-	
-	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MRfQLine>	s_cache	= new ImmutableIntPOCache<Integer,MRfQLine>(Table_Name, 20);
-	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -217,14 +193,12 @@ public class MRfQLine extends X_C_RfQLine
 			pstmt = null;
 		}
 		//	Create Default (1)
-		if (list.size() == 0 && !is_Immutable())
+		if (list.size() == 0)
 		{
 			MRfQLineQty qty = new MRfQLineQty(this);
 			qty.saveEx();
 			list.add(qty);
 		}
-		if (list.size() > 0 && is_Immutable())
-			list.stream().forEach(e -> e.markImmutable());
 		
 		m_qtys = new MRfQLineQty[list.size ()];
 		list.toArray (m_qtys);
@@ -278,14 +252,5 @@ public class MRfQLine extends X_C_RfQLine
 
 		return true;
 	}	//	beforeSave
-
-	@Override
-	public MRfQLine markImmutable() 
-	{
-		MRfQLine po = (MRfQLine) super.markImmutable();
-		if (m_qtys != null && m_qtys.length > 0)
-			Arrays.stream(m_qtys).forEach(e -> e.markImmutable());
-		return po;
-	}
 
 }	//	MRfQLine

@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -36,7 +37,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
  * 				<li>BF [ 2824795 ] Deleting Resource product should be forbidden
  * 					https://sourceforge.net/tracker/?func=detail&aid=2824795&group_id=176962&atid=879332
  */
-public class MResource extends X_S_Resource
+public class MResource extends X_S_Resource implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -77,6 +78,21 @@ public class MResource extends X_S_Resource
 		return r;
 	}
 
+	/**
+	 * Get updateable copy of MResource from cache
+	 * @param ctx
+	 * @param S_Resource_ID
+	 * @param trxName
+	 * @return MResource 
+	 */
+	public static MResource getCopy(Properties ctx, int S_Resource_ID, String trxName) 
+	{
+		MResource rs = get(S_Resource_ID);
+		if (rs != null)
+			rs = new MResource(ctx, rs, trxName);
+		return rs;
+	}
+	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -142,14 +158,11 @@ public class MResource extends X_S_Resource
 	 */
 	public MResourceType getResourceType()
 	{
-		// Use cache if we are outside transaction:
-		if (get_TrxName() == null && getS_ResourceType_ID() > 0)
-			return MResourceType.get(getCtx(), getS_ResourceType_ID());
-		//
 		if (m_resourceType == null && getS_ResourceType_ID() != 0) {
-			m_resourceType = new MResourceType (getCtx(), getS_ResourceType_ID(), get_TrxName());
 			if (is_Immutable())
-				m_resourceType.markImmutable();
+				m_resourceType = MResourceType.get(getCtx(), getS_ResourceType_ID());
+			else
+				m_resourceType = MResourceType.getCopy(getCtx(), getS_ResourceType_ID(), get_TrxName());
 		}
 		return m_resourceType;
 	}	//	getResourceType
@@ -163,8 +176,8 @@ public class MResource extends X_S_Resource
 		if (m_product == null)
 		{
 			m_product = MProduct.forS_Resource_ID(getCtx(), getS_Resource_ID(), get_TrxName());
-			if (is_Immutable())
-				m_product.markImmutable();
+			if (!is_Immutable() && m_product != null)
+				m_product = new MProduct(getCtx(), m_product, get_TrxName());
 		}
 		else if (!is_Immutable())
 		{
@@ -228,12 +241,15 @@ public class MResource extends X_S_Resource
 	@Override
 	public MResource markImmutable() 
 	{
-		MResource po = (MResource) super.markImmutable();
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
 		if (m_product != null)
 			m_product.markImmutable();
 		if (m_resourceType != null)
 			m_resourceType.markImmutable();
-		return po;
+		return this;
 	}
 
 	@Override
