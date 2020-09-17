@@ -71,6 +71,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.GridField;
+import org.compiere.model.InfoColumnVO;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
@@ -791,7 +792,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (modelHasInfoColumn.getInfoColumnID() <= 0 || listReadedColumn.contains(modelHasInfoColumn.getInfoColumnID()))
 				continue;
 
-			MInfoColumn infoColumnAppend = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
+			MInfoColumn infoColumnApp = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
+			InfoColumnVO infoColumnAppend = new InfoColumnVO(Env.getCtx(), infoColumnApp);
 			Object appendData = null;
 			try {
 				if (DisplayType.isID(infoColumnAppend.getAD_Reference_ID())) {
