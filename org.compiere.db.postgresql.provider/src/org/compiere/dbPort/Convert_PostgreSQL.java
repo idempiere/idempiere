@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +47,8 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	public static final int REGEX_FLAGS = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
 
 	private TreeMap<String,String> m_map;
+
+	private String sharedNonce = generateNonce();
 
 	/** Logger */
 	private static final CLogger log = CLogger.getCLogger(Convert_PostgreSQL.class);
@@ -78,7 +81,15 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		/** Vector to save previous values of quoted strings **/
 		Vector<String> retVars = new Vector<String>();
 		
-		String statement = replaceQuotedStrings(sqlStatement, retVars);
+		String nonce = sharedNonce;
+
+		// check for collision with nonce
+		while ( sqlStatement.contains(nonce))
+		{
+			nonce = generateNonce();
+		}
+
+		String statement = replaceQuotedStrings(sqlStatement, retVars, nonce);
 		statement = convertWithConvertMap(statement);
 		statement = convertSimilarTo(statement);
 		statement = statement.replace(DB_PostgreSQL.NATIVE_MARKER, "");
@@ -96,7 +107,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		else if (isCreate && cmpString.indexOf(" VIEW ") != -1)
 			;
 		else if (cmpString.indexOf("ALTER TABLE") != -1) {
-			statement = recoverQuotedStrings(statement, retVars);
+			statement = recoverQuotedStrings(statement, retVars, nonce);
 			retVars.clear();
 			statement = convertDDL(convertComplexStatement(statement));
 		/*
@@ -114,7 +125,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			statement = convertComplexStatement(convertAlias(statement));
 		}
 		if (retVars.size() > 0)
-			statement = recoverQuotedStrings(statement, retVars);
+			statement = recoverQuotedStrings(statement, retVars, nonce);
 		result.add(statement);
 
 		if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
@@ -141,6 +152,20 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			}
 		}
 		return retValue;
+	}
+
+	/**
+	 * Generate fairly hard to guess numeric string
+	 */
+	private String generateNonce() {
+
+		String newNonce = Long.toString(ThreadLocalRandom.current()
+				.nextLong(100000000000000000L,
+						999999999999999999L)).intern();
+
+		sharedNonce = newNonce;
+
+		return newNonce;
 	}
 
 	@Override
@@ -887,6 +912,9 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 				return false;
 		}
 		if (token.startsWith("'") && token.endsWith("'"))
+			return false;
+		// quoted string substitution marker
+		else if ( token.matches("QS\\d+QS\\d{18}") )
 			return false;
 		else 
 		{

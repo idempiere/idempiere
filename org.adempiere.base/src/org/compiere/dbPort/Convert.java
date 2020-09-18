@@ -294,13 +294,13 @@ public abstract class Convert
 	 * @param retVars
 	 * @return string
 	 */
-	protected String replaceQuotedStrings(String inputValue, Vector<String>retVars) {
+	protected String replaceQuotedStrings(String inputValue, Vector<String>retVars, String nonce) {
 		// save every value  
 		// Carlos Ruiz - globalqss - better matching regexp
 		retVars.clear();
 		
 		// First we need to replace double quotes to not be matched by regexp - Teo Sarca BF [3137355 ]
-		final String quoteMarker = "<--QUOTE"+System.currentTimeMillis()+"-->";
+		final String quoteMarker = "<--QUOTE"+nonce+"-->";
 		inputValue = inputValue.replace("''", quoteMarker);
 		
 		Pattern p = Pattern.compile("'[[^']*]*'");
@@ -310,7 +310,7 @@ public abstract class Convert
 		while (m.find()) {
 			String var = inputValue.substring(m.start(), m.end()).replace(quoteMarker, "''"); // Put back quotes, if any
 			retVars.addElement(var);
-			m.appendReplacement(retValue, "<--" + i + "-->");
+			m.appendReplacement(retValue, "<--QS" + i + "QS" + nonce + "-->");
 			i++;
 		}
 		m.appendTail(retValue);
@@ -325,12 +325,12 @@ public abstract class Convert
 	 * @param retVars
 	 * @return string
 	 */
-	protected String recoverQuotedStrings(String retValue, Vector<String>retVars) {
+	protected String recoverQuotedStrings(String retValue, Vector<String>retVars, String nonce) {
 		for (int i = 0; i < retVars.size(); i++) {
 			//hengsin, special character in replacement can cause exception
 			String replacement = (String) retVars.get(i);
 			replacement = escapeQuotedString(replacement);
-			retValue = retValue.replace("<--" + i + "-->", replacement);
+			retValue = retValue.replace("<--QS" + i + "QS" + nonce + "-->", replacement);
 		}
 		return retValue;
 	}
