@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.ClientInfo;
@@ -424,6 +425,14 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 			pstmt = null;
 		}
 		
+		if (M_Locator_ID > 0)
+		{
+			m_mLocator.refreshIfNeeded();
+			boolean valid = m_mLocator.containsKey(M_Locator_ID);
+			if (!valid)
+				M_Locator_ID = 0;
+		}
+		
 		if (M_Locator_ID == 0)
 			return false;
 
@@ -447,7 +456,11 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	
 	private int getOnly_Warehouse_ID()
 	{
-		String only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_Warehouse_ID", true);
+		String only_Warehouse = null;
+		if (gridField != null && gridField.getVO().TabNo > 0)
+			only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_Warehouse_ID", false, true);
+		else
+			only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_Warehouse_ID", true);
 		int only_Warehouse_ID = 0;
 	
 		try
@@ -472,7 +485,11 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		if (!Env.isSOTrx(Env.getCtx(), m_WindowNo))
 			return 0; // No product restrictions for PO
 
-		String only_Product = Env.getContext(Env.getCtx(), m_WindowNo, "M_Product_ID", true);
+		String only_Product = null;
+		if (gridField != null && gridField.getVO().TabNo > 0)
+			only_Product = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_Product_ID", false, true);
+		else
+			only_Product = Env.getContext(Env.getCtx(), m_WindowNo, "M_Product_ID", true);
 		int only_Product_ID = 0;
 		
 		try
@@ -551,5 +568,9 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		getComponent().setTableEditorMode(b);
 	}
     
-    
+	@Override
+	public void dynamicDisplay(Properties ctx) {
+		super.dynamicDisplay(ctx);
+		m_mLocator.dynamicDisplay(ctx);
+	}
 }

@@ -25,11 +25,11 @@ package org.krysalis.barcode4j.impl.qr;
  */
 public class QRHighLevelEncoder implements QRConstants {
 
-    private final String msg;
+    //private final String msg;
     private int encodingMode;
 
     public QRHighLevelEncoder(String msg) {
-        this.msg = msg;
+        //this.msg = msg;
         this.encodingMode = analyzeMessage(msg);
     }
 

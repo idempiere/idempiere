@@ -46,7 +46,13 @@ public class MUserPreference extends X_AD_UserPreference{
 	{
 		super(ctx, rs, trxName);
 	} //MUserPreference
-	
+
+	/** Set User/Contact.
+	    @param AD_User_ID
+	    User within the system - Internal or Business Partner Contact
+	    Overridden to allow saving System record (zero ID)
+	 */
+	@Override
 	public void setAD_User_ID (int AD_User_ID)
 	{
 		if (AD_User_ID == 0) 
@@ -54,7 +60,7 @@ public class MUserPreference extends X_AD_UserPreference{
 		else 
 			super.setAD_User_ID(AD_User_ID);
 	} //setAD_User_ID
-	
+
 	private static MUserPreference createUserPreferences(int AD_User_ID, int AD_Client_ID, String trxName){
 		MUserPreference preferences = new MUserPreference(Env.getCtx(), 0, trxName);
 		preferences.setAD_User_ID(AD_User_ID);

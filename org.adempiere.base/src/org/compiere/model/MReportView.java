@@ -19,7 +19,6 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CCache;
-import org.compiere.util.CLogger;
 
 public class MReportView extends X_AD_ReportView {
 
@@ -29,7 +28,7 @@ public class MReportView extends X_AD_ReportView {
 	private static final long serialVersionUID = -5674822764517548357L;
 	
 	/**	Static Logger					*/
-	private static CLogger	s_log	= CLogger.getCLogger (MReportView.class);
+	//private static CLogger	s_log	= CLogger.getCLogger (MReportView.class);
 	/**	Cache					*/
 	static private CCache<Integer,MReportView> s_cache = new CCache<Integer,MReportView>(Table_Name, 30, 60);
 	

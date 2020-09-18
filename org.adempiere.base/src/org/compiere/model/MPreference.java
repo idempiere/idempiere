@@ -30,7 +30,8 @@ public class MPreference extends X_AD_Preference
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5098559160325123593L;
+	private static final long serialVersionUID = -8935876328996934527L;
+
 	/**	Null Indicator				*/
 	public static String		NULL = "null";
 	
@@ -103,5 +104,19 @@ public class MPreference extends X_AD_Preference
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	/** Set User/Contact.
+        @param AD_User_ID
+        User within the system - Internal or Business Partner Contact
+        Overridden to allow saving System record (zero ID)
+	 */
+	@Override
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID == 0) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
+		else 
+			super.setAD_User_ID(AD_User_ID);
+	} //setAD_User_ID
+
 }	//	MPreference

@@ -29,6 +29,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ComboEditorBox;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.EditorBox;
@@ -641,17 +642,23 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setSclass(sclass);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setSclass(sclass);
 			else
 				component.setSclass(sclass);
 		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
 			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setZclass(zclass);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setZclass(zclass);
 			else
 				component.setZclass(zclass);
 		} else {
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setStyle(style);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setStyle(style);
 			else
 				component.setStyle(style);
 		}
@@ -774,9 +781,14 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      * @param popupMenu
      */
 	protected void addTextEditorMenu(WEditorPopupMenu popupMenu) {
-		Menuitem editor = new Menuitem(Msg.getMsg(Env.getCtx(), "Editor"), ThemeManager.getThemeResource("images/Editor16.png"));
+		Menuitem editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.EDITOR_EVENT);
-		editor.addEventListener(Events.ON_CLICK, popupMenu);
+		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Editor")).intern());
+        if (ThemeManager.isUseFontIconForImage())
+        	editor.setIconSclass("z-icon-Edit");
+        else
+        	editor.setImage(ThemeManager.getThemeResource("images/Editor16.png"));
+        editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
 	}
 	

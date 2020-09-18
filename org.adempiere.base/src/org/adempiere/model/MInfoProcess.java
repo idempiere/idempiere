@@ -58,6 +58,16 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
 
 	}
 	
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoProcess(MInfoProcess copy) {
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_viewIDName = copy.m_viewIDName;
+	}
+	
 	protected String m_viewIDName;
 	
 	/**************************************************************************

@@ -7,4 +7,4 @@ echo Start PostgreSQL DB Service
 # IPC demon may be required for cygwin
 # ipc-daemon&
 
-pg_ctl -o "-i" -l $PGLOG start
+pg_ctl -o "-i" -l "$PGLOG" start

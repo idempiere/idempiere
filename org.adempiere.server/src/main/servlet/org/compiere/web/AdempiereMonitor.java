@@ -1435,6 +1435,8 @@ public class AdempiereMonitor extends HttpServlet
 		line.addElement(new th().addElement("Size"));
 		line.addElement(new th().addElement("Expire (Minutes)"));
 		line.addElement(new th().addElement("Max Size"));
+		line.addElement(new th().addElement("Hit"));
+		line.addElement(new th().addElement("Miss"));
 		line.addElement(new th().addElement("Distributed"));
 		table.addElement(line);
 		
@@ -1453,6 +1455,8 @@ public class AdempiereMonitor extends HttpServlet
 			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
 			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
 			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getHit())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMiss())));
 			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
 			if (ccache.getNodeId() != null)
 			{

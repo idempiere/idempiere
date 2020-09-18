@@ -363,7 +363,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			LayoutUtils.addSclass("large-toolbarbutton", btn);
 
 		bAddDefaultMailText = new Button();
-		bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
+		if(ThemeManager.isUseFontIconForImage())
+			bAddDefaultMailText.setIconSclass("z-icon-GetMail");
+		else
+			bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
 		bAddDefaultMailText.addEventListener(Events.ON_CLICK, this);
 		bAddDefaultMailText.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddDefaultMailTextContent"));
 		if (new MUser(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), null).getR_DefaultMailText_ID() > 0)

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Author: Carlos Ruiz - globalqss
 # Script to synchronize the database with latest migration scripts allowing a remote monitored way
@@ -44,7 +44,7 @@ echo Synchronize iDempiere Database
 
 echo Upgrading database "$1@$ADEMPIERE_DB_NAME"
 
-if [ $# -eq 0 ] 
+if [ $# -eq 0 ]
   then
     echo "Usage: $0 <userAccount>"
     echo "Example: $0 adempiere adempiere"
@@ -92,7 +92,7 @@ apply_script()
     OUTFILE="$2"
     FILE="$3"
     echo "Applying $SCRIPT"
-    cat "$SCRIPT" | $CMD > "$OUTFILE" 2>&1
+    $CMD < "$SCRIPT" > "$OUTFILE" 2>&1
     APPLIED=Y
     if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
     then
@@ -120,7 +120,7 @@ process_fix()
     then
         TMPBASE="${FAILEDSCRIPT##*/}"
         BASE="${TMPBASE%.sql}"
-    elif [ "fix" = "$SUFFIX" ]       
+    elif [ "fix" = "$SUFFIX" ]
     then
         TMPBASE="${FAILEDSCRIPT##*/}"
         BASE="${TMPBASE%.[0-9][0-9][0-9].fix}"
@@ -173,7 +173,7 @@ process_fix()
 
 notify_error()
 {
-    echo -e "$MSGERROR"
+    printf '%s' "$MSGERROR"
     printf '\n%s\n%s\n' "Error=true" "Errors were found during the process (see message above) - please inform and integrate a fix to restart this process again"
     SUPPORTEMAIL=$($SILENTCMD -c "select supportemail from ad_system" | sed -e 's/ //g')
     SENDMAIL=$(command -v sendmail)
@@ -191,7 +191,7 @@ notify_error()
             echo "Content-Type: text/plain; charset=\"UTF-8\""
             echo "Content-Transfer-Encoding: 7bit"
             echo "Content-Disposition: inline"
-            echo -e "$MSGERROR"
+            printf '%s' "$MSGERROR"
             echo "================================="
             cat "$ATTACH"
             echo
@@ -222,15 +222,8 @@ done < $TMPFOLDER/lisERR_$$.txt
 echo "select name from ad_migrationscript" | $SILENTCMD | sed -e 's:^ ::' | grep -v '^$' | sort > $TMPFOLDER/lisDB_$$.txt
 
 # Create list of files in the migration folder
-: > $TMPFOLDER/lisFS_$$.txt
-find . -type d -name "$ADEMPIERE_DB_PATH" | grep -v "./processes_post_migration/$ADEMPIERE_DB_PATH" | while read -r FOLDER
-do
-    cd "${FOLDER}" || exit 1
-    ls -- *.sql 2>/dev/null >> $TMPFOLDER/lisFS_$$.txt
-    cd "$DIR_SCRIPTS" || exit 1
-done
-sort -o $TMPFOLDER/lisFS_$$.txt $TMPFOLDER/lisFS_$$.txt
-sort -o $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisDB_$$.txt
+find . -type f -wholename "*/${ADEMPIERE_DB_PATH}/*.sql" ! -wholename "./processes_post_migration/${ADEMPIERE_DB_PATH}/*" | sed -e 's:.*/::' | sort > $TMPFOLDER/lisFS_$$.txt
+
 MSGERROR=""
 # extract and process the list of pending files
 comm -13 $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisFS_$$.txt > $TMPFOLDER/lisPENDING_$$.txt
@@ -283,7 +276,7 @@ then
     do
         OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
         echo "Applying $FILE"
-        cat "$FILE" | $CMD > "$OUTFILE" 2>&1
+        $CMD < "$FILE" > "$OUTFILE" 2>&1
         if grep -E "$ERROR_STRINGS" "$OUTFILE" > /dev/null 2>&1
         then
             echo "Found error in $SCRIPT"

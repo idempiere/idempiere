@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -70,6 +71,17 @@ public class MAttachmentEntry
 	{
 		this (name, data, 0);
 	}	//	MAttachmentItem
+	
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MAttachmentEntry(MAttachmentEntry copy)
+	{
+		this.m_data = copy.m_data != null ? Arrays.copyOf(copy.m_data, copy.m_data.length) : null;
+		this.m_index = copy.m_index;
+		this.m_name = copy.m_name;
+	}
 	
 	/**	The Name				*/
 	private String 	m_name = "?";

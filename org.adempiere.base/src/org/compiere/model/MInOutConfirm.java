@@ -88,7 +88,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		}
 		if (s_log.isLoggable(Level.INFO)) s_log.info("New: " + confirm);
 		return confirm;
-	}	//	MInOutConfirm
+	}	//	create
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MInOutConfirm.class);
@@ -228,7 +228,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 			log.severe("Could not create PDF - " + e.getMessage());
 		}
 		return null;
-	}	//	getPDF
+	}	//	createPDF
 
 	/**
 	 * 	Create PDF file

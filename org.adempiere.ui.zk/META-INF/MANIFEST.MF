@@ -58,9 +58,9 @@ Import-Package: groovy.transform.stc;version="2.4.7",
  org.springframework.web.util
 DynamicImport-Package: action.images
 Bundle-ClassPath: .,
- WEB-INF/lib/ckez.jar,
- WEB-INF/lib/daisydiff.jar,
- WEB-INF/lib/owasp-java-html-sanitizer.jar
+ lib/ckez.jar,
+ lib/daisydiff.jar,
+ lib/owasp-java-html-sanitizer.jar
 Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  metainfo.zk,
  org.adempiere.webui,

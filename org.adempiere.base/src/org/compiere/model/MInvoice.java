@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -68,7 +69,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3191227310812025813L;
+	private static final long serialVersionUID = 5581441980246794522L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -1055,6 +1056,31 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			}
 		}
 
+		if (!isProcessed())
+		{
+			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+			MAcctSchema as = MAcctSchema.get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			if (as.getC_Currency_ID() != getC_Currency_ID())
+			{
+				if (isOverrideCurrencyRate())
+				{
+					if(getCurrencyRate() == null || getCurrencyRate().signum() == 0)
+					{
+						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_CurrencyRate));
+						return false;
+					}
+				}
+				else
+				{
+					setCurrencyRate(null);
+				}
+			}
+			else
+			{
+				setCurrencyRate(null);
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
@@ -1117,7 +1143,12 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		MDocType dt;
+		if (getC_DocType_ID() == 0) {
+			dt = MDocType.get(getCtx(), getC_DocTypeTarget_ID());
+		} else {
+			dt = MDocType.get(getCtx(), getC_DocType_ID());
+		}
 		StringBuilder msgreturn = new StringBuilder().append(dt.getNameTrl()).append(" ").append(getDocumentNo());
 		return msgreturn.toString();
 	}	//	getDocumentInfo
@@ -1283,43 +1314,58 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public BigDecimal getOpenAmt ()
 	{
-		return getOpenAmt (true, null);
+		return getOpenAmt (true, null, false);
 	}	//	getOpenAmt
 
+	public BigDecimal getOpenAmt (boolean creditMemoAdjusted, Timestamp paymentDate)
+	{
+		return getOpenAmt(creditMemoAdjusted, paymentDate, false);
+	}
 	/**
 	 * 	Get Open Amount
 	 * 	@param creditMemoAdjusted adjusted for CM (negative)
-	 * 	@param paymentDate ignored Payment Date
+	 * 	@param paymentDate Payment Date
 	 * 	@return Open Amt
 	 */
-	public BigDecimal getOpenAmt (boolean creditMemoAdjusted, Timestamp paymentDate)
+	public BigDecimal getOpenAmt (boolean creditMemoAdjusted, Timestamp paymentDate, boolean requery)
 	{
-		if (isPaid())
+		if (isPaid() && paymentDate == null)
 			return Env.ZERO;
 		//
-		if (m_openAmt == null)
-		{
-			m_openAmt = getGrandTotal();
-			if (paymentDate != null)
-			{
-				//	Payment Discount
-				//	Payment Schedule
-			}
-			BigDecimal allocated = getAllocatedAmt();
-			if (allocated != null)
-			{
-				allocated = allocated.abs();	//	is absolute
-				m_openAmt = m_openAmt.subtract(allocated);
+		if (paymentDate != null || m_openAmt == null || requery) {
+			BigDecimal l_openAmt = getOpenAmt(paymentDate);
+			if (paymentDate != null) {
+				if (isCreditMemo() && creditMemoAdjusted)
+					return l_openAmt.negate();
+				return l_openAmt;
+			} else {
+				m_openAmt = l_openAmt;
 			}
 		}
 		//
-		if (!creditMemoAdjusted)
-			return m_openAmt;
-		if (isCreditMemo())
+		if (isCreditMemo() && creditMemoAdjusted)
 			return m_openAmt.negate();
 		return m_openAmt;
 	}	//	getOpenAmt
 
+	/*
+     *    Get open amt depending on payment date
+     *    @return open Amt
+     */
+    public BigDecimal getOpenAmt (Timestamp paymentDate)
+    {
+    	BigDecimal retValue;
+    	if (paymentDate == null) {
+            retValue = DB.getSQLValueBDEx(get_TrxName(),
+            		"SELECT invoiceOpen(?,?) FROM DUAL",
+            		getC_Invoice_ID(), 0);
+    	} else {
+            retValue = DB.getSQLValueBDEx(get_TrxName(),
+            		"SELECT invoiceOpenToDate(?,?,?) FROM DUAL",
+            		getC_Invoice_ID(), 0, paymentDate);
+    	}
+        return retValue;
+    }    //    getOpenAmt
 
 	/**
 	 * 	Get Document Status
@@ -1832,20 +1878,25 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				&& !isReversal())
 			{
 				MInOutLine receiptLine = new MInOutLine (getCtx(),line.getM_InOutLine_ID(), get_TrxName());
-				BigDecimal movementQty = receiptLine.getM_InOut().getMovementType().charAt(1) == '-' ? receiptLine.getMovementQty().negate() : receiptLine.getMovementQty();
-				BigDecimal matchQty = isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced();
+				MInOut receipt = receiptLine.getParent();
 
-				if (movementQty.compareTo(matchQty) < 0)
-					matchQty = movementQty;
+				if (receipt.isProcessed()){
 
-				MMatchInv inv = new MMatchInv(line, getDateInvoiced(), matchQty);
-				if (!inv.save(get_TrxName()))
-				{
-					m_processMsg = CLogger.retrieveErrorString("Could not create Invoice Matching");
-					return DocAction.STATUS_Invalid;
+					BigDecimal movementQty = receiptLine.getM_InOut().getMovementType().charAt(1) == '-' ? receiptLine.getMovementQty().negate() : receiptLine.getMovementQty();
+					BigDecimal matchQty = isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced();
+
+					if (movementQty.compareTo(matchQty) < 0)
+						matchQty = movementQty;
+
+					MMatchInv inv = new MMatchInv(line, getDateInvoiced(), matchQty);
+					if (!inv.save(get_TrxName()))
+					{
+						m_processMsg = CLogger.retrieveErrorString("Could not create Invoice Matching");
+						return DocAction.STATUS_Invalid;
+					}
+					matchInv++;
+					addDocsPostProcess(inv);
 				}
-				matchInv++;
-				addDocsPostProcess(inv);
 			}
 					
 			//	Update Order Line
@@ -1934,8 +1985,20 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
 		DB.getDatabase().forUpdate(bp, 0);
 		//	Update total revenue and balance / credit limit (reversed on AllocationLine.processIt)
-		BigDecimal invAmt = MConversionRate.convertBase(getCtx(), getGrandTotal(true),	//	CM adjusted
-			getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
+		BigDecimal invAmt = null;
+		int baseCurrencyId = Env.getContextAsInt(getCtx(), "$C_Currency_ID");
+		if (getC_Currency_ID() != baseCurrencyId && isOverrideCurrencyRate())
+		{
+			invAmt = getGrandTotal(true).multiply(getCurrencyRate());
+			int stdPrecision = MCurrency.getStdPrecision(getCtx(), baseCurrencyId);
+			if (invAmt.scale() > stdPrecision)
+				invAmt = invAmt.setScale(stdPrecision, RoundingMode.HALF_UP);
+		}
+		else
+		{
+			invAmt = MConversionRate.convertBase(getCtx(), getGrandTotal(true),	//	CM adjusted
+				getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
+		}
 		if (invAmt == null)
 		{
 			m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",

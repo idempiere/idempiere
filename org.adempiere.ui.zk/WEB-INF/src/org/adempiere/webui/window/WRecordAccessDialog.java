@@ -152,13 +152,29 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	 */
 	private void jbInit() throws Exception
 	{
-		bDelete.setImage(ThemeManager.getThemeResource("images/Delete16.png"));
+		//devCoffee #6142
+    	if(ThemeManager.isUseFontIconForImage())
+    		bDelete.setIconSclass("z-icon-Delete");
+    	else
+    		bDelete.setImage(ThemeManager.getThemeResource("images/Delete16.png"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
-		bNew.setImage(ThemeManager.getThemeResource("images/New16.png"));
+		//devCoffee #6142
+    	if(ThemeManager.isUseFontIconForImage())
+    		bNew.setIconSclass("z-icon-New");
+    	else
+    		bNew.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		bNew.setTooltiptext(Msg.getMsg(Env.getCtx(), "New"));
-		bUp.setImage(ThemeManager.getThemeResource("images/Previous16.png"));
+		//devCoffee #6142
+    	if(ThemeManager.isUseFontIconForImage())
+    		bUp.setIconSclass("z-icon-Previous");
+    	else
+    		bUp.setImage(ThemeManager.getThemeResource("images/Previous16.png"));
 		bUp.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
-		bDown.setImage(ThemeManager.getThemeResource("images/Next16.png"));
+		//devCoffee #6142
+    	if(ThemeManager.isUseFontIconForImage())
+    		bDown.setIconSclass("z-icon-Next");
+    	else
+    		bDown.setImage(ThemeManager.getThemeResource("images/Next16.png"));
 		bDown.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		
 		cbActive.setText(Msg.translate(Env.getCtx(), "IsActive"));

@@ -32,7 +32,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20200814L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
@@ -1241,6 +1241,26 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public BigDecimal getRelativePeriod () 
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_RelativePeriod);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Relative Period To.
+		@param RelativePeriodTo 
+		Period offset (0 is current)
+	  */
+	public void setRelativePeriodTo (BigDecimal RelativePeriodTo)
+	{
+		set_Value (COLUMNNAME_RelativePeriodTo, RelativePeriodTo);
+	}
+
+	/** Get Relative Period To.
+		@return Period offset (0 is current)
+	  */
+	public BigDecimal getRelativePeriodTo () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_RelativePeriodTo);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

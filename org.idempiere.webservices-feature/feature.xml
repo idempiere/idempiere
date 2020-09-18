@@ -64,11 +64,9 @@
       <import plugin="com.sun.activation.jakarta.activation"/>
       <import plugin="jakarta.jws-api"/>
       <import plugin="jakarta.mail.api"/>
-      <import plugin="javax.servlet"/>
       <import plugin="jakarta.xml.bind-api"/>
       <import plugin="net.sf.jasperreports.engine"/>
       <import plugin="org.apache.commons.codec"/>
-      <import plugin="slf4j.jcl"/>
       <import plugin="org.apache.servicemix.bundles.xerces"/>
       <import plugin="org.eclipse.osgi"/>
    </requires>

@@ -2382,7 +2382,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		e.CreatedBy = (Integer)getValue("CreatedBy");
 		e.Updated = (Timestamp)getValue("Updated");
 		e.UpdatedBy = (Integer)getValue("UpdatedBy");
-		e.Record_ID = getValue(m_keyColumnName);
+		if (   e.AD_Table_ID == I_AD_OrgInfo.Table_ID
+			|| e.AD_Table_ID == I_AD_ClientInfo.Table_ID
+			|| e.AD_Table_ID == I_AD_Ref_Table.Table_ID
+			|| e.AD_Table_ID == I_C_AcctSchema_Default.Table_ID
+			|| e.AD_Table_ID == I_C_AcctSchema_GL.Table_ID) {
+			e.Record_ID = getValue(m_parents.get(0));
+		} else {
+			e.Record_ID = getValue(m_keyColumnName);
+		}
 		//  Info
 		StringBuilder info = new StringBuilder(getTableName());
 		

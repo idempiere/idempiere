@@ -31,7 +31,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.adwindow.QuickGridTabRowRenderer;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.Searchbox;
+import org.adempiere.webui.component.ComboEditorBox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -50,11 +50,13 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.NamePair;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -62,6 +64,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
@@ -73,6 +76,7 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor
 {
+	private static final int MAX_AUTO_COMPLETE_ROWS = 50;	
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 	public static final String		ATTRIBUTE_IS_INFO_PANEL_OPEN	= "ATTRIBUTE_IS_INFO_PANEL_OPEN";
 	private Lookup 				lookup;
@@ -82,6 +86,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
     private Object              value;
     private InfoPanel			infoPanel = null;
 	private String imageUrl;
+	private InfoListSubModel listModel = null;
 
 	private static final CLogger log = CLogger.getCLogger(WSearchEditor.class);
 
@@ -104,8 +109,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 
     @Override
-	public Searchbox getComponent() {
-		return (Searchbox) super.getComponent();
+	public ComboEditorBox getComponent() {
+		return (ComboEditorBox) super.getComponent();
 	}
 
 	@Override
@@ -132,7 +137,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	 */
 	public WSearchEditor (Lookup lookup, String label, String description, boolean mandatory, boolean readonly, boolean updateable)
 	{
-		super(new Searchbox(), label, description, mandatory, readonly, updateable);
+		super(new CustomSearchBox() , label, description, mandatory, readonly, updateable);
 
 		if (lookup == null)
 		{
@@ -148,7 +153,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	public WSearchEditor(String columnName, boolean mandatory, boolean readonly, boolean updateable,
     		Lookup lookup)
 	{
-		super(new Searchbox(), null, null, mandatory, readonly, updateable);
+		super(new CustomSearchBox(), null, null, mandatory, readonly, updateable);
 
 		if (lookup == null)
 		{
@@ -201,24 +206,79 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		addChangeLogMenu(popupMenu);
 		if (gridField != null)
-			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
+			getComponent().getCombobox().setPlaceholder(gridField.getPlaceholder());
+		
+		if (gridField != null && gridField.isAutocomplete()) {
+			setTableAndKeyColumn();
+			listModel = new InfoListSubModel(lookup, gridField, m_tableName, m_keyColumnName);
+			getComponent().getCombobox().setModel(listModel.getSubModel(null, MAX_AUTO_COMPLETE_ROWS));
+			
+			getComponent().getCombobox().addEventListener(Events.ON_CHANGING, (EventListener<InputEvent>)(e) -> {
+				if (!e.isChangingBySelectBack()) {
+					listModel.setWhereClause(getWhereClause());
+					String s = e.getValue();					
+					getComponent().getCombobox().setModel(listModel.getSubModel(s, MAX_AUTO_COMPLETE_ROWS));
+				}
+			});
+		} else {
+			getComponent().getCombobox().setAutodrop(false);
+		}
+		
 		return;
 	}
 
 	@Override
 	public void setValue(Object value)
 	{
+		Object curValue = this.value;
         this.value = value;
 		if (value != null && !"".equals(String.valueOf(value)))
-		{
-		    String text = lookup.getDisplay(value);
+		{		
+			NamePair namePair = lookup.get(value);
+			if (namePair != null)
+			{
+				String text = namePair.toString();
 
-            if (text.startsWith("_"))
+	            if (text.startsWith("_"))
+	            {
+	                text = text.substring(1);
+	            }
+	            getComponent().setText(text);
+			}
+			else
             {
-                text = text.substring(1);
-            }
-
-            getComponent().setText(text);
+				if (value instanceof Integer && gridField != null && gridField.getDisplayType() != DisplayType.ID && 
+						(gridTab==null || !gridTab.getTableModel().isImporting())) // for IDs is ok to be out of the list
+				{
+					//if it is problem with record lock, just keep value (no trigger change) and set field readonly
+					MRole role = MRole.getDefault(Env.getCtx(), false);
+					int refTableID = -1;
+					if (gridTab != null) // fields process para don't represent a column ID
+					{
+						MColumn col = MColumn.get(Env.getCtx(), gridField.getAD_Column_ID());
+						if (col.get_ID() > 0) {
+							String refTable = col.getReferenceTableName();
+							if (refTable != null) {
+								MTable table = MTable.get(Env.getCtx(), refTable);
+								refTableID = table.getAD_Table_ID();
+							}
+						}
+					}
+					if (refTableID > 0 && ! role.isRecordAccess(refTableID, (int)value, false))
+					{
+						setReadWrite(false);
+					}
+					else
+					{
+						getComponent().setText("");
+						if (curValue == null)
+							curValue = value;
+						ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), curValue, null);
+						super.fireValueChange(changeEvent);
+						this.value = null;
+					}
+				}
+			}
 		}
 		else
 		{
@@ -401,7 +461,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		focusNext();
 
 		//safety check: if focus is going no where, focus back to self
-		String uid = getComponent().getTextbox().getUuid();
+		String uid = getComponent().getCombobox().getUuid();
 		String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
 				"').$n(); if (jq(':focus').size() == 0) e.focus();} catch(error){}}, 100);";
 		Clients.response(new AuScript(script));
@@ -614,12 +674,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 						getComponent().setText("");
 						actionCombo(null);
 					}
-					getComponent().getTextbox().focus();
+					getComponent().getCombobox().focus();
 				}
 				else
 				{
 					if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - Result = null (not cancelled)");
-					getComponent().getTextbox().focus();
+					getComponent().getCombobox().focus();
 					getComponent().setAttribute(ATTRIBUTE_IS_INFO_PANEL_OPEN, false);
 				}
 			}
@@ -780,7 +840,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}
 
 
-	static class CustomSearchBox extends Searchbox {
+	static class CustomSearchBox extends ComboEditorBox {
 
 		/**
 		 * generated serial id
@@ -794,15 +854,15 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				String w = "try{var btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
 				if (ThemeManager.isUseFontIconForImage()) {
 					String sclass = "z-icon-spinner z-icon-spin";
-					getTextbox().setWidgetListener("onChange", "try{"+w+"btn.setIconSclass('" + sclass + "');"
+					getCombobox().setWidgetListener("onChange", "try{"+w+"btn.setIconSclass('" + sclass + "');"
 							+ "btn.setDisabled(true, {adbs: false, skip: false});}catch(err){}");
 				} else {
-					getTextbox().setWidgetListener("onChange", "try{"+w+"btn.setImage(\""
+					getCombobox().setWidgetListener("onChange", "try{"+w+"btn.setImage(\""
 						+ Executions.getCurrent().encodeURL(IN_PROGRESS_IMAGE)+"\");"
 						+ "btn.setDisabled(true, {adbs: false, skip: false});}catch(err){}");
 				}
 			}
 		}
 		
-	}
+	}	
 }

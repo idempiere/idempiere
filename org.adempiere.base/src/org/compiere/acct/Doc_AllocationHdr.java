@@ -105,6 +105,16 @@ public class Doc_AllocationHdr extends Doc
 		{
 			MAllocationLine line = lines[i];
 			DocLine_Allocation docLine = new DocLine_Allocation(line, this);
+
+			//	Get Payment Conversion Rate
+			if (line.getC_Payment_ID() != 0)
+			{
+				MPayment payment = new MPayment (getCtx(), line.getC_Payment_ID(), getTrxName());
+				int C_ConversionType_ID = payment.getC_ConversionType_ID();
+				docLine.setC_ConversionType_ID(C_ConversionType_ID);
+				if (payment.isOverrideCurrencyRate())
+					docLine.setCurrencyRate(payment.getCurrencyRate());
+			}
 			//
 			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
 			list.add (docLine);
@@ -230,9 +240,10 @@ public class Doc_AllocationHdr extends Doc
 				{
 					fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 						getC_Currency_ID(), line.getAmtSource(), null);
-					if (fl != null && payment != null)
+					if (fl != null && payment != null) {
 						fl.setAD_Org_ID(payment.getAD_Org_ID());
-					allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+					}
 				}
 				else
 				{
@@ -272,12 +283,13 @@ public class Doc_AllocationHdr extends Doc
 					{
 						fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 							getC_Currency_ID(), line.getAmtSource(), null);
-						if (fl != null && payment != null)
+						if (fl != null && payment != null) {
 							fl.setAD_Org_ID(payment.getAD_Org_ID());
-						if (payment.getReversal_ID() > 0 )
-							allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
-						else
-							allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+							if (payment.getReversal_ID() > 0 )
+								allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
+							else
+								allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+						}
 					}
 					else if (line.getC_CashLine_ID() != 0)
 					{
@@ -408,7 +420,8 @@ public class Doc_AllocationHdr extends Doc
 						getC_Currency_ID(), null, line.getAmtSource().negate());
 					if (fl != null && payment != null)
 						fl.setAD_Org_ID(payment.getAD_Org_ID());
-					allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
+					if (fl != null)
+						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
 				}
 				else if (isUsingClearing && line.getC_CashLine_ID() != 0) // Avoid usage of clearing accounts
 				{
@@ -719,26 +732,6 @@ public class Doc_AllocationHdr extends Doc
 		}
 		return getAccount(Doc.ACCTTYPE_CashTransfer, as);
 	}	//	getCashAcct
-
-
-	/**************************************************************************
-	 * 	Create Realized Gain & Loss.
-	 * 	Compares the Accounted Amount of the Invoice to the
-	 * 	Accounted Amount of the Allocation
-	 *	@param as accounting schema
-	 *	@param fact fact
-	 *	@param acct account
-	 *	@param invoice invoice
-	 *	@param allocationSource source amt
-	 *	@param allocationAccounted acct amt
-	 *	@return Error Message or null if OK
-	 *
-	 */
-	private String createRealizedGainLoss (DocLine line, MAcctSchema as, Fact fact, MAccount acct,
-		MInvoice invoice, BigDecimal allocationSource, BigDecimal allocationAccounted)
-	{
-		return createInvoiceGainLoss(line, as, fact, acct, invoice, allocationSource, allocationAccounted);
-	}	//	createRealizedGainLoss
 
 
 	/**************************************************************************

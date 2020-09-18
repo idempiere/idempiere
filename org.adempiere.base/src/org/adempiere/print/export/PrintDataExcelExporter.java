@@ -38,11 +38,9 @@ import org.compiere.print.MPrintPaper;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
 import org.compiere.print.layout.PrintDataEvaluatee;
-import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
-import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 
 /**
