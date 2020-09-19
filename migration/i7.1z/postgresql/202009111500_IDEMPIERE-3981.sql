@@ -535,7 +535,7 @@ UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarBu
 ;
 
 -- Jun 22, 2019, 3:57:30 PM BRT
-UPDATE AD_Field SET SeqNo=360,IsDisplayed='Y', Updated=statement_timestamp(), UpdatedBy=100 WHERE AD_Field_ID=206126
+UPDATE AD_Field SET SeqNo=360,IsDisplayed='Y', Updated=TO_TIMESTAMP('2019-06-22 15:57:10','YYYY-MM-DD HH24:MI:SS'), UpdatedBy=100 WHERE AD_Field_ID=206126
 ;
 
 -- Jun 22, 2019, 4:02:05 PM BRT
@@ -1044,3 +1044,5 @@ WHERE t.IsActive='Y'
   AND tbl.IsActive='Y'
 ;
 
+SELECT register_migration_script('202009111500_IDEMPIERE-3981.sql') FROM dual
+;
