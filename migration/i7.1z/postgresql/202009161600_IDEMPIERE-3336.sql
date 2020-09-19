@@ -103,27 +103,8 @@ update AD_RelationType set EntityType='U';
 update AD_StatusLineUsedIn set EntityType='U';
 
 -- restore core records as EntityType = 'D'
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200000;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200001;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200002;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200003;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200004;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200005;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200006;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200007;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200008;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200009;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200010;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200011;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 200012;
-update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID = 1000000;
-
-update AD_RelationType set EntityType='D' where AD_RelationType_ID = 200000;
-update AD_RelationType set EntityType='D' where AD_RelationType_ID = 50001;
-update AD_RelationType set EntityType='D' where AD_RelationType_ID = 50002;
-update AD_RelationType set EntityType='D' where AD_RelationType_ID = 50003;
-update AD_RelationType set EntityType='D' where AD_RelationType_ID = 50004;
-update AD_RelationType set EntityType='D' where AD_RelationType_ID = 50005;
+update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID < 1000000;
+update AD_RelationType set EntityType='D' where AD_RelationType_ID < 1000000;
 
 SELECT register_migration_script('202009161600_IDEMPIERE-3336.sql') FROM dual
 ;
