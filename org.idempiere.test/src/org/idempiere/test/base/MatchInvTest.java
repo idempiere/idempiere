@@ -339,4 +339,185 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		rollback();
 	}
+	
+	@Test
+	/**
+	 * Test the matched invoice posting for credit memo
+	 * PO Qty=10 > IV Qty=10 > MR Qty=9 > CM Qty=1
+	 */
+	public void testCreditMemoPosting() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(bpartner);
+		order.setIsSOTrx(false);
+		order.setC_DocTypeTarget_ID();
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.saveEx();
+		
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(product);
+		orderLine.setQty(BigDecimal.TEN);
+		orderLine.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		order.load(getTrxName());
+		assertFalse(info.isError());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setOrder(order);
+		invoice.setDateAcct(order.getDateOrdered());
+		invoice.setSalesRep_ID(order.getSalesRep_ID());
+		invoice.setC_BPartner_ID(order.getBill_BPartner_ID());
+		invoice.setC_BPartner_Location_ID(order.getBill_Location_ID());
+		invoice.setAD_User_ID(order.getBill_User_ID());
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+		
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setC_OrderLine_ID(orderLine.get_ID());
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(product);
+		invoiceLine.setQty(BigDecimal.TEN);
+		invoiceLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		
+		if (!invoice.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+			assertTrue(error == null);
+		}
+		invoice.load(getTrxName());
+		assertTrue(invoice.isPosted());
+		
+		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		receipt.saveEx();
+				
+		MInOutLine receiptLine = new MInOutLine(receipt);
+		receiptLine.setC_OrderLine_ID(orderLine.get_ID());
+		receiptLine.setLine(10);
+		receiptLine.setProduct(product);
+		receiptLine.setQty(new BigDecimal(9));
+		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+		receiptLine.setM_Locator_ID(M_Locator_ID);
+		receiptLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		receipt.load(getTrxName());
+		assertFalse(info.isError());
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		if (!receipt.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), MInOut.Table_ID, receipt.get_ID(), false, getTrxName());
+			assertTrue(error == null);
+		}
+		receipt.load(getTrxName());
+		assertTrue(receipt.isPosted());
+		
+		int C_AcctSchema_ID = MClientInfo.get(Env.getCtx()).getC_AcctSchema1_ID();
+		MAcctSchema as = MAcctSchema.get(Env.getCtx(), C_AcctSchema_ID);		
+		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+		for (MMatchInv mi : miList) {
+			if (!mi.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			mi.load(getTrxName());
+			assertTrue(mi.isPosted());
+			
+			Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
+			doc.setC_BPartner_ID(mi.getC_InvoiceLine().getC_Invoice().getC_BPartner_ID());
+			MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			
+			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+
+			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
+					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
+					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + C_AcctSchema_ID;
+			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			for (int id : ids) {
+				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				if (fa.getAccount_ID() == acctNIR.getAccount_ID())
+					assertTrue(fa.getAmtAcctDr().compareTo(Env.ZERO) >= 0);
+				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID())
+					assertTrue(fa.getAmtAcctCr().compareTo(Env.ZERO) >= 0);
+			}
+		}
+		
+		MInvoice creditMemo = new MInvoice(Env.getCtx(), 0, getTrxName());
+		creditMemo.setOrder(order);
+		creditMemo.setDateAcct(order.getDateOrdered());
+		creditMemo.setSalesRep_ID(order.getSalesRep_ID());
+		creditMemo.setC_BPartner_ID(order.getBill_BPartner_ID());
+		creditMemo.setC_BPartner_Location_ID(order.getBill_Location_ID());
+		creditMemo.setAD_User_ID(order.getBill_User_ID());
+		creditMemo.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APCreditMemo);
+		creditMemo.setDocStatus(DocAction.STATUS_Drafted);
+		creditMemo.setDocAction(DocAction.ACTION_Complete);
+		creditMemo.saveEx();
+		
+		MInvoiceLine creditMemoLine = new MInvoiceLine(creditMemo);
+		creditMemoLine.setC_OrderLine_ID(orderLine.get_ID());
+		creditMemoLine.setLine(10);
+		creditMemoLine.setProduct(product);
+		creditMemoLine.setQty(BigDecimal.ONE);
+		creditMemoLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
+		creditMemo.load(getTrxName());
+		assertFalse(info.isError());
+		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
+		
+		if (!creditMemo.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), creditMemo.getAD_Client_ID(), MInvoice.Table_ID, creditMemo.get_ID(), false, getTrxName());
+			assertTrue(error == null);
+		}
+		creditMemo.load(getTrxName());
+		assertTrue(creditMemo.isPosted());
+		
+		miList = MMatchInv.getInvoiceLine(Env.getCtx(), creditMemoLine.get_ID(), getTrxName());
+		for (MMatchInv mi : miList) {
+			if (!mi.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			mi.load(getTrxName());
+			assertTrue(mi.isPosted());
+			
+			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+
+			BigDecimal amtAcctDrInvClr = BigDecimal.ZERO;
+			BigDecimal amtAcctCrInvClr = BigDecimal.ZERO;
+			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
+					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
+					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + C_AcctSchema_ID;
+			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			for (int id : ids) {
+				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) < 0) {
+					assertTrue(fa.getAmtAcctCr().compareTo(Env.ZERO) >= 0);
+					amtAcctCrInvClr = amtAcctCrInvClr.add(fa.getAmtAcctCr());
+				}
+				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) > 0) {
+					assertTrue(fa.getAmtAcctDr().compareTo(Env.ZERO) >= 0);
+					amtAcctDrInvClr = amtAcctDrInvClr.add(fa.getAmtAcctDr());
+				}
+			}			
+			assertTrue(amtAcctDrInvClr.compareTo(amtAcctCrInvClr) == 0);
+		}
+		
+		rollback();
+	}
 }
