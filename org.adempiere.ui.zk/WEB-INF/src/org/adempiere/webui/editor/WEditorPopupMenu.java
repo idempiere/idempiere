@@ -290,7 +290,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     }
 
 	public void addSuggestion(final GridField field) {
-		if (!MRole.getDefault().isTableExcluded(MFieldSuggestion.Table_ID)) {
+		if (!MRole.getDefault().isTableAccessExcluded(MFieldSuggestion.Table_ID)) {
 			Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));
 			if (ThemeManager.isUseFontIconForImage())
 				editor.setIconSclass("z-icon-FieldSuggestion");

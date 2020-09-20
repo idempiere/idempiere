@@ -3349,16 +3349,20 @@ public final class MRole extends X_AD_Role
 	 * @param tableID ID of the table
 	 * @return
 	 */
-	public boolean isTableExcluded(int tableID)
+	public boolean isTableAccessExcluded(int tableID)
 	{
 		loadTableAccess(false);
 
 		for (int i = 0; i < m_tableAccess.length; i++) {
-			if (m_tableAccess[i].isExclude() && m_tableAccess[i].getAD_Table_ID() == tableID)
+			if (   m_tableAccess[i].isExclude()
+					&& m_tableAccess[i].getAD_Table_ID() == tableID
+					&& ! m_tableAccess[i].isReadOnly()
+					&& MTableAccess.ACCESSTYPERULE_Accessing.equals(m_tableAccess[i].getAccessTypeRule())
+					)
 				return true;
 		}
 
 		return false;
-	}	//	isTableAccess
+	}	//	isTableAccessExcluded
 
 }	//	MRole

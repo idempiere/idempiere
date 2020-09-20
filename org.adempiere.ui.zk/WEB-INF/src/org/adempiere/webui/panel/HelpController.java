@@ -272,7 +272,7 @@ public class HelpController
     	{
 	    	sb.append(stripHtml(ctxHelpMsg.get_Translation(I_AD_CtxHelpMsg.COLUMNNAME_MsgText), false) + "<br>\n");
 
-	    	if (!MRole.getDefault().isTableExcluded(MCtxHelpSuggestion.Table_ID)) {
+	    	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
 	    		ContextHelpMenupopup popup = new ContextHelpMenupopup(ctxHelpMsg);
 	    		pnlContextHelp.setAttribute("contextMenu", popup);
 	    		pnlContextHelp.setContext(popup);
@@ -629,7 +629,7 @@ public class HelpController
     }
 
     private void addContextHelpMenupopup(PO po, StringBuilder baseContent, StringBuilder translatedContent) {
-    	if (!MRole.getDefault().isTableExcluded(MCtxHelpSuggestion.Table_ID)) {
+    	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
     		ContextHelpMenupopup popup = new ContextHelpMenupopup(po, baseContent.toString(), translatedContent.toString());
     		pnlContextHelp.setAttribute("contextMenu", popup);
     		pnlContextHelp.setContext(popup);
