@@ -29,10 +29,12 @@ import org.compiere.model.I_AD_InfoWindow;
 import org.compiere.model.I_AD_WF_Node;
 import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.MCtxHelpMsg;
+import org.compiere.model.MCtxHelpSuggestion;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
 import org.compiere.model.PO;
@@ -269,16 +271,19 @@ public class HelpController
     	if (ctxHelpMsg != null)
     	{
 	    	sb.append(stripHtml(ctxHelpMsg.get_Translation(I_AD_CtxHelpMsg.COLUMNNAME_MsgText), false) + "<br>\n");
-	    	ContextHelpMenupopup popup = new ContextHelpMenupopup(ctxHelpMsg);
-	    	pnlContextHelp.setAttribute("contextMenu", popup);
-	    	pnlContextHelp.setContext(popup);
-	    	popup.setPage(pnlContextHelp.getPage());
+
+	    	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
+	    		ContextHelpMenupopup popup = new ContextHelpMenupopup(ctxHelpMsg);
+	    		pnlContextHelp.setAttribute("contextMenu", popup);
+	    		pnlContextHelp.setContext(popup);
+	    		popup.setPage(pnlContextHelp.getPage());
+	    	}
     	}
     	else
     	{
     		StringBuilder baseContent = new StringBuilder();
     		StringBuilder translatedContent = new StringBuilder();
-    		ContextHelpMenupopup popup = null;
+
     		if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Tab))
         	{
         		MTab tab = new MTab(Env.getCtx(), recordId, null);
@@ -323,11 +328,8 @@ public class HelpController
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-        		
-        		popup = new ContextHelpMenupopup(tab, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(tab, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Process))
         	{
@@ -374,11 +376,8 @@ public class HelpController
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-        		
-        		popup = new ContextHelpMenupopup(process, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(process, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Form))
         	{
@@ -424,11 +423,8 @@ public class HelpController
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-        		
-        		popup = new ContextHelpMenupopup(form, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(form, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Info))
         	{
@@ -473,11 +469,8 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-				
-        		popup = new ContextHelpMenupopup(info, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+				addContextHelpMenupopup(info, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Workflow)) 
         	{
@@ -522,12 +515,8 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-		
-				popup = new ContextHelpMenupopup(workflow, baseContent.toString(), translatedContent.toString());
-				pnlContextHelp.setAttribute("contextMenu", popup);
-				pnlContextHelp.setContext(popup);
-				popup.setPage(pnlContextHelp.getPage());
 
+				addContextHelpMenupopup(workflow, baseContent, translatedContent);
         	} 
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Task)) 
         	{
@@ -574,11 +563,8 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-				
-				popup = new ContextHelpMenupopup(task, baseContent.toString(), translatedContent.toString());
-		    	pnlContextHelp.setAttribute("contextMenu", popup);
-		    	pnlContextHelp.setContext(popup);
-		    	popup.setPage(pnlContextHelp.getPage());				
+
+				addContextHelpMenupopup(task, baseContent, translatedContent);
 			} 
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Node)) 
         	{
@@ -624,21 +610,16 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-				
-				popup = new ContextHelpMenupopup(node, baseContent.toString(), translatedContent.toString());
-		    	pnlContextHelp.setAttribute("contextMenu", popup);
-		    	pnlContextHelp.setContext(popup);
-		    	popup.setPage(pnlContextHelp.getPage());				
+
+				addContextHelpMenupopup(node, baseContent, translatedContent);
 			}
         	else
         	{
         		translatedContent.append("<p><em>(" + Msg.getMsg(Env.getCtx(), "NotAvailable") + ")</em></p>");
         		baseContent.append("<p><em>(" + Msg.getMsg(Language.getBaseAD_Language(), "NotAvailable") + ")</em></p>");
         		sb.append(translatedContent.toString());
-        		popup = new ContextHelpMenupopup(null, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(null, baseContent, translatedContent);
         	}
     	}
 	
@@ -646,7 +627,16 @@ public class HelpController
     	
     	htmlContextHelp.setContent(sb.toString());
     }
-    
+
+    private void addContextHelpMenupopup(PO po, StringBuilder baseContent, StringBuilder translatedContent) {
+    	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
+    		ContextHelpMenupopup popup = new ContextHelpMenupopup(po, baseContent.toString(), translatedContent.toString());
+    		pnlContextHelp.setAttribute("contextMenu", popup);
+    		pnlContextHelp.setContext(popup);
+    		popup.setPage(pnlContextHelp.getPage());
+    	}
+    }
+
     public void renderQuickInfo(GridTab gridTab) {
     	if (gridTab == null) {
         	pnlQuickInfo.setVisible(false);
