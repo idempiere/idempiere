@@ -79,6 +79,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		appendChild(bandbox);
 //		ZKUpdateUtil.setWidth(bandbox, "100%");
 		bandbox.setAutodrop(true);
+		bandbox.setId("globalSearchBox");
 		bandbox.addEventListener(Events.ON_CHANGING, this);
 		bandbox.addEventListener(Events.ON_CHANGE, this);
 		bandbox.setCtrlKeys("#up#down");

@@ -371,8 +371,13 @@ public class DB_Oracle implements AdempiereDatabase
     public String convertStatement (String oraStatement)
     {
     	Convert.logMigrationScript(oraStatement, null);
-		if ("true".equals(System.getProperty("org.idempiere.db.oracle.debug"))) {
-			log.warning("Oracle -> " + oraStatement);
+		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
+			String filterOrDebug = System.getProperty("org.idempiere.db.debug.filter");
+			boolean print = true;
+			if (filterOrDebug != null)
+				print = oraStatement.matches(filterOrDebug);
+			if (print)
+				log.warning("Oracle -> " + oraStatement);
 		}
         return oraStatement;
     }   //  convertStatement
@@ -1209,10 +1214,12 @@ public class DB_Oracle implements AdempiereDatabase
 				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
 				.append(sql)
 				.append(") tb) where oracle_native_rownum_ >= ")
-				.append(start)
-				.append(" AND oracle_native_rownum_ <= ")
-				.append(end)
-				.append(" order by oracle_native_rownum_");
+				.append(start);
+		if (end > 0) {
+			newSql.append(" AND oracle_native_rownum_ <= ")
+				.append(end);
+		}
+		newSql.append(" order by oracle_native_rownum_");
 
 		return newSql.toString();
 	}

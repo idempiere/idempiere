@@ -44,6 +44,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
+import org.compiere.model.MLocator;
 import org.compiere.model.MLookup;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -372,7 +373,7 @@ ContextMenuListener, IZoomableEditor
             getComponent().setSelectedItem(null);
             oldValue = value;
             
-            if (getComponent() instanceof EditorAutoComplete)
+            if (getComponent() instanceof EditorAutoComplete && gridField!=null)	// IDEMPIERE-4442 Fix NPE, for Autocomplete in non Grid Usage.
             	updateStyle();
         }                                
     }
@@ -423,6 +424,15 @@ ContextMenuListener, IZoomableEditor
 	                    ValueNamePair lookupKNPair = (ValueNamePair) obj;
 	                    getComponent().appendItem(lookupKNPair.getName(), lookupKNPair.getValue());
 	                    if (!found && oldValue != null && lookupKNPair.getValue().equals(oldValue.toString()))
+		                {
+	                    	found = true;
+	                	}
+	            	}
+	                else if (obj instanceof MLocator)
+	                {
+	                	MLocator lookupKNPair = (MLocator) obj;
+	                    getComponent().appendItem(lookupKNPair.getValue(), lookupKNPair.getM_Locator_ID());
+	                    if (!found && oldValue != null && lookupKNPair.getM_Locator_ID() == (Integer) oldValue)
 		                {
 	                    	found = true;
 	                	}

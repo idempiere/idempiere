@@ -41,6 +41,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MLocator;
@@ -77,7 +78,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 
 	private Grid mainPanel = GridFactory.newGridLayout();
 	
-	private Listbox lstLocator = new Listbox();
+	private WTableDirEditor locatorField = null;
 	private Listbox lstWarehouse = new Listbox();
 	private Listbox lstLocatorType = new Listbox();
 	
@@ -144,9 +145,9 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		
 		m_WindowNo = windowNo;
 		this.title = title;
+		m_mLocator = mLocator;
 		initComponents();
 
-		m_mLocator = mLocator;
 		m_M_Locator_ID = M_Locator_ID;
 		m_mandatory = mandatory;
 		m_only_Warehouse_ID = only_Warehouse_ID;
@@ -167,10 +168,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		lblLevelZ.setValue(Msg.getElement(Env.getCtx(), "Z"));
 		lblKey.setValue(Msg.translate(Env.getCtx(), "Value"));
 		
-		lstLocator.setMold("select");
-		lstLocator.setRows(0);
-		LayoutUtils.addSclass("z-label", lstLocator);
-		
+		locatorField = new WTableDirEditor(m_mLocator , Msg.translate(Env.getCtx(), "M_Locator_ID"), "", true, false, true, true);
+		LayoutUtils.addSclass("z-label", locatorField.getComponent());
 		chkCreateNew.setLabel(Msg.getMsg(Env.getCtx(), "CreateNew"));
 		
 		lstWarehouse.setMold("select");
@@ -200,8 +199,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		Row row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblLocator);
-		row.appendChild(lstLocator);
-		ZKUpdateUtil.setHflex(lstLocator, "1");
+		row.appendChild(locatorField.getComponent());
+		ZKUpdateUtil.setHflex(locatorField.getComponent(), "1");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -393,23 +392,10 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			}
 		}
 		
-		int selectedIndex = -1;
-		for (int i = 0; i < m_mLocator.getSize(); i++)
-		{
-			MLocator obj = (MLocator) m_mLocator.getElementAt(i);
-			if (obj.getM_Locator_ID() == m_M_Locator_ID && m_M_Locator_ID > 0)
-				selectedIndex = i;
-			
-			lstLocator.appendItem(obj.toString(), obj);
-		}
-		
-		if (lstLocator.getItemCount() > 0) {
-			if (selectedIndex >= 0)
-				lstLocator.setSelectedIndex(selectedIndex);
-			else
-				lstLocator.setSelectedIndex(0);
-		}
-		lstLocator.addEventListener(Events.ON_SELECT, this);
+		if(m_M_Locator_ID > 0)
+			locatorField.setValue(m_M_Locator_ID);
+
+		locatorField.getComponent().addEventListener(Events.ON_SELECT, this);
 		
 		displayLocator();
 
@@ -432,10 +418,10 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	private void displayLocator()
 	{
 		MLocator l = null;
-		ListItem listitem = lstLocator.getSelectedItem();
-		
-		if (listitem != null)
-			l = (MLocator) listitem.getValue();
+		Integer M_Locator_ID = (Integer)locatorField.getValue();
+
+		if (M_Locator_ID != null)
+			l = MLocator.get(Env.getCtx(), M_Locator_ID);
 		
 		if (l == null)
 			return;
@@ -646,8 +632,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			listitem = new ListItem();
 			listitem.setValue(loc);
 			
-			lstLocator.appendItem(loc.get_TableName(), loc);
-			lstLocator.setSelectedIndex(lstLocator.getItemCount() - 1);
+			locatorField.actionRefresh();
+			locatorField.setValue(m_M_Locator_ID);
 		} // createNew
 
 		if (log.isLoggable(Level.CONFIG)) log.config("M_Locator_ID=" + m_M_Locator_ID);
@@ -660,13 +646,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	
 	public Integer getValue()
 	{
-		ListItem listitem = lstLocator.getSelectedItem();
-		MLocator l = (MLocator) listitem.getValue();
-		
-		if (l != null && l.getM_Locator_ID() != 0)
-			return Integer.valueOf(l.getM_Locator_ID());
-		
-		return null;
+		return (Integer) locatorField.getValue();
 	} // getValue
 
 	/**
@@ -678,11 +658,9 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	{
 		if (m_change)
 		{
-			ListItem listitem = lstLocator.getSelectedItem();
-			MLocator l = listitem != null ? (MLocator)listitem.getValue() : null;
-			
-			if (l != null)
-				return l.getM_Locator_ID() == m_M_Locator_ID;
+			Integer locator_id = (Integer) locatorField.getValue();
+			if(locator_id != null)
+				return locator_id == m_M_Locator_ID;
 		}
 		return m_change;
 	} // getChange
@@ -704,7 +682,7 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 			m_change = true;
 			this.detach();
 		}
-		else if (event.getTarget() == lstLocator)
+		else if (event.getTarget() == locatorField.getComponent())
 			displayLocator();
 		else if (event.getTarget() == chkCreateNew)
 			enableNew();
