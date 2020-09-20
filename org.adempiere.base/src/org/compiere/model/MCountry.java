@@ -54,32 +54,31 @@ public class MCountry extends X_C_Country
 	private static final long serialVersionUID = 6102749517340832365L;
 
 	/**
-	 * 	Get Country (cached)
-	 * 	@param ctx context
-	 *	@param C_Country_ID ID
-	 *	@return Country
-	 *  @deprecated
-	 */
-	public static MCountry get (Properties ctx, int C_Country_ID)
-	{
-		return get(C_Country_ID);
-	}
-	
-	/**
-	 * 	Get Country (Immutable, cached)
+	 * 	Get Country (cached) (immutable)
 	 *	@param C_Country_ID ID
 	 *	@return Country
 	 */
 	public static MCountry get (int C_Country_ID)
 	{
+		return get(Env.getCtx(), C_Country_ID);
+	}
+	
+	/**
+	 * 	Get Country (Immutable, cached)
+	 *  @param ctx context
+	 *	@param C_Country_ID ID
+	 *	@return Country
+	 */
+	public static MCountry get (Properties ctx, int C_Country_ID)
+	{
 		loadAllCountriesIfNeeded();
-		MCountry c = s_countries.get(C_Country_ID);
+		MCountry c = s_countries.get(ctx, C_Country_ID, e -> new MCountry(ctx, e));
 		if (c != null)
 			return c;
-		c = new MCountry (Env.getCtx(), C_Country_ID, (String)null);
+		c = new MCountry (ctx, C_Country_ID, (String)null);
 		if (c.getC_Country_ID() == C_Country_ID)
 		{
-			s_countries.put(C_Country_ID, c);
+			s_countries.put(C_Country_ID, c, e -> new MCountry(Env.getCtx(), e));
 			return c;
 		}
 		return null;

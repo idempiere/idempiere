@@ -27,7 +27,6 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
-import org.idempiere.cache.IntPOCopyCache;
 
 /**
  *	Asset Registration Attribute

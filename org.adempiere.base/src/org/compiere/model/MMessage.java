@@ -118,24 +118,23 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	
 	/**
 	 * 	Get Message ID (cached)
-	 *	@param ctx ignore
-	 *	@param Value message value
-	 *	@return AD_Message_ID
-	 *  @deprecated
-	 */
-	public static int getAD_Message_ID (Properties ctx, String Value)
-	{
-		return getAD_Message_ID(Value);
-	}
-	
-	/**
-	 * 	Get Message ID (cached)
 	 *	@param Value message value
 	 *	@return AD_Message_ID
 	 */
 	public static int getAD_Message_ID (String Value)
 	{
-		MMessage msg = get(Value);
+		return getAD_Message_ID(Env.getCtx(), Value);
+	}
+	
+	/**
+	 * 	Get Message ID (cached)
+	 *  @param ctx context
+	 *	@param Value message value
+	 *	@return AD_Message_ID
+	 */
+	public static int getAD_Message_ID (Properties ctx, String Value)
+	{
+		MMessage msg = get(ctx, Value);
 		if (msg == null)
 			return 0;
 		return msg.getAD_Message_ID();
