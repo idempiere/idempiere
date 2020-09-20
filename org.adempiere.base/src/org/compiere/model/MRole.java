@@ -39,6 +39,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
@@ -1399,7 +1400,15 @@ public final class MRole extends X_AD_Role
 		if (!isTableAccess(AD_Table_ID, ro))		//	No Access to Table		
 			return false;
 		loadColumnAccess(false);
-		
+
+		// Verify access to process for buttons
+		MColumn column = MColumn.get(Env.getCtx(), AD_Column_ID);
+		if (column.getAD_Reference_ID() == DisplayType.Button && column.getAD_Process_ID() > 0) {
+			Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
+			if (access == null)
+				return false;
+		}
+
 		boolean retValue = true;		//	assuming exclusive
 		for (int i = 0; i < m_columnAccess.length; i++)
 		{

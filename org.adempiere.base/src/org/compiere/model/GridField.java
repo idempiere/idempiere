@@ -505,6 +505,13 @@ public class GridField
 					return false;
 				if (!MRole.getDefault(ctx, false).isColumnAccess(AD_Table_ID, m_vo.AD_Column_ID, false))
 					return false;
+				if (getDisplayType() == DisplayType.Button && getAD_Process_ID() > 0) {
+					// Verify access to process for buttons
+					Boolean access = MRole.getDefault().getProcessAccess(getAD_Process_ID());
+					if (access == null || !access.booleanValue())
+						return false;
+				}
+				
 			}
 		}
 			
