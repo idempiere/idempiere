@@ -109,5 +109,13 @@ update AD_StatusLineUsedIn set EntityType='U';
 update AD_StatusLineUsedIn set EntityType='D' where AD_StatusLineUsedIn_ID < 1000000;
 update AD_RelationType set EntityType='D' where AD_RelationType_ID < 1000000;
 
+-- Sep 20, 2020, 3:26:57 PM CEST
+UPDATE AD_Column SET DefaultValue='@SQL=select get_sysconfig(''DEFAULT_ENTITYTYPE'',''U'',0,0) from dual',Updated=TO_DATE('2020-09-20 15:26:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212979
+;
+
+-- Sep 20, 2020, 3:27:27 PM CEST
+UPDATE AD_Column SET DefaultValue='@SQL=select get_sysconfig(''DEFAULT_ENTITYTYPE'',''U'',0,0) from dual',Updated=TO_DATE('2020-09-20 15:27:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212980
+;
+
 SELECT register_migration_script('202009161600_IDEMPIERE-3336.sql') FROM dual
 ;
