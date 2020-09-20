@@ -293,7 +293,15 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_plv = copy.m_plv != null ? new MPriceListVersion(ctx, copy.m_plv, trxName) : null;
+		if (copy.m_plv != null)
+		{
+			this.m_plv = new MPriceListVersion(ctx, copy.m_plv, trxName);
+			this.m_plv.m_pl = this;
+		}
+		else
+		{
+			this.m_plv = null;
+		}
 		this.m_precision = copy.m_precision;
 	}
 	

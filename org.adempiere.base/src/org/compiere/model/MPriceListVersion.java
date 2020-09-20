@@ -108,14 +108,14 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_pl = copy.m_pl != null ? new MPriceList(ctx, copy.m_pl, trxName) : null;
+		this.m_pl = null;
 		this.m_pp = copy.m_pp != null ? Arrays.stream(copy.m_pp).map(e -> {return new MProductPrice(ctx, e, trxName);}).toArray(MProductPrice[]::new) : null;
 	}
 	
 	/** Product Prices			*/
 	private MProductPrice[] m_pp = null;
 	/** Price List				*/
-	private MPriceList		m_pl = null;
+	protected MPriceList		m_pl = null;
 
 	/**
 	 * 	Get Parent PriceList

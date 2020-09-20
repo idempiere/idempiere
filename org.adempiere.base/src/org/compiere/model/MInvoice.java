@@ -442,7 +442,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.m_openAmt = copy.m_openAmt;
-		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MInvoiceLine(ctx, e, trxName);}).toArray(MInvoiceLine[]::new) : null;
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {var v = new MInvoiceLine(ctx, e, trxName); v.m_parent=this; return v;}).toArray(MInvoiceLine[]::new) : null;
 		this.m_taxes = copy.m_taxes != null ? Arrays.stream(copy.m_taxes).map(e -> {return new MInvoiceTax(ctx, e, trxName);}).toArray(MInvoiceTax[]::new) : null;
 	}
 

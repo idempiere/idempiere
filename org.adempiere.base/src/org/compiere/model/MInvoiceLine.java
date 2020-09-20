@@ -201,7 +201,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		this.m_charge = copy.m_charge != null ? new MCharge(ctx, copy.m_charge, trxName) : null;
 		this.m_name = copy.m_name;
 		this.m_precision = copy.m_precision;
-		this.m_parent = copy.m_parent != null ? new MInvoice(ctx, copy.m_parent, trxName) : null;
+		this.m_parent = null;
 		this.m_priceSet = copy.m_priceSet;
 	}
 

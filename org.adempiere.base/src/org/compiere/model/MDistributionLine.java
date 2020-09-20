@@ -110,7 +110,7 @@ public class MDistributionLine extends X_GL_DistributionLine
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_parent = copy.m_parent != null ? new MDistribution(ctx, copy.m_parent, trxName) : null;
+		this.m_parent = null;
 		this.m_amt = copy.m_amt;
 		this.m_qty = copy.m_qty;
 		this.m_account = copy.m_account != null ? new MAccount(ctx, copy.m_account, trxName) : null;

@@ -169,7 +169,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MInventoryLine(ctx, e, trxName);}).toArray(MInventoryLine[]::new) : null;
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {var v = new MInventoryLine(ctx, e, trxName); v.setParent(this); return v;}).toArray(MInventoryLine[]::new) : null;
 	}
 
 	/**	Lines						*/

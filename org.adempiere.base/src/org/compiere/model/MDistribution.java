@@ -329,7 +329,7 @@ public class MDistribution extends X_GL_Distribution
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {return new MDistributionLine(ctx, e, trxName);}).toArray(MDistributionLine[]::new) : null;
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {var v = new MDistributionLine(ctx, e, trxName); v.setParent(this); return v;}).toArray(MDistributionLine[]::new) : null;
 	}
 	
 	/**	The Lines						*/

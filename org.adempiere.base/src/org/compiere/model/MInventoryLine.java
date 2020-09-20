@@ -166,7 +166,7 @@ public class MInventoryLine extends X_M_InventoryLine
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_parent = copy.m_parent != null ? new MInventory(ctx, copy.m_parent, trxName) : null;
+		this.m_parent = null;
 		this.m_product = copy.m_product != null ? new MProduct(ctx, copy.m_product, trxName) : null;
 	}
 
