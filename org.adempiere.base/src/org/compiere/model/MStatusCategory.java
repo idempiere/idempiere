@@ -19,14 +19,16 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Request Status Category Model
@@ -34,13 +36,12 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: MStatusCategory.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MStatusCategory extends X_R_StatusCategory
+public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7538457243144691380L;
-
+	private static final long serialVersionUID = -5527646898927619293L;
 
 	/**
 	 * 	Get Default Status Categpru for Client
@@ -99,7 +100,17 @@ public class MStatusCategory extends X_R_StatusCategory
 	}	//	createDefault
 
 	/**
-	 * 	Get Request Status Category from Cache
+	 * 	Get Request Status Category from Cache (immutable)
+	 *	@param R_StatusCategory_ID id
+	 *	@return RStatusCategory
+	 */
+	public static MStatusCategory get (int R_StatusCategory_ID)
+	{
+		return get(Env.getCtx(), R_StatusCategory_ID);
+	}
+	
+	/**
+	 * 	Get Request Status Category from Cache (immutable)
 	 *	@param ctx context
 	 *	@param R_StatusCategory_ID id
 	 *	@return RStatusCategory
@@ -107,18 +118,21 @@ public class MStatusCategory extends X_R_StatusCategory
 	public static MStatusCategory get (Properties ctx, int R_StatusCategory_ID)
 	{
 		Integer key = Integer.valueOf(R_StatusCategory_ID);
-		MStatusCategory retValue = (MStatusCategory)s_cache.get (key);
+		MStatusCategory retValue = s_cache.get (ctx, key, e -> new MStatusCategory(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MStatusCategory (ctx, R_StatusCategory_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MStatusCategory (ctx, R_StatusCategory_ID, (String)null);
+		if (retValue.get_ID() == R_StatusCategory_ID)
+		{
+			s_cache.put (key, retValue, e -> new MStatusCategory(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MStatusCategory> s_cache 
-		= new CCache<Integer, MStatusCategory> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MStatusCategory> s_cache 
+		= new ImmutableIntPOCache<Integer, MStatusCategory> (Table_Name, 20);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MStatusCategory.class);
 	
@@ -150,6 +164,38 @@ public class MStatusCategory extends X_R_StatusCategory
 		super (ctx, rs, trxName);
 	}	//	RStatusCategory
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MStatusCategory(MStatusCategory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStatusCategory(Properties ctx, MStatusCategory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStatusCategory(Properties ctx, MStatusCategory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_status = copy.m_status != null ? Arrays.stream(copy.m_status).map(e ->{return new MStatus(ctx, e, trxName);}).toArray(MStatus[]::new) : null;
+	}
+	
 	/**	The Status						*/
 	private MStatus[] m_status = null;
 	
@@ -187,6 +233,8 @@ public class MStatusCategory extends X_R_StatusCategory
 			pstmt = null;
 		}
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_status = new MStatus[list.size ()];
 		list.toArray (m_status);
 		return m_status;
@@ -210,6 +258,18 @@ public class MStatusCategory extends X_R_StatusCategory
 				return m_status[0].getR_Status_ID();
 		return 0;
 	}	//	getDefaultR_Status_ID
+
+	@Override
+	public MStatusCategory markImmutable() 
+	{
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_status != null && m_status.length > 0)
+			Arrays.stream(m_status).forEach(e -> e.markImmutable());
+		return this;
+	}
 
 	/**
 	 * 	String Representation

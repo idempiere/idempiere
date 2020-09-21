@@ -495,7 +495,7 @@ public class MWFProcess extends X_AD_WF_Process
 	public MWorkflow getWorkflow()
 	{
 		if (m_wf == null)
-			m_wf = MWorkflow.get (getCtx(), getAD_Workflow_ID());
+			m_wf = MWorkflow.getCopy(getCtx(), getAD_Workflow_ID(), get_TrxName());
 		if (m_wf.get_ID() == 0)
 			throw new IllegalStateException("Not found - AD_Workflow_ID=" + getAD_Workflow_ID());
 		return m_wf;

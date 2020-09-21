@@ -32,19 +32,20 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Import Template Model
  *
  *  @author Carlos Ruiz - GlobalQSS
  */
-public class MImportTemplate extends X_AD_ImportTemplate
+public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1207697938690504067L;
-
+	private static final long serialVersionUID = -4681075469110529774L;
+	
 	/**	Logger			*/
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MImportTemplate.class);
@@ -71,6 +72,37 @@ public class MImportTemplate extends X_AD_ImportTemplate
 		super(ctx, rs, trxName);
 	}	//	MImportTemplate
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MImportTemplate(MImportTemplate copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MImportTemplate(Properties ctx, MImportTemplate copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MImportTemplate(Properties ctx, MImportTemplate copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Validate character set vs supported
@@ -112,6 +144,8 @@ public class MImportTemplate extends X_AD_ImportTemplate
 			.setParameters(Env.getAD_Client_ID(Env.getCtx()), tabid, roleid, roleid)
 			.setOrderBy("Name")
 			.list();
+		if (retValue.size() > 0)
+			retValue.stream().forEach(e -> e.markImmutable());
 		s_cacheRoleTab.put(key, retValue);
 		return retValue;
 	}
@@ -200,6 +234,15 @@ public class MImportTemplate extends X_AD_ImportTemplate
 				}
 		}
 		return is;
+	}
+
+	@Override
+	public MImportTemplate markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MImportTemplate

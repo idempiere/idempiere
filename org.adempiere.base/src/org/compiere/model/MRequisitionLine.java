@@ -327,7 +327,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	@Override
 	public I_M_Product getM_Product()
 	{
-		return MProduct.get(getCtx(), getM_Product_ID());
+		return MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 	}
 
 	/**
