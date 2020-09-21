@@ -355,9 +355,14 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			String cache = convertCache.get(oraStatement);
 			if (cache != null) {
 				Convert.logMigrationScript(oraStatement, cache);
-				if ("true".equals(System.getProperty("org.idempiere.db.postgresql.debug"))) {
+				if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
+					String filterPgDebug = System.getProperty("org.idempiere.db.debug.filter");
+					boolean print = true;
+					if (filterPgDebug != null)
+						print = cache.matches(filterPgDebug);
 					// log.warning("Oracle -> " + oraStatement);
-					log.warning("Pgsql  -> " + cache);
+					if (print)
+						log.warning("Pgsql  -> " + cache);
 				}
 				return cache;
 			}

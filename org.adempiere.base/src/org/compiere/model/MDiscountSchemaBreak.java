@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+
 
 /**
  *	Discount Break Schema (Model)
@@ -30,13 +33,13 @@ import java.util.Properties;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 2012439 ] DiscountSchemaBreak: setting product & category is allowed
  */
-public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak
+public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements ImmutablePOSupport
 {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6413962940750128351L;
+	private static final long serialVersionUID = -5405425697628869517L;
 
 	/**
 	 * 	Standard Constructor
@@ -60,6 +63,36 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak
 		super(ctx, rs, trxName);
 	}	//	MDiscountSchemaBreak
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDiscountSchemaBreak(MDiscountSchemaBreak copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDiscountSchemaBreak(Properties ctx, MDiscountSchemaBreak copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDiscountSchemaBreak(Properties ctx, MDiscountSchemaBreak copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Criteria apply
@@ -123,5 +156,14 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak
 		sb.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	@Override
+	public MDiscountSchemaBreak markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MDiscountSchemaBreak

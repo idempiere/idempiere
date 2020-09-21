@@ -30,12 +30,13 @@ import javax.script.ScriptEngine;
 import org.adempiere.apps.graph.GraphColumn;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.MeasureInterface;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -50,34 +51,47 @@ import org.compiere.util.Util;
  * 			<li>FR [ 2905227 ] Calculate Measure based on the script to PA
  * 			<li>https://sourceforge.net/tracker/?func=detail&aid=2905227&group_id=176962&atid=879335
  */
-public class MMeasure extends X_PA_Measure
+public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6274990637485210675L;
+	private static final long serialVersionUID = -3584012092877837973L;
 
 	/**
-	 * 	Get MMeasure from Cache
-	 *	@param ctx context
+	 * 	Get MMeasure from Cache (immutable)
+	 *	@param PA_Measure_ID id
+	 *	@return MMeasure
+	 */
+	public static MMeasure get (int PA_Measure_ID)
+	{
+		return get(Env.getCtx(), PA_Measure_ID);
+	}
+	
+	/**
+	 * 	Get MMeasure from Cache (immutable)
+	 *  @param ctx context
 	 *	@param PA_Measure_ID id
 	 *	@return MMeasure
 	 */
 	public static MMeasure get (Properties ctx, int PA_Measure_ID)
 	{
 		Integer key = Integer.valueOf(PA_Measure_ID);
-		MMeasure retValue = (MMeasure)s_cache.get (key);
+		MMeasure retValue = s_cache.get (ctx, key, e -> new MMeasure(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MMeasure (ctx, PA_Measure_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MMeasure (ctx, PA_Measure_ID, (String)null);
+		if (retValue.get_ID() == PA_Measure_ID)
+		{
+			s_cache.put (key, retValue, e -> new MMeasure(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MMeasure> s_cache 
-		= new CCache<Integer, MMeasure> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MMeasure> s_cache 
+		= new ImmutableIntPOCache<Integer, MMeasure> (Table_Name, 10);
 	
 	/**
 	 * 	Standard Constructor
@@ -101,12 +115,43 @@ public class MMeasure extends X_PA_Measure
 		super (ctx, rs, trxName);
 	}	//	MMeasure
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MMeasure(MMeasure copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MMeasure(Properties ctx, MMeasure copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MMeasure(Properties ctx, MMeasure copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	public ArrayList<GraphColumn> getGraphColumnList(MGoal goal)
 	{
 		ArrayList<GraphColumn> list = new ArrayList<GraphColumn>();
 		if (MMeasure.MEASURETYPE_Calculated.equals(getMeasureType()))
 		{
-			MMeasureCalc mc = MMeasureCalc.get(getCtx(), getPA_MeasureCalc_ID());
+			MMeasureCalc mc = MMeasureCalc.get(getPA_MeasureCalc_ID());
 			String sql = mc.getSqlBarChart(goal.getRestrictions(false),
 					goal.getMeasureDisplay(), goal.getDateFrom(),
 					MRole.getDefault());	//	logged in role
@@ -465,7 +510,7 @@ public class MMeasure extends X_PA_Measure
 			if (role == null)
 				role = MRole.getDefault(getCtx(), false);	//	could result in wrong data
 			//
-			MMeasureCalc mc = MMeasureCalc.get(getCtx(), getPA_MeasureCalc_ID());
+			MMeasureCalc mc = MMeasureCalc.get(getPA_MeasureCalc_ID());
 			if (mc == null || mc.get_ID() == 0 || mc.get_ID() != getPA_MeasureCalc_ID())
 			{
 				log.log(Level.SEVERE, "Not found PA_MeasureCalc_ID=" + getPA_MeasureCalc_ID());
@@ -669,4 +714,14 @@ public class MMeasure extends X_PA_Measure
 		}
 		return true;
 	}	//	updateUserDefinedGoals
+	
+	@Override
+	public MMeasure markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MMeasure

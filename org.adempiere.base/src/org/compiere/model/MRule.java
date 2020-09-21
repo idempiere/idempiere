@@ -19,17 +19,18 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import javax.script.ScriptEngine;
 
 import org.adempiere.base.Core;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Persistent Rule Model
@@ -37,13 +38,12 @@ import org.compiere.util.Util;
  *  @version $Id: MRule.java
  *  
  */
-public class MRule extends X_AD_Rule
+public class MRule extends X_AD_Rule implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9166262780531877045L;
-	
+	private static final long serialVersionUID = -288947666359685155L;
 	//global or login context variable prefix
 	public final static String GLOBAL_CONTEXT_PREFIX = "G_";
 	//window context variable prefix
@@ -56,7 +56,17 @@ public class MRule extends X_AD_Rule
 	public static final String SCRIPT_PREFIX = "@script:";
 
 	/**
-	 * 	Get Rule from Cache
+	 * 	Get Rule from Cache (immutable)
+	 *	@param AD_Rule_ID id
+	 *	@return MRule
+	 */
+	public static MRule get (int AD_Rule_ID)
+	{
+		return get(Env.getCtx(), AD_Rule_ID);
+	}
+	
+	/**
+	 * 	Get Rule from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Rule_ID id
 	 *	@return MRule
@@ -64,13 +74,16 @@ public class MRule extends X_AD_Rule
 	public static MRule get (Properties ctx, int AD_Rule_ID)
 	{
 		Integer key = Integer.valueOf(AD_Rule_ID);
-		MRule retValue = (MRule) s_cache.get (key);
+		MRule retValue = s_cache.get (ctx, key, e -> new MRule(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MRule (ctx, AD_Rule_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MRule (ctx, AD_Rule_ID, (String)null);
+		if (retValue.get_ID () == AD_Rule_ID)
+		{
+			s_cache.put (key, retValue, e -> new MRule(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -83,10 +96,9 @@ public class MRule extends X_AD_Rule
 	{
 		if (ruleValue == null)
 			return null;
-		Iterator<MRule> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MRule[] it = s_cache.values().toArray(new MRule[0]);
+		for (MRule retValue : it)
 		{
-			MRule retValue = (MRule)it.next();
 			if (ruleValue.equals(retValue.getValue()))
 				return retValue;
 		}
@@ -124,7 +136,7 @@ public class MRule extends X_AD_Rule
 	}	//	getModelValidatorLoginRules
 
 	/**	Cache						*/
-	private static CCache<Integer,MRule> s_cache = new CCache<Integer,MRule>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MRule> s_cache = new ImmutableIntPOCache<Integer,MRule>(Table_Name, 20);
 	
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
@@ -154,6 +166,38 @@ public class MRule extends X_AD_Rule
 	{
 		super(ctx, rs, trxName);
 	}	//	MRule
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRule(MRule copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRule(Properties ctx, MRule copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRule(Properties ctx, MRule copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.engine = copy.engine;
+	}
 	
 	/**
 	 * 	Before Save
@@ -266,5 +310,14 @@ public class MRule extends X_AD_Rule
 			return retValue;
 		}
 	}   //  convertKey
+
+	@Override
+	public MRule markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MRule
