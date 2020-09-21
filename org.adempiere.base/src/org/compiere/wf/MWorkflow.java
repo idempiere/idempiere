@@ -21,10 +21,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
@@ -44,6 +46,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	WorkFlow Model
@@ -57,15 +61,25 @@ import org.compiere.util.Trx;
  * @author Silvano Trinchero, www.freepath.it
  * 			<li>IDEMPIERE-3209 changed functions to public to improve integration support
  */
-public class MWorkflow extends X_AD_Workflow
+public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1905448790453650036L;
+	private static final long serialVersionUID = 727250581144217545L;
 
 	/**
-	 * 	Get Workflow from Cache
+	 * 	Get Workflow from Cache (immutable)
+	 *	@param AD_Workflow_ID id
+	 *	@return workflow
+	 */
+	public static MWorkflow get (int AD_Workflow_ID)
+	{
+		return get(Env.getCtx(), AD_Workflow_ID);
+	}
+	
+	/**
+	 * 	Get Workflow from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Workflow_ID id
 	 *	@return workflow
@@ -73,15 +87,32 @@ public class MWorkflow extends X_AD_Workflow
 	public static MWorkflow get (Properties ctx, int AD_Workflow_ID)
 	{
 		String key = Env.getAD_Language(ctx) + "_" + AD_Workflow_ID;
-		MWorkflow retValue = (MWorkflow)s_cache.get(key);
+		MWorkflow retValue = s_cache.get(ctx, key, e -> new MWorkflow(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MWorkflow (ctx, AD_Workflow_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put(key, retValue);
-		return retValue;
+		retValue = new MWorkflow (ctx, AD_Workflow_ID, (String)null);
+		if (retValue.get_ID() == AD_Workflow_ID) 
+		{
+			s_cache.put(key, retValue, e -> new MWorkflow(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 	
+	/**
+	 * Get updateable copy of MWorkflow from cache
+	 * @param ctx
+	 * @param AD_Workflow_ID
+	 * @param trxName
+	 * @return MWorkflow 
+	 */
+	public static MWorkflow getCopy(Properties ctx, int AD_Workflow_ID, String trxName)
+	{
+		MWorkflow wf = get(AD_Workflow_ID);
+		if (wf != null)
+			wf = new MWorkflow(ctx, wf, trxName);
+		return wf;
+	}
 	
 	/**
 	 * 	Get Doc Value Workflow
@@ -90,7 +121,7 @@ public class MWorkflow extends X_AD_Workflow
 	 *	@param AD_Table_ID table
 	 *	@return document value workflow array or null
 	 */
-	public static MWorkflow[] getDocValue (Properties ctx, int AD_Client_ID, int AD_Table_ID
+	public static synchronized MWorkflow[] getDocValue (Properties ctx, int AD_Client_ID, int AD_Table_ID
 			, String trxName //Bug 1568766 Trx should be kept all along the road		
 	)
 	{
@@ -112,9 +143,7 @@ public class MWorkflow extends X_AD_Workflow
 				newKey = "C" + wf.getAD_Client_ID() + "T" + wf.getAD_Table_ID();
 				if (!newKey.equals(oldKey) && list.size() > 0)
 				{
-					MWorkflow[] wfs = new MWorkflow[list.size()];
-					list.toArray(wfs);
-					s_cacheDocValue.put (oldKey, wfs);
+					s_cacheDocValue.put (oldKey, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
 					list = new ArrayList<MWorkflow>();
 				}
 				oldKey = newKey;
@@ -124,9 +153,7 @@ public class MWorkflow extends X_AD_Workflow
 			//	Last one
 			if (list.size() > 0)
 			{
-				MWorkflow[] wfs = new MWorkflow[list.size()];
-				list.toArray(wfs);
-				s_cacheDocValue.put (oldKey, wfs);
+				s_cacheDocValue.put (oldKey, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
 			}
 			if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + s_cacheDocValue.size());
 		}
@@ -142,12 +169,12 @@ public class MWorkflow extends X_AD_Workflow
 				retValue[i].set_TrxName(trxName);
 			}
 		}*/
-		return retValue;
+		return retValue != null ? Arrays.stream(retValue).map(e -> {return new MWorkflow(ctx, e, trxName);}).toArray(MWorkflow[]::new) : null;
 	}	//	getDocValue
 	
 	
 	/**	Single Cache					*/
-	private static CCache<String,MWorkflow>	s_cache = new CCache<String,MWorkflow>(Table_Name, Table_Name+"|Language_Workflow", 20);
+	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name+"|Language_Workflow", 20);
 	/**	Document Value Cache			*/
 	private static CCache<String,MWorkflow[]>	s_cacheDocValue = new CCache<String,MWorkflow[]> (Table_Name, Table_Name+"|AD_Client_Table", 5);
 	/**	Static Logger	*/
@@ -198,6 +225,42 @@ public class MWorkflow extends X_AD_Workflow
 		loadNodes();
 	}	//	Workflow
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWorkflow(MWorkflow copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWorkflow(Properties ctx, MWorkflow copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWorkflow(Properties ctx, MWorkflow copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_description_trl = copy.m_description_trl;
+		this.m_help_trl = copy.m_help_trl;
+		this.m_name_trl = copy.m_name_trl;
+		this.m_nodes = copy.m_nodes != null ? copy.m_nodes.stream().map(e ->{return new MWFNode(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_translated = copy.m_translated;
+	}
+	
 	/**	WF Nodes				*/
 	private List<MWFNode>	m_nodes = new ArrayList<MWFNode>();
 
@@ -256,6 +319,8 @@ public class MWorkflow extends X_AD_Workflow
 			.setParameters(new Object[]{get_ID()})
 			.setOnlyActiveRecords(true)
 			.list();
+		if (m_nodes.size() > 0 && is_Immutable())
+			m_nodes.stream().forEach(e -> e.markImmutable());
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_nodes.size());
 	}	//	loadNodes
 
@@ -960,6 +1025,18 @@ public class MWorkflow extends X_AD_Workflow
 		if (validTo != null && date.after(validTo))
 			return false;
 		return true;
+	}
+
+	@Override
+	public MWorkflow markImmutable() 
+	{
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_nodes != null && m_nodes.size() > 0)
+			m_nodes.stream().forEach(e -> e.markImmutable()); 
+		return this;
 	}
 
 	/**

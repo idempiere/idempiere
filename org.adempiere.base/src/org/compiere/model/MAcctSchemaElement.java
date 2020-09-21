@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Account Schema Element Object
@@ -38,15 +39,15 @@ import org.compiere.util.Msg;
  * @author victor.perez@e-evolution.com, www.e-evolution.com
  *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
  */
-public class MAcctSchemaElement extends X_C_AcctSchema_Element
+public class MAcctSchemaElement extends X_C_AcctSchema_Element implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4642928142654938659L;
+	private static final long serialVersionUID = -747934131394469553L;
 
 	/**
-	 * Factory: Return ArrayList of Account Schema Elements
+	 * Get ArrayList of Account Schema Elements from cache
 	 * @param as Accounting Schema
 	 * @return ArrayList with Elements
 	 */
@@ -71,12 +72,13 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			if (s_log.isLoggable(Level.FINE)) s_log.fine(" - " + ase);
 			if (ase.isMandatory() && ase.getDefaultValue() == 0)
 				s_log.log(Level.SEVERE, "No default value for " + ase.getName());
+			ase.markImmutable();
 			list.add(ase);
 		}
 		
 		retValue = new MAcctSchemaElement[list.size()];
 		list.toArray(retValue);
-		s_cache.put (key, retValue);
+		s_cache.put(key, retValue);
 		return retValue;
 	}   //  getAcctSchemaElements
 
@@ -237,6 +239,38 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		//	setSeqNo (0);
 		
 	}	//	MAcctSchemaElement
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchemaElement(MAcctSchemaElement copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchemaElement(Properties ctx, MAcctSchemaElement copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchemaElement(Properties ctx, MAcctSchemaElement copy, String trxName) 
+	{
+		super(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_ColumnName = copy.m_ColumnName;
+	}
 
 	/** User Element Column Name		*/
 	private String		m_ColumnName = null;
@@ -538,5 +572,14 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		s_cache.clear();
 		return success;
 	}	//	afterDelete
-	
+
+	@Override
+	public MAcctSchemaElement markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }   //  AcctSchemaElement

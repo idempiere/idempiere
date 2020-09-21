@@ -21,9 +21,11 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -32,13 +34,12 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: MDocTypeCounter.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MDocTypeCounter extends X_C_DocTypeCounter
+public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3469046560457430527L;
-
+	private static final long serialVersionUID = 3999273279386464393L;
 
 	/**
 	 * 	Get Counter document for document type
@@ -59,7 +60,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		
 		//	Indirect Relationship
 		int Counter_C_DocType_ID = 0;
-		MDocType dt = MDocType.get(ctx, C_DocType_ID);
+		MDocType dt = MDocType.get(C_DocType_ID);
 		if (!dt.isCreateCounter())
 			return -1;
 		String cDocBaseType = getCounterDocBaseType(dt.getDocBaseType());
@@ -82,15 +83,23 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		return Counter_C_DocType_ID;
 	}	// getCounterDocType_ID
 
-
-	
 	/**
 	 * 	Get (first) valid Counter document for document type
-	 *	@param ctx context
+	 *	@param ctx ignore
 	 *	@param C_DocType_ID base document
 	 *	@return counter document (may be invalid) or null
 	 */
 	public static MDocTypeCounter getCounterDocType (Properties ctx, int C_DocType_ID)
+	{
+		return getCounterDocType(C_DocType_ID);
+	}
+	
+	/**
+	 * 	Get (first) valid Counter document for document type
+	 *	@param C_DocType_ID base document
+	 *	@return counter document (may be invalid) or null
+	 */
+	public static MDocTypeCounter getCounterDocType (int C_DocType_ID)
 	{
 		Integer key = Integer.valueOf(C_DocType_ID);
 		MDocTypeCounter retValue = (MDocTypeCounter)s_counter.get(key);
@@ -109,11 +118,15 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 			rs = pstmt.executeQuery ();
 			while (rs.next () && retValue == null)
 			{
-				retValue = new MDocTypeCounter (ctx, rs, null);
+				retValue = new MDocTypeCounter (Env.getCtx(), rs, null);
 				if (!retValue.isCreateCounter() || !retValue.isValid())
 				{
 					temp = retValue; 
 					retValue = null;
+				}
+				else
+				{
+					s_counter.put(key, retValue);
 				}
 			}
 		}
@@ -136,21 +149,46 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	
 	/**
 	 * 	Get MDocTypeCounter from Cache
-	 *	@param ctx context
 	 *	@param C_DocTypeCounter_ID id
 	 *	@return MDocTypeCounter
-	 *	@param trxName transaction
+	 */
+	public static MDocTypeCounter get (int C_DocTypeCounter_ID)
+	{
+		return get(C_DocTypeCounter_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MDocTypeCounter from Cache
+	 *	@param C_DocTypeCounter_ID id
+	 *  @param trxName transaction
+	 *	@return MDocTypeCounter
+	 */
+	public static MDocTypeCounter get (int C_DocTypeCounter_ID, String trxName)
+	{
+		return get(Env.getCtx(), C_DocTypeCounter_ID, trxName);
+	}
+	
+	/**
+	 * 	Get MDocTypeCounter from Cache
+	 *  @param ctx context
+	 *	@param C_DocTypeCounter_ID id
+	 *  @param trxName
+	 *	@return MDocTypeCounter
 	 */
 	public static MDocTypeCounter get (Properties ctx, int C_DocTypeCounter_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(C_DocTypeCounter_ID);
-		MDocTypeCounter retValue = (MDocTypeCounter) s_cache.get (key);
+		MDocTypeCounter retValue = (MDocTypeCounter) s_cache.get (ctx, key, e -> new MDocTypeCounter(ctx, e));
 		if (retValue != null)
-			return retValue;
+			return retValue; 
+		
 		retValue = new MDocTypeCounter (ctx, C_DocTypeCounter_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_DocTypeCounter_ID)
+		{
+			s_cache.put(key, retValue, e -> new MDocTypeCounter(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -196,9 +234,9 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	
 	
 	/**	Object Cache				*/
-	private static CCache<Integer,MDocTypeCounter> s_cache = new CCache<Integer,MDocTypeCounter>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MDocTypeCounter> s_cache = new ImmutableIntPOCache<Integer,MDocTypeCounter>(Table_Name, 20);
 	/**	Counter Relationship Cache	*/
-	private static CCache<Integer,MDocTypeCounter> s_counter = new CCache<Integer,MDocTypeCounter>(Table_Name, "C_DocTypeCounter_Relation", 20);
+	private static ImmutableIntPOCache<Integer,MDocTypeCounter> s_counter = new ImmutableIntPOCache<Integer,MDocTypeCounter>(Table_Name, "C_DocTypeCounter_Relation", 20);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MDocTypeCounter.class);
 	
@@ -230,6 +268,36 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 		super(ctx, rs, trxName);
 	}	//	MDocTypeCounter
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDocTypeCounter(MDocTypeCounter copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDocTypeCounter(Properties ctx, MDocTypeCounter copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDocTypeCounter(Properties ctx, MDocTypeCounter copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Set C_DocType_ID
@@ -255,7 +323,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	}	//	setCounter_C_DocType_ID
 	
 	/**
-	 * 	Get Doc Type
+	 * 	Get Doc Type (immutable)
 	 *	@return doc type or null if not existing
 	 */
 	public MDocType getDocType()
@@ -271,7 +339,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 	}	//	getDocType
 	
 	/**
-	 * 	Get Counter Doc Type
+	 * 	Get Counter Doc Type (immutable)
 	 *	@return counter doc type or null if not existing
 	 */
 	public MDocType getCounterDocType()
@@ -379,5 +447,14 @@ public class MDocTypeCounter extends X_C_DocTypeCounter
 			 validate();
 		return true;
 	}	//	beforeSave
-	
+
+	@Override
+	public MDocTypeCounter markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MDocTypeCounter

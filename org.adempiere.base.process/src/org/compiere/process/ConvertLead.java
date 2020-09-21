@@ -59,8 +59,7 @@ public class ConvertLead extends SvrProcess {
 		if (p_AD_User_ID <= 0)
 			throw new FillMandatoryException("AD_User_ID");
 		
-		MUser lead = MUser.get(getCtx(), p_AD_User_ID);
-		lead.set_TrxName(get_TrxName());
+		MUser lead = new MUser(getCtx(), p_AD_User_ID, get_TrxName());
 		if (!lead.isSalesLead() && lead.getC_BPartner_ID() != 0)
 			throw new AdempiereUserError("Lead already converted");
 		

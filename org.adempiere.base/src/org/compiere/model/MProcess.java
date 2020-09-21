@@ -17,19 +17,23 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessInfo;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFProcess;
+
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *  Process Model
@@ -41,15 +45,25 @@ import org.compiere.wf.MWFProcess;
  * 			<li>BF [ 1757523 ] Server Processes are using Server's context
  * 			<li>FR [ 2214883 ] Remove SQL code and Replace for Query
  */
-public class MProcess extends X_AD_Process
+public class MProcess extends X_AD_Process implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7234986583327689692L;
+	private static final long serialVersionUID = 6928560924056836659L;
 
 	/**
-	 * 	Get MProcess from Cache
+	 * 	Get MProcess from Cache (immutable)
+	 *	@param AD_Process_ID id
+	 *	@return MProcess
+	 */
+	public static MProcess get (int AD_Process_ID)
+	{
+		return get(Env.getCtx(), AD_Process_ID);
+	}
+	
+	/**
+	 * 	Get MProcess from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Process_ID id
 	 *	@return MProcess
@@ -57,31 +71,65 @@ public class MProcess extends X_AD_Process
 	public static MProcess get (Properties ctx, int AD_Process_ID)
 	{
 		Integer key = Integer.valueOf(AD_Process_ID);
-		MProcess retValue = (MProcess) s_cache.get (key);
+		MProcess retValue = s_cache.get (ctx, key, e -> new MProcess(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MProcess (ctx, AD_Process_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MProcess (ctx, AD_Process_ID, (String)null);
+		if (retValue.get_ID () == AD_Process_ID)
+		{
+			s_cache.put (key, retValue, e -> new MProcess(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 	
 	/**
-	 * 	Get MProcess from Cache based on UUID
+	 * Get updateable copy of MProcess from cache
+	 * @param ctx
+	 * @param AD_Process_ID
+	 * @param trxName
+	 * @return MProcess
+	 */
+	public static MProcess getCopy(Properties ctx, int AD_Process_ID, String trxName)
+	{
+		MProcess process = get(AD_Process_ID);
+		if (process != null)
+			process = new MProcess(ctx, process, trxName);
+		return process;
+	}
+	
+	/**
+	 * 	Get MProcess from Cache based on UUID (immutable)
+	 *	@param AD_Process_UU UUID
+	 *	@return MProcess
+	 */
+	public static MProcess get (String AD_Process_UU)
+	{
+		return get(Env.getCtx(), AD_Process_UU);
+	}
+	
+	/**
+	 * 	Get MProcess from Cache based on UUID (immutable)
 	 *	@param ctx context
 	 *	@param AD_Process_UU UUID
 	 *	@return MProcess
 	 */
 	public static MProcess get (Properties ctx, String AD_Process_UU)
 	{
-		MProcess retValue = s_cacheUU.get(AD_Process_UU);
+		MProcess retValue = s_cacheUU.get(ctx, AD_Process_UU, e -> new MProcess(ctx, e));
 		if (retValue != null)
 			return retValue;
 		int id = DB.getSQLValueEx(null, "SELECT AD_Process_ID FROM AD_Process WHERE AD_Process_UU = ? ", AD_Process_UU);
-		retValue = new MProcess (ctx, id, null);
-		if (!Util.isEmpty(retValue.getAD_Process_UU()))
-			s_cacheUU.put (retValue.getAD_Process_UU(), retValue);
-		return retValue;
+		if (id > 0)
+		{
+			retValue = new MProcess (ctx, id, (String)null);
+			if (retValue.get_ID() == id && !Util.isEmpty(retValue.getAD_Process_UU())) 
+			{
+				s_cacheUU.put (retValue.getAD_Process_UU(), retValue, e -> new MProcess(Env.getCtx(), e));
+				return retValue;
+			}
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -99,16 +147,16 @@ public class MProcess extends X_AD_Process
 			.firstOnly();
 		if (p != null)
 		{
-			s_cache.put (p.get_ID(), p);
+			s_cache.put (p.get_ID(), p, e -> new MProcess(Env.getCtx(), e));
 		}
 		return p;
 	}	//	getFromMenu
 
 
 	/**	Cache ID						*/
-	private static CCache<Integer,MProcess>	s_cache	= new CCache<Integer,MProcess>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MProcess>	s_cache	= new ImmutableIntPOCache<Integer,MProcess>(Table_Name, 20);
 	/**	Cache UUID						*/
-	private static CCache<String,MProcess>	s_cacheUU	= new CCache<String,MProcess>(Table_Name, Table_Name+"|AD_Process_UU", 20);
+	private static ImmutablePOCache<String,MProcess>	s_cacheUU	= new ImmutablePOCache<String,MProcess>(Table_Name, Table_Name+"|AD_Process_UU", 20);
 	
 	
 	/**************************************************************************
@@ -143,7 +191,38 @@ public class MProcess extends X_AD_Process
 		super(ctx, rs, trxName);
 	}	//	MProcess
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProcess(MProcess copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProcess(Properties ctx, MProcess copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProcess(Properties ctx, MProcess copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_parameters = copy.m_parameters != null ? Arrays.stream(copy.m_parameters).map(e -> {return new MProcessPara(ctx, e, trxName);}).toArray(MProcessPara[]::new) : null;
+	}
+	
 	/**	Parameters					*/
 	private MProcessPara[]		m_parameters = null;
 
@@ -163,6 +242,8 @@ public class MProcess extends X_AD_Process
 			.setOrderBy(MProcessPara.COLUMNNAME_SeqNo)
 			.list();
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_parameters = new MProcessPara[list.size()];
 		list.toArray(m_parameters);
 		return m_parameters;
@@ -534,4 +615,16 @@ public class MProcess extends X_AD_Process
 		return processIt(pi, trx, false);
 	}	//	processItWithoutTrxClose
 	
+	@Override
+	public MProcess markImmutable() 
+	{
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_parameters != null && m_parameters.length > 0)
+			Arrays.stream(m_parameters).forEach(e -> e.markImmutable());
+		return this;
+	}
+
 }	//	MProcess

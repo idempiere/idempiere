@@ -23,8 +23,9 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.print.MPrintColor;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Performance Color Schema
@@ -32,12 +33,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MColorSchema.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MColorSchema extends X_PA_ColorSchema
+public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4645092884363283719L;
+	private static final long serialVersionUID = -3730457542399382168L;
 
 	/**
 	 * 	Get Color
@@ -74,6 +75,15 @@ public class MColorSchema extends X_PA_ColorSchema
 		return cs.getColor(percent);
 	}	//	getColor
 
+	/**
+	 * 	Get MColorSchema from Cache
+	 *	@param PA_ColorSchema_ID id
+	 *	@return MColorSchema
+	 */
+	public static MColorSchema get (int PA_ColorSchema_ID)
+	{
+		return get(Env.getCtx(), PA_ColorSchema_ID);
+	}
 	
 	/**
 	 * 	Get MColorSchema from Cache
@@ -90,18 +100,36 @@ public class MColorSchema extends X_PA_ColorSchema
 			return retValue;
 		}
 		Integer key = Integer.valueOf(PA_ColorSchema_ID);
-		MColorSchema retValue = (MColorSchema)s_cache.get (key);
+		MColorSchema retValue = s_cache.get (ctx, key, e -> new MColorSchema(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MColorSchema (ctx, PA_ColorSchema_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MColorSchema (ctx, PA_ColorSchema_ID, (String)null);
+		if (retValue.get_ID() == PA_ColorSchema_ID)
+		{
+			s_cache.put (key, retValue, e -> new MColorSchema(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MColorSchema from cache
+	 * @param ctx
+	 * @param PA_ColorSchema_ID
+	 * @param trxName
+	 * @return MColorSchema
+	 */
+	public static MColorSchema getCopy(Properties ctx, int PA_ColorSchema_ID, String trxName)
+	{
+		MColorSchema cs = get(PA_ColorSchema_ID);
+		if (cs != null)
+			cs = new MColorSchema(ctx, cs, trxName);
+		return cs;
+	}
+	
 	/**	Cache						*/
-	private static CCache<Integer, MColorSchema> s_cache 
-		= new CCache<Integer, MColorSchema> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MColorSchema> s_cache 
+		= new ImmutableIntPOCache<Integer, MColorSchema> (Table_Name, 20);
 	
 	/**
 	 * 	Standard Constructor
@@ -133,6 +161,37 @@ public class MColorSchema extends X_PA_ColorSchema
 		super (ctx, rs, trxName);
 	}	//	MColorSchema
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MColorSchema(MColorSchema copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MColorSchema(Properties ctx, MColorSchema copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MColorSchema(Properties ctx, MColorSchema copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Set Default.
 	 * 	Red (50) - Yellow (100) - Green
@@ -210,4 +269,13 @@ public class MColorSchema extends X_PA_ColorSchema
 		return sb.toString ();
 	}	//	toString
 	
+	@Override
+	public MColorSchema markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MColorSchema

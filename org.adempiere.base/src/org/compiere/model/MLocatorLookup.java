@@ -272,7 +272,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			return null;
 		}
 		//
-		return Util.isEmpty(trxName) ? MLocator.get(m_ctx, M_Locator_ID) : new MLocator (m_ctx, M_Locator_ID, trxName);
+		return MLocator.getCopy(m_ctx, M_Locator_ID, trxName);
 	}	//	getMLocator
 
 	/**

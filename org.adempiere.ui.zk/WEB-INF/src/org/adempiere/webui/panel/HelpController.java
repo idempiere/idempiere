@@ -14,8 +14,6 @@
 
 package org.adempiere.webui.panel;
 
-import java.util.Properties;
-
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.desktop.IDesktop;
@@ -674,8 +672,7 @@ public class HelpController
 
     private MCtxHelpMsg getCtxHelpMsg(String ctxType, int recordId)
     {
-    	Properties ctx = Env.getCtx();
-    	MCtxHelpMsg retValue = MCtxHelpMsg.get(ctx, ctxType, recordId);
+    	MCtxHelpMsg retValue = MCtxHelpMsg.get(ctxType, recordId);
     	return retValue;
     }
 

@@ -285,6 +285,9 @@ public abstract class PO
 
 	/** Trifon - Indicates that this record is created by replication functionality.*/
 	private boolean m_isReplication = false;
+	
+	/** Immutable flag **/
+	private boolean m_isImmutable = false;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -727,6 +730,8 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
 	{
+		checkImmutable();
+		
 		if (value instanceof String && ColumnName.equals("WhereClause")
 			&& value.toString().toUpperCase().indexOf("=NULL") != -1)
 			log.warning("Invalid Null Value - " + ColumnName + "=" + value);
@@ -785,6 +790,8 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (int index, Object value, boolean checkWritable)
 	{
+		checkImmutable();
+		
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.log(Level.WARNING, "Index invalid - " + index);
@@ -940,6 +947,8 @@ public abstract class PO
 	   Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds)
 	*/
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
+		checkImmutable();
+		
 		if ("Processed".equals(ColumnName)
 				&& value instanceof Boolean
 				&& ((Boolean)value).booleanValue() == true
@@ -1058,6 +1067,8 @@ public abstract class PO
 	 */
 	public final boolean set_CustomColumnReturningBoolean (String columnName, Object value)
 	{
+		checkImmutable();
+		
 		// [ 1845793 ] PO.set_CustomColumn not updating correctly m_newValues
 		// this is for columns not in PO - verify and call proper method if exists
 		int poIndex = get_ColumnIndex(columnName);
@@ -1091,6 +1102,8 @@ public abstract class PO
 	 */
 	private void set_Keys (String ColumnName, Object value)
 	{
+		checkImmutable();
+		
 		//	Update if KeyColumn
 		for (int i = 0; i < m_IDs.length; i++)
 		{
@@ -1309,6 +1322,8 @@ public abstract class PO
 	 */
 	protected void load (int ID, String trxName)
 	{
+		checkImmutable();
+		
 		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
 		if (ID > 0)
 		{
@@ -1408,6 +1423,8 @@ public abstract class PO
 		finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			if (is_Immutable())
+				m_trxName = null;
 		}
 		loadComplete(success);
 		return success;
@@ -1494,6 +1511,8 @@ public abstract class PO
 	 */
 	protected boolean load (HashMap<String,String> hmIn)
 	{
+		checkImmutable();
+		
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
@@ -1547,6 +1566,13 @@ public abstract class PO
 		loadComplete(success);
 		return success;
 	}	//	load
+
+	protected void checkImmutable() {
+		if (is_Immutable())
+		{
+			throw new IllegalStateException("PO is Immutable: " + getClass().getName());
+		}
+	}
 
 	/**
 	 *  Create Hashmap with data as Strings
@@ -2049,6 +2075,8 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
+		checkImmutable();
+		
 		checkValidContext();
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
@@ -2406,6 +2434,7 @@ public abstract class PO
 
 	public void saveReplica (boolean isFromReplication) throws AdempiereException
 	{
+		checkImmutable();
 		setReplication(isFromReplication);
 		saveEx();
 	}
@@ -3233,6 +3262,8 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
+		checkImmutable();
+		
 		checkValidContext();
 		CLogger.resetLast();
 		if (is_new())
@@ -4256,6 +4287,10 @@ public abstract class PO
 	 */
 	public void set_TrxName (String trxName)
 	{
+		if (trxName != null)
+		{
+			checkImmutable();
+		}
 		m_trxName = trxName;
 	}	//	setTrx
 
@@ -4711,7 +4746,7 @@ public abstract class PO
 	 *      @param doc Document
 	 */
 	public void setDoc(Doc doc) {
-		m_doc = doc;
+		m_doc = doc;		
 	}
 
 	public void setReplication(boolean isFromReplication)
@@ -4846,6 +4881,8 @@ public abstract class PO
 	}
 	
 	public void set_Attribute(String columnName, Object value) {
+		checkImmutable();
+		
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
 		m_attributes.put(columnName, value);
@@ -4861,6 +4898,25 @@ public abstract class PO
 		return m_attributes;
 	}
 
+	/**
+	 * Turn on immutable check
+	 */
+	protected void makeImmutable() {
+		if (is_Immutable()) 
+			return;
+		
+		m_isImmutable = true;
+		m_trxName = null;
+	}
+	
+	/**
+	 * 
+	 * @return true if PO is immutable, false otherwise
+	 */
+	public boolean is_Immutable() {
+		return m_isImmutable;
+	}
+	
 	private void validateUniqueIndex()
 	{
 		ValueNamePair ppE = CLogger.retrieveError();
