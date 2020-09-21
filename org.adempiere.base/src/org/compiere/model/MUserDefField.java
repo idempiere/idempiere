@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
@@ -37,6 +38,9 @@ public class MUserDefField extends X_AD_UserDef_Field
 	 */
 	private static final long serialVersionUID = 2522038599257589829L;
 
+	/**	Cache of selected MUserDefField entries 					**/
+	private static CCache<String,MUserDefField> s_cache = new CCache<String,MUserDefField>(Table_Name, 10);
+	
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency
@@ -82,6 +86,13 @@ public class MUserDefField extends X_AD_UserDef_Field
 		if (userdefTab == null)
 			return null;
 		
+		//  Check Cache
+		String key = new StringBuilder().append(AD_Field_ID).append("_")
+				.append(userdefTab.getAD_UserDef_Tab_ID())
+				.toString();
+		if (s_cache.containsKey(key))
+			return s_cache.get(key);
+		
 		MUserDefField retValue = null;
 
 		StringBuilder sql = new StringBuilder("SELECT * "
@@ -103,6 +114,7 @@ public class MUserDefField extends X_AD_UserDef_Field
 			{
 				retValue = new MUserDefField(ctx,rs,null);
 			}
+			s_cache.put(key, retValue);
 		}
 		catch (SQLException ex)
 		{

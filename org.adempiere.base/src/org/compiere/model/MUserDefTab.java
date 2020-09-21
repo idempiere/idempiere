@@ -18,6 +18,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
@@ -35,6 +36,9 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 	 */
 	private static final long serialVersionUID = 20120403111900L;
 
+	/**	Cache of selected MUserDefTab entries 					**/
+	private static CCache<String,MUserDefTab> s_cache = new CCache<String,MUserDefTab>(Table_Name, 10);
+	
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency
@@ -73,6 +77,14 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 	{
 
 		MUserDefTab retValue = null;
+		
+		//  Check Cache
+		String key = new StringBuilder().append(AD_Tab_ID).append("_")
+				.append(AD_UserDefWin_ID)
+				.toString();
+		if (s_cache.containsKey(key))
+			return s_cache.get(key);
+		
 
 		StringBuilder sql = new StringBuilder("SELECT * "
 				+ " FROM AD_UserDef_Tab " 
@@ -93,6 +105,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 			{
 				retValue = new MUserDefTab(ctx,rs,null);
 			}
+			s_cache.put(key, retValue);
 		}
 		catch (SQLException ex)
 		{
