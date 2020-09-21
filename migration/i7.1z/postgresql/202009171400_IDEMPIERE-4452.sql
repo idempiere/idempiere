@@ -29,7 +29,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Sep 17, 2020, 8:25:08 AM UTC
-UPDATE AD_Field SET SeqNo=85, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, SeqNoGrid=85, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2020-09-17 08:25:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206508
+UPDATE AD_Field SET SeqNo=95, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, SeqNoGrid=85, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2020-09-17 08:25:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206508
 ;
 
 -- Sep 17, 2020, 8:29:13 AM UTC
@@ -37,7 +37,7 @@ UPDATE AD_Field SET DisplayLogic='@DiscountType@=P & @C_BPartner_ID@!0', AD_Refe
 ;
 
 -- Sep 17, 2020, 8:30:14 AM UTC
-UPDATE AD_Field SET SeqNo=135, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, SeqNoGrid=135, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2020-09-17 08:30:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206509
+UPDATE AD_Field SET SeqNo=145, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, SeqNoGrid=135, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2020-09-17 08:30:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206509
 ;
 
 -- Sep 17, 2020, 8:45:45 AM UTC
