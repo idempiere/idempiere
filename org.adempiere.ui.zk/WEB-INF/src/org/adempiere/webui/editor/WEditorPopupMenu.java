@@ -26,6 +26,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldSuggestion;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MFieldSuggestion;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MZoomCondition;
@@ -289,17 +290,19 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     }
 
 	public void addSuggestion(final GridField field) {
-		Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));
-		if (ThemeManager.isUseFontIconForImage())
-			editor.setIconSclass("z-icon-FieldSuggestion");
-		editor.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				WFieldSuggestion fieldSuggestion = new WFieldSuggestion(field.getAD_Field_ID());
-				fieldSuggestion.setPage(WEditorPopupMenu.this.getPage());
-				fieldSuggestion.doHighlighted();
-			}
-		});
-		appendChild(editor);		
+		if (!MRole.getDefault().isTableAccessExcluded(MFieldSuggestion.Table_ID)) {
+			Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));
+			if (ThemeManager.isUseFontIconForImage())
+				editor.setIconSclass("z-icon-FieldSuggestion");
+			editor.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					WFieldSuggestion fieldSuggestion = new WFieldSuggestion(field.getAD_Field_ID());
+					fieldSuggestion.setPage(WEditorPopupMenu.this.getPage());
+					fieldSuggestion.doHighlighted();
+				}
+			});
+			appendChild(editor);
+		}
 	}	
 }

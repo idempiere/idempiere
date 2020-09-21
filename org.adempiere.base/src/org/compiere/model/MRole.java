@@ -65,7 +65,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1916500679016906867L;
+	private static final long serialVersionUID = -6317084960843429042L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -3407,6 +3407,27 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		}
 		return access;
 	}
+	
+	/**
+	 * Does the table is excluded for current role (this method doesn't check the level of the table, use isTableAccess for this purpose)
+	 * @param tableID ID of the table
+	 * @return
+	 */
+	public boolean isTableAccessExcluded(int tableID)
+	{
+		loadTableAccess(false);
+
+		for (int i = 0; i < m_tableAccess.length; i++) {
+			if (   m_tableAccess[i].isExclude()
+					&& m_tableAccess[i].getAD_Table_ID() == tableID
+					&& ! m_tableAccess[i].isReadOnly()
+					&& MTableAccess.ACCESSTYPERULE_Accessing.equals(m_tableAccess[i].getAccessTypeRule())
+					)
+				return true;
+		}
+
+		return false;
+	}	//	isTableAccessExcluded
 
 	@Override
 	public MRole markImmutable() {
