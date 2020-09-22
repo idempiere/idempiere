@@ -20,10 +20,11 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -31,7 +32,7 @@ import org.compiere.util.Msg;
  *  @author Dirk Niemeyer, action42 GmbH
  *  @version $Id$
  */
-public class MUserDefField extends X_AD_UserDef_Field
+public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -39,7 +40,7 @@ public class MUserDefField extends X_AD_UserDef_Field
 	private static final long serialVersionUID = 2522038599257589829L;
 
 	/**	Cache of selected MUserDefField entries 					**/
-	private static CCache<String,MUserDefField> s_cache = new CCache<String,MUserDefField>(Table_Name, 10);
+	private static ImmutablePOCache<String,MUserDefField> s_cache = new ImmutablePOCache<String,MUserDefField>(Table_Name, 10);
 	
 	/**
 	 * 	Standard constructor.
@@ -152,6 +153,15 @@ public class MUserDefField extends X_AD_UserDef_Field
 			setIsToolbarButton(null);
 		}
 		return true;
+	}
+
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 		
 }	//	MUserDefField

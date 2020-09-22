@@ -14,13 +14,16 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -29,7 +32,7 @@ import org.compiere.util.DB;
  *  @version $Id$
  *  
  */
-public class MUserDefTab extends X_AD_UserDef_Tab
+public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -37,7 +40,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 	private static final long serialVersionUID = 20120403111900L;
 
 	/**	Cache of selected MUserDefTab entries 					**/
-	private static CCache<String,MUserDefTab> s_cache = new CCache<String,MUserDefTab>(Table_Name, 10);
+	private static ImmutablePOCache<String,MUserDefTab> s_cache = new ImmutablePOCache<String,MUserDefTab>(Table_Name, 10);
 	
 	/**
 	 * 	Standard constructor.
@@ -137,6 +140,15 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 		
 		return getMatch(ctx, AD_Tab_ID, userdefWin.getAD_UserDef_Win_ID());
 		
+	}
+
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 		
 }	//	MUserDefTab
