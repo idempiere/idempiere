@@ -19,7 +19,7 @@ ALTER TABLE M_DiscountSchemaLine ADD IsIgnoreIsCurrentVendor CHAR(1) DEFAULT 'N'
 ;
 
 -- Sep 17, 2020, 8:20:37 AM UTC
-ALTER TABLE M_DiscountSchemaLine ADD VendorCategory VARCHAR2(30) DEFAULT NULL 
+ALTER TABLE M_DiscountSchemaLine ADD VendorCategory VARCHAR2(30 CHAR) DEFAULT NULL 
 ;
 
 -- Sep 17, 2020, 8:22:08 AM UTC

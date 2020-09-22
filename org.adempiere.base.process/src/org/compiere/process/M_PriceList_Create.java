@@ -220,8 +220,8 @@ public class M_PriceList_Create extends SvrProcess {
 						+ " AND (dl.Group1 IS NULL OR p.Group1=dl.Group1)"
 						+ " AND (dl.Group2 IS NULL OR p.Group2=dl.Group2)"
 						+ " AND (dl.VendorCategory IS NULL OR po.VendorCategory=dl.VendorCategory)"
-						+ " AND (dl.C_BPartner_ID IS NULL AND po.IsCurrentVendor='Y'"
-						+ "      OR po.C_BPartner_ID=dl.C_BPartner_ID AND (dl.IsIgnoreIsCurrentVendor='Y' OR po.IsCurrentVendor='Y'))"
+						+ " AND ((dl.C_BPartner_ID IS NULL AND po.IsCurrentVendor='Y')"
+						+ "      OR (po.C_BPartner_ID=dl.C_BPartner_ID AND (dl.IsIgnoreIsCurrentVendor='Y' OR po.IsCurrentVendor='Y')))"
 						+ " AND (dl.M_Product_ID IS NULL OR p.M_Product_ID=dl.M_Product_ID)");
 				if (dsLine.getM_Product_Category_ID() > 0) {
 					sqlb.append(" AND p.M_Product_Category_ID IN (")
