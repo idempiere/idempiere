@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -70,6 +71,37 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	}	//	MyModelExample
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefField(MUserDefField copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefField(Properties ctx, MUserDefField copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefField(Properties ctx, MUserDefField copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+
+	/**
 	 * Get matching MUserDefField related to current field and user definition for window and tab
 	 * @param ctx
 	 * @param AD_Field_ID
@@ -92,7 +124,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 				.append(userdefTab.getAD_UserDef_Tab_ID())
 				.toString();
 		if (s_cache.containsKey(key))
-			return s_cache.get(key);
+			return s_cache.get(ctx, key, e -> new MUserDefField(ctx, e));
 		
 		MUserDefField retValue = null;
 
@@ -115,7 +147,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 			{
 				retValue = new MUserDefField(ctx,rs,null);
 			}
-			s_cache.put(key, retValue);
+			s_cache.put(key, retValue, e -> new MUserDefField(Env.getCtx(), e));
 		}
 		catch (SQLException ex)
 		{

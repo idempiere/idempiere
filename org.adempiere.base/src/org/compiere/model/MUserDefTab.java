@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -70,6 +71,37 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	}	//	MUserDefTab
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefTab(MUserDefTab copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefTab(Properties ctx, MUserDefTab copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefTab(Properties ctx, MUserDefTab copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * Get matching MUserDefTab related to current tab and user definition for window
 	 * @param ctx
 	 * @param AD_Tab_ID
@@ -86,7 +118,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 				.append(AD_UserDefWin_ID)
 				.toString();
 		if (s_cache.containsKey(key))
-			return s_cache.get(key);
+			return s_cache.get(ctx, key, e -> new MUserDefTab(ctx, e));
 		
 
 		StringBuilder sql = new StringBuilder("SELECT * "
@@ -108,7 +140,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 			{
 				retValue = new MUserDefTab(ctx,rs,null);
 			}
-			s_cache.put(key, retValue);
+			s_cache.put(key, retValue, e -> new MUserDefTab(Env.getCtx(), e));
 		}
 		catch (SQLException ex)
 		{
