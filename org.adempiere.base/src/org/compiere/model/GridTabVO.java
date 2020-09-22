@@ -39,10 +39,11 @@ import org.compiere.util.Evaluatee;
  */
 public class GridTabVO implements Evaluatee, Serializable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9091214632840854495L;
+	private static final long serialVersionUID = 2088372161131336289L;
 
 	/**************************************************************************
 	 *	Create MTab VO

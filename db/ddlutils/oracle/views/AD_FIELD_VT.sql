@@ -9,7 +9,7 @@ CREATE OR REPLACE VIEW ad_field_vt AS
    LEFT JOIN ad_column_trl ct ON f.ad_column_id = ct.ad_column_id AND trl.ad_language = ct.ad_language
    JOIN ad_table tbl ON c.ad_table_id = tbl.ad_table_id
    LEFT JOIN ad_val_rule vr ON vr.ad_val_rule_id = COALESCE(f.ad_val_rule_id, c.ad_val_rule_id)
-   LEFT JOIN ad_val_rule vrf ON vrf.ad_val_rule_id = COALESCE(f.ad_val_rule_Lookup_id, c.ad_val_rule_Lookup_id
+   LEFT JOIN ad_val_rule vrf ON vrf.ad_val_rule_id = COALESCE(f.ad_val_rule_Lookup_id, c.ad_val_rule_Lookup_id)
   WHERE f.isactive = 'Y' AND c.isactive = 'Y'
 ;
 

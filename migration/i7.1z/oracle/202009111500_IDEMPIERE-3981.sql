@@ -111,9 +111,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)', SeqNo=250, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL, Placeholder=NULL,Updated=TO_DATE('2019-06-03 10:16:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11265
 ;
 
@@ -141,9 +141,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)', SeqNo=290, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL, Placeholder=NULL,Updated=TO_DATE('2019-06-03 10:16:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11266
 ;
 
@@ -201,9 +201,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)', SeqNo=180, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL, Placeholder=NULL,Updated=TO_DATE('2019-06-03 10:17:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=133
 ;
 
@@ -332,9 +332,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)', SeqNo=440, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL, Placeholder=NULL,Updated=TO_DATE('2019-06-03 10:17:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200836
 ;
 
@@ -972,7 +972,7 @@ CREATE OR REPLACE VIEW ad_field_vt AS
    LEFT JOIN ad_column_trl ct ON f.ad_column_id = ct.ad_column_id AND trl.ad_language = ct.ad_language
    JOIN ad_table tbl ON c.ad_table_id = tbl.ad_table_id
    LEFT JOIN ad_val_rule vr ON vr.ad_val_rule_id = COALESCE(f.ad_val_rule_id, c.ad_val_rule_id)
-   LEFT JOIN ad_val_rule vrf ON vrf.ad_val_rule_id = COALESCE(f.ad_val_rule_Lookup_id, c.ad_val_rule_Lookup_id
+   LEFT JOIN ad_val_rule vrf ON vrf.ad_val_rule_id = COALESCE(f.ad_val_rule_Lookup_id, c.ad_val_rule_Lookup_id)
   WHERE f.isactive = 'Y' AND c.isactive = 'Y'
 ;
 
