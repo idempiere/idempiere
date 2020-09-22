@@ -117,7 +117,10 @@ public class M_PriceList_Create extends SvrProcess {
 				"UPDATE M_Product_PO SET PriceLastPO = 0 WHERE PriceLastPO IS NULL AND AD_Client_ID=?",
 				clientParam, get_TrxName());
 		DB.executeUpdateEx(
-				"UPDATE M_Product_PO SET PricePO = PriceLastPO WHERE PricePO IS NULL OR (PricePO = 0 AND PriceLastPO <> 0) AND AD_Client_ID=?",
+				"UPDATE M_Product_PO SET PricePO = PriceLastPO WHERE (PricePO IS NULL OR PricePO = 0) AND PriceLastPO <> 0 AND AD_Client_ID=?",
+				clientParam, get_TrxName());
+		DB.executeUpdateEx(
+				"UPDATE	M_Product_PO SET PricePO = 0 WHERE PricePO IS NULL AND AD_Client_ID=?",
 				clientParam, get_TrxName());
 		//  Set default current vendor
 		DB.executeUpdateEx(
