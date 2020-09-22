@@ -16,10 +16,6 @@ UPDATE AD_Column SET IsUpdateable='N', FKConstraintName='ADUserDefInfo_ADUserDef
 ;
 
 -- Sep 16, 2020, 4:16:20 PM CEST
-ALTER TABLE AD_UserDef_Info_Column ADD COLUMN AD_UserDef_Info_ID NUMERIC(10) NOT NULL
-;
-
--- Sep 16, 2020, 4:16:20 PM CEST
 ALTER TABLE AD_UserDef_Info_Column ADD CONSTRAINT ADUserDefInfo_ADUserDefInfoCol FOREIGN KEY (AD_UserDef_Info_ID) REFERENCES ad_userdef_info(ad_userdef_info_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
