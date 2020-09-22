@@ -241,9 +241,9 @@ public class M_PriceList_Create extends SvrProcess {
 						+ " AND (dl.Group1 IS NULL OR p.Group1=dl.Group1)"
 						+ " AND (dl.Group2 IS NULL OR p.Group2=dl.Group2)"
 						+ " AND (dl.C_BPartner_ID IS NULL OR EXISTS "
-						+ "(SELECT * FROM M_Product_PO po "
+						+ "(SELECT * FROM M_Product_PO po"
 						+ "WHERE po.M_Product_ID=p.M_Product_ID AND po.C_BPartner_ID=dl.C_BPartner_ID))"
-						+ " AND (dl.M_Product_ID IS NULL OR p.M_Product_ID=dl.M_Product_ID)");
+ 						+ " AND (dl.M_Product_ID IS NULL OR p.M_Product_ID=dl.M_Product_ID)");
 				if (dsLine.getM_Product_Category_ID() > 0) {
 					sqlb.append(" AND p.M_Product_Category_ID IN (")
 						.append(getSubCategoryWhereClause(dsLine.getM_Product_Category_ID()))
@@ -336,7 +336,7 @@ public class M_PriceList_Create extends SvrProcess {
 			/** Calculations	**/
 			MProductPrice[] pp = m_plv.getProductPrice(
 					"AND EXISTS (SELECT * FROM T_Selection s "
-							+ "WHERE s.T_Selection_ID=M_ProductPrice.M_Product_ID)");
+							+ "WHERE s.AD_PInstance_ID = " + m_AD_PInstance_ID + " AND s.T_Selection_ID=M_ProductPrice.M_Product_ID)");
 			for (MProductPrice price : pp) {
 				BigDecimal priceList = price.getPriceList();
 				BigDecimal priceStd = price.getPriceStd();
