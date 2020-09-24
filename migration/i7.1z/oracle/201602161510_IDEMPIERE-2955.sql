@@ -2,7 +2,7 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- IDEMPIERE-2955 Adding Attribute set type field (M_AttributeSet_Type), support DMS/MM
- Dec 2, 2015 11:53:13 AM IST
+-- Dec 2, 2015 11:53:13 AM IST
 INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (202952,0,0,'Y',TO_DATE('2015-12-02 11:53:12','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2015-12-02 11:53:12','YYYY-MM-DD HH24:MI:SS'),100,'M_AttributeSet_Type','AttributeSet Type','AttributeSet Type','D','7b193413-66ff-4a9b-a4e3-73cacc8d413d')
 ;
 
