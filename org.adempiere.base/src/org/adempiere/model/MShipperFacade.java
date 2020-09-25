@@ -31,7 +31,7 @@ public class MShipperFacade
 	public MShipperFacade(MShipper shipper)
 	{
 		m_shipper = shipper;
-		m_processor = getShippingProcessor();
+		getShippingProcessor();
 	}
 	
 	public MShipper getMShipper()
@@ -39,11 +39,14 @@ public class MShipperFacade
 		return m_shipper;
 	}
 	
-	private MShippingProcessor getShippingProcessor() 
+	public MShippingProcessor getShippingProcessor() 
 	{
-		if (m_shipper.getM_ShippingProcessor_ID() > 0)
-			return new MShippingProcessor(m_shipper.getCtx(), m_shipper.getM_ShippingProcessor_ID(), m_shipper.get_TrxName());
-		return null;
+		if (m_processor == null)
+		{
+			if (m_shipper.getM_ShippingProcessor_ID() > 0)
+				m_processor = new MShippingProcessor(m_shipper.getCtx(), m_shipper.getM_ShippingProcessor_ID(), m_shipper.get_TrxName());
+		}
+		return m_processor;
 	}
 	
 	public String getShippingProcessorClass() 

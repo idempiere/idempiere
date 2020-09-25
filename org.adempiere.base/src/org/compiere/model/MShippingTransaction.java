@@ -69,7 +69,10 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			MShipperFacade sf = new MShipperFacade(getMShipper());
 			IShipmentProcessor processor = Core.getShipmentProcessor(sf);
 			if (processor == null)
+			{
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "ShippingNoProcessor"));
+				return false;
+			}
 			else
 			{
 				if (getAction().equals(ACTION_ProcessShipment))
