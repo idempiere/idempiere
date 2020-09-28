@@ -316,15 +316,10 @@ public class Core {
 	{
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("create for " + sf);
 		
-		if (sf.getShippingProcessor() == null)
-		{
-			s_log.log(Level.SEVERE, "Shipment processor not defined for shipper " + sf);
-			return null;
-		}
 		String className = sf.getShippingProcessorClass();
 		if (className == null || className.length() == 0) 
 		{
-			s_log.log(Level.SEVERE, "Shipment processor class not defined for shipper " + sf);
+			s_log.log(Level.SEVERE, "Shipment processor or class not defined for shipper " + sf);
 			return null;
 		}
 		
