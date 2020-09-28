@@ -84,9 +84,6 @@ public class CalloutWindowCustomization extends CalloutEngine
 		ud_tab.setName(tab.get_Translation("Name", lang));
 		ud_tab.setDescription(tab.get_Translation("Description", lang));
 		ud_tab.setHelp(tab.get_Translation("Help", lang));
-		
-		ud_tab.setIsSingleRow(tab.isSingleRow()); 
-		ud_tab.setIsReadOnly(tab.isReadOnly()); 
 
 		return NO_ERROR;
 	}	//	tab
