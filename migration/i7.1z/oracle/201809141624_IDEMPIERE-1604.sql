@@ -7,7 +7,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- 14/09/2018 14h56min26s BRT
-ALTER TABLE AD_UserDef_Tab ADD WhereClause VARCHAR2(2000) DEFAULT NULL 
+ALTER TABLE AD_UserDef_Tab ADD WhereClause VARCHAR2(2000 CHAR) DEFAULT NULL 
 ;
 
 -- 14/09/2018 14h57min39s BRT
@@ -19,7 +19,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- 14/09/2018 15h2min43s BRT
-ALTER TABLE AD_UserDef_Tab ADD OrderByClause VARCHAR2(2000) DEFAULT NULL 
+ALTER TABLE AD_UserDef_Tab ADD OrderByClause VARCHAR2(2000 CHAR) DEFAULT NULL 
 ;
 
 -- 14/09/2018 15h3min40s BRT
@@ -66,7 +66,7 @@ Strings may be in single quotes (optional)',466,'DisplayLogic',2000,'N','N','N',
 ;
 
 -- 14/09/2018 15h13min56s BRT
-ALTER TABLE AD_UserDef_Tab ADD DisplayLogic VARCHAR2(2000) DEFAULT NULL 
+ALTER TABLE AD_UserDef_Tab ADD DisplayLogic VARCHAR2(2000 CHAR) DEFAULT NULL 
 ;
 
 -- 14/09/2018 15h15min28s BRT
