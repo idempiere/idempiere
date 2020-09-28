@@ -85,7 +85,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ActionNotSupported"));
 				
 				if (!processed)
-					setErrorMessage("From " + getMShipper().getName() + ": " + getShippingRespMessage());
+					setErrorMessage(Msg.parseTranslation(getCtx(), "** @Error@ ** @From@ ") + getMShipper().getName() + ": " + getShippingRespMessage());
 			}
 		}
 		catch (Exception e)
@@ -94,7 +94,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			setErrorMessage(Msg.getMsg(Env.getCtx(), "ShippingNotProcessed") + ":\n" + e.getMessage());
 		}
 		
-		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, get_TrxName());
+		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, null); // out of transaction - save history even if the process fails
 		history.setAD_Table_ID(MShippingTransaction.Table_ID);
 		history.setRecord_ID(getM_ShippingTransaction_ID());
 		history.setIsError(!processed);
@@ -104,7 +104,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		if (processed)
 			msg.append(getShippingRespMessage());
 		else
-			msg.append("ERROR: " + getErrorMessage());
+			msg.append(getErrorMessage());
 		msg.append("\nAction: " + getAction());
 		history.setTextMsg(msg.toString());
 		

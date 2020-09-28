@@ -188,7 +188,7 @@ UPDATE M_Shipper SET M_ShippingProcessor_ID=200000,Updated=TO_TIMESTAMP('2020-09
 ;
 
 -- Sep 25, 2020, 9:06:35 PM CEST
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Could not find freight defined for: Shipper {0} - Freight Category {1} - Date {2,date,short} - Weight {3,number,#,##0.00} - Dimension {4,number,#,##0.00} - Origin Country {5} - Destination Country {6} - Origin Region {7} - Destination Region {8}',0,0,'Y',TO_TIMESTAMP('2020-09-25 21:06:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-25 21:06:34','YYYY-MM-DD HH24:MI:SS'),100,200639,'FreightNotFound','D','03990c13-c085-4d1b-bb6f-6ff0c69ef2bc')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','COULD NOT FIND FREIGHT DEFINED FOR: Shipper {0} - Freight Category {1} - Date {2,date,short} - Weight {3,number,#,##0.00} - Dimension {4,number,#,##0.00} - Origin Country {5} - Destination Country {6} - Origin Region {7} - Destination Region {8}',0,0,'Y',TO_TIMESTAMP('2020-09-25 21:06:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-25 21:06:34','YYYY-MM-DD HH24:MI:SS'),100,200639,'FreightNotFound','D','03990c13-c085-4d1b-bb6f-6ff0c69ef2bc')
 ;
 
 -- Sep 25, 2020, 9:06:55 PM CEST
