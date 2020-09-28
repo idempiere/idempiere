@@ -59,9 +59,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',466,'DisplayLogic',2000,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_DATE('2018-09-14 15:13:52','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2018-09-14 15:13:52','YYYY-MM-DD HH24:MI:SS'),100,283,'Y','N','D','N','N','N','Y','e0cd374f-5d30-4113-be73-a8d79ef48cca','Y',0,'N','N')
 ;
 
@@ -110,9 +110,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',394,213695,'Y',2000,170,'N','N','N','N',0,0,'Y',TO_DATE('2018-09-14 15:16:43','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2018-09-14 15:16:43','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','1af31bdc-9a18-4438-a2bd-a1677a7425ec','Y',170,5,3)
 ;
 
