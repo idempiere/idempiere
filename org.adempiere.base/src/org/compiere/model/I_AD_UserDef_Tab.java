@@ -62,6 +62,21 @@ public interface I_AD_UserDef_Tab
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
     /** Column name AD_Tab_ID */
     public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
 
@@ -135,6 +150,19 @@ public interface I_AD_UserDef_Tab
 	  */
 	public String getDescription();
 
+    /** Column name DisplayLogic */
+    public static final String COLUMNNAME_DisplayLogic = "DisplayLogic";
+
+	/** Set Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic);
+
+	/** Get Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic();
+
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
 
@@ -180,12 +208,12 @@ public interface I_AD_UserDef_Tab
 	/** Set Read Only.
 	  * Field is read only
 	  */
-	public void setIsReadOnly (boolean IsReadOnly);
+	public void setIsReadOnly (String IsReadOnly);
 
 	/** Get Read Only.
 	  * Field is read only
 	  */
-	public boolean isReadOnly();
+	public String getIsReadOnly();
 
     /** Column name IsSingleRow */
     public static final String COLUMNNAME_IsSingleRow = "IsSingleRow";
@@ -193,12 +221,12 @@ public interface I_AD_UserDef_Tab
 	/** Set Single Row Layout.
 	  * Default for toggle between Single- and Multi-Row (Grid) Layout
 	  */
-	public void setIsSingleRow (boolean IsSingleRow);
+	public void setIsSingleRow (String IsSingleRow);
 
 	/** Get Single Row Layout.
 	  * Default for toggle between Single- and Multi-Row (Grid) Layout
 	  */
-	public boolean isSingleRow();
+	public String getIsSingleRow();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -213,6 +241,19 @@ public interface I_AD_UserDef_Tab
 	  */
 	public String getName();
 
+    /** Column name OrderByClause */
+    public static final String COLUMNNAME_OrderByClause = "OrderByClause";
+
+	/** Set Sql ORDER BY.
+	  * Fully qualified ORDER BY clause
+	  */
+	public void setOrderByClause (String OrderByClause);
+
+	/** Get Sql ORDER BY.
+	  * Fully qualified ORDER BY clause
+	  */
+	public String getOrderByClause();
+
     /** Column name ReadOnlyLogic */
     public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
 
@@ -225,6 +266,21 @@ public interface I_AD_UserDef_Tab
 	  * Logic to determine if field is read only (applies only when field is read-write)
 	  */
 	public String getReadOnlyLogic();
+
+    /** Column name SeqNo */
+    public static final String COLUMNNAME_SeqNo = "SeqNo";
+
+	/** Set Sequence.
+	  * Method of ordering records;
+ lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo);
+
+	/** Get Sequence.
+	  * Method of ordering records;
+ lowest number comes first
+	  */
+	public int getSeqNo();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -241,4 +297,17 @@ public interface I_AD_UserDef_Tab
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name WhereClause */
+    public static final String COLUMNNAME_WhereClause = "WhereClause";
+
+	/** Set Sql WHERE.
+	  * Fully qualified SQL WHERE clause
+	  */
+	public void setWhereClause (String WhereClause);
+
+	/** Get Sql WHERE.
+	  * Fully qualified SQL WHERE clause
+	  */
+	public String getWhereClause();
 }
