@@ -187,12 +187,12 @@ public interface I_AD_UserDef_Info_Related
 	/** Set Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed);
+	public void setIsDisplayed (String IsDisplayed);
 
 	/** Get Displayed.
 	  * Determines, if this field is displayed
 	  */
-	public boolean isDisplayed();
+	public String getIsDisplayed();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

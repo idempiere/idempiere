@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200916L;
+	private static final long serialVersionUID = 20200929L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -233,28 +233,28 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** IsDisplayed AD_Reference_ID=319 */
+	public static final int ISDISPLAYED_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISDISPLAYED_Yes = "Y";
+	/** No = N */
+	public static final String ISDISPLAYED_No = "N";
 	/** Set Displayed.
 		@param IsDisplayed 
 		Determines, if this field is displayed
 	  */
-	public void setIsDisplayed (boolean IsDisplayed)
+	public void setIsDisplayed (String IsDisplayed)
 	{
-		set_Value (COLUMNNAME_IsDisplayed, Boolean.valueOf(IsDisplayed));
+
+		set_Value (COLUMNNAME_IsDisplayed, IsDisplayed);
 	}
 
 	/** Get Displayed.
 		@return Determines, if this field is displayed
 	  */
-	public boolean isDisplayed () 
+	public String getIsDisplayed () 
 	{
-		Object oo = get_Value(COLUMNNAME_IsDisplayed);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
+		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
 
 	/** Set Name.

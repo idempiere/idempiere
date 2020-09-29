@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200916L;
+	private static final long serialVersionUID = 20200929L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -110,7 +110,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	public void setAD_Language (String AD_Language)
 	{
 
-		set_ValueNoCheck (COLUMNNAME_AD_Language, AD_Language);
+		set_Value (COLUMNNAME_AD_Language, AD_Language);
 	}
 
 	/** Get Language.
@@ -133,9 +133,9 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
 		if (AD_Role_ID < 0) 
-			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
+			set_Value (COLUMNNAME_AD_Role_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
+			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
@@ -195,9 +195,9 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	public void setAD_User_ID (int AD_User_ID)
 	{
 		if (AD_User_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
+			set_Value (COLUMNNAME_AD_User_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
