@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.component;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -28,11 +30,13 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.zkoss.zk.au.out.AuOuter;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -137,7 +141,18 @@ public class NumberBox extends Div
 					if (uid.startsWith("uuid("))
 						uid = uid.substring(5, uid.length()-1);
 					HtmlBasedComponent comp = (HtmlBasedComponent) btn.getDesktop().getComponentByUuidIfAny(uid);
-					if (comp != null) {						
+					if (comp != null) {	
+						Textbox ctbox = (Textbox) comp.getLastChild().getFirstChild();
+						if (ctbox != null) {
+							ctbox.setText(decimalBox.getValue().toString());
+							StringWriter writer = new StringWriter(1024);
+							try {
+								ctbox.redraw(writer);
+								Clients.response(new AuOuter(ctbox, writer.toString()));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
 						comp.focus();
 					}
 				}				
