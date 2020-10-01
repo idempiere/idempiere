@@ -14,6 +14,9 @@ on:
   schedule:
     - cron: '0 7 * * 4'
 
+env:
+    java: 11
+
 jobs:
   analyze:
     name: Analyze
@@ -29,6 +32,13 @@ jobs:
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
+
+    # Install Java 14
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '${{ env.java }}'
+
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
