@@ -20,7 +20,7 @@
 * MA 02110-1301, USA.                                                 *
 *                                                                     *
 * Contributors:                                                       *
-* - Carlos Ruiz - globalqss                                           *
+* - Igor Pojzl, Cloudempiere                                          *
 **********************************************************************/
 package org.compiere.model;
 

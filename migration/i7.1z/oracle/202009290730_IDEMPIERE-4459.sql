@@ -2,12 +2,16 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- IDEMPIERE-4459
+-- Sep 29, 2020, 7:26:58 AM CEST
+INSERT INTO AD_Window (AD_Window_ID,Name,Description,Help,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,IsBetaFunctionality,AD_Window_UU) VALUES (200110,'Info Window Customization','Define Info Window Customization for Role/User','The customization values defined here overwrite/replace the default system definition if defined.',0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','Y','N','N','49fe86de-d43f-4069-98a4-e649a837e6ce')
+;
+
 -- Sep 29, 2020, 7:26:56 AM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,AD_Window_ID,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,IsChangeLog,ReplicationType,IsCentrallyMaintained,AD_Table_UU,Processing) VALUES (200266,'User defined Info Window',200110,'AD_UserDef_Info',135,'6',0,0,'Y',TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','Y','L','Y','bf0ce772-b06d-4c8a-87f2-42adfa5b31a2','N')
 ;
 
 -- Sep 29, 2020, 7:26:56 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info',1000000,'N','N','Table AD_UserDef_Info','Y','Y',0,0,TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,1000000,'Y',1000000,1,200000,'e6ff4b12-be71-49dd-8c7c-47ef5e3e7ef7')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info',1000000,'N','N','Table AD_UserDef_Info','Y','Y',0,0,TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,200332,'Y',1000000,1,200000,'e6ff4b12-be71-49dd-8c7c-47ef5e3e7ef7')
 ;
 
 -- Sep 29, 2020, 7:26:56 AM CEST
@@ -182,7 +186,7 @@ INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_I
 ;
 
 -- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Column',1000000,'N','N','Table AD_UserDef_Info_Column','Y','Y',0,0,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,1000001,'Y',1000000,1,200000,'9100f403-1c05-42b3-9cb7-889e024f201f')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Column',1000000,'N','N','Table AD_UserDef_Info_Column','Y','Y',0,0,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,200333,'Y',1000000,1,200000,'9100f403-1c05-42b3-9cb7-889e024f201f')
 ;
 
 -- Sep 29, 2020, 7:26:57 AM CEST
@@ -369,9 +373,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200268,'DisplayLogic',2000,'N','N','N','N','N','N',14,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,283,'Y','N','D','Y','N','N','Y','06877dff-75a8-4d5c-b9a2-86e08406cbb7','Y','N','N','N','N')
 ;
 
@@ -518,7 +522,7 @@ INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_I
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Related',1000000,'N','N','Table AD_UserDef_Info_Related','Y','Y',0,0,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,1000002,'Y',1000000,1,200000,'55a3ccf3-6dad-4b0c-992a-ab53ec67041d')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Related',1000000,'N','N','Table AD_UserDef_Info_Related','Y','Y',0,0,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,200334,'Y',1000000,1,200000,'55a3ccf3-6dad-4b0c-992a-ab53ec67041d')
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
@@ -677,9 +681,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200267,'DisplayLogic',2000,'N','N','N','N','N','N',14,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,283,'Y','N','D','Y','N','N','Y','93ce9482-7fb4-4d54-97b0-51da098363c3','Y','N','N','N','N')
 ;
 
@@ -718,10 +722,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 
 -- Sep 29, 2020, 7:26:58 AM CEST
 ALTER TABLE AD_UserDef_Info_Related ADD SeqNo NUMBER(10) NOT NULL
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Window (AD_Window_ID,Name,Description,Help,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,IsBetaFunctionality,AD_Window_UU) VALUES (200110,'Info Window Customization','Define Info Window Customization for Role/User','The customization values defined here overwrite/replace the default system definition if defined.',0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','Y','N','N','49fe86de-d43f-4069-98a4-e649a837e6ce')
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
@@ -808,9 +808,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200279,214295,'Y',2000,160,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','97feaea9-fbd1-4b7a-b037-b03ee26721c5','Y',170,1,5,3,'N','N','N','N')
 ;
 
@@ -968,9 +968,9 @@ value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
 Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
+'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+'||chr(64)||'Name@>J<br>
 Strings may be in single quotes (optional)',200281,214266,'N',2000,0,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','7a5af0d4-bf0a-44ec-b11a-fc2814adbb70','Y',130,1,5,3,'N','N','N','N')
 ;
 
@@ -1143,203 +1143,203 @@ ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT ParentRelatedColumn_ADUserDef
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-INSERT INTO AD_Menu (AD_Menu_ID,Name,Description,"action",AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200174,'Info Window Customization','Define Info Window Customization for Role/User','W',200110,0,0,'Y',TO_TIMESTAMP('2020-09-16 10:38:52','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-16 10:38:52','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','D','Y','b13e8923-8016-46ee-a687-0e12ca0a8391')
+INSERT INTO AD_Menu (AD_Menu_ID,Name,Description,Action,AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200174,'Info Window Customization','Define Info Window Customization for Role/User','W',200110,0,0,'Y',TO_DATE('2020-09-16 10:38:52','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-16 10:38:52','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','D','Y','b13e8923-8016-46ee-a687-0e12ca0a8391')
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-INSERT INTO AD_TreeNodeMM (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, AD_Tree_ID, Node_ID, Parent_ID, SeqNo, AD_TreeNodeMM_UU) SELECT t.AD_Client_ID, 0, 'Y', statement_timestamp(), 100, statement_timestamp(), 100,t.AD_Tree_ID, 200174, 0, 999, Generate_UUID() FROM AD_Tree t WHERE t.AD_Client_ID=0 AND t.IsActive='Y' AND t.IsAllNodes='Y' AND t.TreeType='MM' AND NOT EXISTS (SELECT * FROM AD_TreeNodeMM e WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=200174)
+INSERT INTO AD_TreeNodeMM (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, AD_Tree_ID, Node_ID, Parent_ID, SeqNo, AD_TreeNodeMM_UU) SELECT t.AD_Client_ID, 0, 'Y', SysDate, 100, SysDate, 100,t.AD_Tree_ID, 200174, 0, 999, Generate_UUID() FROM AD_Tree t WHERE t.AD_Client_ID=0 AND t.IsActive='Y' AND t.IsAllNodes='Y' AND t.TreeType='MM' AND NOT EXISTS (SELECT * FROM AD_TreeNodeMM e WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=200174)
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=0, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=218
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=218
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=1, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=153
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=1, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=153
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=2, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=263
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=2, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=263
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=3, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=166
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=3, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=166
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=4, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=203
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=4, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=203
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=5, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53242
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=5, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53242
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=6, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=236
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=6, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=236
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=7, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=183
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=7, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=183
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=8, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=160
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=8, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=160
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=9, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=278
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=9, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=278
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=10, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=345
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=10, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=345
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=11, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53296
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=11, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53296
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=12, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53014
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=12, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53014
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=13, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53108
+UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=13, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53108
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=0, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200145
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=0, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200145
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=1, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200142
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=1, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200142
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=2, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53203
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=2, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53203
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=3, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=586
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=3, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=586
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=4, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=138
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=4, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=138
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=5, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=139
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=5, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=139
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=6, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200065
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=6, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200065
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=7, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200063
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=7, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200063
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=8, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=249
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=8, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=249
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=9, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=141
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=9, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=141
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=10, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=300
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=10, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=300
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=11, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=589
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=11, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=589
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=12, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200000
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=12, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200000
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=13, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=295
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=13, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=295
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=14, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=216
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=14, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=216
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=15, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=140
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=15, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=140
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=16, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=142
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=16, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=142
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=17, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53012
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=17, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53012
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=18, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=143
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=18, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=143
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=19, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=201
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=19, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=201
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=20, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=176
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=20, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=176
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=21, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200072
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=21, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200072
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=22, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53086
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=22, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53086
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=23, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=239
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=23, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=239
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=24, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=517
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=24, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=517
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=25, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=499
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=25, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=499
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=26, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200150
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=26, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200150
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=27, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200174
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=27, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200174
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=28, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53089
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=28, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53089
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=29, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53090
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=29, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=53090
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=30, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200038
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=30, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200038
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=31, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200143
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=31, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200143
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=32, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200141
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=32, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=200141
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=33, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=50001
+UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=33, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=50001
 ;
 
 SELECT register_migration_script('202009290730_IDEMPIERE-4459.sql') FROM dual

@@ -1,10 +1,14 @@
 -- IDEMPIERE-4459
+-- Sep 29, 2020, 7:26:58 AM CEST
+INSERT INTO AD_Window (AD_Window_ID,Name,Description,Help,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,IsBetaFunctionality,AD_Window_UU) VALUES (200110,'Info Window Customization','Define Info Window Customization for Role/User','The customization values defined here overwrite/replace the default system definition if defined.',0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','Y','N','N','49fe86de-d43f-4069-98a4-e649a837e6ce')
+;
+
 -- Sep 29, 2020, 7:26:56 AM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,AD_Window_ID,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,IsChangeLog,ReplicationType,IsCentrallyMaintained,AD_Table_UU,Processing) VALUES (200266,'User defined Info Window',200110,'AD_UserDef_Info',135,'6',0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','Y','L','Y','bf0ce772-b06d-4c8a-87f2-42adfa5b31a2','N')
 ;
 
 -- Sep 29, 2020, 7:26:56 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info',1000000,'N','N','Table AD_UserDef_Info','Y','Y',0,0,TO_TIMESTAMP('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,1000000,'Y',1000000,1,200000,'e6ff4b12-be71-49dd-8c7c-47ef5e3e7ef7')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info',1000000,'N','N','Table AD_UserDef_Info','Y','Y',0,0,TO_TIMESTAMP('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,200332,'Y',1000000,1,200000,'e6ff4b12-be71-49dd-8c7c-47ef5e3e7ef7')
 ;
 
 -- Sep 29, 2020, 7:26:56 AM CEST
@@ -179,7 +183,7 @@ INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_I
 ;
 
 -- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Column',1000000,'N','N','Table AD_UserDef_Info_Column','Y','Y',0,0,TO_TIMESTAMP('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,1000001,'Y',1000000,1,200000,'9100f403-1c05-42b3-9cb7-889e024f201f')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Column',1000000,'N','N','Table AD_UserDef_Info_Column','Y','Y',0,0,TO_TIMESTAMP('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,200333,'Y',1000000,1,200000,'9100f403-1c05-42b3-9cb7-889e024f201f')
 ;
 
 -- Sep 29, 2020, 7:26:57 AM CEST
@@ -515,7 +519,7 @@ INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_I
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Related',1000000,'N','N','Table AD_UserDef_Info_Related','Y','Y',0,0,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,1000002,'Y',1000000,1,200000,'55a3ccf3-6dad-4b0c-992a-ab53ec67041d')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_UserDef_Info_Related',1000000,'N','N','Table AD_UserDef_Info_Related','Y','Y',0,0,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,200334,'Y',1000000,1,200000,'55a3ccf3-6dad-4b0c-992a-ab53ec67041d')
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
@@ -715,10 +719,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 
 -- Sep 29, 2020, 7:26:58 AM CEST
 ALTER TABLE AD_UserDef_Info_Related ADD COLUMN SeqNo NUMERIC(10) NOT NULL
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Window (AD_Window_ID,Name,Description,Help,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,IsBetaFunctionality,AD_Window_UU) VALUES (200110,'Info Window Customization','Define Info Window Customization for Role/User','The customization values defined here overwrite/replace the default system definition if defined.',0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','Y','N','N','49fe86de-d43f-4069-98a4-e649a837e6ce')
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
