@@ -684,10 +684,6 @@ INSERT INTO AD_UserQuery (AD_UserQuery_ID,AD_Client_ID,AD_Org_ID,IsActive,Create
 UPDATE AD_UserQuery SET Code='DocStatus<^>!=<^>DR<^><^><^><^><~>IsActive<^>=<^>Y<^><^>AND<^><^>' WHERE AD_UserQuery_ID=200000
 ;
 
--- Oct 3, 2020, 5:02:16 PM CEST
-UPDATE AD_UserQuery SET IsDefault='Y',Updated=TO_DATE('2020-10-03 17:02:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_UserQuery_ID=200000
-;
-
 -- Oct 3, 2020, 5:13:50 PM CEST
 INSERT INTO C_Order (C_Order_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,DocumentNo,DocStatus,DocAction,C_DocType_ID,C_DocTypeTarget_ID,IsApproved,IsCreditApproved,IsDelivered,IsInvoiced,IsPrinted,IsTransferred,DateOrdered,DatePromised,DateAcct,SalesRep_ID,C_PaymentTerm_ID,C_Currency_ID,InvoiceRule,FreightAmt,DeliveryViaRule,PriorityRule,TotalLines,GrandTotal,M_Warehouse_ID,M_PriceList_ID,Processing,C_BPartner_ID,AD_User_ID,ChargeAmt,Processed,C_BPartner_Location_ID,IsSOTrx,DeliveryRule,FreightCostRule,PaymentRule,IsDiscountPrinted,Posted,IsTaxIncluded,IsSelected,SendEMail,Bill_User_ID,Bill_BPartner_ID,CopyFrom,Bill_Location_ID,IsSelfService,C_ConversionType_ID,IsDropShip,IsPayScheduleValid,C_Order_UU) VALUES (200002,11,11,'Y',TO_DATE('2020-10-03 17:13:50','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-10-03 17:13:50','YYYY-MM-DD HH24:MI:SS'),100,'8000','DR','CO',0,126,'N','N','N','N','N','N',TO_DATE('2002-02-22','YYYY-MM-DD'),TO_DATE('2002-02-22','YYYY-MM-DD'),TO_DATE('2002-02-22','YYYY-MM-DD'),101,106,100,'D',0,'P','5',0,0,103,101,'N',114,103,0,'N',109,'N','A','I','P','Y','N','N','N','N',103,114,'N',109,'N',114,'N','N','133084b2-38de-4076-864c-b193ad0cc225')
 ;
