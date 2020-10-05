@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION currencyConvertPayment
 (
 	p_C_Payment_ID		IN NUMBER,
-	p_CurTo_ID		IN NUMBER,
+	p_Currency_To_id	IN NUMBER,
 	p_Amt			IN NUMBER DEFAULT NULL,
 	p_conversionDate	IN DATE DEFAULT NULL
 )

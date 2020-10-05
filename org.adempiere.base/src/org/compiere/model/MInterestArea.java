@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Interest Area.
@@ -35,14 +37,13 @@ import org.compiere.util.DB;
  *
  *  @author Jorg Janke
  *  @version $Id: MInterestArea.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
- */
-public class MInterestArea extends X_R_InterestArea
+ */ 
+public class MInterestArea extends X_R_InterestArea implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6910076559329764930L;
-
+	private static final long serialVersionUID = -8171678779149295978L;
 
 	/**
 	 * 	Get all active interest areas
@@ -80,28 +81,40 @@ public class MInterestArea extends X_R_InterestArea
 		return retValue;
 	}	//	getAll
 
+	/**
+	 * 	Get MInterestArea from Cache (immutable)
+	 *	@param R_InterestArea_ID id
+	 *	@return MInterestArea
+	 */
+	public static MInterestArea get (int R_InterestArea_ID)
+	{
+		return get(Env.getCtx(), R_InterestArea_ID);
+	}
 	
 	/**
-	 * 	Get MInterestArea from Cache
-	 *	@param ctx context
+	 * 	Get MInterestArea from Cache (immutable)
+	 *  @param ctx context
 	 *	@param R_InterestArea_ID id
 	 *	@return MInterestArea
 	 */
 	public static MInterestArea get (Properties ctx, int R_InterestArea_ID)
 	{
 		Integer key = Integer.valueOf(R_InterestArea_ID);
-		MInterestArea retValue = (MInterestArea) s_cache.get (key);
+		MInterestArea retValue = s_cache.get (ctx, key, e -> new MInterestArea(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MInterestArea (ctx, R_InterestArea_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MInterestArea (Env.getCtx(), R_InterestArea_ID, (String)null);
+		if (retValue.get_ID () == R_InterestArea_ID)
+		{
+			s_cache.put (key, retValue, e -> new MInterestArea(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MInterestArea> s_cache = 
-		new CCache<Integer,MInterestArea>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MInterestArea> s_cache = 
+		new ImmutableIntPOCache<Integer,MInterestArea>(Table_Name, 5);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MInterestArea.class);
 	
@@ -134,7 +147,40 @@ public class MInterestArea extends X_R_InterestArea
 		super(ctx, rs, trxName);
 	}	//	MInterestArea
 
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInterestArea(MInterestArea copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInterestArea(Properties ctx, MInterestArea copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInterestArea(Properties ctx, MInterestArea copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_AD_User_ID = copy.m_AD_User_ID;
+		this.m_ci = copy.m_ci != null ? new MContactInterest(ctx, copy.m_ci, trxName) : null;
+	}
+
+
 	/**
 	 * 	Get Value
 	 *	@return value
@@ -227,5 +273,14 @@ public class MInterestArea extends X_R_InterestArea
 		//	We have a BPartner Contact
 		return m_ci.isSubscribed();
 	}	//	isSubscribed
+
+	@Override
+	public MInterestArea markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MInterestArea

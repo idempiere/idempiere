@@ -999,7 +999,7 @@ public class Login
 			rs = null; pstmt = null;
 		}
 		//	Country
-		Env.setContext(m_ctx, "#C_Country_ID", MCountry.getDefault(m_ctx).getC_Country_ID());
+		Env.setContext(m_ctx, "#C_Country_ID", MCountry.getDefault().getC_Country_ID());
 		// Call ModelValidators afterLoadPreferences - teo_sarca FR [ 1670025 ]
 		ModelValidationEngine.get().afterLoadPreferences(m_ctx);
 		return retValue;

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Currency Conversion Type Model
@@ -95,4 +96,34 @@ public class MConversionType extends X_C_ConversionType
 		super(ctx, rs, trxName);
 	}	//	MConversionType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MConversionType(MConversionType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MConversionType(Properties ctx, MConversionType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MConversionType(Properties ctx, MConversionType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 }	//	MConversionType

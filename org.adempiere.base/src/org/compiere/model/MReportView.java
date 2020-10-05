@@ -18,19 +18,20 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
-public class MReportView extends X_AD_ReportView {
-
+public class MReportView extends X_AD_ReportView implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5674822764517548357L;
+	private static final long serialVersionUID = 6065574433744333005L;
 	
 	/**	Static Logger					*/
 	//private static CLogger	s_log	= CLogger.getCLogger (MReportView.class);
 	/**	Cache					*/
-	static private CCache<Integer,MReportView> s_cache = new CCache<Integer,MReportView>(Table_Name, 30, 60);
+	static private ImmutableIntPOCache<Integer,MReportView> s_cache = new ImmutableIntPOCache<Integer,MReportView>(Table_Name, 30, 60);
 	
 	
 	public MReportView(Properties ctx, int AD_ReportView_ID, String trxName) {
@@ -43,9 +44,46 @@ public class MReportView extends X_AD_ReportView {
 
 	/**
 	 * 
+	 * @param copy
+	 */
+	public MReportView(MReportView copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MReportView(Properties ctx, MReportView copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MReportView(Properties ctx, MReportView copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
+	 * Get MReportView from cache (immutable)
+	 * @param AD_ReportView_ID
+	 * @return MReportView
+	 */
+	public static MReportView get (int AD_ReportView_ID) {
+		return get(Env.getCtx(), AD_ReportView_ID);
+	}
+	
+	/**
+	 * Get MReportView from cache (immutable)
 	 * @param ctx
 	 * @param AD_ReportView_ID
-	 * @return
+	 * @return MReportView
 	 */
 	public static MReportView get (Properties ctx, int AD_ReportView_ID) {
 		if(AD_ReportView_ID==0) {
@@ -53,12 +91,27 @@ public class MReportView extends X_AD_ReportView {
 		}
 		
 		Integer key = Integer.valueOf(AD_ReportView_ID);
-		MReportView retValue = (MReportView)s_cache.get(key);
+		MReportView retValue = s_cache.get(ctx, key, e -> new MReportView(ctx, e));
 		if (retValue == null)
 		{
-			retValue = new MReportView (ctx, AD_ReportView_ID, null);
-			s_cache.put(key, retValue);
+			retValue = new MReportView (ctx, AD_ReportView_ID, (String)null);
+			if (retValue.get_ID() == AD_ReportView_ID)
+			{
+				s_cache.put(key, retValue, e -> new MReportView(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get
+	
+	@Override
+	public MReportView markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

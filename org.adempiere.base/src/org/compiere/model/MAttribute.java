@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -27,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Product Attribute
@@ -34,13 +36,12 @@ import org.compiere.util.Env;
  *	@author Jorg Janke
  *	@version $Id: MAttribute.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MAttribute extends X_M_Attribute
+public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7869800574413317999L;
-
+	private static final long serialVersionUID = 7513117649181926813L;
 
 	/**
 	 * 	Get Attributes Of Client
@@ -112,6 +113,38 @@ public class MAttribute extends X_M_Attribute
 		super(ctx, rs, trxName);
 	}	//	MAttribute
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAttribute(MAttribute copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAttribute(Properties ctx, MAttribute copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAttribute(Properties ctx, MAttribute copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_values = copy.m_values != null ? Arrays.stream(copy.m_values).map(e -> {return new MAttributeValue(ctx, e, trxName);}).toArray(MAttributeValue[]::new) : null;
+	}
+	
 	/**	Values						*/
 	private MAttributeValue[]		m_values = null;
 
@@ -127,7 +160,7 @@ public class MAttribute extends X_M_Attribute
 			List<MAttributeValue> list = new ArrayList<MAttributeValue>();
 			if (!isMandatory())
 				list.add (null);
-			list = new Query(getCtx(),I_M_AttributeValue.Table_Name,whereClause,null)
+			list = new Query(getCtx(),I_M_AttributeValue.Table_Name,whereClause,get_TrxName())
 			.setParameters(getM_Attribute_ID())
 			.setOrderBy("Value")
 			.list();
@@ -270,4 +303,13 @@ public class MAttribute extends X_M_Attribute
 		return success;
 	}	//	afterSave
 	
+	@Override
+	public MAttribute markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MAttribute

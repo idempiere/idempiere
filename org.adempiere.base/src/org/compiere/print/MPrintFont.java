@@ -26,8 +26,9 @@ import java.util.logging.Level;
 
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintFont;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	AD_PrintFont Print Font Model
@@ -35,12 +36,12 @@ import org.compiere.util.Env;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintFont.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
-public class MPrintFont extends X_AD_PrintFont
+public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2986160498367260541L;
+	private static final long serialVersionUID = -613305916546183810L;
 
 	/**
 	 *	Constructor
@@ -60,6 +61,38 @@ public class MPrintFont extends X_AD_PrintFont
 		super (ctx, rs, trxName);
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPrintFont(MPrintFont copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintFont(Properties ctx, MPrintFont copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintFont(Properties ctx, MPrintFont copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_cacheFont = copy.m_cacheFont;
+	}
+	
 	/** Font cached					*/
 	private Font 	m_cacheFont = null;
 
@@ -196,7 +229,7 @@ public class MPrintFont extends X_AD_PrintFont
 	/*************************************************************************/
 
 	/** Cached Fonts						*/
-	static private CCache<Integer,MPrintFont> s_fonts = new CCache<Integer,MPrintFont>(Table_Name, 20);
+	static private ImmutableIntPOCache<Integer,MPrintFont> s_fonts = new ImmutableIntPOCache<Integer,MPrintFont>(Table_Name, 20);
 
 	/**
 	 * 	Get Font
@@ -206,14 +239,28 @@ public class MPrintFont extends X_AD_PrintFont
 	static public MPrintFont get (int AD_PrintFont_ID)
 	{
 		Integer key = Integer.valueOf(AD_PrintFont_ID);
-		MPrintFont pf = (MPrintFont)s_fonts.get(key);
+		MPrintFont pf = s_fonts.get(key);
 		if (pf == null)
 		{
-			pf = new MPrintFont (Env.getCtx(), AD_PrintFont_ID, null);
-			s_fonts.put(key, pf);
+			pf = new MPrintFont (Env.getCtx(), AD_PrintFont_ID, (String)null);
+			if (pf.get_ID() == AD_PrintFont_ID)
+			{
+				s_fonts.put(key, pf);
+				return pf;
+			}
+			return null;
 		}
 		return pf;
 	}	//	get
+
+	@Override
+	public MPrintFont markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 	/*************************************************************************/
 

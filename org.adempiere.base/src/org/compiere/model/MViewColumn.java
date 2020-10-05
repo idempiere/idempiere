@@ -20,15 +20,17 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.db.Database;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MViewColumn extends X_AD_ViewColumn {
+public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7325808411400037317L;
+	private static final long serialVersionUID = 4049071242637196213L;
 
 	/**
 	 * Standard constructor
@@ -64,6 +66,37 @@ public class MViewColumn extends X_AD_ViewColumn {
 	}
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MViewColumn(MViewColumn copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MViewColumn(Properties ctx, MViewColumn copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MViewColumn(Properties ctx, MViewColumn copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * String representation
 	 * @return info
 	 */
@@ -90,6 +123,15 @@ public class MViewColumn extends X_AD_ViewColumn {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public MViewColumn markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }

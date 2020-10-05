@@ -180,7 +180,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public MBankAccount getBankAccount()
 	{
-		return MBankAccount.get(getCtx(), getC_BankAccount_ID());
+		return MBankAccount.getCopy(getCtx(), getC_BankAccount_ID(), (String)null);
 	}	//	getBankAccount
 	
 	/**

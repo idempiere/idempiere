@@ -22,12 +22,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.compiere.model.MProduct;
 import org.compiere.model.Query;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * PP Product BOM Model.
@@ -35,15 +37,14 @@ import org.compiere.util.Env;
  * @author Victor Perez www.e-evolution.com     
  * @author Teo Sarca, http://www.arhipac.ro
  */
-public class MPPProductBOM extends X_PP_Product_BOM
+public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSupport
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1561124355655122911L;
+	private static final long serialVersionUID = -5048325803007991296L;
 	/**	Cache						*/
-	private static CCache<Integer,MPPProductBOM> s_cache = new CCache<Integer,MPPProductBOM>(Table_Name, 40, 5);
+	private static ImmutableIntPOCache<Integer,MPPProductBOM> s_cache = new ImmutableIntPOCache<Integer,MPPProductBOM>(Table_Name, 40, 5);
 	/** BOM Lines					*/
 	private List<MPPProductBOMLine> m_lines = null;
 	
@@ -61,8 +62,19 @@ public class MPPProductBOM extends X_PP_Product_BOM
 					.list();
 		
 	}
+	
 	/**
-	 * Get Product BOM by ID (cached) 
+	 * Get Product BOM by ID (cached) (immutable)
+	 * @param PP_Product_BOM_ID
+	 * @return product bom
+	 */
+	public static MPPProductBOM get(int PP_Product_BOM_ID)
+	{
+		return get(Env.getCtx(), PP_Product_BOM_ID);
+	}
+	
+	/**
+	 * Get Product BOM by ID (cached) (immutable)
 	 * @param ctx
 	 * @param PP_Product_BOM_ID
 	 * @return product bom
@@ -71,18 +83,30 @@ public class MPPProductBOM extends X_PP_Product_BOM
 	{
 		if (PP_Product_BOM_ID <= 0)
 			return null;
-		MPPProductBOM bom = s_cache.get(PP_Product_BOM_ID);
+		MPPProductBOM bom = s_cache.get(ctx, PP_Product_BOM_ID, e -> new MPPProductBOM(ctx, e));
 		if (bom != null)
 			return bom;
-		bom = new MPPProductBOM(ctx, PP_Product_BOM_ID, null);
+		bom = new MPPProductBOM(ctx, PP_Product_BOM_ID, (String)null);
 		if (bom.get_ID() == PP_Product_BOM_ID)
 		{
-			s_cache.put(PP_Product_BOM_ID, bom);
+			s_cache.put(PP_Product_BOM_ID, bom, e -> new MPPProductBOM(Env.getCtx(), e));
+			return bom;
 		}
-		else
-		{
-			bom = null;
-		}
+		return null;
+	}
+	
+	/**
+	 * Get updateable copy of MPPProductBOM from cache
+	 * @param ctx
+	 * @param PP_Product_BOM_ID
+	 * @param trxName
+	 * @return MPPProductBOM 
+	 */
+	public static MPPProductBOM getCopy(Properties ctx, int PP_Product_BOM_ID, String trxName)
+	{
+		MPPProductBOM bom = get(PP_Product_BOM_ID);
+		if (bom != null)
+			bom = new MPPProductBOM(ctx, bom, trxName);
 		return bom;
 	}
 	
@@ -107,7 +131,7 @@ public class MPPProductBOM extends X_PP_Product_BOM
 	 */
 	public static MPPProductBOM getDefault(MProduct product, String trxName)
 	{
-		MPPProductBOM bom = new Query(product.getCtx(), Table_Name, "M_Product_ID=? AND Value=?", trxName)
+		MPPProductBOM bom = new Query(Env.getCtx(), Table_Name, "M_Product_ID=? AND Value=?", trxName)
 				.setParameters(new Object[]{product.getM_Product_ID(), product.getValue()})
 				.setClient_ID()
 				.firstOnly();
@@ -180,6 +204,38 @@ public class MPPProductBOM extends X_PP_Product_BOM
 	}
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MPPProductBOM(MPPProductBOM copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPPProductBOM(Properties ctx, MPPProductBOM copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPPProductBOM(Properties ctx, MPPProductBOM copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? copy.m_lines.stream().map(e -> {return new MPPProductBOMLine(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
+	}
+	
+	/**
 	 * 	Get BOM Lines valid date for Product BOM
 	 *  @param valid Date to Validate
 	 * 	@return BOM Lines
@@ -221,6 +277,8 @@ public class MPPProductBOM extends X_PP_Product_BOM
 											.setOnlyActiveRecords(true)
 											.setOrderBy(MPPProductBOMLine.COLUMNNAME_Line)
 											.list();
+			if (m_lines.size() > 0 && is_Immutable())
+				m_lines.stream().forEach(e -> e.markImmutable());
 		}
 		return this.m_lines.toArray(new MPPProductBOMLine[this.m_lines.size()]);
 	}	//	getLines    		
@@ -270,6 +328,19 @@ public class MPPProductBOM extends X_PP_Product_BOM
 		product.setIsBOM(count > 0);
 		product.saveEx();
 	}
+
+	@Override
+	public MPPProductBOM markImmutable() 
+	{
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_lines != null && m_lines.size() > 0)
+			m_lines.stream().forEach(e -> e.markImmutable());
+		return this;
+	}
+
 	
 	@Override
 	public String toString ()

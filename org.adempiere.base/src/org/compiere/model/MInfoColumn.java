@@ -224,9 +224,6 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 
 	@Override
 	public I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException {
-		if (get_TrxName() != null)
-			return new MValRule(getCtx(), getAD_Val_Rule_ID(), get_TrxName());
-		else
-			return MValRule.get(getCtx(), getAD_Val_Rule_ID());
+		return MValRule.getCopy(getCtx(), getAD_Val_Rule_ID(), get_TrxName());
 	}
 }	//	MInfoColumn

@@ -88,7 +88,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		}
 		//  load data
 		if (m_mImage == null)
-			m_mImage = MImage.get (Env.getCtx(), 0);
+			m_mImage = new MImage (Env.getCtx(), 0, null);
 		else
 		{
 			if (m_mImage.getData()!=null)
@@ -272,7 +272,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 				image.setContent(img);
 				
 				if (m_mImage == null)
-					m_mImage = MImage.get (Env.getCtx(), 0);
+					m_mImage = new MImage (Env.getCtx(), 0, null);
 				m_mImage.setName(defaultNameForCaptureImage);
 				m_mImage.setBinaryData(imageData);
 				fileNameTextbox.setValue(defaultNameForCaptureImage);
@@ -351,7 +351,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 
 		//  Save info
 		if (m_mImage == null)
-			m_mImage = MImage.get (Env.getCtx(), 0);
+			m_mImage = new MImage (Env.getCtx(), 0, null);
 		m_mImage.setName(fileName);
 		m_mImage.setImageURL(fileName);
 		if (image.getContent() != null)

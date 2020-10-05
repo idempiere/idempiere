@@ -1639,7 +1639,7 @@ public class MCost extends X_M_Cost
 		int M_CostElement_ID = getM_CostElement_ID();
 		if (M_CostElement_ID == 0)
 			return null;
-		return MCostElement.get(getCtx(), M_CostElement_ID);
+		return MCostElement.getCopy(getCtx(), M_CostElement_ID, get_TrxName());
 	}	//	getCostElement
 
 	/**
