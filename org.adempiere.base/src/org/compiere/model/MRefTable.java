@@ -19,15 +19,17 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MRefTable extends X_AD_Ref_Table
+public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3595900192339578282L;
+	private static final long serialVersionUID = 5068032076487795624L;
 
 	/**
 	 * 	Standard Constructor
@@ -59,22 +61,69 @@ public class MRefTable extends X_AD_Ref_Table
 		super (ctx, rs, trxName);
 	}	//	MRefTable
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRefTable(MRefTable copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRefTable(Properties ctx, MRefTable copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRefTable(Properties ctx, MRefTable copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
-		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
+		MTable table = MTable.getCopy(getCtx(), getAD_Table_ID(), get_TrxName());
 		return table;
 	}
 
 	/**	Ref Table Cache				*/
-	private static CCache<Integer,MRefTable>	s_cache = new CCache<Integer,MRefTable>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MRefTable>	s_cache = new ImmutableIntPOCache<Integer,MRefTable>(Table_Name, 20);
 
+	/**
+	 * 	Get from Cache
+	 *	@param AD_Reference_ID id
+	 *	@return category
+	 */
+	public static MRefTable get (int AD_Reference_ID)
+	{
+		return get(Env.getCtx(), AD_Reference_ID);
+	}
+	
+	/**
+	 * 	Get from Cache (immutable)
+	 *	@param ctx context
+	 *	@param AD_Reference_ID id
+	 *	@return category
+	 */
 	public static MRefTable get (Properties ctx, int AD_Reference_ID)
 	{
 		return get (ctx, AD_Reference_ID, null);
 	}
 
 	/**
-	 * 	Get from Cache
+	 * 	Get from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Reference_ID id
 	 *  @param trxName trx
@@ -83,15 +132,26 @@ public class MRefTable extends X_AD_Ref_Table
 	public static MRefTable get (Properties ctx, int AD_Reference_ID, String trxName)
 	{
 		Integer ii = Integer.valueOf(AD_Reference_ID);
-		MRefTable retValue = (MRefTable)s_cache.get(ii);
+		MRefTable retValue = s_cache.get(ctx, ii, e -> new MRefTable(ctx, e));
 		if (retValue != null) {
-			retValue.set_TrxName(trxName);
 			return retValue;
 		}
 		retValue = new MRefTable (ctx, AD_Reference_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (AD_Reference_ID, retValue);
-		return retValue;
+		if (retValue.get_ID () == AD_Reference_ID)
+		{
+			s_cache.put (AD_Reference_ID, retValue, e -> new MRefTable(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
+
+	@Override
+	public MRefTable markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MRefTable

@@ -175,7 +175,7 @@ public class MRMATax extends X_M_RMATax
 	}	//	setPrecision
 
 	/**
-	 * 	Get Tax
+	 * 	Get Tax (immutable)
 	 *	@return tax
 	 */
 	protected MTax getTax()

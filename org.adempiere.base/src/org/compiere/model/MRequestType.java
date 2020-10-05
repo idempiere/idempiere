@@ -23,10 +23,11 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Request Type Model
@@ -36,16 +37,25 @@ import org.compiere.util.Env;
  *  
  *  Teo Sarca - bug fix [ 1642833 ] MRequestType minor typo bug
  */
-public class MRequestType extends X_R_RequestType
+public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 {
-
     /**
-     * 
-     */
-    private static final long serialVersionUID = 6235793036503665638L;
+	 * 
+	 */
+	private static final long serialVersionUID = -1772516764599702671L;
 
 	/**
-	 * 	Get Request Type (cached)
+	 * 	Get Request Type (cached) (immutable)
+	 *	@param R_RequestType_ID id
+	 *	@return Request Type
+	 */
+	public static MRequestType get (int R_RequestType_ID)
+	{
+		return get(Env.getCtx(), R_RequestType_ID);
+	}
+	
+	/**
+	 * 	Get Request Type (cached) (immutable)
 	 *	@param ctx context
 	 *	@param R_RequestType_ID id
 	 *	@return Request Type
@@ -53,20 +63,40 @@ public class MRequestType extends X_R_RequestType
 	public static MRequestType get (Properties ctx, int R_RequestType_ID)
 	{
 		Integer key = Integer.valueOf(R_RequestType_ID);
-		MRequestType retValue = (MRequestType)s_cache.get(key);
+		MRequestType retValue = s_cache.get(ctx, key, e -> new MRequestType(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MRequestType (ctx, R_RequestType_ID, null);
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == R_RequestType_ID)
+			{
+				s_cache.put(key, retValue, e -> new MRequestType(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MRequestType from cache
+	 * @param ctx
+	 * @param R_RequestType_ID
+	 * @param trxName
+	 * @return MRequestType
+	 */
+	public static MRequestType getCopy(Properties ctx, int R_RequestType_ID, String trxName)
+	{
+		MRequestType rt = get(R_RequestType_ID);
+		if (rt != null)
+			rt = new MRequestType(ctx, rt, trxName);		
+		return rt;
+	}
+	
 	/** Static Logger					*/
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MRequestType.class);
 	/**	Cache							*/
-	static private CCache<Integer,MRequestType> s_cache = new CCache<Integer,MRequestType>(Table_Name, 10);
+	static private ImmutableIntPOCache<Integer,MRequestType> s_cache = new ImmutableIntPOCache<Integer,MRequestType>(Table_Name, 10);
 
 	/**
 	 * 	Get Default Request Type
@@ -128,6 +158,37 @@ public class MRequestType extends X_R_RequestType
 		super(ctx, rs, trxName);
 	}	//	MRequestType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRequestType(MRequestType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRequestType(Properties ctx, MRequestType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRequestType(Properties ctx, MRequestType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/** Next time stats to be created		*/
 	private long m_nextStats = 0;
 	
@@ -497,5 +558,14 @@ public class MRequestType extends X_R_RequestType
 		query.setRecordCount(1);
 		return query;
 	}	//	getQuery
-	
+
+	@Override
+	public MRequestType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MRequestType

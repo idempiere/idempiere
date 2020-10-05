@@ -54,7 +54,7 @@ public class BroadcastMsgUtil
 	 */
 	public static void publishBroadcastMessage(final int messageID, String trxName) {
 		
-		MBroadcastMessage mbMessage = MBroadcastMessage.get(Env.getCtx(), messageID);
+		MBroadcastMessage mbMessage = new MBroadcastMessage(Env.getCtx(), messageID, trxName);
 		String broadcastType = mbMessage.getBroadcastType();
 		
 		if (MBroadcastMessage.BROADCASTTYPE_Login.equals(broadcastType)

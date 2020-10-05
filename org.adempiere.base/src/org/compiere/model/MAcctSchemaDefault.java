@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Default Accounts for MAcctSchema
@@ -31,14 +33,13 @@ import org.compiere.util.KeyNamePair;
  *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
  *  @version $Id: MAcctSchemaDefault.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MAcctSchemaDefault extends X_C_AcctSchema_Default
+public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements ImmutablePOSupport
 {
 
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 199959007595802866L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7966846617443248102L;
 
 	/**
 	 * 	Get Accounting Schema Default Info
@@ -79,6 +80,37 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default
 		super(ctx, rs, trxName);
 	}	//	MAcctSchemaDefault
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchemaDefault(MAcctSchemaDefault copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchemaDefault(Properties ctx, MAcctSchemaDefault copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchemaDefault(Properties ctx, MAcctSchemaDefault copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Get Realized Gain Acct for currency
 	 *	@param C_Currency_ID currency
@@ -151,5 +183,14 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default
 			setAD_Org_ID(0);
 		return true;
 	}	//	beforeSave
+
+	@Override
+	public MAcctSchemaDefault markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MAcctSchemaDefault

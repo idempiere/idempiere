@@ -6,21 +6,23 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.fa.feature.UseLifeImpl;
 
 /**	Asset Class
  *	@author Teo Sarca, SC Arhipac SRL
  *	@version $Id$
  */
-public class MAssetClass extends X_A_Asset_Class
+public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6526341869523579715L;
+	private static final long serialVersionUID = -7805056592418891872L;
 
 	/**
 	 *
@@ -40,12 +42,51 @@ public class MAssetClass extends X_A_Asset_Class
 		super (ctx, rs, trxName);
 	}	//	MAssetClass
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAssetClass(MAssetClass copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAssetClass(Properties ctx, MAssetClass copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAssetClass(Properties ctx, MAssetClass copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		*/
-	private static CCache<Integer, MAssetClass> s_cache = new CCache<Integer, MAssetClass>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MAssetClass> s_cache = new ImmutableIntPOCache<Integer, MAssetClass>(Table_Name, 20);
 
 	/**	Get Asset Class from cache
+	 *	@param id A_Asset_Class_ID
+	 *	@return MAssetClass or null if not found
+	 */
+	public static MAssetClass get(int id) {
+		return get(Env.getCtx(), id);
+	}
+	
+	/**	Get Asset Class from cache
 	 *	@param ctx	context
-	 *	@param id		A_Asset_Class_ID
+	 *	@param id A_Asset_Class_ID
 	 *	@return MAssetClass or null if not found
 	 */
 	public static MAssetClass get(Properties ctx, int id) {
@@ -53,14 +94,16 @@ public class MAssetClass extends X_A_Asset_Class
 			return null;
 		}
 		
-		MAssetClass assetClass = s_cache.get(id);
+		MAssetClass assetClass = s_cache.get(ctx, id, e -> new MAssetClass(ctx, e));
 		if (assetClass == null) {
-			assetClass = new MAssetClass(ctx, id, null);
-		}
-		if (assetClass.get_ID() != id) {
+			assetClass = new MAssetClass(ctx, id, (String)null);
+			if (assetClass.get_ID() == id) {
+				s_cache.put(id, assetClass, e -> new MAssetClass(Env.getCtx(), e));
+				return assetClass;
+			}
 			return null;
-		}
-		s_cache.put(id, assetClass);
+		}		
+		
 		return assetClass;
 	} // get
 	
@@ -209,4 +252,14 @@ public class MAssetClass extends X_A_Asset_Class
 		}
 		return true;
 	}
+	
+	@Override
+	public MAssetClass markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION currencyConvertInvoice(
 	p_currency_to_id in number,
 	p_amt in number DEFAULT NULL,
 	p_conversiondate in date DEFAULT NULL)
-    RETURNS number
+    RETURN number
 AS
 	v_GrandTotal NUMBER;
 	v_ConversionType_ID NUMBER;

@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	User overrides for window model
@@ -28,13 +29,12 @@ import org.compiere.util.Env;
  *  @version $Id$
  *  
  */
-public class MUserDefWin extends X_AD_UserDef_Win
+public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5775251886672840324L;
-
+	private static final long serialVersionUID = -7542708120229671875L;
 	private volatile static List<MUserDefWin> m_fullList = null;
 
 	/**
@@ -64,6 +64,37 @@ public class MUserDefWin extends X_AD_UserDef_Win
 		super (ctx, rs, trxName);
 	}	//	MUserDefWin
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefWin(MUserDefWin copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefWin(Properties ctx, MUserDefWin copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefWin(Properties ctx, MUserDefWin copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 *  Get all MUserDefWin entries related to window
 	 * 	@param ctx context
@@ -123,7 +154,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 				.append(AD_User_ID)
 				.toString();
 		if (s_cache.containsKey(key))
-			return s_cache.get(key);
+			return s_cache.get(ctx, key, e -> new MUserDefWin(ctx, e));
 
 		// candidates
 		MUserDefWin[] candidates = getAll(ctx, window_ID);
@@ -186,7 +217,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	    if (weight[maxindex] > -1) {
 			MUserDefWin retValue = null;
 	    	retValue=candidates[maxindex];
-	    	s_cache.put(key, retValue);
+	    	s_cache.put(key, retValue, e -> new MUserDefWin(Env.getCtx(), e));
 	    	return retValue;
 	    } else {
 	    	s_cache.put(key, null);
@@ -195,7 +226,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	}
 	
 	/**	Cache of selected MUserDefWin entries 					**/
-	private static CCache<String,MUserDefWin> s_cache = new CCache<String,MUserDefWin>(Table_Name, 3);	//  3 weights
+	private static ImmutablePOCache<String,MUserDefWin> s_cache = new ImmutablePOCache<String,MUserDefWin>(Table_Name, 3);	//  3 weights
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
@@ -208,5 +239,15 @@ public class MUserDefWin extends X_AD_UserDef_Win
 		m_fullList = null;
 		return true;
 	}
-	
+
+	@Override
+	public MUserDefWin markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
+
 }	//	MUserDefWin

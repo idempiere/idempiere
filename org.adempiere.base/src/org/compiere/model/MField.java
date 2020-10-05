@@ -19,7 +19,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -28,35 +30,44 @@ import org.compiere.util.CCache;
  *  @author Jorg Janke
  *  @version $Id: MField.java,v 1.2 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MField extends X_AD_Field
+public class MField extends X_AD_Field implements ImmutablePOSupport
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7243492167390659946L;
+	private static final long serialVersionUID = -7382459987895129752L;
 	
 	/**	Cache						*/
-	private static CCache<Integer,MField> s_cache = new CCache<Integer,MField>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MField> s_cache = new ImmutableIntPOCache<Integer,MField>(Table_Name, 20);
 	
 	/**
 	 * 
-	 * @param ctx
 	 * @param AD_Field_ID
-	 * @return MField
+	 * @return MField (immutable)
+	 */
+	public static MField get(int AD_Field_ID)
+	{
+		return get(Env.getCtx(), AD_Field_ID);
+	}
+	
+	/**
+	 * @param ctx context
+	 * @param AD_Field_ID
+	 * @return Immutable instance of MField
 	 */
 	public static MField get(Properties ctx, int AD_Field_ID)
 	{
 		Integer key = Integer.valueOf(AD_Field_ID);
-		MField retValue = s_cache.get (key);
-		if (retValue != null && retValue.getCtx() == ctx) {
+		MField retValue = s_cache.get (ctx, key, e -> new MField(ctx, e));
+		if (retValue != null) 
+			return retValue;
+		
+		retValue = new MField (ctx, AD_Field_ID, (String)null);
+		if (retValue.get_ID () == AD_Field_ID) {
+			s_cache.put (key, retValue, e -> new MField(Env.getCtx(), e));
 			return retValue;
 		}
-		retValue = new MField (ctx, AD_Field_ID, null);
-		if (retValue.get_ID () == AD_Field_ID) {
-			s_cache.put (key, retValue);
-		}
-		return retValue;
+		return null;
 	}
 	
 	/**
@@ -123,6 +134,37 @@ public class MField extends X_AD_Field
 	}	//	M_Field
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MField(MField copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MField(Properties ctx, MField copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MField(Properties ctx, MField copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Set Column Values
 	 *	@param column column
 	 */
@@ -185,4 +227,13 @@ public class MField extends X_AD_Field
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	public MField markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MField

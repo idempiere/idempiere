@@ -116,7 +116,7 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 	public static boolean createForOrg (MOrg org)
 	{
 		int counter = 0;
-		MRole[] roles = MRole.getOfClient(org.getCtx());
+		MRole[] roles = MRole.getOfClient(org.getCtx(), org.get_TrxName());
 		for (int i = 0; i < roles.length; i++)
 		{
 			if (!roles[i].isManual())

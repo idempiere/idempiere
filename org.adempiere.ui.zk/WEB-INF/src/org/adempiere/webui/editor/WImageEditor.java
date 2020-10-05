@@ -143,7 +143,7 @@ public class WImageEditor extends WEditor
 		}
 		//  Get/Create Image
 		if (m_mImage == null || newValue != m_mImage.get_ID())
-			m_mImage = MImage.get (Env.getCtx(), newValue);
+			m_mImage = MImage.getCopy(Env.getCtx(), newValue, (String)null);
 		//
 		if (log.isLoggable(Level.FINE)) log.fine(m_mImage.toString());
 		AImage img = null;

@@ -215,7 +215,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	public MProduct getProduct()
 	{
 		if (m_product == null)
-			m_product = MProduct.get(getCtx(), getM_Product_ID());
+			m_product = MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return m_product;
 	}	//	getProduct
 	

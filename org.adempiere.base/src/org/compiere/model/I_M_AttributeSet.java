@@ -269,6 +269,15 @@ public interface I_M_AttributeSet
 	  */
 	public int getM_AttributeSet_ID();
 
+    /** Column name M_AttributeSet_Type */
+    public static final String COLUMNNAME_M_AttributeSet_Type = "M_AttributeSet_Type";
+
+	/** Set AttributeSet Type	  */
+	public void setM_AttributeSet_Type (String M_AttributeSet_Type);
+
+	/** Get AttributeSet Type	  */
+	public String getM_AttributeSet_Type();
+
     /** Column name M_AttributeSet_UU */
     public static final String COLUMNNAME_M_AttributeSet_UU = "M_AttributeSet_UU";
 

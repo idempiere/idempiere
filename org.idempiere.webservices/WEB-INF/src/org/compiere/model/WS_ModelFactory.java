@@ -40,6 +40,8 @@ public class WS_ModelFactory implements IModelFactory {
 			return MWebServiceType.class;
 		if (X_WS_WebService.Table_Name.equals(tableName))
 			return MWebService.class;
+		if (MWebServiceMethod.Table_Name.equals(tableName))
+			return MWebServiceMethod.class;
 		return null;
 	}
 
@@ -51,6 +53,8 @@ public class WS_ModelFactory implements IModelFactory {
 			return new MWebServiceType(Env.getCtx(), Record_ID, trxName);
 		if (X_WS_WebService.Table_Name.equals(tableName))
 			return new MWebService(Env.getCtx(), Record_ID, trxName);
+		if (MWebServiceMethod.Table_Name.equals(tableName))
+			return new MWebServiceMethod(Env.getCtx(), Record_ID, trxName);
 		return null;
 	}
 
@@ -62,6 +66,8 @@ public class WS_ModelFactory implements IModelFactory {
 			return new MWebServiceType(Env.getCtx(), rs, trxName);
 		if (X_WS_WebService.Table_Name.equals(tableName))
 			return new MWebService(Env.getCtx(), rs, trxName);
+		if (MWebServiceMethod.Table_Name.equals(tableName))
+			return new MWebServiceMethod(Env.getCtx(), rs, trxName);
 		return null;
 	}
 
