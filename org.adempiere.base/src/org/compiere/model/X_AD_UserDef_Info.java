@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200929L;
+	private static final long serialVersionUID = 20201006L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -39,9 +39,6 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
         {
 			setAD_InfoWindow_ID (0);
 			setAD_UserDef_Info_ID (0);
-			setIsDefault (false);
-			setIsReadOnly (false);
-			setIsUserUpdateable (false);
         } */
     }
 
@@ -243,78 +240,6 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
-	}
-
-	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
-	public void setIsDefault (boolean IsDefault)
-	{
-		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
-	}
-
-	/** Get Default.
-		@return Default value
-	  */
-	public boolean isDefault () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
-	public void setIsReadOnly (boolean IsReadOnly)
-	{
-		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
-	}
-
-	/** Get Read Only.
-		@return Field is read only
-	  */
-	public boolean isReadOnly () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set User updatable.
-		@param IsUserUpdateable 
-		The field can be updated by the user
-	  */
-	public void setIsUserUpdateable (boolean IsUserUpdateable)
-	{
-		set_Value (COLUMNNAME_IsUserUpdateable, Boolean.valueOf(IsUserUpdateable));
-	}
-
-	/** Get User updatable.
-		@return The field can be updated by the user
-	  */
-	public boolean isUserUpdateable () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsUserUpdateable);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** Set Name.

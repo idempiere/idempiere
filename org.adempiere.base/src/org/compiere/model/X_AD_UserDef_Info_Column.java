@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200917L;
+	private static final long serialVersionUID = 20201006L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -40,10 +40,8 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 			setAD_InfoColumn_ID (0);
 			setAD_UserDef_Info_Column_ID (0);
 			setAD_UserDef_Info_ID (0);
-// @AD_UserDef_Info_ID@
-			setIsCentrallyMaintained (true);
-// Y
 			setSeqNo (0);
+// 0
         } */
     }
 
@@ -325,26 +323,6 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
 
-	/** Set Length.
-		@param FieldLength 
-		Length of the column in the database
-	  */
-	public void setFieldLength (int FieldLength)
-	{
-		set_Value (COLUMNNAME_FieldLength, Integer.valueOf(FieldLength));
-	}
-
-	/** Get Length.
-		@return Length of the column in the database
-	  */
-	public int getFieldLength () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_FieldLength);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Comment/Help.
 		@param Help 
 		Comment or Hint
@@ -360,23 +338,6 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
-	}
-
-	/** Set Input field validation.
-		@param InputFieldValidation 
-		Input field validaton query
-	  */
-	public void setInputFieldValidation (String InputFieldValidation)
-	{
-		set_Value (COLUMNNAME_InputFieldValidation, InputFieldValidation);
-	}
-
-	/** Get Input field validation.
-		@return Input field validaton query
-	  */
-	public String getInputFieldValidation () 
-	{
-		return (String)get_Value(COLUMNNAME_InputFieldValidation);
 	}
 
 	/** IsAutocomplete AD_Reference_ID=319 */
@@ -401,30 +362,6 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	public String getIsAutocomplete () 
 	{
 		return (String)get_Value(COLUMNNAME_IsAutocomplete);
-	}
-
-	/** Set Centrally maintained.
-		@param IsCentrallyMaintained 
-		Information maintained in System Element table
-	  */
-	public void setIsCentrallyMaintained (boolean IsCentrallyMaintained)
-	{
-		set_Value (COLUMNNAME_IsCentrallyMaintained, Boolean.valueOf(IsCentrallyMaintained));
-	}
-
-	/** Get Centrally maintained.
-		@return Information maintained in System Element table
-	  */
-	public boolean isCentrallyMaintained () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** IsDisplayed AD_Reference_ID=319 */
@@ -645,56 +582,5 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Value Format.
-		@param VFormat 
-		Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
-	public void setVFormat (String VFormat)
-	{
-		set_Value (COLUMNNAME_VFormat, VFormat);
-	}
-
-	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
-	public String getVFormat () 
-	{
-		return (String)get_Value(COLUMNNAME_VFormat);
-	}
-
-	/** Set Max. Value.
-		@param ValueMax 
-		Maximum Value for a field
-	  */
-	public void setValueMax (String ValueMax)
-	{
-		set_Value (COLUMNNAME_ValueMax, ValueMax);
-	}
-
-	/** Get Max. Value.
-		@return Maximum Value for a field
-	  */
-	public String getValueMax () 
-	{
-		return (String)get_Value(COLUMNNAME_ValueMax);
-	}
-
-	/** Set Min. Value.
-		@param ValueMin 
-		Minimum Value for a field
-	  */
-	public void setValueMin (String ValueMin)
-	{
-		set_Value (COLUMNNAME_ValueMin, ValueMin);
-	}
-
-	/** Get Min. Value.
-		@return Minimum Value for a field
-	  */
-	public String getValueMin () 
-	{
-		return (String)get_Value(COLUMNNAME_ValueMin);
 	}
 }

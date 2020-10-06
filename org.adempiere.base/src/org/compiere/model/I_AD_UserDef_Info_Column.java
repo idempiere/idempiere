@@ -223,19 +223,6 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public String getDisplayLogic();
 
-    /** Column name FieldLength */
-    public static final String COLUMNNAME_FieldLength = "FieldLength";
-
-	/** Set Length.
-	  * Length of the column in the database
-	  */
-	public void setFieldLength (int FieldLength);
-
-	/** Get Length.
-	  * Length of the column in the database
-	  */
-	public int getFieldLength();
-
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
 
@@ -248,19 +235,6 @@ public interface I_AD_UserDef_Info_Column
 	  * Comment or Hint
 	  */
 	public String getHelp();
-
-    /** Column name InputFieldValidation */
-    public static final String COLUMNNAME_InputFieldValidation = "InputFieldValidation";
-
-	/** Set Input field validation.
-	  * Input field validaton query
-	  */
-	public void setInputFieldValidation (String InputFieldValidation);
-
-	/** Get Input field validation.
-	  * Input field validaton query
-	  */
-	public String getInputFieldValidation();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -287,19 +261,6 @@ public interface I_AD_UserDef_Info_Column
 	  * Automatic completion for textfields
 	  */
 	public String getIsAutocomplete();
-
-    /** Column name IsCentrallyMaintained */
-    public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";
-
-	/** Set Centrally maintained.
-	  * Information maintained in System Element table
-	  */
-	public void setIsCentrallyMaintained (boolean IsCentrallyMaintained);
-
-	/** Get Centrally maintained.
-	  * Information maintained in System Element table
-	  */
-	public boolean isCentrallyMaintained();
 
     /** Column name IsDisplayed */
     public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";
@@ -444,45 +405,4 @@ public interface I_AD_UserDef_Info_Column
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name VFormat */
-    public static final String COLUMNNAME_VFormat = "VFormat";
-
-	/** Set Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
-	public void setVFormat (String VFormat);
-
-	/** Get Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
-	public String getVFormat();
-
-    /** Column name ValueMax */
-    public static final String COLUMNNAME_ValueMax = "ValueMax";
-
-	/** Set Max. Value.
-	  * Maximum Value for a field
-	  */
-	public void setValueMax (String ValueMax);
-
-	/** Get Max. Value.
-	  * Maximum Value for a field
-	  */
-	public String getValueMax();
-
-    /** Column name ValueMin */
-    public static final String COLUMNNAME_ValueMin = "ValueMin";
-
-	/** Set Min. Value.
-	  * Minimum Value for a field
-	  */
-	public void setValueMin (String ValueMin);
-
-	/** Get Min. Value.
-	  * Minimum Value for a field
-	  */
-	public String getValueMin();
 }

@@ -193,45 +193,6 @@ public interface I_AD_UserDef_Info
 	  */
 	public boolean isActive();
 
-    /** Column name IsDefault */
-    public static final String COLUMNNAME_IsDefault = "IsDefault";
-
-	/** Set Default.
-	  * Default value
-	  */
-	public void setIsDefault (boolean IsDefault);
-
-	/** Get Default.
-	  * Default value
-	  */
-	public boolean isDefault();
-
-    /** Column name IsReadOnly */
-    public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
-
-	/** Set Read Only.
-	  * Field is read only
-	  */
-	public void setIsReadOnly (boolean IsReadOnly);
-
-	/** Get Read Only.
-	  * Field is read only
-	  */
-	public boolean isReadOnly();
-
-    /** Column name IsUserUpdateable */
-    public static final String COLUMNNAME_IsUserUpdateable = "IsUserUpdateable";
-
-	/** Set User updatable.
-	  * The field can be updated by the user
-	  */
-	public void setIsUserUpdateable (boolean IsUserUpdateable);
-
-	/** Get User updatable.
-	  * The field can be updated by the user
-	  */
-	public boolean isUserUpdateable();
-
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

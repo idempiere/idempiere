@@ -209,8 +209,9 @@ public class InfoColumnVO implements Serializable, Cloneable {
 					vo.Placeholder = userDef.getPlaceholder();
 				if (userDef.get_Translation("Placeholder") != null)
 					vo.PlaceHolderTrl = userDef.get_Translation("Placeholder");
-				if (userDef.getInputFieldValidation() != null)
-					vo.InputFieldValidation = userDef.getInputFieldValidation();
+// IDEMPIERE-4459 - this field is on basic info window column we asume this can be implemented later TODO Carlos Ruiz
+//				if (userDef.getInputFieldValidation() != null)
+//					vo.InputFieldValidation = userDef.getInputFieldValidation();
 				if (userDef.getIsQueryCriteria() != null)
 					vo.isQueryCriteria = "Y".equals(userDef.getIsQueryCriteria());
 				if (userDef.getQueryFunction()!= null)
