@@ -253,6 +253,8 @@ public class CalloutOrder extends CalloutEngine
 			+ " p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
 			+ " (select max(lship.C_BPartner_Location_ID) from C_BPartner_Location lship where p.C_BPartner_ID=lship.C_BPartner_ID AND lship.IsShipTo='Y' AND lship.IsActive='Y') as C_BPartner_Location_ID,"
 			+ " (select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y') as AD_User_ID,"
+			+ " (select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y' AND IsBillTo='Y') as BillTo_User_ID,"
+			+ " (select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y' AND IsShipTo='Y') as ShipTo_User_ID,"
 			+ " COALESCE(p.PO_PriceList_ID,g.PO_PriceList_ID) AS PO_PriceList_ID, p.PaymentRulePO,p.PO_PaymentTerm_ID,"
 			+ " (select max(lbill.C_BPartner_Location_ID) from C_BPartner_Location lbill where p.C_BPartner_ID=lbill.C_BPartner_ID AND lbill.IsBillTo='Y' AND lbill.IsActive='Y') AS Bill_Location_ID, "
 			+ " p.SOCreditStatus, "
@@ -344,12 +346,16 @@ public class CalloutOrder extends CalloutEngine
 					if (cont.length() > 0)
 						contID = Integer.parseInt(cont);
 				}
+				int BillTo_User_ID = rs.getInt("BillTo_User_ID");
+				int ShipTo_User_ID = rs.getInt("ShipTo_User_ID");
 				if (contID == 0)
 					mTab.setValue("AD_User_ID", null);
 				else
 				{
-					mTab.setValue("AD_User_ID", Integer.valueOf(contID));
-					mTab.setValue("Bill_User_ID", Integer.valueOf(contID));
+					Integer userID = ShipTo_User_ID > 0 ? Integer.valueOf(ShipTo_User_ID) : Integer.valueOf(contID);
+					mTab.setValue("AD_User_ID", userID);
+					userID = BillTo_User_ID > 0 ? Integer.valueOf(BillTo_User_ID) : Integer.valueOf(contID);
+					mTab.setValue("Bill_User_ID", userID);
 				}
 
 				//	CreditAvailable
