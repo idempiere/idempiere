@@ -50,6 +50,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 // N
 			setIsFullBPAccess (true);
 // Y
+			setIsInPayroll (false);
+// N
 			setIsLocked (false);
 // 'N'
 			setIsNoExpire (false);
@@ -699,6 +701,30 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public boolean isFullBPAccess () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsFullBPAccess);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Is In Payroll.
+		@param IsInPayroll 
+		Defined if any User Contact will be used for Calculate Payroll
+	  */
+	public void setIsInPayroll (boolean IsInPayroll)
+	{
+		set_Value (COLUMNNAME_IsInPayroll, Boolean.valueOf(IsInPayroll));
+	}
+
+	/** Get Is In Payroll.
+		@return Defined if any User Contact will be used for Calculate Payroll
+	  */
+	public boolean isInPayroll () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsInPayroll);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

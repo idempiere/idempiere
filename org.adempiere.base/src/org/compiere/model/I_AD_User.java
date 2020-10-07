@@ -463,6 +463,19 @@ public interface I_AD_User
 	  */
 	public boolean isFullBPAccess();
 
+    /** Column name IsInPayroll */
+    public static final String COLUMNNAME_IsInPayroll = "IsInPayroll";
+
+	/** Set Is In Payroll.
+	  * Defined if any User Contact will be used for Calculate Payroll
+	  */
+	public void setIsInPayroll (boolean IsInPayroll);
+
+	/** Get Is In Payroll.
+	  * Defined if any User Contact will be used for Calculate Payroll
+	  */
+	public boolean isInPayroll();
+
     /** Column name IsLocked */
     public static final String COLUMNNAME_IsLocked = "IsLocked";
 
