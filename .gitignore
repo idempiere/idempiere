@@ -24,3 +24,5 @@ External Plug-in Libraries
 /jettyhome/
 
 /org.idempiere.javadoc/API
+**/.classpath
+org.idempiere.maven.to.p2/org.idempiere.webservice.client/.settings/
