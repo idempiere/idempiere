@@ -282,5 +282,13 @@ UPDATE AD_Field SET Name='Ship Contact', Description='Business Partner Shipment 
 UPDATE AD_Field SET Name='Invoice Contact', Description='Business Partner Invoice/Bill Contact', Help='If the Invoice Contact is selected, the contact is used to send notifications about invoices to a customer or a vendor.', IsCentrallyMaintained='N', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-07 13:18:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206515
 ;
 
+-- Oct 7, 2020, 1:17:54 PM CEST
+UPDATE AD_Field SET Name='Ship Contact', Description='Business Partner Shipment Contact', Help='If the Ship Contact is selected, the contact is used for notification.', IsCentrallyMaintained='N', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-07 13:17:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206517
+;
+
+-- Oct 7, 2020, 1:18:41 PM CEST
+UPDATE AD_Field SET Name='Invoice Contact', Description='Business Partner Invoice/Bill Contact', Help='If the Invoice Contact is selected, the contact is used to send notifications about invoices to a customer or a vendor.', IsCentrallyMaintained='N', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-07 13:18:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206518
+;
+
 SELECT register_migration_script('202010071405_IDEMPIERE-4490.sql') FROM dual
 ;
