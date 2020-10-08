@@ -348,9 +348,10 @@ public class CalloutOrder extends CalloutEngine
 				}
 				int BillTo_User_ID = rs.getInt("BillTo_User_ID");
 				int ShipTo_User_ID = rs.getInt("ShipTo_User_ID");
-				if (contID == 0)
+				if (contID == 0) {
 					mTab.setValue("AD_User_ID", null);
-				else
+					mTab.setValue("Bill_User_ID", null);
+				} else
 				{
 					Integer userID = ShipTo_User_ID > 0 ? Integer.valueOf(ShipTo_User_ID) : Integer.valueOf(contID);
 					mTab.setValue("AD_User_ID", userID);
