@@ -471,6 +471,7 @@ public class CalloutOrder extends CalloutEngine
 			+ "p.InvoiceRule,p.DeliveryRule,p.FreightCostRule,DeliveryViaRule,"
 			+ "p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
 			+ "(select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y') as AD_User_ID,"
+			+ "(select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y' AND IsBillTo='Y') as BillTo_User_ID,"
 			+ "p.PO_PriceList_ID, p.PaymentRulePO, p.PO_PaymentTerm_ID,"
 			+ "(select max(lbill.C_BPartner_Location_ID) from C_BPartner_Location lbill where p.C_BPartner_ID=lbill.C_BPartner_ID AND lbill.IsBillTo='Y' AND lbill.IsActive='Y') AS Bill_Location_ID "
 			+ "FROM C_BPartner p "
@@ -529,6 +530,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("Bill_Location_ID", Integer.valueOf(bill_Location_ID));
 
 				//	Contact - overwritten by InfoBP selection
+				int BillTo_User_ID = rs.getInt("BillTo_User_ID");
 				int contID = rs.getInt("AD_User_ID");
 				if (bill_BPartner_ID.toString().equals(Env.getContext(ctx, WindowNo, Env.TAB_INFO, "C_BPartner_ID")))
 				{
@@ -538,8 +540,10 @@ public class CalloutOrder extends CalloutEngine
 				}
 				if (contID == 0)
 					mTab.setValue("Bill_User_ID", null);
-				else
-					mTab.setValue("Bill_User_ID", Integer.valueOf(contID));
+				else {
+					Integer userID = BillTo_User_ID > 0 ? Integer.valueOf(BillTo_User_ID) : Integer.valueOf(contID);
+					mTab.setValue("Bill_User_ID", userID);
+				}
 
 				//	CreditAvailable
 				if (IsSOTrx)
