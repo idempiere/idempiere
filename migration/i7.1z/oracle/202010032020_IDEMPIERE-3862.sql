@@ -1,4 +1,6 @@
-DROP VIEW rv_pp_mrp;
+-- IDEMPIERE-3862 ORACLE - Update datatype NVARCHAR2 to VARCHAR2
+-- Fix view to avoid compilation errors
+
 CREATE OR REPLACE VIEW rv_pp_mrp AS 
 SELECT 
 mrp.pp_mrp_id,
@@ -97,3 +99,7 @@ FROM pp_product_planning pp
 INNER JOIN M_Product p ON (pp.M_Product_ID = p.M_Product_ID)
 WHERE bomqtyonhand(pp.M_Product_ID,pp.M_Warehouse_ID, 0) < pp.safetystock 
 ;
+
+SELECT register_migration_script('202010032020_IDEMPIERE-3862.sql') FROM dual
+;
+
