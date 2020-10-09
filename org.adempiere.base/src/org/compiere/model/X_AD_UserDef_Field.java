@@ -74,6 +74,34 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
       return sb.toString();
     }
 
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID 
+		Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_FieldGroup_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
