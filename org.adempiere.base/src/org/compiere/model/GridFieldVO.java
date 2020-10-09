@@ -186,6 +186,14 @@ public class GridFieldVO implements Serializable, Cloneable
 				if (userDef.getPlaceholder() != null)
 					vo.Placeholder = userDef.getPlaceholder();
 				
+				//devCoffee 8535
+				if (userDef.getAD_FieldGroup_ID() > 0)
+				{
+					vo.FieldGroup = ((X_AD_FieldGroup)userDef.getAD_FieldGroup()).get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
+					vo.FieldGroupType = userDef.getAD_FieldGroup().getFieldGroupType();
+				}
+				//fim devCoffee 8535
+				
 				if (userDef.getIsAutocomplete() != null)
 					vo.IsAutocomplete = "Y".equals(userDef.getIsAutocomplete());
 			}
