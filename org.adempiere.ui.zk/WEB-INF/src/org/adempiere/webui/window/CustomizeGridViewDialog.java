@@ -52,30 +52,29 @@ public class CustomizeGridViewDialog extends Window {
 			customizePanel = new CustomizeGridViewPanel(windowNo, AD_Tab_ID, AD_User_ID, columnsWidth, gridFieldIds);
 		}
 		this.setStyle("position : relative;");
-		if (!ThemeManager.isUseCSSForWindowSize()) {
-			ZKUpdateUtil.setWindowWidthX(this, 600);
-			ZKUpdateUtil.setWindowHeightX(this, 500);
-		} else {
-			addCallback(AFTER_PAGE_ATTACHED, t-> {
-				ZKUpdateUtil.setCSSHeight(this);
-				ZKUpdateUtil.setCSSWidth(this);
-			});
-		}
+		
 		this.setBorder("normal");
 		this.setSclass("popup-dialog customize-grid-view-dialog");
 		
 		if (isQuickForm)
 		{
-			ZKUpdateUtil.setWidth(this, "500px");
-			ZKUpdateUtil.setHeight(this, "410px");
+			ZKUpdateUtil.setWindowWidthX(this, 500);
+			ZKUpdateUtil.setWindowHeightX(this, 410);
 			quickCustomizePanel.createUI();
 			quickCustomizePanel.loadData();
 			appendChild(quickCustomizePanel);
 		}
 		else
 		{
-			ZKUpdateUtil.setWidth(this, "600px");
-			ZKUpdateUtil.setHeight(this, "500px");
+			if (!ThemeManager.isUseCSSForWindowSize()) {
+				ZKUpdateUtil.setWindowWidthX(this, 600);
+				ZKUpdateUtil.setWindowHeightX(this, 500);
+			} else {
+				addCallback(AFTER_PAGE_ATTACHED, t-> {
+					ZKUpdateUtil.setCSSHeight(this);
+					ZKUpdateUtil.setCSSWidth(this);
+				});
+			}
 
 			appendChild(customizePanel);
 			customizePanel.createUI();

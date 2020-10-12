@@ -302,10 +302,24 @@
 .activity-card .help-content {
 	font-size: 13px;
 }
+.mobile .activity-card .help-content {
+	font-size: 16px;
+}
 .record-info-dialog .record-info-radiogroup {
 	padding: 4px 4px 8px 4px;
 }
 .record-info-dialog .record-info-changelog-table {
 	margin-left: 3px;
 	margin-right: 3px;
+}
+
+@media only screen 
+  and (max-device-width: 700px) {
+	.adtab-grid > .z-cell > .z-label {
+		white-space: pre-line;
+	}	
+}
+.adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
+	white-space: pre-line;
+	text-overflow: ellipsis;
 }

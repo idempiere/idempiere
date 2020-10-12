@@ -175,8 +175,11 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_FOOTER_SERVER_MSG = "ZK_FOOTER_SERVER_MSG";
     public static final String ZK_GRID_AFTER_FIND = "ZK_GRID_AFTER_FIND";
     public static final String ZK_GRID_EDIT_MODELESS = "ZK_GRID_EDIT_MODELESS";
+    public static final String ZK_GRID_MOBILE_EDITABLE = "ZK_GRID_MOBILE_EDITABLE";
     public static final String ZK_GRID_MOBILE_EDIT_MODELESS = "ZK_GRID_MOBILE_EDIT_MODELESS";
+    public static final String ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR = "ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR";
     public static final String ZK_GRID_MOBILE_MAX_COLUMNS = "ZK_GRID_MOBILE_MAX_COLUMNS";
+    public static final String ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR = "ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR";
     public static final String ZK_INFO_NUM_PAGE_PRELOAD = "ZK_INFO_NUM_PAGE_PRELOAD";
     public static final String ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD = "ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD";
     public static final String ZK_LOGIN_ALLOW_REMEMBER_ME = "ZK_LOGIN_ALLOW_REMEMBER_ME";

@@ -1148,7 +1148,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		form.setMaximizable(true);
 		form.setMaximized(true);
 		form.setPosition("center");
-		ZkCssHelper.appendStyle(form, "min-width: 500px; min-height: 400px; width: 900px; height:550px; z-index: 900;");
+		ZKUpdateUtil.setWindowHeightX(form, 550);
+		ZKUpdateUtil.setWindowWidthX(form, 900);
+		ZkCssHelper.appendStyle(form, "z-index: 900;");
 
 		AEnv.showWindow(form);
 	} // onQuickForm
@@ -3592,7 +3594,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			// 2 is offset of num of column in grid view and actual data fields.
 			// in grid view, add two function column, indicator column and selection (checkbox) column
 			// @see GridView#setupColumns
-			Column column = (Column) columnList.get(i+2);
+			int offset = tabPanel.getGridView().isShowCurrentRowIndicatorColumn() ? 2 : 1;
+			Column column = (Column) columnList.get(i+offset);
 			String width = column.getWidth();
 			columnsWidth.put(fields[i].getAD_Field_ID(), width);
 			gridFieldIds.add(fields[i].getAD_Field_ID());

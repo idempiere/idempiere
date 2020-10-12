@@ -534,6 +534,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, ITheme.ZK_TOOLBAR_BUTTON_SIZE, Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE));
 		Env.setContext(properties, ITheme.USE_CSS_FOR_WINDOW_SIZE, Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
 		Env.setContext(properties, ITheme.USE_FONT_ICON_FOR_IMAGE, Env.getContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE));
+		Env.setContext(properties, "#clientInfo_desktopWidth", clientInfo.desktopWidth);
+		Env.setContext(properties, "#clientInfo_desktopHeight", clientInfo.desktopHeight);
+		Env.setContext(properties, "#clientInfo_orientation", clientInfo.orientation);
+		Env.setContext(properties, "#clientInfo_mobile", clientInfo.tablet);
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
