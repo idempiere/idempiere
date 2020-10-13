@@ -1276,6 +1276,20 @@ public class AdempiereMonitor extends HttpServlet
 		WebEnv.initWeb(config);
 		log.info ("");
 		
+		//sleep 1 min to give cluster service time to start first
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+		}
+		//wait another 2 min if cluster service is still not up
+		if (ClusterServerMgr.getClusterService() == null)
+		{
+			try {
+				Thread.sleep(120000);
+			} catch (InterruptedException e) {
+			}
+		}
+		
 		//always create the local server manager instance
 		m_serverMgr = AdempiereServerMgr.get();
 		
