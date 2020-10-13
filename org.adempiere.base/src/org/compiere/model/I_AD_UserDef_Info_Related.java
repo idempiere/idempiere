@@ -49,17 +49,6 @@ public interface I_AD_UserDef_Info_Related
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_CtxHelp_ID */
-    public static final String COLUMNNAME_AD_CtxHelp_ID = "AD_CtxHelp_ID";
-
-	/** Set Context Help	  */
-	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID);
-
-	/** Get Context Help	  */
-	public int getAD_CtxHelp_ID();
-
-	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
-
     /** Column name AD_InfoRelated_ID */
     public static final String COLUMNNAME_AD_InfoRelated_ID = "AD_InfoRelated_ID";
 
@@ -142,19 +131,6 @@ public interface I_AD_UserDef_Info_Related
 	  */
 	public String getDescription();
 
-    /** Column name DisplayLogic */
-    public static final String COLUMNNAME_DisplayLogic = "DisplayLogic";
-
-	/** Set Display Logic.
-	  * If the Field is displayed, the result determines if the field is actually displayed
-	  */
-	public void setDisplayLogic (String DisplayLogic);
-
-	/** Get Display Logic.
-	  * If the Field is displayed, the result determines if the field is actually displayed
-	  */
-	public String getDisplayLogic();
-
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
 
@@ -181,19 +157,6 @@ public interface I_AD_UserDef_Info_Related
 	  */
 	public boolean isActive();
 
-    /** Column name IsDisplayed */
-    public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";
-
-	/** Set Displayed.
-	  * Determines, if this field is displayed
-	  */
-	public void setIsDisplayed (String IsDisplayed);
-
-	/** Get Displayed.
-	  * Determines, if this field is displayed
-	  */
-	public String getIsDisplayed();
-
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -206,43 +169,6 @@ public interface I_AD_UserDef_Info_Related
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
-
-    /** Column name ParentRelatedColumn_ID */
-    public static final String COLUMNNAME_ParentRelatedColumn_ID = "ParentRelatedColumn_ID";
-
-	/** Set Parent Related Column.
-	  * column in parent info window, link with column in this relate info
-	  */
-	public void setParentRelatedColumn_ID (int ParentRelatedColumn_ID);
-
-	/** Get Parent Related Column.
-	  * column in parent info window, link with column in this relate info
-	  */
-	public int getParentRelatedColumn_ID();
-
-	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException;
-
-    /** Column name RelatedColumn_ID */
-    public static final String COLUMNNAME_RelatedColumn_ID = "RelatedColumn_ID";
-
-	/** Set Related Info Column	  */
-	public void setRelatedColumn_ID (int RelatedColumn_ID);
-
-	/** Get Related Info Column	  */
-	public int getRelatedColumn_ID();
-
-	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException;
-
-    /** Column name RelatedInfo_ID */
-    public static final String COLUMNNAME_RelatedInfo_ID = "RelatedInfo_ID";
-
-	/** Set Related Info Window	  */
-	public void setRelatedInfo_ID (int RelatedInfo_ID);
-
-	/** Get Related Info Window	  */
-	public int getRelatedInfo_ID();
-
-	public org.compiere.model.I_AD_InfoWindow getRelatedInfo() throws RuntimeException;
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

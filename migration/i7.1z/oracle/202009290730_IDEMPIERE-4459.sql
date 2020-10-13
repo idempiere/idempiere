@@ -141,30 +141,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ALTER TABLE AD_UserDef_Info ADD AD_Language VARCHAR2(6 CHAR) DEFAULT NULL 
 ;
 
--- Sep 29, 2020, 7:26:56 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214242,0.0,'Default','Default value','The Default Checkbox indicates if this record will be used as a default value.',200266,'IsDefault',1,'N','N','Y','N','N','N',20,0,0,'Y',TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,1103,'Y','N','D','Y','N','N','Y','1fff3bb0-71bf-4078-babd-e14520cee945','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:56 AM CEST
-ALTER TABLE AD_UserDef_Info ADD IsDefault CHAR(1) CHECK (IsDefault IN ('Y','N')) NOT NULL
-;
-
--- Sep 29, 2020, 7:26:56 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214243,0.0,'Read Only','Field is read only','The Read Only indicates that this field may only be Read.  It may not be updated.',200266,'IsReadOnly',1,'N','N','Y','N','N','N',20,0,0,'Y',TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:56','YYYY-MM-DD HH24:MI:SS'),100,405,'Y','N','D','Y','N','N','Y','19ff0fe9-b846-41e7-aed7-8a0e04cbfac6','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-ALTER TABLE AD_UserDef_Info ADD IsReadOnly CHAR(1) CHECK (IsReadOnly IN ('Y','N')) NOT NULL
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214244,0.0,'User updatable','The field can be updated by the user','The User Updatable checkbox indicate if the user can update  this field.',200266,'IsUserUpdateable',1,'N','N','Y','N','N','N',20,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,423,'Y','N','D','Y','N','N','Y','2f1898a5-408a-49c7-a6f4-0fa89522cb95','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-ALTER TABLE AD_UserDef_Info ADD IsUserUpdateable CHAR(1) CHECK (IsUserUpdateable IN ('Y','N')) NOT NULL
-;
-
 -- Sep 29, 2020, 7:26:57 AM CEST
 INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203436,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,'AD_UserDef_Info_UU','AD_UserDef_Info_UU','AD_UserDef_Info_UU','D','445df916-338b-4a70-8838-a7331b4d25c2')
 ;
@@ -357,14 +333,6 @@ ALTER TABLE AD_UserDef_Info_Column ADD AD_Val_Rule_ID NUMBER(10) DEFAULT NULL
 ;
 
 -- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214294,0.0,'Centrally maintained','Information maintained in System Element table','The Centrally Maintained checkbox indicates if the Name, Description and Help maintained in ''System Element'' table  or ''Window'' table.',200268,'IsCentrallyMaintained','Y',1,'N','N','Y','N','N','N',20,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,362,'Y','N','D','Y','N','N','Y','5a5c2bca-6148-42a3-a0d8-879db0701979','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-ALTER TABLE AD_UserDef_Info_Column ADD IsCentrallyMaintained CHAR(1) DEFAULT 'Y' CHECK (IsCentrallyMaintained IN ('Y','N')) NOT NULL
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214295,0.0,'Display Logic','If the Field is displayed, the result determines if the field is actually displayed','format := {expression} [{logic} {expression}]<br> 
 expression := @{context}@{operand}{value} or @{context}@{operand}{value}<br> 
 logic := {|}|{&}<br>
@@ -405,52 +373,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 
 -- Sep 29, 2020, 7:26:57 AM CEST
 ALTER TABLE AD_UserDef_Info_Column ADD SeqNoSelection NUMBER(10) DEFAULT 0
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214301,0.0,'Length','Length of the column in the database','The Length indicates the length of a column as defined in the database.',200268,'FieldLength',10,'N','N','N','N','N','N',11,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,302,'Y','N','D','Y','N','N','Y','74a84c67-8ffb-4833-9983-f51748a167b5','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-ALTER TABLE AD_UserDef_Info_Column ADD FieldLength NUMBER(10) DEFAULT NULL 
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214302,0.0,'Value Format','Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"','<B>Validation elements:</B>
- 	(Space) any character
-_	Space (fixed character)
-l	any Letter a..Z NO space
-L	any Letter a..Z NO space converted to upper case
-o	any Letter a..Z or space
-O	any Letter a..Z or space converted to upper case
-a	any Letters & Digits NO space
-A	any Letters & Digits NO space converted to upper case
-c	any Letters & Digits or space
-C	any Letters & Digits or space converted to upper case
-0	Digits 0..9 NO space
-9	Digits 0..9 or space
-
-Example of format "(000)_000-0000"',200268,'VFormat',60,'N','N','N','N','N','N',10,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,616,'Y','N','D','Y','N','N','Y','3bf68ca3-a511-4941-9c6f-fc20c27313ff','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-ALTER TABLE AD_UserDef_Info_Column ADD VFormat VARCHAR2(60 CHAR) DEFAULT NULL 
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214303,0.0,'Min. Value','Minimum Value for a field','The Minimum Value indicates the lowest  allowable value for a field.',200268,'ValueMin',20,'N','N','N','N','N','N',10,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,1060,'Y','N','D','Y','N','N','Y','c97d4378-b9b8-49c0-8b5a-124646ec0951','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-ALTER TABLE AD_UserDef_Info_Column ADD ValueMin VARCHAR2(20 CHAR) DEFAULT NULL 
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214304,0.0,'Max. Value','Maximum Value for a field','The Maximum Value indicates the highest allowable value for a field',200268,'ValueMax',20,'N','N','N','N','N','N',10,0,0,'Y',TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:57','YYYY-MM-DD HH24:MI:SS'),100,1059,'Y','N','D','Y','N','N','Y','9c914d88-71e5-4fc8-a47f-8c0ee995cd1c','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:57 AM CEST
-ALTER TABLE AD_UserDef_Info_Column ADD ValueMax VARCHAR2(20 CHAR) DEFAULT NULL 
 ;
 
 -- Sep 29, 2020, 7:26:57 AM CEST
@@ -657,66 +579,6 @@ ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT AD_UserDef_Info_Related_UU_id
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214263,0.0,'Context Help',200267,'AD_CtxHelp_ID',10,'N','N','N','N','N','N',19,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,202212,'N','N','D','Y','N','N','Y','f2485f3b-bb9a-4da7-a964-0566117af14d','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD AD_CtxHelp_ID NUMBER(10) DEFAULT NULL 
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214264,0.0,'Displayed','Determines, if this field is displayed','If the field is displayed, the field Display Logic will determine at runtime, if it is actually displayed',200267,'IsDisplayed',1,'N','N','N','N','N','N',17,319,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,368,'Y','N','D','Y','N','N','Y','a00cda11-0e9f-4b35-8acf-faf0b06d18cf','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD IsDisplayed CHAR(1) DEFAULT NULL 
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214266,0.0,'Display Logic','If the Field is displayed, the result determines if the field is actually displayed','format := {expression} [{logic} {expression}]<br> 
-expression := @{context}@{operand}{value} or @{context}@{operand}{value}<br> 
-logic := {|}|{&}<br>
-context := any global or window context <br>
-value := strings or numbers<br>
-logic operators	:= AND or OR with the previous result from left to right <br>
-operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
-Examples: <br>
-'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
-'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-'||chr(64)||'Name@>J<br>
-Strings may be in single quotes (optional)',200267,'DisplayLogic',2000,'N','N','N','N','N','N',14,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,283,'Y','N','D','Y','N','N','Y','93ce9482-7fb4-4d54-97b0-51da098363c3','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD DisplayLogic VARCHAR2(2000 CHAR) DEFAULT NULL 
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214267,0.0,'Related Info Window',200267,'RelatedInfo_ID','0',10,'N','N','N','N','N','N',18,200071,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,202557,'Y','N','D','Y','N','N','Y','36f9db23-07c3-4bb3-9975-cba5014d73ab','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD RelatedInfo_ID NUMBER(10) DEFAULT 0
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,AD_Val_Rule_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214268,0.0,'Related Info Column',200267,200046,'RelatedColumn_ID','0',10,'N','N','N','N','N','N',18,200072,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,202558,'Y','N','D','Y','N','N','Y','72eef670-1d6f-48d5-a209-182cd6460654','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD RelatedColumn_ID NUMBER(10) DEFAULT 0
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,AD_Val_Rule_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214269,0.0,'Parent Related Column','column in parent info window, link with column in this relate info','default column RelatedColumn in Relate Info window will link with key column of main info window
-column define in ParentRelatedColumn will replace key column',200267,200065,'ParentRelatedColumn_ID',10,'N','N','N','N','N','N',18,200072,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,202792,'Y','N','D','Y','N','N','Y','7fb59bc3-0257-443b-9f67-ef79dc57a673','Y','N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD ParentRelatedColumn_ID NUMBER(10) DEFAULT NULL 
-;
-
--- Sep 29, 2020, 7:26:58 AM CEST
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214270,0.0,'Sequence','Method of ordering records; lowest number comes first','The Sequence indicates the order of records',200267,'SeqNo',10,'N','N','Y','N','N','N',11,0,0,'Y',TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,566,'Y','N','D','Y','N','N','Y','1b5028d1-38db-41c5-9743-be85a4964b64','Y','N','N','N','N')
 ;
 
@@ -792,10 +654,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206449,'Centrally maintained','Information maintained in System Element table','The Centrally Maintained checkbox indicates if the Name, Description and Help maintained in ''System Element'' table  or ''Window'' table.',200279,214294,'Y',1,140,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','94d81a7c-b761-4426-927e-58aa4ad83082','Y',160,2,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206462,'Mandatory','Data entry is required in this column','The field must have a value for the record to be saved to the database.',200279,214307,'Y',1,150,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','1b1c69a5-25d1-49b2-bb1e-aa75cae10f1f','Y',290,4,2,1,'N','N','N','N')
 ;
 
@@ -851,36 +709,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 ;
 
 -- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206456,'Length','Length of the column in the database','The Length indicates the length of a column as defined in the database.',200279,214301,'Y',10,260,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','3d40ca72-43b5-4f49-bdb3-c5dc8670e1a4','Y',230,4,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206458,'Min. Value','Minimum Value for a field','The Minimum Value indicates the lowest  allowable value for a field.',200279,214303,'Y',20,270,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','3c0e88c0-5548-4243-871d-29ffce210dcb','Y',250,1,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206459,'Max. Value','Maximum Value for a field','The Maximum Value indicates the highest allowable value for a field',200279,214304,'Y',20,280,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','649fced1-8e54-4e16-b1ae-0639818bfd6f','Y',260,1,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206457,'Value Format','Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"','<B>Validation elements:</B>
- 	(Space) any character
-_	Space (fixed character)
-l	any Letter a..Z NO space
-L	any Letter a..Z NO space converted to upper case
-o	any Letter a..Z or space
-O	any Letter a..Z or space converted to upper case
-a	any Letters & Digits NO space
-A	any Letters & Digits NO space converted to upper case
-c	any Letters & Digits or space
-C	any Letters & Digits or space converted to upper case
-0	Digits 0..9 NO space
-9	Digits 0..9 or space
-
-Example of format "(000)_000-0000"',200279,214302,'Y',60,290,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','5e66b443-8da1-4a08-bc85-6d348dcb2e29','Y',240,1,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206466,'Input field validation','Input field validaton query','Input field validaton query',200279,214311,'Y',2000,300,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','681cad79-973b-4729-9038-a768de6a2157','Y',330,1,5,3,'N','N','N','N')
 ;
 
@@ -925,18 +753,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206480,'Default','Default value','The Default Checkbox indicates if this record will be used as a default value.',200280,214242,'Y',1,100,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','91379bf0-28fe-4abc-af54-dfaf7824100b','Y',90,2,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206481,'Read Only','Field is read only','The Read Only indicates that this field may only be Read.  It may not be updated.',200280,214243,'Y',1,110,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','4d42bfaf-72ce-406a-a6de-61bb4da54886','Y',100,2,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206482,'User updatable','The field can be updated by the user','The User Updatable checkbox indicate if the user can update  this field.',200280,214244,'Y',1,120,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','3ae39f69-ef15-47be-8f41-7eacd77019dc','Y',110,2,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206484,'Active','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
@@ -956,39 +772,11 @@ INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD
 ;
 
 -- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206502,'Related Info Column',200281,214268,'N',10,0,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','0362744b-ab59-4fec-a65a-bca8f01e725a','Y',150,1,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206500,'Display Logic','If the Field is displayed, the result determines if the field is actually displayed','format := {expression} [{logic} {expression}]<br> 
-expression := @{context}@{operand}{value} or @{context}@{operand}{value}<br> 
-logic := {|}|{&}<br>
-context := any global or window context <br>
-value := strings or numbers<br>
-logic operators	:= AND or OR with the previous result from left to right <br>
-operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
-Examples: <br>
-'||chr(64)||'AD_Table_ID@=14 | @Language@!GERGER <br>
-'||chr(64)||'PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-'||chr(64)||'Name@>J<br>
-Strings may be in single quotes (optional)',200281,214266,'N',2000,0,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','7a5af0d4-bf0a-44ec-b11a-fc2814adbb70','Y',130,1,5,3,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206503,'Parent Related Column','column in parent info window, link with column in this relate info','default column RelatedColumn in Relate Info window will link with key column of main info window
-column define in ParentRelatedColumn will replace key column',200281,214269,'N',10,0,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','44c6bf05-6d8b-49f3-a637-91e04ecb67d3','Y',160,1,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206495,'AD_UserDef_Info_Related_UU',200281,214261,'N',36,0,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','091580eb-5bd1-4be2-b866-3d3dd920054f','N',1,2,1,'N','N','N','N')
 ;
 
 -- Sep 29, 2020, 7:26:59 AM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206490,'User defined Info Related',200281,214246,'N',10,0,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','7a14984f-f64e-43bb-be0f-ae19ea493e8c','N',1,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,AD_FieldGroup_ID,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206501,'Related Info Window',200281,214267,'N',10,0,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y',200004,'D','3dec6061-052f-44cb-b21b-82f853b08085','Y',140,1,2,1,'N','N','N','N')
 ;
 
 -- Sep 29, 2020, 7:26:59 AM CEST
@@ -1028,14 +816,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
 (2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200281,214249,'Y',1,90,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','8aa5de2b-f9c0-4333-a302-dd572a688fc0','Y',180,2,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206498,'Displayed','Determines, if this field is displayed','If the field is displayed, the field Display Logic will determine at runtime, if it is actually displayed',200281,214264,'Y',1,100,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','944d9461-53d1-46f0-bf96-af1a052db781','Y',110,1,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206497,'Context Help',200281,214263,'Y',10,110,'N','N','N','N',0,0,'Y',TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','0df0940b-3f6d-4cfd-9908-e54d39b5db0d','Y',100,1,2,1,'N','N','N','N')
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
@@ -1108,38 +888,6 @@ UPDATE AD_Column SET FKConstraintName='ADInfoRelated_ADUserDefInfoRel', FKConstr
 
 -- Sep 29, 2020, 7:27:00 AM CEST
 ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT ADInfoRelated_ADUserDefInfoRel FOREIGN KEY (AD_InfoRelated_ID) REFERENCES ad_inforelated(ad_inforelated_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_Column SET FKConstraintName='ADCtxHelp_ADUserDefInfoRelated', FKConstraintType='N',Updated=TO_DATE('2020-09-29 07:27:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214263
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT ADCtxHelp_ADUserDefInfoRelated FOREIGN KEY (AD_CtxHelp_ID) REFERENCES ad_ctxhelp(ad_ctxhelp_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_Column SET FKConstraintName='RelatedInfo_ADUserDefInfoRelat', FKConstraintType='N',Updated=TO_DATE('2020-09-29 07:27:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214267
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT RelatedInfo_ADUserDefInfoRelat FOREIGN KEY (RelatedInfo_ID) REFERENCES ad_infowindow(ad_infowindow_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_Column SET FKConstraintName='RelatedColumn_ADUserDefInfoRel', FKConstraintType='N',Updated=TO_DATE('2020-09-29 07:27:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214268
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT RelatedColumn_ADUserDefInfoRel FOREIGN KEY (RelatedColumn_ID) REFERENCES ad_infocolumn(ad_infocolumn_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-UPDATE AD_Column SET FKConstraintName='ParentRelatedColumn_ADUserDefI', FKConstraintType='N',Updated=TO_DATE('2020-09-29 07:27:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214269
-;
-
--- Sep 29, 2020, 7:27:00 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT ParentRelatedColumn_ADUserDefI FOREIGN KEY (ParentRelatedColumn_ID) REFERENCES ad_infocolumn(ad_infocolumn_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST
@@ -1340,6 +1088,198 @@ UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=32, Updated=SysDate WHERE AD_Tree_
 
 -- Sep 29, 2020, 7:27:00 AM CEST
 UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=33, Updated=SysDate WHERE AD_Tree_ID=10 AND Node_ID=50001
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=30, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=1, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206476
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=40, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=4, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206477
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=50, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=1, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206478
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=5, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206484
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET SeqNo=70, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206472
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET SeqNo=80, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206473
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET SeqNo=90, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206474
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET SeqNo=100, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206479
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET SeqNo=0, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206483
+;
+
+-- Oct 11, 2020, 4:34:07 PM CEST
+UPDATE AD_Field SET SeqNo=0, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:34:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206475
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=40, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=4, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206437
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=80, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206441
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=90, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206455
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=100, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206442
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=110, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206464
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=120, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=1, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206443
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=130, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206462
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=140, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206450
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=150, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206460
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=160, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206467
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=170, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206468
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=180, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206465
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=190, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206445
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=200, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206448
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=210, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206447
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=220, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206453
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=230, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206452
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=240, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=5, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206469
+;
+
+-- Oct 11, 2020, 4:55:52 PM CEST
+UPDATE AD_Field SET SeqNo=250, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:55:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206466
+;
+
+-- Oct 11, 2020, 4:56:15 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=40, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=4, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:56:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206492
+;
+
+-- Oct 11, 2020, 4:56:15 PM CEST
+UPDATE AD_Field SET SeqNo=50, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:56:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206487
+;
+
+-- Oct 11, 2020, 4:56:15 PM CEST
+UPDATE AD_Field SET SeqNo=60, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:56:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206488
+;
+
+-- Oct 11, 2020, 4:56:15 PM CEST
+UPDATE AD_Field SET SeqNo=70, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:56:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206489
+;
+
+-- Oct 11, 2020, 4:56:15 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=80, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=1, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:56:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206504
+;
+
+-- Oct 11, 2020, 4:56:15 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=90, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=5, IsToolbarButton=NULL,Updated=TO_DATE('2020-10-11 16:56:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206505
+;
+
+-- Oct 11, 2020, 4:58:25 PM CEST
+UPDATE AD_Column SET IsIdentifier='Y', SeqNo=10,Updated=TO_DATE('2020-10-11 16:58:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214237
+;
+
+-- Oct 11, 2020, 4:58:35 PM CEST
+UPDATE AD_Column SET SeqNo=20,Updated=TO_DATE('2020-10-11 16:58:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214238
+;
+
+-- Oct 11, 2020, 5:00:40 PM CEST
+UPDATE AD_Column SET IsIdentifier='Y', SeqNo=2,Updated=TO_DATE('2020-10-11 17:00:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=15787
+;
+
+-- Oct 11, 2020, 5:01:39 PM CEST
+UPDATE AD_Column SET IsIdentifier='Y', SeqNo=3,Updated=TO_DATE('2020-10-11 17:01:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=15788
+;
+
+-- Oct 11, 2020, 5:01:55 PM CEST
+UPDATE AD_Column SET IsIdentifier='Y', SeqNo=4,Updated=TO_DATE('2020-10-11 17:01:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=15789
+;
+
+-- Oct 11, 2020, 5:03:52 PM CEST
+UPDATE AD_Column SET DefaultValue='NULL',Updated=TO_DATE('2020-10-11 17:03:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214286
+;
+
+-- Oct 11, 2020, 5:04:00 PM CEST
+UPDATE AD_Column SET DefaultValue='NULL',Updated=TO_DATE('2020-10-11 17:04:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214300
+;
+
+-- Oct 11, 2020, 5:05:18 PM CEST
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_DATE('2020-10-11 17:05:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214286
+;
+
+-- Oct 11, 2020, 5:05:20 PM CEST
+ALTER TABLE AD_UserDef_Info_Column MODIFY SeqNo NUMBER(10) DEFAULT NULL
+;
+
+-- Oct 11, 2020, 5:05:20 PM CEST
+ALTER TABLE AD_UserDef_Info_Column MODIFY SeqNo NULL
+;
+
+-- Oct 11, 2020, 5:06:35 PM CEST
+UPDATE AD_Column SET DefaultValue='NULL', IsMandatory='N',Updated=TO_DATE('2020-10-11 17:06:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214270
+;
+
+-- Oct 11, 2020, 5:06:36 PM CEST
+ALTER TABLE AD_UserDef_Info_Related MODIFY SeqNo NUMBER(10) DEFAULT NULL
+;
+
+-- Oct 11, 2020, 5:06:36 PM CEST
+ALTER TABLE AD_UserDef_Info_Related MODIFY SeqNo NULL
 ;
 
 SELECT register_migration_script('202009290730_IDEMPIERE-4459.sql') FROM dual

@@ -236,6 +236,19 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public String getHelp();
 
+    /** Column name InputFieldValidation */
+    public static final String COLUMNNAME_InputFieldValidation = "InputFieldValidation";
+
+	/** Set Input field validation.
+	  * Input field validaton query
+	  */
+	public void setInputFieldValidation (String InputFieldValidation);
+
+	/** Get Input field validation.
+	  * Input field validaton query
+	  */
+	public String getInputFieldValidation();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 

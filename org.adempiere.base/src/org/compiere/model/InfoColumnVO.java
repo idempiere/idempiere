@@ -164,7 +164,6 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		InfoColumnVO vo = this;
 
 		// InfoColumn Customization
-		if (vo.isDisplayed) {
 			MUserDefInfoColumn userDef = null;
 			userDef = MUserDefInfoColumn.get(vo.ctx,vo.AD_InfoColumn_ID, vo.AD_InfoWindow_ID);
 			if (userDef != null)
@@ -209,9 +208,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 					vo.Placeholder = userDef.getPlaceholder();
 				if (userDef.get_Translation("Placeholder") != null)
 					vo.PlaceHolderTrl = userDef.get_Translation("Placeholder");
-// IDEMPIERE-4459 - this field is on basic info window column we asume this can be implemented later TODO Carlos Ruiz
-//				if (userDef.getInputFieldValidation() != null)
-//					vo.InputFieldValidation = userDef.getInputFieldValidation();
+				if (userDef.getInputFieldValidation() != null)
+					vo.InputFieldValidation = userDef.getInputFieldValidation();
 				if (userDef.getIsQueryCriteria() != null)
 					vo.isQueryCriteria = "Y".equals(userDef.getIsQueryCriteria());
 				if (userDef.getQueryFunction()!= null)
@@ -220,7 +218,6 @@ public class InfoColumnVO implements Serializable, Cloneable {
 					vo.QueryOperator= userDef.getQueryOperator();
 				if (userDef.getIsAutocomplete() != null)
 					vo.isAutocomplete = "Y".equals(userDef.getIsAutocomplete());
-			}
 		}
 		//
 		return vo;

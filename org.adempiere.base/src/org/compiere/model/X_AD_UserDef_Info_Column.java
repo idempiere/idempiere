@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201006L;
+	private static final long serialVersionUID = 20201011L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -40,8 +40,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 			setAD_InfoColumn_ID (0);
 			setAD_UserDef_Info_Column_ID (0);
 			setAD_UserDef_Info_ID (0);
-			setSeqNo (0);
-// 0
+// @AD_UserDef_Info_ID@
         } */
     }
 
@@ -338,6 +337,23 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Input field validation.
+		@param InputFieldValidation 
+		Input field validaton query
+	  */
+	public void setInputFieldValidation (String InputFieldValidation)
+	{
+		set_Value (COLUMNNAME_InputFieldValidation, InputFieldValidation);
+	}
+
+	/** Get Input field validation.
+		@return Input field validaton query
+	  */
+	public String getInputFieldValidation () 
+	{
+		return (String)get_Value(COLUMNNAME_InputFieldValidation);
 	}
 
 	/** IsAutocomplete AD_Reference_ID=319 */

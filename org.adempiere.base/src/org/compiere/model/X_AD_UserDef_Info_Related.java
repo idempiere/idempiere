@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200929L;
+	private static final long serialVersionUID = 20201011L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -41,7 +41,6 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 			setAD_UserDef_Info_ID (0);
 // @AD_UserDef_Info_ID@
 			setAD_UserDef_Info_Related_ID (0);
-			setSeqNo (0);
         } */
     }
 
@@ -72,31 +71,6 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
-
-	/** Set Context Help.
-		@param AD_CtxHelp_ID Context Help	  */
-	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
-	{
-		if (AD_CtxHelp_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
-	}
-
-	/** Get Context Help.
-		@return Context Help	  */
-	public int getAD_CtxHelp_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	public org.compiere.model.I_AD_InfoRelated getAD_InfoRelated() throws RuntimeException
     {
@@ -199,23 +173,6 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
-	public void setDisplayLogic (String DisplayLogic)
-	{
-		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
-	}
-
-	/** Get Display Logic.
-		@return If the Field is displayed, the result determines if the field is actually displayed
-	  */
-	public String getDisplayLogic () 
-	{
-		return (String)get_Value(COLUMNNAME_DisplayLogic);
-	}
-
 	/** Set Comment/Help.
 		@param Help 
 		Comment or Hint
@@ -233,30 +190,6 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	/** IsDisplayed AD_Reference_ID=319 */
-	public static final int ISDISPLAYED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDISPLAYED_Yes = "Y";
-	/** No = N */
-	public static final String ISDISPLAYED_No = "N";
-	/** Set Displayed.
-		@param IsDisplayed 
-		Determines, if this field is displayed
-	  */
-	public void setIsDisplayed (String IsDisplayed)
-	{
-
-		set_Value (COLUMNNAME_IsDisplayed, IsDisplayed);
-	}
-
-	/** Get Displayed.
-		@return Determines, if this field is displayed
-	  */
-	public String getIsDisplayed () 
-	{
-		return (String)get_Value(COLUMNNAME_IsDisplayed);
-	}
-
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -272,84 +205,6 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
-	}
-
-	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
-			.getPO(getParentRelatedColumn_ID(), get_TrxName());	}
-
-	/** Set Parent Related Column.
-		@param ParentRelatedColumn_ID 
-		column in parent info window, link with column in this relate info
-	  */
-	public void setParentRelatedColumn_ID (int ParentRelatedColumn_ID)
-	{
-		if (ParentRelatedColumn_ID < 1) 
-			set_Value (COLUMNNAME_ParentRelatedColumn_ID, null);
-		else 
-			set_Value (COLUMNNAME_ParentRelatedColumn_ID, Integer.valueOf(ParentRelatedColumn_ID));
-	}
-
-	/** Get Parent Related Column.
-		@return column in parent info window, link with column in this relate info
-	  */
-	public int getParentRelatedColumn_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ParentRelatedColumn_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
-			.getPO(getRelatedColumn_ID(), get_TrxName());	}
-
-	/** Set Related Info Column.
-		@param RelatedColumn_ID Related Info Column	  */
-	public void setRelatedColumn_ID (int RelatedColumn_ID)
-	{
-		if (RelatedColumn_ID < 1) 
-			set_Value (COLUMNNAME_RelatedColumn_ID, null);
-		else 
-			set_Value (COLUMNNAME_RelatedColumn_ID, Integer.valueOf(RelatedColumn_ID));
-	}
-
-	/** Get Related Info Column.
-		@return Related Info Column	  */
-	public int getRelatedColumn_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_RelatedColumn_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_InfoWindow getRelatedInfo() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getRelatedInfo_ID(), get_TrxName());	}
-
-	/** Set Related Info Window.
-		@param RelatedInfo_ID Related Info Window	  */
-	public void setRelatedInfo_ID (int RelatedInfo_ID)
-	{
-		if (RelatedInfo_ID < 1) 
-			set_Value (COLUMNNAME_RelatedInfo_ID, null);
-		else 
-			set_Value (COLUMNNAME_RelatedInfo_ID, Integer.valueOf(RelatedInfo_ID));
-	}
-
-	/** Get Related Info Window.
-		@return Related Info Window	  */
-	public int getRelatedInfo_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_RelatedInfo_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Sequence.
