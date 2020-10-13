@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="idempiere-201003" sequenceNumber="111">
+<target name="idempiere-201008" sequenceNumber="112">
 <locations>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webservice.client-p2-R20190412"/>
@@ -411,30 +411,30 @@
 		<unit id="org.tukaani.xz.source" version="1.8.0.v20180207-1613"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="https://idempiere.github.io/binary.file/p2.zk/9.0.1.2"/>
-		<unit id="zcommon" version="9.0.1.2"/>
-		<unit id="zcommon.source" version="9.0.1.2"/>
-		<unit id="zel" version="9.0.1.2"/>
-		<unit id="zel.source" version="9.0.1.2"/>
-		<unit id="zhtml" version="9.0.1.2"/>
-		<unit id="zhtml.source" version="9.0.1.2"/>
-		<unit id="zjavassist" version="9.0.1.2"/>
-		<unit id="zk" version="9.0.1.2"/>
-		<unit id="zk.source" version="9.0.1.2"/>
-		<unit id="zkbind" version="9.0.1.2"/>
-		<unit id="zkbind.source" version="9.0.1.2"/>
-		<unit id="zkplus" version="9.0.1.2"/>
-		<unit id="zkplus-legacy" version="9.0.1.2"/>
-		<unit id="zkplus-legacy.source" version="9.0.1.2"/>
-		<unit id="zkplus.source" version="9.0.1.2"/>
-		<unit id="zkwebfragment" version="9.0.1.2"/>
-		<unit id="zkwebfragment.source" version="9.0.1.2"/>
-		<unit id="zul" version="9.0.1.2"/>
-		<unit id="zul.source" version="9.0.1.2"/>
-		<unit id="zweb" version="9.0.1.2"/>
-		<unit id="zweb-dsp" version="9.0.1.2"/>
-		<unit id="zweb-dsp.source" version="9.0.1.2"/>
-		<unit id="zweb.source" version="9.0.1.2"/>
+		<repository location="https://idempiere.github.io/binary.file/p2.zk/9.5.0"/>				
+		<unit id="zcommon" version="9.5.0"/>
+		<unit id="zcommon.source" version="9.5.0"/>
+		<unit id="zel" version="9.5.0"/>
+		<unit id="zel.source" version="9.5.0"/>
+		<unit id="zhtml" version="9.5.0"/>
+		<unit id="zhtml.source" version="9.5.0"/>
+		<unit id="zjavassist" version="9.5.0"/>
+		<unit id="zk" version="9.5.0"/>
+		<unit id="zk.source" version="9.5.0"/>
+		<unit id="zkbind" version="9.5.0"/>
+		<unit id="zkbind.source" version="9.5.0"/>
+		<unit id="zkplus" version="9.5.0"/>
+		<unit id="zkplus-legacy" version="9.5.0"/>
+		<unit id="zkplus-legacy.source" version="9.5.0"/>
+		<unit id="zkplus.source" version="9.5.0"/>
+		<unit id="zkwebfragment" version="9.5.0"/>
+		<unit id="zkwebfragment.source" version="9.5.0"/>
+		<unit id="zul" version="9.5.0"/>
+		<unit id="zul.source" version="9.5.0"/>
+		<unit id="zweb" version="9.5.0"/>
+		<unit id="zweb-dsp" version="9.5.0"/>
+		<unit id="zweb-dsp.source" version="9.5.0"/>
+		<unit id="zweb.source" version="9.5.0"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20200519/"/>
