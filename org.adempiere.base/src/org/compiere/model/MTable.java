@@ -289,7 +289,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public MTable(Properties ctx, MTable copy, String trxName) 
 	{
-		this(ctx, 0, trxName);
+		//-1 to avoid infinite loop
+		this(ctx, -1, trxName);
 		copyPO(copy);
 		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MColumn(ctx, e, trxName);}).toArray(MColumn[]::new): null;
 		this.m_columnNameMap = copy.m_columnNameMap != null ? new HashMap<String, Integer>(copy.m_columnNameMap) : null;
