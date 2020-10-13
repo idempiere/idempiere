@@ -153,12 +153,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		while (it.hasNext())
 		{
 			MTable retValue = it.next();
-			if (tableName.equalsIgnoreCase(retValue.getTableName())
-					&& retValue.getCtx() == ctx
-				)
+			if (tableName.equalsIgnoreCase(retValue.getTableName()))
 			{
-				return retValue;
-		}
+				return s_cache.get (ctx, retValue.get_ID(), e -> new MTable(ctx, e));
+			}
 		}
 		//
 		MTable retValue = null;
@@ -186,7 +184,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		if (retValue != null)
 		{
 			Integer key = Integer.valueOf(retValue.getAD_Table_ID());
-			s_cache.put (key, retValue);
+			s_cache.put (key, retValue, e -> new MTable(Env.getCtx(), e));
 		}
 		return retValue;
 	}	//	get
@@ -291,7 +289,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public MTable(Properties ctx, MTable copy, String trxName) 
 	{
-		this(ctx, 0, trxName);
+		//-1 to avoid infinite loop
+		this(ctx, -1, trxName);
 		copyPO(copy);
 		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MColumn(ctx, e, trxName);}).toArray(MColumn[]::new): null;
 		this.m_columnNameMap = copy.m_columnNameMap != null ? new HashMap<String, Integer>(copy.m_columnNameMap) : null;
