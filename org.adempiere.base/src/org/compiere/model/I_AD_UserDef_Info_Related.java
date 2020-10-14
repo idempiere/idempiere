@@ -157,6 +157,19 @@ public interface I_AD_UserDef_Info_Related
 	  */
 	public boolean isActive();
 
+    /** Column name IsDisplayed */
+    public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";
+
+	/** Set Displayed.
+	  * Determines, if this field is displayed
+	  */
+	public void setIsDisplayed (String IsDisplayed);
+
+	/** Get Displayed.
+	  * Determines, if this field is displayed
+	  */
+	public String getIsDisplayed();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

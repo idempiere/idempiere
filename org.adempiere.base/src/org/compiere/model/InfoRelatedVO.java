@@ -78,6 +78,8 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 				vo.Name = userDef.get_Translation("Name");
 			if (userDef.getSeqNo() > 0)
 			    vo.SeqNo= userDef.getSeqNo();
+			if (userDef.getIsDisplayed() != null)
+				vo.isDisplayed = "Y".equals(userDef.getIsDisplayed());
 		}		
 	}
 

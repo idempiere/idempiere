@@ -164,60 +164,60 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		InfoColumnVO vo = this;
 
 		// InfoColumn Customization
-			MUserDefInfoColumn userDef = null;
-			userDef = MUserDefInfoColumn.get(vo.ctx,vo.AD_InfoColumn_ID, vo.AD_InfoWindow_ID);
-			if (userDef != null)
-			{
-				if (userDef.getName() != null)
-					vo.Name = userDef.getName();
-				if (userDef.get_Translation("Name") != null)
-					vo.NameTrl = userDef.get_Translation("Name");
-				if (userDef.getDescription() != null)
-					vo.Description = userDef.getDescription();
-				if (userDef.get_Translation("Description") != null)
-					vo.DescriptionTrl = userDef.get_Translation("Description");
-				if (userDef.getHelp() != null)
-					vo.Help = userDef.getHelp();
-				if (userDef.get_Translation("Help") != null)
-					vo.HelpTrl = userDef.get_Translation("Help");
-				if (userDef.getDisplayLogic() != null)
-					vo.DisplayLogic = userDef.getDisplayLogic();
-				if (userDef.getDefaultValue() != null)
-					vo.DefaultValue = userDef.getDefaultValue();
-				if (userDef.getIsDisplayed()!= null)
-				    vo.isDisplayed = "Y".equals(userDef.getIsDisplayed());
-				if (userDef.getIsReadOnly()!= null)
-				    vo.isReadOnly = "Y".equals(userDef.getIsReadOnly());
-				if (userDef.getAD_Reference_ID()>0)
-					vo.AD_Reference_ID = userDef.getAD_Reference_ID();
-				if (userDef.getAD_Reference_Value_ID()>0)
-					vo.AD_Reference_Value_ID = userDef.getAD_Reference_Value_ID();
-				if (userDef.getIsMandatory()!= null)
-					vo.isMandatory = "Y".equals(userDef.getIsMandatory());
-				if (userDef.getSeqNo() > 0)
-				    vo.SeqNo= userDef.getSeqNo();
-				if (userDef.getSeqNoSelection() > 0)
-				    vo.SeqNoSelection= userDef.getSeqNoSelection();
-				if (userDef.getAD_Val_Rule_ID() > 0) {
-					vo.ValidationCode = MValRule.get(vo.ctx, userDef.getAD_Val_Rule_ID()).getCode();
-					vo.AD_Val_Rule_ID = userDef.getAD_Val_Rule_ID();
-				}
-				if (userDef.getAD_FieldStyle_ID() > 0)
-					vo.AD_FieldStyle_ID = userDef.getAD_FieldStyle_ID();
-				if (userDef.getPlaceholder() != null)
-					vo.Placeholder = userDef.getPlaceholder();
-				if (userDef.get_Translation("Placeholder") != null)
-					vo.PlaceHolderTrl = userDef.get_Translation("Placeholder");
-				if (userDef.getInputFieldValidation() != null)
-					vo.InputFieldValidation = userDef.getInputFieldValidation();
-				if (userDef.getIsQueryCriteria() != null)
-					vo.isQueryCriteria = "Y".equals(userDef.getIsQueryCriteria());
-				if (userDef.getQueryFunction()!= null)
-					vo.QueryFunction= userDef.getQueryFunction();
-				if (userDef.getQueryOperator()!= null)
-					vo.QueryOperator= userDef.getQueryOperator();
-				if (userDef.getIsAutocomplete() != null)
-					vo.isAutocomplete = "Y".equals(userDef.getIsAutocomplete());
+		MUserDefInfoColumn userDef = null;
+		userDef = MUserDefInfoColumn.get(vo.ctx,vo.AD_InfoColumn_ID, vo.AD_InfoWindow_ID);
+		if (userDef != null)
+		{
+			if (userDef.getName() != null)
+				vo.Name = userDef.getName();
+			if (userDef.get_Translation("Name") != null)
+				vo.NameTrl = userDef.get_Translation("Name");
+			if (userDef.getDescription() != null)
+				vo.Description = userDef.getDescription();
+			if (userDef.get_Translation("Description") != null)
+				vo.DescriptionTrl = userDef.get_Translation("Description");
+			if (userDef.getHelp() != null)
+				vo.Help = userDef.getHelp();
+			if (userDef.get_Translation("Help") != null)
+				vo.HelpTrl = userDef.get_Translation("Help");
+			if (userDef.getDisplayLogic() != null)
+				vo.DisplayLogic = userDef.getDisplayLogic();
+			if (userDef.getDefaultValue() != null)
+				vo.DefaultValue = userDef.getDefaultValue();
+			if (userDef.getIsDisplayed()!= null)
+			    vo.isDisplayed = "Y".equals(userDef.getIsDisplayed());
+			if (userDef.getIsReadOnly()!= null)
+			    vo.isReadOnly = "Y".equals(userDef.getIsReadOnly());
+			if (userDef.getAD_Reference_ID()>0)
+				vo.AD_Reference_ID = userDef.getAD_Reference_ID();
+			if (userDef.getAD_Reference_Value_ID()>0)
+				vo.AD_Reference_Value_ID = userDef.getAD_Reference_Value_ID();
+			if (userDef.getIsMandatory()!= null)
+				vo.isMandatory = "Y".equals(userDef.getIsMandatory());
+			if (userDef.getSeqNo() > 0)
+			    vo.SeqNo= userDef.getSeqNo();
+			if (userDef.getSeqNoSelection() > 0)
+			    vo.SeqNoSelection= userDef.getSeqNoSelection();
+			if (userDef.getAD_Val_Rule_ID() > 0) {
+				vo.ValidationCode = MValRule.get(vo.ctx, userDef.getAD_Val_Rule_ID()).getCode();
+				vo.AD_Val_Rule_ID = userDef.getAD_Val_Rule_ID();
+			}
+			if (userDef.getAD_FieldStyle_ID() > 0)
+				vo.AD_FieldStyle_ID = userDef.getAD_FieldStyle_ID();
+			if (userDef.getPlaceholder() != null)
+				vo.Placeholder = userDef.getPlaceholder();
+			if (userDef.get_Translation("Placeholder") != null)
+				vo.PlaceHolderTrl = userDef.get_Translation("Placeholder");
+			if (userDef.getInputFieldValidation() != null)
+				vo.InputFieldValidation = userDef.getInputFieldValidation();
+			if (userDef.getIsQueryCriteria() != null)
+				vo.isQueryCriteria = "Y".equals(userDef.getIsQueryCriteria());
+			if (userDef.getQueryFunction()!= null)
+				vo.QueryFunction= userDef.getQueryFunction();
+			if (userDef.getQueryOperator()!= null)
+				vo.QueryOperator= userDef.getQueryOperator();
+			if (userDef.getIsAutocomplete() != null)
+				vo.isAutocomplete = "Y".equals(userDef.getIsAutocomplete());
 		}
 		//
 		return vo;
