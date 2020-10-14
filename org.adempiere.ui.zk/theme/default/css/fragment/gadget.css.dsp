@@ -215,8 +215,12 @@
 .help-content
 {
 	padding: 2px;
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
+}
+.mobile .help-content
+{
+	font-size: 14px;
 }
 
 .fav-new-btn.z-toolbarbutton [class^="z-icon-"] {
