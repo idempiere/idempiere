@@ -113,7 +113,10 @@
 .global-search-tabpanel {
 	width: 600px;
 }
-@media screen and (max-width: 599px) {
+@media screen and (max-width: 649px) {
+	.global-search-box.z-bandbox-popup {
+		width: 90% !important;
+	}
 	.global-search-tabpanel {
 		width: 100%;
 	}

@@ -17,9 +17,16 @@ html,body {
 	margin:0px;
 }
 
-<%-- Tablet --%>
+[class*="z-"]:not([class*="z-icon-"]) {
+    font-size: 14px;
+}
+
+<%-- Mobile/Tablet --%>
 .tablet-scrolling {
 	-webkit-overflow-scrolling: touch;
+}
+.mobile [class*="z-"]:not([class*="z-icon-"]) {
+    font-size: 16px;
 }
 
 <%-- vbox fix for firefox and ie --%>
