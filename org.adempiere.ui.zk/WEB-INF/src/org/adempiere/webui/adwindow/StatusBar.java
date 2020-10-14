@@ -198,7 +198,7 @@ public class StatusBar extends Panel implements EventListener<Event>
     	else
     	{
     		Label label = new Label("...");
-			label.setStyle("cursor: pointer");
+			label.setSclass("mobile-overflow-link");
 			messageContainer.appendChild(label);
 			label.addEventListener(Events.ON_CLICK, this);
     	}
