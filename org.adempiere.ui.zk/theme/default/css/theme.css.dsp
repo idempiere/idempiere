@@ -17,6 +17,10 @@ html,body {
 	margin:0px;
 }
 
+[class*="z-"]:not([class*="z-icon-"]) {
+    font-size: 14px;
+}
+
 <%-- Mobile/Tablet --%>
 .tablet-scrolling {
 	-webkit-overflow-scrolling: touch;

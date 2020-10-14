@@ -1,8 +1,11 @@
 package org.adempiere.webui.window;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.adwindow.QuickGridView;
 import org.adempiere.webui.apps.AEnv;
@@ -11,8 +14,12 @@ import org.adempiere.webui.panel.CustomizeGridViewPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.panel.QuickCustomizeGridViewPanel;
+import org.compiere.model.GridField;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
 
 public class CustomizeGridViewDialog extends Window {
 
@@ -96,6 +103,31 @@ public class CustomizeGridViewDialog extends Window {
 		customizePanel.setGridPanel(gridPanel);
 	}
 
+	/**
+	 * show grid view customization dialog for tabPanel
+	 * @param tabPanel
+	 * @return true if saved is ok
+	 */
+	public static boolean onCustomize(ADTabpanel tabPanel) {
+		Columns columns = tabPanel.getGridView().getListbox().getColumns();
+		List<Component> columnList = columns.getChildren();
+		GridField[] fields = tabPanel.getGridView().getFields();
+		Map<Integer, String> columnsWidth = new HashMap<Integer, String>();
+		ArrayList<Integer> gridFieldIds = new ArrayList<Integer>();
+		for (int i = 0; i < fields.length; i++) {
+			// 2 is offset of num of column in grid view and actual data fields.
+			// in grid view, add two function column, indicator column and selection (checkbox) column
+			// @see GridView#setupColumns
+			int offset = tabPanel.getGridView().isShowCurrentRowIndicatorColumn() ? 2 : 1;
+			Column column = (Column) columnList.get(i+offset);
+			String width = column.getWidth();
+			columnsWidth.put(fields[i].getAD_Field_ID(), width);
+			gridFieldIds.add(fields[i].getAD_Field_ID());
+
+		}
+		return showCustomize(0, tabPanel.getGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView(), null, false);
+	}
+	
 	/**
 	 * Show User customize (modal)
 	 * @param WindowNo window no

@@ -276,7 +276,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		if (paging != null && paging.getPageSize() != pageSize) {
 			paging.setPageSize(pageSize);
 			updateModel();
-			if (paging.getPageSize() > 1) {
+			if (paging.getPageCount() > 1) {
 				showPagingControl();
 			} else {
 				hidePagingControl();
@@ -538,6 +538,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		}
 		
 		org.zkoss.zul.Column selection = new Column();
+		selection.setHeight("2em");
 		ZKUpdateUtil.setWidth(selection, "22px");
 		try{
 			selection.setSort("none");
@@ -554,7 +555,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		if (showCurrentRowIndicatorColumn)
 		{
-			org.zkoss.zul.Column indicator = new Column();				
+			org.zkoss.zul.Column indicator = new Column();
+			indicator.setHeight("2em");
 			ZKUpdateUtil.setWidth(indicator, "22px");
 			try {
 				indicator.setSort("none");
@@ -579,6 +581,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				colnames.put(index, gridField[i].getHeader());
 				index++;
 				org.zkoss.zul.Column column = new Column();
+				column.setHeight("2em");
 				int colindex =tableModel.findColumn(gridField[i].getColumnName()); 
 				column.setSortAscending(new SortComparator(colindex, true, Env.getLanguage(Env.getCtx())));
 				column.setSortDescending(new SortComparator(colindex, false, Env.getLanguage(Env.getCtx())));

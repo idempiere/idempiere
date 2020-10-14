@@ -3,7 +3,6 @@
 <%-- breadcrumb --%>
 .breadcrumb-toolbar-button {
 	background-color: transparent; 
-	height: 22px;
 }
 .breadcrumb-toolbar-button img {
 	width: 22px;
@@ -60,6 +59,7 @@
 	display: inline-block;
 	position: absolute;
 	right: 4px;
+	max-width: 90%;
 }
 
 .docstatus-normal .z-label {
@@ -89,12 +89,35 @@
 }
 
 .adwindow-breadcrumb {
-	height: 30px;
+	min-height: 30px;
 	background-color: #FFF;
 	padding: 0px;
 	padding-left: 5px;
 	border-bottom: 1px solid #C5C5C5 !important;
-	clear: both;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: space-between
+}
+.adwindow-breadcrumb-paths {
+	display: inline-block;
+	padding: 4px 0px;
+}
+.adwindow-breadcrumb-toolbar {
+	display: inline-block; 
+	text-align: right;
+}
+.adwindow-breadcrumb-toolbar .z-toolbar {
+	background-image: none; 
+	background-color: transparent; 
+	border: none;
+}
+.adwindow-breadcrumb .breadcrumb-record-info.link {
+	padding-top: 4px;
+	padding-bottom: 0px;
+}
+.adwindow-breadcrumb .z-toolbarbutton-content {
+	line-height: inherit;
 }
 
 .adwindow-detailpane {
@@ -320,6 +343,7 @@
 	}	
 }
 .adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
-	white-space: pre-line;
+	white-space: pre-wrap;
 	text-overflow: ellipsis;
 }
+

@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.adwindow;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.form.WQuickForm;
 import org.adempiere.webui.component.DocumentLink;
@@ -105,6 +106,9 @@ public class StatusBar extends Panel implements EventListener<Event>
         
         appendChild(west);
         appendChild(east);
+        
+        if (ClientInfo.isMobile())
+        	ClientInfo.onClientInfo(this, this::onClientInfo);
     }
 
     /**
@@ -171,11 +175,35 @@ public class StatusBar extends Panel implements EventListener<Event>
     	String labelText = buildLabelText(m_statusText);
     	if (error) {
     		Notification.show(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", 3500, true);
+    	} else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH)) {
+    		Notification.show(buildNotificationText(m_statusText), "info", findTabpanel(this), "top_left", 2000, true);
     	}
-    	Label label = new Label(labelText);
+    	
     	messageContainer.setSclass(error ? "docstatus-error" : "docstatus-normal");
-    	messageContainer.appendChild(label);
-		if (m_logs != null) {
+    	if (!ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH))
+    	{
+	    	Label label = new Label(labelText);	    	
+	    	messageContainer.appendChild(label);	
+			if (labelText.length() != m_statusText.length() || (div != null && div.getChildren().size() > 0)) {
+				label.addEventListener(Events.ON_CLICK, this);
+				label.setStyle("cursor: pointer");
+			
+				label = new Label(" ...");
+				label.setStyle("cursor: pointer");
+				messageContainer.appendChild(label);
+				label.addEventListener(Events.ON_CLICK, this);
+			}	    	
+	    	messageContainer.appendChild(new Space());	  
+    	}
+    	else
+    	{
+    		Label label = new Label("...");
+			label.setStyle("cursor: pointer");
+			messageContainer.appendChild(label);
+			label.addEventListener(Events.ON_CLICK, this);
+    	}
+    	
+    	if (m_logs != null) {
 			div = new Div();
 			for (int i = 0; i < m_logs.length; i++) {
 				if (m_logs[i].getP_Msg() != null) {
@@ -189,24 +217,12 @@ public class StatusBar extends Panel implements EventListener<Event>
 				}
 			}
 		}
-
-		if (labelText.length() != m_statusText.length() || (div != null && div.getChildren().size() > 0)) {
-			label.addEventListener(Events.ON_CLICK, this);
-			label.setStyle("cursor: pointer");
-		
-			label = new Label(" ...");
-			label.setStyle("cursor: pointer");
-			messageContainer.appendChild(label);
-			label.addEventListener(Events.ON_CLICK, this);
-		}
     	
-    	messageContainer.appendChild(new Space());
     	createPopupContent();
     	if(div!=null)
     	{
     		msgPopupCnt.appendChild(div);
     	}
-        
     }
 
     private String buildLabelText(String statusText) {
@@ -295,11 +311,14 @@ public class StatusBar extends Panel implements EventListener<Event>
 		msgPopup.setClosable(true);
 		msgPopup.setSizable(true);
 		msgPopup.setContentStyle("overflow: auto");
-		ZKUpdateUtil.setWidth(msgPopup, "500px");
+		ZKUpdateUtil.setWindowWidthX(msgPopup, 500);
         msgPopup.appendChild(msgPopupCnt);
         msgPopup.setShadow(true);
         msgPopupCaption = new Caption();
         msgPopup.appendChild(msgPopupCaption);        
 	}
 
-		}
+    protected void onClientInfo() {
+    	ZKUpdateUtil.setWindowWidthX(msgPopup, 500);
+    }
+}
