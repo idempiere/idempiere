@@ -31,6 +31,7 @@ import java.util.Properties;
 
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * User overrides for Info Window Model
@@ -171,9 +172,14 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 					weight[i] = -1;
 				}
 			}
-			// prefer if related to current login language
-			if (weight[i] > -1 && Env.getAD_Language(ctx).equalsIgnoreCase(candidates[i].getAD_Language())) {
-				weight[i] = weight[i] + 8;
+			
+			if (weight[i] > -1 && !Util.isEmpty(candidates[i].getAD_Language())) {
+				if(Env.getAD_Language(ctx).equalsIgnoreCase(candidates[i].getAD_Language())) {
+					weight[i] = weight[i] + 8;
+				}
+				else {
+					weight[i] = -1;
+				}
 			}
 			// others are implicit
 		}

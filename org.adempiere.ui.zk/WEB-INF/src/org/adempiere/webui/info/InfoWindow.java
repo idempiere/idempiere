@@ -74,6 +74,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.Lookup;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.InfoColumnVO;
+import org.compiere.model.InfoRelatedVO;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
@@ -81,6 +82,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.MUserDefInfo;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -683,23 +685,20 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			return false;
 
 		// topinfoColumns = infoWindow.getInfoColumns();
-		relatedInfoList = infoWindow.getInfoRelated(true);
+		MInfoRelated[] infoRelatedList = infoWindow.getInfoRelated(true);
+		//Init Info Related VO
+		relatedInfoList = InfoRelatedVO.getInfoRelatedVOList(Env.getCtx(), infoRelatedList);
+		
 		Tabpanels tabPanels = new Tabpanels();
 		Tabs tabs = new Tabs();
 
-		if (relatedInfoList.length > 0) { // setup the panel
-
-			//embeddedPane.setTitle(Msg.translate(Env.getCtx(), "Related Information"));
-			ZKUpdateUtil.setHeight(embeddedPane, "100%");
-			//tabPanels = new Tabpanels();
-			embeddedPane.appendChild(tabPanels);
-			//tabs = new Tabs();
-			embeddedPane.appendChild(tabs);
-
-		}
 
 		//	for(int i=0; i <  relatedinfoList.length - 1 ; i++) {
-		for (MInfoRelated relatedInfo:relatedInfoList) {
+		for (InfoRelatedVO relatedInfo:relatedInfoList) {
+			
+			if(!relatedInfo.isDisplayed()) {
+				continue;
+			}
 
 			String tableName = null;		
 			int infoRelatedID = relatedInfo.getRelatedInfo_ID(); 
@@ -752,12 +751,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				RelatedInfoWindow relatedInfoWindow = new RelatedInfoWindow(ewinInfo, this, embeddedPaging, s_sqlCount, s_layoutEmbedded, editorMap);
 				relatedMap.put(embedInfo.getAD_InfoWindow_ID(), relatedInfoWindow);
 
-				MInfoWindow riw = (MInfoWindow) relatedInfo.getRelatedInfo();
-				String tabTitle;
-				if (riw != null)
-					tabTitle = Util.cleanAmp(riw.get_Translation("Name"));
-				else
-					tabTitle = relatedInfo.getName();
+				String tabTitle = relatedInfo.getName();
 				Tab tab = new Tab(tabTitle);
 				tabs.appendChild(tab);
 				Tabpanel desktopTabPanel = new Tabpanel();
@@ -770,6 +764,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				vlayout.appendChild(embeddedTbl);				
 				tabPanels.appendChild(desktopTabPanel);
 			}
+
+		}
+		
+		if (relatedInfoList.length > 0) { // setup the panel
+
+			//embeddedPane.setTitle(Msg.translate(Env.getCtx(), "Related Information"));
+			ZKUpdateUtil.setHeight(embeddedPane, "100%");
+			//tabPanels = new Tabpanels();
+			embeddedPane.appendChild(tabPanels);
+			//tabs = new Tabs();
+			embeddedPane.appendChild(tabs);
 
 		}
 
@@ -1265,8 +1270,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 	
 	protected void renderWindow()
-	{		
-		setTitle(infoWindow.get_Translation("Name"));
+	{	
+		// Load User Def
+		MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+		if(userDef != null && !Util.isEmpty(userDef.getName())) {
+			setTitle(userDef.getName());
+		} else {
+			setTitle(infoWindow.get_Translation("Name"));
+		}
 		layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");

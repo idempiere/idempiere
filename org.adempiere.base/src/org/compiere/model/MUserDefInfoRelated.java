@@ -24,8 +24,14 @@
 **********************************************************************/
 package org.compiere.model;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 
 /**
  * User overrides for Info Window Related Model
@@ -45,4 +51,55 @@ public class MUserDefInfoRelated extends X_AD_UserDef_Info_Related {
 	public MUserDefInfoRelated(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
+	
+	/**
+	 * Get matching MUserDefInfoRelated related to current Info Column and user definition for Info window
+	 * @param ctx
+	 * @param AD_InfoRelated_ID
+	 * @param AD_InfoWindow_ID
+	 * @return
+	 */
+	public static MUserDefInfoRelated get (Properties ctx, int AD_InfoRelated_ID, int AD_InfoWindow_ID )
+	{
+
+		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(ctx, AD_InfoWindow_ID);
+		if (userdefInfo == null)
+			return null;
+		
+		MUserDefInfoRelated retValue = null;
+
+		StringBuilder sql = new StringBuilder("SELECT * "
+				+ " FROM AD_UserDef_Info_Related c " 
+				+ " WHERE c.AD_InfoRelated_ID=? AND c.IsActive='Y' "
+				+ " AND c.AD_UserDef_Info_ID=? ");
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			//	create statement
+			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt.setInt(1, AD_InfoRelated_ID);
+			pstmt.setInt(2, userdefInfo.getAD_UserDef_Info_ID());
+			// 	get data
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				retValue = new MUserDefInfoRelated(ctx,rs,null);
+			}
+		}
+		catch (SQLException ex)
+		{
+			CLogger.get().log(Level.SEVERE, sql.toString(), ex);
+			return null;
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; 
+			pstmt = null;
+		}
+
+		return retValue;
+	}	//get
 }
