@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201014L;
+	private static final long serialVersionUID = 20201015L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -173,6 +173,23 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set Display Logic.
+		@param DisplayLogic 
+		If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic)
+	{
+		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
+	}
+
+	/** Get Display Logic.
+		@return If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic () 
+	{
+		return (String)get_Value(COLUMNNAME_DisplayLogic);
+	}
+
 	/** Set Comment/Help.
 		@param Help 
 		Comment or Hint
@@ -188,30 +205,6 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
-	}
-
-	/** IsDisplayed AD_Reference_ID=319 */
-	public static final int ISDISPLAYED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDISPLAYED_Yes = "Y";
-	/** No = N */
-	public static final String ISDISPLAYED_No = "N";
-	/** Set Displayed.
-		@param IsDisplayed 
-		Determines, if this field is displayed
-	  */
-	public void setIsDisplayed (String IsDisplayed)
-	{
-
-		set_Value (COLUMNNAME_IsDisplayed, IsDisplayed);
-	}
-
-	/** Get Displayed.
-		@return Determines, if this field is displayed
-	  */
-	public String getIsDisplayed () 
-	{
-		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
 
 	/** Set Name.

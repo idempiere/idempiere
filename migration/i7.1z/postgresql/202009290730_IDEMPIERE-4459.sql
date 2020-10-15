@@ -576,11 +576,22 @@ ALTER TABLE AD_UserDef_Info_Related ADD CONSTRAINT AD_UserDef_Info_Related_UU_id
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214264,0.0,'Displayed','Determines, if this field is displayed','If the field is displayed, the field Display Logic will determine at runtime, if it is actually displayed',200267,'IsDisplayed',1,'N','N','N','N','N','N',17,319,0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,368,'Y','N','D','Y','N','N','Y','a00cda11-0e9f-4b35-8acf-faf0b06d18cf','Y','N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214266,0.0,'Display Logic','If the Field is displayed, the result determines if the field is actually displayed','format := {expression} [{logic} {expression}]<br> 
+expression := @{context}@{operand}{value} or @{context}@{operand}{value}<br> 
+logic := {|}|{&}<br>
+context := any global or window context <br>
+value := strings or numbers<br>
+logic operators	:= AND or OR with the previous result from left to right <br>
+operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
+Examples: <br>
+@AD_Table_ID@=14 | @Language@!GERGER <br>
+@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+@Name@>J<br>
+Strings may be in single quotes (optional)',200267,'DisplayLogic',2000,'N','N','N','N','N','N',14,0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:58','YYYY-MM-DD HH24:MI:SS'),100,283,'Y','N','D','Y','N','N','Y','93ce9482-7fb4-4d54-97b0-51da098363c3','Y','N','N','N','N')
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
-ALTER TABLE AD_UserDef_Info_Related ADD COLUMN IsDisplayed CHAR(1) DEFAULT NULL 
+ALTER TABLE AD_UserDef_Info_Related ADD COLUMN DisplayLogic VARCHAR(2000) DEFAULT NULL 
 ;
 
 -- Sep 29, 2020, 7:26:58 AM CEST
@@ -777,6 +788,21 @@ INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD
 ;
 
 -- Sep 29, 2020, 7:26:59 AM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206500,'Display Logic','If the Field is displayed, the result determines if the field is actually displayed','format := {expression} [{logic} {expression}]<br> 
+expression := @{context}@{operand}{value} or @{context}@{operand}{value}<br> 
+logic := {|}|{&}<br>
+context := any global or window context <br>
+value := strings or numbers<br>
+logic operators	:= AND or OR with the previous result from left to right <br>
+operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
+Examples: <br>
+@AD_Table_ID@=14 | @Language@!GERGER <br>
+@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
+@Name@>J<br>
+Strings may be in single quotes (optional)',200281,214266,'Y',2000,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','7a5af0d4-bf0a-44ec-b11a-fc2814adbb70','Y',130,1,5,3,'N','N','N','N')
+;
+
+-- Sep 29, 2020, 7:26:59 AM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206495,'AD_UserDef_Info_Related_UU',200281,214261,'N',36,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','091580eb-5bd1-4be2-b866-3d3dd920054f','N',1,2,1,'N','N','N','N')
 ;
 
@@ -821,10 +847,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
 (2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200281,214249,'Y',1,90,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','8aa5de2b-f9c0-4333-a302-dd572a688fc0','Y',180,2,2,1,'N','N','N','N')
-;
-
--- Sep 29, 2020, 7:26:59 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206498,'Displayed','Determines, if this field is displayed','If the field is displayed, the field Display Logic will determine at runtime, if it is actually displayed',200281,214264,'Y',1,100,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-09-29 07:26:59','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','944d9461-53d1-46f0-bf96-af1a052db781','Y',110,1,2,1,'N','N','N','N')
 ;
 
 -- Sep 29, 2020, 7:27:00 AM CEST

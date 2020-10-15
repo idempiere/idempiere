@@ -71,10 +71,10 @@ import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridWindow;
-import org.compiere.model.Lookup;
-import org.compiere.model.MInfoColumn;
 import org.compiere.model.InfoColumnVO;
 import org.compiere.model.InfoRelatedVO;
+import org.compiere.model.Lookup;
+import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
@@ -687,7 +687,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// topinfoColumns = infoWindow.getInfoColumns();
 		MInfoRelated[] infoRelatedList = infoWindow.getInfoRelated(true);
 		//Init Info Related VO
-		relatedInfoList = InfoRelatedVO.getInfoRelatedVOList(Env.getCtx(), infoRelatedList);
+		relatedInfoList = InfoRelatedVO.getInfoRelatedVOList(Env.getCtx(), infoRelatedList, p_WindowNo);
 		
 		Tabpanels tabPanels = new Tabpanels();
 		Tabs tabs = new Tabs();
@@ -696,7 +696,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		//	for(int i=0; i <  relatedinfoList.length - 1 ; i++) {
 		for (InfoRelatedVO relatedInfo:relatedInfoList) {
 			
-			if(!relatedInfo.isDisplayed()) {
+			if(!relatedInfo.isDisplayed(infoContext)) {
 				continue;
 			}
 

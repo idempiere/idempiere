@@ -131,6 +131,19 @@ public interface I_AD_UserDef_Info_Related
 	  */
 	public String getDescription();
 
+    /** Column name DisplayLogic */
+    public static final String COLUMNNAME_DisplayLogic = "DisplayLogic";
+
+	/** Set Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public void setDisplayLogic (String DisplayLogic);
+
+	/** Get Display Logic.
+	  * If the Field is displayed, the result determines if the field is actually displayed
+	  */
+	public String getDisplayLogic();
+
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
 
@@ -156,19 +169,6 @@ public interface I_AD_UserDef_Info_Related
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name IsDisplayed */
-    public static final String COLUMNNAME_IsDisplayed = "IsDisplayed";
-
-	/** Set Displayed.
-	  * Determines, if this field is displayed
-	  */
-	public void setIsDisplayed (String IsDisplayed);
-
-	/** Get Displayed.
-	  * Determines, if this field is displayed
-	  */
-	public String getIsDisplayed();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

@@ -4,9 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoRelated;
+import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
+import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 
 /**
@@ -21,6 +26,9 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	 */
 	private static final long serialVersionUID = 3683704870522235708L;
 	
+	/**	Logger			*/
+	private static CLogger	log = CLogger.getCLogger(InfoRelatedVO.class);
+	
 	/** Properties */
 	private Properties ctx;
 	
@@ -31,35 +39,39 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	private MInfoRelated infoRelated;
 
 	private int SeqNo;
-
-	private boolean isDisplayed;
+	
+	private String DisplayLogic;
 
 	private String Name;
+
+	private int WindowNo;
 	
 	/**
 	 * Default Constructor
 	 * @param ctx
 	 * @param infoColumn
 	 */
-	public InfoRelatedVO(Properties ctx, MInfoRelated infoRelated) {
+	public InfoRelatedVO(Properties ctx, MInfoRelated infoRelated, int windowNo) {
 		
 		this.ctx = ctx;
 		
 		this.infoRelated = infoRelated;
-		
-		this.isDisplayed = infoRelated.isActive();
-		
+				
 		this.AD_InfoRelated_ID = infoRelated.getAD_InfoRelated_ID();
 		
 		this.AD_InfoWindow_ID = infoRelated.getAD_InfoWindow_ID();
 		
 		this.SeqNo = infoRelated.getSeqNo();
 		
+		this.DisplayLogic = infoRelated.getDisplayLogic();
+		
 		MInfoWindow riw = (MInfoWindow) infoRelated.getRelatedInfo();
 		if (riw != null)
 			this.Name = Util.cleanAmp(riw.get_Translation("Name"));
 		else
 			this.Name = infoRelated.getName();
+		
+		this.WindowNo = windowNo;
 		
 		this.afterCreate();		
 	}
@@ -78,8 +90,8 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 				vo.Name = userDef.get_Translation("Name");
 			if (userDef.getSeqNo() > 0)
 			    vo.SeqNo= userDef.getSeqNo();
-			if (userDef.getIsDisplayed() != null)
-				vo.isDisplayed = "Y".equals(userDef.getIsDisplayed());
+			if (userDef.getDisplayLogic() != null)
+				vo.DisplayLogic = userDef.getDisplayLogic();
 		}		
 	}
 
@@ -88,11 +100,11 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	 * @param ctx
 	 * @param infoColumn
 	 */
-	public static InfoRelatedVO[] getInfoRelatedVOList(Properties ctx, MInfoRelated[] infoRelatedList) {
+	public static InfoRelatedVO[] getInfoRelatedVOList(Properties ctx, MInfoRelated[] infoRelatedList, int windowNo) {
 		ArrayList<InfoRelatedVO> infoRelatedVOList = new ArrayList<InfoRelatedVO>();
 		// Create Info Related VO
 		for(MInfoRelated infoRelated : infoRelatedList) {
-			InfoRelatedVO infoRelatedVO = new InfoRelatedVO(ctx, infoRelated);
+			InfoRelatedVO infoRelatedVO = new InfoRelatedVO(ctx, infoRelated, windowNo);
 			infoRelatedVOList.add(infoRelatedVO);
 		}
 		
@@ -134,10 +146,6 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		return Name;
 	}
 
-	public boolean isDisplayed() {
-		return this.isDisplayed;
-	}
-	
 	public I_AD_InfoColumn getParentRelatedColumn() {
 		return infoRelated.getParentRelatedColumn();
 	}
@@ -161,4 +169,52 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	public MInfoColumn getAD_InfoColumn (){
 		return (MInfoColumn) getParentRelatedColumn();
 	}
+
+	public String getDisplayLogic() {
+		return DisplayLogic;
+	}
+	
+	/**************************************************************************
+	 *	Is the Related Window Visible ?
+	 *  @return true, if visible
+	 */
+	public boolean isDisplayed (final Properties ctx)
+	{
+		//  no restrictions
+		if (Util.isEmpty(getDisplayLogic()))
+			return true;
+
+		if (getDisplayLogic().startsWith("@SQL=")) {
+			return Evaluator.parseSQLLogic(DisplayLogic, ctx, WindowNo, 0, infoRelated.toString());
+		}
+		Evaluatee evaluatee = new Evaluatee() {
+			public String get_ValueAsString(String variableName) {
+				return InfoRelatedVO.this.get_ValueAsString(ctx, variableName);
+			}
+		};
+		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
+		if (log.isLoggable(Level.FINEST)) log.finest(infoRelated.toString()
+			+ " (" + getDisplayLogic() + ") => " + retValue);
+		return retValue;
+
+	}	//	isDisplayed
+	
+	
+	/**
+	 * 	Get Variable Value (Evaluatee)
+	 *	@param variableName name
+	 *	@return value
+	 */
+	public String get_ValueAsString (Properties ctx, String variableName)
+	{
+		int f = variableName.indexOf('.');
+		if (f > 0) {
+			variableName = variableName.substring(0, f);
+		}
+		
+		String value = null;		
+	    value = Env.getContext (ctx, WindowNo, variableName, true);
+	   
+		return value;
+	}	//	get_ValueAsString
 }
