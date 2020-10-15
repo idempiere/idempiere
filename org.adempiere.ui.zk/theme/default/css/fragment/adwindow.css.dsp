@@ -347,3 +347,19 @@
 	text-overflow: ellipsis;
 }
 
+.mobile-overflow-link {
+	font-weight: 700; 
+	text-decoration: none;
+	transition: background 0.8s;
+	background-position: center;
+}
+.mobile-overflow-link:active {
+	background-color: #ddd;
+  	background-size: 80%;
+	transition: background 0s;
+}
+.adwindow-status-docstatus .z-label.mobile-overflow-link {
+	width: 18px;
+	cursor: pointer;
+	display: inline-block;
+}

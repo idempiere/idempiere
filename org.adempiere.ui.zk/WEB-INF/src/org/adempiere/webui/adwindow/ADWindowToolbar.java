@@ -1140,7 +1140,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		if (overflows.size() > 0) {
 			overflowButton = new A();
 			overflowButton.setIconSclass("z-icon-ShowMore");
-			overflowButton.setStyle("position: absolute; right: 8px; font-weight: 500; color: #333");
+			overflowButton.setSclass("font-icon-toolbar-button toolbar-button mobile-overflow-link");
 			appendChild(overflowButton);
 			overflowPopup = new Popup();
 			overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
