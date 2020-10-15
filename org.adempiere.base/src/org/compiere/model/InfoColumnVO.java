@@ -26,6 +26,7 @@ package org.compiere.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Properties;
 
 import org.compiere.util.Env;
@@ -236,6 +237,17 @@ public class InfoColumnVO implements Serializable, Cloneable {
 			InfoColumnVO infoColumn = new InfoColumnVO(ctx, p_infoColumn);
 			infoColumns.add(infoColumn);			
 		}
+		
+		infoColumns.sort(new Comparator<InfoColumnVO>() {
+
+			@Override
+			public int compare(InfoColumnVO o1, InfoColumnVO o2) {
+				Integer o1SeqNo = Integer.valueOf(o1.getSeqNo());
+				Integer o2SeqNo = Integer.valueOf(o2.getSeqNo());
+				return o1SeqNo.compareTo(o2SeqNo);
+			}
+		});
+		
 		return infoColumns.toArray(new InfoColumnVO[infoColumns.size()]);
 	}
 	
