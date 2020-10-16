@@ -135,6 +135,14 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
+	private static final String SLIDE_LEFT_IN_CSS = "slide-left-in";
+
+	private static final String SLIDE_LEFT_OUT_CSS = "slide-left-out";
+
+	private static final String SLIDE_RIGHT_IN_CSS = "slide-right-in";
+
+	private static final String SLIDE_RIGHT_OUT_CSS = "slide-right-out";
+
 	/**
 	 * 
 	 */
@@ -263,11 +271,25 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         {
 	        form.addEventListener("onSwipeRight", e -> {
 	        	if (windowPanel != null && windowPanel.getBreadCrumb() != null && windowPanel.getBreadCrumb().isPreviousEnabled())
-					windowPanel.onPrevious();
+	        	{
+	        		windowPanel.saveAndNavigate(b -> {
+	        			if (b) {
+	        				LayoutUtils.addSclass(SLIDE_RIGHT_OUT_CSS, form);
+	    					windowPanel.onPrevious();
+	        			}
+	        		});	        		
+	        	}
 	        });
 	        form.addEventListener("onSwipeLeft", e -> {
 	        	if (windowPanel != null && windowPanel.getBreadCrumb() != null && windowPanel.getBreadCrumb().isNextEnabled())
-					windowPanel.onNext();
+	        	{
+	        		windowPanel.saveAndNavigate(b -> {
+	        			if (b) {
+	        				LayoutUtils.addSclass(SLIDE_LEFT_OUT_CSS, form);	        	
+	    					windowPanel.onNext();
+	        			}
+	        		});	        		
+	        	}
 	        });
         }
         
@@ -872,6 +894,20 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             return;
         }
 
+        if (form.getSclass() != null && form.getSclass().contains(SLIDE_RIGHT_OUT_CSS)) {
+        	Executions.schedule(getDesktop(), e -> {
+        		LayoutUtils.removeSclass(SLIDE_RIGHT_OUT_CSS, form);
+        		LayoutUtils.addSclass(SLIDE_RIGHT_IN_CSS, form);
+        		Executions.schedule(getDesktop(), e1 -> onAfterSlide(e1), new Event("onAfterSlide", form));
+        	}, new Event("onAfterSlideRightOut", form));
+        } else if (form.getSclass() != null && form.getSclass().contains(SLIDE_LEFT_OUT_CSS)) {
+        	Executions.schedule(getDesktop(), e -> {
+        		LayoutUtils.removeSclass(SLIDE_LEFT_OUT_CSS, form);
+        		LayoutUtils.addSclass(SLIDE_LEFT_IN_CSS, form);
+        		Executions.schedule(getDesktop(), e1 -> onAfterSlide(e1), new Event("onAfterSlide", form));
+        	}, new Event("onAfterSlideLeftOut", form));
+        }
+        
     	List<Group> collapsedGroups = new ArrayList<Group>();
     	for (Group group : allCollapsibleGroups) {
     		if (! group.isOpen())
@@ -1013,6 +1049,15 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         echoDeferSetSelectedNodeEvent();
         if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
+
+	private void onAfterSlide(Event e) {
+		//delay to let animation complete
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {}
+		LayoutUtils.removeSclass(SLIDE_LEFT_IN_CSS, form);
+		LayoutUtils.removeSclass(SLIDE_RIGHT_IN_CSS, form);
+	}
 
 	private void echoDeferSetSelectedNodeEvent() {
 		if (getAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR) == null) {
