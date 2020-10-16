@@ -116,18 +116,20 @@ public class DefaultFeedbackService implements IFeedbackService {
 			
 			MSystem system = MSystem.get(Env.getCtx());
 
-			for (String s : getFeedbackRecipient(MSysConfig.FEEDBACK_EMAIL_TO).split(","))
-				if(EMail.validate(s.trim()))
-					dialog.addTo(s.trim(), Util.isEmpty(dialog.getTo()));
+			for (String s : getFeedbackRecipient(MSysConfig.FEEDBACK_EMAIL_TO).split(",")) {
+				if (!Util.isEmpty(s.trim()) && EMail.validate(s.trim()))
+					dialog.addTo(s.trim(), false);
+			}
 
 			if (Util.isEmpty(dialog.getTo()) && !Util.isEmpty(system.getSupportEMail())) 
 			{
 				dialog.addTo(system.getSupportEMail(), true);
 			}
 
-			for (String s : getFeedbackRecipient(MSysConfig.FEEDBACK_EMAIL_CC).split(","))
-				if(EMail.validate(s.trim()))
-					dialog.addCC(s.trim(), Util.isEmpty(dialog.getCc()));
+			for (String s : getFeedbackRecipient(MSysConfig.FEEDBACK_EMAIL_CC).split(",")) {
+				if (!Util.isEmpty(s.trim()) && EMail.validate(s.trim()))
+					dialog.addCC(s.trim(), false);
+			}
 
 			AEnv.showWindow(dialog);
 			if (imageBytes != null && imageBytes.length > 0) {
@@ -136,6 +138,11 @@ public class DefaultFeedbackService implements IFeedbackService {
 				dialog.addAttachment(screenShot, true);
 			}
 			dialog.focus();
+		}
+		
+		protected String getFeedbackRecipient(String scValue) {
+			String retValue = MSysConfig.getValue(scValue, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
+			return Util.isEmpty(retValue) ? "" : retValue;
 		}
 	}
 	
@@ -180,10 +187,5 @@ public class DefaultFeedbackService implements IFeedbackService {
 			}
 			window.focus();
 		}
-	}
-	
-	static String getFeedbackRecipient(String scValue) {
-		String retValue = MSysConfig.getValue(scValue, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
-		return Util.isEmpty(retValue) ? "" : retValue;
 	}
 }
