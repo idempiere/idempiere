@@ -33,5 +33,13 @@ Examples: <br>
 Strings may be in single quotes (optional)',200100,214326,'Y',2000,130,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2020-10-15 09:39:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2020-10-15 09:39:16','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','6ba1b12a-abbb-4e56-92ea-2391ffa6e5fb','Y',100,5,3)
 ;
 
+-- Oct 15, 2020, 6:39:04 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=100, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=1, ColumnSpan=5, NumLines=1, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2020-10-15 18:39:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206500
+;
+
+-- Oct 15, 2020, 6:39:27 PM CEST
+UPDATE AD_Field SET SeqNo=130, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, NumLines=1, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2020-10-15 18:39:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206520
+;
+
 SELECT register_migration_script('202010150940_IDEMPIERE-4459.sql') FROM dual
 ;
