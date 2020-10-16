@@ -40,7 +40,6 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
-import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -71,6 +70,8 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.GridField;
+import org.compiere.model.InfoColumnVO;
+import org.compiere.model.InfoRelatedVO;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
@@ -135,7 +136,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected final static String ATT_INFO_PROCESS_KEY = "INFO_PROCESS";
 	protected int pageSize;
 	public LinkedHashMap<KeyNamePair,LinkedHashMap<String, Object>> m_values = null;
-	protected MInfoRelated[] relatedInfoList;
+	protected InfoRelatedVO[] relatedInfoList;
 	// for test disable load all record when num of record < 1000
 	protected boolean isIgnoreCacheAll = true;
 	// Num of page preload, default is 2 page before current and 2 page after current 
@@ -791,7 +792,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (modelHasInfoColumn.getInfoColumnID() <= 0 || listReadedColumn.contains(modelHasInfoColumn.getInfoColumnID()))
 				continue;
 
-			MInfoColumn infoColumnAppend = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
+			MInfoColumn infoColumnApp = (MInfoColumn) modelHasInfoColumn.getAD_InfoColumn();
+			InfoColumnVO infoColumnAppend = new InfoColumnVO(Env.getCtx(), infoColumnApp);
 			Object appendData = null;
 			try {
 				if (DisplayType.isID(infoColumnAppend.getAD_Reference_ID())) {
