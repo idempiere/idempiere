@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for AD_InfoRelated
+/** Generated Interface for AD_UserDef_Info
  *  @author iDempiere (generated) 
  *  @version Release 7.1
  */
-public interface I_AD_InfoRelated 
+public interface I_AD_UserDef_Info 
 {
 
-    /** TableName=AD_InfoRelated */
-    public static final String Table_Name = "AD_InfoRelated";
+    /** TableName=AD_UserDef_Info */
+    public static final String Table_Name = "AD_UserDef_Info";
 
-    /** AD_Table_ID=200089 */
-    public static final int Table_ID = 200089;
+    /** AD_Table_ID=200266 */
+    public static final int Table_ID = 200266;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -48,24 +48,6 @@ public interface I_AD_InfoRelated
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_InfoRelated_ID */
-    public static final String COLUMNNAME_AD_InfoRelated_ID = "AD_InfoRelated_ID";
-
-	/** Set InfoRelated	  */
-	public void setAD_InfoRelated_ID (int AD_InfoRelated_ID);
-
-	/** Get InfoRelated	  */
-	public int getAD_InfoRelated_ID();
-
-    /** Column name AD_InfoRelated_UU */
-    public static final String COLUMNNAME_AD_InfoRelated_UU = "AD_InfoRelated_UU";
-
-	/** Set AD_InfoRelated_UU	  */
-	public void setAD_InfoRelated_UU (String AD_InfoRelated_UU);
-
-	/** Get AD_InfoRelated_UU	  */
-	public String getAD_InfoRelated_UU();
 
     /** Column name AD_InfoWindow_ID */
     public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
@@ -82,6 +64,19 @@ public interface I_AD_InfoRelated
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
+    /** Column name AD_Language */
+    public static final String COLUMNNAME_AD_Language = "AD_Language";
+
+	/** Set Language.
+	  * Language for this entity
+	  */
+	public void setAD_Language (String AD_Language);
+
+	/** Get Language.
+	  * Language for this entity
+	  */
+	public String getAD_Language();
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -94,6 +89,54 @@ public interface I_AD_InfoRelated
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Role_ID */
+    public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
+
+	/** Set Role.
+	  * Responsibility Role
+	  */
+	public void setAD_Role_ID (int AD_Role_ID);
+
+	/** Get Role.
+	  * Responsibility Role
+	  */
+	public int getAD_Role_ID();
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
+
+    /** Column name AD_UserDef_Info_ID */
+    public static final String COLUMNNAME_AD_UserDef_Info_ID = "AD_UserDef_Info_ID";
+
+	/** Set User defined Info Window	  */
+	public void setAD_UserDef_Info_ID (int AD_UserDef_Info_ID);
+
+	/** Get User defined Info Window	  */
+	public int getAD_UserDef_Info_ID();
+
+    /** Column name AD_UserDef_Info_UU */
+    public static final String COLUMNNAME_AD_UserDef_Info_UU = "AD_UserDef_Info_UU";
+
+	/** Set AD_UserDef_Info_UU	  */
+	public void setAD_UserDef_Info_UU (String AD_UserDef_Info_UU);
+
+	/** Get AD_UserDef_Info_UU	  */
+	public String getAD_UserDef_Info_UU();
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -123,34 +166,6 @@ public interface I_AD_InfoRelated
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name DisplayLogic */
-    public static final String COLUMNNAME_DisplayLogic = "DisplayLogic";
-
-	/** Set Display Logic.
-	  * If the Field is displayed, the result determines if the field is actually displayed
-	  */
-	public void setDisplayLogic (String DisplayLogic);
-
-	/** Get Display Logic.
-	  * If the Field is displayed, the result determines if the field is actually displayed
-	  */
-	public String getDisplayLogic();
-
-    /** Column name EntityType */
-    public static final String COLUMNNAME_EntityType = "EntityType";
-
-	/** Set Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public void setEntityType (String EntityType);
-
-	/** Get Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public String getEntityType();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
@@ -190,58 +205,6 @@ public interface I_AD_InfoRelated
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
-
-    /** Column name ParentRelatedColumn_ID */
-    public static final String COLUMNNAME_ParentRelatedColumn_ID = "ParentRelatedColumn_ID";
-
-	/** Set Parent Related Column.
-	  * column in parent info window, link with column in this relate info
-	  */
-	public void setParentRelatedColumn_ID (int ParentRelatedColumn_ID);
-
-	/** Get Parent Related Column.
-	  * column in parent info window, link with column in this relate info
-	  */
-	public int getParentRelatedColumn_ID();
-
-	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException;
-
-    /** Column name RelatedColumn_ID */
-    public static final String COLUMNNAME_RelatedColumn_ID = "RelatedColumn_ID";
-
-	/** Set Related Info Column	  */
-	public void setRelatedColumn_ID (int RelatedColumn_ID);
-
-	/** Get Related Info Column	  */
-	public int getRelatedColumn_ID();
-
-	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException;
-
-    /** Column name RelatedInfo_ID */
-    public static final String COLUMNNAME_RelatedInfo_ID = "RelatedInfo_ID";
-
-	/** Set Related Info Window	  */
-	public void setRelatedInfo_ID (int RelatedInfo_ID);
-
-	/** Get Related Info Window	  */
-	public int getRelatedInfo_ID();
-
-	public org.compiere.model.I_AD_InfoWindow getRelatedInfo() throws RuntimeException;
-
-    /** Column name SeqNo */
-    public static final String COLUMNNAME_SeqNo = "SeqNo";
-
-	/** Set Sequence.
-	  * Method of ordering records;
- lowest number comes first
-	  */
-	public void setSeqNo (int SeqNo);
-
-	/** Get Sequence.
-	  * Method of ordering records;
- lowest number comes first
-	  */
-	public int getSeqNo();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
