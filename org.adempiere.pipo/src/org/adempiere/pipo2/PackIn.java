@@ -246,7 +246,10 @@ public class PackIn {
 		try{
 			while (e.hasMoreElements()) {
 				ZipEntry ze = (ZipEntry) e.nextElement();
-				File file = new File(m_packageDirectory + File.separator + ze.getName());
+				File file = new File(m_packageDirectory, ze.getName());
+				if (!file.toPath().normalize().startsWith(m_packageDirectory)) {
+					throw new AdempiereException("Bad zip entry: " + ze.getName());
+				}
 				FileOutputStream fout = new FileOutputStream(file);
 				InputStream in = zf.getInputStream(ze);
 				for (int c = in.read(); c != -1; c = in.read()) {
@@ -258,7 +261,7 @@ public class PackIn {
 			}
 			retValue = new File[files.size()];
 			files.toArray(retValue);
-		}catch (Exception ex){
+		} finally {
 			zf.close();
 		}
 		return retValue;
