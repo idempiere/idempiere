@@ -45,6 +45,7 @@ when detect side effect, fix to only apply for parameter window*/
 	max-height: 300pt; 
 	overflow: hidden; 
 	margin: 10px;
+	line-height: normal;
 }
 
 .option-input-parameter{

@@ -27,6 +27,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Listbox;
@@ -221,6 +222,12 @@ public class WRecordInfo extends Window implements EventListener<Event>
 					}
 				}
 			});
+			
+			if (ClientInfo.isMobile())
+			{
+				group.setSelectedIndex(1);
+				Events.sendEvent(Events.ON_CHECK, group, null);
+			}
 		}
 		else
 		{

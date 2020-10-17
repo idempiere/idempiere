@@ -32,11 +32,11 @@ import org.zkoss.zk.ui.sys.ComponentCtrl;
  * @author Low Heng Sin
  *
  */
-public class ClientInfo implements Serializable {
+public class ClientInfo implements Serializable {	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -713195891415378500L;
+	private static final long serialVersionUID = -2686811277627911861L;
 	
 	public int colorDepth;
 	public int desktopWidth;
@@ -156,5 +156,12 @@ public class ClientInfo implements Serializable {
 		Component root = SessionManager.getAppDesktop().getComponent().getRoot();
 		root.addEventListener(Events.ON_CLIENT_INFO, eventListener);
 		ctrl.addCallback(AFTER_PAGE_DETACHED, t -> root.removeEventListener(Events.ON_CLIENT_INFO, eventListener));
+	}
+	
+	/**
+	 * @return true if screen orientation is portrait, false otherwise
+	 */
+	public boolean isPortrait() {
+		return "portrait".equalsIgnoreCase(orientation);
 	}
 }

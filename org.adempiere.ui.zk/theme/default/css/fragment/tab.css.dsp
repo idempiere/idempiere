@@ -14,3 +14,17 @@
 .z-tab-button :hover {
 	color: blue;
 }
+
+.z-tabbox-icon.z-tabbox-left-scroll, .z-tabbox-icon.z-tabbox-right-scroll {
+	padding: 0px;
+    border-radius: 0px;
+    background-color: transparent;
+    background: none;
+}
+
+.z-tabbox-icon.z-tabbox-left-scroll .z-icon-chevron-left, .z-tabbox-icon.z-tabbox-right-scroll .z-icon-chevron-right {
+	opacity: 1;
+}
+.z-tab-button > .z-icon-times.z-tab-icon {
+	margin-top: -9px;
+}

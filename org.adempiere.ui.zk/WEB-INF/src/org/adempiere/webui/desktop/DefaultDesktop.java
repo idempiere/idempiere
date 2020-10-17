@@ -332,7 +332,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	btn.setIconSclass("z-icon-remove");
         	btn.addEventListener(Events.ON_CLICK, evt -> eastPopup.close());
         	eastPopup.appendChild(btn);
-        	btn.setStyle("position: absolute; top: 4px; right: 4px; padding: 2px 6px;");
+        	btn.setStyle("position: absolute; top: 20px; right: 0px; padding: 2px 0px;");
         	eastPopup.setStyle("padding-top: 20px;");
         	eastPopup.appendChild(content);
         	eastPopup.setPage(getComponent().getPage());
@@ -577,7 +577,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         		westPopup.removeAttribute(POPUP_OPEN_ATTR);
         	});
         	westPopup.appendChild(btn);
-        	btn.setStyle("position: absolute; top: 4px; right: 4px; padding: 2px 6px;");
+        	btn.setStyle("position: absolute; top: 10px; right: 0px; padding: 2px 0px;");
 		}
 		logo = pnlHead.getLogo();
 		if (mobile && logo != null)
