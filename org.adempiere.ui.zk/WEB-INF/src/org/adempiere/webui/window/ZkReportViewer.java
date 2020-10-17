@@ -703,7 +703,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				}
 			} else {
 				Listitem selected = previewType.getSelectedItem();
-				if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false) && (selected == null || "PDF".equals(selected.getValue()))) {
+				if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
+						&& (selected == null || "PDF".equals(selected.getValue()))) {
 					iframe.setSrc(pdfJsUrl);
 				} else {
 					iframe.setSrc(null);

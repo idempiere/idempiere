@@ -55,7 +55,7 @@ public class SimplePDFViewer extends Window {
 		ZKUpdateUtil.setHeight(iframe, height + "px");
 		ZKUpdateUtil.setWidth(iframe, "100%");
 		media = new AMedia(getTitle(), "pdf", "application/pdf", pdfInput);
-		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false)) {
+		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (getPage() != null) {
 				showMobileViewer(iframe);
 			} else {

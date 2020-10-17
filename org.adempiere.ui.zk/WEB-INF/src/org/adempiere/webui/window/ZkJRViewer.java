@@ -532,7 +532,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		} else {
 			Listitem selected = previewType.getSelectedItem();
 			String reportType=selected.getValue();
-			if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false) && "PDF".equals( reportType ) ) {
+			if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) && "PDF".equals( reportType ) ) {
 				openWithPdfJsViewer();
 			} else {
 				iframe.setSrc(null);

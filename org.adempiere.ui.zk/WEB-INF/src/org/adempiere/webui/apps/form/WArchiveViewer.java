@@ -123,7 +123,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				try {
 					dynInit();
 					jbInit();
-					if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false)) {
+					if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
 						if (media != null && iframe.getSrc() == null) {
 							String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
 							String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
@@ -228,7 +228,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private void reportViewer(String name, byte[] data)
 	{	
 		media = new AMedia(name + ".pdf", "pdf", "application/pdf", data);
-		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false))
+		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())))
 		{
 			mediaVersion ++;
 			if (form.getDesktop() == null)
