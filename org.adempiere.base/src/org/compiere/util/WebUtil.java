@@ -941,6 +941,7 @@ public final class WebUtil
 		cookie.setComment("adempiere Web User");
 		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge(1);      //  second
+		cookie.setSecure(true);
 		response.addCookie(cookie);
 	}	//	deleteCookieWebUser
 	
