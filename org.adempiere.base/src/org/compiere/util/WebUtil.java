@@ -450,7 +450,7 @@ public final class WebUtil
 		{
 			Cookie cookie = new Cookie (WebEnv.COOKIE_INFO, propertiesEncode(cookieProperties));
 			cookie.setComment("(c) iDempiere, Inc - Jorg Janke");
-			cookie.setSecure(false);
+			cookie.setSecure(true);
 			cookie.setPath("/");
 			if (cookieProperties.size() == 0)
 				cookie.setMaxAge(0);            //  delete cookie
