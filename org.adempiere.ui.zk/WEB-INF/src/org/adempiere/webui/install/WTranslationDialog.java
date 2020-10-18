@@ -396,9 +396,14 @@ public class WTranslationDialog extends TranslationController implements IFormCo
 					log.warning("Ignored file " + entry.getName());
 					continue;
 				}
+				File outFile = new File(tempfolder.getPath(), entry.getName());
+				if (!outFile.toPath().normalize().startsWith(tempfolder.toPath())) {
+					log.severe("Bad zip entry: " + entry.getName());
+					continue;
+				}
 
 				if (log.isLoggable(Level.INFO)) log.info("Extracting file: " + entry.getName());
-				copyInputStream(zipFile.getInputStream(entry), new BufferedOutputStream(new FileOutputStream(tempfolder.getPath() + File.separator + entry.getName())));
+				copyInputStream(zipFile.getInputStream(entry), new BufferedOutputStream(new FileOutputStream(outFile)));
 				validfile = true;
 			}
 		} catch (Throwable e) {
