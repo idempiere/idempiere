@@ -43,10 +43,13 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -578,6 +581,20 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			editor.setMandatory(attribute.isMandatory());
 			editor.fillHorizontal();
 			setEditorAttribute(attribute, editor);
+			editor.addValueChangeListener(new ValueChangeListener() {
+
+				@Override
+				public void valueChange(ValueChangeEvent evt)
+				{
+					if (evt.getSource() instanceof WEditor)
+					{
+						WEditor sourceEditor = (WEditor) evt.getSource();
+						// IDEMPIERE-2999 - set value in online button as HRef
+						if (sourceEditor.getGridField().getDisplayType() == DisplayType.URL)
+							((Urlbox) sourceEditor.getComponent()).setText((String) evt.getNewValue());
+					}
+				}
+			});
 
 			Component fieldEditor = editor.getComponent();
 			row.appendChild(fieldEditor);
