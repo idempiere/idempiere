@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -41,7 +42,14 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7513117649181926813L;
+	private static final long serialVersionUID = 7869800574413317999L;
+	/**	Logger	*/
+	private static CLogger s_log = CLogger.getCLogger (MAttribute.class);
+
+	private static CCache<Integer, MAttribute>	s_cache				= new CCache<Integer, MAttribute>(Table_Name, 30, 60);
+	
+	/**	Values						*/
+	private MAttributeValue[]		m_values = null;
 
 	/**
 	 * 	Get Attributes Of Client
@@ -58,15 +66,15 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(AD_Client_ID);
 		if (onlyProductAttributes)
-			{
-				sql += " AND IsInstanceAttribute=?";
-				params.add(false);
-			}
+		{
+			sql += " AND IsInstanceAttribute=?";
+			params.add(false);
+		}
 		if (onlyListAttributes)
-			{
-				sql += " AND AttributeValueType=?";
-				params.add(MAttribute.ATTRIBUTEVALUETYPE_List);
-			}
+		{
+			sql += " AND AttributeValueType=?";
+			params.add(MAttribute.ATTRIBUTEVALUETYPE_List);
+		}
 		StringBuilder whereClause = new StringBuilder("AD_Client_ID=?").append(sql);
 		
 		List<MAttribute>list = new Query(ctx,I_M_Attribute.Table_Name,whereClause.toString(),null)
@@ -80,11 +88,7 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("AD_Client_ID=" + AD_Client_ID + " - #" + list.size());
 		return retValue;
 	}	//	getOfClient
-	
-	/**	Logger	*/
-	private static CLogger s_log = CLogger.getCLogger (MAttribute.class);
 
-	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -144,9 +148,6 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		copyPO(copy);
 		this.m_values = copy.m_values != null ? Arrays.stream(copy.m_values).map(e -> {return new MAttributeValue(ctx, e, trxName);}).toArray(MAttributeValue[]::new) : null;
 	}
-	
-	/**	Values						*/
-	private MAttributeValue[]		m_values = null;
 
 	/**
 	 *	Get Values if List
@@ -170,6 +171,20 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		return m_values;
 	}	//	getValues
 
+	public static MAttribute get(Properties ctx, int M_Attribute_ID)
+	{
+		Integer key = Integer.valueOf(M_Attribute_ID);
+		MAttribute retValue = (MAttribute) s_cache.get(key);
+
+		if (retValue != null)
+			return retValue;
+
+		retValue = (MAttribute) MTable.get(ctx, MAttribute.Table_ID).getPO(M_Attribute_ID, null);
+
+		s_cache.put(key, retValue);
+
+		return retValue;
+	} // get
 	
 	/**************************************************************************
 	 * 	Get Attribute Instance
@@ -252,6 +267,22 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		instance.saveEx();
 	}	//	setAttributeInstance
 	
+	/**
+	 * Set Attribute Instance
+	 * 
+	 * @param valueInt                  Integer value
+	 * @param M_AttributeSetInstance_ID id
+	 * @param value
+	 */
+	public void setMAttributeInstance(int M_AttributeSetInstance_ID, int valueInt, String value)
+	{
+		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
+		if (instance == null)
+			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(), M_AttributeSetInstance_ID, valueInt, get_TrxName());
+		else
+			instance.setValueInt(valueInt, value);
+		instance.saveEx();
+	} // setAttributeInstance
 	
 	public void setMAttributeInstance(int M_AttributeSetInstance_ID, Timestamp value)
 	{
@@ -302,6 +333,11 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		}
 		return success;
 	}	//	afterSave
+
+	public boolean isAttributeValueTypeReference()
+	{
+		return ATTRIBUTEVALUETYPE_Reference.equals(getAttributeValueType());
+	} // isAttributeValueTypeReference
 	
 	@Override
 	public MAttribute markImmutable() {
