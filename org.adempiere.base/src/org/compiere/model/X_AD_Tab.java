@@ -30,7 +30,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20200911L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -530,6 +530,27 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return false;
 	}
 
+	/** Set Allow Advanced Lookup.
+		@param IsAllowAdvancedLookup Allow Advanced Lookup	  */
+	public void setIsAllowAdvancedLookup (boolean IsAllowAdvancedLookup)
+	{
+		set_Value (COLUMNNAME_IsAllowAdvancedLookup, Boolean.valueOf(IsAllowAdvancedLookup));
+	}
+
+	/** Get Allow Advanced Lookup.
+		@return Allow Advanced Lookup	  */
+	public boolean isAllowAdvancedLookup () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAllowAdvancedLookup);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Accounting Tab.
 		@param IsInfoTab 
 		This Tab contains accounting information
@@ -569,6 +590,30 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public boolean isInsertRecord () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsInsertRecord);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Lookup Only Selection Columns.
+		@param IsLookupOnlySelection 
+		When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public void setIsLookupOnlySelection (boolean IsLookupOnlySelection)
+	{
+		set_Value (COLUMNNAME_IsLookupOnlySelection, Boolean.valueOf(IsLookupOnlySelection));
+	}
+
+	/** Get Lookup Only Selection Columns.
+		@return When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public boolean isLookupOnlySelection () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsLookupOnlySelection);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

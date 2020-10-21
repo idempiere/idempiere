@@ -39,10 +39,11 @@ import org.compiere.util.Evaluatee;
  */
 public class GridTabVO implements Evaluatee, Serializable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9091214632840854495L;
+	private static final long serialVersionUID = 2088372161131336289L;
 
 	/**************************************************************************
 	 *	Create MTab VO
@@ -225,6 +226,18 @@ public class GridTabVO implements Evaluatee, Serializable
 			if (rs.getString("IsHighVolume").equals("Y"))
 				vo.IsHighVolume = true;
 
+			// Lookup Only Selection Fields
+			if (rs.getString("IsLookupOnlySelection").equals("Y"))
+				vo.IsLookupOnlySelection = true;
+			if (userDef != null && userDef.getIsLookupOnlySelection() != null)
+				vo.IsLookupOnlySelection =  "Y".equals(userDef.getIsLookupOnlySelection());
+			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsLookupOnlySelection, vo.IsLookupOnlySelection);
+			// Allow Advanced Lookup
+			if (rs.getString("IsAllowAdvancedLookup").equals("Y"))
+				vo.IsAllowAdvancedLookup = true;
+			if (userDef != null && userDef.getIsAllowAdvancedLookup() != null)
+				vo.IsAllowAdvancedLookup =  "Y".equals(userDef.getIsAllowAdvancedLookup());
+			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsAllowAdvancedLookup, vo.IsAllowAdvancedLookup);			
 			vo.CommitWarning = rs.getString("CommitWarning");
 			if (vo.CommitWarning == null)
 				vo.CommitWarning = "";
@@ -494,6 +507,10 @@ public class GridTabVO implements Evaluatee, Serializable
 	public  boolean	    IsDeleteable = false;
 	/** Table High Volume	*/
 	public  boolean     IsHighVolume = false;
+	/** Allow use of advanced Lookup panel **/
+	public boolean IsAllowAdvancedLookup = false;
+	/** Only allow Lookup using selection defined fields **/
+	public boolean IsLookupOnlySelection = false;
 	/** Process			*/
 	public	int		    AD_Process_ID = 0;
 	/** Process UUID		*/
@@ -601,6 +618,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.IsSecurityEnabled = IsSecurityEnabled;
 		clone.IsDeleteable = IsDeleteable;
 		clone.IsHighVolume = IsHighVolume;
+		clone.IsLookupOnlySelection = IsLookupOnlySelection;
+		clone.IsAllowAdvancedLookup = IsAllowAdvancedLookup;
 		clone.AD_Process_ID = AD_Process_ID;
 		clone.CommitWarning = CommitWarning;
 		clone.WhereClause = WhereClause;
@@ -613,6 +632,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.ReplicationType = ReplicationType;
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AccessLevel, clone.AccessLevel);
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AD_Table_ID, String.valueOf(clone.AD_Table_ID));
+		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsLookupOnlySelection, clone.IsLookupOnlySelection);
+		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsAllowAdvancedLookup, clone.IsAllowAdvancedLookup);
 
 		//
 		clone.IsSortTab = IsSortTab;
