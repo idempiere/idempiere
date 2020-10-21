@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -632698704437797186L;
+	private static final long serialVersionUID = -632698704437797176L;
 
 	/**
 	 *  Field Constructor.
@@ -2579,6 +2579,7 @@ public class GridField
 			field.m_vo = field.m_vo.clone(ctx, field.m_vo.WindowNo, field.m_vo.TabNo, 
 					field.m_vo.AD_Window_ID, field.m_vo.AD_Tab_ID, field.m_vo.tabReadOnly);
 			field.m_vo.lookupInfo = null;
+			field.m_lookup = null;
 			field.m_propertyChangeListeners = new PropertyChangeSupport(this);
 			return field;
 		} catch (CloneNotSupportedException e) {
