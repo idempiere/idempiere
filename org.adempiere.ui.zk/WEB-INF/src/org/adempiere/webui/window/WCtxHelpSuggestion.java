@@ -17,6 +17,7 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
+import org.compiere.model.MUserDefInfo;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.DB;
@@ -364,7 +365,13 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Workflow);
 		} else if (po instanceof MInfoWindow) {
 			MInfoWindow info = (MInfoWindow) po;
+			// Load User Def
 			String name = info.getName();
+			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
+			if(userDef != null && !Util.isEmpty(userDef.getName())) {
+				name = userDef.getName();
+			} 
+
 			String fullName = "Info " + name;
 			if (fullName.length() <= 60) {
 				ctxHelp.setName(fullName);

@@ -51,11 +51,14 @@ public class MRfQLineQty extends X_C_RfQLineQty
 		Integer key = Integer.valueOf(C_RfQLineQty_ID);
 		MRfQLineQty retValue = (MRfQLineQty) s_cache.get (key);
 		if (retValue != null)
-			return retValue;
+			return new MRfQLineQty(ctx, retValue, trxName);
 		retValue = new MRfQLineQty (ctx, C_RfQLineQty_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_RfQLineQty_ID)
+		{
+			s_cache.put (key, new MRfQLineQty(Env.getCtx(), retValue));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
@@ -101,6 +104,38 @@ public class MRfQLineQty extends X_C_RfQLineQty
 		setClientOrg(line);
 		setC_RfQLine_ID (line.getC_RfQLine_ID());
 	}	//	MRfQLineQty
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRfQLineQty(MRfQLineQty copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRfQLineQty(Properties ctx, MRfQLineQty copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRfQLineQty(Properties ctx, MRfQLineQty copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_uom = copy.m_uom != null ? new MUOM(ctx, copy.m_uom, trxName) : null;
+	}
 	
 	/**	Unit of Measure		*/
 	private MUOM	m_uom = null;
@@ -169,5 +204,4 @@ public class MRfQLineQty extends X_C_RfQLineQty
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
 }	//	MRfQLineQty

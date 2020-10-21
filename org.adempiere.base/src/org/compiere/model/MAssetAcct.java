@@ -6,20 +6,22 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Asset Acct Model
  *	@author	Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MAssetAcct extends X_A_Asset_Acct
+public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3919172418904053712L;
+	private static final long serialVersionUID = -8898773839204909595L;
 
 	/**
 	 * DO NOT USE DIRECTLY
@@ -38,32 +40,69 @@ public class MAssetAcct extends X_A_Asset_Acct
 		super (ctx, rs, trxName);
 	}
 	
-	/**		Static Cache: A_Asset_Acct_ID -> MAssetAcct					*/
-	private static CCache<Integer,MAssetAcct> s_cache = new CCache<Integer,MAssetAcct>(Table_Name, 5);
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAssetAcct(MAssetAcct copy)
+	{
+		this(Env.getCtx(), copy);
+	}
 	
 	/**
-	 * Get Asset Accounting (from cache)
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAssetAcct(Properties ctx, MAssetAcct copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAssetAcct(Properties ctx, MAssetAcct copy, String trxName)
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**		Static Cache: A_Asset_Acct_ID -> MAssetAcct					*/
+	private static ImmutableIntPOCache<Integer,MAssetAcct> s_cache = new ImmutableIntPOCache<Integer,MAssetAcct>(Table_Name, 5);
+	
+	/**
+	 * Get Asset Accounting (from cache) (immutable)
+	 * @param A_Asset_Acct_ID asset accounting id
+	 * @return asset accounting or null if not found
+	 */
+	public static MAssetAcct get (int A_Asset_Acct_ID)
+	{
+		return get(Env.getCtx(), A_Asset_Acct_ID);
+	}
+	
+	/**
+	 * Get Asset Accounting (from cache) (immutable)
 	 * @param ctx context
 	 * @param A_Asset_Acct_ID asset accounting id
 	 * @return asset accounting or null if not found
 	 */
 	public static MAssetAcct get (Properties ctx, int A_Asset_Acct_ID)
 	{
-		MAssetAcct acct = s_cache.get(A_Asset_Acct_ID);
+		MAssetAcct acct = s_cache.get(ctx, A_Asset_Acct_ID, e -> new MAssetAcct(ctx, e));
 		if (acct != null)
+			return acct;
+
+		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, (String)null);
+		if (acct.get_ID() == A_Asset_Acct_ID)
 		{
+			s_cache.put(A_Asset_Acct_ID, acct, e -> new MAssetAcct(Env.getCtx(), e));
 			return acct;
 		}
-		acct = new MAssetAcct(ctx, A_Asset_Acct_ID, null);
-		if (acct.get_ID() > 0)
-		{
-			addToCache(acct);
-		}
-		else
-		{
-			acct = null;
-		}
-		return acct;
+		return null;
 	}
 	
 	/**
@@ -91,20 +130,11 @@ public class MAssetAcct extends X_A_Asset_Acct
 								.setParameters(params)
 								.setOrderBy(COLUMNNAME_ValidFrom+" DESC NULLS LAST")
 								.first();
-		if (trxName == null)
+		if (acct.get_ID() > 0)
 		{
-			addToCache(acct);
+			s_cache.put(acct.get_ID(), acct, e -> new MAssetAcct(Env.getCtx(), e));
 		}
 		return acct;
-	}
-	
-	private static void addToCache(MAssetAcct acct)
-	{
-		if (acct == null || acct.get_ID() <= 0)
-		{
-			return;
-		}
-		s_cache.put(acct.get_ID(), acct);
 	}
 	
 	/**
@@ -143,7 +173,7 @@ public class MAssetAcct extends X_A_Asset_Acct
 	
 	public MAcctSchema getC_AcctSchema()
 	{
-		return MAcctSchema.get(getCtx(), getC_AcctSchema_ID());
+		return MAcctSchema.getCopy(getCtx(), getC_AcctSchema_ID(), get_TrxName());
 	}
 	
 	public MAccount getP_Asset_Acct(int M_Product_ID)
@@ -162,5 +192,13 @@ public class MAssetAcct extends X_A_Asset_Acct
 		return true;
 	}
 	
-	
+	@Override
+	public MAssetAcct markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	class MAssetAcct

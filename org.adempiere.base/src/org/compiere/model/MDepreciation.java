@@ -7,10 +7,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.IntPOCopyCache;
+import org.idempiere.cache.POCopyCache;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetNotSupportedException;
 import org.idempiere.fa.service.api.DepreciationDTO;
@@ -21,13 +23,12 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
  * Depreciation Engine (eg. SL, ARH_VAR ...)
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-public class MDepreciation extends X_A_Depreciation
+public class MDepreciation extends X_A_Depreciation implements ImmutablePOSupport
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -632058079835100100L;
+	private static final long serialVersionUID = -4366354698409595086L;
 
 	/** Standard Constructor */
 	public MDepreciation (Properties ctx, int A_Depreciation_ID, String trxName)
@@ -45,12 +46,43 @@ public class MDepreciation extends X_A_Depreciation
 		super (ctx, rs, trxName);
 	}	//	MDepreciation
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDepreciation(MDepreciation copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDepreciation(Properties ctx, MDepreciation copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDepreciation(Properties ctx, MDepreciation copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		Cache									*/
-	private static CCache<Integer,MDepreciation>
-	s_cache = new CCache<Integer,MDepreciation>(Table_Name, 5);
+	private static IntPOCopyCache<Integer,MDepreciation>
+	s_cache = new IntPOCopyCache<Integer,MDepreciation>(Table_Name, 5);
 	/**		Cache for type							*/
-	private static CCache<String,MDepreciation>
-	s_cache_forType = new CCache<String,MDepreciation>(Table_Name, Table_Name+"_DepreciationType", 5);
+	private static POCopyCache<String,MDepreciation>
+	s_cache_forType = new POCopyCache<String,MDepreciation>(Table_Name, Table_Name+"_DepreciationType", 5);
 	/**		Static logger							*/
 	private static Logger s_log = CLogger.getCLogger(MDepreciation.class);
 	/** The accuracy of calculation on depreciation */
@@ -66,37 +98,51 @@ public class MDepreciation extends X_A_Depreciation
 			return ;
 		}
 		
-		s_cache.put(depr.get_ID(), depr);
+		s_cache.put(depr.get_ID(), depr, e -> new MDepreciation(Env.getCtx(), e));
 		String key = "" + depr.getAD_Client_ID() + "_" + depr.getDepreciationType();
-		s_cache_forType.put(key, depr);
+		s_cache_forType.put(key, depr, e -> new MDepreciation(Env.getCtx(), e));
 	}
  
 	/**
-	 * Get Depreciation method
+	 * Get Depreciation method from cache
+	 * @param A_Depreciation_ID depreciation id
+	 */
+	public static MDepreciation get(int A_Depreciation_ID)
+	{
+		return get(Env.getCtx(), A_Depreciation_ID);
+	}
+	
+	/**
+	 * Get Depreciation method from cache
 	 * @param ctx
 	 * @param A_Depreciation_ID depreciation id
 	 */
 	public static MDepreciation get(Properties ctx, int A_Depreciation_ID)
 	{
-		MDepreciation depr = s_cache.get(A_Depreciation_ID);
+		MDepreciation depr = s_cache.get(A_Depreciation_ID, e -> new MDepreciation(ctx, e));
 		if (depr != null)
-		{
 			return depr;
-		}
-		depr = new MDepreciation(ctx, A_Depreciation_ID, null);
-		if (depr.get_ID() > 0)
+		
+		depr = new MDepreciation(ctx, A_Depreciation_ID, (String)null);
+		if (depr.get_ID() == A_Depreciation_ID)
 		{
 			addToCache(depr);
+			return depr;
 		}
-		else
-		{
-			depr = null;
-		}
-		return depr;
+		return null;
 	} // get
 
 	/**
 	 * Get Depreciation method
+	 * @param depreciationType depreciation type (e.g. SL)
+	 */
+	public static MDepreciation get(String depreciationType)
+	{
+		return get(Env.getCtx(), depreciationType);
+	}
+	
+	/**
+	 * Get Depreciation method (immutable)
 	 * @param ctx
 	 * @param depreciationType depreciation type (e.g. SL)
 	 */
@@ -104,11 +150,9 @@ public class MDepreciation extends X_A_Depreciation
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx); 
 		String key = "" + AD_Client_ID + "_" + depreciationType;
-		MDepreciation depr = s_cache_forType.get(key);
+		MDepreciation depr = s_cache_forType.get(key, e -> new MDepreciation(ctx, e));
 		if (depr != null)
-		{
 			return depr;
-		}
 		
 		final String whereClause = COLUMNNAME_DepreciationType+"=?"
 									+" AND AD_Client_ID IN (0,?)";
@@ -117,7 +161,7 @@ public class MDepreciation extends X_A_Depreciation
 						.setParameters(new Object[]{depreciationType, AD_Client_ID})
 						.firstOnly();
 		addToCache(depr);
-		return depr;
+		return (MDepreciation) depr.markImmutable();
 	}	//	get
 	
 	/**
@@ -482,4 +526,14 @@ public class MDepreciation extends X_A_Depreciation
 		// TODO: Adding this method to compile correctly and future research
 		return 0;
 	}
+	
+	@Override
+	public MDepreciation markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

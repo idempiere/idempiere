@@ -113,7 +113,7 @@ public class MBOMProduct extends X_M_BOMProduct
 	private MBOM getBOM()
 	{
 		if (m_bom == null && getM_BOM_ID() != 0)
-			m_bom = MBOM.get(getCtx(), getM_BOM_ID());
+			m_bom = MBOM.getCopy(getCtx(), getM_BOM_ID(), get_TrxName());
 		return m_bom;
 	}	//	getBOM
 	

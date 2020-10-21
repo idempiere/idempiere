@@ -216,19 +216,19 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 	@Override
 	public MPPProductBOM getPP_Product_BOM()
 	{
-		return MPPProductBOM.get(getCtx(), getPP_Product_BOM_ID());
+		return MPPProductBOM.getCopy(getCtx(), getPP_Product_BOM_ID(), get_TrxName());
 	}
 	
 	@Override
 	public MWorkflow getAD_Workflow()
 	{
-		return MWorkflow.get(getCtx(), getAD_Workflow_ID());
+		return MWorkflow.getCopy(getCtx(), getAD_Workflow_ID(), get_TrxName());
 	}
 	
 	@Override
 	public MResource getS_Resource()
 	{
-		return MResource.get(getCtx(), getS_Resource_ID());
+		return MResource.getCopy(getCtx(), getS_Resource_ID(), get_TrxName());
 	}
 
 

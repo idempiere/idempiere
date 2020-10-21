@@ -66,7 +66,7 @@ public class MSystem extends X_AD_System
 	public synchronized static MSystem get (Properties ctx)
 	{
 		if (s_system.get(0) != null)
-			return s_system.get(0);
+			return new MSystem(ctx, s_system.get(0));
 		//
 		MSystem system = new Query(ctx, Table_Name, null, null)
 						.setOrderBy(COLUMNNAME_AD_System_ID)
@@ -78,7 +78,7 @@ public class MSystem extends X_AD_System
 		{
 			system.saveEx();
 		}
-		s_system.put(0, system);
+		s_system.put(0, new MSystem(Env.getCtx(), system));
 		return system;
 	}	//	get
 	
@@ -113,6 +113,37 @@ public class MSystem extends X_AD_System
 			s_system.put(0, this);
 	}	//	MSystem
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSystem(MSystem copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSystem(Properties ctx, MSystem copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSystem(Properties ctx, MSystem copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Is LDAP Authentification defined
 	 *	@return true if ldap defined

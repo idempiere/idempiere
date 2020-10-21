@@ -152,6 +152,8 @@ public class GridTabVO implements Evaluatee, Serializable
 			
 			//	DisplayLogic
 			vo.DisplayLogic = rs.getString("DisplayLogic");
+			if (userDef != null && userDef.getDisplayLogic() != null)
+				vo.DisplayLogic = userDef.getDisplayLogic();
 			
 			//	Access Level
 			vo.AccessLevel = rs.getString("AccessLevel");
@@ -176,11 +178,11 @@ public class GridTabVO implements Evaluatee, Serializable
 			
 			if (rs.getString("IsReadOnly").equals("Y"))
 				vo.IsReadOnly = true;
-			if (userDef != null && userDef.get_ValueAsString("ReadOnlyLogic") != null)
-				vo.IsReadOnly = userDef.isReadOnly();
+			if (userDef != null && userDef.getIsReadOnly() != null)
+				vo.IsReadOnly = MUserDefTab.ISREADONLY_Yes.equals(userDef.getIsReadOnly());
 			vo.ReadOnlyLogic = rs.getString("ReadOnlyLogic");
-			if (userDef != null)
-				vo.ReadOnlyLogic = userDef.get_ValueAsString("ReadOnlyLogic");
+			if (userDef != null && userDef.getReadOnlyLogic() != null)
+				vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
 			
 			if (rs.getString("IsInsertRecord").equals("N"))
 				vo.IsInsertRecord = false;
@@ -200,8 +202,8 @@ public class GridTabVO implements Evaluatee, Serializable
 
 			if (rs.getString("IsSingleRow").equals("Y"))
 				vo.IsSingleRow = true;
-			if (userDef != null)
-				vo.IsSingleRow = userDef.isSingleRow();
+			if (userDef != null && userDef.getIsSingleRow() != null)
+				vo.IsSingleRow = MUserDefTab.ISSINGLEROW_Yes.equals(userDef.getIsSingleRow());
 
 			if (rs.getString("HasTree").equals("Y"))
 				vo.HasTree = true;
@@ -249,14 +251,25 @@ public class GridTabVO implements Evaluatee, Serializable
 			if (vo.WhereClause.trim().length() > 0) {
 				vo.WhereClause = "("+vo.WhereClause+")";
 			}
-
+			//	Make sure the tab where is not replaced
+			if (userDef != null && userDef.getWhereClause() != null && !userDef.getWhereClause().trim().isEmpty())
+			{
+				if (vo.WhereClause.trim().length() > 0)
+					vo.WhereClause += " AND ";
+				vo.WhereClause += " (" + userDef.getWhereClause() + ")";
+			}
+			
 			vo.OrderByClause = rs.getString("OrderByClause");
 			if (vo.OrderByClause == null)
 				vo.OrderByClause = "";
+			if (userDef != null && userDef.getOrderByClause() != null && !userDef.getOrderByClause().trim().isEmpty())
+				vo.OrderByClause = userDef.getOrderByClause();
 
 			vo.AD_Process_ID = rs.getInt("AD_Process_ID");
 			if (rs.wasNull())
 				vo.AD_Process_ID = 0;
+			if (userDef != null && userDef.getAD_Process_ID() > 0)
+				vo.AD_Process_ID = userDef.getAD_Process_ID();
 			vo.AD_Image_ID = rs.getInt("AD_Image_ID");
 			if (rs.wasNull())
 				vo.AD_Image_ID = 0;

@@ -25,8 +25,10 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -40,17 +42,27 @@ import org.compiere.util.TimeUtil;
  * 				<li>added manufacturing related methods (getDayStart, getDayEnd etc)
  * 				<li>BF [ 2431049 ] If Time Slot then Time Slot Start/End should be mandatory
  */
-public class MResourceType extends X_S_ResourceType
+public class MResourceType extends X_S_ResourceType implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6303797933825680667L;
+	private static final long serialVersionUID = 1738229111191830237L;
 	/** Cache */
-	private static CCache<Integer, MResourceType> s_cache = new CCache<Integer, MResourceType>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MResourceType> s_cache = new ImmutableIntPOCache<Integer, MResourceType>(Table_Name, 20);
 	
 	/**
-	 * Get from Cache
+	 * Get from Cache (immutable)
+	 * @param S_ResourceType_ID
+	 * @return MResourceType
+	 */
+	public static MResourceType get(int S_ResourceType_ID) 
+	{
+		return get(Env.getCtx(), S_ResourceType_ID);
+	}
+	
+	/**
+	 * Get from Cache (immutable)
 	 * @param ctx
 	 * @param S_ResourceType_ID
 	 * @return MResourceType
@@ -60,14 +72,31 @@ public class MResourceType extends X_S_ResourceType
 		if (S_ResourceType_ID <= 0)
 			return null;
 		
-		MResourceType type = s_cache.get(S_ResourceType_ID);
+		MResourceType type = s_cache.get(ctx, S_ResourceType_ID, e -> new MResourceType(ctx, e));
 		if (type == null) {
-			type = new MResourceType(ctx, S_ResourceType_ID, null);
+			type = new MResourceType(ctx, S_ResourceType_ID, (String)null);
 			if (type.get_ID() == S_ResourceType_ID) {
-				s_cache.put(S_ResourceType_ID, type);
+				s_cache.put(S_ResourceType_ID, type, e -> new MResourceType(Env.getCtx(), e));
+				return type;
 			}
+			return null;
 		}
 		return type;
+	}
+	
+	/**
+	 * Get updateable copy of MResourceType from cache
+	 * @param ctx
+	 * @param S_ResourceType_ID
+	 * @param trxName
+	 * @return MResourceType 
+	 */
+	public static MResourceType getCopy(Properties ctx, int S_ResourceType_ID, String trxName)
+	{
+		MResourceType rt = get(S_ResourceType_ID);
+		if (rt != null)
+			rt = new MResourceType(ctx, rt, trxName);
+		return rt;
 	}
 	
 	/**
@@ -89,6 +118,37 @@ public class MResourceType extends X_S_ResourceType
 	{
 		super(ctx, rs, trxName);
 	}	//	MResourceType
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MResourceType(MResourceType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MResourceType(Properties ctx, MResourceType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MResourceType(Properties ctx, MResourceType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord)
@@ -309,4 +369,14 @@ public class MResourceType extends X_S_ResourceType
 		}
 		return sb.append("]").toString();
 	}
+	
+	@Override
+	public MResourceType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MResourceType

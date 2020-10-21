@@ -41,7 +41,6 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
@@ -327,15 +326,6 @@ public class InfoProductWindow extends InfoWindow {
 		south.setSplittable(true);
 		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
 		south.setTooltiptext(Msg.translate(Env.getCtx(), "WarehouseStock"));
-		south.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
-			@Override
-			public void onEvent(SwipeEvent event) throws Exception {
-				South south = (South) event.getTarget();
-				if ("down".equals(event.getSwipeDirection())) {
-					south.setOpen(false);
-				}
-			}
-		});
 		south.setSclass("south-collapsible-with-title");
 		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
 		{

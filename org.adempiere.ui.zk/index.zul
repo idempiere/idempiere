@@ -61,7 +61,7 @@ Copyright (C) 2007 Ashley G Ramdass.
 		});
 			
 		zk.afterLoad(function() {
-			jq(window).unload(function () {
+			jq(window).on("unload", function () {
 				//rmDesktop not call in window.onbeforeunload (mount.js) when zk.confirmClose is not null								
 				if (!zk.ie && zk.confirmClose){						
 					rmDesktop();
