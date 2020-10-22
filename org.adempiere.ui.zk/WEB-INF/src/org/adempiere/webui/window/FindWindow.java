@@ -1039,8 +1039,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listItem.appendChild(cellQueryTo);
         listItem.appendChild(cellRightBracket);
 
-        advancedPanel.appendChild(listItem);
-        advancedPanel.setSelectedItem(listItem);
+        int selectedIndex = advancedPanel.getSelectedIndex();
+		if (selectedIndex >= 0)
+		{
+			ListItem item = advancedPanel.getItemAtIndex(selectedIndex + 1);
+			advancedPanel.insertBefore(listItem, item);
+		}
+		else
+		{
+			advancedPanel.appendChild(listItem);
+		}
+
+		advancedPanel.setSelectedItem(listItem);
+
 
         if (fields != null){
         	// QueryFrom
