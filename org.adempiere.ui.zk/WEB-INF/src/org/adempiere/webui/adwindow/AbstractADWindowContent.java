@@ -727,7 +727,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	m_findCancelled = false;
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();
-            FindWindow findWindow = new FindWindow(curWindowNo,
+            FindWindow findWindow = new FindWindow(curWindowNo, mTab.getTabNo(),
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
                     where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
            	tabFindWindowHashMap.put(mTab, findWindow);
@@ -3626,7 +3626,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
 			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
 		} else {
-			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
+			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 

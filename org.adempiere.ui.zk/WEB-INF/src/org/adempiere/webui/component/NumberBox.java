@@ -143,7 +143,7 @@ public class NumberBox extends Div
 					HtmlBasedComponent comp = (HtmlBasedComponent) btn.getDesktop().getComponentByUuidIfAny(uid);
 					if (comp != null) {	
 						Textbox ctbox = (Textbox) comp.getLastChild().getFirstChild();
-						if (ctbox != null) {
+						if (ctbox != null && decimalBox.getValue() != null) {
 							ctbox.setText(decimalBox.getValue().toString());
 							StringWriter writer = new StringWriter(1024);
 							try {
