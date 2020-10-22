@@ -3,7 +3,6 @@
 <%-- breadcrumb --%>
 .breadcrumb-toolbar-button {
 	background-color: transparent; 
-	height: 22px;
 }
 .breadcrumb-toolbar-button img {
 	width: 22px;
@@ -60,6 +59,7 @@
 	display: inline-block;
 	position: absolute;
 	right: 4px;
+	max-width: 90%;
 }
 
 .docstatus-normal .z-label {
@@ -89,12 +89,35 @@
 }
 
 .adwindow-breadcrumb {
-	height: 30px;
+	min-height: 30px;
 	background-color: #FFF;
 	padding: 0px;
 	padding-left: 5px;
 	border-bottom: 1px solid #C5C5C5 !important;
-	clear: both;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: space-between
+}
+.adwindow-breadcrumb-paths {
+	display: inline-block;
+	padding: 4px 0px;
+}
+.adwindow-breadcrumb-toolbar {
+	display: inline-block; 
+	text-align: right;
+}
+.adwindow-breadcrumb-toolbar .z-toolbar {
+	background-image: none; 
+	background-color: transparent; 
+	border: none;
+}
+.adwindow-breadcrumb .breadcrumb-record-info.link {
+	padding-top: 4px;
+	padding-bottom: 0px;
+}
+.adwindow-breadcrumb .z-toolbarbutton-content {
+	line-height: inherit;
 }
 
 .adwindow-detailpane {
@@ -302,10 +325,75 @@
 .activity-card .help-content {
 	font-size: 13px;
 }
+.mobile .activity-card .help-content {
+	font-size: 16px;
+}
 .record-info-dialog .record-info-radiogroup {
 	padding: 4px 4px 8px 4px;
 }
 .record-info-dialog .record-info-changelog-table {
 	margin-left: 3px;
 	margin-right: 3px;
+}
+
+@media only screen 
+  and (max-device-width: 700px) {
+	.adtab-grid > .z-cell > .z-label {
+		white-space: pre-line;
+	}	
+}
+.adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
+	white-space: pre-wrap;
+	text-overflow: ellipsis;
+}
+
+.mobile-overflow-link {
+	font-weight: 700; 
+	text-decoration: none;
+	transition: background 0.8s;
+	background-position: center;
+}
+.mobile-overflow-link:active {
+	background-color: #ddd;
+  	background-size: 80%;
+	transition: background 0s;
+}
+.adwindow-status-docstatus .z-label.mobile-overflow-link {
+	width: 18px;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.slide-right-out {
+    animation: slide-right-out 0.3s forwards;
+    animation-timing-function: ease-in;
+}
+@keyframes slide-right-out {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(100%); }
+}
+.slide-right-in {
+    animation: slide-right-in 0.3s forwards;
+    animation-timing-function: ease-out;
+}
+@keyframes slide-right-in {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+}
+
+.slide-left-out {
+    animation: slide-left-out 0.3s forwards;
+    animation-timing-function: ease-in;
+}
+@keyframes slide-left-out {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+.slide-left-in {
+    animation: slide-left-in 0.3s forwards;
+    animation-timing-function: ease-out;
+}
+@keyframes slide-left-in {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0%); }
 }

@@ -217,9 +217,9 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 		int maxri = MSysConfig.getIntValue(MSysConfig.RecentItems_MaxSaved, 50, Env.getAD_Client_ID(ctx));
 		if (maxri <= 0)
 			return;
-		MRecentItem ri = get(ctx, AD_Table_ID, Record_ID, AD_User_ID);
-		if (ri == null) {
-			ri = new MRecentItem(ctx, 0, null);
+		MRecentItem ric = get(ctx, AD_Table_ID, Record_ID, AD_User_ID);
+		if (ric == null) {
+			MRecentItem ri = new MRecentItem(ctx, 0, null);
 			ri.setAD_Table_ID(AD_Table_ID);
 			ri.setRecord_ID(Record_ID);
 			ri.setAD_User_ID(AD_User_ID);
@@ -228,15 +228,16 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 			ri.setAD_Tab_ID(AD_Tab_ID);
 			ri.saveEx();
 		} else {
-			if (   ri.getAD_Role_ID() != AD_Role_ID
-				|| ri.getAD_Window_ID() != AD_Window_ID
-				|| ri.getAD_Tab_ID() != AD_Tab_ID) {
+			if (   ric.getAD_Role_ID() != AD_Role_ID
+				|| ric.getAD_Window_ID() != AD_Window_ID
+				|| ric.getAD_Tab_ID() != AD_Tab_ID) {
+				MRecentItem ri = getCopy(ctx, ric.getAD_RecentItem_ID(), null);
 				ri.setAD_Role_ID(AD_Role_ID);
 				ri.setAD_Window_ID(AD_Window_ID);
 				ri.setAD_Tab_ID(AD_Tab_ID);
 				ri.saveEx();
 			} else {
-				DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=getDate() WHERE AD_RecentItem_ID=?", new Object[] {ri.getAD_RecentItem_ID()}, null);
+				DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=getDate() WHERE AD_RecentItem_ID=?", new Object[] {ric.getAD_RecentItem_ID()}, null);
 			}
 		}
 		publishChangedEvent(AD_User_ID);

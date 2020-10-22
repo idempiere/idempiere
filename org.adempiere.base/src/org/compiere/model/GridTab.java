@@ -112,7 +112,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8153324039370820860L;
+	private static final long serialVersionUID = 8443012394354164942L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -229,6 +229,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_FindSQL = "_TabInfo_FindSQL";
 	public static final String CTX_SQL = "_TabInfo_SQL";
 	public static final String CTX_IsSortTab = "_TabInfo_IsSortTab";
+	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
+	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
 	//private HashMap<Integer,Integer>	m_PostIts = null;
 
@@ -1513,6 +1515,24 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		return m_vo.IsHighVolume;
 	}	//	isHighVolume
 
+	/**
+	 * Is Lookup Only By Selection Fields?
+	 * 
+	 * @return true if only selection
+	 */
+	public boolean IsLookupOnlySelection() {
+		return m_vo.IsLookupOnlySelection;
+	} // IsLookupOnlySelection
+
+	/**
+	 * Is Allow Advanced Lookup panel?
+	 * 
+	 * @return true if allow the use
+	 */
+	public boolean IsAllowAdvancedLookup() {
+		return m_vo.IsAllowAdvancedLookup;
+	} // IsAllowAdvancedLookup
+	
 	/**
 	 *	Is Read Only?
 	 *  @return true if read only

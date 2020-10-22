@@ -29,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -36,6 +38,8 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MConversionRate;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
@@ -45,11 +49,15 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MPriceList;
+import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
+import org.compiere.model.MProductPrice;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -519,5 +527,189 @@ public class MatchInvTest extends AbstractTestCase {
 		}
 		
 		rollback();
+	}
+	
+	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4128
+	 */
+	public void testMatReceiptPostingWithDiffCurrencyPrecision() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		priceList.setName("Purchase JPY " + System.currentTimeMillis());
+		MCurrency japaneseYen = MCurrency.get("JPY"); // Japanese Yen (JPY)
+		priceList.setC_Currency_ID(japaneseYen.getC_Currency_ID());
+		priceList.setPricePrecision(japaneseYen.getStdPrecision());
+		priceList.saveEx();
+		
+		MPriceListVersion plv = new MPriceListVersion(priceList);
+		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setValidFrom(currentDate);
+		plv.saveEx();
+		
+		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), new BigDecimal(2400), new BigDecimal(2400), Env.ZERO);
+		pp.saveEx();
+		
+		MConversionRate cr1 = new MConversionRate(Env.getCtx(), 0, null);
+		cr1.setC_Currency_ID(japaneseYen.getC_Currency_ID());
+		cr1.setC_Currency_ID_To(100); // USD
+		cr1.setC_ConversionType_ID(114); // Spot
+		cr1.setValidFrom(currentDate);
+		cr1.setValidTo(currentDate);
+		cr1.setMultiplyRate(new BigDecimal(0.277582));
+		cr1.saveEx();
+		
+		MConversionRate cr2 = new MConversionRate(Env.getCtx(), 0, null);
+		cr2.setC_Currency_ID(japaneseYen.getC_Currency_ID());
+		cr2.setC_Currency_ID_To(102); // EUR
+		cr2.setC_ConversionType_ID(114); // Spot
+		cr2.setValidFrom(currentDate);
+		cr2.setValidTo(currentDate);
+		cr2.setMultiplyRate(new BigDecimal(0.236675));
+		cr2.saveEx();
+		
+		try {
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(bpartner);
+			order.setIsSOTrx(false);
+			order.setC_DocTypeTarget_ID();
+			order.setDateOrdered(currentDate);
+			order.setDateAcct(currentDate);
+			order.setM_PriceList_ID(priceList.getM_PriceList_ID());
+			order.setC_ConversionType_ID(114); // Spot
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.saveEx();
+			
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			orderLine.setQty(new BigDecimal(3));
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			
+			MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+			receipt.saveEx();
+					
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setC_OrderLine_ID(orderLine.get_ID());
+			receiptLine.setLine(10);
+			receiptLine.setProduct(product);
+			receiptLine.setQty(new BigDecimal(3));
+			MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+			int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+			receiptLine.setM_Locator_ID(M_Locator_ID);
+			receiptLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			receipt.load(getTrxName());
+			assertFalse(info.isError());
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+			
+			if (!receipt.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), MInOut.Table_ID, receipt.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			receipt.load(getTrxName());
+			assertTrue(receipt.isPosted());
+			
+			MInvoice invoice = new MInvoice(receipt, receipt.getMovementDate());
+			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+			invoice.setDateInvoiced(currentDate);
+			invoice.setDateAcct(currentDate);
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+			
+			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+			invoiceLine.setM_InOutLine_ID(receiptLine.get_ID());
+			invoiceLine.setLine(10);
+			invoiceLine.setProduct(product);
+			invoiceLine.setQty(new BigDecimal(3));
+			invoiceLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			invoice.load(getTrxName());
+			assertFalse(info.isError());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+			
+			if (!invoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			invoice.load(getTrxName());
+			assertTrue(invoice.isPosted());
+			
+			int C_AcctSchema_ID = MClientInfo.get(Env.getCtx()).getC_AcctSchema1_ID();
+			MAcctSchema as = MAcctSchema.get(Env.getCtx(), C_AcctSchema_ID);		
+			BigDecimal amount = new BigDecimal(1998.59).setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertTrue(error == null);
+				}
+				mi.load(getTrxName());
+				assertTrue(mi.isPosted());
+				
+				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
+				doc.setC_BPartner_ID(mi.getC_InvoiceLine().getC_Invoice().getC_BPartner_ID());
+				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				
+				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+	
+				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
+						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
+						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + C_AcctSchema_ID;
+				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+				for (int id : ids) {
+					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+					if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
+						assertTrue(fa.getAmtAcctDr().compareTo(Env.ZERO) >= 0);
+						assertTrue(fa.getAmtAcctDr().compareTo(amount) == 0);
+					} else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
+						assertTrue(fa.getAmtAcctCr().compareTo(Env.ZERO) >= 0);
+						assertTrue(fa.getAmtAcctCr().compareTo(amount) == 0);
+					}
+				}
+			}
+		} finally {
+			String whereClause = "ValidFrom=? AND ValidTo=? "
+					+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
+					+ "AND C_ConversionType_ID=? "
+					+ "AND AD_Client_ID=? AND AD_Org_ID=?";
+			MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
+					.setParameters(cr1.getValidFrom(), cr1.getValidTo(), 
+							cr1.getC_Currency_ID_To(), cr1.getC_Currency_ID(),
+							cr1.getC_ConversionType_ID(),
+							cr1.getAD_Client_ID(), cr1.getAD_Org_ID())
+					.firstOnly();
+			if (reciprocal != null)
+				reciprocal.deleteEx(true);
+			cr1.deleteEx(true);
+			
+			reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
+					.setParameters(cr2.getValidFrom(), cr2.getValidTo(), 
+							cr2.getC_Currency_ID_To(), cr2.getC_Currency_ID(),
+							cr2.getC_ConversionType_ID(),
+							cr2.getAD_Client_ID(), cr2.getAD_Org_ID())
+					.firstOnly();
+			if (reciprocal != null)
+				reciprocal.deleteEx(true);
+			cr2.deleteEx(true);
+			
+			pp.deleteEx(true);
+			plv.deleteEx(true);
+			priceList.deleteEx(true);
+			rollback();
+		}
 	}
 }
