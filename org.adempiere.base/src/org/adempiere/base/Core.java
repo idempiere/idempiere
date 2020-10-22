@@ -36,6 +36,8 @@ import org.adempiere.model.MShipperFacade;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.Callout;
+import org.compiere.model.GridFieldVO;
+import org.compiere.model.Lookup;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
@@ -45,12 +47,17 @@ import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
+import org.idempiere.distributed.ICacheService;
+import org.idempiere.distributed.IClusterService;
+import org.idempiere.distributed.IMessageService;
 import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
+import org.osgi.framework.Constants;
 
 /**
  * This is a facade class for the Service Locator.
@@ -63,6 +70,8 @@ public class Core {
 
 	private final static CLogger s_log = CLogger.getCLogger(Core.class);
 
+	private static final CCache<String, IServiceReferenceHolder<IResourceFinder>> s_resourceFinderCache = new CCache<>(null, "IResourceFinder", 100, false);
+	
 	/**
 	 * @return list of active resource finder
 	 */
@@ -70,16 +79,33 @@ public class Core {
 		return new IResourceFinder() {
 
 			public URL getResource(String name) {
-				List<IResourceFinder> f = Service.locator().list(IResourceFinder.class).getServices();
-				for (IResourceFinder finder : f) {
-					URL url = finder.getResource(name);
-					if (url!=null)
-						return url;
+				IServiceReferenceHolder<IResourceFinder> cache = s_resourceFinderCache.get(name);
+				if (cache != null) {
+					IResourceFinder service = cache.getService();
+					if (service != null) {
+						URL url = service.getResource(name);
+						if (url!=null)
+							return url;
+					}
+					s_resourceFinderCache.remove(name);
+				}
+				List<IServiceReferenceHolder<IResourceFinder>> f = Service.locator().list(IResourceFinder.class).getServiceReferences();
+				for (IServiceReferenceHolder<IResourceFinder> finder : f) {
+					IResourceFinder service = finder.getService();
+					if (service != null) {
+						URL url = service.getResource(name);
+						if (url!=null) {
+							s_resourceFinderCache.put(name, finder);
+							return url;
+						}
+					}
 				}
 				return null;
 			}
 		};
 	}
+	
+	private static final CCache<String, List<IServiceReferenceHolder<IColumnCalloutFactory>>> s_columnCalloutFactoryCache = new CCache<>(null, "List<IColumnCalloutFactory>", 100, false);
 
 	/**
 	 *
@@ -89,20 +115,56 @@ public class Core {
 	 */
 	public static List<IColumnCallout> findCallout(String tableName, String columnName) {
 		List<IColumnCallout> list = new ArrayList<IColumnCallout>();
-		List<IColumnCalloutFactory> factories = Service.locator().list(IColumnCalloutFactory.class).getServices();
+		
+		String cacheKey = tableName + "." + columnName;
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> cache = s_columnCalloutFactoryCache.get(cacheKey);
+		if (cache != null) {
+			boolean staleReference = false;
+			for (IServiceReferenceHolder<IColumnCalloutFactory> factory : cache) {
+				IColumnCalloutFactory service = factory.getService();
+				if (service != null) {
+					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
+					if (callouts != null && callouts.length > 0) {
+						for(IColumnCallout callout : callouts) {
+							list.add(callout);
+						}
+					} else {						
+						staleReference = true;
+						break;
+					}
+				} else {
+					staleReference = true;
+					break;
+				}
+			}
+			if (!staleReference)
+				return list;
+			else
+				s_columnCalloutFactoryCache.remove(cacheKey);
+		}
+		
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> factories = Service.locator().list(IColumnCalloutFactory.class).getServiceReferences();
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> found = new ArrayList<>();
 		if (factories != null) {
-			for(IColumnCalloutFactory factory : factories) {
-				IColumnCallout[] callouts = factory.getColumnCallouts(tableName, columnName);
-				if (callouts != null && callouts.length > 0) {
-					for(IColumnCallout callout : callouts) {
-						list.add(callout);
+			for(IServiceReferenceHolder<IColumnCalloutFactory> factory : factories) {
+				IColumnCalloutFactory service = factory.getService();
+				if (service != null) {
+					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
+					if (callouts != null && callouts.length > 0) {
+						for(IColumnCallout callout : callouts) {
+							list.add(callout);						
+						}
+						found.add(factory);
 					}
 				}
 			}
+			s_columnCalloutFactoryCache.put(cacheKey, found);
 		}
 		return list;
 	}
 
+	private static final CCache<String, IServiceReferenceHolder<ICalloutFactory>> s_calloutFactoryCache = new CCache<>(null, "ICalloutFactory", 100, false);
+	
 	// IDEMPIERE-2732
 	/**
 	 *
@@ -111,30 +173,64 @@ public class Core {
 	 * @return callout for className
 	 */
 	public static Callout getCallout(String className, String methodName) {
-		List<ICalloutFactory> factories = Service.locator().list(ICalloutFactory.class).getServices();
-		if (factories != null) {
-			for(ICalloutFactory factory : factories) {
-				Callout callout = factory.getCallout(className, methodName);
+		String cacheKey = className + "::" + methodName;
+		IServiceReferenceHolder<ICalloutFactory> cache = s_calloutFactoryCache.get(cacheKey);
+		if (cache != null) {
+			ICalloutFactory service = cache.getService();
+			if (service != null) {
+				Callout callout = service.getCallout(className, methodName);
 				if (callout != null) {
 					return callout;
+				}
+			}
+			s_calloutFactoryCache.remove(cacheKey);
+		}
+		List<IServiceReferenceHolder<ICalloutFactory>> factories = Service.locator().list(ICalloutFactory.class).getServiceReferences();
+		if (factories != null) {
+			for(IServiceReferenceHolder<ICalloutFactory> factory : factories) {
+				ICalloutFactory service = factory.getService();
+				if (service != null) {
+					Callout callout = service.getCallout(className, methodName);
+					if (callout != null) {
+						s_calloutFactoryCache.put(cacheKey, factory);
+						return callout;
+					}
 				}
 			}
 		}
 		return null;
 	}
 
+	private static final CCache<String, IServiceReferenceHolder<IProcessFactory>> s_processFactoryCache = new CCache<>(null, "IProcessFactory", 100, false);
+	
 	/**
 	 *
 	 * @param processId Java class name or equinox extension id
 	 * @return ProcessCall instance or null if processId not found
 	 */
 	public static ProcessCall getProcess(String processId) {
-		List<IProcessFactory> factories = getProcessFactories();
-		if (factories != null && !factories.isEmpty()) {
-			for(IProcessFactory factory : factories) {
-				ProcessCall process = factory.newProcessInstance(processId);
+		IServiceReferenceHolder<IProcessFactory> cache = s_processFactoryCache.get(processId);
+		if (cache != null) {
+			IProcessFactory service = cache.getService();
+			if (service != null) {
+				ProcessCall process = service.newProcessInstance(processId);
 				if (process != null)
 					return process;
+			}
+			s_processFactoryCache.remove(processId);
+		}
+		
+		List<IServiceReferenceHolder<IProcessFactory>> factories = getProcessFactories();
+		if (factories != null && !factories.isEmpty()) {
+			for(IServiceReferenceHolder<IProcessFactory> factory : factories) {
+				IProcessFactory service = factory.getService();
+				if (service != null) {
+					ProcessCall process = service.newProcessInstance(processId);
+					if (process != null) {
+						s_processFactoryCache.put(processId, factory);
+						return process;
+					}
+				}
 			}
 		}
 		return null; 		
@@ -144,18 +240,19 @@ public class Core {
 	 * This method load the process factories waiting until the DefaultProcessFactory on base is loaded (IDEMPIERE-3829)
 	 * @return List of factories implementing IProcessFactory
 	 */
-	private static List<IProcessFactory> getProcessFactories() {
-		List<IProcessFactory> factories = null;
+	private static List<IServiceReferenceHolder<IProcessFactory>> getProcessFactories() {
+		List<IServiceReferenceHolder<IProcessFactory>> factories = null;
 		int maxIterations = 5;
 		int waitMillis = 1000;
 		int iterations = 0;
 		boolean foundDefault = false;
 		while (true) {
-			factories = Service.locator().list(IProcessFactory.class).getServices();
+			factories = Service.locator().list(IProcessFactory.class).getServiceReferences();
 			if (factories != null && !factories.isEmpty()) {
-				for(IProcessFactory factory : factories) {
+				for(IServiceReferenceHolder<IProcessFactory> factory : factories) {
 					// wait until DefaultProcessFactory is loaded
-					if (factory instanceof DefaultProcessFactory) {
+					IProcessFactory service = factory.getService();
+					if (service instanceof DefaultProcessFactory) {
 						foundDefault = true;
 						break;
 					}
@@ -173,31 +270,63 @@ public class Core {
 		return factories;
 	}
 
+	private static final CCache<String, IServiceReferenceHolder<IModelValidatorFactory>> s_modelValidatorFactoryCache = new CCache<>(null, "IModelValidatorFactory", 100, false);
+	
 	/**
 	 *
 	 * @param validatorId Java class name or equinox extension Id
 	 * @return ModelValidator instance of null if validatorId not found
 	 */
 	public static ModelValidator getModelValidator(String validatorId) {
-		List<IModelValidatorFactory> factoryList = Service.locator().list(IModelValidatorFactory.class).getServices();
-		if (factoryList != null) {
-			for(IModelValidatorFactory factory : factoryList) {
-				ModelValidator validator = factory.newModelValidatorInstance(validatorId);
+		IServiceReferenceHolder<IModelValidatorFactory> cache = s_modelValidatorFactoryCache.get(validatorId);
+		if (cache != null) {
+			IModelValidatorFactory service = cache.getService();
+			if (service != null) {
+				ModelValidator validator = service.newModelValidatorInstance(validatorId);
 				if (validator != null)
 					return validator;
+			}
+			s_modelValidatorFactoryCache.remove(validatorId);
+		}
+		List<IServiceReferenceHolder<IModelValidatorFactory>> factoryList = Service.locator().list(IModelValidatorFactory.class).getServiceReferences();
+		if (factoryList != null) {
+			for(IServiceReferenceHolder<IModelValidatorFactory> factory : factoryList) {
+				IModelValidatorFactory service = factory.getService();
+				if (service != null) {
+					ModelValidator validator = service.newModelValidatorInstance(validatorId);
+					if (validator != null) {
+						s_modelValidatorFactoryCache.put(validatorId, factory);
+						return validator;
+					}
+				}
 			}
 		}
 		
 		return null;
 	}
 
+	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;
+	
 	/**
 	 * 
-	 * @return keystore
+	 * @return {@link IKeyStore}
 	 */
 	public static IKeyStore getKeyStore(){
-		return Service.locator().locate(IKeyStore.class).getService();
+		IKeyStore keystoreService = null;
+		if (s_keystoreServiceReference != null) {
+			keystoreService = s_keystoreServiceReference.getService();
+			if (keystoreService != null)
+				return keystoreService;
+		}
+		IServiceReferenceHolder<IKeyStore> serviceReference = Service.locator().locate(IKeyStore.class).getServiceReference();
+		if (serviceReference != null) {
+			keystoreService = serviceReference.getService();
+			s_keystoreServiceReference = serviceReference;
+		}
+		return keystoreService;
 	}
+	
+	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(null, "IPaymentProcessorFactory", 100, false);
 	
 	/**
 	 *  Get payment processor instance
@@ -216,14 +345,31 @@ public class Core {
 		}
 		//
 		PaymentProcessor myProcessor = null;
-		
-		List<IPaymentProcessorFactory> factoryList = Service.locator().list(IPaymentProcessorFactory.class).getServices();
-		if (factoryList != null) {
-			for(IPaymentProcessorFactory factory : factoryList) {
-				PaymentProcessor processor = factory.newPaymentProcessorInstance(className);
-				if (processor != null) {
+		IServiceReferenceHolder<IPaymentProcessorFactory> cache = s_paymentProcessorFactoryCache.get(className);
+		if (cache != null) {
+			IPaymentProcessorFactory service = cache.getService();
+			if (service != null) {
+				PaymentProcessor processor = service.newPaymentProcessorInstance(className);
+				if (processor != null) 
 					myProcessor = processor;
-					break;
+			}
+			if (myProcessor == null)
+				s_paymentProcessorFactoryCache.remove(className);
+		}
+		
+		if (myProcessor == null) {
+			List<IServiceReferenceHolder<IPaymentProcessorFactory>> factoryList = Service.locator().list(IPaymentProcessorFactory.class).getServiceReferences();
+			if (factoryList != null) {
+				for(IServiceReferenceHolder<IPaymentProcessorFactory> factory : factoryList) {
+					IPaymentProcessorFactory service = factory.getService();
+					if (service != null) {
+						PaymentProcessor processor = service.newPaymentProcessorInstance(className);
+						if (processor != null) {
+							myProcessor = processor;
+							s_paymentProcessorFactoryCache.put(className, factory);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -239,6 +385,8 @@ public class Core {
 		return myProcessor;
 	}
 	
+	private static final CCache<String, IServiceReferenceHolder<IBankStatementLoaderFactory>> s_bankStatementLoaderFactoryCache = new CCache<>(null, "IBankStatementLoaderFactory", 100, false);
+	
 	/**
 	 * get BankStatementLoader instance
 	 * 
@@ -252,15 +400,30 @@ public class Core {
 		}
 
 		BankStatementLoaderInterface myBankStatementLoader = null;
-		
-		List<IBankStatementLoaderFactory> factoryList = 
-				Service.locator().list(IBankStatementLoaderFactory.class).getServices();
-		if (factoryList != null) {
-			for(IBankStatementLoaderFactory factory : factoryList) {
-				BankStatementLoaderInterface loader = factory.newBankStatementLoaderInstance(className);
-				if (loader != null) {
+		IServiceReferenceHolder<IBankStatementLoaderFactory> cache = s_bankStatementLoaderFactoryCache.get(className);
+		if (cache != null) {
+			IBankStatementLoaderFactory service = cache.getService();
+			if (service != null) {
+				BankStatementLoaderInterface loader = service.newBankStatementLoaderInstance(className);
+				if (loader != null) 
 					myBankStatementLoader = loader;
-					break;
+			}
+			if (myBankStatementLoader == null)
+				s_bankStatementLoaderFactoryCache.remove(className);
+		}
+		if (myBankStatementLoader == null) {
+			List<IServiceReferenceHolder<IBankStatementLoaderFactory>> factoryList = Service.locator().list(IBankStatementLoaderFactory.class).getServiceReferences();
+			if (factoryList != null) {
+				for(IServiceReferenceHolder<IBankStatementLoaderFactory> factory : factoryList) {
+					IBankStatementLoaderFactory service = factory.getService();
+					if (service != null) {
+						BankStatementLoaderInterface loader = service.newBankStatementLoaderInstance(className);
+						if (loader != null) {
+							myBankStatementLoader = loader;
+							s_bankStatementLoaderFactoryCache.put(className, factory);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -272,6 +435,8 @@ public class Core {
 		
 		return myBankStatementLoader;
 	}
+	
+	private static final CCache<String, IServiceReferenceHolder<IBankStatementMatcherFactory>> s_bankStatementMatcherFactoryCache = new CCache<>(null, "IBankStatementMatcherFactory", 100, false);
 	
 	/**
 	 * get BankStatementMatcher instance
@@ -286,15 +451,30 @@ public class Core {
 		}
 
 		BankStatementMatcherInterface myBankStatementMatcher = null;
-		
-		List<IBankStatementMatcherFactory> factoryList = 
-				Service.locator().list(IBankStatementMatcherFactory.class).getServices();
-		if (factoryList != null) {
-			for(IBankStatementMatcherFactory factory : factoryList) {
-				BankStatementMatcherInterface matcher = factory.newBankStatementMatcherInstance(className);
-				if (matcher != null) {
+		IServiceReferenceHolder<IBankStatementMatcherFactory> cache = s_bankStatementMatcherFactoryCache.get(className);
+		if (cache != null) {
+			IBankStatementMatcherFactory service = cache.getService();
+			if (service != null) {
+				BankStatementMatcherInterface matcher = service.newBankStatementMatcherInstance(className);
+				if (matcher != null) 
 					myBankStatementMatcher = matcher;
-					break;
+			}
+			if (myBankStatementMatcher == null)
+				s_bankStatementMatcherFactoryCache.remove(className);
+		}
+		if (myBankStatementMatcher == null) {
+			List<IServiceReferenceHolder<IBankStatementMatcherFactory>> factoryList = Service.locator().list(IBankStatementMatcherFactory.class).getServiceReferences();
+			if (factoryList != null) {
+				for(IServiceReferenceHolder<IBankStatementMatcherFactory> factory : factoryList) {
+					IBankStatementMatcherFactory service = factory.getService();
+					if (service != null) {
+						BankStatementMatcherInterface matcher = service.newBankStatementMatcherInstance(className);
+						if (matcher != null) {
+							myBankStatementMatcher = matcher;
+							s_bankStatementMatcherFactoryCache.put(className, factory);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -306,6 +486,8 @@ public class Core {
 		
 		return myBankStatementMatcher;
 	}
+	
+	private static final CCache<String, IServiceReferenceHolder<IShipmentProcessorFactory>> s_shipmentProcessorFactoryCache = new CCache<>(null, "IShipmentProcessorFactory", 100, false);
 	
 	/**
 	 * 
@@ -322,19 +504,36 @@ public class Core {
 			s_log.log(Level.SEVERE, "Shipment processor or class not defined for shipper " + sf);
 			return null;
 		}
-		
-		List<IShipmentProcessorFactory> factoryList = Service.locator().list(IShipmentProcessorFactory.class).getServices();
+	
+		IServiceReferenceHolder<IShipmentProcessorFactory> cache = s_shipmentProcessorFactoryCache.get(className);
+		if (cache != null) {
+			IShipmentProcessorFactory service = cache.getService();
+			if (service != null) {
+				IShipmentProcessor processor = service.newShipmentProcessorInstance(className);
+				if (processor != null)
+					return processor;
+			}
+			s_shipmentProcessorFactoryCache.remove(className);
+		}
+		List<IServiceReferenceHolder<IShipmentProcessorFactory>> factoryList = Service.locator().list(IShipmentProcessorFactory.class).getServiceReferences();
 		if (factoryList == null) 
 			return null;
-		for (IShipmentProcessorFactory factory : factoryList)
+		for (IServiceReferenceHolder<IShipmentProcessorFactory> factory : factoryList)
 		{
-			IShipmentProcessor processor = factory.newShipmentProcessorInstance(className);
-			if (processor != null)
-				return processor;
+			IShipmentProcessorFactory service = factory.getService();
+			if (service != null) {
+				IShipmentProcessor processor = service.newShipmentProcessorInstance(className);
+				if (processor != null) {
+					s_shipmentProcessorFactoryCache.put(className, factory);
+					return processor;
+				}
+			}
 		}
 		
 		return null;
 	}
+	
+	private static final CCache<String, IServiceReferenceHolder<IAddressValidationFactory>> s_addressValidationFactoryCache = new CCache<>(null, "IAddressValidationFactory", 100, false);
 	
 	/**
 	 * Get address validation instance
@@ -350,18 +549,35 @@ public class Core {
 			return null;
 		}
 		
-		List<IAddressValidationFactory> factoryList = Service.locator().list(IAddressValidationFactory.class).getServices();
+		IServiceReferenceHolder<IAddressValidationFactory> cache = s_addressValidationFactoryCache.get(className);
+		if (cache != null) {
+			IAddressValidationFactory service = cache.getService();
+			if (service != null) {
+				IAddressValidation processor = service.newAddressValidationInstance(className);
+				if (processor != null)
+					return processor;
+			}
+			s_addressValidationFactoryCache.remove(className);
+		}
+		List<IServiceReferenceHolder<IAddressValidationFactory>> factoryList = Service.locator().list(IAddressValidationFactory.class).getServiceReferences();
 		if (factoryList == null) 
 			return null;
-		for (IAddressValidationFactory factory : factoryList)
+		for (IServiceReferenceHolder<IAddressValidationFactory> factory : factoryList)
 		{
-			IAddressValidation processor = factory.newAddressValidationInstance(className);
-			if (processor != null)
-				return processor;
+			IAddressValidationFactory service = factory.getService();
+			if (service != null) {
+				IAddressValidation processor = service.newAddressValidationInstance(className);
+				if (processor != null) {
+					s_addressValidationFactoryCache.put(className, factory);
+					return processor;
+				}
+			}
 		}
 		
 		return null;
 	}
+	
+	private static final CCache<String, IServiceReferenceHolder<ITaxProviderFactory>> s_taxProviderFactoryCache = new CCache<>(null, "ITaxProviderFactory", 100, false);
 	
 	/**
 	 * Get tax provider instance
@@ -388,20 +604,37 @@ public class Core {
 				s_log.log(Level.SEVERE, "Tax provider class not defined: " + provider);
 				return null;
 			}
-			
-			List<ITaxProviderFactory> factoryList = Service.locator().list(ITaxProviderFactory.class).getServices();
+	
+			IServiceReferenceHolder<ITaxProviderFactory> cache = s_taxProviderFactoryCache.get(className);
+			if (cache != null) {
+				ITaxProviderFactory service = cache.getService();
+				if (service != null) {
+					calculator = service.newTaxProviderInstance(className);
+					if (calculator != null)
+						return calculator;
+				}
+				s_taxProviderFactoryCache.remove(className);
+			}
+			List<IServiceReferenceHolder<ITaxProviderFactory>> factoryList = Service.locator().list(ITaxProviderFactory.class).getServiceReferences();
 			if (factoryList == null) 
 				return null;
-			for (ITaxProviderFactory factory : factoryList)
+			for (IServiceReferenceHolder<ITaxProviderFactory> factory : factoryList)
 			{
-				calculator = factory.newTaxProviderInstance(className);
-				if (calculator != null)
-					return calculator;
+				ITaxProviderFactory service = factory.getService();
+				if (service != null) {
+					calculator = service.newTaxProviderInstance(className);
+					if (calculator != null) {
+						s_taxProviderFactoryCache.put(className, factory);
+						return calculator;
+					}
+				}
 			}
 		}
 		
 		return null;
 	}
+	
+	private static final CCache<String, IServiceReferenceHolder<IReplenishFactory>> s_replenishFactoryCache = new CCache<>(null, "IReplenishFactory", 100, false);
 	
 	/**
 	 * get Custom Replenish instance
@@ -416,15 +649,30 @@ public class Core {
 		}
 
 		ReplenishInterface myReplenishInstance = null;
-		
-		List<IReplenishFactory> factoryList = 
-				Service.locator().list(IReplenishFactory.class).getServices();
-		if (factoryList != null) {
-			for(IReplenishFactory factory : factoryList) {
-				ReplenishInterface loader = factory.newReplenishInstance(className);
-				if (loader != null) {
+		IServiceReferenceHolder<IReplenishFactory> cache = s_replenishFactoryCache.get(className);
+		if (cache != null) {
+			IReplenishFactory service = cache.getService();
+			if (service != null) {
+				ReplenishInterface loader = service.newReplenishInstance(className);
+				if (loader != null) 
 					myReplenishInstance = loader;
-					break;
+			}
+			if (myReplenishInstance == null)
+				s_replenishFactoryCache.remove(className);
+		}
+		if (myReplenishInstance == null) {
+			List<IServiceReferenceHolder<IReplenishFactory>> factoryList = Service.locator().list(IReplenishFactory.class).getServiceReferences();
+			if (factoryList != null) {
+				for(IServiceReferenceHolder<IReplenishFactory> factory : factoryList) {
+					IReplenishFactory service = factory.getService();
+					if (service != null) {
+						ReplenishInterface loader = service.newReplenishInstance(className);
+						if (loader != null) {
+							myReplenishInstance = loader;
+							s_replenishFactoryCache.put(className, factory);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -437,7 +685,8 @@ public class Core {
 		return myReplenishInstance;
 	}
 	
-
+	private final static CCache<String, IServiceReferenceHolder<ScriptEngineFactory>> s_scriptEngineFactoryCache = new CCache<String, IServiceReferenceHolder<ScriptEngineFactory>>(null, "ScriptEngineFactory", 100, false);
+	
 	/** Get script engine 
 	 * 
 	 * @param engineName
@@ -450,13 +699,23 @@ public class Core {
 		if (engine != null)
 			return engine;
 		
-		List<ScriptEngineFactory> factoryList = 
-				Service.locator().list(ScriptEngineFactory.class).getServices();
+		IServiceReferenceHolder<ScriptEngineFactory> cache = s_scriptEngineFactoryCache.get(engineName);
+		if (cache != null) {
+			ScriptEngineFactory service = cache.getService();
+			if (service != null)
+				return service.getScriptEngine();
+			s_scriptEngineFactoryCache.remove(engineName);
+		}
+		List<IServiceReferenceHolder<ScriptEngineFactory>> factoryList = Service.locator().list(ScriptEngineFactory.class).getServiceReferences();
 		if (factoryList != null) {
-			for(ScriptEngineFactory factory : factoryList) {
-				for (String name : factory.getNames()) {
-					if (engineName.equals(name)) {
-						return factory.getScriptEngine();
+			for(IServiceReferenceHolder<ScriptEngineFactory> factory : factoryList) {
+				ScriptEngineFactory service = factory.getService();
+				if (service != null) {
+					for (String name : service.getNames()) {
+						if (engineName.equals(name)) {
+							s_scriptEngineFactoryCache.put(engineName, factory);
+							return service.getScriptEngine();
+						}
 					}
 				}
 			}
@@ -464,6 +723,8 @@ public class Core {
 		
 		return null;
 	}
+	
+	private static final CCache<String, IServiceReferenceHolder<IPaymentExporterFactory>> s_paymentExporterFactory = new CCache<>(null, "IPaymentExporterFactory", 100, false);
 	
 	/**
 	 * get PaymentExporter instance
@@ -478,15 +739,30 @@ public class Core {
 		}
 
 		PaymentExport myPaymentExporter = null;
-		
-		List<IPaymentExporterFactory> factoryList = 
-				Service.locator().list(IPaymentExporterFactory.class).getServices();
-		if (factoryList != null) {
-			for(IPaymentExporterFactory factory : factoryList) {
-				PaymentExport exporter = factory.newPaymentExporterInstance(className);
-				if (exporter != null) {
+		IServiceReferenceHolder<IPaymentExporterFactory> cache = s_paymentExporterFactory.get(className);
+		if (cache != null) {
+			IPaymentExporterFactory service = cache.getService();
+			if (service != null) {
+				PaymentExport exporter = service.newPaymentExporterInstance(className);
+				if (exporter != null) 
 					myPaymentExporter = exporter;
-					break;
+			}
+			if (myPaymentExporter == null)
+				s_paymentExporterFactory.remove(className);
+		}
+		if (myPaymentExporter == null) {
+			List<IServiceReferenceHolder<IPaymentExporterFactory>> factoryList = Service.locator().list(IPaymentExporterFactory.class).getServiceReferences();
+			if (factoryList != null) {
+				for(IServiceReferenceHolder<IPaymentExporterFactory> factory : factoryList) {
+					IPaymentExporterFactory service = factory.getService();
+					if (service != null) {
+						PaymentExport exporter = service.newPaymentExporterInstance(className);
+						if (exporter != null) {
+							myPaymentExporter = exporter;
+							s_paymentExporterFactory.put(className, factory);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -499,19 +775,30 @@ public class Core {
 		return myPaymentExporter;
 	}	
 
+	private static IServiceReferenceHolder<IProductPricingFactory> s_productPricingFactoryCache = null;
+	
 	/**
 	 * get ProductPricing instance
 	 * 
 	 * @return instance of the IProductPricing or null
 	 */
-	public static IProductPricing getProductPricing() {
-
-		List<IProductPricingFactory> factoryList = 
-				Service.locator().list(IProductPricingFactory.class).getServices();
-		if (factoryList != null) {
-			for(IProductPricingFactory factory : factoryList) {
-				IProductPricing myProductPricing = factory.newProductPricingInstance();
+	public static synchronized IProductPricing getProductPricing() {
+		if (s_productPricingFactoryCache != null) {
+			IProductPricingFactory service = s_productPricingFactoryCache.getService();
+			if (service != null) {
+				IProductPricing myProductPricing = service.newProductPricingInstance();
+				if (myProductPricing != null)
+					return myProductPricing;
+			}
+			s_productPricingFactoryCache = null;
+		}
+		IServiceReferenceHolder<IProductPricingFactory> factoryReference = Service.locator().locate(IProductPricingFactory.class).getServiceReference();
+		if (factoryReference != null) {
+			IProductPricingFactory service = factoryReference.getService();
+			if (service != null) {
+				IProductPricing myProductPricing = service.newProductPricingInstance();
 				if (myProductPricing != null) {
+					s_productPricingFactoryCache = factoryReference;
 					return myProductPricing;
 				}
 			}
@@ -520,20 +807,35 @@ public class Core {
 		return null;
 	}
 	
+	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(null, "IDepreciationMethodFactory", 100, false);
+	
 	/**
 	 * lookup implement {@link IDepreciationMethod}
 	 * @param factoryLookupDTO
-	 * @return
+	 * @return {@link IDepreciationMethod}
 	 */
 	public static IDepreciationMethod getDepreciationMethod(DepreciationFactoryLookupDTO factoryLookupDTO) {
-
-		List<IDepreciationMethodFactory> factoryList = 
-				Service.locator().list(IDepreciationMethodFactory.class).getServices();
-		if (factoryList != null) {
-			for(IDepreciationMethodFactory factory : factoryList) {
-				IDepreciationMethod depreciationMethod = factory.getDepreciationMethod(factoryLookupDTO);
-				if (depreciationMethod != null) {
+		String cacheKey = factoryLookupDTO.depreciationType;
+		IServiceReferenceHolder<IDepreciationMethodFactory> cache = s_depreciationMethodFactoryCache.get(cacheKey);
+		if (cache != null) {
+			IDepreciationMethodFactory service = cache.getService();
+			if (service != null) {
+				IDepreciationMethod depreciationMethod = service.getDepreciationMethod(factoryLookupDTO);
+				if (depreciationMethod != null) 
 					return depreciationMethod;
+			}
+			s_depreciationMethodFactoryCache.remove(cacheKey);
+		}
+		List<IServiceReferenceHolder<IDepreciationMethodFactory>> factoryList = Service.locator().list(IDepreciationMethodFactory.class).getServiceReferences();
+		if (factoryList != null) {
+			for(IServiceReferenceHolder<IDepreciationMethodFactory> factory : factoryList) {
+				IDepreciationMethodFactory service = factory.getService();
+				if (service != null) {
+					IDepreciationMethod depreciationMethod = service.getDepreciationMethod(factoryLookupDTO);
+					if (depreciationMethod != null) {
+						s_depreciationMethodFactoryCache.put(cacheKey, factory);
+						return depreciationMethod;
+					}
 				}
 			}
 		}
@@ -541,4 +843,130 @@ public class Core {
 		return null;
 	}
 
+	private static IServiceReferenceHolder<IMessageService> s_messageServiceReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMessageService}
+	 */
+	public static synchronized IMessageService getMessageService() {
+		IMessageService messageService = null;
+		if (s_messageServiceReference != null) {
+			messageService = s_messageServiceReference.getService();
+			if (messageService != null)
+				return messageService;
+		}
+		IServiceReferenceHolder<IMessageService> serviceReference = Service.locator().locate(IMessageService.class).getServiceReference();
+		if (serviceReference != null) {
+			messageService = serviceReference.getService();
+			s_messageServiceReference = serviceReference;
+		}
+		return messageService;
+	}
+	
+	private static IServiceReferenceHolder<IClusterService> s_clusterServiceReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IClusterService}
+	 */
+	public static synchronized IClusterService getClusterService() {
+		IClusterService clusterService = null;
+		if (s_clusterServiceReference != null) {
+			clusterService = s_clusterServiceReference.getService();
+			if (clusterService != null)
+				return clusterService;
+		}
+		IServiceReferenceHolder<IClusterService> serviceReference = Service.locator().locate(IClusterService.class).getServiceReference();
+		if (serviceReference != null) {
+			clusterService = serviceReference.getService();
+			s_clusterServiceReference = serviceReference;
+		}
+		return clusterService;
+	}
+	
+	private static IServiceReferenceHolder<ICacheService> s_cacheServiceReference = null;
+	
+	/**
+	 * 
+	 * @return {@link ICacheService}
+	 */
+	public static synchronized ICacheService getCacheService() {
+		ICacheService cacheService = null;
+		if (s_cacheServiceReference != null) {
+			cacheService = s_cacheServiceReference.getService();
+			if (cacheService != null)
+				return cacheService;
+		}
+		IServiceReferenceHolder<ICacheService> serviceReference = Service.locator().locate(ICacheService.class).getServiceReference();
+		if (serviceReference != null) {
+			cacheService = serviceReference.getService();
+			s_cacheServiceReference = serviceReference;
+		}
+		return cacheService;
+	}
+	
+	private static IServiceReferenceHolder<IDictionaryService> s_dictionaryServiceReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IDictionaryService}
+	 */
+	public static synchronized IDictionaryService getDictionaryService() {
+		IDictionaryService ids = null;
+		if (s_dictionaryServiceReference != null) {
+			ids = s_dictionaryServiceReference.getService();
+			if (ids != null)
+				return ids;
+		}
+		IServiceReferenceHolder<IDictionaryService> serviceReference = Service.locator().locate(IDictionaryService.class).getServiceReference();
+		if (serviceReference != null) {
+			ids = serviceReference.getService();
+			s_dictionaryServiceReference = serviceReference;
+		}
+		return ids;
+	}
+	
+	private static final CCache<Long, IServiceReferenceHolder<ILookupFactory>> s_lookupFactoryCache = new CCache<Long, IServiceReferenceHolder<ILookupFactory>>(null, "ILookupFactory", 10, false);
+	
+	/**
+	 * Get lookup from osgi factory
+	 * see DefaultLookupFactory.java for the other default Lookups
+	 * @param gridFieldVO
+	 * @return {@link Lookup}
+	 */
+	public static Lookup getLookupFromFactory(GridFieldVO gridFieldVO) {
+		List<Long> visitedIds = new ArrayList<Long>();
+		if (!s_lookupFactoryCache.isEmpty()) {
+			Long[] keys = s_lookupFactoryCache.keySet().toArray(new Long[0]);
+			for (Long key : keys) {
+				IServiceReferenceHolder<ILookupFactory> serviceReference = s_lookupFactoryCache.get(key);
+				if (serviceReference != null) {
+					ILookupFactory service = serviceReference.getService();
+					if (service != null) {
+						visitedIds.add(key);
+						Lookup lookup = service.getLookup(gridFieldVO);
+						if (lookup != null)
+							return lookup;
+					} else {
+						s_lookupFactoryCache.remove(key);
+					}
+				}
+			}
+		}
+		List<IServiceReferenceHolder<ILookupFactory>> serviceReferences = Service.locator().list(ILookupFactory.class).getServiceReferences();
+		for(IServiceReferenceHolder<ILookupFactory> serviceReference : serviceReferences) {
+			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
+			if (visitedIds.contains(serviceId))
+				continue;
+			ILookupFactory service = serviceReference.getService();
+			if (service != null) {				
+				s_lookupFactoryCache.put(serviceId, serviceReference);
+				Lookup lookup = service.getLookup(gridFieldVO);
+				if (lookup != null)
+					return lookup;
+			}
+		}
+		return null;
+	}
 }

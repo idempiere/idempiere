@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.IModelFactory;
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.model.GenericPO;
 import org.compiere.db.AdempiereDatabase;
@@ -208,7 +209,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTable.class);
 
-	private static final CCache<String, IModelFactory> s_modelFactoryCache = new CCache<String, IModelFactory>(null, "IModelFactory", 100, 120, false, 2000);
+	private static final CCache<String, IServiceReferenceHolder<IModelFactory>> s_modelFactoryCache = new CCache<>(null, "IModelFactory", 100, 120, false, 2000);
 
 	/**
 	 * 	Get Persistence Class for Table
@@ -217,25 +218,31 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public static Class<?> getClass (String tableName)
 	{
-		IModelFactory cache = s_modelFactoryCache.get(tableName);
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
 		if (cache != null)
 		{
-			Class<?> clazz = cache.getClass(tableName);
-			if (clazz != null)
-				return clazz;
-			else
-				s_modelFactoryCache.remove(tableName);
+			IModelFactory service = cache.getService();
+			if (service != null)
+			{
+				Class<?> clazz = service.getClass(tableName);
+				if (clazz != null)
+					return clazz;
+			}
+			s_modelFactoryCache.remove(tableName);
 		}
 		
-		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
 		if (factoryList == null)
 			return null;
-		for(IModelFactory factory : factoryList) {
-			Class<?> clazz = factory.getClass(tableName);
-			if (clazz != null)
-			{
-				s_modelFactoryCache.put(tableName, factory);
-				return clazz;
+		for(IServiceReferenceHolder<IModelFactory> factory : factoryList) {
+			IModelFactory service = factory.getService();
+			if (service != null) {
+				Class<?> clazz = service.getClass(tableName);
+				if (clazz != null)
+				{
+					s_modelFactoryCache.put(tableName, factory);
+					return clazz;
+				}
 			}
 		}
 		return null;
@@ -495,36 +502,42 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		}
 
 		PO po = null;
-		IModelFactory cache = s_modelFactoryCache.get(tableName);
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
 		if (cache != null)
 		{
-			po = cache.getPO(tableName, Record_ID, trxName);
-			if (po != null)
+			IModelFactory service = cache.getService();
+			if (service != null)
 			{
-				if (po.get_ID() != Record_ID && Record_ID > 0)
-				{
-					s_modelFactoryCache.remove(tableName);
-					po = null;
-				}
-				else
-					return po;
-			}
-		}
-		
-		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
-		if (factoryList != null)
-		{
-			for(IModelFactory factory : factoryList)
-			{
-				po = factory.getPO(tableName, Record_ID, trxName);
+				po = service.getPO(tableName, Record_ID, trxName);
 				if (po != null)
 				{
 					if (po.get_ID() != Record_ID && Record_ID > 0)
 						po = null;
 					else
+						return po;
+				}
+			}
+			s_modelFactoryCache.remove(tableName);
+		}
+		
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
+		if (factoryList != null)
+		{
+			for(IServiceReferenceHolder<IModelFactory> factory : factoryList)
+			{
+				IModelFactory service = factory.getService();
+				if (service != null)
+				{
+					po = service.getPO(tableName, Record_ID, trxName);
+					if (po != null)
 					{
-						s_modelFactoryCache.put(tableName, factory);
-						break;
+						if (po.get_ID() != Record_ID && Record_ID > 0)
+							po = null;
+						else
+						{
+							s_modelFactoryCache.put(tableName, factory);
+							break;
+						}
 					}
 				}
 			}
@@ -551,24 +564,31 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		String tableName = getTableName();
 
 		PO po = null;
-		IModelFactory cache = s_modelFactoryCache.get(tableName);
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
 		if (cache != null)
 		{
-			po = cache.getPO(tableName, rs, trxName);
-			if (po != null)
-				return po;
-			else
-				s_modelFactoryCache.remove(tableName);
+			IModelFactory service = cache.getService();
+			if (service != null)
+			{
+				po = service.getPO(tableName, rs, trxName);
+				if (po != null)
+					return po;
+			}
+			s_modelFactoryCache.remove(tableName);
 		}
-		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
 		if (factoryList != null)
 		{
-			for(IModelFactory factory : factoryList) {
-				po = factory.getPO(tableName, rs, trxName);
-				if (po != null)
+			for(IServiceReferenceHolder<IModelFactory> factory : factoryList) {
+				IModelFactory service = factory.getService();
+				if (service != null)
 				{
-					s_modelFactoryCache.put(tableName, factory);
-					break;
+					po = service.getPO(tableName, rs, trxName);
+					if (po != null)
+					{
+						s_modelFactoryCache.put(tableName, factory);
+						break;
+					}
 				}
 			}
 		}

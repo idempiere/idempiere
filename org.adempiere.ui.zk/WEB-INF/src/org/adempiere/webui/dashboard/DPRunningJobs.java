@@ -17,7 +17,7 @@ package org.adempiere.webui.dashboard;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
@@ -126,7 +126,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	{
 		if (topicSubscriber == null) {
 			topicSubscriber = new TopicSubscriber();
-			IMessageService service = Service.locator().locate(IMessageService.class).getService();
+			IMessageService service = Core.getMessageService();
 			if (service != null) {
 				ITopic<Integer> topic = service.getTopic(MPInstance.ON_RUNNING_JOB_CHANGED_TOPIC);
 				topic.subscribe(topicSubscriber);

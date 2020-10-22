@@ -35,7 +35,9 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.ILookupFactory;
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogMgt;
@@ -195,15 +197,8 @@ public class GridField
 	}   //  m_lookup
 
 	private void loadLookupFromFactory() {
-		//http://jira.idempiere.com/browse/IDEMPIERE-694
-		//see DefaultLookupFactory.java for the other default Lookups
-		List<ILookupFactory> factoryList = Service.locator().list(ILookupFactory.class).getServices();
-		for(ILookupFactory factory : factoryList)
-		{
-			m_lookup = factory.getLookup(m_vo);
-			if (m_lookup != null)
-				break;
-		}
+		//http://jira.idempiere.com/browse/IDEMPIERE-694		
+		m_lookup = Core.getLookupFromFactory(m_vo);
 	}
 
 	/***
@@ -264,10 +259,11 @@ public class GridField
 		else {
 			//http://jira.idempiere.com/browse/IDEMPIERE-694
 			//see DefaultLookupFactory.java for the other default Lookups
-			List<ILookupFactory> factoryList = Service.locator().list(ILookupFactory.class).getServices();
-			for(ILookupFactory factory : factoryList)
+			List<IServiceReferenceHolder<ILookupFactory>> factoryList = Service.locator().list(ILookupFactory.class).getServiceReferences();
+			for(IServiceReferenceHolder<ILookupFactory> factory : factoryList)
 			{
-				retValue = factory.isLookup(m_vo);
+				ILookupFactory service = factory.getService();
+				retValue = service != null && service.isLookup(m_vo);
 				if (retValue == true)
 					break;
 			}

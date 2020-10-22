@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.exceptions.AdempiereException;
@@ -37,41 +38,120 @@ public class MStorageProvider extends X_AD_StorageProvider {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * 
+	 * @return {@link IAttachmentStore}
+	 */
 	public IAttachmentStore getAttachmentStore() {
 		ServiceQuery query=new ServiceQuery();
 		String method = this.getMethod();
 		if (method == null)
 			method = "DB";
 		query.put("method", method);
-		IAttachmentStore store = Service.locator().locate(IAttachmentStore.class, query).getService();			
+		IAttachmentStore store = getAttachmentStoreService(query);			
 		if (store == null) {
 			throw new AdempiereException("No attachment storage provider found");
 		}
 		return store;
 	}
+
+	private static IServiceReferenceHolder<IAttachmentStore> s_attachmentStoreReference = null;
 	
+	/**
+	 * 
+	 * @param query
+	 * @return {@link IAttachmentStore}
+	 */
+	public static synchronized IAttachmentStore getAttachmentStoreService(ServiceQuery query) {
+		IAttachmentStore store = null;
+		if (s_attachmentStoreReference != null) {
+			store = s_attachmentStoreReference.getService();
+			if (store != null)
+				return store;
+		}
+		IServiceReferenceHolder<IAttachmentStore> serviceReference = Service.locator().locate(IAttachmentStore.class, query).getServiceReference();
+		if (serviceReference != null) {
+			store = serviceReference.getService();
+			s_attachmentStoreReference = serviceReference;
+		}
+		return store;
+	}
+	
+	/**
+	 * 
+	 * @return {@link IArchiveStore}
+	 */
 	public IArchiveStore getArchiveStore() {
 		ServiceQuery query=new ServiceQuery();
 		String method = this.getMethod();
 		if (method == null)
 			method = "DB";
 		query.put("method", method);
-		IArchiveStore store = Service.locator().locate(IArchiveStore.class, query).getService();
+		IArchiveStore store = getArchiveStoreService(query);
 		if (store == null) {
 			throw new AdempiereException("No archive storage provider found");
 		}
 		return store;
 	}
+
+	private static IServiceReferenceHolder<IArchiveStore> s_archiveStoreReference = null;
+	
+	/**
+	 * 
+	 * @param query
+	 * @return {@link IArchiveStore}
+	 */
+	public static synchronized IArchiveStore getArchiveStoreService(ServiceQuery query) {
+		IArchiveStore store = null;
+		if (s_archiveStoreReference != null) {
+			store = s_archiveStoreReference.getService();
+			if (store != null)
+				return store;
+		}
 		
+		IServiceReferenceHolder<IArchiveStore> serviceReference = Service.locator().locate(IArchiveStore.class, query).getServiceReference();
+		if (serviceReference != null) {
+			store = serviceReference.getService();
+			s_archiveStoreReference = serviceReference;
+		}
+		return store;
+	}
+		
+	/**
+	 * 
+	 * @return {@link IImageStore}
+	 */
 	public IImageStore getImageStore() {
 		ServiceQuery query=new ServiceQuery();
 		String method = this.getMethod();
 		if (method == null)
 			method = "DB";
 		query.put("method", method);
-		IImageStore store = Service.locator().locate(IImageStore.class, query).getService();
+		IImageStore store = getImageStoreService(query);
 		if (store == null) {
 			throw new AdempiereException("No image storage provider found");
+		}
+		return store;
+	}
+
+	private static IServiceReferenceHolder<IImageStore> s_imageStoreReference = null;
+	
+	/**
+	 * 
+	 * @param query
+	 * @return {@link IImageStore}
+	 */
+	public static synchronized IImageStore getImageStoreService(ServiceQuery query) {
+		IImageStore store = null;
+		if (s_imageStoreReference != null) {
+			store = s_imageStoreReference.getService();
+			if (store != null)
+				return store;
+		}
+		IServiceReferenceHolder<IImageStore> serviceReference = Service.locator().locate(IImageStore.class, query).getServiceReference();
+		if (serviceReference != null) {
+			store = serviceReference.getService();
+			s_imageStoreReference = serviceReference;
 		}
 		return store;
 	}

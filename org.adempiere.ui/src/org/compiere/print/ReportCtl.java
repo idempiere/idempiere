@@ -31,6 +31,7 @@ import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
@@ -463,8 +464,29 @@ public class ReportCtl
 	 */
 	public static void preview(ReportEngine re)
 	{
-		ReportViewerProvider viewer = Service.locator().locate(ReportViewerProvider.class).getService();
+		ReportViewerProvider viewer = getReportViewerProvider();
 		viewer.openViewer(re);
+	}
+
+	private static IServiceReferenceHolder<ReportViewerProvider> s_reportViewerProviderReference = null;
+	
+	/**
+	 * 
+	 * @return {@link ReportViewerProvider}
+	 */
+	public static synchronized ReportViewerProvider getReportViewerProvider() {
+		ReportViewerProvider viewer = null;
+		if (s_reportViewerProviderReference != null) {
+			viewer = s_reportViewerProviderReference.getService();
+			if (viewer != null)
+				return viewer;
+		}
+		IServiceReferenceHolder<ReportViewerProvider> viewerReference = Service.locator().locate(ReportViewerProvider.class).getServiceReference();
+		if (viewerReference != null) {
+			s_reportViewerProviderReference = viewerReference;
+			viewer = viewerReference.getService();
+		}
+		return viewer;
 	}
 
 }	//	ReportCtl

@@ -17,13 +17,16 @@
 
 package org.adempiere.webui.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.webui.factory.IEditorFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
-import org.compiere.util.CLogger;
+import org.compiere.util.CCache;
+import org.osgi.framework.Constants;
 
 /**
  *
@@ -36,29 +39,61 @@ import org.compiere.util.CLogger;
  */
 public class WebEditorFactory
 {
-
-    @SuppressWarnings("unused")
-	private final static CLogger logger;
-
-    static
-    {
-        logger = CLogger.getCLogger(WebEditorFactory.class);
-    }
-
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @return WEditor for GridField
+     */
     public static WEditor getEditor(GridField gridField, boolean tableEditor)
     {
     	return getEditor(gridField.getGridTab(), gridField, tableEditor);
     }
 
+    private static final CCache<Long, IServiceReferenceHolder<IEditorFactory>> s_editorFactoryCache = new CCache<>(null, "IEditorFactory", 10, false);
+    
+    /**
+     * 
+     * @param gridTab
+     * @param gridField
+     * @param tableEditor
+     * @return WEditor for GridField
+     */
     public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor)
     {
+    	List<Long> visitedIds = new ArrayList<Long>();
+		if (!s_editorFactoryCache.isEmpty()) {
+			Long[] keys = s_editorFactoryCache.keySet().toArray(new Long[0]);
+			for (Long key : keys) {
+				IServiceReferenceHolder<IEditorFactory> serviceReference = s_editorFactoryCache.get(key);
+				if (serviceReference != null) {
+					IEditorFactory service = serviceReference.getService();
+					if (service != null) {
+						visitedIds.add(key);
+						WEditor editor = service.getEditor(gridTab, gridField, tableEditor);
+			        	if (editor != null)
+			        		return editor;
+					} else {
+						s_editorFactoryCache.remove(key);
+					}
+				}
+			}
+		}
         WEditor editor = null;
-        List<IEditorFactory> factoryList = Service.locator().list(IEditorFactory.class).getServices();
-        for(IEditorFactory factory : factoryList)
+        List<IServiceReferenceHolder<IEditorFactory>> serviceReferences = Service.locator().list(IEditorFactory.class).getServiceReferences();
+        for(IServiceReferenceHolder<IEditorFactory> serviceReference : serviceReferences)
         {
-        	editor = factory.getEditor(gridTab, gridField, tableEditor);
-        	if (editor != null)
-        		break;
+        	Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
+			if (visitedIds.contains(serviceId))
+				continue;
+        	IEditorFactory service = serviceReference.getService();
+        	if (service != null)
+        	{
+        		s_editorFactoryCache.put(serviceId, serviceReference);
+	        	editor = service.getEditor(gridTab, gridField, tableEditor);
+	        	if (editor != null)
+	        		break;
+        	}
         }
         return editor;
     }

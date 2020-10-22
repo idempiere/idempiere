@@ -27,7 +27,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import org.adempiere.base.IServiceHolder;
+import org.adempiere.base.Core;
 import org.adempiere.base.Service;
 import org.adempiere.server.AdempiereServerActivator;
 import org.adempiere.server.IServerFactory;
@@ -142,7 +142,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		if (clusterId != null) {
 			Map<String, String> map = getServerOwnerMap();
 			if (map != null) {
-				ICacheService cacheService = getCacheService();
+				ICacheService cacheService = Core.getCacheService();
 				try {
 					String reloadLockKey = "cluster.server.owner.map.reload";
 					if (cacheService.tryLock(map, reloadLockKey, 30, TimeUnit.SECONDS)) {
@@ -200,7 +200,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 						if (clusterId != null) {
 							Map<String, String> map = getServerOwnerMap();
 							if (map != null) {
-								ICacheService cacheService = getCacheService();
+								ICacheService cacheService = Core.getCacheService();
 								try {
 									if (cacheService.tryLock(map, server.getServerID(), 30, TimeUnit.SECONDS)) {
 										try {
@@ -257,7 +257,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 							if (clusterId != null) {
 								Map<String, String> map = getServerOwnerMap();
 								if (map != null) {
-									ICacheService cacheService = getCacheService();
+									ICacheService cacheService = Core.getCacheService();
 									try {
 										if (cacheService.tryLock(map, server.getServerID(), 30, TimeUnit.SECONDS)) {
 											try {
@@ -853,14 +853,8 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		return null;
 	}
 	
-	private ICacheService getCacheService( ) {
-		IServiceHolder<ICacheService> holder = Service.locator().locate(ICacheService.class);
-		ICacheService service = holder != null ? holder.getService() : null;
-		return service;
-	}
-	
 	private Map<String, String> getServerOwnerMap() {
-		ICacheService service = getCacheService();
+		ICacheService service = Core.getCacheService();
 		if (service != null) {
 			return service.getMap("cluster.server.owner.map");
 		}

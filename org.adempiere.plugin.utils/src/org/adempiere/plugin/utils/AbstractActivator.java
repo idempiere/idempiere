@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.IDictionaryService;
-import org.adempiere.base.Service;
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
@@ -93,9 +93,8 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		boolean success = false;
 
 		if (!installedPackage(version)) {
-			List<IDictionaryService> list = Service.locator().list(IDictionaryService.class).getServices();
-			if (list != null) {
-				IDictionaryService ids = list.get(0);
+			IDictionaryService ids = Core.getDictionaryService();
+			if (ids != null) {
 				ids.merge(null, zipfile);
 				success = true;
 				if (ids.getAD_Package_Imp_Proc() != null) {
