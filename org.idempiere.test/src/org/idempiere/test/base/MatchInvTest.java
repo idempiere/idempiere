@@ -550,25 +550,28 @@ public class MatchInvTest extends AbstractTestCase {
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
-		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), new BigDecimal(2400), new BigDecimal(2400), Env.ZERO);
+		BigDecimal priceInYen = new BigDecimal(2400);
+		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInYen, priceInYen, Env.ZERO);
 		pp.saveEx();
 		
+		BigDecimal yenToUsd = new BigDecimal(0.277582);
 		MConversionRate cr1 = new MConversionRate(Env.getCtx(), 0, null);
 		cr1.setC_Currency_ID(japaneseYen.getC_Currency_ID());
 		cr1.setC_Currency_ID_To(100); // USD
 		cr1.setC_ConversionType_ID(114); // Spot
 		cr1.setValidFrom(currentDate);
 		cr1.setValidTo(currentDate);
-		cr1.setMultiplyRate(new BigDecimal(0.277582));
+		cr1.setMultiplyRate(yenToUsd);
 		cr1.saveEx();
 		
+		BigDecimal euroToUsd = new BigDecimal(0.236675);
 		MConversionRate cr2 = new MConversionRate(Env.getCtx(), 0, null);
 		cr2.setC_Currency_ID(japaneseYen.getC_Currency_ID());
 		cr2.setC_Currency_ID_To(102); // EUR
 		cr2.setC_ConversionType_ID(114); // Spot
 		cr2.setValidFrom(currentDate);
 		cr2.setValidTo(currentDate);
-		cr2.setMultiplyRate(new BigDecimal(0.236675));
+		cr2.setMultiplyRate(euroToUsd);
 		cr2.saveEx();
 		
 		try {
@@ -628,11 +631,12 @@ public class MatchInvTest extends AbstractTestCase {
 			invoice.setDocAction(DocAction.ACTION_Complete);
 			invoice.saveEx();
 			
+			BigDecimal qtyInvoiced = new BigDecimal(3);
 			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
 			invoiceLine.setM_InOutLine_ID(receiptLine.get_ID());
 			invoiceLine.setLine(10);
 			invoiceLine.setProduct(product);
-			invoiceLine.setQty(new BigDecimal(3));
+			invoiceLine.setQty(qtyInvoiced);
 			invoiceLine.saveEx();
 			
 			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
@@ -647,9 +651,10 @@ public class MatchInvTest extends AbstractTestCase {
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());
 			
-			int C_AcctSchema_ID = MClientInfo.get(Env.getCtx()).getC_AcctSchema1_ID();
+			int C_AcctSchema_ID = MClientInfo.get(Env.getCtx()).getC_AcctSchema1_ID(); //usd schema
 			MAcctSchema as = MAcctSchema.get(Env.getCtx(), C_AcctSchema_ID);		
-			BigDecimal amount = new BigDecimal(1998.59).setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+			BigDecimal acctAmount = priceInYen.multiply(yenToUsd).multiply(qtyInvoiced).setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP); 
+			BigDecimal acctSource = priceInYen.multiply(qtyInvoiced).setScale(japaneseYen.getStdPrecision(), RoundingMode.HALF_UP);
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
@@ -674,10 +679,12 @@ public class MatchInvTest extends AbstractTestCase {
 					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 					if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
 						assertTrue(fa.getAmtAcctDr().compareTo(Env.ZERO) >= 0);
-						assertTrue(fa.getAmtAcctDr().compareTo(amount) == 0);
+						assertTrue(fa.getAmtAcctDr().compareTo(acctAmount) == 0, fa.getAmtAcctDr().toPlainString() + " != " + acctAmount.toPlainString());
+						assertTrue(fa.getAmtSourceDr().toPlainString().compareTo(acctSource.toPlainString()) == 0, fa.getAmtSourceDr().toPlainString() + " != " + acctSource.toPlainString());
 					} else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
 						assertTrue(fa.getAmtAcctCr().compareTo(Env.ZERO) >= 0);
-						assertTrue(fa.getAmtAcctCr().compareTo(amount) == 0);
+						assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());
+						assertTrue(fa.getAmtSourceCr().toPlainString().compareTo(acctSource.toPlainString()) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
 					}
 				}
 			}
