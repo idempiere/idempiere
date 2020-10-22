@@ -100,7 +100,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
-
+	
 	/**
 	 * Get matching MUserDefField related to current field and user definition for window and tab
 	 * @param ctx
@@ -110,6 +110,20 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	 * @return
 	 */
 	public static MUserDefField get (Properties ctx, int AD_Field_ID, int AD_Tab_ID, int AD_Window_ID )
+	{
+		return get(ctx, AD_Field_ID, AD_Tab_ID, AD_Window_ID, false);
+	}
+
+	/**
+	 * Get matching MUserDefField related to current field and user definition for window and tab
+	 * @param ctx
+	 * @param AD_Field_ID
+	 * @param AD_Tab_ID
+	 * @param AD_Window_ID
+	 * @param reload
+	 * @return
+	 */
+	public static MUserDefField get (Properties ctx, int AD_Field_ID, int AD_Tab_ID, int AD_Window_ID , boolean reload)
 	{
 
 		MUserDefWin userdefWin = MUserDefWin.getBestMatch(ctx, AD_Window_ID);
@@ -123,7 +137,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 		String key = new StringBuilder().append(AD_Field_ID).append("_")
 				.append(userdefTab.getAD_UserDef_Tab_ID())
 				.toString();
-		if (s_cache.containsKey(key))
+		if (!reload && s_cache.containsKey(key))
 			return s_cache.get(ctx, key, e -> new MUserDefField(ctx, e));
 		
 		MUserDefField retValue = null;

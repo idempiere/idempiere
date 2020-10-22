@@ -43,7 +43,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4339975517612838655L;
+	private static final long serialVersionUID = -7393845332390162370L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -96,6 +96,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
     public static final String EMAIL_TEST_MAILTEXT_ID = "EMAIL_TEST_MAILTEXT_ID";
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
+    public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
+    public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
@@ -122,6 +124,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
     public static final String MAX_TEXT_LENGTH_ON_GRID_VIEW = "MAX_TEXT_LENGTH_ON_GRID_VIEW";
     public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
+    public static final String MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS";
+    public static final String MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS";
     public static final String MFG_ValidateCostsDifferenceOnCreate = "MFG_ValidateCostsDifferenceOnCreate";
     public static final String MFG_ValidateCostsOnCreate = "MFG_ValidateCostsOnCreate";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT";
@@ -199,6 +203,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME_USE_FONT_ICON_FOR_IMAGE = "ZK_THEME_USE_FONT_ICON_FOR_IMAGE";
     public static final String ZK_THEME = "ZK_THEME";
+    public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
 	/**

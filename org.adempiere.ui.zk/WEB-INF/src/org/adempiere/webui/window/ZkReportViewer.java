@@ -702,8 +702,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					Clients.evalJavaScript(script);
 				}
 			} else {
-				iframe.setSrc(null);
-				iframe.setContent(media);
+				Listitem selected = previewType.getSelectedItem();
+				if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
+						&& (selected == null || "PDF".equals(selected.getValue()))) {
+					iframe.setSrc(pdfJsUrl);
+				} else {
+					iframe.setSrc(null);
+					iframe.setContent(media);
+				}
 			}
 			
 			revalidate();
@@ -1414,7 +1420,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			bFind.setVisible(false);
 		else
 		{
-            final FindWindow find = new FindWindow(m_WindowNo, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
+			final FindWindow find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
             if (!find.initialize())
             	return;
             

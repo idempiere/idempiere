@@ -622,8 +622,20 @@ public class MTree extends MTree_Base
 						access = role.getWorkflowAccess(AD_Workflow_ID);
 					else if (X_AD_Menu.ACTION_Task.equals(actionColor))
 						access = role.getTaskAccess(AD_Task_ID);
-					else if (X_AD_Menu.ACTION_Info.equals(actionColor))
+					else if (X_AD_Menu.ACTION_Info.equals(actionColor)) {
 						access = role.getInfoAccess(AD_InfoWindow_ID);
+						
+						// Get Info Window Customization
+						MUserDefInfo userDef = null; 
+						userDef = MUserDefInfo.getBestMatch(getCtx(), AD_InfoWindow_ID);
+						if (userDef != null)
+						{
+							if (userDef.getName() != null)
+								name = userDef.getName();
+							if (userDef.getDescription() != null)
+								description = userDef.getDescription();
+						}
+					}
 				//	log.fine("getNodeDetail - " + name + " - " + actionColor + " - " + access);
 					//
 					if (access != null		//	rw or ro for Role 

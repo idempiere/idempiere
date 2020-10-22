@@ -195,7 +195,6 @@ public class GridWindowVO implements Serializable
 				vo.Description = userDef.getDescription();
 			if (userDef.getHelp() != null)
 				vo.Help = userDef.getHelp();
-			// ToDo userDef.isDefault, userDef.isReadOnly, userDef.isUserUpdateable
 		}
 
 		//  Create Tabs
