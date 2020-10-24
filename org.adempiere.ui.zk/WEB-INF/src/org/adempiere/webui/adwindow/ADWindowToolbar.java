@@ -498,9 +498,16 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         {
             if(event.getTarget() instanceof ToolBarButton)
             {
-            	if (!event.getTarget().getId().contentEquals(BTNPREFIX+"ShowMore"))
+            	if (!event.getTarget().getId().contentEquals(BTNPREFIX+"ShowMore")) {
             		doOnClick(event);
-            	else
+            		try {
+            			if(menuItems.containsKey(event.getTarget())) {
+            				Thread.sleep(200);// work-around IDEMPIERE-4499
+            			}
+            		} catch (InterruptedException e) {
+            			// it's safe to ignore
+            		}
+            	}else
             		menupopup.open(btnShowMore, "after_start");
             }
         } else if (eventName.equals(Events.ON_CTRL_KEY))
