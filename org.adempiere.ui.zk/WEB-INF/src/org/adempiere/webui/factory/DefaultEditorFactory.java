@@ -34,6 +34,7 @@ import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WPAttributeEditor;
 import org.adempiere.webui.editor.WPasswordEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
+import org.adempiere.webui.editor.WRadioGroupEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -218,6 +219,10 @@ public class DefaultEditorFactory implements IEditorFactory {
         else if (displayType == DisplayType.ChosenMultipleSelectionSearch)
         {
         	editor = new WChosenboxSearchEditor(gridField);
+        }
+        else if (displayType == DisplayType.RadiogroupList)
+        {
+        	editor = new WRadioGroupEditor(gridField);
         }
         else
         {

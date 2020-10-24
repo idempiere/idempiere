@@ -188,7 +188,7 @@ public class MLookupFactory
 		MLookupInfo info = null;
 		boolean needToAddSecurity = true;
 		//	List
-		if (AD_Reference_ID == DisplayType.List || AD_Reference_ID == DisplayType.ChosenMultipleSelectionList)	//	17
+		if (AD_Reference_ID == DisplayType.List || AD_Reference_ID == DisplayType.ChosenMultipleSelectionList || AD_Reference_ID == DisplayType.RadiogroupList)	//	17
 		{
 			info = getLookup_List(language, AD_Reference_Value_ID);
 			needToAddSecurity = false;
