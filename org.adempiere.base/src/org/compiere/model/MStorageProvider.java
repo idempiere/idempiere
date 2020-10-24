@@ -23,6 +23,7 @@ import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.CCache;
 
 public class MStorageProvider extends X_AD_StorageProvider {
 	/**
@@ -55,24 +56,28 @@ public class MStorageProvider extends X_AD_StorageProvider {
 		return store;
 	}
 
-	private static IServiceReferenceHolder<IAttachmentStore> s_attachmentStoreReference = null;
+	private static CCache<ServiceQuery, IServiceReferenceHolder<IAttachmentStore>> s_attachmentStoreReference = new CCache<>(null, "IAttachmentStore", 3, false);
 	
 	/**
 	 * 
 	 * @param query
 	 * @return {@link IAttachmentStore}
 	 */
-	public static synchronized IAttachmentStore getAttachmentStoreService(ServiceQuery query) {
+	public static IAttachmentStore getAttachmentStoreService(ServiceQuery query) {
 		IAttachmentStore store = null;
-		if (s_attachmentStoreReference != null) {
-			store = s_attachmentStoreReference.getService();
+		IServiceReferenceHolder<IAttachmentStore> cache = s_attachmentStoreReference.get(query);
+		if (cache != null) {
+			store = cache.getService();
 			if (store != null)
 				return store;
+			else
+				s_attachmentStoreReference.remove(query);
 		}
 		IServiceReferenceHolder<IAttachmentStore> serviceReference = Service.locator().locate(IAttachmentStore.class, query).getServiceReference();
 		if (serviceReference != null) {
 			store = serviceReference.getService();
-			s_attachmentStoreReference = serviceReference;
+			if (store != null)
+				s_attachmentStoreReference.put(query, serviceReference);
 		}
 		return store;
 	}
@@ -94,25 +99,29 @@ public class MStorageProvider extends X_AD_StorageProvider {
 		return store;
 	}
 
-	private static IServiceReferenceHolder<IArchiveStore> s_archiveStoreReference = null;
+	private static CCache<ServiceQuery, IServiceReferenceHolder<IArchiveStore>> s_archiveStoreReference = new CCache<>(null, "IArchiveStore", 3, false);
 	
 	/**
 	 * 
 	 * @param query
 	 * @return {@link IArchiveStore}
 	 */
-	public static synchronized IArchiveStore getArchiveStoreService(ServiceQuery query) {
+	public static IArchiveStore getArchiveStoreService(ServiceQuery query) {
 		IArchiveStore store = null;
-		if (s_archiveStoreReference != null) {
-			store = s_archiveStoreReference.getService();
+		IServiceReferenceHolder<IArchiveStore> cache = s_archiveStoreReference.get(query);
+		if (cache != null) {
+			store = cache.getService();
 			if (store != null)
 				return store;
+			else
+				s_archiveStoreReference.remove(query);
 		}
 		
 		IServiceReferenceHolder<IArchiveStore> serviceReference = Service.locator().locate(IArchiveStore.class, query).getServiceReference();
 		if (serviceReference != null) {
 			store = serviceReference.getService();
-			s_archiveStoreReference = serviceReference;
+			if (store != null)
+				s_archiveStoreReference.put(query, serviceReference);
 		}
 		return store;
 	}
@@ -134,24 +143,27 @@ public class MStorageProvider extends X_AD_StorageProvider {
 		return store;
 	}
 
-	private static IServiceReferenceHolder<IImageStore> s_imageStoreReference = null;
+	private static CCache<ServiceQuery, IServiceReferenceHolder<IImageStore>> s_imageStoreReference = new CCache<>(null, "IImageStore", 3, false);
 	
 	/**
 	 * 
 	 * @param query
 	 * @return {@link IImageStore}
 	 */
-	public static synchronized IImageStore getImageStoreService(ServiceQuery query) {
+	public static IImageStore getImageStoreService(ServiceQuery query) {
 		IImageStore store = null;
-		if (s_imageStoreReference != null) {
-			store = s_imageStoreReference.getService();
+		IServiceReferenceHolder<IImageStore> cache = s_imageStoreReference.get(query);
+		if (cache != null) {
+			store = cache.getService();
 			if (store != null)
 				return store;
+			else
+				s_imageStoreReference.remove(query);
 		}
 		IServiceReferenceHolder<IImageStore> serviceReference = Service.locator().locate(IImageStore.class, query).getServiceReference();
 		if (serviceReference != null) {
 			store = serviceReference.getService();
-			s_imageStoreReference = serviceReference;
+			s_imageStoreReference.put(query, serviceReference);
 		}
 		return store;
 	}

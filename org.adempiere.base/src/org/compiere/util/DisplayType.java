@@ -899,7 +899,7 @@ public final class DisplayType
 	}   //  getCurrencyFormat
 
 
-	private final static CCache<Integer,  IServiceReferenceHolder<IDisplayTypeFactory>> s_displayTypeFactoryCache = new CCache<Integer, IServiceReferenceHolder<IDisplayTypeFactory>>(null, "IDisplayTypeFactory", 100, false);
+	private final static CCache<Integer, IServiceReferenceHolder<IDisplayTypeFactory>> s_displayTypeFactoryCache = new CCache<>(null, "IDisplayTypeFactory", 100, false);
 	
 	private static List<IServiceReferenceHolder<IDisplayTypeFactory>> getDisplayTypeFactories() {
 		 return Service.locator().list(IDisplayTypeFactory.class).getServiceReferences();

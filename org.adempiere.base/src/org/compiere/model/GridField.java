@@ -35,10 +35,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-import org.adempiere.base.Core;
-import org.adempiere.base.ILookupFactory;
-import org.adempiere.base.IServiceReferenceHolder;
-import org.adempiere.base.Service;
+import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -198,7 +195,7 @@ public class GridField
 
 	private void loadLookupFromFactory() {
 		//http://jira.idempiere.com/browse/IDEMPIERE-694		
-		m_lookup = Core.getLookupFromFactory(m_vo);
+		m_lookup = LookupFactoryHelper.getLookup(m_vo);
 	}
 
 	/***
@@ -258,15 +255,8 @@ public class GridField
 	//		retValue = false;
 		else {
 			//http://jira.idempiere.com/browse/IDEMPIERE-694
-			//see DefaultLookupFactory.java for the other default Lookups
-			List<IServiceReferenceHolder<ILookupFactory>> factoryList = Service.locator().list(ILookupFactory.class).getServiceReferences();
-			for(IServiceReferenceHolder<ILookupFactory> factory : factoryList)
-			{
-				ILookupFactory service = factory.getService();
-				retValue = service != null && service.isLookup(m_vo);
-				if (retValue == true)
-					break;
-			}
+			if (LookupFactoryHelper.isLookup(m_vo))
+				retValue = true;
 		}
 		return retValue;
 	}   //  isLookup
