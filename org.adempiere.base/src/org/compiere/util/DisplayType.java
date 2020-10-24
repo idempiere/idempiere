@@ -287,6 +287,7 @@ public final class DisplayType
 			|| displayType == URL || displayType == PrinterName
 			|| displayType == SingleSelectionGrid || displayType == Color
 			|| displayType == MultipleSelectionGrid
+			|| displayType == RadiogroupList
 			|| displayType == ChosenMultipleSelectionList
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch)
