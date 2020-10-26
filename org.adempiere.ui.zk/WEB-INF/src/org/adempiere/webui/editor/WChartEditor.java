@@ -16,7 +16,7 @@ package org.adempiere.webui.editor;
 
 import java.util.List;
 
-import org.adempiere.base.Service;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.compiere.model.GridField;
@@ -66,7 +66,7 @@ public class WChartEditor extends WEditor
 	        chartDiv.getChildren().clear();
 	        ChartModel model = new ChartModel();
 	        model.chart = chartModel;
-	        List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+	        List<IChartRendererService> list = Extensions.getChartRendererServices();
 			for (IChartRendererService renderer : list) {
 				if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
 					break;
@@ -156,7 +156,7 @@ public class WChartEditor extends WEditor
     		chartDiv.getChildren().clear();
     		ChartModel model = new ChartModel();
     		model.chart = chartModel;
-    		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+    		List<IChartRendererService> list = Extensions.getChartRendererServices();
     		for (IChartRendererService renderer : list) {
     			if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
     				break;

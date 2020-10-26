@@ -43,6 +43,17 @@ public class GridWindowVO implements Serializable
 
 	/**
 	 *  Create Window Value Object
+	 *  @param WindowNo window no for ctx
+	 *  @param AD_Window_ID window id
+	 *  @return MWindowVO
+	 */
+	public static GridWindowVO create (int WindowNo, int AD_Window_ID)
+	{
+		return create(Env.getCtx(), WindowNo, AD_Window_ID);
+	}
+	
+	/**
+	 *  Create Window Value Object
 	 *  @param ctx context
 	 *  @param WindowNo window no for ctx
 	 *  @param AD_Window_ID window id

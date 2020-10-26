@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
@@ -167,7 +167,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		
 		if (subscriber == null) {
 			subscriber = new TopicSubscriber();
-			IMessageService service = Service.locator().locate(IMessageService.class).getService();			
+			IMessageService service = Core.getMessageService();			
 			if (service != null) {
 				ITopic<Map<String,String>> topic = service.getTopic("onRequestChanged");
 				topic.subscribe(subscriber);
@@ -562,7 +562,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		
 		@Override
 		public void run() {
-			IMessageService service = Service.locator().locate(IMessageService.class).getService();			
+			IMessageService service = Core.getMessageService();			
 			if (service != null) {
 				ITopic<Map<String,String>> topic = service.getTopic(ON_REQUEST_CHANGED_TOPIC);				
 				topic.publish(message);

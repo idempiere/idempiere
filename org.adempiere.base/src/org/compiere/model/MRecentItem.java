@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
@@ -244,7 +244,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	public static void publishChangedEvent(int AD_User_ID) {
-		IMessageService service = Service.locator().locate(IMessageService.class).getService();
+		IMessageService service = Core.getMessageService();
 		if (service != null) {
 			ITopic<Integer> topic = service.getTopic(ON_RECENT_ITEM_CHANGED_TOPIC);
 			topic.publish(AD_User_ID);
