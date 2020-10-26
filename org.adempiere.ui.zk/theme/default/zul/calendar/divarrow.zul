@@ -1,4 +1,4 @@
-<div class="tabs arrows" xmlns:w="client" forward="onMoveDate(${arg.type})"
+<div class="tabs arrows ${arg.fontClass}" xmlns:w="client" forward="onMoveDate(${arg.type})"
 	w:unbind_="function(skipper, after){this.$unbind_(skipper, after);jq(this).unbind('mouseover').unbind('mouseout');}">
 	<attribute w:name="bind_"><![CDATA[ 
 		function (desktop, skipper, after) { 
