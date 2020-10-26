@@ -679,11 +679,15 @@ public class MatchInvTest extends AbstractTestCase {
 					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 					if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
 						assertTrue(fa.getAmtAcctDr().compareTo(Env.ZERO) >= 0);
-						assertTrue(fa.getAmtAcctDr().compareTo(acctAmount) == 0, fa.getAmtAcctDr().toPlainString() + " != " + acctAmount.toPlainString());
+						assertTrue(fa.getAmtAcctDr().toPlainString().compareTo(acctAmount.toPlainString()) == 0, fa.getAmtAcctDr().toPlainString() + " != " + acctAmount.toPlainString());
+						// verify source amt and currency
+						assertTrue(fa.getC_Currency_ID() == japaneseYen.getC_Currency_ID());												
 						assertTrue(fa.getAmtSourceDr().toPlainString().compareTo(acctSource.toPlainString()) == 0, fa.getAmtSourceDr().toPlainString() + " != " + acctSource.toPlainString());
 					} else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
 						assertTrue(fa.getAmtAcctCr().compareTo(Env.ZERO) >= 0);
-						assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());
+						assertTrue(fa.getAmtAcctCr().toPlainString().compareTo(acctAmount.toPlainString()) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());
+						// verify source amt and currency
+						assertTrue(fa.getC_Currency_ID() == japaneseYen.getC_Currency_ID());
 						assertTrue(fa.getAmtSourceCr().toPlainString().compareTo(acctSource.toPlainString()) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
 					}
 				}
