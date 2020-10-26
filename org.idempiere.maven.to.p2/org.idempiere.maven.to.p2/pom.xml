@@ -10,12 +10,12 @@
 	<artifactId>org.idempiere.maven.to.p2</artifactId>
 	<packaging>pom</packaging>
 	<properties>
-		<jetty.version>9.4.28.v20200408</jetty.version>
-		<jetty.jsp.version>8.5.49</jetty.jsp.version>
+		<jetty.version>9.4.33.v20201020</jetty.version>
+		<jetty.jsp.version>8.5.54</jetty.jsp.version><!--4826-->
 		<jetty.osgi.servlet.api.version>3.1.0.M3</jetty.osgi.servlet.api.version>
 		<org.apache.taglibs.version>1.2.5</org.apache.taglibs.version>
 		<groovy.version>2.5.3</groovy.version>
-		<org.bouncycastle.version>1.60</org.bouncycastle.version>
+		<org.bouncycastle.version>1.66</org.bouncycastle.version><!--https://www.bouncycastle.org/latest_releases.html-->
 		<jackson.version>2.10.0</jackson.version> <!--jasperreport dependency-->
 		<stax2.api.version>4.2</stax2.api.version> <!--jackson-dataformat-xml dependency-->
 		<validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
@@ -23,15 +23,15 @@
 		<json.version>20180813</json.version> <!--jackson-datatype-json-org dependency-->
 		<slf4j.version>1.7.25</slf4j.version>
 		<xml.ws.version>2.3.2</xml.ws.version>
-		<xml.ws.export.version>2.4</xml.ws.export.version>
 		<apache.cxf.version>3.3.1</apache.cxf.version>
 		<apache.cxf.databinding.version>3.1.18</apache.cxf.databinding.version>
-		<activation.version>1.2.1</activation.version>
+		<activation.version>1.2.1</activation.version><!--https://github.com/eclipse-ee4j/jaf-->
 		<annotation.version>1.3.3</annotation.version>
-		<asm.version>7.3.1</asm.version>
-		<javamail.version>1.6.3</javamail.version>
+		<asm.version>9.0</asm.version><!--5475-->
+		<javamail.version>1.6.5</javamail.version><!--https://eclipse-ee4j.github.io/mail/-->
 		<poi.version>4.1.0</poi.version>
 		<batik.version>1.11</batik.version>
+		<tycho.version>1.7.0</tycho.version>
 	</properties>
 	
 	<repositories>
@@ -98,14 +98,13 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.passay:passay:jar:1.3.1</id>
+											<id>org.passay:passay:jar:1.6.0</id><!--http://www.passay.org/download.html-->
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
 											<id>org.mortbay.jasper:apache-jsp:jar:${jetty.jsp.version}</id>
-											<!-- https://github.com/jetty-project/jasper-jsp/issues/5 -->
-											<source>false</source>
+											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
@@ -174,7 +173,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.2.4</id>
+											<id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:jar:1.3.2</id><!--5475-->
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -224,7 +223,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>com.itextpdf:itextpdf:jar:5.5.13</id>
+											<id>com.itextpdf:itextpdf:jar:5.5.13.2</id><!--https://kb.itextpdf.com/home/it5kb/releases/release-itext-5-5-13-2-->
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -264,7 +263,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.cryptacular:cryptacular:jar:1.2.2</id>
+											<id>org.cryptacular:cryptacular:jar:1.2.4</id><!--http://www.cryptacular.org/download.html-->
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -274,7 +273,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.atmosphere:atmosphere-runtime:jar:2.5.0</id>
+											<id>org.atmosphere:atmosphere-runtime:jar:2.5.15</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -374,12 +373,12 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>com.ibm.icu:icu4j:jar:63.1</id>
+											<id>com.ibm.icu:icu4j:jar:67.1</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>joda-time:joda-time:jar:2.10</id>
+											<id>joda-time:joda-time:jar:2.10.8</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -593,7 +592,7 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.5</id>
+											<id>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.6</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -605,21 +604,21 @@
 										</artifact>
 										<artifact>
 											<!--https://github.com/eclipse-ee4j/jax-rpc-api-->
-											<id>jakarta.xml.rpc:jakarta.xml.rpc-api:jar:1.1.3</id>
+											<id>jakarta.xml.rpc:jakarta.xml.rpc-api:jar:1.1.4</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
 											<!-- https://github.com/eclipse-ee4j/jpa-api -->
-											<id>jakarta.persistence:jakarta.persistence-api:jar:2.2.2</id>
+											<id>jakarta.persistence:jakarta.persistence-api:jar:2.2.3</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
-										<artifact>
+										<!--<artifact>
 											<id>org.codehaus.woodstox:stax2-api:jar:4.1</id>
 											<source>true</source>
 											<transitive>false</transitive>
-										</artifact>
+										</artifact>-->
 										<artifact>
 											<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.spring-beans:jar:${springframework.version}</id>
 											<source>false</source>
@@ -1353,11 +1352,11 @@
 				</executions>
 			</plugin>
 
+            <!-- delete metadata file to update md5 -->
 			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
 				<executions>
-                    			<!-- delete metadata file to update md5 -->
 					<execution>
 						<id>move-file</id>
 						<phase>package</phase>
