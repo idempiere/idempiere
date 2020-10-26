@@ -29,6 +29,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -42,7 +43,8 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7869800574413317999L;
+	private static final long serialVersionUID = 8266487405778526776L;
+
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MAttribute.class);
 
@@ -308,6 +310,22 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		// not advanced roles cannot add or modify reference types
+		if ((newRecord || MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(getAttributeValueType()))
+				&& ! MRole.getDefault().isAccessAdvanced()) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+			return false;
+		}
+		return true;
+	}
 	
 	/**
 	 * 	AfterSave
