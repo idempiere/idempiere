@@ -96,9 +96,24 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	
 	private ADWindow adwindow;
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WSearchEditor (GridField gridField)
 	{
-		super(new CustomSearchBox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WSearchEditor (GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new CustomSearchBox(), gridField, tableEditor, editorConfiguration);
 
 		lookup = gridField.getLookup();
 

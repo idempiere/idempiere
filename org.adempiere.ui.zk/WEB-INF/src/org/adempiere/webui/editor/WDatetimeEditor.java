@@ -48,12 +48,21 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     private Timestamp oldValue = new Timestamp(0);
 
     /**
+    *
+    * @param gridField
+    */
+    public WDatetimeEditor(GridField gridField)
+    {
+    	this(gridField, false, null);
+    }
+    
+    /**
      *
      * @param gridField
      */
-    public WDatetimeEditor(GridField gridField)
+    public WDatetimeEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(new DatetimeBox(), gridField);
+        super(new DatetimeBox(), gridField, tableEditor, editorConfiguration);
         init();
     }
 

@@ -47,7 +47,19 @@ public class WebEditorFactory
      */
     public static WEditor getEditor(GridField gridField, boolean tableEditor)
     {
-    	return getEditor(gridField.getGridTab(), gridField, tableEditor);
+    	return getEditor(gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     * @return {@link WEditor}
+     */
+    public static WEditor getEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+    {
+    	return getEditor(gridField.getGridTab(), gridField, tableEditor, editorConfiguration);
     }
 
     private static final CCache<Long, IServiceReferenceHolder<IEditorFactory>> s_editorFactoryCache = new CCache<>(null, "IEditorFactory", 10, false);
@@ -57,9 +69,22 @@ public class WebEditorFactory
      * @param gridTab
      * @param gridField
      * @param tableEditor
-     * @return WEditor for GridField
+     * @return {@link WEditor}
      */
     public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor)
+    {
+    	return getEditor(gridTab, gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridTab
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     * @return {@link WEditor}
+     */
+    public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
     	List<Long> visitedIds = new ArrayList<Long>();
 		if (!s_editorFactoryCache.isEmpty()) {
@@ -70,7 +95,7 @@ public class WebEditorFactory
 					IEditorFactory service = serviceReference.getService();
 					if (service != null) {
 						visitedIds.add(key);
-						WEditor editor = service.getEditor(gridTab, gridField, tableEditor);
+						WEditor editor = service.getEditor(gridTab, gridField, tableEditor, editorConfiguration);
 			        	if (editor != null)
 			        		return editor;
 					} else {
@@ -79,6 +104,7 @@ public class WebEditorFactory
 				}
 			}
 		}
+
         WEditor editor = null;
         List<IServiceReferenceHolder<IEditorFactory>> serviceReferences = Service.locator().list(IEditorFactory.class).getServiceReferences();
         for(IServiceReferenceHolder<IEditorFactory> serviceReference : serviceReferences)
@@ -90,7 +116,7 @@ public class WebEditorFactory
         	if (service != null)
         	{
         		s_editorFactoryCache.put(serviceId, serviceReference);
-	        	editor = service.getEditor(gridTab, gridField, tableEditor);
+	        	editor = service.getEditor(gridTab, gridField, tableEditor, editorConfiguration);
 	        	if (editor != null)
 	        		break;
         	}

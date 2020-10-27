@@ -39,9 +39,24 @@ public class WFileDirectoryEditor extends WEditor
 
 	private String oldValue;
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WFileDirectoryEditor(GridField gridField)
 	{
-		super(new FilenameBox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WFileDirectoryEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new FilenameBox(), gridField, tableEditor, editorConfiguration);
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass("z-icon-Open");
 		else

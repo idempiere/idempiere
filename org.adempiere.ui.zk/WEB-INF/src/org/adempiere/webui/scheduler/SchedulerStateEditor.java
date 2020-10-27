@@ -29,6 +29,7 @@ import org.adempiere.base.Core;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
@@ -57,13 +58,45 @@ public class SchedulerStateEditor extends WEditor {
 	
 	private int schedulerState;
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public SchedulerStateEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public SchedulerStateEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        this(gridField, -1);
+        this(gridField, -1, tableEditor, editorConfiguration);
     }
 
-    public SchedulerStateEditor(GridField gridField, int rowIndex) {
-        super(new Button(), gridField, rowIndex);
+	/**
+	 * 
+	 * @param gridField
+	 * @param rowIndex
+	 */
+	public SchedulerStateEditor(GridField gridField, int rowIndex)
+	{
+		this(gridField, rowIndex, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param rowIndex
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public SchedulerStateEditor(GridField gridField, int rowIndex, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+        super(new Button(), gridField, rowIndex, tableEditor, editorConfiguration);
         Button btn = getComponent();
         
         btn.addEventListener(ON_START_SCHEDULER_EVENT, evt -> {

@@ -21,11 +21,13 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_AMOUNT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ASSIGNMENT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BINARY;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHART;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_LIST;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_TABLE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_SEARCH;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_TABLE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COLOR;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COSTPRICE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DASHBOARD_CONTENT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATETIME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_FILENAME;
@@ -37,13 +39,16 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATION;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATOR;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_MEMO;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_MULTIPLE_SELECTION_GRID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_NUMBER;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PAYMENT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRINTNAME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRODUCTATTRIBUTE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_QUANTITY;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RADIOGROUP_LIST;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ROWID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SEARCH;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SINGLE_SELECTION_GRID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
@@ -52,10 +57,6 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXTLONG;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_CHART;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DASHBOARD_CONTENT;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SINGLE_SELECTION_GRID;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_MULTIPLE_SELECTION_GRID;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -162,6 +163,8 @@ public final class DisplayType
 	public static final int SingleSelectionGrid = REFERENCE_DATATYPE_SINGLE_SELECTION_GRID;
 	
 	public static final int MultipleSelectionGrid = REFERENCE_DATATYPE_MULTIPLE_SELECTION_GRID;
+
+	public static final int RadiogroupList = REFERENCE_DATATYPE_RADIOGROUP_LIST;
 
 	public static final int ChosenMultipleSelectionList = REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_LIST;
 	
@@ -311,6 +314,7 @@ public final class DisplayType
 			|| displayType == URL || displayType == PrinterName
 			|| displayType == SingleSelectionGrid || displayType == Color
 			|| displayType == MultipleSelectionGrid
+			|| displayType == RadiogroupList
 			|| displayType == ChosenMultipleSelectionList
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch)
@@ -370,6 +374,7 @@ public final class DisplayType
 	{
 		if (displayType == List || displayType == Table
 			|| displayType == TableDir || displayType == Search
+			|| displayType == RadiogroupList
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch
 			|| displayType == ChosenMultipleSelectionList)
@@ -655,7 +660,7 @@ public final class DisplayType
 	 */
 	public static Class<?> getClass (int displayType, boolean yesNoAsBoolean)
 	{
-		if (isText(displayType) || displayType == List || displayType == Payment)
+		if (isText(displayType) || displayType == List || displayType == Payment || displayType == RadiogroupList)
 			return String.class;
 		else if (isID(displayType) || displayType == Integer)    //  note that Integer is stored as BD
 			return Integer.class;
@@ -744,7 +749,7 @@ public final class DisplayType
 			return getDatabase().getClobDataType();
 		if (displayType == DisplayType.YesNo)
 			return getDatabase().getCharacterDataType()+"(1)";
-		if (displayType == DisplayType.List || displayType == DisplayType.Payment) {
+		if (displayType == DisplayType.List || displayType == DisplayType.Payment || displayType == DisplayType.RadiogroupList) {
 			if (fieldLength == 1)
 				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
 			else
@@ -809,6 +814,8 @@ public final class DisplayType
 			return "DateTime";
 		if (displayType == List)
 			return "List";
+		if (displayType == RadiogroupList)
+			return "RadiogroupList";
 		if (displayType == Table)
 			return "Table";
 		if (displayType == TableDir)

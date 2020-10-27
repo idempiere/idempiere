@@ -53,9 +53,26 @@ public class WChartEditor extends WEditor
 	@SuppressWarnings("unused")
 	private static final CLogger log = CLogger.getCLogger(WChartEditor.class);
     
-    public WChartEditor(GridField gridField, int windowNo)
+	/**
+	 * 
+	 * @param gridField
+	 * @param windowNo
+	 */
+	public WChartEditor(GridField gridField, int windowNo)
+	{
+		this(gridField, windowNo, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param windowNo
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WChartEditor(GridField gridField, int windowNo, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(new Panel(), gridField);
+        super(new Panel(), gridField, tableEditor, editorConfiguration);
 		chartModel = new MChart(Env.getCtx(), gridField.getAD_Chart_ID(), null);
 		chartModel.setWindowNo(windowNo);
         init();        
