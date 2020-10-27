@@ -94,6 +94,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public static final String MNITMPREFIX = "Mnitm";
 
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
+    
+	/** Search messages using translation */
+	private String				m_sNew;	
 
     private Combobox fQueryName;
 	private MUserQuery[] userQueries;
@@ -197,9 +200,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         this.appendChild(menupopup);
         
         //IDEMPIERE-4085
+        m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");
         fQueryName = new Combobox();
-        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
-        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"QueryName"));
+        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"SelectQuery"));
+        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"SelectQuery"));
         fQueryName.setId(BTNPREFIX + "SearchQuery");
         fQueryName.addEventListener(Events.ON_SELECT, this);
         LayoutUtils.addSclass("toolbar-searchbox", fQueryName);
@@ -527,10 +531,14 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	if (index < 0) return;
         	if (index == 0) // no query - refresh
         		setSelectedUserQuery(null);
+        	else if (m_sNew.equals(fQueryName.getValue())) { //On new send the Event to open the FindWindow
+        		Events.sendEvent(Events.ON_CLICK, btnFind, null);
+        		return;
+        	}
         	else
 				setSelectedUserQuery(userQueries[index-1]);
 
-			doOnClick(event);
+        	doOnClick(event);
         }
     }
 
@@ -1220,6 +1228,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	       			setSelectedUserQuery(AD_UserQuery_ID);
 	       	}
         }
+        fQueryName.appendItem(m_sNew, 0);
         if (AD_UserQuery_ID <= 0 || fQueryName.getItemCount() <= 1 
         		|| fQueryName.getSelectedItem() == null)
         	fQueryName.setSelectedIndex(0);
