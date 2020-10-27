@@ -4,7 +4,6 @@ tr.z-group {
 }
 
 .z-group-header .z-label {
-	font-family: Helvetica,Arial,sans-serif;
 	color: #333;
 	width: auto;
 	font-weight: bold;

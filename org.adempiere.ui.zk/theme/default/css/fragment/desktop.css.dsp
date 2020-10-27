@@ -28,7 +28,6 @@
 }
 
 .desktop-header-font {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
