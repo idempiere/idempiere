@@ -4,7 +4,6 @@ tr.z-group {
 }
 
 .z-group-header .z-label {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	color: #333;
 	width: auto;
 	font-weight: bold;
