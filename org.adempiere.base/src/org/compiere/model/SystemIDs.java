@@ -127,6 +127,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_PRINTNAME = 42;
 	public final static int REFERENCE_DATATYPE_PRODUCTATTRIBUTE = 35;
 	public final static int REFERENCE_DATATYPE_QUANTITY = 29;
+	public final static int REFERENCE_DATATYPE_RADIOGROUP_LIST= 200152;
 	public final static int REFERENCE_DATATYPE_ROWID = 26;
 	public final static int REFERENCE_DATATYPE_SEARCH = 30;
 	public final static int REFERENCE_DATATYPE_STRING = 10;

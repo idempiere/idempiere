@@ -25,6 +25,7 @@
 **********************************************************************/
 package org.adempiere.webui.scheduler;
 
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.factory.IEditorFactory;
 import org.compiere.model.GridField;
@@ -49,8 +50,14 @@ public class SchedulerStateEditorFactory implements IEditorFactory {
 
 	@Override
 	public WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor) {
+		return getEditor(gridTab, gridField, tableEditor, null);
+	}
+
+	@Override
+	public WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor,
+			IEditorConfiguration editorConfiguration) {
 		if (gridField != null && gridField.getDisplayType() == SCHEDULER_STATE_AD_REFERENCE_ID) {
-			return new SchedulerStateEditor(gridField);
+			return new SchedulerStateEditor(gridField, tableEditor, editorConfiguration);
 		}
 		return null;
 	}

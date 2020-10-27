@@ -28,6 +28,7 @@ import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Urlbox;
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -109,6 +110,18 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/** DefaultFocusField		*/
 	private WEditor	defaultFocusField = null;
 
+	private final static IEditorConfiguration readOnlyEditorConfiguration = new IEditorConfiguration() {
+		@Override
+		public Boolean getReadonly() {
+			return Boolean.TRUE;
+		}
+
+		@Override
+		public Boolean getMandatory() {
+			return Boolean.FALSE;
+		}
+	};
+	
 	/**
 	 *
 	 * @param gridTab
@@ -503,9 +516,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 				
 				//readonly for display text
-				WEditor readOnlyEditor = WebEditorFactory.getEditor(gridPanelFields[i], true);
+				WEditor readOnlyEditor = WebEditorFactory.getEditor(gridPanelFields[i], true, readOnlyEditorConfiguration);
 				if (readOnlyEditor != null) {
-					readOnlyEditor.setReadWrite(false);
 					readOnlyEditors.put(gridPanelFields[i], readOnlyEditor);
 				}
 				
@@ -706,8 +718,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            {
 		            	popupMenu.addMenuListener((ContextMenuListener)editor);
 		            	div.appendChild(popupMenu);
-		            	popupMenu.addContextElement((XulElement) editor.getComponent());
-		            }		            
+		            	Component editorComponent = editor.getComponent();
+		            	if (editorComponent instanceof XulElement)
+		            		popupMenu.addContextElement((XulElement) editorComponent);		            	
+		            }		  
 		            
 		            
 		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab) 

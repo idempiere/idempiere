@@ -94,7 +94,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     private String description;
 
-    private boolean readOnly;
+    protected boolean readOnly;
 
     private String columnName;
 
@@ -154,16 +154,45 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		
 	}
 	
+	/**
+	 * 
+	 * @param comp
+	 * @param gridField
+	 */
     public WEditor(Component comp, GridField gridField) {
     	this(comp, gridField, -1);
 	}
 
-	/**
-     *
+    /**
+     * 
      * @param comp
      * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
      */
-    public WEditor(Component comp, GridField gridField, int rowIndex)
+    public WEditor(Component comp, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+    	this(comp, gridField, -1, tableEditor, editorConfiguration);
+	}
+    
+    /**
+     * 
+     * @param comp
+     * @param gridField
+     * @param rowIndex
+     */
+    public WEditor(Component comp, GridField gridField, int rowIndex) {
+	   this(comp, gridField, rowIndex, false, null);
+    }
+   
+	/**
+	 * 
+	 * @param comp
+	 * @param gridField
+	 * @param rowIndex
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WEditor(Component comp, GridField gridField, int rowIndex, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
         if (comp == null)
         {
@@ -175,7 +204,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
             throw new IllegalArgumentException("Grid field cannot be null");
         }
 
-        this.setComponent(comp);
+        this.setComponent(comp);        
         this.gridField = gridField;
         if (gridField.getGridTab() != null) {
         	comp.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getGridTab().getTableName()+"0"+gridField.getColumnName());
@@ -183,8 +212,15 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         } else {
         	comp.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getColumnName());
         }
-        this.setMandatory(gridField.isMandatory(true));
-        this.readOnly = gridField.isReadOnly();
+        if (editorConfiguration != null && editorConfiguration.getMandatory() != null)
+        	this.setMandatory(editorConfiguration.getMandatory());
+        else
+        	this.setMandatory(gridField.isMandatory(true));
+        this.tableEditor = tableEditor;
+        if (editorConfiguration != null && editorConfiguration.getReadonly() != null)
+        	this.readOnly = editorConfiguration.getReadonly();
+        else
+        	this.readOnly = gridField.isReadOnly();
         this.description = gridField.getDescription();
         this.columnName = gridField.getColumnName();
         this.strLabel = gridField.getHeader();
@@ -613,6 +649,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			} else {
 				label.setStyle(style);
 			}
+//			if (this instanceof WRadioGroupEditor)
+//				System.out.println(getComponent().getUuid() + " label stype="+label.getStyle());
 		}
 	}
 
