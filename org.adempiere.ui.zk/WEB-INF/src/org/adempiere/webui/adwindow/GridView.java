@@ -60,7 +60,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
@@ -529,6 +528,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		Columns columns = new Columns();
 		
 		//frozen not working well on tablet devices yet
+		//frozen is implemented poorly on zk ce, not working with scroll and white-space wrap
+		//unlikely to be fixed since the working 'smooth scrolling frozen' is a zk ee only feature
+		/*
 		if (!ClientInfo.isMobile())
 		{
 			Frozen frozen = new Frozen();
@@ -536,6 +538,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 			frozen.setColumns(2);
 			listbox.appendChild(frozen);
 		}
+		*/
 		
 		org.zkoss.zul.Column selection = new Column();
 		selection.setHeight("2em");

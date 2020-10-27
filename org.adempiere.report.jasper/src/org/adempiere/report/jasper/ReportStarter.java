@@ -50,6 +50,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.JobName;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
@@ -755,7 +756,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 							printInfo = new PrintInfo(pi);
 						if (reportPathList.length == 1) {
 		                    if (log.isLoggable(Level.INFO)) log.info( "ReportStarter.startProcess run report -"+jasperPrint.getName());
-		                    JRViewerProvider viewerLauncher = Service.locator().locate(JRViewerProvider.class).getService();
+		                    JRViewerProvider viewerLauncher = getViewerProvider();
 		                    if (!Util.isEmpty(processInfo.getReportType())) {
 		                    	jasperPrint.setProperty("IDEMPIERE_REPORT_TYPE", processInfo.getReportType());
 		                    }
@@ -763,7 +764,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	                	} else {
 	                		jasperPrintList.add(jasperPrint);
 	                		if (idx+1 == reportPathList.length) {
-			                    JRViewerProviderList viewerLauncher = Service.locator().locate(JRViewerProviderList.class).getService();
+			                    JRViewerProviderList viewerLauncher = getViewerProviderList();
 			                    if (viewerLauncher == null) {
 			                    	throw new AdempiereException("Can not find a viewer provider for multiple jaspers");
 			                    }
@@ -886,7 +887,49 @@ public class ReportStarter implements ProcessCall, ClientProcess
         reportResult( AD_PInstance_ID, null, trxName);
         pi.setSummary(Msg.getMsg(Env.getCtx(), "Success"), false);
         return true;
-    }	
+    }
+
+    private static IServiceReferenceHolder<JRViewerProviderList> s_viewerProviderListReference = null;
+    
+    /**
+     * 
+     * @return {@link JRViewerProviderList}
+     */
+	public static synchronized JRViewerProviderList getViewerProviderList() {
+		JRViewerProviderList viewerLauncher = null;
+		if (s_viewerProviderListReference != null) {
+			viewerLauncher = s_viewerProviderListReference.getService();
+			if (viewerLauncher != null)
+				return viewerLauncher;
+		}
+		IServiceReferenceHolder<JRViewerProviderList> viewerReference = Service.locator().locate(JRViewerProviderList.class).getServiceReference();
+		if (viewerReference != null) {
+			viewerLauncher = viewerReference.getService();
+			s_viewerProviderListReference = viewerReference;
+		}
+		return viewerLauncher;
+	}
+
+	private static IServiceReferenceHolder<JRViewerProvider> s_viewerProviderReference = null;
+	
+	/**
+	 * 
+	 * @return {@link JRViewerProvider}
+	 */
+	public static synchronized JRViewerProvider getViewerProvider() {
+		JRViewerProvider viewerLauncher = null;
+		if (s_viewerProviderReference != null) {
+			viewerLauncher = s_viewerProviderReference.getService();
+			if (viewerLauncher != null)
+				return viewerLauncher;
+		}
+		IServiceReferenceHolder<JRViewerProvider> viewerReference = Service.locator().locate(JRViewerProvider.class).getServiceReference();
+		if (viewerReference != null) {
+			viewerLauncher = viewerReference.getService();
+			s_viewerProviderReference = viewerReference;
+		}
+		return viewerLauncher;
+	}	
 	
     private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();

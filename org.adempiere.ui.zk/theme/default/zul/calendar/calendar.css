@@ -13,15 +13,15 @@
 	color: blue !important;
 }
 .tabs * {
-	background: #7EAAC6;
+	background: #ececec;
 	cursor: pointer;
 }
 .tabs .bd {
-	background: #7EAAC6;
+	background: #c5c5c5;
 	zoom: 1;
 }
 .tabs .t1, .tabs .t2, .tabs .t3 {
-	background: #7EAAC6;
+	background: #e4e4e4;
 	font-size: 0;
 	line-height: 0;
 	margin: 0 2px;
@@ -38,7 +38,7 @@
 	margin: 0 1px;
 }
 .tabs .b1, .tabs .b2, .tabs .b3 {
-	background: #7EAAC6;
+	background: #e4e4e4;
 	font-size: 0;
 	line-height: 0;
 	margin: 0 2px;
@@ -55,7 +55,7 @@
 	margin: 0 1px;
 }
 .tabs .cm {
-	background: #C3E0F2;
+	background: #c7c7c7;
 	margin: 0 1px;
 	border-left: 1px solid white;
 	border-right: 1px solid white;
@@ -66,7 +66,7 @@
 	vertical-align: middle;
 	text-align: center;
 	white-space: nowrap;
-	color: #0F3B82;
+	color: #000000;
 	padding: 2px 5px;
 }
 .tabs .text, .tabs .text * {
@@ -76,8 +76,7 @@
 	position: relative;
 }
 .top {
-	background: #f1fcff;
-	border-bottom: 0.2em solid #B5D5E9;
+	border-bottom: 0.2em solid #dedede;
 	overflow: hidden;
 	height: 0.7em;
 	position: absolute;
@@ -155,4 +154,65 @@
 }
 .purple {
 	background: #B373B3!important;
+}
+.z-font-Calendar .text {
+	color: #333333;
+}
+.z-font-Calendar .cnt {
+	background: #ffffff;
+}
+.z-font-Calendar .bd {
+    background: #ffffff;
+}
+.z-font-Calendar .t1,.z-font-Calendar .t2,.z-font-Calendar .t3 {
+    background: #ffffff;
+}
+.z-font-Calendar .b1,.z-font-Calendar .b2,.z-font-Calendar .b3 {
+    background: #ffffff;
+}
+.z-cal-font-theme .z-calendars-inner {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-body {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-t1,
+.z-cal-font-theme .z-calendars-t2,
+.z-cal-font-theme .z-calendars-t3 {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-b1,
+.z-cal-font-theme .z-calendars-b2,
+.z-cal-font-theme .z-calendars-b3 {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-month-header {
+    background-color: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-month-date {
+    background-color: #e9e9e9;
+}
+.z-cal-font-theme .z-calendars-month-date-off {
+    background-color: #c5c5c5;
+}
+.z-calendars-week-cnt .z-calendars-timezone {
+	background-color: #cfcfcf;
+	border-right: 1px solid #a2a2a2;
+	color: #000000;
+}
+.z-calendars-timezone {
+	color: #000000;
+}
+.z-calendars-week-cnt {
+	background-color: #ececec;
+}
+.z-calendars-daylong-body {
+	background-color: #ececec;
+	border-color: #808080 white white #747474;
+}
+.z-calendars-hour-of-day,
+.z-calendars-day-of-week-inner,
+.z-calendars-day-of-week-inner .z-calendars-week-today,
+.z-calendars-month-header .z-calendars-day-of-week {
+	color: #000000 !important;
 }

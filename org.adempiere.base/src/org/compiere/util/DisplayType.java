@@ -65,9 +65,11 @@ import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.adempiere.base.IDisplayTypeFactory;
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
@@ -217,10 +219,18 @@ public final class DisplayType
 			|| displayType == Image || displayType == Chart)
 			return true;
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			if(factory.isID(displayType))
-				return true;
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null)
+				return service.isID(displayType);
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().isID(displayType))
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return true;
 		}
 		
 		return false;
@@ -238,10 +248,18 @@ public final class DisplayType
 			|| displayType == Integer || displayType == Quantity)
 			return true;
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			if(factory.isNumeric(displayType))
-				return true;
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null)
+				return service.isNumeric(displayType);
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().isNumeric(displayType))
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return true;
 		}
 		
 		return false;
@@ -263,13 +281,22 @@ public final class DisplayType
 			|| displayType == Quantity)
 			return 4;
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			if(factory.getDefaultPrecision(displayType) != null)
-				return factory.getDefaultPrecision(displayType).intValue();
-				
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null) {
+				Integer v = service.getDefaultPrecision(displayType);
+				return v != null ? v.intValue() : 0;
+			}
 		}
-		
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().getDefaultPrecision(displayType) != null)
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			Integer v = found.get().getService().getDefaultPrecision(displayType);
+			return v != null ? v.intValue() : 0;
+		}
 		return 0;
 	}	//	getDefaultPrecision
 
@@ -293,10 +320,18 @@ public final class DisplayType
 			|| displayType == ChosenMultipleSelectionSearch)
 			return true;
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			if(factory.isText(displayType))
-				return true;
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null)
+				return service.isText(displayType);
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().isText(displayType))
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return true;
 		}
 		return false;
 	}	//	isText
@@ -312,10 +347,18 @@ public final class DisplayType
 		if (displayType == Date || displayType == DateTime || displayType == Time)
 			return true;
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			if(factory.isDate(displayType))
-				return true;
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null)
+				return service.isDate(displayType);
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().isDate(displayType))
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return true;
 		}
 		
 		return false;
@@ -337,10 +380,18 @@ public final class DisplayType
 			|| displayType == ChosenMultipleSelectionList)
 			return true;
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			if(factory.isLookup(displayType))
-				return true;				
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null)
+				return service.isLookup(displayType);
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().isLookup(displayType))
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return true;
 		}
 		
 		return false;
@@ -357,10 +408,18 @@ public final class DisplayType
 			|| displayType == TextLong)
 			return true;
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			if(factory.isLOB(displayType))
-				return true;				
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null)
+				return service.isLOB(displayType);
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().isLOB(displayType))
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return true;
 		}
 		
 		return false;
@@ -420,12 +479,21 @@ public final class DisplayType
 		}
 		else
 		{
-			List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-			for(IDisplayTypeFactory factory : factoryList){
-				DecimalFormat osgiFormat = factory.getNumberFormat(displayType, myLanguage, pattern);
-				if(osgiFormat!=null){
-					return osgiFormat;
+			IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+			if (cache != null) {
+				IDisplayTypeFactory service = cache.getService();
+				if (service != null) {
+					DecimalFormat f = service.getNumberFormat(displayType, language, pattern);
+					if (f != null)
+						return f;
 				}
+			}
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+						.filter(e -> e.getService() != null && e.getService().getNumberFormat(displayType, language, pattern) != null)
+						.findFirst();
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().getNumberFormat(displayType, language, pattern);
 			}
 			
 			format.setMaximumIntegerDigits(MAX_DIGITS);
@@ -535,11 +603,21 @@ public final class DisplayType
 		}
 
 		else {
-			List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-			for(IDisplayTypeFactory factory : factoryList){
-				SimpleDateFormat osgiFormat = factory.getDateFormat(displayType, myLanguage, pattern);
-				if(osgiFormat!=null)
-					return osgiFormat;
+			IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+			if (cache != null) {
+				IDisplayTypeFactory service = cache.getService();
+				if (service != null) {
+					SimpleDateFormat v = service.getDateFormat(displayType, language, pattern);
+					if (v != null)
+						return v;
+				}
+			}
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+						.filter(e -> e.getService() != null && e.getService().getDateFormat(displayType, language, pattern) != null)
+						.findFirst();
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().getDateFormat(displayType, language, pattern);
 			}
 		}
 
@@ -598,11 +676,21 @@ public final class DisplayType
 			return byte[].class;
 		else
 		{
-			List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-			for(IDisplayTypeFactory factory : factoryList){
-				Class<?> osgiClass = factory.getClass(displayType, yesNoAsBoolean); 
-				if(osgiClass!=null)
-					return osgiClass;
+			IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+			if (cache != null) {
+				IDisplayTypeFactory service = cache.getService();
+				if (service != null) {
+					Class<?> v = service.getClass(displayType, yesNoAsBoolean);
+					if (v != null)
+						return v;
+				}
+			}
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+						.filter(e -> e.getService() != null && e.getService().getClass(displayType, yesNoAsBoolean) != null)
+						.findFirst();
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().getClass(displayType, yesNoAsBoolean);
 			}
 		}
 		//
@@ -677,11 +765,21 @@ public final class DisplayType
 				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
 		}
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			String osgiSQLDataType = factory.getSQLDataType(displayType, columnName, fieldLength);
-			if(osgiSQLDataType!=null)
-				return osgiSQLDataType;
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null) {
+				String v = service.getSQLDataType(displayType, columnName, fieldLength);
+				if (v != null)
+					return v;
+			}
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().getSQLDataType(displayType, columnName, fieldLength) != null)
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return found.get().getService().getSQLDataType(displayType, columnName, fieldLength);
 		}
 		
 		if (!DisplayType.isText(displayType))
@@ -771,11 +869,21 @@ public final class DisplayType
 		if (displayType == Chart)
 			return "Chart";
 		
-		List<IDisplayTypeFactory> factoryList = Service.locator().list(IDisplayTypeFactory.class).getServices();
-		for(IDisplayTypeFactory factory : factoryList){
-			String osgiDescription = factory.getDescription(displayType);
-			if(osgiDescription!=null)
-				return osgiDescription;
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null) {
+				String v = service.getDescription(displayType);
+				if (v != null)
+					return v;
+			}
+		}
+		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().getDescription(displayType) != null)
+					.findFirst();
+		if (found.isPresent()) {
+			s_displayTypeFactoryCache.put(displayType, found.get());
+			return found.get().getService().getDescription(displayType);
 		}
 		
 		//
@@ -798,4 +906,9 @@ public final class DisplayType
 	}   //  getCurrencyFormat
 
 
+	private final static CCache<Integer, IServiceReferenceHolder<IDisplayTypeFactory>> s_displayTypeFactoryCache = new CCache<>(null, "IDisplayTypeFactory", 100, false);
+	
+	private static List<IServiceReferenceHolder<IDisplayTypeFactory>> getDisplayTypeFactories() {
+		 return Service.locator().list(IDisplayTypeFactory.class).getServiceReferences();
+	}
 }	//	DisplayType

@@ -25,8 +25,7 @@
 **********************************************************************/
 package org.adempiere.webui.scheduler;
 
-import org.adempiere.base.IServiceHolder;
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Button;
@@ -362,8 +361,7 @@ public class SchedulerStateEditor extends WEditor {
 	
 	private IServerManager getServerMgr() {
 		IServerManager serverMgr = null;
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder != null ? holder.getService() : null;
+		IClusterService service = Core.getClusterService();
 		if (service != null)
 			serverMgr = ClusterServerMgr.getInstance();
 		else

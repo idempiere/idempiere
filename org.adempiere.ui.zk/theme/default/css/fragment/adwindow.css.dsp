@@ -338,13 +338,13 @@
 
 @media only screen 
   and (max-device-width: 700px) {
-	.adtab-grid > .z-cell > .z-label {
+	.mobile .adtab-grid > .z-cell > .z-label {
 		white-space: pre-line;
 	}	
 }
 .adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
-	white-space: pre-wrap;
 	text-overflow: ellipsis;
+	white-space: pre-line;
 }
 
 .mobile-overflow-link {
