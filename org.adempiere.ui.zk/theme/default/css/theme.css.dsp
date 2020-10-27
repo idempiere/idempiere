@@ -9,7 +9,7 @@ html,body {
 	width: 100%;
 	background-color: #D4E3F4;
 	color: #333;
-	font-family: Helvetica,Arial,sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	overflow: hidden;
 }
 
@@ -19,6 +19,7 @@ html,body {
 
 [class*="z-"]:not([class*="z-icon-"]) {
     font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 <%-- Mobile/Tablet --%>
