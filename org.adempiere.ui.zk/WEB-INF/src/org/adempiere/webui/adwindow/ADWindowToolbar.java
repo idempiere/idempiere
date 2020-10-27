@@ -537,7 +537,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	if (index < 0) return;
         	if (index == 0) // no query - refresh
         		setSelectedUserQuery(null);
-        	else if (fQueryName.getValue().equals(m_sNew)) { //On new send the Event to open the FindWindow
+        	else if (m_sNew.equals(fQueryName.getValue())) { //On new send the Event to open the FindWindow
         		Events.sendEvent(Events.ON_CLICK, btnFind, null);
         		return;
         	}
