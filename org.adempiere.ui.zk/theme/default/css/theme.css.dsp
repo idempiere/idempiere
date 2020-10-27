@@ -17,7 +17,7 @@ html,body {
 	margin:0px;
 }
 
-[class*="z-"]:not([class*="z-icon-"]) {
+[class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
     font-size: 14px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
