@@ -45,18 +45,56 @@ public class WebEditorFactory
         logger = CLogger.getCLogger(WebEditorFactory.class);
     }
 
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @return
+     */
     public static WEditor getEditor(GridField gridField, boolean tableEditor)
     {
-    	return getEditor(gridField.getGridTab(), gridField, tableEditor);
+    	return getEditor(gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     * @return {@link WEditor}
+     */
+    public static WEditor getEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+    {
+    	return getEditor(gridField.getGridTab(), gridField, tableEditor, editorConfiguration);
     }
 
+    /**
+     * 
+     * @param gridTab
+     * @param gridField
+     * @param tableEditor
+     * @return {@link WEditor}
+     */
     public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor)
+    {
+    	return getEditor(gridTab, gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridTab
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     * @return {@link WEditor}
+     */
+    public static WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
         WEditor editor = null;
         List<IEditorFactory> factoryList = Service.locator().list(IEditorFactory.class).getServices();
         for(IEditorFactory factory : factoryList)
         {
-        	editor = factory.getEditor(gridTab, gridField, tableEditor);
+        	editor = factory.getEditor(gridTab, gridField, tableEditor, editorConfiguration);
         	if (editor != null)
         		break;
         }

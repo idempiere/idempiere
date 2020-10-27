@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.factory;
 
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WAccountEditor;
 import org.adempiere.webui.editor.WAssignmentEditor;
 import org.adempiere.webui.editor.WBinaryEditor;
@@ -58,6 +59,12 @@ public class DefaultEditorFactory implements IEditorFactory {
 	@Override
 	public WEditor getEditor(GridTab gridTab, GridField gridField,
 			boolean tableEditor) {
+		return getEditor(gridTab, gridField, tableEditor, null);
+	}
+	
+	@Override
+	public WEditor getEditor(GridTab gridTab, GridField gridField,
+			boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		if (gridField == null)
         {
             return null;
@@ -79,14 +86,14 @@ public class DefaultEditorFactory implements IEditorFactory {
         {
             if (gridField.isEncryptedField())
             {
-                editor = new WPasswordEditor(gridField, tableEditor);
+                editor = new WPasswordEditor(gridField, tableEditor, editorConfiguration);
             }
             else
             {
             	if (gridField.isHtml())
-            		editor = new WHtmlEditor(gridField);
+            		editor = new WHtmlEditor(gridField, tableEditor, editorConfiguration);
             	else
-            		editor = new WStringEditor(gridField, tableEditor);
+            		editor = new WStringEditor(gridField, tableEditor, editorConfiguration);
             }
             //enable html5 color input type
             if (displayType == DisplayType.Color)
@@ -95,23 +102,23 @@ public class DefaultEditorFactory implements IEditorFactory {
         /** File */
         else if (displayType == DisplayType.FileName)
         {
-        	editor = new WFilenameEditor(gridField);
+        	editor = new WFilenameEditor(gridField, tableEditor, editorConfiguration);
         }
         /** File Path */
         else if (displayType == DisplayType.FilePath)
         {
-        	editor = new WFileDirectoryEditor(gridField);
+        	editor = new WFileDirectoryEditor(gridField, tableEditor, editorConfiguration);
         }
         /** Number */
         else if (DisplayType.isNumeric(displayType))
         {
-            editor = new WNumberEditor(tableEditor, gridField);
+            editor = new WNumberEditor(gridField, tableEditor, editorConfiguration);
         }
 
         /** YesNo */
         else if (displayType == DisplayType.YesNo)
         {
-            editor = new WYesNoEditor(gridField);
+            editor = new WYesNoEditor(gridField, tableEditor, editorConfiguration);
             if (tableEditor)
             	((WYesNoEditor)editor).getComponent().setLabel("");
         }
@@ -120,117 +127,115 @@ public class DefaultEditorFactory implements IEditorFactory {
         else if (displayType == DisplayType.Text || displayType == DisplayType.Memo || displayType == DisplayType.TextLong || displayType == DisplayType.ID)
         {
         	if (gridField.isHtml())
-        		editor = new WHtmlEditor(gridField);
+        		editor = new WHtmlEditor(gridField, tableEditor, editorConfiguration);
         	else
-        		editor = new WStringEditor(gridField, tableEditor);
+        		editor = new WStringEditor(gridField, tableEditor, editorConfiguration);
         }
 
         /** Date */
         else if (DisplayType.isDate(displayType))
         {
         	if (displayType == DisplayType.Time)
-        		editor = new WTimeEditor(gridField);
+        		editor = new WTimeEditor(gridField, tableEditor, editorConfiguration);
         	else if (displayType == DisplayType.DateTime)
-        		editor = new WDatetimeEditor(gridField);
+        		editor = new WDatetimeEditor(gridField, tableEditor, editorConfiguration);
         	else
-        		editor = new WDateEditor(gridField);
+        		editor = new WDateEditor(gridField, tableEditor, editorConfiguration);
         }
         
         /** Chart */
         else if(displayType == DisplayType.Chart)
         {
-        	editor = new WChartEditor(gridField, (gridTab == null ? 0 : gridTab.getWindowNo()));
+        	editor = new WChartEditor(gridField, (gridTab == null ? 0 : gridTab.getWindowNo()), tableEditor, editorConfiguration);
         }
 
         /** Dashboard Content */
         else if(displayType == DisplayType.DashboardContent)
         {
-        	editor = new WDashboardContentEditor(gridField, (gridTab == null ? 0 : gridTab.getWindowNo()));
+        	editor = new WDashboardContentEditor(gridField, (gridTab == null ? 0 : gridTab.getWindowNo()), tableEditor, editorConfiguration);
         }
         
         /**  Button */
         else if (displayType == DisplayType.Button)
         {
-            editor = new WButtonEditor(gridField);
+            editor = new WButtonEditor(gridField, tableEditor, editorConfiguration);
         }
 
         /** Table Direct */
         else if (displayType == DisplayType.TableDir ||
                 displayType == DisplayType.Table || displayType == DisplayType.List)
         {
-            editor = new WTableDirEditor(gridField);
+            editor = new WTableDirEditor(gridField, tableEditor, editorConfiguration);
         }
         
         else if (displayType == DisplayType.Payment)
         {
-        	editor = new WPaymentEditor(gridField);
+        	editor = new WPaymentEditor(gridField, tableEditor, editorConfiguration);
         }
 
         else if (displayType == DisplayType.URL)
         {
-        	editor = new WUrlEditor(gridField);
+        	editor = new WUrlEditor(gridField, tableEditor, editorConfiguration);
         }
 
         else if (displayType == DisplayType.Search)
         {
-        	editor = new WSearchEditor(gridField);
+        	editor = new WSearchEditor(gridField, tableEditor, editorConfiguration);
         }
 
         else if (displayType == DisplayType.Location)
         {
-            editor = new WLocationEditor(gridField);
+            editor = new WLocationEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.Locator)
         {
-        	editor = new WLocatorEditor(gridField);
+        	editor = new WLocatorEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.Account)
         {
-        	editor = new WAccountEditor(gridField);
+        	editor = new WAccountEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.Image)
         {
-        	editor = new WImageEditor(gridField);
+        	editor = new WImageEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.Binary)
         {
-        	editor = new WBinaryEditor(gridField);
+        	editor = new WBinaryEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.PAttribute)
         {
-        	editor = new WPAttributeEditor(gridTab, gridField);
+        	editor = new WPAttributeEditor(gridTab, gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.Assignment)
         {
-        	editor = new WAssignmentEditor(gridField);
+        	editor = new WAssignmentEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.SingleSelectionGrid)
         {
-        	editor = new WGridTabSingleSelectionEditor(gridField, tableEditor);
+        	editor = new WGridTabSingleSelectionEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.MultipleSelectionGrid)
         {
-        	editor = new WGridTabMultiSelectionEditor(gridField, tableEditor);
+        	editor = new WGridTabMultiSelectionEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.ChosenMultipleSelectionList || displayType == DisplayType.ChosenMultipleSelectionTable)
         {
-        	editor = new WChosenboxListEditor(gridField);
+        	editor = new WChosenboxListEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.ChosenMultipleSelectionSearch)
         {
-        	editor = new WChosenboxSearchEditor(gridField);
+        	editor = new WChosenboxSearchEditor(gridField, tableEditor, editorConfiguration);
         }
         else if (displayType == DisplayType.RadiogroupList)
         {
-        	editor = new WRadioGroupEditor(gridField);
+        	editor = new WRadioGroupEditor(gridField, tableEditor, editorConfiguration);
         }
         else
         {
-            editor = new WUnknownEditor(gridField);
+            editor = new WUnknownEditor(gridField, tableEditor, editorConfiguration);
         }
 
-        editor.setTableEditor(tableEditor);
-        
         return editor;
 	}
 

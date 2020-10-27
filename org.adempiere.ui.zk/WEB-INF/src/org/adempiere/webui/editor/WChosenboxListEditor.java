@@ -71,14 +71,29 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 	
 	private ListModelList<ValueNamePair> model = new ListModelList<>();
 
-    public WChosenboxListEditor(GridField gridField)
+	/**
+	 * 
+	 * @param gridField
+	 */
+	public WChosenboxListEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WChosenboxListEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        this(new ChosenboxEditor(), gridField);
+        this(new ChosenboxEditor(), gridField, tableEditor, editorConfiguration);
     }
     
-    private WChosenboxListEditor(Component comp, GridField gridField)
+    private WChosenboxListEditor(Component comp, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(comp, gridField);
+        super(comp, gridField, tableEditor, editorConfiguration);
         lookup = gridField.getLookup();
         init();
     }
