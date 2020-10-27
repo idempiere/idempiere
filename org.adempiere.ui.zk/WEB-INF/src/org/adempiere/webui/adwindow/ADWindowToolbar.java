@@ -205,8 +205,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         //IDEMPIERE-4085
         m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");
         fQueryName = new Combobox();
-        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
-        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"QueryName"));
+        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"SelectQuery"));
+        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"SelectQuery"));
         fQueryName.setId(BTNPREFIX + "SearchQuery");
         fQueryName.addEventListener(Events.ON_SELECT, this);
         LayoutUtils.addSclass("toolbar-searchbox", fQueryName);
