@@ -659,7 +659,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 		if (m_change)
 		{
 			Integer locator_id = (Integer) locatorField.getValue();
-			return locator_id == m_M_Locator_ID;
+			if(locator_id != null)
+				return locator_id == m_M_Locator_ID;
 		}
 		return m_change;
 	} // getChange

@@ -65,9 +65,24 @@ public class WHtmlEditor extends WEditor implements ContextMenuListener
     /**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WHtmlEditor.class);
 
-    public WHtmlEditor(GridField gridField)
+	/**
+	 * 
+	 * @param gridField
+	 */
+	public WHtmlEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WHtmlEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(new Div(), gridField);
+        super(new Div(), gridField, tableEditor, editorConfiguration);
         init();
     }
 

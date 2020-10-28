@@ -45,9 +45,24 @@ public class WBinaryEditor extends WEditor
 
 	private ADWindow adwindow;
    
-    public WBinaryEditor(GridField gridField)
+	/**
+	 * 
+	 * @param gridField
+	 */
+	public WBinaryEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WBinaryEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(new Button(), gridField);
+        super(new Button(), gridField, tableEditor, editorConfiguration);
         init();
     }
 

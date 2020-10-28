@@ -60,7 +60,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
@@ -75,6 +74,8 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vlayout implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
+	private static final int MIN_COLUMN_MOBILE_WIDTH = 100;
+
 	/**
 	 * 
 	 */
@@ -144,6 +145,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	
 	boolean isHasCustomizeData = false;
 
+	private boolean showCurrentRowIndicatorColumn = true;
+
 	public GridView()
 	{
 		this(0);
@@ -184,7 +187,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		//default true for better UI experience
 		if (ClientInfo.isMobile())
-			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDIT_MODELESS, false);
+			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDIT_MODELESS, false) && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDITABLE, false);
 		else
 			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
 		
@@ -272,7 +275,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		if (paging != null && paging.getPageSize() != pageSize) {
 			paging.setPageSize(pageSize);
 			updateModel();
-			if (paging.getPageSize() > 1) {
+			if (paging.getPageCount() > 1) {
 				showPagingControl();
 			} else {
 				hidePagingControl();
@@ -525,6 +528,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		Columns columns = new Columns();
 		
 		//frozen not working well on tablet devices yet
+		//frozen is implemented poorly on zk ce, not working with scroll and white-space wrap
+		//unlikely to be fixed since the working 'smooth scrolling frozen' is a zk ee only feature
+		/*
 		if (!ClientInfo.isMobile())
 		{
 			Frozen frozen = new Frozen();
@@ -532,8 +538,10 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 			frozen.setColumns(2);
 			listbox.appendChild(frozen);
 		}
+		*/
 		
 		org.zkoss.zul.Column selection = new Column();
+		selection.setHeight("2em");
 		ZKUpdateUtil.setWidth(selection, "22px");
 		try{
 			selection.setSort("none");
@@ -545,13 +553,21 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		selectAll.addEventListener(Events.ON_CHECK, this);
 		columns.appendChild(selection);
 		
-		org.zkoss.zul.Column indicator = new Column();				
-		ZKUpdateUtil.setWidth(indicator, "22px");
-		try {
-			indicator.setSort("none");
-		} catch (Exception e) {}
-		indicator.setStyle("border-left: none");
-		columns.appendChild(indicator);
+		if (ClientInfo.isMobile())
+			showCurrentRowIndicatorColumn = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR, false);
+		
+		if (showCurrentRowIndicatorColumn)
+		{
+			org.zkoss.zul.Column indicator = new Column();
+			indicator.setHeight("2em");
+			ZKUpdateUtil.setWidth(indicator, "22px");
+			try {
+				indicator.setSort("none");
+			} catch (Exception e) {}
+			indicator.setStyle("border-left: none");
+			columns.appendChild(indicator);
+		}
+		
 		listbox.appendChild(columns);
 		columns.setSizable(true);
 		columns.setMenupopup("none");
@@ -568,6 +584,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				colnames.put(index, gridField[i].getHeader());
 				index++;
 				org.zkoss.zul.Column column = new Column();
+				column.setHeight("2em");
 				int colindex =tableModel.findColumn(gridField[i].getColumnName()); 
 				column.setSortAscending(new SortComparator(colindex, true, Env.getLanguage(Env.getCtx())));
 				column.setSortDescending(new SortComparator(colindex, false, Env.getLanguage(Env.getCtx())));
@@ -612,7 +629,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 							estimatedWidth = headerWidth;
 						
 						//hflex=min for first column not working well
-						if (i > 0)
+						if (i > 0 && !ClientInfo.isMobile())
 						{
 							if (DisplayType.isLookup(gridField[i].getDisplayType()))
 							{
@@ -633,10 +650,19 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 						
 						//set estimated width if not using hflex=min
 						if (!"min".equals(column.getHflex())) {
-							if (estimatedWidth > MAX_COLUMN_WIDTH)
-								estimatedWidth = MAX_COLUMN_WIDTH;
-							else if ( estimatedWidth < MIN_COLUMN_WIDTH)
-								estimatedWidth = MIN_COLUMN_WIDTH;
+							if (ClientInfo.isMobile() && ClientInfo.get() != null &&
+								ClientInfo.get().desktopWidth <= ClientInfo.SMALL_WIDTH) {
+								int maxWidth = ClientInfo.get().desktopWidth / 5;
+								if (maxWidth < MIN_COLUMN_MOBILE_WIDTH)
+									maxWidth = MIN_COLUMN_MOBILE_WIDTH;
+								if (estimatedWidth > maxWidth)
+									estimatedWidth = maxWidth;
+							} else {
+								if (estimatedWidth > MAX_COLUMN_WIDTH)
+									estimatedWidth = MAX_COLUMN_WIDTH;
+								else if ( estimatedWidth < MIN_COLUMN_WIDTH)
+									estimatedWidth = MIN_COLUMN_WIDTH;								
+							}
 							ZKUpdateUtil.setWidth(column, Integer.toString(estimatedWidth) + "px");
 						}
 					}
@@ -1275,5 +1301,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	public void editorTraverse(Callback<WEditor> editorTaverseCallback) {
 		editorTraverse(editorTaverseCallback, renderer.getEditors());
 		
+	}
+	
+	public boolean isShowCurrentRowIndicatorColumn() {
+		return showCurrentRowIndicatorColumn;
 	}
 }

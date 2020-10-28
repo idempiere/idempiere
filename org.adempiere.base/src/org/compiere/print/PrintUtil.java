@@ -542,7 +542,6 @@ public class PrintUtil
 	//	dump(null, null);
 	}	//	testSPS*/
 
-
 	/**************************************************************************
 	 * 	Create Print Form & Print Formats for a new Client.
 	 *  - Order, Invoice, etc.
@@ -551,29 +550,41 @@ public class PrintUtil
 	 */
 	public static void setupPrintForm (int AD_Client_ID)
 	{
+		setupPrintForm(AD_Client_ID, (String)null);
+	}
+	
+	/**************************************************************************
+	 * 	Create Print Form & Print Formats for a new Client.
+	 *  - Order, Invoice, etc.
+	 *  Called from VSetup
+	 *  @param AD_Client_ID new Client
+	 *  @param trxName
+	 */
+	public static void setupPrintForm (int AD_Client_ID, String trxName)
+	{
 		if (log.isLoggable(Level.CONFIG)) log.config("AD_Client_ID=" + AD_Client_ID);
 		Properties ctx = Env.getCtx();
 		CLogMgt.enable(false);
 		//
 		//	Order Template
-		int Order_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_HEADER_TEMPLATE, AD_Client_ID).get_ID();
-		int OrderLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_LINETAX_TEMPLATE, AD_Client_ID).get_ID();
-		updatePrintFormatHeader(Order_PrintFormat_ID, OrderLine_PrintFormat_ID);
+		int Order_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_HEADER_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		int OrderLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_LINETAX_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		updatePrintFormatHeader(Order_PrintFormat_ID, OrderLine_PrintFormat_ID, trxName);
 		//	Invoice
-		int Invoice_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INVOICE_HEADER_TEMPLATE, AD_Client_ID).get_ID();
-		int InvoiceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INVOICE_LINETAX_TEMPLATE, AD_Client_ID).get_ID();
-		updatePrintFormatHeader(Invoice_PrintFormat_ID, InvoiceLine_PrintFormat_ID);
+		int Invoice_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INVOICE_HEADER_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		int InvoiceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INVOICE_LINETAX_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		updatePrintFormatHeader(Invoice_PrintFormat_ID, InvoiceLine_PrintFormat_ID, trxName);
 		//	Shipment
-		int Shipment_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INOUT_HEADER_TEMPLATE, AD_Client_ID).get_ID();
-		int ShipmentLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INOUT_LINE_TEMPLATE, AD_Client_ID).get_ID();
-		updatePrintFormatHeader(Shipment_PrintFormat_ID, ShipmentLine_PrintFormat_ID);
+		int Shipment_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INOUT_HEADER_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		int ShipmentLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_INOUT_LINE_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		updatePrintFormatHeader(Shipment_PrintFormat_ID, ShipmentLine_PrintFormat_ID, trxName);
 		//	Check
-		int Check_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_CHECK_TEMPLATE, AD_Client_ID).get_ID();
-		int RemittanceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE_LINES_TEMPLATE, AD_Client_ID).get_ID();
-		updatePrintFormatHeader(Check_PrintFormat_ID, RemittanceLine_PrintFormat_ID);
+		int Check_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_CHECK_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		int RemittanceLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE_LINES_TEMPLATE, AD_Client_ID, trxName).get_ID();
+		updatePrintFormatHeader(Check_PrintFormat_ID, RemittanceLine_PrintFormat_ID, trxName);
 		//	Remittance
-		int Remittance_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE__TEMPLATE, AD_Client_ID).get_ID();
-		updatePrintFormatHeader(Remittance_PrintFormat_ID, RemittanceLine_PrintFormat_ID);
+		int Remittance_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE__TEMPLATE, AD_Client_ID, trxName).get_ID();
+		updatePrintFormatHeader(Remittance_PrintFormat_ID, RemittanceLine_PrintFormat_ID, trxName);
 
 	//	TODO: MPrintForm	
 	//	MPrintForm form = new MPrintForm(); 
@@ -585,7 +596,7 @@ public class PrintUtil
 			+ "'" + Msg.translate(ctx, "Standard") + "',"
 			+ Order_PrintFormat_ID + "," + Invoice_PrintFormat_ID + ","
 			+ Remittance_PrintFormat_ID + "," + Shipment_PrintFormat_ID + ")";
-		int no = DB.executeUpdate(sql, null);
+		int no = DB.executeUpdate(sql, trxName);
 		if (no != 1)
 			log.log(Level.SEVERE, "PrintForm NOT inserted");
 		//
@@ -596,8 +607,9 @@ public class PrintUtil
 	 * 	Update the PrintFormat Header lines with Reference to Child Print Format.
 	 * 	@param Header_ID AD_PrintFormat_ID for Header
 	 * 	@param Line_ID AD_PrintFormat_ID for Line
+	 *  @param trxName
 	 */
-	static private void updatePrintFormatHeader (int Header_ID, int Line_ID)
+	static private void updatePrintFormatHeader (int Header_ID, int Line_ID, String trxName)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE AD_PrintFormatItem SET AD_PrintFormatChild_ID=")
@@ -605,7 +617,7 @@ public class PrintUtil
 			.append(" WHERE AD_PrintFormatChild_ID IS NOT NULL AND AD_PrintFormat_ID=")
 			.append(Header_ID);
 		@SuppressWarnings("unused")
-		int no = DB.executeUpdate(sb.toString(), null);
+		int no = DB.executeUpdate(sb.toString(), trxName);
 	}	//	updatePrintFormatHeader
 
 	/*************************************************************************/

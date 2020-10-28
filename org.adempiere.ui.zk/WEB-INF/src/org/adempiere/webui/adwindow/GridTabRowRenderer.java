@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.adempiere.util.GridRowCtx;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -27,6 +28,7 @@ import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Urlbox;
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -108,6 +110,18 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/** DefaultFocusField		*/
 	private WEditor	defaultFocusField = null;
 
+	private final static IEditorConfiguration readOnlyEditorConfiguration = new IEditorConfiguration() {
+		@Override
+		public Boolean getReadonly() {
+			return Boolean.TRUE;
+		}
+
+		@Override
+		public Boolean getMandatory() {
+			return Boolean.FALSE;
+		}
+	};
+	
 	/**
 	 *
 	 * @param gridTab
@@ -475,19 +489,20 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		cell.appendChild(selection);
 		row.appendChild(cell);
 		
-		cell = new Cell();
-		cell.addEventListener(Events.ON_CLICK, this);
-		cell.setStyle("border: none;");
-		cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
-		if (ThemeManager.isUseFontIconForImage()) {
-			Label indicatorLabel = new Label();
-			cell.appendChild(indicatorLabel);
-			final Cell finalCell = cell;
-			indicatorLabel.addEventListener(Events.ON_CLICK, evt->Events.postEvent(Events.ON_CLICK, finalCell, indicatorLabel.getSclass()));
+		if (isShowCurrentRowIndicatorColumn()) {
+			cell = new Cell();
+			cell.addEventListener(Events.ON_CLICK, this);
+			cell.setStyle("border: none;");
+			cell.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "EditRecord")));
+			if (ThemeManager.isUseFontIconForImage()) {
+				Label indicatorLabel = new Label();
+				cell.appendChild(indicatorLabel);
+				final Cell finalCell = cell;
+				indicatorLabel.addEventListener(Events.ON_CLICK, evt->Events.postEvent(Events.ON_CLICK, finalCell, indicatorLabel.getSclass()));
+			}
+			cell.setValign("middle");
+			row.appendChild(cell);
 		}
-		cell.setValign("middle");
-		
-		row.appendChild(cell);
 		
 		Boolean isActive = null;
 		int colIndex = -1;
@@ -501,9 +516,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 				
 				//readonly for display text
-				WEditor readOnlyEditor = WebEditorFactory.getEditor(gridPanelFields[i], true);
+				WEditor readOnlyEditor = WebEditorFactory.getEditor(gridPanelFields[i], true, readOnlyEditorConfiguration);
 				if (readOnlyEditor != null) {
-					readOnlyEditor.setReadWrite(false);
 					readOnlyEditors.put(gridPanelFields[i], readOnlyEditor);
 				}
 				
@@ -599,7 +613,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @param row
 	 */
 	public void setCurrentRow(Row row) {
-		if (currentRow != null && currentRow.getParent() != null && currentRow != row) {
+		if (currentRow != null && currentRow.getParent() != null && currentRow != row && isShowCurrentRowIndicatorColumn()) {
 			Cell cell = (Cell) currentRow.getChildren().get(1);
 			if (cell != null) {
 				cell.setSclass("row-indicator");
@@ -609,7 +623,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 		currentRow = row;
 		Cell cell = (Cell) currentRow.getChildren().get(1);
-		if (cell != null) {
+		if (cell != null && isShowCurrentRowIndicatorColumn()) {
 			if (ThemeManager.isUseFontIconForImage()) 
 			{
 				Label indicatorLabel = (Label) cell.getFirstChild();
@@ -668,13 +682,17 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * Enter edit mode
 	 */
 	public void editCurrentRow() {
+		if (ClientInfo.isMobile()) {
+			if (!MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDITABLE, false))
+				return;
+		}
 		if (currentRow != null && currentRow.getParent() != null && currentRow.isVisible()
 			&& grid != null && grid.isVisible() && grid.getParent() != null && grid.getParent().isVisible()) {
 			GridField[] gridPanelFields = gridPanel.getFields();
 			int columnCount = gridPanelFields.length;
 			org.zkoss.zul.Columns columns = grid.getColumns();
 			//skip selection and indicator column
-			int colIndex = 1;
+			int colIndex = isShowCurrentRowIndicatorColumn() ? 1 : 0;
 			for (int i = 0; i < columnCount; i++) {
 				if ((!isGridViewCustomized && !gridPanelFields[i].isDisplayedGrid()) || gridPanelFields[i].isToolbarOnlyButton()) {
 					continue;
@@ -700,8 +718,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            {
 		            	popupMenu.addMenuListener((ContextMenuListener)editor);
 		            	div.appendChild(popupMenu);
-		            	popupMenu.addContextElement((XulElement) editor.getComponent());
-		            }		            
+		            	Component editorComponent = editor.getComponent();
+		            	if (editorComponent instanceof XulElement)
+		            		popupMenu.addContextElement((XulElement) editorComponent);		            	
+		            }		  
 		            
 		            
 		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab) 
@@ -921,4 +941,9 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			Events.sendEvent(gridPanel, new Event("onSelectRow", gridPanel, checkBox));
 		}
 	}
+
+	private boolean isShowCurrentRowIndicatorColumn() {
+		return gridPanel != null && gridPanel.isShowCurrentRowIndicatorColumn();
+	}
+
 }

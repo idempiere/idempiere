@@ -29,7 +29,7 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20200916L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
         {
 			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
+			setEntityType (null);
+// U
 			setIsStatusLine (true);
 // Y
         } */
@@ -213,6 +215,26 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** EntityType AD_Reference_ID=389 */
+	public static final int ENTITYTYPE_AD_Reference_ID=389;
+	/** Set Entity Type.
+		@param EntityType 
+		Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public void setEntityType (String EntityType)
+	{
+
+		set_Value (COLUMNNAME_EntityType, EntityType);
+	}
+
+	/** Get Entity Type.
+		@return Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public String getEntityType () 
+	{
+		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Status Line.

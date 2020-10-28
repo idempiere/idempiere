@@ -1,5 +1,6 @@
 package org.adempiere.process;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MPackage;
@@ -27,7 +28,7 @@ public class PrintShippingLabel extends SvrProcess
 		if (labelId <= 0)
 			return "Label format not defined.";
 
-		IPrintShippingLabel service = Service.locator().locate(IPrintShippingLabel.class).getService();
+		IPrintShippingLabel service = getService();
 		if (service != null)
 		{
 			MShipperLabels label = new MShipperLabels(getCtx(), labelId, get_TrxName());		
@@ -38,5 +39,25 @@ public class PrintShippingLabel extends SvrProcess
 		}
 		else
 			return "Not found in service/extension registry and classpath";
+	}
+
+	private static IServiceReferenceHolder<IPrintShippingLabel> s_serviceReference = null;
+	
+	private synchronized static IPrintShippingLabel getService() {
+		if (s_serviceReference != null) {
+			IPrintShippingLabel service = s_serviceReference.getService();
+			if (service != null)
+				return service;
+		}
+		IServiceReferenceHolder<IPrintShippingLabel> serviceReference = Service.locator().locate(IPrintShippingLabel.class).getServiceReference();
+		if (serviceReference != null) {
+			IPrintShippingLabel service = serviceReference.getService();
+			if (service != null) {
+				s_serviceReference = serviceReference;
+				return service;
+			}
+		}
+		return null;
+		
 	}
 }

@@ -94,6 +94,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public static final String MNITMPREFIX = "Mnitm";
 
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
+    
+	/** Search messages using translation */
+	private String				m_sNew;	
 
     private Combobox fQueryName;
 	private MUserQuery[] userQueries;
@@ -130,10 +133,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnQuickForm;
 
     private ToolBarButton btnShowMore;
-    private Menupopup menupopup;
 
     private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
-    private HashMap<ToolBarButton, Menuitem> menuItems = new HashMap<ToolBarButton, Menuitem>();
 	private ArrayList<ToolBarButton> mobileShowMoreButtons = new ArrayList<ToolBarButton>();
 	
 //    private ToolBarButton btnExit;
@@ -195,14 +196,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
     	LayoutUtils.addSclass("adwindow-toolbar", this);
 
-    	//Show more menu pop up
-        menupopup = new Menupopup();
-        this.appendChild(menupopup);
-        
         //IDEMPIERE-4085
+        m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");
         fQueryName = new Combobox();
-        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
-        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"QueryName"));
+        fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"SelectQuery"));
+        fQueryName.setPlaceholder(Msg.getMsg(Env.getCtx(),"SelectQuery"));
         fQueryName.setId(BTNPREFIX + "SearchQuery");
         fQueryName.addEventListener(Events.ON_SELECT, this);
         LayoutUtils.addSclass("toolbar-searchbox", fQueryName);
@@ -283,6 +281,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnShowMore.setDisabled(true);
         btnShowMore.setVisible(false);
 
+        if (!ClientInfo.isMobile())
+        	overflows = new ArrayList<ToolBarButton>();
         MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("W", null);
         for (MToolBarButton button : officialButtons) {
         	if (! button.isActive()) {
@@ -330,7 +330,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         			if (ClientInfo.isMobile() && button.isShowMore()) 
     					mobileShowMoreButtons.add(buttons.get(button.getComponentName()));
     				else if (button.isShowMore())
-        				createMenuitem(buttons.get(button.getComponentName()));
+        				overflows.add(buttons.get(button.getComponentName()));
         			else {
             			this.appendChild(buttons.get(button.getComponentName()));
             			if (button.isAddSeparator()) {
@@ -341,10 +341,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     		        this.appendChild(fQueryName); 
         	}
         }
-        if (!ClientInfo.isMobile() && !menuItems.isEmpty()) {
-            this.appendChild(btnShowMore);
-            btnShowMore.setDisabled(false);
-            btnShowMore.setVisible(true);
+        if (!ClientInfo.isMobile() && overflows.size() > 0) {
+            enableShowMore();
         }
 
     	configureKeyMap();
@@ -390,29 +388,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         return btn;
     }
     
-    /**
-     * Create Menu Item based on ToolBar button
-     * @param button
-     * @return
-     */
-    private Menuitem createMenuitem(ToolBarButton button){
-		Menuitem item = new Menuitem(button.getTooltiptext());
-		if (button.getImage() != null)
-			item.setImage(button.getImage());
-		else if (button.getImageContent() != null)
-			item.setImageContent(button.getImageContent());
-		else if (ThemeManager.isUseFontIconForImage()) { 
-			item.setIconSclass(button.getIconSclass());
-    		LayoutUtils.addSclass("font-icon-menuitem", item);
-		}
-		item.setId(MNITMPREFIX+button.getName());
-		item.setValue(button.getName());
-		item.addEventListener(Events.ON_CLICK, evt -> Events.sendEvent(new Event(Events.ON_CLICK, button)));
-		menupopup.appendChild(item);
-		menuItems.put(button, item);
-		return item;
-    }    
-
     public ToolBarButton getButton(String name)
     {
     	return buttons.get(name);
@@ -420,8 +395,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     
     public LabelImageElement getToolbarItem(String name)
     {
-    	return menuItems.get(buttons.get(name)) != null ? buttons.get("ShowMore") : 
-    		buttons.get(name);
+    	return	buttons.get(name);
     }
 
     /** VK_A thru VK_Z are the same as ASCII 'A' thru 'Z' (0x41 - 0x5A) */
@@ -501,7 +475,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
             	if (!event.getTarget().getId().contentEquals(BTNPREFIX+"ShowMore"))
             		doOnClick(event);
             	else
-            		menupopup.open(btnShowMore, "after_start");
+            		onShowMore();
             }
         } else if (eventName.equals(Events.ON_CTRL_KEY))
         {
@@ -533,10 +507,14 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	if (index < 0) return;
         	if (index == 0) // no query - refresh
         		setSelectedUserQuery(null);
+        	else if (m_sNew.equals(fQueryName.getValue())) { //On new send the Event to open the FindWindow
+        		Events.sendEvent(Events.ON_CLICK, btnFind, null);
+        		return;
+        	}
         	else
 				setSelectedUserQuery(userQueries[index-1]);
 
-			doOnClick(event);
+        	doOnClick(event);
         }
     }
 
@@ -592,22 +570,17 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     {
         this.btnParentRecord.setDisabled(!enableParent);
         this.btnDetailRecord.setDisabled(!enableDetail);
-        enableMenuitem(btnParentRecord, enableParent);
-        enableMenuitem(btnDetailRecord, enableDetail);
     }
 
     public void enableRefresh(boolean enabled)
     {
         this.btnRefresh.setDisabled(!enabled);
-        enableMenuitem(btnRefresh, enabled);
     }
 
     public void enableSave(boolean enabled)
     {
         this.btnSave.setDisabled(!enabled);
     	this.btnSaveAndCreate.setDisabled(!enabled);
-        enableMenuitem(btnSave, enabled);
-        enableMenuitem(btnSaveAndCreate, enabled);
     }
 
     public boolean isSaveEnable() {
@@ -622,7 +595,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableDelete(boolean enabled)
     {
         this.btnDelete.setDisabled(!enabled);        
-        enableMenuitem(btnDelete, enabled);
     }
     
     public boolean isDeleteEnable()
@@ -637,96 +609,76 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableIgnore(boolean enabled)
     {
         this.btnIgnore.setDisabled(!enabled);
-        enableMenuitem(btnIgnore, enabled);
     }
 
     public void enableNew(boolean enabled)
     {
         this.btnNew.setDisabled(!enabled);
-        enableMenuitem(btnNew, enabled);
     }
 
     public void enableCopy(boolean enabled)
     {
         this.btnCopy.setDisabled(!enabled);
-        enableMenuitem(btnCopy, enabled);
     }
 
     public void enableAttachment(boolean enabled)
     {
         this.btnAttachment.setDisabled(!enabled);
-        enableMenuitem(btnAttachment, enabled);
     }
 
     public void enableChat(boolean enabled)
     {
         this.btnChat.setDisabled(!enabled);
-        enableMenuitem(btnChat, enabled);
     }
 
     public void enablePrint(boolean enabled)
     {
     	this.btnPrint.setDisabled(!enabled);
-        enableMenuitem(btnPrint, enabled);
     }
 
     public void enableReport(boolean enabled)
     {
     	this.btnReport.setDisabled(!enabled);
-        enableMenuitem(btnReport, enabled);
     }
 
     public void enableFind(boolean enabled)
     {
         this.btnFind.setDisabled(!enabled);
-        enableMenuitem(btnFind, enabled);
     }
 
     public void enableGridToggle(boolean enabled)
     {
     	btnGridToggle.setDisabled(!enabled);
-    	enableMenuitem(btnGridToggle, enabled);
     }
 
     public void enableCustomize(boolean enabled)
     {
     	btnCustomize.setDisabled(!enabled);
-    	enableMenuitem(btnCustomize, enabled);
     }
     
     public void enableArchive(boolean enabled)
     {
     	btnArchive.setDisabled(!enabled);
-    	enableMenuitem(btnArchive, enabled);
     }
     
     public void enableZoomAcross(boolean enabled)
     {
     	btnZoomAcross.setDisabled(!enabled);
-    	enableMenuitem(btnZoomAcross, enabled);
     }
     
     public void enableActiveWorkflows(boolean enabled)
     {
     	btnActiveWorkflows.setDisabled(!enabled);
-    	enableMenuitem(btnActiveWorkflows, enabled);
     }
     
     public void enableRequests(boolean enabled)
     {
     	btnRequests.setDisabled(!enabled);
-    	enableMenuitem(btnRequests, enabled);
     }
     
-    public void enableMenuitem(Toolbarbutton button, boolean enabled) {
-        if (menuItems.get(button) != null)
-			menuItems.get(button).setDisabled(!enabled);
-    }
-
 	public void enableQuickForm(boolean enabled)
 	{
 		btnQuickForm.setDisabled(!enabled);
-		enableMenuitem(btnQuickForm, enabled);
 	}
 
     public void lock(boolean locked)
@@ -738,10 +690,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
       		String iconSclass = "z-icon-" + (this.btnLock.isPressed() ? "lock" : "unlock") ;
       		this.btnLock.setIconSclass(iconSclass);
       		LayoutUtils.addSclass("font-icon-toolbar-button", this.btnLock);
-      		if (menuItems.get(btnLock) != null) {
-    			menuItems.get(btnLock).setIconSclass(iconSclass);
-    			LayoutUtils.addSclass("font-icon-menuitem", menuItems.get(btnLock));
-    		}
       	}
       	else
       	{
@@ -754,16 +702,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
       		String imgURL = "images/"+ (this.btnLock.isPressed() ? "LockX" : "Lock") + suffix;
         	imgURL = ThemeManager.getThemeResource(imgURL);
     		this.btnLock.setImage(imgURL);
-    		if (menuItems.get(btnLock) != null) {
-    			menuItems.get(btnLock).setImage(imgURL);
-    		}
       	}
     }
 
     public void enablePostIt(boolean enabled)
     {
         this.btnPostIt.setDisabled(!enabled);
-    	enableMenuitem(btnPostIt, enabled);
     }
 
     public Event getEvent()
@@ -850,10 +794,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		{
 			btn.setVisible(visible);
 		}
-		for (Menuitem mn : menuItems.values())
-		{
-			mn.setVisible(visible);
-		}
 	}
 
 	/**
@@ -867,11 +807,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		if (btn != null)
 		{
 			btn.setVisible(visible);
-		}
-		Menuitem mn = menuItems.get(btn);
-		if (mn != null)
-		{
-			mn.setVisible(visible);
 		}
 	}
 
@@ -890,7 +825,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableExport(boolean b) {
 		if (btnExport != null)
 			btnExport.setDisabled(!b);
-    	enableMenuitem(btnExport, b);
 	}
 
 	/**
@@ -900,7 +834,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableFileImport(boolean b) {
 		if (btnFileImport != null)
 			btnFileImport.setDisabled(!b);
-    	enableMenuitem(btnFileImport, b);
 	}
 
 	/**
@@ -910,7 +843,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableCSVImport(boolean b) {
 		if (btnCSVImport != null)
 			btnCSVImport.setDisabled(!b);
-    	enableMenuitem(btnCSVImport, b);
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;
@@ -972,7 +904,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			GridTab gridTab = adwindow.getADWindowContent().getActiveGridTab();
 			if (gridTab != null) {
 				btnActiveWorkflows.setDisabled(!hasWorkflow(gridTab));
-				enableMenuitem(btnActiveWorkflows, !btnActiveWorkflows.isDisabled());
 			}
 		}
 		ToolBarMenuRestictionLoaded = true;
@@ -988,17 +919,14 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void enableProcessButton(boolean b) {
 		if (btnProcess != null) {
 			btnProcess.setDisabled(!b);
-			enableMenuitem(btnProcess, b);
 		}
 	}
 
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
-			toolbarCustomBtn.dynamicDisplay(menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null);
+			toolbarCustomBtn.dynamicDisplay(overflows.contains(toolbarCustomBtn.getToolbarbutton()));
 			customButtons.add(toolbarCustomBtn.getToolbarbutton());
-			if (menuItems.get(toolbarCustomBtn.getToolbarbutton()) != null)
-				menuItems.get(toolbarCustomBtn.getToolbarbutton()).setVisible(toolbarCustomBtn.getToolbarbutton().isVisible());
 		}
 		
 		ADWindow adwindow = ADWindow.findADWindow(this);
@@ -1069,12 +997,13 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				"		return;\n" + 
 				"	}\n" + 
 				"	for (; w; w = w.nextSibling) {\n" + 
-				"		total -= jq(w.$n()).outerWidth(true);\n" + 
+				"		var ow = jq(w.$n()).outerWidth(true);\n" +
+				"		if (typeof ow != 'undefined') {total -= ow;}\n" + 
 				"		if (total < 0 && w.className == 'zul.wgt.Toolbarbutton') {\n" + 
 				"			break;\n" + 
 				"		}\n" + 
 				"	}\n" + 
-				"	if (w) {\n" + 
+				"	if (w && total < 0) {\n" + 
 				"       var event = new zk.Event(wgt, 'onOverflowButton', w.uuid, {toServer: true}); \n" +
 				"       zAu.send(event); \n" +
 				"	}\n" +
@@ -1137,44 +1066,77 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		for (ToolBarButton toolbarButton : mobileShowMoreButtons)
 			overflows.add(toolbarButton);
 		if (overflows.size() > 0) {
-			overflowButton = new A();
-			overflowButton.setIconSclass("z-icon-ShowMore");
-			overflowButton.setStyle("position: absolute; right: 4px; font-size: 18px; font-weight: 500; color: #333");
-			appendChild(overflowButton);
-			overflowPopup = new Popup();
-			overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
-				if (!oe.isOpen()) {
-					overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
-				}
-			});
-			appendChild(overflowPopup);
-			for(ToolBarButton btn : overflows) {
-				overflowPopup.appendChild(btn);
-			}			
-			overflowButton.addEventListener(Events.ON_CLICK, e -> {
-				Long ts = (Long) overflowPopup.removeAttribute("popup.close");
-				if (ts != null) {
-					if (System.currentTimeMillis() - ts.longValue() < 500) {
-						return;
-					}
-				}
-				overflowPopup.open(overflowButton, "after_end");
-			});
-			
-			int cnt = 0;
-			for(Component c : getChildren()) {
-				if (c instanceof ToolBarButton)
-					cnt++;
+			createOverflowButton();
+			populateOverflowPopup();
+		}
+	}
+
+	private void populateOverflowPopup() {
+		for(ToolBarButton btn : overflows) {
+			overflowPopup.appendChild(btn);
+		}			
+		
+		int cnt = 0;
+		for(Component c : getChildren()) {
+			if (c instanceof ToolBarButton)
+				cnt++;
+		}
+		if (overflows.size() >= cnt) {
+			String script = "var e = jq('#" + getUuid() + "');";
+			script = script + "var b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
+			script = script + "b.setWidth(e.css('width'));";
+			Clients.evalJavaScript(script);
+		} else {
+			overflowPopup.setWidth(null);
+		}
+	}
+
+	private void enableShowMore() {
+		this.appendChild(btnShowMore);
+        btnShowMore.setDisabled(false);
+        btnShowMore.setVisible(true);                
+		overflowPopup = new Popup();
+		overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+			if (!oe.isOpen()) {
+				overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
 			}
-			if (overflows.size() >= cnt) {
-				String script = "var e = jq('#" + getUuid() + "');";
-				script = script + "var b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
-				script = script + "b.setWidth(e.css('width'));";
-				Clients.evalJavaScript(script);
-			} else {
-				overflowPopup.setWidth(null);
+		});
+		appendChild(overflowPopup);
+		populateOverflowPopup();
+	}
+
+	private void onShowMore() {
+		Long ts = (Long) overflowPopup.removeAttribute("popup.close");
+		if (ts != null) {
+			if (System.currentTimeMillis() - ts.longValue() < 500) {
+				return;
 			}
 		}
+		overflowPopup.open(btnShowMore, "after_end");
+	}
+	
+	private void createOverflowButton() {
+		overflowButton = new A();
+		overflowButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowMore"));
+		overflowButton.setIconSclass("z-icon-ShowMore");
+		overflowButton.setSclass("font-icon-toolbar-button toolbar-button mobile-overflow-link");
+		appendChild(overflowButton);
+		overflowPopup = new Popup();
+		overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+			if (!oe.isOpen()) {
+				overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
+			}
+		});
+		appendChild(overflowPopup);
+		overflowButton.addEventListener(Events.ON_CLICK, e -> {
+			Long ts = (Long) overflowPopup.removeAttribute("popup.close");
+			if (ts != null) {
+				if (System.currentTimeMillis() - ts.longValue() < 500) {
+					return;
+				}
+			}
+			overflowPopup.open(overflowButton, "after_end");
+		});
 	}
 	
 	public void onPostAfterSize() {
@@ -1186,14 +1148,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	
     public void setPressed(String buttonName, boolean pressed) {
     	getButton(buttonName).setPressed(pressed);
-    	if (menuItems.get(getButton(buttonName)) != null) {
-    		if (pressed)
-    			menuItems.get(getButton(buttonName)).setSclass("z-toolbarbutton-checked font-icon-menuitem");
-    		else {
-    			menuItems.get(getButton(buttonName)).setClass("");
-    			menuItems.get(getButton(buttonName)).setClass("font-icon-menuitem z-menu-item");
-    		}
-    	}
     }
 
 	/**
@@ -1225,6 +1179,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	       			setSelectedUserQuery(AD_UserQuery_ID);
 	       	}
         }
+        fQueryName.appendItem(m_sNew, 0);
         if (AD_UserQuery_ID <= 0 || fQueryName.getItemCount() <= 1 
         		|| fQueryName.getSelectedItem() == null)
         	fQueryName.setSelectedIndex(0);

@@ -33,7 +33,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Random;
@@ -992,7 +991,6 @@ public class DB_Oracle implements AdempiereDatabase
             Text1   NVARCHAR2(2000) NULL,
             Text2   VARCHAR2(2000)  NULL
         );
-        **/
         try
         {
             String myString1 = "123456789 12345678";
@@ -1007,13 +1005,13 @@ public class DB_Oracle implements AdempiereDatabase
             System.out.println(Util.size(myString.toString()));
             //
             Connection conn2 = db.getCachedConnection(cc, true, Connection.TRANSACTION_READ_COMMITTED);
-            /** **/
+            //
             PreparedStatement pstmt = conn2.prepareStatement
                 ("INSERT INTO X_Test(Text1, Text2) values(?,?)");
             pstmt.setString(1, myString.toString()); // NVARCHAR2 column
             pstmt.setString(2, myString.toString()); // VARCHAR2 column
             System.out.println(pstmt.executeUpdate());
-            /** **/
+            //
             Statement stmt = conn2.createStatement();
             System.out.println(stmt.executeUpdate
                 ("INSERT INTO X_Test(Text1, Text2) values('" + myString + "','" + myString + "')"));
@@ -1024,6 +1022,7 @@ public class DB_Oracle implements AdempiereDatabase
         }
         db.cleanup();
         System.out.println("--------------------------------------------------");
+        **/
         System.exit(0);
 
 

@@ -17,11 +17,14 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Price List Version Model
@@ -29,12 +32,12 @@ import org.compiere.util.TimeUtil;
  *  @author Jorg Janke
  *  @version $Id: MPriceListVersion.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MPriceListVersion extends X_M_PriceList_Version
+public class MPriceListVersion extends X_M_PriceList_Version implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3607494586575155059L;
+	private static final long serialVersionUID = 1625884461739604147L;
 
 	/**
 	 * 	Standard Constructor
@@ -76,10 +79,43 @@ public class MPriceListVersion extends X_M_PriceList_Version
 		setM_PriceList_ID(pl.getM_PriceList_ID());
 	}	//	MPriceListVersion
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPriceListVersion(MPriceListVersion copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPriceListVersion(Properties ctx, MPriceListVersion copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPriceListVersion(Properties ctx, MPriceListVersion copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_pl = null;
+		this.m_pp = copy.m_pp != null ? Arrays.stream(copy.m_pp).map(e -> {return new MProductPrice(ctx, e, trxName);}).toArray(MProductPrice[]::new) : null;
+	}
+	
 	/** Product Prices			*/
 	private MProductPrice[] m_pp = null;
 	/** Price List				*/
-	private MPriceList		m_pl = null;
+	protected MPriceList		m_pl = null;
 
 	/**
 	 * 	Get Parent PriceList
@@ -88,7 +124,12 @@ public class MPriceListVersion extends X_M_PriceList_Version
 	public MPriceList getPriceList()
 	{
 		if (m_pl == null && getM_PriceList_ID() != 0)
-			m_pl = MPriceList.get (getCtx(), getM_PriceList_ID(), null);
+		{
+			if (is_Immutable())
+				m_pl = MPriceList.get (getCtx(), getM_PriceList_ID(), null);
+			else
+				m_pl = MPriceList.getCopy(getCtx(), getM_PriceList_ID(), get_TrxName());
+		}
 		return m_pl;
 	}	//	PriceList
 	
@@ -103,6 +144,8 @@ public class MPriceListVersion extends X_M_PriceList_Version
 		if (m_pp != null && !refresh)
 			return m_pp;
 		m_pp = getProductPrice(null);
+		if (m_pp != null && m_pp.length > 0 && is_Immutable())
+			Arrays.stream(m_pp).forEach(e -> e.markImmutable());
 		return m_pp;
 	}	//	getProductPrice
 	
@@ -152,4 +195,18 @@ public class MPriceListVersion extends X_M_PriceList_Version
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	public MPriceListVersion markImmutable() 
+	{
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_pl != null)
+			m_pl.markImmutable();
+		if (m_pp != null && m_pp.length > 0)
+			Arrays.stream(m_pp).forEach(e -> e.markImmutable());
+		return this;
+	}
+
 }	//	MPriceListVersion

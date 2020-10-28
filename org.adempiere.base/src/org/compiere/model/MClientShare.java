@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * 	Client Share Info
@@ -142,6 +143,38 @@ public class MClientShare extends X_AD_ClientShare
 		super (ctx, rs, trxName);
 	}	//	MClientShare
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MClientShare(MClientShare copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MClientShare(Properties ctx, MClientShare copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MClientShare(Properties ctx, MClientShare copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_table = copy.m_table != null ? new MTable(ctx, copy.m_table, trxName) : null;
+	}
+	
 	/**	The Table				*/
 	private MTable		m_table = null;
 	
@@ -170,7 +203,7 @@ public class MClientShare extends X_AD_ClientShare
 	public MTable getTable()
 	{
 		if (m_table == null)
-			m_table = MTable.get(getCtx(), getAD_Table_ID());
+			m_table = MTable.getCopy(getCtx(), getAD_Table_ID(), get_TrxName());
 		return m_table;
 	}	//	getTable
 	

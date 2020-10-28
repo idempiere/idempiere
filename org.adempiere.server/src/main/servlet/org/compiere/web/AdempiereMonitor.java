@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.servlet.ServletConfig;
@@ -114,6 +116,8 @@ public class AdempiereMonitor extends HttpServlet
 	private static p				m_message = null;
 	
 	private volatile static ArrayList<File>	m_dirAccessList = null;
+
+	private ScheduledFuture<?> serverMgrFuture = null;
 	
 	/**
 	 * 	Get
@@ -201,7 +205,7 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		
 		if (log.isLoggable(Level.INFO)) log.info ("ServerID=" + serverID);
-		ServerInstance server = m_serverMgr.getServerInstance(serverID);
+		ServerInstance server = getServerManager().getServerInstance(serverID);
 		if (server == null)
 		{
 			m_message = new p();
@@ -272,7 +276,7 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		
 		if (log.isLoggable(Level.INFO)) log.info ("ServerID=" + serverID);
-		ServerInstance server = m_serverMgr.getServerInstance(serverID);
+		ServerInstance server = getServerManager().getServerInstance(serverID);
 		if (server == null)
 		{
 			m_message = new p();
@@ -281,7 +285,7 @@ public class AdempiereMonitor extends HttpServlet
 			return false;
 		}
 		//
-		String error = m_serverMgr.runNow(serverID);
+		String error = getServerManager().runNow(serverID);
 		if (!Util.isEmpty(error, true))
 		{
 			m_message = new p();
@@ -317,9 +321,9 @@ public class AdempiereMonitor extends HttpServlet
 			{
 				if (start)
 				{	
-					ok = m_serverMgr.startAll()==null;
+					ok = getServerManager().startAll()==null;
 				} else{					
-					ok = m_serverMgr.stopAll()==null;
+					ok = getServerManager().stopAll()==null;
 				}
 					
 				m_message.addElement("All");
@@ -328,11 +332,11 @@ public class AdempiereMonitor extends HttpServlet
 			{
 				if (reload) 
 				{
-					ok=m_serverMgr.reload()==null;
+					ok=getServerManager().reload()==null;
 					this.createSummaryPage(request, response,true);
 					m_dirAccessList = getDirAcessList();
 				} else {
-					 ServerInstance server = m_serverMgr.getServerInstance(serverID);
+					 ServerInstance server = getServerManager().getServerInstance(serverID);
 					if (server == null) {
 						m_message = new p();
 						m_message.addElement(new strong("Server not found: "));
@@ -340,9 +344,9 @@ public class AdempiereMonitor extends HttpServlet
 						return;
 					} else {
 						if (start)
-							ok = m_serverMgr.start(serverID)==null;
+							ok = getServerManager().start(serverID)==null;
 						else
-							ok = m_serverMgr.stop(serverID)==null;
+							ok = getServerManager().stop(serverID)==null;
 						m_message.addElement(server.getModel().getName());
 					}
 				}
@@ -676,16 +680,16 @@ public class AdempiereMonitor extends HttpServlet
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Manager"));
-		line.addElement(new td().addElement(WebEnv.getCellContent(m_serverMgr.getDescription())));
+		line.addElement(new td().addElement(WebEnv.getCellContent(getServerManager().getDescription())));
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Start - Elapsed"));
-		line.addElement(new td().addElement(WebEnv.getCellContent(m_serverMgr.getStartTime())
-			+ " - " + TimeUtil.formatElapsed(m_serverMgr.getStartTime())));
+		line.addElement(new td().addElement(WebEnv.getCellContent(getServerManager().getStartTime())
+			+ " - " + TimeUtil.formatElapsed(getServerManager().getStartTime())));
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Servers"));
-		line.addElement(new td().addElement(WebEnv.getCellContent(createServerCountMessage(m_serverMgr.getServerCount()))));
+		line.addElement(new td().addElement(WebEnv.getCellContent(createServerCountMessage(getServerManager().getServerCount()))));
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Last Updated"));
@@ -754,7 +758,7 @@ public class AdempiereMonitor extends HttpServlet
 		//	***** Server Links *****			
 		bb.addElement(new hr());
 		para = new p();
-		ServerInstance[] servers = m_serverMgr.getServerInstances();		
+		ServerInstance[] servers = getServerManager().getServerInstances();		
 		for (int i = 0; i < servers.length; i++)
 		{
 			if (i > 0)
@@ -946,16 +950,16 @@ public class AdempiereMonitor extends HttpServlet
 
 		writer.println("\t<server-manager>");
 		writer.print("\t\t<description>");
-		writer.print(m_serverMgr.getDescription());
+		writer.print(getServerManager().getDescription());
 		writer.println("</description>");
 		writer.print("\t\t<start-time>");
-		writer.print(m_serverMgr.getStartTime());
+		writer.print(getServerManager().getStartTime());
 		writer.println("</start-time>");
 		writer.print("\t\t<server-count>");
-		writer.print(m_serverMgr.getServerCount());
+		writer.print(getServerManager().getServerCount());
 		writer.println("</server-count>");
 		
-		ServerInstance[] servers = m_serverMgr.getServerInstances();		
+		ServerInstance[] servers = getServerManager().getServerInstances();		
 		for (int i = 0; i < servers.length; i++)
 		{
 			ServerInstance server = servers[i];
@@ -1276,15 +1280,50 @@ public class AdempiereMonitor extends HttpServlet
 		WebEnv.initWeb(config);
 		log.info ("");
 		
-		//always create the local server manager instance
-		m_serverMgr = AdempiereServerMgr.get();
+		// initial Wait (default to 10 seconds) to give cluster service time to start first
+		final int initialWaitSeconds = MSysConfig.getIntValue(MSysConfig.MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS, 10);
+		serverMgrFuture = Adempiere.getThreadPoolExecutor().schedule(() -> {
+			int maxSecondsToWait = MSysConfig.getIntValue(MSysConfig.MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS, 180);			
+			int totalWaitSeconds = initialWaitSeconds;
+			//check every 5 seconds (until maxSecondsToWait)
+			int waitSeconds = 5;
+			while (ClusterServerMgr.getClusterService() == null)
+			{
+				try {
+					Thread.sleep(waitSeconds * 1000);
+				} catch (InterruptedException e) {
+					break;
+				}
+				if (Thread.interrupted())
+					break;
+				totalWaitSeconds += waitSeconds;
+				if (totalWaitSeconds >= maxSecondsToWait) {
+					log.warning("Cluster Service did not start after " + totalWaitSeconds + " seconds");
+					break;
+				}
+			}
+			
+			//always create the local server manager instance
+			m_serverMgr = AdempiereServerMgr.get();
+			
+			//switch to cluster manager if cluster service is available
+			if (ClusterServerMgr.getClusterService() != null)
+				m_serverMgr = ClusterServerMgr.getInstance();
+		}, initialWaitSeconds, TimeUnit.SECONDS);
 		
-		//switch to cluster manager if cluster service is available
-		if (ClusterServerMgr.getClusterService() != null)
-			m_serverMgr = ClusterServerMgr.getInstance();
-				
 		m_dirAccessList = getDirAcessList();
 	}	//	init
+	
+	private IServerManager getServerManager()
+	{
+		if (!serverMgrFuture.isDone() && !serverMgrFuture.isCancelled())
+		{
+			try {
+				serverMgrFuture.get();
+			} catch (Exception e) {}
+		}
+		return m_serverMgr;
+	}
 	
 	/**
 	 * 	Destroy
@@ -1292,6 +1331,11 @@ public class AdempiereMonitor extends HttpServlet
 	public void destroy ()
 	{
 		log.info ("destroy");
+		if (!serverMgrFuture.isDone() && !serverMgrFuture.isCancelled())
+		{
+			serverMgrFuture.cancel(true);
+		}
+		serverMgrFuture = null;
 		m_serverMgr = null;
 		m_dirAccessList = null;
 	}	//	destroy

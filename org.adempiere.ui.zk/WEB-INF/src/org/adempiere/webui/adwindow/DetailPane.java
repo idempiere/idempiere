@@ -24,6 +24,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.compiere.model.MToolBarButton;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -72,6 +73,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	
 	private static final String BTN_QUICK_FORM_ID = "BtnQuickForm";
 
+	private static final String BTN_CUSTOMIZE_ID = "BtnCustomize";
+	
 	private static final String TABBOX_ONSELECT_ATTRIBUTE = "detailpane.tabbox.onselect";
 
 	public static final String ON_POST_SELECT_TAB_EVENT = "onPostSelectTab";
@@ -80,6 +83,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 	private static final String STATUS_ERROR_ATTRIBUTE = "status.error";
 
+	private static final String CUSTOMIZE_IMAGE = "images/Customize16.png";
 	private static final String DELETE_IMAGE = "images/Delete16.png";
 	private static final String EDIT_IMAGE = "images/EditRecord16.png";
 	private static final String NEW_IMAGE = "images/New16.png";
@@ -378,6 +382,17 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")));
 		buttons.put(BTN_QUICK_FORM_ID.substring(3, BTN_QUICK_FORM_ID.length()), button);
 		
+		// ADD Customize grid button
+		button = new ToolBarButton();
+		if (ThemeManager.isUseFontIconForImage())
+			button.setIconSclass("z-icon-Customize");
+		else
+			button.setImage(ThemeManager.getThemeResource(CUSTOMIZE_IMAGE));
+		button.setId(BTN_CUSTOMIZE_ID);
+		button.addEventListener(Events.ON_CLICK, e -> onCustomize(e));
+		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Customize")));
+		buttons.put(BTN_CUSTOMIZE_ID.substring(3, BTN_CUSTOMIZE_ID.length()), button);
+
 		MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("D", null);
 		for (MToolBarButton toolbarButton : officialButtons) {
 			if ( !toolbarButton.isActive() ) {
@@ -433,6 +448,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		messageContainer.setSclass("adwindow-detailpane-message");
 		messageContainer.setId("messages");
 		
+		toolbar.appendChild(new Space());
 		toolbar.appendChild(messageContainer);
 		toolbar.setSclass("adwindow-detailpane-toolbar");
 		ZKUpdateUtil.setVflex(toolbar, "0");
@@ -453,6 +469,13 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		}
 	}
 	
+	protected void onCustomize(Event e) {
+		if (getSelectedADTabpanel() instanceof ADTabpanel) {
+			ADTabpanel tabPanel = (ADTabpanel) getSelectedADTabpanel();
+			CustomizeGridViewDialog.onCustomize(tabPanel);
+		}
+	}
+
 	protected void onProcess(Component button) {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
 		ADTabpanel adtab = (ADTabpanel) getSelectedADTabpanel();

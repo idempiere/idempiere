@@ -27,7 +27,10 @@ import org.compiere.model.GridField;
  */
 public class WPasswordEditor extends WStringEditor
 {
-
+	/**
+	 * 
+	 * @param gridField
+	 */
     public WPasswordEditor(GridField gridField)
     {
         super(gridField);
@@ -35,9 +38,25 @@ public class WPasswordEditor extends WStringEditor
         setChangeEventWhenEditing (true);
     }
 
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     */
     public WPasswordEditor(GridField gridField, boolean tableEditor)
     {
-    	super(gridField, tableEditor);
+    	this(gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WPasswordEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+    {
+    	super(gridField, tableEditor, editorConfiguration);
     	super.setTypePassword(true);
     	setChangeEventWhenEditing (false);
     }

@@ -121,7 +121,7 @@ public class MMovementLine extends X_M_MovementLine
 	public MProduct getProduct()
 	{
 		if (getM_Product_ID() != 0)
-			return MProduct.get(getCtx(), getM_Product_ID());
+			return MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return null;
 	}	//	getProduct
 	

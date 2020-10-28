@@ -270,7 +270,7 @@ public class WFEditor extends ADForm {
 
 	private void load(int workflowId, boolean reread) {
 		//	Get Workflow
-		m_wf = MWorkflow.get(Env.getCtx(), workflowId);
+		m_wf = MWorkflow.getCopy(Env.getCtx(), workflowId, (String)null);
 		m_workflowId = workflowId;
 		nodeContainer = new WFNodeContainer();
 		nodeContainer.setWorkflow(m_wf);

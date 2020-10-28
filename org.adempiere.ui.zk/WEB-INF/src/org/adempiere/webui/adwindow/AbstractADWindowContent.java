@@ -121,8 +121,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Column;
-import org.zkoss.zul.Columns;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
@@ -729,7 +727,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	m_findCancelled = false;
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();
-            FindWindow findWindow = new FindWindow(curWindowNo,
+            FindWindow findWindow = new FindWindow(curWindowNo, mTab.getTabNo(),
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
                     where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
            	tabFindWindowHashMap.put(mTab, findWindow);
@@ -1148,7 +1146,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		form.setMaximizable(true);
 		form.setMaximized(true);
 		form.setPosition("center");
-		ZkCssHelper.appendStyle(form, "min-width: 500px; min-height: 400px; width: 900px; height:550px; z-index: 900;");
+		ZKUpdateUtil.setWindowHeightX(form, 550);
+		ZKUpdateUtil.setWindowWidthX(form, 900);
+		ZkCssHelper.appendStyle(form, "z-index: 900;");
 
 		AEnv.showWindow(form);
 	} // onQuickForm
@@ -3583,22 +3583,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	public void onCustomize() {
 		ADTabpanel tabPanel = (ADTabpanel) getADTab().getSelectedTabpanel();
-		Columns columns = tabPanel.getGridView().getListbox().getColumns();
-		List<Component> columnList = columns.getChildren();
-		GridField[] fields = tabPanel.getGridView().getFields();
-		Map<Integer, String> columnsWidth = new HashMap<Integer, String>();
-		ArrayList<Integer> gridFieldIds = new ArrayList<Integer>();
-		for (int i = 0; i < fields.length; i++) {
-			// 2 is offset of num of column in grid view and actual data fields.
-			// in grid view, add two function column, indicator column and selection (checkbox) column
-			// @see GridView#setupColumns
-			Column column = (Column) columnList.get(i+2);
-			String width = column.getWidth();
-			columnsWidth.put(fields[i].getAD_Field_ID(), width);
-			gridFieldIds.add(fields[i].getAD_Field_ID());
-
-		}
-		CustomizeGridViewDialog.showCustomize(0, adTabbox.getSelectedGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView(), null, false);
+		CustomizeGridViewDialog.onCustomize(tabPanel);
 	}
 
 	/**
@@ -3641,7 +3626,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
 			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
 		} else {
-			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
+			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 

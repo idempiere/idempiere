@@ -73,9 +73,24 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	private static final int MAX_AUTO_COMPLETE_ROWS = 50;
 	private boolean onselecting;
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WChosenboxSearchEditor (GridField gridField)
 	{
-		super(new ChosenSearchBox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WChosenboxSearchEditor (GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new ChosenSearchBox(), gridField, tableEditor, editorConfiguration);
 
 		lookup = gridField.getLookup();
 
