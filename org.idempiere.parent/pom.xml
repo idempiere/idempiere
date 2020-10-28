@@ -14,7 +14,7 @@
 		<tycho.version>2.0.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jp.version>6.11.0</jp.version>
+		<jp.version>6.15.0</jp.version>
 		<zk.version>9.5.0.1</zk.version>
 		<zk.javassist.src.version>3.23.1-GA</zk.javassist.src.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
