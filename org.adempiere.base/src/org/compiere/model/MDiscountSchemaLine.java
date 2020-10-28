@@ -57,6 +57,46 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine
 	}	//	MDiscountSchemaLine
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MDiscountSchemaLine(MDiscountSchemaLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDiscountSchemaLine(Properties ctx, MDiscountSchemaLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDiscountSchemaLine(Properties ctx, MDiscountSchemaLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+
+	@Override
+	public MDiscountSchemaLine markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
+  /**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
