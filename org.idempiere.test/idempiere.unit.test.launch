@@ -133,7 +133,7 @@
         <setEntry value="java_cup-runtime@default:default"/>
         <setEntry value="java_cup@default:default"/>
         <setEntry value="javaewah@default:default"/>
-        <setEntry value="javax.annotation-api@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="javax.annotation@default:default"/>
         <setEntry value="javax.el@default:default"/>
         <setEntry value="javax.enterprise.cdi-api@default:default"/>

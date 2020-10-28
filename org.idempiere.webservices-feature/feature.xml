@@ -50,7 +50,7 @@
       <import plugin="org.springframework.spring-jcl" version="5.1.1" match="greaterOrEqual"/>
       <import plugin="org.apache.servicemix.bundles.spring-web"/>
       <import plugin="org.apache.cxf.cxf-rt-rs-extension-providers" version="3.1.17" match="greaterOrEqual"/>
-      <import plugin="javax.annotation-api" version="1.3.2" match="greaterOrEqual"/>
+      <import plugin="jakarta.annotation-api" version="1.3.2" match="greaterOrEqual"/>
       <import plugin="org.glassfish.jersey.core.jersey-common" version="2.22.1" match="greaterOrEqual"/>
       <import plugin="org.apache.cxf.cxf-rt-rs-service-description" version="3.3.1" match="greaterOrEqual"/>
       <import plugin="org.glassfish.hk2.osgi-resource-locator" version="2.5.0" match="greaterOrEqual"/>
@@ -306,7 +306,7 @@
          id="org.glassfish.hk2.osgi-resource-locator"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.3"
          unpack="false"/>
 
    <plugin
