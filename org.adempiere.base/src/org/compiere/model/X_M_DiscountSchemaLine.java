@@ -33,7 +33,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200623L;
+	private static final long serialVersionUID = 20201027L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -44,6 +44,8 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 			setC_ConversionType_ID (0);
 			setConversionDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
+			setIsIgnoreIsCurrentVendor (false);
+// N
 			setLimit_AddAmt (Env.ZERO);
 			setLimit_Base (null);
 // X
@@ -236,6 +238,30 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public String getGroup2 () 
 	{
 		return (String)get_Value(COLUMNNAME_Group2);
+	}
+
+	/** Set Ignore Current Vendor Flag.
+		@param IsIgnoreIsCurrentVendor 
+		take all PO prices into account
+	  */
+	public void setIsIgnoreIsCurrentVendor (boolean IsIgnoreIsCurrentVendor)
+	{
+		set_Value (COLUMNNAME_IsIgnoreIsCurrentVendor, Boolean.valueOf(IsIgnoreIsCurrentVendor));
+	}
+
+	/** Get Ignore Current Vendor Flag.
+		@return take all PO prices into account
+	  */
+	public boolean isIgnoreIsCurrentVendor () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsIgnoreIsCurrentVendor);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Limit price Surcharge Amount.
@@ -895,5 +921,22 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public String getStd_Rounding () 
 	{
 		return (String)get_Value(COLUMNNAME_Std_Rounding);
+	}
+
+	/** Set Partner Category.
+		@param VendorCategory 
+		Product Category of the Business Partner
+	  */
+	public void setVendorCategory (String VendorCategory)
+	{
+		set_Value (COLUMNNAME_VendorCategory, VendorCategory);
+	}
+
+	/** Get Partner Category.
+		@return Product Category of the Business Partner
+	  */
+	public String getVendorCategory () 
+	{
+		return (String)get_Value(COLUMNNAME_VendorCategory);
 	}
 }

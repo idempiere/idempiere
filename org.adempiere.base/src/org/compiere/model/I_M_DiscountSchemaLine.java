@@ -178,6 +178,19 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public boolean isActive();
 
+    /** Column name IsIgnoreIsCurrentVendor */
+    public static final String COLUMNNAME_IsIgnoreIsCurrentVendor = "IsIgnoreIsCurrentVendor";
+
+	/** Set Ignore Current Vendor Flag.
+	  * take all PO prices into account
+	  */
+	public void setIsIgnoreIsCurrentVendor (boolean IsIgnoreIsCurrentVendor);
+
+	/** Get Ignore Current Vendor Flag.
+	  * take all PO prices into account
+	  */
+	public boolean isIgnoreIsCurrentVendor();
+
     /** Column name Limit_AddAmt */
     public static final String COLUMNNAME_Limit_AddAmt = "Limit_AddAmt";
 
@@ -552,4 +565,17 @@ public interface I_M_DiscountSchemaLine
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name VendorCategory */
+    public static final String COLUMNNAME_VendorCategory = "VendorCategory";
+
+	/** Set Partner Category.
+	  * Product Category of the Business Partner
+	  */
+	public void setVendorCategory (String VendorCategory);
+
+	/** Get Partner Category.
+	  * Product Category of the Business Partner
+	  */
+	public String getVendorCategory();
 }

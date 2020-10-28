@@ -56,4 +56,17 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine
 		super(ctx, rs, trxName);
 	}	//	MDiscountSchemaLine
 
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (getC_BPartner_ID() == 0)
+			setIsIgnoreIsCurrentVendor(false);
+
+		return true;
+	}	//	beforeSave
+	
 }	//	MDiscountSchemaLine
