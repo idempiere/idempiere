@@ -26,7 +26,7 @@ html,body {
 .tablet-scrolling {
 	-webkit-overflow-scrolling: touch;
 }
-.mobile [class*="z-"]:not([class*="z-icon-"]) {
+.mobile [class*="z-"] {
     font-size: 16px;
 }
 
