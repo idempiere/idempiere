@@ -195,6 +195,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		InfoPanel info = InfoManager.create(0, tableName, tableName + "_ID", "", false, "", false);
 		info.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		AEnv.showWindow(info);
+		info.setFocus(true);
 	}	// showPanel
 
 	/** Window Width                */

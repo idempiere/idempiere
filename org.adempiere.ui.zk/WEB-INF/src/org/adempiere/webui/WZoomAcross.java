@@ -34,6 +34,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Popup;
 
 /**
  *	Application Zoom Across Launcher.
@@ -89,7 +90,17 @@ public class WZoomAcross
 			m_popup.appendChild(menuItem);  // Added
 		}
 		m_popup.setStyle("overflow: auto;max-height: 80%;");
-		m_popup.setPage(invoker.getPage());
+		Popup popup = LayoutUtils.findPopup(invoker);
+		if (popup != null)
+		{
+			popup.appendChild(m_popup);
+		}
+		else
+		{
+			m_popup.setPage(invoker.getPage());
+			LayoutUtils.autoDetachOnClose(m_popup);
+		}
+		
 		m_popup.open(invoker, "after_start");
 	}
 
