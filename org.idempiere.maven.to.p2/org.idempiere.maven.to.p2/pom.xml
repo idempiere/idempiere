@@ -273,7 +273,8 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>org.atmosphere:atmosphere-runtime:jar:2.5.15</id>
+											<!--to get source, binary will be overider later -->
+											<id>org.atmosphere:atmosphere-runtime:jar:2.6.4</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
@@ -1366,6 +1367,23 @@
 							<url>${url.file.srv}/extra.jar/com.diffplug.osgi.extension.sun.misc_0.0.0.jar</url>
 							<unpack>false</unpack>
 							<outputFileName>com.diffplug.osgi.extension.sun.misc_0.0.0.jar</outputFileName>
+							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
+							<retries>5</retries>
+							<overwrite>true</overwrite>
+							<skipCache>true</skipCache>
+						</configuration>
+					</execution>
+					<execution>
+						<!--https://raw.githubusercontent.com/idempiere/binary.file/master/extra.jar/atmosphere/note-->
+						<id>download-atmosphere-bundle</id>
+						<phase>package</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>${url.file.srv}/extra.jar/atmosphere/atmosphere-runtime-2.6.4.jar</url>
+							<unpack>false</unpack>
+							<outputFileName>org.atmosphere.runtime_2.6.4.jar</outputFileName>
 							<outputDirectory>${project.build.directory}/repository/plugins</outputDirectory>
 							<retries>5</retries>
 							<overwrite>true</overwrite>
