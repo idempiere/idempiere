@@ -69,11 +69,5 @@
    <feature url="features/org.eclipse.equinox.server.p2_1.10.0.v20200813-0739.jar" id="org.eclipse.equinox.server.p2" version="1.10.0.v20200813-0739">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.equinox.compendium.sdk_3.20.300.v20200810-0747.jar" id="org.eclipse.equinox.compendium.sdk" version="3.20.300.v20200810-0747">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.equinox.serverside.sdk_3.20.0.v20200828-1034.jar" id="org.eclipse.equinox.serverside.sdk" version="3.20.0.v20200828-1034">
-      <category name="idempiere.core"/>
-   </feature>
    <category-def name="idempiere.core" label="idempiere core"/>
 </site>
