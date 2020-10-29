@@ -511,7 +511,6 @@
         <setEntry value="org.springframework.spring-jcl@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
         <setEntry value="org.w3c.css.sac@default:default"/>
-        <setEntry value="org.w3c.dom.events@default:default"/>
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg.patch@default:false"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>

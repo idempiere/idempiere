@@ -798,6 +798,12 @@
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>
+										<artifact>
+											<!--for REST, it's remove from orbit of eclipse 17-->
+											<id>org.glassfish.jersey.bundles.repackaged:jersey-guava:2.22.1</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
 									</artifacts>
 								</feature>
 								<feature>
@@ -953,8 +959,8 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<!--for REST, it's remove from orbit of eclipse 17-->
-											<id>org.glassfish.jersey.bundles.repackaged:jersey-guava:2.22.1</id>
+											<!--IDEMPIERE-4504-->
+											<id>org.w3c.dom:org.w3c.dom.smil:1.0.0.v200806040011</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

@@ -27,7 +27,7 @@
          id="org.adempiere.report.jasper.library"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="7.1.0.qualifier"
          fragment="true"/>
 
    <plugin
@@ -117,7 +117,7 @@
          id="org.w3c.dom.smil"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v200806040011"
          unpack="false"/>
 
    <plugin
@@ -304,13 +304,6 @@
 
    <plugin
          id="json"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.events"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -25,7 +25,7 @@ echo ===================================
 TELNET_PORT=${TELNET_PORT:-12612}
 
 
-VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.w3c.dom.events
+VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 -Dosgi.compatibility.bootdelegation=true
 -Djetty.home=$BASE/jettyhome
 -Djetty.base=$BASE/jettyhome

@@ -972,8 +972,6 @@
 		<unit id="org.w3c.css.sac.source" version="1.3.1.v200903091627"/>
 		<unit id="org.w3c.dom.events" version="3.0.0.draft20060413_v201105210656"/>
 		<unit id="org.w3c.dom.events.source" version="3.0.0.draft20060413_v201105210656"/>
-		<unit id="org.w3c.dom.smil" version="1.0.1.v200903091627"/>
-		<unit id="org.w3c.dom.smil.source" version="1.0.1.v200903091627"/>
 		<unit id="org.w3c.dom.svg" version="1.1.0.v201011041433"/>
 		<unit id="org.w3c.dom.svg.source" version="1.1.0.v201011041433"/>
 		<unit id="org.xbill.dns" version="2.0.8.v201112050911"/>
@@ -1071,14 +1069,14 @@
 		<unit id="com.fasterxml.woodstox.woodstox-core.source" version="6.0.1"/>
 		<unit id="com.github.relaxng.Datatype" version="2011.1.0"/>
 		<unit id="com.github.relaxng.Datatype.source" version="2011.1.0"/>
-		<unit id="com.google.zxing.core" version="3.2.1"/>
-		<unit id="com.google.zxing.core.source" version="3.2.1"/>
+		<unit id="com.google.zxing.core" version="3.4.0"/>
+		<unit id="com.google.zxing.core.source" version="3.4.0"/>
 		<unit id="com.ibm.icu" version="67.1.0"/>
 		<unit id="com.ibm.icu.source" version="67.1.0"/>
 		<unit id="com.itextpdf" version="5.5.13.2"/>
 		<unit id="com.itextpdf.source" version="5.5.13.2"/>
 		<unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1_b02"/>
-		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js7_b01"/>
+		<unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js8_b01"/>
 		<unit id="com.sun.mail.gimap.source" version="1.6.5"/>
 		<unit id="com.sun.mail.imap.source" version="1.6.5"/>
 		<unit id="com.sun.mail.smtp.source" version="1.6.5"/>
@@ -1137,8 +1135,8 @@
 		<unit id="joda-time.source" version="2.10.8"/>
 		<unit id="json" version="20180813.0.0"/>
 		<unit id="json.source" version="20180813.0.0"/>
-		<unit id="net.sf.jasperreports.engine" version="6.11.0"/>
-		<unit id="net.sf.jasperreports.engine.source" version="6.11.0"/>
+		<unit id="net.sf.jasperreports.engine" version="6.15.0"/>
+		<unit id="net.sf.jasperreports.engine.source" version="6.15.0"/>
 		<unit id="net.sf.supercsv.super-csv" version="2.4.0"/>
 		<unit id="net.sf.supercsv.super-csv.source" version="2.4.0"/>
 		<unit id="org.apache.activemq.activemq-core" version="5.7.0"/>
@@ -1215,16 +1213,16 @@
 		<unit id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec.source" version="1.0.1"/>
 		<unit id="org.apache.neethi" version="3.1.1"/>
 		<unit id="org.apache.neethi.source" version="3.1.1"/>
-		<unit id="org.apache.poi.poi" version="4.1.0"/>
-		<unit id="org.apache.poi.poi-ooxml" version="4.1.0"/>
-		<unit id="org.apache.poi.poi-ooxml-schemas" version="4.1.0"/>
-		<unit id="org.apache.poi.poi-ooxml.source" version="4.1.0"/>
-		<unit id="org.apache.poi.poi.source" version="4.1.0"/>
+		<unit id="org.apache.poi.poi" version="4.1.2"/>
+		<unit id="org.apache.poi.poi-ooxml" version="4.1.2"/>
+		<unit id="org.apache.poi.poi-ooxml-schemas" version="4.1.2"/>
+		<unit id="org.apache.poi.poi-ooxml.source" version="4.1.2"/>
+		<unit id="org.apache.poi.poi.source" version="4.1.2"/>
 		<unit id="org.apache.servicemix.bundles.cglib" version="3.2.6.1"/>
 		<unit id="org.apache.servicemix.bundles.cglib.source" version="3.2.6.1"/>
-		<unit id="org.apache.servicemix.bundles.jaxen" version="1.1.1.2"/>
-		<unit id="org.apache.servicemix.bundles.rhino" version="1.7.6.1"/>
-		<unit id="org.apache.servicemix.bundles.rhino.source" version="1.7.6.1"/>
+		<unit id="org.apache.servicemix.bundles.jaxen" version="1.1.6.1"/>
+		<unit id="org.apache.servicemix.bundles.rhino" version="1.7.11.1"/>
+		<unit id="org.apache.servicemix.bundles.rhino.source" version="1.7.11.1"/>
 		<unit id="org.apache.servicemix.bundles.spring-aop" version="4.3.19.RELEASE_1"/>
 		<unit id="org.apache.servicemix.bundles.spring-aop.source.sources" version="4.3.19.RELEASE_1"/>
 		<unit id="org.apache.servicemix.bundles.spring-beans" version="4.3.19.RELEASE_1"/>
@@ -1418,6 +1416,8 @@
 		<unit id="stax2-api.source" version="4.2.0"/>
 		<unit id="org.glassfish.hk2.osgi-resource-locator" version="1.0.3"/>
 		<unit id="org.glassfish.hk2.osgi-resource-locator.source" version="1.0.3"/>
+		<unit id="org.apache.servicemix.bundles.jaxen.source" version="1.1.6.1"/>
+		<unit id="org.w3c.dom.smil" version="1.0.0.v200806040011"/>
 	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>

@@ -110,7 +110,6 @@
         <setEntry value="org.slf4j.api*1.7.30.v20200204-2150@default:default"/>
         <setEntry value="org.slf4j.binding.nop@default:false"/>
         <setEntry value="org.slf4j.binding.simple@default:false"/>
-        <setEntry value="org.w3c.dom.events@default:default"/>
         <setEntry value="osgi.enterprise@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
