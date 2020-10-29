@@ -69,7 +69,6 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
@@ -482,16 +481,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
             		doOnClick(event);
             	else
             		onShowMore();
-            } else {
-            	if(event.getTarget() instanceof Label) {
-            		Object obj = event.getTarget().getAttribute("button");
-            		if (obj != null && obj instanceof ToolBarButton) {
-            			ToolBarButton btn = (ToolBarButton) obj;
-            			if (!btn.isDisabled()) {
-            				Events.sendEvent(Events.ON_CLICK, btn, null);
-            			}
-            		}
-            	}
             }
         } else if (eventName.equals(Events.ON_CTRL_KEY))
         {
