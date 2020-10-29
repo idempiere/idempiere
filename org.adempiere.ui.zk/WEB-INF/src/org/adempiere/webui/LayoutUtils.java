@@ -37,6 +37,7 @@ import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.LayoutRegion;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Space;
@@ -474,5 +475,32 @@ public final class LayoutUtils {
 	 */
 	public static void addSlideSclass(LayoutRegion region) {
 		region.addEventListener(Events.ON_OPEN, addSlideEventListener);
+	}
+	
+	/**
+	 * find popup ancestor of comp
+	 * @param comp
+	 * @return {@link Popup} if comp or one of its ancestor is Popup
+	 */
+	public static Popup findPopup(Component comp) {
+		Component c = comp;
+		while (c != null) {
+			if (c instanceof Popup)
+				return (Popup) c;
+			c = c.getParent();
+		}
+		return null;
+	}
+
+	/**
+	 * call popup.detach when it is close
+	 * @param popup
+	 */
+	public static void autoDetachOnClose(Popup popup) {
+		popup.addEventListener(Events.ON_OPEN, (OpenEvent e) -> {
+			if (!e.isOpen()) {
+				popup.detach();
+			}
+		});
 	}
 }

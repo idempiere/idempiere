@@ -44,6 +44,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MUserQuery;
 import org.compiere.util.CLogger;
@@ -65,9 +66,13 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
@@ -1066,22 +1071,47 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	private void populateOverflowPopup() {
-		for(ToolBarButton btn : overflows) {
-			overflowPopup.appendChild(btn);
-		}			
-		
-		int cnt = 0;
-		for(Component c : getChildren()) {
-			if (c instanceof ToolBarButton)
-				cnt++;
-		}
-		if (overflows.size() >= cnt) {
-			String script = "var e = jq('#" + getUuid() + "');";
-			script = script + "var b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
-			script = script + "b.setWidth(e.css('width'));";
-			Clients.evalJavaScript(script);
+		boolean vertical = !ClientInfo.isMobile() && MSysConfig.getBooleanValue(MSysConfig.ZK_TOOLBAR_SHOW_MORE_VERTICAL, true, Env.getAD_Client_ID(Env.getCtx()));
+		if (vertical) {
+			Grid grid = new Grid();
+			grid.setHflex("min");
+			grid.setStyle("border:none;");
+			Rows rows = new Rows();
+			rows.setParent(grid);
+			overflowPopup.appendChild(grid);
+			LayoutUtils.addSclass("toolbar-overflow-popup-vertical", overflowPopup);
+			for(ToolBarButton btn : overflows) {
+				Row row = new Row();
+				row.setParent(rows);
+				Cell cell1 = new Cell();
+				cell1.setParent(row);
+				cell1.appendChild(btn);
+				cell1.setStyle("border:none;");
+				String msgValue = btn.getName().substring(BTNPREFIX.length());
+				String msg = Msg.getMsg(Env.getCtx(), msgValue);
+				btn.setLabel(msg);
+				btn.setHflex("1");
+			}
 		} else {
-			overflowPopup.setWidth(null);
+			for(ToolBarButton btn : overflows) {
+				overflowPopup.appendChild(btn);
+			}
+		}
+		
+		if (!vertical) {
+			int cnt = 0;
+			for(Component c : getChildren()) {
+				if (c instanceof ToolBarButton)
+					cnt++;
+			}
+			if (overflows.size() >= cnt) {
+				String script = "var e = jq('#" + getUuid() + "');";
+				script = script + "var b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
+				script = script + "b.setWidth(e.css('width'));";
+				Clients.evalJavaScript(script);
+			} else {
+				overflowPopup.setWidth(null);
+			}
 		}
 	}
 
@@ -1089,12 +1119,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		this.appendChild(btnShowMore);
         btnShowMore.setDisabled(false);
         btnShowMore.setVisible(true);                
-		overflowPopup = new Popup();
-		overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
-			if (!oe.isOpen()) {
-				overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
-			}
-		});
+		newOverflowPopup();
 		appendChild(overflowPopup);
 		populateOverflowPopup();
 	}
@@ -1115,12 +1140,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		overflowButton.setIconSclass("z-icon-ShowMore");
 		overflowButton.setSclass("font-icon-toolbar-button toolbar-button mobile-overflow-link");
 		appendChild(overflowButton);
-		overflowPopup = new Popup();
-		overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
-			if (!oe.isOpen()) {
-				overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
-			}
-		});
+		newOverflowPopup();
 		appendChild(overflowPopup);
 		overflowButton.addEventListener(Events.ON_CLICK, e -> {
 			Long ts = (Long) overflowPopup.removeAttribute("popup.close");
@@ -1130,6 +1150,21 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				}
 			}
 			overflowPopup.open(overflowButton, "after_end");
+		});
+	}
+
+	private void newOverflowPopup() {
+		overflowPopup = new Popup();
+		overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+			if (!oe.isOpen()) {
+				overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
+				Component[] childrens = overflowPopup.getChildren().toArray(new Component[0]);
+				for (Component child : childrens) {
+					if (child instanceof Grid || child instanceof Toolbarbutton)
+						continue;
+					child.detach();
+				}
+			}
 		});
 	}
 	
