@@ -58,6 +58,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Paging;
@@ -798,7 +799,11 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 				gridTab.clearSelection();
-				listbox.invalidate();
+				Center center = findCenter(this);
+				if (center != null)
+					center.invalidate();
+				else
+					this.invalidate();
 			}
 		}
 		else if (event.getTarget() == selectAll)
@@ -830,6 +835,18 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		}
 	}
 
+	private Center findCenter(GridView gridView) {
+		if (gridView == null)
+			return null;
+		Component p = gridView.getParent();
+		while (p != null) {
+			if (p instanceof Center)
+				return (Center)p;
+			p = p.getParent();
+		}
+		return null;
+	}
+	
 	private boolean isAllSelected() {
 		org.zkoss.zul.Rows rows = listbox.getRows();
 		List<Component> childs = rows.getChildren();
@@ -1203,7 +1220,11 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		refresh(gridTab);
 		scrollToCurrentRow();
-		listbox.invalidate();
+		Center center = findCenter(this);
+		if (center != null)
+			center.invalidate();
+		else
+			this.invalidate();
 	}
 
 	/**
