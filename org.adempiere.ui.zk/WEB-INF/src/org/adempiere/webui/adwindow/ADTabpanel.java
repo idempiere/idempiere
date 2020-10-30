@@ -1721,7 +1721,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
 			listPanel.scrollToCurrentRow();
-			listPanel.getListbox().invalidate();
+			listPanel.invalidate();
 		} else {
 			listPanel.deactivate();
 		}
