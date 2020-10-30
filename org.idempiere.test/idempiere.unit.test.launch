@@ -133,7 +133,7 @@
         <setEntry value="java_cup-runtime@default:default"/>
         <setEntry value="java_cup@default:default"/>
         <setEntry value="javaewah@default:default"/>
-        <setEntry value="javax.annotation-api@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="javax.annotation@default:default"/>
         <setEntry value="javax.el@default:default"/>
         <setEntry value="javax.enterprise.cdi-api@default:default"/>
@@ -389,9 +389,6 @@
         <setEntry value="org.eclipse.jdt.junit.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit4.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit5.runtime@default:default"/>
-        <setEntry value="org.eclipse.jetty.alpn.api@default:default"/>
-        <setEntry value="org.eclipse.jetty.alpn.client@default:default"/>
-        <setEntry value="org.eclipse.jetty.alpn.server@default:default"/>
         <setEntry value="org.eclipse.jetty.annotations@default:default"/>
         <setEntry value="org.eclipse.jetty.apache-jsp@default:default"/>
         <setEntry value="org.eclipse.jetty.client@default:default"/>
@@ -400,18 +397,12 @@
         <setEntry value="org.eclipse.jetty.deploy@default:default"/>
         <setEntry value="org.eclipse.jetty.http*9.4.27.v20200227@default:default"/>
         <setEntry value="org.eclipse.jetty.http*9.4.28.v20200408@default:default"/>
-        <setEntry value="org.eclipse.jetty.http2.client.http@default:default"/>
-        <setEntry value="org.eclipse.jetty.http2.client@default:default"/>
-        <setEntry value="org.eclipse.jetty.http2.common@default:default"/>
-        <setEntry value="org.eclipse.jetty.http2.hpack@default:default"/>
-        <setEntry value="org.eclipse.jetty.http2.server@default:default"/>
         <setEntry value="org.eclipse.jetty.io*9.4.27.v20200227@default:default"/>
         <setEntry value="org.eclipse.jetty.io*9.4.28.v20200408@default:default"/>
         <setEntry value="org.eclipse.jetty.jaas@default:default"/>
         <setEntry value="org.eclipse.jetty.jmx@default:default"/>
         <setEntry value="org.eclipse.jetty.jndi@default:default"/>
         <setEntry value="org.eclipse.jetty.osgi-servlet-api@default:default"/>
-        <setEntry value="org.eclipse.jetty.osgi.alpn.fragment@default:false"/>
         <setEntry value="org.eclipse.jetty.osgi.boot.jsp@default:false"/>
         <setEntry value="org.eclipse.jetty.osgi.boot.warurl@default:default"/>
         <setEntry value="org.eclipse.jetty.osgi.boot@default:default"/>
@@ -520,7 +511,6 @@
         <setEntry value="org.springframework.spring-jcl@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
         <setEntry value="org.w3c.css.sac@default:default"/>
-        <setEntry value="org.w3c.dom.events@default:default"/>
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg.patch@default:false"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>

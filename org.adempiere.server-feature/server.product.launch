@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+    <setAttribute key="additional_plugins">
+        <setEntry value="org.adempiere.eclipse.equinox.http.servlet:7.1.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.pipo:7.1.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.server:7.1.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.ui.zk:7.1.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.apache.aries.spifly.dynamic.bundle:1.3.2:default:true:1:true"/>
+        <setEntry value="org.apache.felix.webconsole:4.3.8:default:true:default:true"/>
+        <setEntry value="org.eclipse.core.runtime:3.19.0.v20200724-1004:default:true:default:true"/>
+        <setEntry value="org.eclipse.equinox.cm:1.4.400.v20200422-1833:default:true:default:true"/>
+        <setEntry value="org.eclipse.equinox.common:3.13.0.v20200828-1034:default:true:2:true"/>
+        <setEntry value="org.eclipse.equinox.ds:1.6.200.v20200422-1833:default:true:2:true"/>
+        <setEntry value="org.eclipse.equinox.event:1.5.500.v20200616-0800:default:true:2:true"/>
+        <setEntry value="org.eclipse.equinox.http.registry:1.2.0.v20200614-1851:default:true:default:true"/>
+        <setEntry value="org.eclipse.equinox.simpleconfigurator:1.3.600.v20200721-1308:default:true:1:true"/>
+        <setEntry value="org.eclipse.jetty.apache-jsp:9.4.33.v20201020:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.http:9.4.33.v20201020:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.osgi.boot:9.4.33.v20201020:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.osgi.httpservice:9.4.33.v20201020:default:true:10:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.common:9.4.33.v20201020:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.javax.websocket.server:9.4.33.v20201020:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.javax.websocket:9.4.33.v20201020:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.server:9.4.33.v20201020:default:true:3:true"/>
+        <setEntry value="org.idempiere.felix.webconsole:7.1.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.mortbay.jasper.apache-el:8.5.54:default:true:default:true"/>
+        <setEntry value="org.mortbay.jasper.apache-jsp:8.5.54:default:true:default:true"/>
+    </setAttribute>
     <booleanAttribute key="append.args" value="true"/>
     <stringAttribute key="application" value="org.adempiere.server.application"/>
     <booleanAttribute key="askclear" value="false"/>
@@ -23,17 +49,34 @@
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-exports=java.desktop/sun.awt=ALL-UNNAMED --add-exports=java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED -Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl,org.w3c.dom.events -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-https.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-exports=java.desktop/sun.awt=ALL-UNNAMED --add-exports=java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED -Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-https.xml,etc/jetty-threadpool.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}"/>
     <stringAttribute key="pde.version" value="3.3"/>
     <stringAttribute key="product" value="org.adempiere.server.server_product"/>
     <stringAttribute key="productFile" value="/org.adempiere.server-feature/server.product"/>
+    <setAttribute key="selected_features">
+        <setEntry value="org.adempiere.base.feature:default"/>
+        <setEntry value="org.adempiere.payment.processor.feature:default"/>
+        <setEntry value="org.adempiere.pipo.feature:default"/>
+        <setEntry value="org.adempiere.replication.feature:default"/>
+        <setEntry value="org.adempiere.replication.server.feature:default"/>
+        <setEntry value="org.adempiere.report.jasper.feature:default"/>
+        <setEntry value="org.adempiere.server.feature:default"/>
+        <setEntry value="org.adempiere.ui.zk.feature:default"/>
+        <setEntry value="org.compiere.db.provider.feature:default"/>
+        <setEntry value="org.idempiere.eclipse.platform.feature:default"/>
+        <setEntry value="org.idempiere.felix.webconsole.feature:default"/>
+        <setEntry value="org.idempiere.hazelcast.service.feature:default"/>
+        <setEntry value="org.idempiere.webservices.client.feature:default"/>
+        <setEntry value="org.idempiere.webservices.feature:default"/>
+        <setEntry value="org.idempiere.zk.feature:default"/>
+    </setAttribute>
     <setAttribute key="selected_target_bundles">
         <setEntry value="bcmail@default:default"/>
         <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
         <setEntry value="bctsp@default:default"/>
-        <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+        <setEntry value="com.diffplug.osgi.extension.sun.misc@default:default"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-core@default:default"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-databind@default:default"/>
@@ -45,21 +88,19 @@
         <setEntry value="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider@default:default"/>
         <setEntry value="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider@default:default"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jaxb-annotations@default:default"/>
-        <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema.source"/>
+        <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema.source@default:default"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema@default:default"/>
         <setEntry value="com.fasterxml.woodstox.woodstox-core@default:default"/>
         <setEntry value="com.github.relaxng.Datatype@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
         <setEntry value="com.google.guava@default:default"/>
         <setEntry value="com.google.zxing.core@default:default"/>
-        <setEntry value="com.ibm.icu*64.2.0.v20190507-1337@default:default"/>
+        <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.itextpdf@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.itext@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.istack.commons-runtime@default:default"/>
-        <setEntry value="com.sun.jna.platform@default:default"/>
-        <setEntry value="com.sun.jna@default:default"/>
         <setEntry value="com.sun.mail.gimap@default:default"/>
         <setEntry value="com.sun.mail.imap@default:default"/>
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
@@ -71,14 +112,15 @@
         <setEntry value="com.sun.xml.stream.buffer.streambuffer@default:default"/>
         <setEntry value="com.sun.xml.ws.jaxws-rt@default:default"/>
         <setEntry value="com.sun.xml.ws.policy@default:default"/>
-        <setEntry value="groovy-console@default:false"/>
-        <setEntry value="groovy-datetime@default:false"/>
-        <setEntry value="groovy-json@default:false"/>
-        <setEntry value="groovy-jsr223@default:false"/>
-        <setEntry value="groovy-nio@default:false"/>
-        <setEntry value="groovy-sql@default:false"/>
-        <setEntry value="groovy-xml@default:false"/>
+        <setEntry value="groovy-console@default:default"/>
+        <setEntry value="groovy-datetime@default:default"/>
+        <setEntry value="groovy-json@default:default"/>
+        <setEntry value="groovy-jsr223@default:default"/>
+        <setEntry value="groovy-nio@default:default"/>
+        <setEntry value="groovy-sql@default:default"/>
+        <setEntry value="groovy-xml@default:default"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.jws-api@default:default"/>
         <setEntry value="jakarta.mail.api@default:default"/>
         <setEntry value="jakarta.persistence-api@default:default"/>
@@ -86,7 +128,6 @@
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.soap-api@default:default"/>
         <setEntry value="jakarta.xml.ws-api@default:default"/>
-        <setEntry value="javax.annotation-api@default:default"/>
         <setEntry value="javax.enterprise.cdi-api@default:default"/>
         <setEntry value="javax.inject@default:default"/>
         <setEntry value="javax.interceptor-api@default:default"/>
@@ -139,7 +180,7 @@
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
-        <setEntry value="org.apache.felix.scr@1:true"/>
+        <setEntry value="org.apache.felix.scr@default:default"/>
         <setEntry value="org.apache.felix.webconsole@default:true"/>
         <setEntry value="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
@@ -204,9 +245,8 @@
         <setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
         <setEntry value="org.eclipse.ecf.identity@default:default"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer.httpclient45@default:default"/>
-        <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:false"/>
+        <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:default"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
-        <setEntry value="org.eclipse.ecf.ssl@default:false"/>
         <setEntry value="org.eclipse.ecf@default:default"/>
         <setEntry value="org.eclipse.equinox.app@default:default"/>
         <setEntry value="org.eclipse.equinox.cm@default:true"/>
@@ -220,7 +260,6 @@
         <setEntry value="org.eclipse.equinox.http.registry@default:true"/>
         <setEntry value="org.eclipse.equinox.http.servlet@default:default"/>
         <setEntry value="org.eclipse.equinox.http.servletbridge@default:default"/>
-        <setEntry value="org.eclipse.equinox.launcher.gtk.linux.x86_64@default:false"/>
         <setEntry value="org.eclipse.equinox.launcher@default:default"/>
         <setEntry value="org.eclipse.equinox.metatype@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.artifact.repository@default:default"/>
@@ -244,33 +283,27 @@
         <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator@1:true"/>
         <setEntry value="org.eclipse.jdt.core@default:default"/>
-        <setEntry value="org.eclipse.jetty.alpn.api@default:true"/>
-        <setEntry value="org.eclipse.jetty.alpn.server@default:true"/>
         <setEntry value="org.eclipse.jetty.annotations@default:default"/>
         <setEntry value="org.eclipse.jetty.apache-jsp@default:true"/>
         <setEntry value="org.eclipse.jetty.client@default:default"/>
-        <setEntry value="org.eclipse.jetty.continuation*9.4.28.v20200408@default:default"/>
+        <setEntry value="org.eclipse.jetty.continuation@default:default"/>
         <setEntry value="org.eclipse.jetty.deploy@default:default"/>
-        <setEntry value="org.eclipse.jetty.http*9.4.28.v20200408@default:true"/>
-        <setEntry value="org.eclipse.jetty.http2.common@default:true"/>
-        <setEntry value="org.eclipse.jetty.http2.hpack@default:true"/>
-        <setEntry value="org.eclipse.jetty.http2.server@default:true"/>
-        <setEntry value="org.eclipse.jetty.io*9.4.28.v20200408@default:default"/>
+        <setEntry value="org.eclipse.jetty.http@default:true"/>
+        <setEntry value="org.eclipse.jetty.io@default:default"/>
         <setEntry value="org.eclipse.jetty.jaas@default:default"/>
         <setEntry value="org.eclipse.jetty.jmx@default:default"/>
         <setEntry value="org.eclipse.jetty.jndi@default:default"/>
         <setEntry value="org.eclipse.jetty.osgi-servlet-api@default:default"/>
-        <setEntry value="org.eclipse.jetty.osgi.alpn.fragment@default:false"/>
-        <setEntry value="org.eclipse.jetty.osgi.boot.jsp@default:false"/>
+        <setEntry value="org.eclipse.jetty.osgi.boot.jsp@default:default"/>
         <setEntry value="org.eclipse.jetty.osgi.boot@default:true"/>
         <setEntry value="org.eclipse.jetty.osgi.httpservice@10:true"/>
         <setEntry value="org.eclipse.jetty.plus@default:default"/>
-        <setEntry value="org.eclipse.jetty.security*9.4.28.v20200408@default:default"/>
-        <setEntry value="org.eclipse.jetty.server*9.4.28.v20200408@default:default"/>
-        <setEntry value="org.eclipse.jetty.servlet*9.4.28.v20200408@default:default"/>
+        <setEntry value="org.eclipse.jetty.security@default:default"/>
+        <setEntry value="org.eclipse.jetty.server@default:default"/>
+        <setEntry value="org.eclipse.jetty.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.servlets@default:default"/>
-        <setEntry value="org.eclipse.jetty.util*9.4.28.v20200408@default:default"/>
         <setEntry value="org.eclipse.jetty.util.ajax@default:default"/>
+        <setEntry value="org.eclipse.jetty.util@default:default"/>
         <setEntry value="org.eclipse.jetty.webapp@default:default"/>
         <setEntry value="org.eclipse.jetty.websocket.api@default:default"/>
         <setEntry value="org.eclipse.jetty.websocket.client@default:default"/>
@@ -280,10 +313,10 @@
         <setEntry value="org.eclipse.jetty.websocket.server@3:true"/>
         <setEntry value="org.eclipse.jetty.websocket.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.xml@default:default"/>
-        <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
+        <setEntry value="org.eclipse.osgi.compatibility.state@default:default"/>
         <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
-        <setEntry value="org.eclipse.osgi@-1:true"/>
+        <setEntry value="org.eclipse.osgi@default:default"/>
         <setEntry value="org.eclipse.text@default:default"/>
         <setEntry value="org.glassfish.external.management-api@default:default"/>
         <setEntry value="org.glassfish.gmbal.gmbal@default:default"/>
@@ -312,21 +345,22 @@
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-el@default:true"/>
         <setEntry value="org.mortbay.jasper.apache-jsp@default:true"/>
-        <setEntry value="org.objectweb.asm*7.3.1@default:default"/>
-        <setEntry value="org.objectweb.asm.commons*7.3.1@default:default"/>
-        <setEntry value="org.objectweb.asm.tree*7.3.1@default:default"/>
+        <setEntry value="org.objectweb.asm.commons@default:default"/>
+        <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
+        <setEntry value="org.objectweb.asm.tree@default:default"/>
+        <setEntry value="org.objectweb.asm.util@default:default"/>
+        <setEntry value="org.objectweb.asm@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.springframework.spring-jcl@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
         <setEntry value="org.w3c.css.sac@default:default"/>
-        <setEntry value="org.w3c.dom.events@default:default"/>
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
-        <setEntry value="slf4j.jcl@default:false"/>
+        <setEntry value="slf4j.jcl@default:default"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="zcommon@default:default"/>
         <setEntry value="zel@default:default"/>
@@ -337,7 +371,7 @@
         <setEntry value="zkplus@default:default"/>
         <setEntry value="zkwebfragment@default:default"/>
         <setEntry value="zul@default:default"/>
-        <setEntry value="zweb-dsp@default:false"/>
+        <setEntry value="zweb-dsp@default:default"/>
         <setEntry value="zweb@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
@@ -352,7 +386,7 @@
         <setEntry value="org.adempiere.plugin.utils@default:default"/>
         <setEntry value="org.adempiere.replication.server@default:default"/>
         <setEntry value="org.adempiere.replication@default:default"/>
-        <setEntry value="org.adempiere.report.jasper.library@default:false"/>
+        <setEntry value="org.adempiere.report.jasper.library@default:default"/>
         <setEntry value="org.adempiere.report.jasper@default:default"/>
         <setEntry value="org.adempiere.server@default:true"/>
         <setEntry value="org.adempiere.ui.zk@default:true"/>
