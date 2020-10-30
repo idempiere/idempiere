@@ -261,91 +261,71 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 }
 
 location "https://download.eclipse.org/eclipse/updates/4.17" {
-	org.eclipse.equinox.executable.feature.group
-	
-	org.eclipse.equinox.server.p2.feature.group
-	//<<
+	// ### Equinox https://download.eclipse.org/equinox/drops/R-4.17-202009021800/index.php
+	// equinox core framework
+	org.eclipse.osgi
+	//<< equinox framework starter kit
+	org.apache.commons.codec
+	org.apache.commons.logging
+	org.apache.felix.gogo.command
+	org.apache.felix.gogo.runtime
+	org.apache.felix.gogo.shell
+	org.apache.felix.scr
+	org.apache.httpcomponents.httpclient
+	org.apache.httpcomponents.httpcore
+	org.eclipse.core.jobs
+	org.eclipse.ecf
+	org.eclipse.ecf.filetransfer
+	org.eclipse.ecf.identity
+	org.eclipse.ecf.provider.filetransfer
+	org.eclipse.ecf.provider.filetransfer.httpclient45
+	org.eclipse.ecf.provider.filetransfer.ssl
+	org.eclipse.ecf.ssl
+	org.eclipse.equinox.app
+	org.eclipse.equinox.common
+	org.eclipse.equinox.concurrent
+	org.eclipse.equinox.console
+	org.eclipse.equinox.ds
+	org.eclipse.equinox.frameworkadmin
+	org.eclipse.equinox.frameworkadmin.equinox
+	org.eclipse.equinox.launcher
+	//org.eclipse.equinox.launcher.gtk.linux.x86
 	org.eclipse.equinox.p2.artifact.repository
 	org.eclipse.equinox.p2.console
 	org.eclipse.equinox.p2.core
 	org.eclipse.equinox.p2.director
 	org.eclipse.equinox.p2.engine
 	org.eclipse.equinox.p2.garbagecollector
+	org.eclipse.equinox.p2.jarprocessor
 	org.eclipse.equinox.p2.metadata
 	org.eclipse.equinox.p2.metadata.repository
+	org.eclipse.equinox.p2.operations
 	org.eclipse.equinox.p2.repository
 	org.eclipse.equinox.p2.touchpoint.eclipse
 	org.eclipse.equinox.p2.touchpoint.natives
-	org.eclipse.equinox.simpleconfigurator.manipulator
-	org.sat4j.core
-	org.sat4j.pb
-	org.eclipse.equinox.frameworkadmin
-	org.eclipse.equinox.frameworkadmin.equinox
-	org.eclipse.equinox.preferences
-	org.eclipse.equinox.security
-	org.eclipse.equinox.app
-	org.eclipse.equinox.p2.jarprocessor
 	org.eclipse.equinox.p2.transport.ecf
-	//>>
-	
-	org.eclipse.equinox.server.core.feature.group
-	//<<
-	org.eclipse.osgi
+	org.eclipse.equinox.preferences
+	org.eclipse.equinox.registry
+	org.eclipse.equinox.security
+	//org.eclipse.equinox.security.linux.x86
+	org.eclipse.equinox.simpleconfigurator
+	org.eclipse.equinox.simpleconfigurator.manipulator
 	org.eclipse.osgi.services
 	org.eclipse.osgi.util
-	org.eclipse.equinox.common
-	org.eclipse.equinox.ds
-	org.eclipse.core.jobs
-	org.eclipse.equinox.registry
+	org.sat4j.core
+	org.sat4j.pb
+	org.tukaani.xz
+	//<< equinox add-on
+	// feature for launcher all environment
+	org.eclipse.equinox.executable.feature.group
 	org.eclipse.equinox.http.registry
-	org.eclipse.equinox.simpleconfigurator
 	org.eclipse.osgi.compatibility.state
-	org.apache.felix.scr
-	//>>
-	
-	org.eclipse.ecf.core.feature.feature.group
-	//<<
-	org.eclipse.ecf
-	org.eclipse.ecf.identity
-	//>>
-	
-	org.eclipse.ecf.core.ssl.feature.feature.group
-	//<<
-	org.eclipse.ecf.ssl
-	//>>
-	
-	org.eclipse.ecf.filetransfer.feature.feature.group
-	//<<
-	org.eclipse.ecf.filetransfer
-	org.eclipse.ecf.provider.filetransfer
-	//>>
-	
-	org.eclipse.ecf.filetransfer.httpclient45.feature.feature.group
-	//<<
-	org.eclipse.ecf.provider.filetransfer.httpclient45
-	org.eclipse.ecf.provider.filetransfer.httpclient45.win32
-	org.apache.commons.codec
-	org.apache.commons.logging
-	com.sun.jna
-	com.sun.jna.platform
-	org.apache.httpcomponents.httpclient
-	org.apache.httpcomponents.httpclient.win
-	org.apache.httpcomponents.httpcore
-	//>>
-	
-	org.eclipse.ecf.filetransfer.ssl.feature.feature.group
-	//<<
-	org.eclipse.ecf.provider.filetransfer.ssl
-	//>>
-
 	org.eclipse.core.runtime
 	org.eclipse.equinox.http.servlet
 	org.eclipse.equinox.servletbridge
 	org.eclipse.equinox.p2.director.app
 	org.eclipse.equinox.cm
 	org.eclipse.equinox.event
-	org.eclipse.equinox.concurrent
-	org.eclipse.equinox.console
 	org.eclipse.equinox.http.servletbridge
 	org.eclipse.equinox.metatype
 	org.eclipse.ant.core
@@ -386,9 +366,6 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202008312006
 	org.apache.commons.lang3
 	org.apache.commons.lang
 	org.apache.commons.net
-	org.apache.felix.gogo.command
-	org.apache.felix.gogo.runtime
-	org.apache.felix.gogo.shell
 	org.apache.lucene.analyzers-common
 	org.apache.lucene.core
 	org.apache.xalan
@@ -407,7 +384,6 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202008312006
 	org.glassfish.jersey.media.jersey-media-json-jackson
 	org.hamcrest.core
 	org.junit
-	org.tukaani.xz
 	org.w3c.css.sac
 	org.w3c.dom.svg
 }	

@@ -45,28 +45,7 @@
    <feature url="features/org.idempiere.webservices.feature_7.1.0.qualifier.jar" id="org.idempiere.webservices.feature" version="7.1.0.qualifier">
       <category name="idempiere.core"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.core.feature_1.5.700.v20200812-2314.jar" id="org.eclipse.ecf.core.feature" version="1.5.700.v20200812-2314">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.core.ssl.feature_1.1.500.v20200812-2314.jar" id="org.eclipse.ecf.core.ssl.feature" version="1.1.500.v20200812-2314">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.feature_3.14.1400.v20200812-2314.jar" id="org.eclipse.ecf.filetransfer.feature" version="3.14.1400.v20200812-2314">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.ssl.feature_1.1.400.v20200812-2314.jar" id="org.eclipse.ecf.filetransfer.ssl.feature" version="1.1.400.v20200812-2314">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.ecf.filetransfer.httpclient45.feature_1.0.600.v20200816-1842.jar" id="org.eclipse.ecf.filetransfer.httpclient45.feature" version="1.0.600.v20200816-1842">
-      <category name="idempiere.core"/>
-   </feature>
    <feature url="features/org.eclipse.equinox.executable_3.8.900.v20200819-0940.jar" id="org.eclipse.equinox.executable" version="3.8.900.v20200819-0940">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.equinox.server.core_1.13.0.v20200828-1034.jar" id="org.eclipse.equinox.server.core" version="1.13.0.v20200828-1034">
-      <category name="idempiere.core"/>
-   </feature>
-   <feature url="features/org.eclipse.equinox.server.p2_1.10.0.v20200813-0739.jar" id="org.eclipse.equinox.server.p2" version="1.10.0.v20200813-0739">
       <category name="idempiere.core"/>
    </feature>
    <category-def name="idempiere.core" label="idempiere core"/>

@@ -64,14 +64,6 @@
         <setEntry value="org.adempiere.server.feature:default"/>
         <setEntry value="org.adempiere.ui.zk.feature:default"/>
         <setEntry value="org.compiere.db.provider.feature:default"/>
-        <setEntry value="org.eclipse.ecf.core.feature:default"/>
-        <setEntry value="org.eclipse.ecf.core.ssl.feature:default"/>
-        <setEntry value="org.eclipse.ecf.filetransfer.feature:default"/>
-        <setEntry value="org.eclipse.ecf.filetransfer.httpclient45.feature:default"/>
-        <setEntry value="org.eclipse.ecf.filetransfer.ssl.feature:default"/>
-        <setEntry value="org.eclipse.equinox.executable:default"/>
-        <setEntry value="org.eclipse.equinox.server.core:default"/>
-        <setEntry value="org.eclipse.equinox.server.p2:default"/>
         <setEntry value="org.idempiere.eclipse.platform.feature:default"/>
         <setEntry value="org.idempiere.felix.webconsole.feature:default"/>
         <setEntry value="org.idempiere.hazelcast.service.feature:default"/>
@@ -109,8 +101,6 @@
         <setEntry value="com.jaspersoft.studio.bundles.itext@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.istack.commons-runtime@default:default"/>
-        <setEntry value="com.sun.jna.platform@default:default"/>
-        <setEntry value="com.sun.jna@default:default"/>
         <setEntry value="com.sun.mail.gimap@default:default"/>
         <setEntry value="com.sun.mail.imap@default:default"/>
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
@@ -257,7 +247,6 @@
         <setEntry value="org.eclipse.ecf.provider.filetransfer.httpclient45@default:default"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:default"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
-        <setEntry value="org.eclipse.ecf.ssl@default:default"/>
         <setEntry value="org.eclipse.ecf@default:default"/>
         <setEntry value="org.eclipse.equinox.app@default:default"/>
         <setEntry value="org.eclipse.equinox.cm@default:true"/>
@@ -271,7 +260,6 @@
         <setEntry value="org.eclipse.equinox.http.registry@default:true"/>
         <setEntry value="org.eclipse.equinox.http.servlet@default:default"/>
         <setEntry value="org.eclipse.equinox.http.servletbridge@default:default"/>
-        <setEntry value="org.eclipse.equinox.launcher.gtk.linux.x86_64@default:default"/>
         <setEntry value="org.eclipse.equinox.launcher@default:default"/>
         <setEntry value="org.eclipse.equinox.metatype@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.artifact.repository@default:default"/>

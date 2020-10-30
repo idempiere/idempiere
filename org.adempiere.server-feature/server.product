@@ -60,14 +60,14 @@
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-el" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-jsp" autoStart="true" startLevel="0" />
-      <property name="osgi.console.enable.builtin" value="false" />
       <property name="osgi.compatibility.bootdelegation" value="true" />
-      <property name="eclipse.product" value="org.adempiere.server.product" />
-      <property name="osgi.noShutdown" value="true" />
-      <property name="osgi.checkConfiguration" value="true" />
       <property name="org.eclipse.equinox.simpleconfigurator.exclusiveInstallation" value="false" />
-      <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="eclipse.product" value="org.adempiere.server.product" />
       <property name="osgi.instance.area.default" value="@config.dir/../workspace" />
+      <property name="osgi.console.enable.builtin" value="false" />
+      <property name="osgi.checkConfiguration" value="true" />
+      <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="osgi.noShutdown" value="true" />
       <property name="osgi.framework.activeThreadType" value="normal" />
    </configurations>
 
