@@ -963,12 +963,14 @@ public class Doc_AllocationHdr extends Doc
 		// For Payment
 		List<Object> valuesPay = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 				MPayment.Table_ID, payment.getC_Payment_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
-		if (valuesPay != null) {
+		if (valuesPay != null && valuesPay.size() >= 4) {
 			paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
 			paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
-			if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
-				paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
-				paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+			if (paymentSource != null && paymentAccounted != null) {
+				if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
+					paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
+					paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+				}
 			}
 		}
 		
@@ -1428,15 +1430,17 @@ public class Doc_AllocationHdr extends Doc
 			// For Payment
 			List<Object> valuesPay = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 					MPayment.Table_ID, payment.getC_Payment_ID(), as.getC_AcctSchema_ID(), htPayAcct.get(payment.getC_Payment_ID()).getAccount_ID());
-			if (valuesPay != null) {
+			if (valuesPay != null && valuesPay.size() >= 4) {
 				BigDecimal paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
 				BigDecimal paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
-				if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
-					paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
-					paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+				if (paymentSource != null && paymentAccounted != null) {
+					if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
+						paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
+						paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+					}
+					htPaySource.put(payment.getC_Payment_ID(), paymentSource);
+					htPayAccounted.put(payment.getC_Payment_ID(), paymentAccounted);
 				}
-				htPaySource.put(payment.getC_Payment_ID(), paymentSource);
-				htPayAccounted.put(payment.getC_Payment_ID(), paymentAccounted);
 			}
 		}
 		
