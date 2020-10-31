@@ -53,6 +53,7 @@ import org.compiere.model.MLanguage;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
+import org.compiere.model.MReference;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -398,12 +399,19 @@ public final class AEnv
         {
         	zoomQuery = new MQuery();   //  ColumnName might be changed in MTab.validateQuery
         	String column = lookup.getColumnName();
-        	//	Check if it is a Table Reference
-        	if (lookup instanceof MLookup && DisplayType.List == lookup.getDisplayType())
+        	//	Check if it is a List Reference
+        	if (lookup instanceof MLookup)
         	{
         		int AD_Reference_ID = ((MLookup)lookup).getAD_Reference_Value_ID();
-        		column = "AD_Ref_List_ID";
-        		value = DB.getSQLValue(null, "SELECT AD_Ref_List_ID FROM AD_Ref_List WHERE AD_Reference_ID=? AND Value=?", AD_Reference_ID, value);
+        		if (AD_Reference_ID > 0)
+        		{
+        			MReference reference = MReference.get(AD_Reference_ID);
+        			if (reference.getValidationType().equals(MReference.VALIDATIONTYPE_ListValidation))
+        			{
+		        		column = "AD_Ref_List_ID";
+		        		value = DB.getSQLValue(null, "SELECT AD_Ref_List_ID FROM AD_Ref_List WHERE AD_Reference_ID=? AND Value=?", AD_Reference_ID, value);
+        			}
+        		}
         	}
         	//strip off table name, fully qualify name doesn't work when zoom into detail tab
         	if (column.indexOf(".") > 0)

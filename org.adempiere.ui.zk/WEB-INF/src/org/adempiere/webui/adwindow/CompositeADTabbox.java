@@ -923,7 +923,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			if (tabPanel.getDesktop() != null) {
 				Executions.schedule(tabPanel.getDesktop(), e -> {
 					invalidateTabPanel(tabPanel);
-				}, new Event("onPostActivateDetail", tabPanel));	
+				}, new Event("onPostActivateDetail", tabPanel));
 			} else {
 				invalidateTabPanel(tabPanel);
 			}
