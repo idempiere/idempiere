@@ -6,10 +6,6 @@ with source configurePhase allEnvironments
 location "https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webservice.client-p2-R20190412" {
 	com.sun.istack.commons-runtime
 	com.sun.org.apache.xml.internal.resolver
-	com.sun.xml.bind.external.rngom
-	com.sun.xml.bind.jaxb-jxc
-	com.sun.xml.bind.jaxb-osgi
-	com.sun.xml.bind.jaxb-xjc
 	com.sun.xml.fastinfoset.FastInfoset
 	com.sun.xml.messaging.saaj.impl
 	com.sun.xml.stream.buffer.streambuffer
@@ -18,7 +14,6 @@ location "https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webserv
 	jakarta.xml.ws-api
 	org.glassfish.external.management-api
 	org.glassfish.gmbal.gmbal
-	org.glassfish.ha.ha-api
 	org.glassfish.jaxb.txw2
 	org.glassfish.pfl.pfl-asm
 	org.glassfish.pfl.pfl-basic
@@ -36,7 +31,6 @@ location "https://idempiere.github.io/binary.file/p2.zk/9.5.0.1" {
 	zk
 	zkbind
 	zkplus
-	zkplus-legacy
 	zkwebfragment
 	zul
 	zweb
@@ -76,22 +70,12 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	com.sun.xml.bind.jaxb-impl
 	com.sun.xml.ws.jaxws-rt
 	groovy
-	groovy-ant
-	groovy-cli-commons
-	groovy-cli-picocli
 	groovy-console
 	groovy-datetime
-	groovy-docgenerator
-	groovy-groovydoc
-	groovy-groovysh
-	groovy-jmx
 	groovy-json
 	groovy-jsr223
-	groovy-macro
 	groovy-nio
-	groovy-servlet
 	groovy-sql
-	groovy-swing
 	groovy-xml
 	jakarta.annotation-api
 	jakarta.jws-api
@@ -104,7 +88,6 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	javax.transaction-api
 	javax.validation.api
 	javax.websocket-api
-	javax.xml.rpc-api
 	joda-time
 	json
 	net.sf.jasperreports.engine
@@ -117,9 +100,7 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	org.apache.commons.commons-configuration2
 	org.apache.commons.digester
 	org.apache.commons.discovery
-	org.apache.commons.javaflow
 	org.apache.cxf.cxf-core
-	org.apache.cxf.cxf-rt-bindings-object
 	org.apache.cxf.cxf-rt-bindings-soap
 	org.apache.cxf.cxf-rt-bindings-xml
 	org.apache.cxf.cxf-rt-databinding-jaxb
@@ -127,9 +108,7 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	org.apache.cxf.cxf-rt-frontend-jaxrs
 	org.apache.cxf.cxf-rt-frontend-jaxws
 	org.apache.cxf.cxf-rt-frontend-simple
-	org.apache.cxf.cxf-rt-management
 	org.apache.cxf.cxf-rt-rs-extension-providers
-	org.apache.cxf.cxf-rt-rs-http-sci
 	org.apache.cxf.cxf-rt-rs-service-description
 	org.apache.cxf.cxf-rt-security
 	org.apache.cxf.cxf-rt-transports-http
@@ -137,13 +116,8 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	org.apache.cxf.cxf-rt-ws-addr
 	org.apache.cxf.cxf-rt-ws-policy
 	org.apache.cxf.cxf-rt-wsdl
-	org.apache.cxf.cxf-spring-boot-autoconfigure
 	org.apache.cxf.rt-ws-transfer
-	org.apache.felix.inventory
 	org.apache.felix.webconsole
-	org.apache.felix.webconsole.plugins.ds
-	org.apache.felix.webconsole.plugins.memoryusage
-	org.apache.felix.webconsole.plugins.packageadmin
 	org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec
 	org.apache.neethi
 	org.apache.poi.poi
@@ -171,7 +145,6 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	org.apache.taglibs.standard-impl
 	org.apache.taglibs.standard-jstlel
 	org.apache.taglibs.taglibs-standard-spec
-	org.apache.velocity
 	org.apache.ws.xmlschema.core
 	org.apache.xmlbeans
 	org.apache.xmlgraphics.batik-anim
@@ -193,36 +166,22 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	org.apache.xmlgraphics.batik-xml
 	org.atmosphere.runtime
 	org.cryptacular
-	org.eclipse.jetty.alpn.api
-	org.eclipse.jetty.alpn.client
-	org.eclipse.jetty.alpn.openjdk8.server
-	org.eclipse.jetty.alpn.server
 	org.eclipse.jetty.annotations
 	org.eclipse.jetty.apache-jsp
 	org.eclipse.jetty.client
 	org.eclipse.jetty.continuation
 	org.eclipse.jetty.deploy
 	org.eclipse.jetty.http
-	org.eclipse.jetty.http2.client
-	org.eclipse.jetty.http2.client.http
-	org.eclipse.jetty.http2.common
-	org.eclipse.jetty.http2.hpack
-	org.eclipse.jetty.http2.server
 	org.eclipse.jetty.io
 	org.eclipse.jetty.jaas
 	org.eclipse.jetty.jmx
 	org.eclipse.jetty.jndi
 	org.eclipse.jetty.osgi-servlet-api
-	org.eclipse.jetty.osgi.alpn.fragment
 	org.eclipse.jetty.osgi.boot
 	org.eclipse.jetty.osgi.boot.jsp
-	org.eclipse.jetty.osgi.boot.warurl
 	org.eclipse.jetty.osgi.httpservice
 	org.eclipse.jetty.plus
-	org.eclipse.jetty.proxy
-	org.eclipse.jetty.rewrite
 	org.eclipse.jetty.security
-	org.eclipse.jetty.security.jaspi
 	org.eclipse.jetty.server
 	org.eclipse.jetty.servlet
 	org.eclipse.jetty.servlets
@@ -252,11 +211,9 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	org.passay
 	org.springframework.spring-jcl
 	org.w3c.dom.smil
-	org.w3c.dom.svg.patch
 	org.zkoss.zsoup
 	slf4j.api
 	slf4j.jcl
-	slf4j.jdk14
 	stax2-api
 }
 
@@ -280,7 +237,6 @@ location "https://download.eclipse.org/eclipse/updates/4.17" {
 	org.eclipse.ecf.provider.filetransfer
 	org.eclipse.ecf.provider.filetransfer.httpclient45
 	org.eclipse.ecf.provider.filetransfer.ssl
-	org.eclipse.ecf.ssl
 	org.eclipse.equinox.app
 	org.eclipse.equinox.common
 	org.eclipse.equinox.concurrent
@@ -299,7 +255,6 @@ location "https://download.eclipse.org/eclipse/updates/4.17" {
 	org.eclipse.equinox.p2.jarprocessor
 	org.eclipse.equinox.p2.metadata
 	org.eclipse.equinox.p2.metadata.repository
-	org.eclipse.equinox.p2.operations
 	org.eclipse.equinox.p2.repository
 	org.eclipse.equinox.p2.touchpoint.eclipse
 	org.eclipse.equinox.p2.touchpoint.natives
@@ -340,13 +295,22 @@ location "https://download.eclipse.org/eclipse/updates/4.17" {
 	org.eclipse.text
 	
 	//<< for test
+	org.opentest4j
+	org.apiguardian
+	org.junit
 	org.junit.jupiter.api
 	org.junit.jupiter.params
 	org.junit.jupiter.engine
-	org.opentest4j
+	org.junit.jupiter.migrationsupport
+	org.junit.vintage.engine
 	org.junit.platform.engine
 	org.junit.platform.commons
-	org.apiguardian
+	org.junit.platform.launcher
+	org.junit.platform.runner
+	org.junit.platform.suite.api
+	org.eclipse.pde.junit.runtime
+	org.eclipse.jdt.junit.runtime
+	org.eclipse.jdt.junit5.runtime
 	//>>
 }
 
@@ -383,7 +347,6 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202008312006
 	org.glassfish.jersey.ext.entityfiltering
 	org.glassfish.jersey.media.jersey-media-json-jackson
 	org.hamcrest.core
-	org.junit
 	org.w3c.css.sac
 	org.w3c.dom.svg
 }	
