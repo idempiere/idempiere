@@ -29,7 +29,9 @@ import java.util.Properties;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ValuePreference;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -448,6 +450,10 @@ public class WRadioGroupEditor extends WEditor implements ContextMenuListener, L
 		{
 			WFieldRecordInfo.start(gridField);
 		}
+		else if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent()))
+		{
+			actionZoom();
+		}
 	}
 	
 	public  void propertyChange(PropertyChangeEvent evt)
@@ -475,6 +481,9 @@ public class WRadioGroupEditor extends WEditor implements ContextMenuListener, L
 			this.actionRefresh();
 
 		super.dynamicDisplay(ctx);
+		
+		if (!ClientInfo.isMobile() && getPopupMenu().getParent() != null && getComponent().radioGroup.getContext() == null)
+			getPopupMenu().addContextElement(getComponent().radioGroup);
     }
 	
 	private static class RadioGroupEditor extends Hlayout {
@@ -612,5 +621,13 @@ public class WRadioGroupEditor extends WEditor implements ContextMenuListener, L
 	@Override
 	public void contentsChanged(ListDataEvent e) {
 		refreshList();
-	}	
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.IZoomableEditor#actionZoom()
+	 */
+    public void actionZoom()
+	{
+   		AEnv.actionZoom(lookup, getValue());
+	}
 }
