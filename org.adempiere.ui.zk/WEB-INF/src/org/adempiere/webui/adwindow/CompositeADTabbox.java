@@ -920,9 +920,13 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 		if (!tabPanel.isVisible()) {
 			tabPanel.setVisible(true);
-			Executions.schedule(tabPanel.getDesktop(), e -> {
+			if (tabPanel.getDesktop() != null) {
+				Executions.schedule(tabPanel.getDesktop(), e -> {
+					invalidateTabPanel(tabPanel);
+				}, new Event("onPostActivateDetail", tabPanel));	
+			} else {
 				invalidateTabPanel(tabPanel);
-			}, new Event("onPostActivateDetail", tabPanel));	
+			}
 		} else {
 			invalidateTabPanel(tabPanel);
 		}
