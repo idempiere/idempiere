@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-201030" sequenceNumber="1604024638">
+<target name="idempiere-201030" sequenceNumber="1604136260">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="com.sun.istack.commons-runtime" version="3.0.8"/>
       <unit id="com.sun.org.apache.xml.internal.resolver" version="20050927.0.0"/>
-      <unit id="com.sun.xml.bind.external.rngom" version="2.3.2"/>
-      <unit id="com.sun.xml.bind.jaxb-jxc" version="2.3.2"/>
-      <unit id="com.sun.xml.bind.jaxb-osgi" version="2.3.2"/>
-      <unit id="com.sun.xml.bind.jaxb-xjc" version="2.3.2"/>
       <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.16"/>
       <unit id="com.sun.xml.messaging.saaj.impl" version="1.5.1"/>
       <unit id="com.sun.xml.stream.buffer.streambuffer" version="1.5.7"/>
@@ -18,7 +14,6 @@
       <unit id="jakarta.xml.ws-api" version="2.3.2"/>
       <unit id="org.glassfish.external.management-api" version="3.2.1"/>
       <unit id="org.glassfish.gmbal.gmbal" version="4.0.0"/>
-      <unit id="org.glassfish.ha.ha-api" version="3.1.12"/>
       <unit id="org.glassfish.jaxb.txw2" version="2.3.2"/>
       <unit id="org.glassfish.pfl.pfl-asm" version="4.0.1"/>
       <unit id="org.glassfish.pfl.pfl-basic" version="4.0.1"/>
@@ -36,7 +31,6 @@
       <unit id="zk" version="9.5.0.1"/>
       <unit id="zkbind" version="9.5.0.1"/>
       <unit id="zkplus" version="9.5.0.1"/>
-      <unit id="zkplus-legacy" version="9.5.0.1"/>
       <unit id="zkwebfragment" version="9.5.0.1"/>
       <unit id="zul" version="9.5.0.1"/>
       <unit id="zweb" version="9.5.0.1"/>
@@ -76,22 +70,12 @@
       <unit id="com.sun.xml.bind.jaxb-impl" version="2.3.2"/>
       <unit id="com.sun.xml.ws.jaxws-rt" version="2.3.2"/>
       <unit id="groovy" version="2.5.3"/>
-      <unit id="groovy-ant" version="2.5.3"/>
-      <unit id="groovy-cli-commons" version="2.5.3"/>
-      <unit id="groovy-cli-picocli" version="2.5.3"/>
       <unit id="groovy-console" version="2.5.3"/>
       <unit id="groovy-datetime" version="2.5.3"/>
-      <unit id="groovy-docgenerator" version="2.5.3"/>
-      <unit id="groovy-groovydoc" version="2.5.3"/>
-      <unit id="groovy-groovysh" version="2.5.3"/>
-      <unit id="groovy-jmx" version="2.5.3"/>
       <unit id="groovy-json" version="2.5.3"/>
       <unit id="groovy-jsr223" version="2.5.3"/>
-      <unit id="groovy-macro" version="2.5.3"/>
       <unit id="groovy-nio" version="2.5.3"/>
-      <unit id="groovy-servlet" version="2.5.3"/>
       <unit id="groovy-sql" version="2.5.3"/>
-      <unit id="groovy-swing" version="2.5.3"/>
       <unit id="groovy-xml" version="2.5.3"/>
       <unit id="jakarta.annotation-api" version="1.3.5"/>
       <unit id="jakarta.jws-api" version="1.1.1"/>
@@ -104,7 +88,6 @@
       <unit id="javax.transaction-api" version="1.3.0"/>
       <unit id="javax.validation.api" version="1.1.0.Final"/>
       <unit id="javax.websocket-api" version="1.1.0"/>
-      <unit id="javax.xml.rpc-api" version="1.1.4"/>
       <unit id="joda-time" version="2.10.8"/>
       <unit id="json" version="20180813.0.0"/>
       <unit id="net.sf.jasperreports.engine" version="6.15.0"/>
@@ -117,9 +100,7 @@
       <unit id="org.apache.commons.commons-configuration2" version="2.3.0"/>
       <unit id="org.apache.commons.digester" version="2.1.0"/>
       <unit id="org.apache.commons.discovery" version="0.5.0"/>
-      <unit id="org.apache.commons.javaflow" version="1590792.0.0"/>
       <unit id="org.apache.cxf.cxf-core" version="3.3.1"/>
-      <unit id="org.apache.cxf.cxf-rt-bindings-object" version="3.1.18"/>
       <unit id="org.apache.cxf.cxf-rt-bindings-soap" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-bindings-xml" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-databinding-jaxb" version="3.3.1"/>
@@ -127,9 +108,7 @@
       <unit id="org.apache.cxf.cxf-rt-frontend-jaxrs" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-frontend-jaxws" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-frontend-simple" version="3.3.1"/>
-      <unit id="org.apache.cxf.cxf-rt-management" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-rs-extension-providers" version="3.1.18"/>
-      <unit id="org.apache.cxf.cxf-rt-rs-http-sci" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-rs-service-description" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-security" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-transports-http" version="3.3.1"/>
@@ -137,13 +116,8 @@
       <unit id="org.apache.cxf.cxf-rt-ws-addr" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-ws-policy" version="3.3.1"/>
       <unit id="org.apache.cxf.cxf-rt-wsdl" version="3.3.1"/>
-      <unit id="org.apache.cxf.cxf-spring-boot-autoconfigure" version="3.3.1"/>
       <unit id="org.apache.cxf.rt-ws-transfer" version="3.3.1"/>
-      <unit id="org.apache.felix.inventory" version="1.0.6"/>
       <unit id="org.apache.felix.webconsole" version="4.3.8"/>
-      <unit id="org.apache.felix.webconsole.plugins.ds" version="2.1.0"/>
-      <unit id="org.apache.felix.webconsole.plugins.memoryusage" version="1.0.8"/>
-      <unit id="org.apache.felix.webconsole.plugins.packageadmin" version="1.0.4"/>
       <unit id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec" version="1.0.1"/>
       <unit id="org.apache.neethi" version="3.1.1"/>
       <unit id="org.apache.poi.poi" version="4.1.2"/>
@@ -171,7 +145,6 @@
       <unit id="org.apache.taglibs.standard-impl" version="1.2.5"/>
       <unit id="org.apache.taglibs.standard-jstlel" version="1.2.5"/>
       <unit id="org.apache.taglibs.taglibs-standard-spec" version="1.2.5"/>
-      <unit id="org.apache.velocity" version="1.7.0"/>
       <unit id="org.apache.ws.xmlschema.core" version="2.2.3"/>
       <unit id="org.apache.xmlbeans" version="3.1.0"/>
       <unit id="org.apache.xmlgraphics.batik-anim" version="1.11.0"/>
@@ -193,36 +166,22 @@
       <unit id="org.apache.xmlgraphics.batik-xml" version="1.11.0"/>
       <unit id="org.atmosphere.runtime" version="2.6.4"/>
       <unit id="org.cryptacular" version="1.2.4"/>
-      <unit id="org.eclipse.jetty.alpn.api" version="1.1.3.v20160715"/>
-      <unit id="org.eclipse.jetty.alpn.client" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.alpn.openjdk8.server" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.alpn.server" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.annotations" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.apache-jsp" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.client" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.continuation" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.deploy" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.http" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.http2.client" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.http2.client.http" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.http2.common" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.http2.hpack" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.http2.server" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.io" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.jaas" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.jmx" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.jndi" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.osgi-servlet-api" version="3.1.0.M3"/>
-      <unit id="org.eclipse.jetty.osgi.alpn.fragment" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.osgi.boot" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.osgi.boot.jsp" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.osgi.boot.warurl" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.osgi.httpservice" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.plus" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.proxy" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.rewrite" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.security" version="9.4.33.v20201020"/>
-      <unit id="org.eclipse.jetty.security.jaspi" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.server" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.servlet" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.servlets" version="9.4.33.v20201020"/>
@@ -252,11 +211,9 @@
       <unit id="org.passay" version="1.6.0"/>
       <unit id="org.springframework.spring-jcl" version="5.1.1.RELEASE"/>
       <unit id="org.w3c.dom.smil" version="1.0.0.v200806040011"/>
-      <unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
       <unit id="org.zkoss.zsoup" version="1.8.2.5"/>
       <unit id="slf4j.api" version="1.7.25"/>
       <unit id="slf4j.jcl" version="1.7.25"/>
-      <unit id="slf4j.jdk14" version="1.7.25"/>
       <unit id="stax2-api" version="4.2.0"/>
       <repository location="https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029"/>
     </location>
@@ -277,7 +234,6 @@
       <unit id="org.eclipse.ecf.provider.filetransfer" version="3.2.600.v20200611-2221"/>
       <unit id="org.eclipse.ecf.provider.filetransfer.httpclient45" version="1.0.300.v20200611-1836"/>
       <unit id="org.eclipse.ecf.provider.filetransfer.ssl" version="1.0.200.v20200611-1836"/>
-      <unit id="org.eclipse.ecf.ssl" version="1.2.400.v20200611-2220"/>
       <unit id="org.eclipse.equinox.app" version="1.5.0.v20200717-0620"/>
       <unit id="org.eclipse.equinox.common" version="3.13.0.v20200828-1034"/>
       <unit id="org.eclipse.equinox.concurrent" version="1.1.500.v20200106-1437"/>
@@ -295,7 +251,6 @@
       <unit id="org.eclipse.equinox.p2.jarprocessor" version="1.1.600.v20200217-1130"/>
       <unit id="org.eclipse.equinox.p2.metadata" version="2.5.0.v20200511-1530"/>
       <unit id="org.eclipse.equinox.p2.metadata.repository" version="1.3.400.v20191211-1528"/>
-      <unit id="org.eclipse.equinox.p2.operations" version="2.5.900.v20200808-1311"/>
       <unit id="org.eclipse.equinox.p2.repository" version="2.4.800.v20200813-0739"/>
       <unit id="org.eclipse.equinox.p2.touchpoint.eclipse" version="2.2.700.v20200813-0739"/>
       <unit id="org.eclipse.equinox.p2.touchpoint.natives" version="1.3.600.v20200511-1530"/>
@@ -331,13 +286,22 @@
       <unit id="org.eclipse.core.variables" version="3.4.800.v20200120-1101"/>
       <unit id="org.eclipse.jdt.core" version="3.23.0.v20200828-0941"/>
       <unit id="org.eclipse.text" version="3.10.300.v20200807-0831"/>
+      <unit id="org.opentest4j" version="1.2.0.v20190826-0900"/>
+      <unit id="org.apiguardian" version="1.1.0.v20190826-0900"/>
+      <unit id="org.junit" version="4.13.0.v20200204-1500"/>
       <unit id="org.junit.jupiter.api" version="5.6.0.v20200203-2009"/>
       <unit id="org.junit.jupiter.params" version="5.6.0.v20200203-2009"/>
       <unit id="org.junit.jupiter.engine" version="5.6.0.v20200203-2009"/>
-      <unit id="org.opentest4j" version="1.2.0.v20190826-0900"/>
+      <unit id="org.junit.jupiter.migrationsupport" version="5.6.0.v20200203-2009"/>
+      <unit id="org.junit.vintage.engine" version="5.6.0.v20200203-2009"/>
       <unit id="org.junit.platform.engine" version="1.6.0.v20200203-2009"/>
       <unit id="org.junit.platform.commons" version="1.6.0.v20200203-2009"/>
-      <unit id="org.apiguardian" version="1.1.0.v20190826-0900"/>
+      <unit id="org.junit.platform.launcher" version="1.6.0.v20200203-2009"/>
+      <unit id="org.junit.platform.runner" version="1.6.0.v20200203-2009"/>
+      <unit id="org.junit.platform.suite.api" version="1.6.0.v20200203-2009"/>
+      <unit id="org.eclipse.pde.junit.runtime" version="3.5.900.v20200810-0835"/>
+      <unit id="org.eclipse.jdt.junit.runtime" version="3.5.300.v20200720-0748"/>
+      <unit id="org.eclipse.jdt.junit5.runtime" version="1.0.1000.v20200720-0748"/>
       <repository location="https://download.eclipse.org/eclipse/updates/4.17"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
@@ -373,7 +337,6 @@
       <unit id="org.glassfish.jersey.ext.entityfiltering" version="2.30.1.v20200513-1859"/>
       <unit id="org.glassfish.jersey.media.jersey-media-json-jackson" version="2.30.1.v20200513-1859"/>
       <unit id="org.hamcrest.core" version="1.3.0.v20180420-1519"/>
-      <unit id="org.junit" version="4.13.0.v20200204-1500"/>
       <unit id="org.w3c.css.sac" version="1.3.1.v200903091627"/>
       <unit id="org.w3c.dom.svg" version="1.1.0.v201011041433"/>
       <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20200831200620/repository"/>

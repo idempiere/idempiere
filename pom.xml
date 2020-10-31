@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>7.1.0-SNAPSHOT</version>
+		<version>8.1.0-SNAPSHOT</version>
 		<relativePath>org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<modules>
@@ -25,7 +25,6 @@
 		<module>org.adempiere.replication.server</module>
 		<module>org.adempiere.report.jasper.library</module>
 		<module>org.adempiere.report.jasper</module>
-		<module>org.adempiere.report.jasper.webapp</module>
 		<module>org.adempiere.server</module>		
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>
@@ -54,6 +53,8 @@
 		<module>org.idempiere.webservices.client-feature</module>
 		<module>org.idempiere.p2</module>
 		<module>org.idempiere.javadoc</module>
+		<module>org.idempiere.test-feature</module>
+		<module>org.idempiere.test</module>
 		<module>${idempiere.target}</module>
 	</modules>
 
