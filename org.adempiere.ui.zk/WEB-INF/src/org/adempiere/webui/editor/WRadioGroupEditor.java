@@ -62,7 +62,7 @@ import org.zkoss.zul.Radiogroup;
  * @author hengsin
  *
  */
-public class WRadioGroupEditor extends WEditor implements ContextMenuListener, ListDataListener
+public class WRadioGroupEditor extends WEditor implements ContextMenuListener, ListDataListener, IZoomableEditor
 {
     public final static String[] LISTENER_EVENTS = {Events.ON_CHECK};
     
