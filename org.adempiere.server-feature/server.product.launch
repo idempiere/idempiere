@@ -76,7 +76,7 @@
         <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
         <setEntry value="bctsp@default:default"/>
-        <setEntry value="com.diffplug.osgi.extension.sun.misc@default:default"/>
+        <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-core@default:default"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-databind@default:default"/>
@@ -88,7 +88,7 @@
         <setEntry value="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider@default:default"/>
         <setEntry value="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider@default:default"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jaxb-annotations@default:default"/>
-        <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema.source@default:default"/>
+        <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema.source"/>
         <setEntry value="com.fasterxml.jackson.module.jackson-module-jsonSchema@default:default"/>
         <setEntry value="com.fasterxml.woodstox.woodstox-core@default:default"/>
         <setEntry value="com.github.relaxng.Datatype@default:default"/>
@@ -112,13 +112,13 @@
         <setEntry value="com.sun.xml.stream.buffer.streambuffer@default:default"/>
         <setEntry value="com.sun.xml.ws.jaxws-rt@default:default"/>
         <setEntry value="com.sun.xml.ws.policy@default:default"/>
-        <setEntry value="groovy-console@default:default"/>
-        <setEntry value="groovy-datetime@default:default"/>
-        <setEntry value="groovy-json@default:default"/>
-        <setEntry value="groovy-jsr223@default:default"/>
-        <setEntry value="groovy-nio@default:default"/>
-        <setEntry value="groovy-sql@default:default"/>
-        <setEntry value="groovy-xml@default:default"/>
+        <setEntry value="groovy-console@default:false"/>
+        <setEntry value="groovy-datetime@default:false"/>
+        <setEntry value="groovy-json@default:false"/>
+        <setEntry value="groovy-jsr223@default:false"/>
+        <setEntry value="groovy-nio@default:false"/>
+        <setEntry value="groovy-sql@default:false"/>
+        <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.jws-api@default:default"/>
@@ -180,7 +180,7 @@
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
-        <setEntry value="org.apache.felix.scr@default:default"/>
+        <setEntry value="org.apache.felix.scr@1:true"/>
         <setEntry value="org.apache.felix.webconsole@default:true"/>
         <setEntry value="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
@@ -229,6 +229,7 @@
         <setEntry value="org.apache.xmlgraphics.batik-util@default:default"/>
         <setEntry value="org.apache.xmlgraphics.batik-xml@default:default"/>
         <setEntry value="org.apache.xmlgraphics@default:default"/>
+        <setEntry value="org.apiguardian@default:default"/>
         <setEntry value="org.atmosphere.runtime@default:default"/>
         <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.dom4j@default:default"/>
@@ -245,7 +246,7 @@
         <setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
         <setEntry value="org.eclipse.ecf.identity@default:default"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer.httpclient45@default:default"/>
-        <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:default"/>
+        <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:false"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
         <setEntry value="org.eclipse.ecf@default:default"/>
         <setEntry value="org.eclipse.equinox.app@default:default"/>
@@ -294,7 +295,7 @@
         <setEntry value="org.eclipse.jetty.jmx@default:default"/>
         <setEntry value="org.eclipse.jetty.jndi@default:default"/>
         <setEntry value="org.eclipse.jetty.osgi-servlet-api@default:default"/>
-        <setEntry value="org.eclipse.jetty.osgi.boot.jsp@default:default"/>
+        <setEntry value="org.eclipse.jetty.osgi.boot.jsp@default:false"/>
         <setEntry value="org.eclipse.jetty.osgi.boot@default:true"/>
         <setEntry value="org.eclipse.jetty.osgi.httpservice@10:true"/>
         <setEntry value="org.eclipse.jetty.plus@default:default"/>
@@ -313,10 +314,10 @@
         <setEntry value="org.eclipse.jetty.websocket.server@3:true"/>
         <setEntry value="org.eclipse.jetty.websocket.servlet@default:default"/>
         <setEntry value="org.eclipse.jetty.xml@default:default"/>
-        <setEntry value="org.eclipse.osgi.compatibility.state@default:default"/>
+        <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
         <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
-        <setEntry value="org.eclipse.osgi@default:default"/>
+        <setEntry value="org.eclipse.osgi@-1:true"/>
         <setEntry value="org.eclipse.text@default:default"/>
         <setEntry value="org.glassfish.external.management-api@default:default"/>
         <setEntry value="org.glassfish.gmbal.gmbal@default:default"/>
@@ -339,6 +340,11 @@
         <setEntry value="org.hamcrest.core@default:default"/>
         <setEntry value="org.jfree.chart@default:default"/>
         <setEntry value="org.jfree.jcommon@default:default"/>
+        <setEntry value="org.junit.jupiter.api@default:default"/>
+        <setEntry value="org.junit.jupiter.engine@default:default"/>
+        <setEntry value="org.junit.jupiter.params@default:default"/>
+        <setEntry value="org.junit.platform.commons@default:default"/>
+        <setEntry value="org.junit.platform.engine@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.jvnet.mimepull@default:default"/>
         <setEntry value="org.jvnet.staxex.stax-ex@default:default"/>
@@ -350,6 +356,7 @@
         <setEntry value="org.objectweb.asm.tree@default:default"/>
         <setEntry value="org.objectweb.asm.util@default:default"/>
         <setEntry value="org.objectweb.asm@default:default"/>
+        <setEntry value="org.opentest4j@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
@@ -360,7 +367,7 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
-        <setEntry value="slf4j.jcl@default:default"/>
+        <setEntry value="slf4j.jcl@default:false"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="zcommon@default:default"/>
         <setEntry value="zel@default:default"/>
@@ -371,7 +378,7 @@
         <setEntry value="zkplus@default:default"/>
         <setEntry value="zkwebfragment@default:default"/>
         <setEntry value="zul@default:default"/>
-        <setEntry value="zweb-dsp@default:default"/>
+        <setEntry value="zweb-dsp@default:false"/>
         <setEntry value="zweb@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
@@ -386,7 +393,7 @@
         <setEntry value="org.adempiere.plugin.utils@default:default"/>
         <setEntry value="org.adempiere.replication.server@default:default"/>
         <setEntry value="org.adempiere.replication@default:default"/>
-        <setEntry value="org.adempiere.report.jasper.library@default:default"/>
+        <setEntry value="org.adempiere.report.jasper.library@default:false"/>
         <setEntry value="org.adempiere.report.jasper@default:default"/>
         <setEntry value="org.adempiere.server@default:true"/>
         <setEntry value="org.adempiere.ui.zk@default:true"/>

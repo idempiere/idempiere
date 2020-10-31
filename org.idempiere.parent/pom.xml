@@ -32,7 +32,7 @@
 		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20200831200620/repository</idempiere-orbit-url>
 		<idempiere-orbit-repository-id>orbit-2020-09-R20200831200620</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
-		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group</extra.ui.install>
+		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.test.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<codehaus.plexus>2.8.5</codehaus.plexus>
 	</properties>
