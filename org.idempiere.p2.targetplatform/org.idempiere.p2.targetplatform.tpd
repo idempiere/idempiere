@@ -295,15 +295,22 @@ location "https://download.eclipse.org/eclipse/updates/4.17" {
 	org.eclipse.text
 	
 	//<< for test
+	org.opentest4j
+	org.apiguardian
+	org.junit
 	org.junit.jupiter.api
 	org.junit.jupiter.params
 	org.junit.jupiter.engine
-	org.opentest4j
+	org.junit.jupiter.migrationsupport
+	org.junit.vintage.engine
 	org.junit.platform.engine
 	org.junit.platform.commons
-	org.apiguardian
+	org.junit.platform.launcher
+	org.junit.platform.runner
+	org.junit.platform.suite.api
 	org.eclipse.pde.junit.runtime
 	org.eclipse.jdt.junit.runtime
+	org.eclipse.jdt.junit5.runtime
 	//>>
 }
 
@@ -340,7 +347,6 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202008312006
 	org.glassfish.jersey.ext.entityfiltering
 	org.glassfish.jersey.media.jersey-media-json-jackson
 	org.hamcrest.core
-	org.junit
 	org.w3c.css.sac
 	org.w3c.dom.svg
 }	
