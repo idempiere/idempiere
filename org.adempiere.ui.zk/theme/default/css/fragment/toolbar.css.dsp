@@ -26,6 +26,10 @@
 	padding: 1px;
 	border: none;	
 }
+.toolbar-overflow-popup-vertical .toolbar-button, 
+.toolbar-overflow-popup-vertical .toolbar-button .z-toolbarbutton-content {
+	width: auto;
+}
 
 .depressed img {
 	border-width: 1px;
@@ -94,6 +98,10 @@
 }
 .font-icon-menuitem i {
 	vertical-align: middle;
+}
+.toolbar-overflow-popup-vertical .font-icon-toolbar-button.toolbar-button, 
+.toolbar-overflow-popup-vertical .font-icon-toolbar-button.toolbar-button .z-toolbarbutton-content {
+	justify-content: flex-start;
 }
 .toolbar-searchbox {
     margin-right: 10px;
