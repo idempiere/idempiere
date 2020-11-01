@@ -1465,13 +1465,13 @@ public abstract class Doc
 
 		else
 		{
-			log.severe ("Not found AcctType=" + AcctType);
+			log.warning("Not found AcctType=" + AcctType);
 			return 0;
 		}
 		//  Do we have sql & Parameter
 		if (sql == null || para_1 == 0)
 		{
-			log.severe ("No Parameter for AcctType=" + AcctType + " - SQL=" + sql);
+			log.warning("No Parameter for AcctType=" + AcctType + " - SQL=" + sql);
 			return 0;
 		}
 
@@ -1505,7 +1505,7 @@ public abstract class Doc
 		//	No account
 		if (Account_ID == 0)
 		{
-			log.severe ("NO account Type="
+			log.warning("NO account Type="
 				+ AcctType + ", Record=" + p_po.get_ID());
 			return 0;
 		}

@@ -30,14 +30,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.logging.LogRecord;
 
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.PO;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CLogErrorBuffer;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
@@ -59,6 +63,11 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-829
 	 */
 	public void testOpenAmt() {
+		int severeCount = 0;
+		LogRecord[] errorLogs = CLogErrorBuffer.get(true).getRecords(true);
+		if (errorLogs != null)
+			severeCount = errorLogs.length;
+		
 		// Invoice $200 today
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 		invoice.setBPartner(MBPartner.get(Env.getCtx(), 117));  // C&W
@@ -89,9 +98,10 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
-		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
-		assertTrue(TWOHUNDRED.compareTo(invoice.getGrandTotal()) == 0);
+		assertFalse(info.isError(), "Error processing invoice: " + info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice document status is not completed: " + invoice.getDocStatus());
+		assertTrue(TWOHUNDRED.compareTo(invoice.getGrandTotal()) == 0, "Invoice grand total not as expected: " + invoice.getGrandTotal().toPlainString());
+		assertTrue(invoice.isPosted(), "Invoice not posted");
 
 		// first $100 payment next week
 		MPayment payment1 = new MPayment(Env.getCtx(), 0, getTrxName());
@@ -111,10 +121,16 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 
 		info = MWorkflow.runDocumentActionWorkflow(payment1, DocAction.ACTION_Complete);
 		payment1.load(getTrxName());
-		assertFalse(info.isError());
-		assertEquals(DocAction.STATUS_Completed, payment1.getDocStatus());
-		assertEquals(false, invoice.isPaid());
-
+		assertFalse(info.isError(), "Error processing payment: " + info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, payment1.getDocStatus(), "Payment document status is not completed: " + payment1.getDocStatus());
+		assertEquals(false, invoice.isPaid(), "Invoice isPaid() is not false");
+		assertTrue(payment1.isPosted(), "Payment not posted");
+		
+		ArrayList<PO> postProcessDocs = payment1.getDocsPostProcess();
+		for(PO postProcessDoc : postProcessDocs) {
+			assertTrue(postProcessDoc.get_ValueAsBoolean("Posted"), "Post Process Doc not posted: " + postProcessDoc);
+		}
+		
 		// second $100 payment next two weeks
 		MPayment payment2 = new MPayment(Env.getCtx(), 0, getTrxName());
 		payment2.setC_Invoice_ID(invoice.getC_Invoice_ID());
@@ -133,16 +149,26 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 
 		info = MWorkflow.runDocumentActionWorkflow(payment2, DocAction.ACTION_Complete);
 		payment2.load(getTrxName());
-		assertFalse(info.isError());
-		assertEquals(DocAction.STATUS_Completed, payment2.getDocStatus());
+		assertFalse(info.isError(), "Error processing payment: " + info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, payment2.getDocStatus(), "Payment document status is not completed: " + payment2.getDocStatus());
+		assertTrue(payment2.isPosted(), "Payment not posted");
 
+		postProcessDocs = payment2.getDocsPostProcess();
+		for(PO postProcessDoc : postProcessDocs) {
+			assertTrue(postProcessDoc.get_ValueAsBoolean("Posted"), "Post Process Doc not posted: " + postProcessDoc);
+		}
+		
 		invoice.load(getTrxName());
-		assertEquals(true, invoice.isPaid());
-		assertTrue(Env.ZERO.compareTo(invoice.getOpenAmt()) == 0);
+		assertEquals(true, invoice.isPaid(), "Invoice isPaid() is not true");
+		assertTrue(Env.ZERO.compareTo(invoice.getOpenAmt()) == 0, "Invoice open amount not zero: " + invoice.getOpenAmt().toPlainString());
 		assertTrue(TWOHUNDRED.compareTo(invoice.getOpenAmt(false, today, true)) == 0);
 		assertTrue(Env.ONEHUNDRED.compareTo(invoice.getOpenAmt(false, nextweek, true)) == 0);
 		assertTrue(Env.ZERO.compareTo(invoice.getOpenAmt(false, next2weeks, true)) == 0);
 
+		errorLogs = CLogErrorBuffer.get(true).getRecords(true);
+		if (errorLogs != null)
+			assertEquals(severeCount, errorLogs.length, "Severe errors recorded in log: " + errorLogs.length);
+		
 		rollback();
 	}
 }
