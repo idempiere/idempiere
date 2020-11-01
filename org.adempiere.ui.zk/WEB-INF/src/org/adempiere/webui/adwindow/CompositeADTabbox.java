@@ -912,19 +912,23 @@ public class CompositeADTabbox extends AbstractADTabbox
 			if (!tabPanel.getGridTab().isSortTab()) {
 				currentRow = tabPanel.getGridTab().getCurrentRow();
 			}
-			tabPanel.query(false, 0, 0);
+			tabPanel.query(false, 0, 0);			
 			if (currentRow >= 0 && currentRow != tabPanel.getGridTab().getCurrentRow() 
 				&& currentRow < tabPanel.getGridTab().getRowCount()) {
 				tabPanel.getGridTab().setCurrentRow(currentRow, false);
-			}
-			Center center = findCenter(tabPanel.getGridView());
-			if (center != null)
-				center.invalidate();
-			else
-				tabPanel.invalidate();
+			}			
 		}
 		if (!tabPanel.isVisible()) {
 			tabPanel.setVisible(true);
+			if (tabPanel.getDesktop() != null) {
+				Executions.schedule(tabPanel.getDesktop(), e -> {
+					invalidateTabPanel(tabPanel);
+				}, new Event("onPostActivateDetail", tabPanel));
+			} else {
+				invalidateTabPanel(tabPanel);
+			}
+		} else {
+			invalidateTabPanel(tabPanel);
 		}
 		boolean wasForm = false;
 		if (!tabPanel.isGridView()) {
@@ -945,6 +949,14 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 		if (wasForm && tabPanel.getTabLevel() == 0 && headerTab.getTabLevel() != 0) // maintain form on header when zooming to a detail tab
 			tabPanel.switchRowPresentation();
+	}
+
+	private void invalidateTabPanel(IADTabpanel tabPanel) {
+		Center center = findCenter(tabPanel.getGridView());
+		if (center != null)
+			center.invalidate();
+		else
+			tabPanel.invalidate();
 	}
 	
 	private Center findCenter(GridView gridView) {
