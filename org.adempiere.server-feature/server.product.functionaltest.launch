@@ -161,7 +161,6 @@
         <setEntry value="org.glassfish.hk2.locator@default:default"/>
         <setEntry value="org.glassfish.hk2.osgi-resource-locator@default:default"/>
         <setEntry value="org.glassfish.hk2.utils@default:default"/>
-        <setEntry value="org.glassfish.jersey.bundles.repackaged.jersey-guava@default:default"/>
         <setEntry value="org.glassfish.jersey.core.jersey-common@default:default"/>
         <setEntry value="org.jfree.chart@default:default"/>
         <setEntry value="org.jfree.jcommon@default:default"/>
@@ -176,7 +175,7 @@
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.springframework.spring-jcl@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
-        <setEntry value="slf4j.jcl@default:default"/>
+        <setEntry value="slf4j.jcl@default:false"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="zcommon@default:default"/>
         <setEntry value="zel@default:default"/>

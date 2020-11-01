@@ -106,7 +106,8 @@
         <setEntry value="javax.interceptor-api@default:default"/>
         <setEntry value="javax.jms@default:default"/>
         <setEntry value="javax.transaction-api@default:default"/>
-        <setEntry value="javax.validation.api@default:default"/>
+        <setEntry value="javax.validation.api*1.1.0.Final@default:default"/>
+        <setEntry value="javax.validation.api*2.0.1.Final@default:default"/>
         <setEntry value="javax.websocket-api@default:default"/>
         <setEntry value="joda-time@default:default"/>
         <setEntry value="json@default:default"/>
@@ -301,7 +302,6 @@
         <setEntry value="org.glassfish.hk2.osgi-resource-locator@default:default"/>
         <setEntry value="org.glassfish.hk2.utils@default:default"/>
         <setEntry value="org.glassfish.jaxb.txw2@default:default"/>
-        <setEntry value="org.glassfish.jersey.bundles.repackaged.jersey-guava@default:default"/>
         <setEntry value="org.glassfish.jersey.containers.servlet.core@default:default"/>
         <setEntry value="org.glassfish.jersey.core.jersey-client@default:default"/>
         <setEntry value="org.glassfish.jersey.core.jersey-common@default:default"/>

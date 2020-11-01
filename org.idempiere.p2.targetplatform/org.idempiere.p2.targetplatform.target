@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
-<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-201030" sequenceNumber="1604136260">
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl --><target name="idempiere-201101" sequenceNumber="1604210681">
   <locations>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.sun.istack.commons-runtime" version="3.0.8"/>
       <unit id="com.sun.org.apache.xml.internal.resolver" version="20050927.0.0"/>
       <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.16"/>
@@ -23,7 +22,7 @@
       <unit id="org.jvnet.staxex.stax-ex" version="1.8.1"/>
       <repository location="https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webservice.client-p2-R20190412"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="zcommon" version="9.5.0.1"/>
       <unit id="zel" version="9.5.0.1"/>
       <unit id="zhtml" version="9.5.0.1"/>
@@ -37,24 +36,24 @@
       <unit id="zweb-dsp" version="9.5.0.1"/>
       <repository location="https://idempiere.github.io/binary.file/p2.zk/9.5.0.1"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="bcmail" version="1.66.0"/>
       <unit id="bcpkix" version="1.66.0"/>
       <unit id="bcprov" version="1.66.0"/>
       <unit id="bctsp" version="1.46.0"/>
       <unit id="com.diffplug.osgi.extension.sun.misc" version="0.0.0"/>
-      <unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.core.jackson-core" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.core.jackson-databind" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.10.0"/>
-      <unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.10.0"/>
+      <unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.core.jackson-core" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.core.jackson-databind" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.10.1"/>
+      <unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.10.1"/>
       <unit id="com.fasterxml.woodstox.woodstox-core" version="6.0.1"/>
       <unit id="com.github.relaxng.Datatype" version="2011.1.0"/>
       <unit id="com.google.zxing.core" version="3.4.0"/>
@@ -87,6 +86,7 @@
       <unit id="javax.interceptor-api" version="1.2.2"/>
       <unit id="javax.transaction-api" version="1.3.0"/>
       <unit id="javax.validation.api" version="1.1.0.Final"/>
+      <unit id="javax.validation.api" version="2.0.1.Final"/>
       <unit id="javax.websocket-api" version="1.1.0"/>
       <unit id="joda-time" version="2.10.8"/>
       <unit id="json" version="20180813.0.0"/>
@@ -197,7 +197,6 @@
       <unit id="org.eclipse.jetty.websocket.servlet" version="9.4.33.v20201020"/>
       <unit id="org.eclipse.jetty.xml" version="9.4.33.v20201020"/>
       <unit id="org.glassfish.hk2.osgi-resource-locator" version="1.0.3"/>
-      <unit id="org.glassfish.jersey.bundles.repackaged.jersey-guava" version="2.22.1"/>
       <unit id="org.jfree.chart" version="1.0.19"/>
       <unit id="org.jfree.jcommon" version="1.0.23"/>
       <unit id="org.krysalis.barcode4j" version="2.1.0"/>
@@ -215,9 +214,9 @@
       <unit id="slf4j.api" version="1.7.25"/>
       <unit id="slf4j.jcl" version="1.7.25"/>
       <unit id="stax2-api" version="4.2.0"/>
-      <repository location="https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029"/>
+      <repository location="https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201101"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="org.eclipse.osgi" version="3.16.0.v20200828-0759"/>
       <unit id="org.apache.commons.codec" version="1.13.0.v20200108-0001"/>
       <unit id="org.apache.commons.logging" version="1.2.0.v20180409-1502"/>
@@ -304,7 +303,7 @@
       <unit id="org.eclipse.jdt.junit5.runtime" version="1.0.1000.v20200720-0748"/>
       <repository location="https://download.eclipse.org/eclipse/updates/4.17"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.gson" version="2.8.2.v20180104-1110"/>
       <unit id="com.google.guava" version="27.1.0.v20190517-1946"/>
       <unit id="javax.inject" version="1.0.0.v20091030"/>
@@ -330,6 +329,7 @@
       <unit id="org.glassfish.hk2.api" version="2.6.1.v20200513-1859"/>
       <unit id="org.glassfish.hk2.locator" version="2.6.1.v20200513-1859"/>
       <unit id="org.glassfish.hk2.utils" version="2.6.1.v20200513-1859"/>
+      <unit id="org.glassfish.jersey.inject.jersey-hk2" version="2.30.1.v20200512-1802"/>
       <unit id="org.glassfish.jersey.containers.servlet.core" version="2.30.1.v20200513-1859"/>
       <unit id="org.glassfish.jersey.core.jersey-client" version="2.30.1.v20200513-1859"/>
       <unit id="org.glassfish.jersey.core.jersey-common" version="2.30.1.v20200513-1859"/>

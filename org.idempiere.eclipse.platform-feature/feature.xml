@@ -418,4 +418,18 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="javax.validation.api"
+         download-size="0"
+         install-size="0"
+         version="2.0.1.Final"
+         unpack="false"/>
+
+   <plugin
+         id="org.glassfish.jersey.inject.jersey-hk2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
