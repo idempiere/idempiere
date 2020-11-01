@@ -1,5 +1,5 @@
 
-target "idempiere-201030"
+target "idempiere-201101"
 
 with source configurePhase allEnvironments
 
@@ -37,7 +37,7 @@ location "https://idempiere.github.io/binary.file/p2.zk/9.5.0.1" {
 	zweb-dsp
 }
 
-location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
+location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201101" {
 	bcmail
 	bcpkix
 	bcprov
@@ -86,7 +86,7 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	javax.enterprise.cdi-api
 	javax.interceptor-api
 	javax.transaction-api
-	javax.validation.api
+	javax.validation.api [1.1.0.Final,1.1.0.Final]
 	javax.websocket-api
 	joda-time
 	json
@@ -197,7 +197,6 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201029" {
 	org.eclipse.jetty.websocket.servlet
 	org.eclipse.jetty.xml
 	org.glassfish.hk2.osgi-resource-locator
-	org.glassfish.jersey.bundles.repackaged.jersey-guava
 	org.jfree.chart
 	org.jfree.jcommon
 	org.krysalis.barcode4j
@@ -340,6 +339,7 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202008312006
 	org.glassfish.hk2.api
 	org.glassfish.hk2.locator
 	org.glassfish.hk2.utils
+	org.glassfish.jersey.inject.jersey-hk2
 	org.glassfish.jersey.containers.servlet.core
 	org.glassfish.jersey.core.jersey-client
 	org.glassfish.jersey.core.jersey-common

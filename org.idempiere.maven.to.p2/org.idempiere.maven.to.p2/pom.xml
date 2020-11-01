@@ -16,9 +16,10 @@
 		<org.apache.taglibs.version>1.2.5</org.apache.taglibs.version>
 		<groovy.version>2.5.3</groovy.version>
 		<org.bouncycastle.version>1.66</org.bouncycastle.version><!--https://www.bouncycastle.org/latest_releases.html-->
-		<jackson.version>2.10.0</jackson.version> <!--jasperreport dependency-->
+		<jackson.version>2.10.1</jackson.version> <!--jasperreport/jersey dependency-->
 		<stax2.api.version>4.2</stax2.api.version> <!--jackson-dataformat-xml dependency-->
-		<validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jasperreport engine-->
+		<validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jackson-module-jsonSchema-->
+		<validation.api.jersey.version>2.0.1.Final</validation.api.jersey.version> <!--jersey-server also import it but from 2.0-->
 		<woodstox.core.version>6.0.1</woodstox.core.version> <!--jackson-dataformat-xml dependency-->
 		<json.version>20180813</json.version> <!--jackson-datatype-json-org dependency-->
 		<slf4j.version>1.7.25</slf4j.version>
@@ -946,6 +947,11 @@
 										</artifact>
 										<artifact>
 											<id>javax.validation:validation-api:jar:${validation.api.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>javax.validation:validation-api:jar:${validation.api.jersey.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

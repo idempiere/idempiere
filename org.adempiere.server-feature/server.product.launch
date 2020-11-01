@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
     <setAttribute key="additional_plugins">
@@ -232,7 +231,6 @@
         <setEntry value="org.apache.xmlgraphics.batik-util@default:default"/>
         <setEntry value="org.apache.xmlgraphics.batik-xml@default:default"/>
         <setEntry value="org.apache.xmlgraphics@default:default"/>
-        <setEntry value="org.apiguardian@default:default"/>
         <setEntry value="org.atmosphere.runtime@default:default"/>
         <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.dom4j@default:default"/>
@@ -343,11 +341,6 @@
         <setEntry value="org.hamcrest.core@default:default"/>
         <setEntry value="org.jfree.chart@default:default"/>
         <setEntry value="org.jfree.jcommon@default:default"/>
-        <setEntry value="org.junit.jupiter.api@default:default"/>
-        <setEntry value="org.junit.jupiter.engine@default:default"/>
-        <setEntry value="org.junit.jupiter.params@default:default"/>
-        <setEntry value="org.junit.platform.commons@default:default"/>
-        <setEntry value="org.junit.platform.engine@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.jvnet.mimepull@default:default"/>
         <setEntry value="org.jvnet.staxex.stax-ex@default:default"/>
@@ -359,7 +352,6 @@
         <setEntry value="org.objectweb.asm.tree@default:default"/>
         <setEntry value="org.objectweb.asm.util@default:default"/>
         <setEntry value="org.objectweb.asm@default:default"/>
-        <setEntry value="org.opentest4j@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
