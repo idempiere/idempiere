@@ -4880,20 +4880,34 @@ public abstract class PO
 	    p_info = initPO(p_ctx);
 	}
 	
-	public void set_Attribute(String columnName, Object value) {
+	/**
+	 * set attribute value
+	 * @param attributeName
+	 * @param value
+	 */
+	public void set_Attribute(String attributeName, Object value) {
 		checkImmutable();
 		
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
-		m_attributes.put(columnName, value);
+		m_attributes.put(attributeName, value);
 	}
 	
-	public Object get_Attribute(String columnName) {
+	/**
+	 * 
+	 * @param attributeName
+	 * @return attribute value
+	 */
+	public Object get_Attribute(String attributeName) {
 		if (m_attributes != null)
-			return m_attributes.get(columnName);
+			return m_attributes.get(attributeName);
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return map of attributes
+	 */
 	public HashMap<String,Object> get_Attributes() {
 		return m_attributes;
 	}
