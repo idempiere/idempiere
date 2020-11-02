@@ -228,11 +228,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnAttachment = createButton("Attachment", "Attachment", "Attachment");
         btnPostIt = createButton("PostIt", "PostIt", "PostIt");
         btnChat = createButton("Chat", "Chat", "Chat");
-        btnGridToggle = createButton("Toggle", "Multi", "Multi");
+        btnGridToggle = createButton("Toggle", "Multi", "Toggle");
         btnGridToggle.setTooltiptext(btnGridToggle.getTooltiptext()+ "    Alt+T");
-        btnParentRecord = createButton("ParentRecord", "Parent", "Parent");
+        btnParentRecord = createButton("ParentRecord", "Parent", "ParentRecord");
         btnParentRecord.setTooltiptext(btnParentRecord.getTooltiptext()+ "   Alt+Up");
-        btnDetailRecord = createButton("DetailRecord", "Detail", "Detail");
+        btnDetailRecord = createButton("DetailRecord", "Detail", "DetailRecord");
         btnDetailRecord.setTooltiptext(btnDetailRecord.getTooltiptext()+ "   Alt+Down");
         btnReport = createButton("Report", "Report", "Report");
         btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
@@ -245,10 +245,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     		btnLock.setVisible(isPersonalLock);
         }
 		btnZoomAcross = createButton("ZoomAcross", "ZoomAcross", "ZoomAcross");
-        btnActiveWorkflows = createButton("ActiveWorkflows", "WorkFlow", "WorkFlow");
-        btnRequests = createButton("Requests", "Request", "Request");
+        btnActiveWorkflows = createButton("ActiveWorkflows", "WorkFlow", "ActiveWorkflows");
+        btnRequests = createButton("Requests", "Request", "Requests");
         if (isAllowProductInfo) {
-            btnProductInfo = createButton("ProductInfo", "Product", "InfoProduct");
+            btnProductInfo = createButton("ProductInfo", "Product", "ProductInfo");
             btnProductInfo.setDisabled(!isAllowProductInfo); // Elaine 2008/07/22
             btnProductInfo.setVisible(isAllowProductInfo);
         }
