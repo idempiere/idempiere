@@ -240,14 +240,7 @@ public class MTree extends MTree_Base
 		StringBuilder sql = new StringBuilder();
 		if (getTreeType().equals(TREETYPE_Menu))	// specific sql, need to load TreeBar IDEMPIERE 329 - nmicoud
 		{
-			sql = new StringBuilder("SELECT "
-					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,tb.IsActive "
-					+ "FROM ").append(getNodeTableName()).append(" tn"
-							+ " LEFT OUTER JOIN AD_TreeBar tb ON (tn.AD_Tree_ID=tb.AD_Tree_ID"
-							+ " AND tn.Node_ID=tb.Node_ID AND tb.IsFavourite = 'Y'"
-							+ (AD_User_ID != -1 ? " AND tb.AD_User_ID=? ": "") 	//	#1 (conditional)
-							+ ") "
-							+ "WHERE tn.AD_Tree_ID=?");								//	#2
+			sql = new StringBuilder("SELECT tn.Node_ID,tn.Parent_ID,tn.SeqNo,'N' FROM ").append(getNodeTableName()).append(" tn  WHERE tn.AD_Tree_ID=?");
 			if (!m_editable)
 				sql.append(" AND tn.IsActive='Y'");
 			sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
@@ -284,10 +277,7 @@ public class MTree extends MTree_Base
 			getNodeDetails(); 
 			//
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			int idx = 1;
-			if (AD_User_ID != -1 && getTreeType().equals(TREETYPE_Menu))	// IDEMPIERE 329 - nmicoud
-				pstmt.setInt(idx++, AD_User_ID);
-			pstmt.setInt(idx++, getAD_Tree_ID());
+			pstmt.setInt(1, getAD_Tree_ID());
 			//	Get Tree & Bar
 			rs = pstmt.executeQuery();
 			m_root = new MTreeNode (0, 0, getName(), getDescription(), 0, true, null, false, null);

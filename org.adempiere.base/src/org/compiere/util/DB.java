@@ -2539,6 +2539,43 @@ public final class DB
     	return rowsArray;
 	}
 
+	/**
+	 * Get Boolean Value from SQL
+	 * 
+	 * @param  trxName     trx
+	 * @param  sql         sql
+	 * @param  params      array of parameters
+	 * @return             first boolean value or false
+	 * @throws DBException if there is any SQLException
+	 */
+	public static boolean getSQLValueBooleanEx(String trxName, String sql, Object... params)
+	{
+		boolean retValue = false;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = prepareStatement(sql, trxName);
+			setParameters(pstmt, params);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+				retValue = rs.getBoolean(1);
+			else if (log.isLoggable(Level.WARNING))
+				log.fine("No Value " + sql);
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
+		}
+		finally
+		{
+			close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+		return retValue;
+	} // getSQLValueBooleanEx
+
 	/**	Read Replica Statements List	*/
 	private static final List<PreparedStatement> readReplicaStatements = Collections.synchronizedList(new ArrayList<PreparedStatement>());
 
