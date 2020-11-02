@@ -1228,9 +1228,9 @@ public abstract class Doc
 	/**	Account Type - Invoice - AP  */
 	public static final int 	ACCTTYPE_V_Liability    = 2;
 	/**	Account Type - Invoice - AP Service  */
-	public static final int 	ACCTTYPE_V_Liability_Services    = 3;
+	public static final int 	ACCTTYPE_V_Liability_Services    = 3; // Deprecated IDEMPIERE-362
 	/**	Account Type - Invoice - AR Service  */
-	public static final int 	ACCTTYPE_C_Receivable_Services   = 4;
+	public static final int 	ACCTTYPE_C_Receivable_Services   = 4; // Deprecated IDEMPIERE-362
 
 	/** Account Type - Payment - Unallocated */
 	public static final int     ACCTTYPE_UnallocatedCash = 10;
@@ -1313,7 +1313,7 @@ public abstract class Doc
 			sql = "SELECT V_Liability_Acct FROM C_BP_Vendor_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
 		}
-		else if (AcctType == ACCTTYPE_V_Liability_Services)
+		else if (AcctType == ACCTTYPE_V_Liability_Services) // Deprecated IDEMPIERE-362
 		{
 			sql = "SELECT V_Liability_Services_Acct FROM C_BP_Vendor_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
@@ -1323,7 +1323,7 @@ public abstract class Doc
 			sql = "SELECT C_Receivable_Acct FROM C_BP_Customer_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
 		}
-		else if (AcctType == ACCTTYPE_C_Receivable_Services)
+		else if (AcctType == ACCTTYPE_C_Receivable_Services) // Deprecated IDEMPIERE-362
 		{
 			sql = "SELECT C_Receivable_Services_Acct FROM C_BP_Customer_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
