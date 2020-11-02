@@ -425,7 +425,7 @@ UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y', Updated=getDate(), Updated
 -- Oct 28, 2020, 5:20:55 PM IST
 UPDATE AD_Field SET SeqNoGrid=100,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=206539
 ;
-0
+
 -- Oct 28, 2020, 5:20:55 PM IST
 UPDATE AD_Field SET SeqNoGrid=110,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=206540
 ;
