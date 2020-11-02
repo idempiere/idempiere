@@ -148,6 +148,11 @@ public class WebEnv
 			return true;
 		}
 
+		Properties ctx = new Properties();
+		Env.setContext(ctx, Env.AD_CLIENT_ID, 0);
+		Env.setContext(ctx, Env.AD_USER_ID, 0);
+		ServerContext.setCurrentInstance(ctx);
+		
 		//  Load Environment Variables (serverApps/src/web/WEB-INF/web.xml)
 		Enumeration<String> en = context.getInitParameterNames();
 		StringBuilder info = new StringBuilder("Servlet Context Init Parameters: ")
@@ -179,18 +184,12 @@ public class WebEnv
 
 		//	Logging now initiated
 		if (log.isLoggable(Level.INFO)) log.info(info.toString());
-		//
-		Properties ctx = new Properties();
-		try {
-			ServerContext.setCurrentInstance(ctx);
-			MClient client = MClient.get(Env.getCtx(), 0);
-			MSystem system = MSystem.get(Env.getCtx());
-			client.sendEMail(client.getRequestEMail(),
-				"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
-				"ServerInfo: " + context.getServerInfo(), null);
-		} finally {
-			ServerContext.dispose();
-		}
+		//		
+		MClient client = MClient.get(Env.getCtx(), 0);
+		MSystem system = MSystem.get(Env.getCtx());
+		client.sendEMail(client.getRequestEMail(),
+			"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
+			"ServerInfo: " + context.getServerInfo(), null);
 
 		return s_initOK;
 	}	//	initWeb
