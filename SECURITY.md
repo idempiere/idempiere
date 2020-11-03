@@ -4,8 +4,8 @@
 
 | Version             | Supported          |
 | ------------------- | ------------------ |
-| release-7.1         | :white_check_mark: |
-| master a.k.a. 7.1z  | :white_check_mark: |
+| release-8.1         | :white_check_mark: |
+| master a.k.a. 8.1z  | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
