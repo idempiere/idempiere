@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Node_Asset
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 @SuppressWarnings("all")
 public interface I_PP_Order_Node_Asset 

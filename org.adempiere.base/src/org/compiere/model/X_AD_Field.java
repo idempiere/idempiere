@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200911L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -893,7 +893,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public static final String ISSELECTIONCOLUMN_No = "N";
 	/** Set Selection Column.
 		@param IsSelectionColumn 
-		Is this column used for Lookup rows in windows
+		Is this column used for finding rows in windows
 	  */
 	public void setIsSelectionColumn (String IsSelectionColumn)
 	{
@@ -902,7 +902,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	/** Get Selection Column.
-		@return Is this column used for Lookup rows in windows
+		@return Is this column used for finding rows in windows
 	  */
 	public String getIsSelectionColumn () 
 	{
