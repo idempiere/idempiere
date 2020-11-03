@@ -401,3 +401,27 @@
     0% { transform: translateX(100%); }
     100% { transform: translateX(0%); }
 }
+
+@media only screen 
+  and (max-device-width: 700px) {
+	.adwindow-detailpane-toolbar .z-paging-button {
+		margin-right: 2px;
+	}
+	.adwindow-detailpane-toolbar .z-paging-input {
+		margin-left: 3px;
+	}
+	.adwindow-detailpane-toolbar .z-paging-text {
+		margin-right: 3px;
+	}
+	.adwindow-detailpane-toolbar {
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+}
+@media only screen 
+  and (max-device-width: 350px) {
+ 	.adwindow-detailpane-toolbar .z-paging-input {
+		width: 30px;
+	}
+}
+  

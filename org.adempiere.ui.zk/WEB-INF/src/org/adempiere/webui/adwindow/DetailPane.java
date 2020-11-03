@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.base.IServiceHolder;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
@@ -447,8 +448,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		messageContainer.setAlign("center");
 		messageContainer.setSclass("adwindow-detailpane-message");
 		messageContainer.setId("messages");
-		
-		toolbar.appendChild(new Space());
+		if (ClientInfo.minWidth(ClientInfo.SMALL_WIDTH))
+			toolbar.appendChild(new Space());
 		toolbar.appendChild(messageContainer);
 		toolbar.setSclass("adwindow-detailpane-toolbar");
 		ZKUpdateUtil.setVflex(toolbar, "0");
@@ -582,7 +583,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     		label.setStyle("cursor: pointer");
     		messageContainer.appendChild(label);
     		label.addEventListener(Events.ON_CLICK, this);
-    	}    	
+    	} else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH)) {
+    		label.addEventListener(Events.ON_CLICK, this);
+    		label.setStyle("cursor: pointer");
+    	}
     	
     	messageContainer.appendChild(new Space());
 	}
