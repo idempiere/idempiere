@@ -298,6 +298,3 @@
 .z-icon-Calendar:before {
 	content: "\f073";
 }
-.z-icon-TreeFavNodeAdd:before {
-	content: "\f07b";
-}
