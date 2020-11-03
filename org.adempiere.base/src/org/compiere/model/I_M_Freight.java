@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Freight
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 public interface I_M_Freight 
 {
@@ -148,6 +148,24 @@ public interface I_M_Freight
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name MaxDimension */
+    public static final String COLUMNNAME_MaxDimension = "MaxDimension";
+
+	/** Set Max Dimension	  */
+	public void setMaxDimension (BigDecimal MaxDimension);
+
+	/** Get Max Dimension	  */
+	public BigDecimal getMaxDimension();
+
+    /** Column name MaxWeight */
+    public static final String COLUMNNAME_MaxWeight = "MaxWeight";
+
+	/** Set Max Weight	  */
+	public void setMaxWeight (BigDecimal MaxWeight);
+
+	/** Get Max Weight	  */
+	public BigDecimal getMaxWeight();
 
     /** Column name M_FreightCategory_ID */
     public static final String COLUMNNAME_M_FreightCategory_ID = "M_FreightCategory_ID";

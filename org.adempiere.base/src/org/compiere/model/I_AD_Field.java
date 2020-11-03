@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 public interface I_AD_Field 
 {
@@ -541,12 +541,12 @@ public interface I_AD_Field
     public static final String COLUMNNAME_IsSelectionColumn = "IsSelectionColumn";
 
 	/** Set Selection Column.
-	  * Is this column used for Lookup rows in windows
+	  * Is this column used for finding rows in windows
 	  */
 	public void setIsSelectionColumn (String IsSelectionColumn);
 
 	/** Get Selection Column.
-	  * Is this column used for Lookup rows in windows
+	  * Is this column used for finding rows in windows
 	  */
 	public String getIsSelectionColumn();
 

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Freight
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_M_Freight extends PO implements I_M_Freight, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_M_Freight (Properties ctx, int M_Freight_ID, String trxName)
@@ -177,6 +177,40 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	public BigDecimal getFreightAmt () 
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FreightAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Max Dimension.
+		@param MaxDimension Max Dimension	  */
+	public void setMaxDimension (BigDecimal MaxDimension)
+	{
+		set_Value (COLUMNNAME_MaxDimension, MaxDimension);
+	}
+
+	/** Get Max Dimension.
+		@return Max Dimension	  */
+	public BigDecimal getMaxDimension () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxDimension);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Max Weight.
+		@param MaxWeight Max Weight	  */
+	public void setMaxWeight (BigDecimal MaxWeight)
+	{
+		set_Value (COLUMNNAME_MaxWeight, MaxWeight);
+	}
+
+	/** Get Max Weight.
+		@return Max Weight	  */
+	public BigDecimal getMaxWeight () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxWeight);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

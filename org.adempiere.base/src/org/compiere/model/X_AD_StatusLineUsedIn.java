@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_StatusLineUsedIn
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200916L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
@@ -40,7 +40,7 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
 			setEntityType (null);
-// U
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setIsStatusLine (true);
 // Y
         } */
