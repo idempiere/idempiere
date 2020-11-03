@@ -607,6 +607,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			grid.invalidate();
 		}
 
+		if (MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_VIEW_USE_DEFER_RENDERING, false, Env.getAD_Client_ID(Env.getCtx())))
+			row.setRenderdefer(1);
 	}
 
 	/**
