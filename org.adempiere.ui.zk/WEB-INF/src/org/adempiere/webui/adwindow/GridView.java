@@ -799,11 +799,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 				gridTab.clearSelection();
-				Center center = findCenter(this);
-				if (center != null)
-					center.invalidate();
-				else
-					this.invalidate();
+				invalidateGridView();
 			}
 		}
 		else if (event.getTarget() == selectAll)
@@ -1220,6 +1216,13 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		refresh(gridTab);
 		scrollToCurrentRow();
+		invalidateGridView();
+	}
+
+	/**
+	 * redraw grid view
+	 */
+	public void invalidateGridView() {
 		Center center = findCenter(this);
 		if (center != null)
 			center.invalidate();

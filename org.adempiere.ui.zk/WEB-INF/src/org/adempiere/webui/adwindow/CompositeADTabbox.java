@@ -493,8 +493,9 @@ public class CompositeADTabbox extends AbstractADTabbox
     			}
     			hasChanges = true;
     		}
-    		if (hasChanges)
-    			headerTab.getDetailPane().invalidate();
+    		if (hasChanges) {
+    			headerTab.getDetailPane().getParent().invalidate();
+    		}
     	}
 	}
 
