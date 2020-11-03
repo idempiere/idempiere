@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceType
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_WS_WebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName)
@@ -134,6 +134,20 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Create Default Parameters.
+		@param InsertParameters Create Default Parameters	  */
+	public void setInsertParameters (String InsertParameters)
+	{
+		set_Value (COLUMNNAME_InsertParameters, InsertParameters);
+	}
+
+	/** Get Create Default Parameters.
+		@return Create Default Parameters	  */
+	public String getInsertParameters () 
+	{
+		return (String)get_Value(COLUMNNAME_InsertParameters);
 	}
 
 	/** Set Name.

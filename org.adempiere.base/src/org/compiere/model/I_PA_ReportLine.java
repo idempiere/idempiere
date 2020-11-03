@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 public interface I_PA_ReportLine 
 {
@@ -219,6 +219,15 @@ public interface I_PA_ReportLine
 
 	public org.compiere.model.I_PA_ReportLine getOper_2() throws RuntimeException;
 
+    /** Column name OverlineStrokeType */
+    public static final String COLUMNNAME_OverlineStrokeType = "OverlineStrokeType";
+
+	/** Set Overline Stroke Type	  */
+	public void setOverlineStrokeType (String OverlineStrokeType);
+
+	/** Get Overline Stroke Type	  */
+	public String getOverlineStrokeType();
+
     /** Column name PAAmountType */
     public static final String COLUMNNAME_PAAmountType = "PAAmountType";
 
@@ -301,15 +310,6 @@ public interface I_PA_ReportLine
  lowest number comes first
 	  */
 	public int getSeqNo();
- 
-   /** Column name OverlineStrokeType */
-    public static final String COLUMNNAME_OverlineStrokeType = "OverlineStrokeType";
-
-	/** Set Overline Stroke Type	  */
-	public void setOverlineStrokeType (String OverlineStrokeType);
-
-	/** Get Overline Stroke Type	  */
-	public String getOverlineStrokeType();
 
     /** Column name UnderlineStrokeType */
     public static final String COLUMNNAME_UnderlineStrokeType = "UnderlineStrokeType";

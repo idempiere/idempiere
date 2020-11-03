@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Win
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Win (Properties ctx, int AD_UserDef_Win_ID, String trxName)

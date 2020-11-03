@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_PriceList
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_I_PriceList (Properties ctx, int I_PriceList_ID, String trxName)

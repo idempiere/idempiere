@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200911L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -86,9 +86,9 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
 	{
 		if (AD_FieldGroup_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_FieldGroup_ID, null);
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
 	}
 
 	/** Get Field Group.
