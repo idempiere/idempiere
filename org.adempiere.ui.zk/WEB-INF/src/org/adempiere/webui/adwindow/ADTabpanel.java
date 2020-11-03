@@ -1367,6 +1367,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	if (tabPanel != null) {
     		if (!tabPanel.isActivated()) {
     			tabPanel.activate(true);
+    		} else {
+    			tabPanel.getGridView().invalidateGridView();
     		}
 	    	if (!tabPanel.isGridView()) {
 	    		tabPanel.switchRowPresentation();	
@@ -1568,7 +1570,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	listPanel.dynamicDisplay(col);
         	if (GridTable.DATA_REFRESH_MESSAGE.equals(e.getAD_Message()) || 
         		"Sorted".equals(e.getAD_Message())) {
-        		listPanel.getListbox().invalidate();
+        		listPanel.invalidateGridView();
         	}
         }
     }
