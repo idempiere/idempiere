@@ -23,7 +23,10 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
+import org.compiere.model.MLanguage;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Timebox;
@@ -110,6 +113,9 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 	private void init()
 	{
 		getComponent().setCols(10);
+		MLanguage mlang = MLanguage.get(Env.getCtx(), Language.getLoginLanguage());
+		if (mlang != null && mlang.get_ID() > 0 && mlang.getTimePattern() != null)
+			getComponent().setFormat(mlang.getTimePattern());
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
 		popupMenu.addMenuListener(this);
 		addChangeLogMenu(popupMenu);
