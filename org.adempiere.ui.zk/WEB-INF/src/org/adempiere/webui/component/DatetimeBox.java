@@ -16,11 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.compiere.model.MLanguage;
-import org.compiere.util.Env;
-import org.compiere.util.Language;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Timebox;
 
 /**
  * 
@@ -41,9 +37,6 @@ public class DatetimeBox extends Panel {
 		dateBox.setCols(10);
 		timeBox = new Timebox();
 		timeBox.setCols(10);
-		MLanguage mlang = MLanguage.get(Env.getCtx(), Language.getLoginLanguage());
-		if (mlang != null && mlang.get_ID() > 0 && mlang.getTimePattern() != null)
-			timeBox.setFormat(mlang.getTimePattern());
 		//timeBox.setButtonVisible(false);
 		appendChild(dateBox);
 		appendChild(timeBox);

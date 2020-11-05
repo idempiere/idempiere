@@ -29,6 +29,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.Timebox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.theme.ThemeManager;
@@ -50,7 +51,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Timebox;
 
 /**
  * 
@@ -245,13 +245,13 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		rows.appendChild(row);
 		row.appendChild(lblStartTime.rightAlign());
 		row.appendChild(tbxStartTime);
-		ZKUpdateUtil.setWidth(tbxStartTime, "40%");
+		ZKUpdateUtil.setWidth(tbxStartTime, "50%");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(lblEndTime.rightAlign());
 		row.appendChild(tbxEndTime);
-		ZKUpdateUtil.setWidth(tbxEndTime, "40%");
+		ZKUpdateUtil.setWidth(tbxEndTime, "50%");
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
