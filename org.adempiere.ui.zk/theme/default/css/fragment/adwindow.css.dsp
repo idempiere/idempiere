@@ -347,8 +347,13 @@
 	}	
 }
 .adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
-	text-overflow: ellipsis;
-	white-space: pre-line;
+	text-overflow: ellipsis;	
+}
+@media only screen 
+  and (max-device-width: 700px) {
+	.mobile .adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
+		white-space: pre-line;
+	}
 }
 
 .mobile-overflow-link {
