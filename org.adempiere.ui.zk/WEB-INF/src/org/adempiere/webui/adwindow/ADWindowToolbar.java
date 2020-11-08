@@ -930,7 +930,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
-			toolbarCustomBtn.dynamicDisplay(overflows.contains(toolbarCustomBtn.getToolbarbutton()));
+			if (overflows != null)
+				toolbarCustomBtn.dynamicDisplay(overflows.contains(toolbarCustomBtn.getToolbarbutton()));
 			customButtons.add(toolbarCustomBtn.getToolbarbutton());
 		}
 		
