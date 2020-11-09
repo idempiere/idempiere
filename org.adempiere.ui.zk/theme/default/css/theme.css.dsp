@@ -18,15 +18,39 @@ html,body {
 }
 
 [class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
-    font-size: 14px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+@media screen and (min-device-width: 2500px) {
+	[class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
+		font-size: 15px;
+	}
+}
+@media screen and (max-device-width: 2499px) {
+	[class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
+		font-size: 14px;
+	}
+}
+@media screen and (max-device-width: 1899px) {
+	[class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
+		font-size: 13px;
+	}
+}
+@media screen and (max-device-width: 1399px) {
+	[class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
+		font-size: 12px;
+	}
 }
 
 <%-- Mobile/Tablet --%>
 .tablet-scrolling {
 	-webkit-overflow-scrolling: touch;
 }
-.mobile [class*="z-"] {
+<%-- default font size for mobile --%>
+.mobile [class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
+    font-size: 16px;
+}
+<%-- the not=xyz is needed to get this selected over standard zk rule --%>
+.mobile [class*="z-icon-"]:not([class*="xyz"]), .mobile [class*="z-group-icon-"] {
     font-size: 16px;
 }
 
