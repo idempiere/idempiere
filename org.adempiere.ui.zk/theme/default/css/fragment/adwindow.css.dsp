@@ -97,7 +97,7 @@
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	justify-content: space-between
+	justify-content: space-between;
 }
 .adwindow-breadcrumb-paths {
 	display: inline-block;
