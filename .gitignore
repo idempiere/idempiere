@@ -24,3 +24,10 @@ External Plug-in Libraries
 /jettyhome/
 
 /org.idempiere.javadoc/API
+/localRepository/
+/maven.script/testScript/localRepository/
+/maven.script/testScript/maven.script/
+/maven.script/testScript/maven.script/org.idempiere.p2.targetplatform/
+/maven.script/testScript/workspace/
+/org.idempiere.p2.targetplatform/org.idempiere.p2.targetplatformlocal.target
+/org.idempiere.p2.targetplatform/org.idempiere.p2.targetplatformlocal.tpd

@@ -11,7 +11,7 @@
 
 	<properties>
 		<jdk.version>11</jdk.version>
-		<tycho.version>2.0.0</tycho.version>
+		<tycho.version>2.1.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.15.0</jp.version>
@@ -35,11 +35,26 @@
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.test.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<codehaus.plexus>2.8.5</codehaus.plexus>
+		<mode></mode>
 	</properties>
 
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.codehaus.gmavenplus</groupId>
+					<artifactId>gmavenplus-plugin</artifactId>
+					<version>1.11.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.codehaus.groovy</groupId>
+							<artifactId>groovy-all</artifactId>
+							<version>3.0.6</version>
+							<type>pom</type>
+							<scope>runtime</scope>
+						</dependency>
+					</dependencies>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
@@ -99,258 +114,60 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.gmavenplus</groupId>
+										<artifactId>gmavenplus-plugin</artifactId>
+										<versionRange>[1.11.0,)</versionRange>
+										<goals>
+											<goal>execute</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore/>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-                <plugin>
-			        <groupId>org.eclipse.tycho.extras</groupId>
-			        <artifactId>tycho-eclipserun-plugin</artifactId>
-			        <version>${tycho.extras.version}</version>
-			        <configuration>
-				        <repositories>
-				            <repository>
-				                <id>${idempiere-equinox-repository-id}</id>
-				                <url>${idempiere-equinox-url}</url>
-				                <layout>p2</layout>
-				            </repository>
-				            <repository>
-				                <id>${idempiere-orbit-repository-id}</id>
-				                <url>${idempiere-orbit-url}</url>
-				                <layout>p2</layout>
-				            </repository>
-				        </repositories>
-				        <dependencies>
-					        <dependency>
-						        <artifactId>org.eclipse.ecf</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.ds</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.garbagecollector</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.frameworkadmin.equinox</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.publisher.eclipse</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.commons.logging</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.ecf.provider.filetransfer.httpclient45</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.director</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.common</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.metadata</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.tukaani.xz</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.core</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.core.net</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.concurrent</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.core.contenttype</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.updatesite</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.httpcomponents.httpcore</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.touchpoint.eclipse</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.core.jobs</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.preferences</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.registry</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.simpleconfigurator.manipulator</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.security</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.jarprocessor</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.engine</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.ecf.identity</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.app</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.felix.scr</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.repository</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.httpcomponents.httpclient</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.artifact.repository</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.osgi.compatibility.state</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.ecf.provider.filetransfer</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.launcher</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.osgi.util</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.frameworkadmin</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.publisher</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.touchpoint.natives</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.commons.codec</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.osgi.services</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.ecf.filetransfer</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.ecf.provider.filetransfer.ssl</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.ecf.ssl</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.sat4j.core</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.core.runtime</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.transport.ecf</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.director.app</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.sat4j.pb</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.p2.metadata.repository</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.simpleconfigurator</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.eclipse.equinox.console</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.felix.gogo.command</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.felix.gogo.runtime</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-					        <dependency>
-						        <artifactId>org.apache.felix.gogo.shell</artifactId>
-						        <type>eclipse-plugin</type>
-					        </dependency>
-				        </dependencies>
-			        </configuration>
-		        </plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-eclipserun-plugin</artifactId>
+					<version>${tycho.extras.version}</version>
+					<configuration>
+						<repositories>
+							<repository>
+								<id>${idempiere-equinox-repository-id}</id>
+								<url>${idempiere-equinox-url}</url>
+								<layout>p2</layout>
+							</repository>
+							<repository>
+								<id>${idempiere-orbit-repository-id}</id>
+								<url>${idempiere-orbit-url}</url>
+								<layout>p2</layout>
+							</repository>
+							<repository>
+								<id>cbi-targetplatform-dsl</id>
+								<url>https://download.eclipse.org/cbi/tpd/3.0.0-SNAPSHOT</url>
+								<layout>p2</layout>
+							</repository>
+							<repository>
+								<id>eclipse-release-4.17</id>
+								<url>https://download.eclipse.org/releases/2020-09/202009161000/</url>
+								<layout>p2</layout>
+							</repository>
+						</repositories>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho.version}</version>
-                    <configuration>
-                    	<source>${jdk.version}</source>
-                    	<target>${jdk.version}</target>
+					<configuration>
+						<source>${jdk.version}</source>
+						<target>${jdk.version}</target>
 						<verbose>true</verbose>						
 					</configuration>
 				</plugin>
@@ -400,9 +217,9 @@
 					<version>${maven.dependency.version}</version>
 				</plugin>
 				<plugin>
-				  <groupId>org.eclipse.tycho</groupId>
-				  <artifactId>tycho-surefire-plugin</artifactId>
-				  <version>${tycho.version}</version>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -426,7 +243,7 @@
 								<include>*.jar</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
-        				</fileset>
+						</fileset>
 					</filesets>
 				</configuration>
 			</plugin>
@@ -452,139 +269,204 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- don't like on maven.script/testScript when plugin declare multi time (2 times) it run both with order as declare on pom (if same phase)
+			but when place to <profile> just last declare run
+			so i have to move one to here -->
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<executions>
+				  <execution>
+					<id>set script dir</id>
+					<goals>
+					  <goal>execute</goal>
+					</goals>
+					<phase>validate</phase>
+					<configuration>
+					  <scripts>
+						<script><![CDATA[
+						  if (session.userProperties['scriptDir'] == null && project.properties['scriptDir'] == null){
+							project.properties.setProperty('scriptDir', session.getExecutionRootDirectory() + "/maven.script")
+						  }
+						]]></script>
+					  </scripts>
+					</configuration>
+				  </execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
-    <profiles>
-	    <profile>
-		    <id>buildIdempiere</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-	            <repository>
-		            <id>Central</id>
-		            <url>https://repo1.maven.org/maven2</url>
-	            </repository>
+	<profiles>
+		<profile>
+			<id>buildIdempiere</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<id>Central</id>
+					<url>https://repo1.maven.org/maven2</url>
+				</repository>
 
-	            <repository>
-		            <id>Redhat-GA</id>
-		            <url>https://maven.repository.redhat.com/ga</url>
-	            </repository>
+				<repository>
+					<id>Redhat-GA</id>
+					<url>https://maven.repository.redhat.com/ga</url>
+				</repository>
 
-	            <repository>
-		            <id>OpenNMS</id>
-		            <url>https://repo.opennms.org/maven2</url>
-	            </repository>
+				<repository>
+					<id>OpenNMS</id>
+					<url>https://repo.opennms.org/maven2</url>
+				</repository>
 
-	            <repository>
-		            <id>jr-ce-releases</id>
-		            <url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
-	            </repository>
+				<repository>
+					<id>jr-ce-releases</id>
+					<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
+				</repository>
 
-	            <repository>
-		            <id>jp-third-party-ce</id>
-		            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts</url>
-	            </repository>
+				<repository>
+					<id>jp-third-party-ce</id>
+					<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts</url>
+				</repository>
 
-	            <repository>
-		            <id>Clojars</id>
-		            <url>https://clojars.org/repo</url>
-	            </repository>
+				<repository>
+					<id>Clojars</id>
+					<url>https://clojars.org/repo</url>
+				</repository>
 
-	            <repository>
-		            <id>atlassian-3rdparty</id>
-		            <url>https://maven.atlassian.com/3rdparty</url>
-	            </repository>
+				<repository>
+					<id>atlassian-3rdparty</id>
+					<url>https://maven.atlassian.com/3rdparty</url>
+				</repository>
 
-	            <repository>
-		            <id>zkoss</id>
-		            <url>https://mavensync.zkoss.org/maven2</url>
-	            </repository>
+				<repository>
+					<id>zkoss</id>
+					<url>https://mavensync.zkoss.org/maven2</url>
+				</repository>
 
-	            <repository>
-		            <id>jenkins</id>
-		            <url>https://repo.jenkins-ci.org/releases</url>
-	            </repository>
-            </repositories>
-            <build>
-                <plugins>
-                    <plugin>
-		            <groupId>org.eclipse.tycho</groupId>
-		            <artifactId>target-platform-configuration</artifactId>
-		            <version>${tycho.version}</version>
-		            <configuration>
-			            <targetDefinitionIncludeSource>honor</targetDefinitionIncludeSource>
-			            <!-- work-around for split package message error "Missing Constraint: 
-				            Bundle-RequiredExecutionEnvironment" track:https://bugs.eclipse.org/bugs/show_bug.cgi?id=403196 
-				            discuss:https://dev.eclipse.org/mhonarc/lists/tycho-user/msg03941.html -->
-			            <dependency-resolution>
-				            <extraRequirements>
-					            <requirement>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.core.runtime</id>
-						            <versionRange>0.0.0</versionRange>
-					            </requirement>
-					            <requirement>
-						            <type>eclipse-plugin</type>
-						            <id>org.eclipse.equinox.common</id>
-						            <versionRange>0.0.0</versionRange>
-					            </requirement>
-				            </extraRequirements>
-			            </dependency-resolution>
-			            <target>
-				            <artifact>
-					            <groupId>org.idempiere</groupId>
-					            <artifactId>${idempiere.target}</artifactId>
-					            <version>8.1.0-SNAPSHOT</version>
-				            </artifact>
-			            </target>
+				<repository>
+					<id>jenkins</id>
+					<url>https://repo.jenkins-ci.org/releases</url>
+				</repository>
+			</repositories>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>target-platform-configuration</artifactId>
+						<version>${tycho.version}</version>
+						<configuration>
+							<targetDefinitionIncludeSource>honor</targetDefinitionIncludeSource>
+							<!-- work-around for split package message error "Missing Constraint: 
+								Bundle-RequiredExecutionEnvironment" track:https://bugs.eclipse.org/bugs/show_bug.cgi?id=403196 
+								discuss:https://dev.eclipse.org/mhonarc/lists/tycho-user/msg03941.html -->
+							<dependency-resolution>
+								<extraRequirements>
+									<requirement>
+										<type>eclipse-plugin</type>
+										<id>org.eclipse.core.runtime</id>
+										<versionRange>0.0.0</versionRange>
+									</requirement>
+									<requirement>
+										<type>eclipse-plugin</type>
+										<id>org.eclipse.equinox.common</id>
+										<versionRange>0.0.0</versionRange>
+									</requirement>
+								</extraRequirements>
+							</dependency-resolution>
+							<target>
+								<artifact>
+									<groupId>org.idempiere</groupId>
+									<artifactId>${idempiere.target}</artifactId>
+									<version>8.1.0-SNAPSHOT</version>
+									<file>${idempiere.target}${mode}.target</file>
+									<classifier>${idempiere.target}${mode}</classifier>
+								</artifact>
+							</target>
 
-			            <!-- configure the p2 target environments for multi-platform build -->
-			            <environments>
-				            <environment>
-					            <os>linux</os>
-					            <ws>gtk</ws>
-					            <arch>x86_64</arch>
-				            </environment>
-				            <environment>
-					            <os>win32</os>
-					            <ws>win32</ws>
-					            <arch>x86_64</arch>
-				            </environment>
-					    <environment>
-					            <os>macosx</os>
-					            <ws>cocoa</ws>
-					            <arch>x86_64</arch>
-				            </environment>
-			            </environments>
-			            <executionEnvironmentDefault>JavaSE-${jdk.version}</executionEnvironmentDefault>
-			            <executionEnvironment>JavaSE-${jdk.version}</executionEnvironment>
-		            </configuration>
-		     </plugin>
-		 </plugins>
-	    </build>
-	</profile>
+							<!-- configure the p2 target environments for multi-platform build -->
+							<environments>
+								<environment>
+									<os>linux</os>
+									<ws>gtk</ws>
+									<arch>x86_64</arch>
+								</environment>
+								<!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=568626 -->
+								<environment>
+									<os>linux</os>
+									<ws>gtk</ws>
+									<arch>ppc64le</arch>
+								</environment>
+								<environment>
+									<os>linux</os>
+									<ws>gtk</ws>
+									<arch>aarch64</arch>
+								</environment>
+								<environment>
+									<os>win32</os>
+									<ws>win32</ws>
+									<arch>x86_64</arch>
+								</environment>
+								<environment>
+									<os>macosx</os>
+									<ws>cocoa</ws>
+									<arch>x86_64</arch>
+								</environment>
+							</environments>
+							<executionEnvironmentDefault>JavaSE-${jdk.version}</executionEnvironmentDefault>
+							<executionEnvironment>JavaSE-${jdk.version}</executionEnvironment>
+						</configuration>
+				 	</plugin>
 
-        <profile>
-            <id>buildP2FromMaven</id>
-            <repositories>
-            	<repository>
-                	<id>${idempiere-equinox-repository-id}</id>
-                    <url>${idempiere-equinox-url}</url>
-                	<layout>p2</layout>
-                </repository>
-                <repository>
-                    <id>${idempiere-orbit-repository-id}</id>
-                    <url>${idempiere-orbit-url}</url>
-                    <layout>p2</layout>
-                </repository>
-                <repository>
-		            <id>wso2</id>
-		            <url>https://dist.wso2.org/maven2</url>
-	            </repository>
-            </repositories>
-        </profile>
+					<!--use groovy to check exists repository then choose dev groovy on that case -->
+					
+					<!--NOT YET USE NOW because target is load to soon, variable setting by this one to later to use, waitting for solution
+					refer: https://github.com/eclipse-cbi/targetplatform-dsl/issues/73
+					<plugin>
+						<groupId>org.codehaus.gmavenplus</groupId>
+						<artifactId>gmavenplus-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>groovy choose target</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<scripts>
+										<script>
+											${scriptDir}/auto.choose.target.groovy
+										</script>
+									</scripts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					-->
+			 	</plugins>
+			</build>
+		</profile>
 
-    </profiles>
+		<profile>
+			<id>buildP2FromMaven</id>
+			<repositories>
+				<repository>
+					<id>${idempiere-equinox-repository-id}</id>
+					<url>${idempiere-equinox-url}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>${idempiere-orbit-repository-id}</id>
+					<url>${idempiere-orbit-url}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>wso2</id>
+					<url>https://dist.wso2.org/maven2</url>
+				</repository>
+			</repositories>
+		</profile>
+
+	</profiles>
 </project>
