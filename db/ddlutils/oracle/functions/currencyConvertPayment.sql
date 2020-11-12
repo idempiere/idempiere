@@ -21,7 +21,7 @@ AS
 BEGIN
 	SELECT AD_Client_ID, AD_Org_ID, DateAcct, C_Currency_ID, C_ConversionType_ID, CurrencyRate, ConvertedAmt, PayAmt, IsOverrideCurrencyRate
 	INTO v_Client_ID, v_Org_ID, v_DateAcct, v_Currency_ID, v_ConversionType_ID, v_CurrencyRate, v_ConvertedAmt, v_PayAmt, v_IsOverrideCurrencyRate
-	FROM C_Payment
+	FROM C_Payment_V
 	WHERE C_Payment_ID=p_C_Payment_ID;
 	
 	SELECT sc.C_Currency_ID
