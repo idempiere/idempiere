@@ -108,7 +108,6 @@ span.grid-combobox-editor {
 .grid-combobox-editor .z-combobox-button {
 	position: absolute;
 	right: 0px;
-	top: 1px;
 	border-bottom-right-radius: 3px;
 	border-top-right-radius: 3px;
 	border-bottom-left-radius: 0px;
@@ -169,7 +168,6 @@ span.grid-combobox-editor {
 .payment-rule-editor .z-combobox-button {
 	position: absolute;
 	right: 0px;
-	top: 1px;
 }
 .payment-rule-editor .z-combobox .z-combobox-button-hover {
 	background-color: #ddd;
