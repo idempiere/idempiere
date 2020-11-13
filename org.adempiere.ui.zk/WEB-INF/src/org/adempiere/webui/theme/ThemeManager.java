@@ -61,7 +61,7 @@ public final class ThemeManager {
 	/**
 	 * @return name of active theme
 	 */
-	public synchronized static String getTheme() {
+	public static String getTheme() {
 		String theme = System.getProperty(MSysConfig.ZK_THEME);
 		if (Util.isEmpty(theme))
 			theme = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT);
