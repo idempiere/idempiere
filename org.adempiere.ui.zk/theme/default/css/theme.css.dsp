@@ -124,4 +124,6 @@ table.z-vbox > tbody > tr > td > table {
 
 <c:include page="fragment/font-icons.css.dsp" />
 
-<c:include page="fragment/custom.css.dsp" />
+<c:if test="${u:isThemeHasCustomCSSFragment()}">
+    <c:include page="fragment/custom.css.dsp" />
+</c:if>
