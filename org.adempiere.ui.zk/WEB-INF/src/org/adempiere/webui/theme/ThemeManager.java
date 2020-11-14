@@ -19,6 +19,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -170,7 +171,26 @@ public final class ThemeManager {
 			return null;
 		}
 	}
+
+	private static final CCache<String, Boolean> s_themeHasCustomCSSCache = new CCache<String, Boolean>(null, "ThemeHasCustomCSSCache", 2, -1, false);
 	
+	/**
+	 * @return true if custom css exists
+	 */
+	public static Boolean isThemeHasCustomCSSFragment() {
+		String theme = getTheme();
+		Boolean flag = s_themeHasCustomCSSCache.get(theme);
+		if (flag != null)
+			return flag;
+		if (ThemeManager.class.getResource(ITheme.THEME_PATH_PREFIX +  theme + "/css/fragment/custom.css.dsp") == null) {
+			flag = Boolean.FALSE;
+		} else {
+			flag = Boolean.TRUE;
+		}
+		s_themeHasCustomCSSCache.put(theme, flag);
+		return flag;
+	}
+
 	public static boolean isUseCSSForWindowSize() {
 		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
 	}	
