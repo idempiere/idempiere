@@ -17,8 +17,6 @@
 
 package org.adempiere.webui.component;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -30,8 +28,6 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.zkoss.zk.au.out.AuOuter;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -95,35 +91,6 @@ public class NumberBox extends Div
     	decimalBox.setSclass("editor-input");
         decimalBox.setId(decimalBox.getUuid());
         
-        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, null).getDecimalFormatSymbols().getDecimalSeparator();
-        String separator = Character.toString(separatorChar);
-        boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
-        if (processDotKeypad) {
-            StringBuffer funct = new StringBuffer();
-            funct.append("function(evt)");
-            funct.append("{");
-            // ignore dot, comma and decimal separator and process them on key down
-            funct.append("    if (!this._shallIgnore(evt, '0123456789-%'))");
-            funct.append("    {");
-            funct.append("        this.$doKeyPress_(evt);");
-            funct.append("    }");
-            funct.append("}");
-            decimalBox.setWidgetOverride("doKeyPress_", funct.toString());
-            funct = new StringBuffer();
-            // debug // funct.append("console.log('keyCode='+event.keyCode);");
-            funct.append("if (window.event)");
-            funct.append("    key = event.keyCode;");
-            funct.append("else");
-            funct.append("    key = event.which;");
-            funct.append("if (key == 108 || key == 110 || key == 188 || key == 190 || key == 194) {");
-            funct.append("    var id = '$'.concat('").append(decimalBox.getId()).append("');");
-            funct.append("    var calcText = jq(id)[0];");
-            funct.append("    calcText.value += '").append(separator).append("';");
-            funct.append("    event.stop;");
-            funct.append("};");
-            decimalBox.setWidgetListener("onKeyDown", funct.toString());
-        }
-
         appendChild(decimalBox);
 		
 		btn = new Button();
@@ -137,24 +104,18 @@ public class NumberBox extends Div
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (btn.getPopup() != null) {
-					String uid = btn.getPopup();
-					if (uid.startsWith("uuid("))
-						uid = uid.substring(5, uid.length()-1);
-					HtmlBasedComponent comp = (HtmlBasedComponent) btn.getDesktop().getComponentByUuidIfAny(uid);
-					if (comp != null) {	
-						Textbox ctbox = (Textbox) comp.getLastChild().getFirstChild();
-						if (ctbox != null && decimalBox.getValue() != null) {
-							ctbox.setText(decimalBox.getValue().toString());
-							StringWriter writer = new StringWriter(1024);
-							try {
-								ctbox.redraw(writer);
-								Clients.response(new AuOuter(ctbox, writer.toString()));
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-						comp.focus();
+			        String curValue = "";
+					if (decimalBox.getValue() != null) {
+						curValue = decimalBox.getValue().toString();
+				        boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
+				        if (processDotKeypad) {
+					        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, null).getDecimalFormatSymbols().getDecimalSeparator();
+					        String separator = Character.toString(separatorChar);
+					        curValue = curValue.replace(".", separator);
+				        }
 					}
+					String txtCalcId = txtCalc.getId();
+					Clients.evalJavaScript("calc.append('" + txtCalcId + "', '" + curValue + "')");
 				}				
 			}
 		});
@@ -285,7 +246,7 @@ public class NumberBox extends Div
         } else {
             // restrict allowed characters
             String decimalSep = separator;
-            if (!processDotKeypad && !".".equals(separator))
+            if (!".".equals(separator))
             	decimalSep += ".";
             funct.append("    if (!this._shallIgnore(evt, '= -/()*%+0123456789").append(decimalSep).append("'))");
         }

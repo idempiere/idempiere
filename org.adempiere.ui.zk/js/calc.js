@@ -6,6 +6,7 @@ function Calc()
 	this.clearAll = clearAll;
 	this.evaluate = evaluate;
 	this.append = append;
+	this.appendOnCursor = appendOnCursor;
 
 	function validateDown(displayTextId, calcTextId, integral, separatorKey, e, processDotKeypad)
 	{
@@ -21,7 +22,7 @@ function Calc()
 	     }
 	     else if (processDotKeypad && (key == 108 || key == 110 || key == 188 || key == 190 || key == 194))
 	     {
-	     	append(calcTextId, String.fromCharCode(separatorKey));
+	    	appendOnCursor(calcTextId, String.fromCharCode(separatorKey));
 	     	e.stop;
 	     }
 	}
@@ -104,6 +105,17 @@ function Calc()
 		var id = "$".concat(calcTextId);
 		var calcText = jq(id)[0];
 		calcText.value += val;
+		calcText.focus();
+	}
+
+	function appendOnCursor(calcTextId, val)
+	{
+		var id = "$".concat(calcTextId);
+		var calcText = jq(id)[0];
+		var position = calcText.selectionStart;
+		var newValue = calcText.value.substring(0, position) + val + calcText.value.substring(position);
+		calcText.value = newValue;
+		calcText.setSelectionRange(position+1, position+1);
 	}
 }
 
