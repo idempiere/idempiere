@@ -38,7 +38,7 @@
 
 	<session-config>
 		<device-type>ajax</device-type>
-		<automatic-timeout/> <!-- the same as <automatic-timeout>true</automatic-timeout> -->
+		<automatic-timeout>true</automatic-timeout>
 		<timeout-uri>/timeout.zul</timeout-uri>
 	</session-config>
 

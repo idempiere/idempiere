@@ -59,7 +59,7 @@
     	  if (me.trace)
     		  console.log("complete"+ " dtid: " + me.desktop.id);
     	  if (me._req && me._req.statusText == "SessionNotFound" && me._req.status == 400) {
-    		  ;//stop sent request:IDEMPIERE-4237
+    		  me._timeout();
     	  } else {
     		  me._schedule();
     	  }
@@ -71,6 +71,7 @@
         setTimeout(this.proxy(this._send), this.delay);
       } else {
         this.stop();
+        this._serverError();
       }
     },
     _send: function() {
@@ -99,6 +100,19 @@
         this._req.abort();
         this._req = null;
       }
+    },
+    _timeout: function() {
+    	_serverError();
+    },
+    _serverError: function() {
+    	zk.confirmClose = false;
+    	adempiere.get("zkTimeoutText", function(ok, val) {
+			if (ok && !!val)
+			{
+				alert(val);
+			}
+			window.location.href="index.zul";
+		});
     }
   });
 })();
