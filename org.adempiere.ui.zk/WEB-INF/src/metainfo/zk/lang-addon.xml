@@ -47,15 +47,15 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript src="/js/calc.js" charset="UTF-8"/>
 	<javascript src="/js/layout.js" charset="UTF-8"/>
 	<javascript src="/js/report.js" charset="UTF-8"/>	
-	<!-- <javascript src="/js/persist-min.js" charset="UTF-8"/>  -->
-	<javascript src="/js/token.js" charset="UTF-8"/>
 	<javascript src="/js/window.js" charset="UTF-8"/>
 	<javascript src="/js/html2canvas.js" charset="UTF-8"/>
 	<javascript src="/js/jquery.maskedinput.js" charset="UTF-8"/>
 	<javascript src="/js/photobooth_min.js" charset="UTF-8"/>
 
-
 	<javascript package="jawwa.atmosphere" merge="false" />
 	<javascript package="org.idempiere.websocket" merge="false" />
+	<javascript package="adempiere.local.storage" merge="false" />
 	
+	<javascript-module name="jawwa.atmosphere" version="202011161530"/>
+	<javascript-module name="adempiere.local.storage" version="202011151100"/>
 </language>
