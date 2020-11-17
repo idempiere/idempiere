@@ -41,7 +41,7 @@
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
     	  if (me.trace)
     		  console.log("error: " + textStatus + " dtid: " + me.desktop.id);
-    	  if (textStatus != "timeout" && textStatus != "abort") {
+    	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound") {
 	          if (typeof console == "object") {
 	        	  console.error(textStatus);
 	              console.error(errorThrown);
@@ -59,7 +59,7 @@
     	  if (me.trace)
     		  console.log("complete"+ " dtid: " + me.desktop.id);
     	  if (me._req && me._req.statusText == "SessionNotFound" && me._req.status == 400) {
-    		  me._timeout();
+    		  ;
     	  } else {
     		  me._schedule();
     	  }
@@ -71,7 +71,7 @@
         setTimeout(this.proxy(this._send), this.delay);
       } else {
         this.stop();
-        this._serverError();
+        jawwa.atmosphere.serverNotAvailable();
       }
     },
     _send: function() {
@@ -100,19 +100,20 @@
         this._req.abort();
         this._req = null;
       }
-    },
-    _timeout: function() {
-    	_serverError();
-    },
-    _serverError: function() {
-    	zk.confirmClose = false;
+    }
+  });
+  jawwa.atmosphere.serverNotAvailable = function() {
+    	zk.confirmClose = false;    	
     	adempiere.get("zkTimeoutText", function(ok, val) {
 			if (ok && !!val)
 			{
+				zk.errorDismiss();
 				alert(val);
 			}
 			window.location.href="index.zul";
 		});
-    }
-  });
+   };
+   jawwa.atmosphere.sessionTimeout = function() {
+   		jawwa.atmosphere.serverNotAvailable();
+   };
 })();

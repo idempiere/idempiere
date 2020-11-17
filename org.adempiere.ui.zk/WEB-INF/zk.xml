@@ -40,6 +40,11 @@
 		<device-type>ajax</device-type>
 		<automatic-timeout>true</automatic-timeout>
 		<timeout-uri>/timeout.zul</timeout-uri>
+		<!--
+		Comment out timeout-uri above and un-comment timeout-message below if you prefer timeout 
+		message alert over a timeout page
+		<timeout-message>script:<![CDATA[jawwa.atmosphere.sessionTimeout();]]></timeout-message>
+		 -->		
 	</session-config>
 
 	<!--
