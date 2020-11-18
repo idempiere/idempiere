@@ -2383,7 +2383,8 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			MOrderLine counterLine = counterLines[i];
 			counterLine.setOrder(counter);	//	copies header values (BP, etc.)
-			counterLine.setPrice();
+			//counterLine.setPrice();
+			counterLine.setPrice(counterLine.getPriceEntered());
 			counterLine.setTax();
 			counterLine.saveEx(get_TrxName());
 		}
