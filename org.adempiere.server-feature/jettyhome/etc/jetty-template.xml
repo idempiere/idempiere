@@ -111,12 +111,6 @@
     <Set name="dumpAfterStart"><Property name="jetty.server.dumpAfterStart" deprecated="jetty.dump.start" default="false"/></Set>
     <Set name="dumpBeforeStop"><Property name="jetty.server.dumpBeforeStop" deprecated="jetty.dump.stop" default="false"/></Set>
 	
-	<!-- IDEMPIERE-2490 -->
-	<Call name="setAttribute">
-      <Arg>org.eclipse.jetty.server.Request.maxFormContentSize</Arg>
-      <Arg>1048576</Arg>
-    </Call>
-    
     <!-- IDEMPIERE-2761 -->
     <Set class="org.eclipse.jetty.util.resource.Resource" name="defaultUseCaches">false</Set>
     

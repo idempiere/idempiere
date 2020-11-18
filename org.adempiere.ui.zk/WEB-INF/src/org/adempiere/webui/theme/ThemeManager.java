@@ -19,6 +19,8 @@ import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.zkoss.image.AImage;
@@ -29,6 +31,12 @@ import org.zkoss.image.AImage;
  *
  */
 public final class ThemeManager {
+
+	/**	Logger			*/
+	private static CLogger log = CLogger.getCLogger(ThemeManager.class);
+
+	private static String m_theme = null;
+	private static String m_brokenTheme = null;
 
 	/**
 	 * @return url for large logo
@@ -56,7 +64,24 @@ public final class ThemeManager {
 	 */
 	public static String getTheme() {
 		String theme = System.getProperty(MSysConfig.ZK_THEME);
-		return Util.isEmpty(theme) ? MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT) : theme;
+		if (Util.isEmpty(theme))
+			theme = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT);
+		if (theme.equals(m_brokenTheme)) {
+			theme = ITheme.ZK_THEME_DEFAULT;
+		} else {
+			if (! theme.equals(m_theme)) {
+				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
+					// Verify the theme.css.dsp exists in the theme folder
+					if (ThemeManager.class.getResource(ITheme.THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET) == null) {
+						log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to default");
+						m_brokenTheme = theme;
+						theme = ITheme.ZK_THEME_DEFAULT;
+					}
+				}
+				m_theme = theme;
+			}
+		}
+		return theme;
 	}
 
 	/**
@@ -146,7 +171,26 @@ public final class ThemeManager {
 			return null;
 		}
 	}
+
+	private static final CCache<String, Boolean> s_themeHasCustomCSSCache = new CCache<String, Boolean>(null, "ThemeHasCustomCSSCache", 2, -1, false);
 	
+	/**
+	 * @return true if custom css exists
+	 */
+	public static Boolean isThemeHasCustomCSSFragment() {
+		String theme = getTheme();
+		Boolean flag = s_themeHasCustomCSSCache.get(theme);
+		if (flag != null)
+			return flag;
+		if (ThemeManager.class.getResource(ITheme.THEME_PATH_PREFIX +  theme + "/css/fragment/custom.css.dsp") == null) {
+			flag = Boolean.FALSE;
+		} else {
+			flag = Boolean.TRUE;
+		}
+		s_themeHasCustomCSSCache.put(theme, flag);
+		return flag;
+	}
+
 	public static boolean isUseCSSForWindowSize() {
 		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
 	}	
