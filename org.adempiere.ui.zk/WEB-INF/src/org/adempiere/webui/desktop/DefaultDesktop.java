@@ -332,7 +332,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	btn.setIconSclass("z-icon-remove");
         	btn.addEventListener(Events.ON_CLICK, evt -> eastPopup.close());
         	eastPopup.appendChild(btn);
-        	btn.setStyle("position: absolute; top: 4px; right: 4px; padding: 2px 6px;");
+        	btn.setStyle("position: absolute; top: 20px; right: 0px; padding: 2px 0px;");
         	eastPopup.setStyle("padding-top: 20px;");
         	eastPopup.appendChild(content);
         	eastPopup.setPage(getComponent().getPage());
@@ -469,7 +469,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {
         		
         		preference = new MPreference(Env.getCtx(), 0, null);
-        		preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+        		preference.setAD_User_ID(userId); // allow System
         		preference.setAttribute("SideController.Width");
         	}
         	preference.setValue(width);
@@ -512,7 +512,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	if ( preference == null || preference.getAD_Preference_ID() <= 0 ) {
         		
         		preference = new MPreference(Env.getCtx(), 0, null);
-        		preference.set_ValueOfColumn("AD_User_ID", userId); // required set_Value for System=0 user
+        		preference.setAD_User_ID(userId); // allow System
         		preference.setAttribute("HelpController.Width");
         	}
         	preference.setValue(width);
@@ -577,7 +577,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         		westPopup.removeAttribute(POPUP_OPEN_ATTR);
         	});
         	westPopup.appendChild(btn);
-        	btn.setStyle("position: absolute; top: 4px; right: 4px; padding: 2px 6px;");
+        	btn.setStyle("position: absolute; top: 10px; right: 0px; padding: 2px 0px;");
 		}
 		logo = pnlHead.getLogo();
 		if (mobile && logo != null)

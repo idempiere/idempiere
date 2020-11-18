@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Ref_Table
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 public interface I_AD_Ref_Table 
 {

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -44,6 +44,8 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 			setC_ConversionType_ID (0);
 			setConversionDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
+			setIsIgnoreIsCurrentVendor (false);
+// N
 			setLimit_AddAmt (Env.ZERO);
 			setLimit_Base (null);
 // X
@@ -193,6 +195,23 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 		return (Timestamp)get_Value(COLUMNNAME_ConversionDate);
 	}
 
+	/** Set Description.
+		@param Description 
+		Optional short description of the record
+	  */
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_Description);
+	}
+
 	/** Set Group1.
 		@param Group1 Group1	  */
 	public void setGroup1 (String Group1)
@@ -219,6 +238,30 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public String getGroup2 () 
 	{
 		return (String)get_Value(COLUMNNAME_Group2);
+	}
+
+	/** Set Ignore Current Vendor Flag.
+		@param IsIgnoreIsCurrentVendor 
+		take all PO prices into account
+	  */
+	public void setIsIgnoreIsCurrentVendor (boolean IsIgnoreIsCurrentVendor)
+	{
+		set_Value (COLUMNNAME_IsIgnoreIsCurrentVendor, Boolean.valueOf(IsIgnoreIsCurrentVendor));
+	}
+
+	/** Get Ignore Current Vendor Flag.
+		@return take all PO prices into account
+	  */
+	public boolean isIgnoreIsCurrentVendor () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsIgnoreIsCurrentVendor);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Limit price Surcharge Amount.
@@ -369,6 +412,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String LIMIT_ROUNDING_CurrencyPrecision = "C";
 	/** Ending in 9/5 = 9 */
 	public static final String LIMIT_ROUNDING_EndingIn95 = "9";
+	/** Hundred = h */
+	public static final String LIMIT_ROUNDING_Hundred = "h";
+	/** Thousand = t */
+	public static final String LIMIT_ROUNDING_Thousand = "t";
 	/** Set Limit price Rounding.
 		@param Limit_Rounding 
 		Rounding of the final result
@@ -535,6 +582,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String LIST_ROUNDING_CurrencyPrecision = "C";
 	/** Ending in 9/5 = 9 */
 	public static final String LIST_ROUNDING_EndingIn95 = "9";
+	/** Hundred = h */
+	public static final String LIST_ROUNDING_Hundred = "h";
+	/** Thousand = t */
+	public static final String LIST_ROUNDING_Thousand = "t";
 	/** Set List price Rounding.
 		@param List_Rounding 
 		Rounding rule for final list price
@@ -850,6 +901,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final String STD_ROUNDING_CurrencyPrecision = "C";
 	/** Ending in 9/5 = 9 */
 	public static final String STD_ROUNDING_EndingIn95 = "9";
+	/** Hundred = h */
+	public static final String STD_ROUNDING_Hundred = "h";
+	/** Thousand = t */
+	public static final String STD_ROUNDING_Thousand = "t";
 	/** Set Standard price Rounding.
 		@param Std_Rounding 
 		Rounding rule for calculated price
@@ -866,5 +921,22 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public String getStd_Rounding () 
 	{
 		return (String)get_Value(COLUMNNAME_Std_Rounding);
+	}
+
+	/** Set Partner Category.
+		@param VendorCategory 
+		Product Category of the Business Partner
+	  */
+	public void setVendorCategory (String VendorCategory)
+	{
+		set_Value (COLUMNNAME_VendorCategory, VendorCategory);
+	}
+
+	/** Get Partner Category.
+		@return Product Category of the Business Partner
+	  */
+	public String getVendorCategory () 
+	{
+		return (String)get_Value(COLUMNNAME_VendorCategory);
 	}
 }

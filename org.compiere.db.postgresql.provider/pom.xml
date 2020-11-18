@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>7.1.0-SNAPSHOT</version>
+		<version>8.1.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.compiere.db.postgresql.provider</artifactId>
@@ -26,17 +26,17 @@
 								<artifactItem>
 									<groupId>com.mchange</groupId>
 									<artifactId>c3p0</artifactId>
-									<version>0.9.5.2</version>
+									<version>0.9.5.5</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.mchange</groupId>
 									<artifactId>mchange-commons-java</artifactId>
-									<version>0.2.15</version>
+									<version>0.2.20</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.postgresql</groupId>
 									<artifactId>postgresql</artifactId>
-									<version>42.2.5</version>
+									<version>42.2.18</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

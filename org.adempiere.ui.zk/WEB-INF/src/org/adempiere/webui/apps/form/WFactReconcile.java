@@ -186,7 +186,9 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		
 		// Parameter Panel
 		North north = new North();
-		north.setStyle("border: none; max-height: 60%;");
+		north.setStyle("border: none;");
+		if (ClientInfo.isMobile())
+			north.setStyle("max-height: 60%;");
 		mainLayout.appendChild(north);
 		north.appendChild(parameterPanel);
 		north.setCollapsible(true);

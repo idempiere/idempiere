@@ -800,7 +800,7 @@ public class MProductPricing extends AbstractProductPricing
 		if (M_DiscountSchema_ID == 0)
 			return;
 		
-		MDiscountSchema sd = MDiscountSchema.get(Env.getCtx(), M_DiscountSchema_ID);	//	not correct
+		MDiscountSchema sd = MDiscountSchema.get(M_DiscountSchema_ID);	//	not correct
 		if (sd.get_ID() == 0 || (MDiscountSchema.DISCOUNTTYPE_Breaks.equals(sd.getDiscountType()) && !MDiscountSchema.CUMULATIVELEVEL_Line.equals(sd.getCumulativeLevel())))
 			return;
 		//
@@ -818,7 +818,7 @@ public class MProductPricing extends AbstractProductPricing
 	public BigDecimal getDiscount()
 	{
 		BigDecimal Discount = Env.ZERO;
-		if (m_PriceList.intValue() != 0)
+		if (m_PriceList.compareTo(Env.ZERO) != 0)
 			Discount = BigDecimal.valueOf((m_PriceList.doubleValue() - m_PriceStd.doubleValue())
 				/ m_PriceList.doubleValue() * 100.0);
 		if (Discount.scale() > 2)

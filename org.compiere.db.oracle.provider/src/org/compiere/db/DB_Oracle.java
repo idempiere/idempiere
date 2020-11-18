@@ -33,7 +33,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Random;
@@ -371,8 +370,13 @@ public class DB_Oracle implements AdempiereDatabase
     public String convertStatement (String oraStatement)
     {
     	Convert.logMigrationScript(oraStatement, null);
-		if ("true".equals(System.getProperty("org.idempiere.db.oracle.debug"))) {
-			log.warning("Oracle -> " + oraStatement);
+		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
+			String filterOrDebug = System.getProperty("org.idempiere.db.debug.filter");
+			boolean print = true;
+			if (filterOrDebug != null)
+				print = oraStatement.matches(filterOrDebug);
+			if (print)
+				log.warning("Oracle -> " + oraStatement);
 		}
         return oraStatement;
     }   //  convertStatement
@@ -987,7 +991,6 @@ public class DB_Oracle implements AdempiereDatabase
             Text1   NVARCHAR2(2000) NULL,
             Text2   VARCHAR2(2000)  NULL
         );
-        **/
         try
         {
             String myString1 = "123456789 12345678";
@@ -1002,13 +1005,13 @@ public class DB_Oracle implements AdempiereDatabase
             System.out.println(Util.size(myString.toString()));
             //
             Connection conn2 = db.getCachedConnection(cc, true, Connection.TRANSACTION_READ_COMMITTED);
-            /** **/
+            //
             PreparedStatement pstmt = conn2.prepareStatement
                 ("INSERT INTO X_Test(Text1, Text2) values(?,?)");
             pstmt.setString(1, myString.toString()); // NVARCHAR2 column
             pstmt.setString(2, myString.toString()); // VARCHAR2 column
             System.out.println(pstmt.executeUpdate());
-            /** **/
+            //
             Statement stmt = conn2.createStatement();
             System.out.println(stmt.executeUpdate
                 ("INSERT INTO X_Test(Text1, Text2) values('" + myString + "','" + myString + "')"));
@@ -1019,6 +1022,7 @@ public class DB_Oracle implements AdempiereDatabase
         }
         db.cleanup();
         System.out.println("--------------------------------------------------");
+        **/
         System.exit(0);
 
 
@@ -1209,10 +1213,12 @@ public class DB_Oracle implements AdempiereDatabase
 				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
 				.append(sql)
 				.append(") tb) where oracle_native_rownum_ >= ")
-				.append(start)
-				.append(" AND oracle_native_rownum_ <= ")
-				.append(end)
-				.append(" order by oracle_native_rownum_");
+				.append(start);
+		if (end > 0) {
+			newSql.append(" AND oracle_native_rownum_ <= ")
+				.append(end);
+		}
+		newSql.append(" order by oracle_native_rownum_");
 
 		return newSql.toString();
 	}
@@ -1370,6 +1376,13 @@ public class DB_Oracle implements AdempiereDatabase
 	public String getVarcharDataType() {
 		return "VARCHAR2";
 	}
+
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public String getVarcharLengthSuffix() {
+		return " CHAR";
+	};
 
 	@Override
 	public String getBlobDataType() {

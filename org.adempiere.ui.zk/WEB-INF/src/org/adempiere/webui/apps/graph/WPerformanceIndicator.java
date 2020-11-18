@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
-import org.adempiere.base.Service;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.graph.model.IndicatorModel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.theme.ThemeManager;
@@ -199,7 +199,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		model.dialBackground = dialBackground;
 		model.needleColor = needleColor;
 		model.tickColor = tickColor;
-		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+		List<IChartRendererService> list = Extensions.getChartRendererServices();
 		for (IChartRendererService renderer : list) { 
 			if (renderer.renderPerformanceIndicator(this, chartWidth, chartHeight, model))
 				break;

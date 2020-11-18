@@ -37,9 +37,9 @@
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
         <setEntry value="com.sun.mail.smtp@default:default"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.mail.api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
-        <setEntry value="javax.annotation-api@default:default"/>
         <setEntry value="javax.jms@default:default"/>
         <setEntry value="net.sf.supercsv.super-csv@default:default"/>
         <setEntry value="org.apache.activemq.activemq-core@default:default"/>
@@ -91,7 +91,7 @@
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
     </setAttribute>
-    <booleanAttribute key="show_selected_only" value="false"/>
+    <booleanAttribute key="show_selected_only" value="true"/>
     <stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>

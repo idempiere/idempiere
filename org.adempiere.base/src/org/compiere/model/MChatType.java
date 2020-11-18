@@ -19,7 +19,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Chat Type Model
@@ -27,15 +29,25 @@ import org.compiere.util.CCache;
  *  @author Jorg Janke
  *  @version $Id: MChatType.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MChatType extends X_CM_ChatType
+public class MChatType extends X_CM_ChatType implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7933150405119053730L;
+	private static final long serialVersionUID = 973259852970379643L;
 
 	/**
-	 * 	Get MChatType from Cache
+	 * 	Get MChatType from Cache (immutable)
+	 *	@param CM_ChatType_ID id
+	 *	@return MChatType
+	 */
+	public static MChatType get (int CM_ChatType_ID)
+	{
+		return get(Env.getCtx(), CM_ChatType_ID);
+	}
+	
+	/**
+	 * 	Get MChatType from Cache (immutable)
 	 *	@param ctx context
 	 *	@param CM_ChatType_ID id
 	 *	@return MChatType
@@ -43,18 +55,21 @@ public class MChatType extends X_CM_ChatType
 	public static MChatType get (Properties ctx, int CM_ChatType_ID)
 	{
 		Integer key = Integer.valueOf(CM_ChatType_ID);
-		MChatType retValue = (MChatType)s_cache.get (key);
+		MChatType retValue = s_cache.get (ctx, key, e -> new MChatType(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MChatType (ctx, CM_ChatType_ID, null);
-		if (retValue.get_ID () != CM_ChatType_ID)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MChatType (ctx, CM_ChatType_ID, (String)null);
+		if (retValue.get_ID () == CM_ChatType_ID)
+		{
+			s_cache.put (key, retValue, e -> new MChatType(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MChatType> s_cache 
-		= new CCache<Integer, MChatType> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MChatType> s_cache 
+		= new ImmutableIntPOCache<Integer, MChatType> (Table_Name, 20);
 	
 	/**
 	 * 	Standard Constructor
@@ -80,4 +95,44 @@ public class MChatType extends X_CM_ChatType
 		super (ctx, rs, trxName);
 	}	//	MChatType
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MChatType(MChatType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MChatType(Properties ctx, MChatType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MChatType(Properties ctx, MChatType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	@Override
+	public MChatType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MChatType

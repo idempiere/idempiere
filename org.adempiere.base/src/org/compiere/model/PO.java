@@ -30,6 +30,7 @@ import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -225,7 +227,24 @@ public abstract class PO
 		setAD_Org_ID(AD_Org_ID);
 	}	//	PO
 
-
+	/**
+	 * Copy all properties from copy. Method to help the implementation of copy constructor.
+	 * @param copy
+	 */
+	protected void copyPO(PO copy)
+	{
+		this.m_attachment = copy.m_attachment != null ? new MAttachment(copy.m_attachment) : null;
+		this.m_attributes = copy.m_attributes != null ? new HashMap<String, Object>(copy.m_attributes) : null;
+		this.m_createNew = copy.m_createNew;
+		this.m_custom = copy.m_custom != null ? new HashMap<String, String>(copy.m_custom) : null;
+		this.m_IDs = copy.m_IDs != null ? Arrays.copyOf(copy.m_IDs, copy.m_IDs.length) : null;
+		this.m_KeyColumns = copy.m_KeyColumns != null ? Arrays.copyOf(copy.m_KeyColumns, copy.m_KeyColumns.length) : null;
+		this.m_lobInfo = copy.m_lobInfo != null ? copy.m_lobInfo.stream().map(PO_LOB::new).collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_newValues = copy.m_newValues != null ? Arrays.copyOf(copy.m_newValues, copy.m_newValues.length) : null;
+		this.m_oldValues = copy.m_oldValues != null ? Arrays.copyOf(copy.m_oldValues, copy.m_oldValues.length) : null;		
+		this.s_acctColumns = copy.s_acctColumns != null ? copy.s_acctColumns.stream().collect(Collectors.toCollection(ArrayList::new)) : null;
+	}
+	
 	/**	Logger							*/
 	protected transient CLogger	log = CLogger.getCLogger (getClass());
 	/** Static Logger					*/
@@ -266,6 +285,9 @@ public abstract class PO
 
 	/** Trifon - Indicates that this record is created by replication functionality.*/
 	private boolean m_isReplication = false;
+	
+	/** Immutable flag **/
+	private boolean m_isImmutable = false;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -708,6 +730,8 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
 	{
+		checkImmutable();
+		
 		if (value instanceof String && ColumnName.equals("WhereClause")
 			&& value.toString().toUpperCase().indexOf("=NULL") != -1)
 			log.warning("Invalid Null Value - " + ColumnName + "=" + value);
@@ -766,6 +790,8 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (int index, Object value, boolean checkWritable)
 	{
+		checkImmutable();
+		
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.log(Level.WARNING, "Index invalid - " + index);
@@ -921,6 +947,8 @@ public abstract class PO
 	   Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds)
 	*/
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
+		checkImmutable();
+		
 		if ("Processed".equals(ColumnName)
 				&& value instanceof Boolean
 				&& ((Boolean)value).booleanValue() == true
@@ -1039,6 +1067,8 @@ public abstract class PO
 	 */
 	public final boolean set_CustomColumnReturningBoolean (String columnName, Object value)
 	{
+		checkImmutable();
+		
 		// [ 1845793 ] PO.set_CustomColumn not updating correctly m_newValues
 		// this is for columns not in PO - verify and call proper method if exists
 		int poIndex = get_ColumnIndex(columnName);
@@ -1072,6 +1102,8 @@ public abstract class PO
 	 */
 	private void set_Keys (String ColumnName, Object value)
 	{
+		checkImmutable();
+		
 		//	Update if KeyColumn
 		for (int i = 0; i < m_IDs.length; i++)
 		{
@@ -1290,6 +1322,8 @@ public abstract class PO
 	 */
 	protected void load (int ID, String trxName)
 	{
+		checkImmutable();
+		
 		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
 		if (ID > 0)
 		{
@@ -1389,6 +1423,8 @@ public abstract class PO
 		finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			if (is_Immutable())
+				m_trxName = null;
 		}
 		loadComplete(success);
 		return success;
@@ -1475,6 +1511,8 @@ public abstract class PO
 	 */
 	protected boolean load (HashMap<String,String> hmIn)
 	{
+		checkImmutable();
+		
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
@@ -1528,6 +1566,13 @@ public abstract class PO
 		loadComplete(success);
 		return success;
 	}	//	load
+
+	protected void checkImmutable() {
+		if (is_Immutable())
+		{
+			throw new IllegalStateException("PO is Immutable: " + getClass().getName());
+		}
+	}
 
 	/**
 	 *  Create Hashmap with data as Strings
@@ -2030,6 +2075,8 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
+		checkImmutable();
+		
 		checkValidContext();
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
@@ -2046,33 +2093,6 @@ public abstract class PO
 					log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
 					return false;
 				}
-			}
-		}
-
-		//	Organization Check
-		if (getAD_Org_ID() == 0
-			&& (get_AccessLevel() == ACCESSLEVEL_ORG
-				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
-					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
-		{
-			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
-			return false;
-		}
-		//	Should be Org 0
-		if (getAD_Org_ID() != 0)
-		{
-			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
-			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
-			{
-				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_ALL
-					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
-			}
-			if (reset)
-			{
-				log.warning("Set Org to 0");
-				setAD_Org_ID(0);
 			}
 		}
 
@@ -2172,6 +2192,34 @@ public abstract class PO
 				}
 				return false;
 			}
+
+		//	Organization Check
+		if (getAD_Org_ID() == 0
+			&& (get_AccessLevel() == ACCESSLEVEL_ORG
+				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
+					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
+		{
+			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
+			return false;
+		}
+		//	Should be Org 0
+		if (getAD_Org_ID() != 0)
+		{
+			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
+			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
+			{
+				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_ALL
+					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
+			}
+			if (reset)
+			{
+				log.warning("Set Org to 0");
+				setAD_Org_ID(0);
+			}
+		}
+
 			//	Save
 			if (newRecord)
 			{
@@ -2364,7 +2412,7 @@ public abstract class PO
 			m_createNew = false;
 		}
 		if (!newRecord) {
-			CacheMgt.get().reset(p_info.getTableName());
+			CacheMgt.get().reset(p_info.getTableName(), get_ID());
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
 		} else if (get_ID() > 0 && success)
 			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
@@ -2386,6 +2434,7 @@ public abstract class PO
 
 	public void saveReplica (boolean isFromReplication) throws AdempiereException
 	{
+		checkImmutable();
 		setReplication(isFromReplication);
 		saveEx();
 	}
@@ -3213,6 +3262,8 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
+		checkImmutable();
+		
 		checkValidContext();
 		CLogger.resetLast();
 		if (is_new())
@@ -3522,7 +3573,7 @@ public abstract class PO
 				int size = p_info.getColumnCount();
 				m_oldValues = new Object[size];
 				m_newValues = new Object[size];
-				CacheMgt.get().reset(p_info.getTableName());
+				CacheMgt.get().reset(p_info.getTableName(), Record_ID);
 			}
 		}
 		finally
@@ -4236,6 +4287,10 @@ public abstract class PO
 	 */
 	public void set_TrxName (String trxName)
 	{
+		if (trxName != null)
+		{
+			checkImmutable();
+		}
 		m_trxName = trxName;
 	}	//	setTrx
 
@@ -4691,7 +4746,7 @@ public abstract class PO
 	 *      @param doc Document
 	 */
 	public void setDoc(Doc doc) {
-		m_doc = doc;
+		m_doc = doc;		
 	}
 
 	public void setReplication(boolean isFromReplication)
@@ -4775,6 +4830,7 @@ public abstract class PO
 	}
 	
 	@Override
+	@Deprecated
 	protected Object clone() throws CloneNotSupportedException {
 		PO clone = (PO) super.clone();
 		clone.m_trxName = null;
@@ -4824,22 +4880,57 @@ public abstract class PO
 	    p_info = initPO(p_ctx);
 	}
 	
-	public void set_Attribute(String columnName, Object value) {
+	/**
+	 * set attribute value
+	 * @param attributeName
+	 * @param value
+	 */
+	public void set_Attribute(String attributeName, Object value) {
+		checkImmutable();
+		
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
-		m_attributes.put(columnName, value);
+		m_attributes.put(attributeName, value);
 	}
 	
-	public Object get_Attribute(String columnName) {
+	/**
+	 * 
+	 * @param attributeName
+	 * @return attribute value
+	 */
+	public Object get_Attribute(String attributeName) {
 		if (m_attributes != null)
-			return m_attributes.get(columnName);
+			return m_attributes.get(attributeName);
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return map of attributes
+	 */
 	public HashMap<String,Object> get_Attributes() {
 		return m_attributes;
 	}
 
+	/**
+	 * Turn on immutable check
+	 */
+	protected void makeImmutable() {
+		if (is_Immutable()) 
+			return;
+		
+		m_isImmutable = true;
+		m_trxName = null;
+	}
+	
+	/**
+	 * 
+	 * @return true if PO is immutable, false otherwise
+	 */
+	public boolean is_Immutable() {
+		return m_isImmutable;
+	}
+	
 	private void validateUniqueIndex()
 	{
 		ValueNamePair ppE = CLogger.retrieveError();

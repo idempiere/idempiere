@@ -48,7 +48,9 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class AtmosphereServerPush implements ServerPush {
 
-    private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
+    private static final String ATMOSPHERE_SERVER_PUSH_ECHO = "AtmosphereServerPush.Echo";
+
+	private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
 
 	public static final int DEFAULT_TIMEOUT = 1000 * 60 * 2;
 
@@ -161,7 +163,12 @@ public class AtmosphereServerPush implements ServerPush {
 
     @SuppressWarnings("unchecked")
 	@Override
-    public void onPiggyback() {
+    public void onPiggyback() {    	
+    	if (Executions.getCurrent() != null && Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) != null) {
+    		//has pending serverpush echo, wait for next execution piggyback trigger by the pending serverpush echo
+    		return;
+    	}
+    	
     	Schedule<Event>[] pendings = null;
     	synchronized (schedules) {
     		if (!schedules.isEmpty()) {
@@ -195,8 +202,8 @@ public class AtmosphereServerPush implements ServerPush {
     		synchronized (schedules) {
 				schedules.add(new Schedule(task, event, scheduler));
 			}
-    		if (Executions.getCurrent().getAttribute("AtmosphereServerPush.Echo") == null) {
-    			Executions.getCurrent().setAttribute("AtmosphereServerPush.Echo", Boolean.TRUE);
+    		if (Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) == null) {
+    			Executions.getCurrent().setAttribute(ATMOSPHERE_SERVER_PUSH_ECHO, Boolean.TRUE);
     			Clients.response(new AuEcho());
     		}
     	}
@@ -229,11 +236,18 @@ public class AtmosphereServerPush implements ServerPush {
             return;
         }
 
-        this.resource.set(null);
+        AtmosphereResource currentResource = this.resource.getAndSet(null);
         synchronized (schedules) {
         	schedules.clear();
 		}
         
+        if (currentResource != null ) {
+        	try {
+				currentResource.close();
+			} catch (IOException e) {
+			}
+        }
+                
         if (Executions.getCurrent() != null) {
 	        if (log.isDebugEnabled())
 	        	log.debug("Stopping server push for " + desktop);

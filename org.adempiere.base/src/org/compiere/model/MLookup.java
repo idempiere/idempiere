@@ -512,8 +512,6 @@ public final class MLookup extends Lookup implements Serializable
 
 	/**	Save getDirect last return value */	
 	private HashMap<Object,Object>	m_lookupDirect = null;
-	/**	Save last unsuccessful				*/
-	private Object					m_directNullKey = null;
 	private Future<?> m_loaderFuture;
 
 	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal)
@@ -533,8 +531,6 @@ public final class MLookup extends Lookup implements Serializable
 		//	Nothing to query
 		if (key == null || m_info.QueryDirect == null || m_info.QueryDirect.length() == 0)
 			return null;
-		if (key.equals(m_directNullKey))
-			return null;
 		if (key.toString().trim().length() == 0)
 			return null;
 		//
@@ -548,7 +544,7 @@ public final class MLookup extends Lookup implements Serializable
 		if (log.isLoggable(Level.FINER)) log.finer(m_info.KeyColumn + ": " + key 
 				+ ", SaveInCache=" + saveInCache + ",Local=" + cacheLocal);
 		
-		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn;
+		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn+"|"+m_info.AD_Reference_Value_ID+"|"+Env.getAD_Language(Env.getCtx());
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 		CCache<Integer, KeyNamePair> knpCache = null;
 		CCache<String, ValueNamePair> vnpCache = null;
@@ -609,7 +605,6 @@ public final class MLookup extends Lookup implements Serializable
 			}
 			else
 			{
-				m_directNullKey = key;
 				directValue = null;
 			}
 
@@ -920,8 +915,8 @@ public final class MLookup extends Lookup implements Serializable
 	private final static CCache<String, CCache<String, List<KeyNamePair>>> s_keyNamePairCache = new CCache<String, CCache<String, List<KeyNamePair>>>(null, "MLookup.KeyNamePairCache", 100, 60, false, 500);
 	private final static CCache<String, CCache<String, List<ValueNamePair>>> s_valueNamePairCache = new CCache<String, CCache<String, List<ValueNamePair>>>(null, "MLookup.ValueNamePairCache", 100, 60, false, 500);
 	
-	private final static CCache<String, CCache<Integer, KeyNamePair>> s_directKeyNamePairCache = new CCache<String, CCache<Integer,KeyNamePair>>(null, "", 100, 60, false, 500);
-	private final static CCache<String, CCache<String, ValueNamePair>> s_directValueNamePairCache = new CCache<String, CCache<String,ValueNamePair>>(null, "", 100, 60, false, 500);
+	private final static CCache<String, CCache<Integer, KeyNamePair>> s_directKeyNamePairCache = new CCache<String, CCache<Integer,KeyNamePair>>(null, "MLookup.DirectKeyNamePairCache", 100, 60, false, 500);
+	private final static CCache<String, CCache<String, ValueNamePair>> s_directValueNamePairCache = new CCache<String, CCache<String,ValueNamePair>>(null, "MLookup.DirectValueNamePairCache", 100, 60, false, 500);
 	
 	private synchronized static List<KeyNamePair> getKeyNamePairCache(MLookupInfo lookupInfo, String cacheKey) 
 	{
@@ -1085,6 +1080,9 @@ public final class MLookup extends Lookup implements Serializable
 						for(KeyNamePair knp : knpCache) 
 						{
 							m_lookup.put(knp.getKey(), knp);
+							String name = knp.getName();
+							if (name.startsWith(INACTIVE_S) && name.endsWith(INACTIVE_E))
+								m_hasInactive  = true;
 						}
 						return;
 					}
@@ -1104,6 +1102,9 @@ public final class MLookup extends Lookup implements Serializable
 						for(ValueNamePair vnp : vnpCache)
 						{
 							m_lookup.put(vnp.getValue(), vnp);
+							String name = vnp.getName();
+							if (name.startsWith(INACTIVE_S) && name.endsWith(INACTIVE_E))
+								m_hasInactive  = true;
 						}
 						return;
 					}

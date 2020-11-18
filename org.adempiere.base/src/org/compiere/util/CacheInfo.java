@@ -37,8 +37,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.adempiere.base.IServiceHolder;
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
@@ -61,6 +60,8 @@ public class CacheInfo implements Serializable {
 	private boolean distributed;
 	private InetAddress nodeAddress;
 	private String nodeId;
+	private long hit;
+	private long miss;
 
 	/**
 	 * 
@@ -72,6 +73,8 @@ public class CacheInfo implements Serializable {
 		expireMinutes = cache.getExpireMinutes();
 		maxSize = cache.getMaxSize();
 		distributed = cache.isDistributed();
+		hit = cache.getHit();
+		miss = cache.getMiss();
 	}
 
 	/**
@@ -133,12 +136,27 @@ public class CacheInfo implements Serializable {
 
 	/**
 	 * 
+	 * @return hit count
+	 */
+	public long getHit() {
+		return hit;
+	}
+	
+	/**
+	 * 
+	 * @return miss count
+	 */
+	public long getMiss() {
+		return miss;
+	}
+	
+	/**
+	 * 
 	 * @param sortByName
 	 * @return cache infos
 	 */
 	public static List<CacheInfo> getCacheInfos(boolean sortByName) {
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder != null ? holder.getService() : null;
+		IClusterService service = Core.getClusterService();
 		if (service != null && service.getMembers().size() > 1) {
 			List<CacheInfo> instances = new ArrayList<>();
 			GetCacheInfoCallable callable = new GetCacheInfoCallable();

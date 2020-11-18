@@ -292,3 +292,9 @@
 .z-icon-UnSort:before {
 	content: "\f074";
 }
+.z-icon-GetMail:before {
+	content: "\f0e0";
+}
+.z-icon-Calendar:before {
+	content: "\f073";
+}

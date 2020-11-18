@@ -237,7 +237,7 @@ public class MCash extends X_C_Cash implements DocAction
 	public MCashBook getCashBook()
 	{
 		if (m_book == null)
-			m_book = MCashBook.get(getCtx(), getC_CashBook_ID());
+			m_book = MCashBook.getCopy(getCtx(), getC_CashBook_ID(), get_TrxName());
 		return m_book;
 	}	//	getCashBook
 	

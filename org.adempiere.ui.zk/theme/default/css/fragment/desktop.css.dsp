@@ -28,7 +28,6 @@
 }
 
 .desktop-header-font {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
@@ -255,7 +254,8 @@
 .window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content [class^="z-icon"] {
 	display:inline-flex;
 	align-items: center;
-	justify-content: center; 
+	justify-content: center;
+	border-bottom: 0px; 
 }
 
 .user-panel-popup .z-popup-content {

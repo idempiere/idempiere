@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Project Type Model
@@ -33,16 +35,25 @@ import org.compiere.util.DB;
  *	@author Jorg Janke
  *	@version $Id: MProjectType.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MProjectType extends X_C_ProjectType
+public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6041540981032251476L;
-
+	private static final long serialVersionUID = 2378841146277294989L;
 
 	/**
-	 * 	Get MProjectType from Cache
+	 * 	Get MProjectType from Cache (immutable)
+	 *	@param C_ProjectType_ID id
+	 *	@return MProjectType
+	 */
+	public static MProjectType get (int C_ProjectType_ID)
+	{
+		return get(Env.getCtx(), C_ProjectType_ID);
+	}
+
+	/**
+	 * 	Get MProjectType from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_ProjectType_ID id
 	 *	@return MProjectType
@@ -50,18 +61,21 @@ public class MProjectType extends X_C_ProjectType
 	public static MProjectType get (Properties ctx, int C_ProjectType_ID)
 	{
 		Integer key = Integer.valueOf(C_ProjectType_ID);
-		MProjectType retValue = (MProjectType)s_cache.get (key);
+		MProjectType retValue = s_cache.get (ctx, key, e -> new MProjectType(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MProjectType (ctx, C_ProjectType_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MProjectType (ctx, C_ProjectType_ID, (String)null);
+		if (retValue.get_ID() == C_ProjectType_ID)
+		{
+			s_cache.put (key, retValue, e -> new MProjectType(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MProjectType> s_cache 
-		= new CCache<Integer, MProjectType> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MProjectType> s_cache 
+		= new ImmutableIntPOCache<Integer, MProjectType> (Table_Name, 20);
 	
 	
 	/**************************************************************************
@@ -93,6 +107,37 @@ public class MProjectType extends X_C_ProjectType
 		super(ctx, rs, trxName);
 	}	//	MProjectType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProjectType(MProjectType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProjectType(Properties ctx, MProjectType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProjectType(Properties ctx, MProjectType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	String Representation
 	 *	@return	info
@@ -308,5 +353,14 @@ public class MProjectType extends X_C_ProjectType
 		query.setRecordCount(1);
 		return query;
 	}	//	getQuery
+
+	@Override
+	public MProjectType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MProjectType

@@ -539,53 +539,52 @@ public class GridTabCSVImporter implements IGridTabImporter
 	 * @param childs
 	 */
 	private void manageMasterTrx(GridTab gridTab, List<GridTab> childs){
-
-		if( trx != null ){
-
-			if( isError() ) {
-				gridTab.dataDelete();
-				rollbackTrx();
-				setError(false);
-			}else {
-
-				boolean commit = false;
-				if( isThereDocAction ){
-
-					boolean isError = false;
-					int AD_Process_ID = MColumn.get(Env.getCtx(), gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
-
-					if( AD_Process_ID > 0 ){
-						String docResult = processDocAction(masterRecord, AD_Process_ID); 
-
-						if(docResult.contains("error")) 
-							isError = true; 
-
-						rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n")); 
-					}else {
-						throwAdempiereException("No Process found for document action.");	  
-					}
-
-					if( isError ){
-						gridTab.dataDelete();
-						rollbackTrx();
-					}else{
+		if (trx != null) {
+			try {
+				if (isError()) {
+					gridTab.dataDelete();
+					rollbackTrx();
+					setError(false);
+				} else {
+					boolean commit = false;
+					if (isThereDocAction) {
+	
+						boolean isError = false;
+						int AD_Process_ID = MColumn.get(Env.getCtx(), gridTab.getField("DocAction").getAD_Column_ID()).getAD_Process_ID(); 
+	
+						if (AD_Process_ID > 0){
+							String docResult = processDocAction(masterRecord, AD_Process_ID); 
+	
+							if (docResult.contains("error")) 
+								isError = true; 
+	
+							rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",docResult + quoteChar + "\n")); 
+						} else {
+							throwAdempiereException("No Process found for document action.");	  
+						}
+	
+						if (isError){
+							gridTab.dataDelete();
+							rollbackTrx();
+						} else {
+							commit = true;
+						}
+					} else {
 						commit = true;
 					}
-				}else{
-					commit = true;
-				}
-				if (commit) {
-					String commitResult = commitTrx();
-					if (isError()) {
-						rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",commitResult + quoteChar + "\n")); 
-						gridTab.dataDelete();
-						rollbackTrx();
+					if (commit) {
+						String commitResult = commitTrx();
+						if (isError()) {
+							rowsTmpResult.set(0,rowsTmpResult.get(0).replace(quoteChar + "\n",commitResult + quoteChar + "\n")); 
+							gridTab.dataDelete();
+							rollbackTrx();
+						}
 					}
 				}
+			} finally {
+				trx.close();
+				trx=null;
 			}
-
-			trx.close();
-			trx=null;
 		}
 
 	}//manageMasterTrx
@@ -687,9 +686,17 @@ public class GridTabCSVImporter implements IGridTabImporter
 						if(currentGridTab.equals(gridTab))
 							masterRecord = po;
 
-						if( isInsertMode() )
-							logMsg = Msg.getMsg(Env.getCtx(), "Inserted") + " " + po.toString();	
-						else{
+						if( isInsertMode() ) {
+							logMsg = Msg.getMsg(Env.getCtx(), "Inserted") + " " + po.toString();
+							if (!Util.isEmpty(currentGridTab.getKeyColumnName()) && currentGridTab.getKeyColumnName().endsWith("_ID")) {
+								int recordId = currentGridTab.getRecord_ID();
+								if (recordId > 0) {
+									if (currentGridTab.getTabNo() == 0)
+										Env.setContext(Env.getCtx(), currentGridTab.getWindowNo(), currentGridTab.getKeyColumnName(), recordId);
+									Env.setContext(Env.getCtx(), currentGridTab.getWindowNo(), currentGridTab.getTabNo(), currentGridTab.getKeyColumnName(), Integer.toString(recordId));
+								}
+							}
+						} else {
 							logMsg = Msg.getMsg(Env.getCtx(), "Updated") + " " + po.toString(); 
 							if( currentGridTab.equals(gridTab) && sortedtTabMapIndexes.size()>1 )
 								currentGridTab.dataRefresh(true); 
@@ -1070,9 +1077,13 @@ public class GridTabCSVImporter implements IGridTabImporter
 			
 			if(isForeing) 
 			   foreignColumn = header.get(i).substring(header.get(i).indexOf("[")+1,header.get(i).indexOf("]"));
-			if(!isForeing && !isKeyColumn && ("AD_Language".equals(columnName) || "EntityType".equals(columnName)))
+			if(!isForeing && !isKeyColumn && ("AD_Language".equals(columnName) || "EntityType".equals(columnName))) {
 				setValue = value;
-			else if(!"C_Location".equals(gridTab.getTableName()) && header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){
+				GridField field = gridTab.getField(columnName);
+			    logMsg = gridTab.setValue(field,setValue);
+			    if(logMsg!=null && logMsg.equals(""))
+			    	logMsg= null;
+			}else if(!"C_Location".equals(gridTab.getTableName()) && header.get(i).contains(MTable.getTableName(Env.getCtx(),MLocation.Table_ID))){
 		    
 				if(address == null){
 				    if(isInsertMode()){

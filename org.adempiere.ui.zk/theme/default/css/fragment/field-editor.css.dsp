@@ -108,7 +108,6 @@ span.grid-combobox-editor {
 .grid-combobox-editor .z-combobox-button {
 	position: absolute;
 	right: 0px;
-	top: 1px;
 	border-bottom-right-radius: 3px;
 	border-top-right-radius: 3px;
 	border-bottom-left-radius: 0px;
@@ -121,6 +120,22 @@ span.grid-combobox-editor {
 	
 .grid-combobox-editor input:focus + .z-combobox-button {
 	border-left: 1px solid #0000ff;
+}
+
+.editor-input.z-combobox + .editor-button {
+	background-color: #F7F7F7;
+	width: 22px;
+    height: 24px;
+    min-height: 24px;
+    right: 0px;
+    top: 1px;
+    border: 1px solid #CFCFCF;
+    border-radius: 0;
+    border-left: 1px solid transparent;
+}
+.editor-input.z-combobox > .z-combobox-input {
+	border-bottom-right-radius: 0;
+	border-top-right-radius: 0;
 }
 
 <%-- payment rule --%>
@@ -153,7 +168,6 @@ span.grid-combobox-editor {
 .payment-rule-editor .z-combobox-button {
 	position: absolute;
 	right: 0px;
-	top: 1px;
 }
 .payment-rule-editor .z-combobox .z-combobox-button-hover {
 	background-color: #ddd;

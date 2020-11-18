@@ -63,8 +63,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	{
 		if (sLine == null)
 			return null;
-		final String whereClause = I_M_InOutLine.COLUMNNAME_M_InOutLine_ID+"=?";
-		List<MInvoiceLine> list = new Query(sLine.getCtx(),I_C_InvoiceLine.Table_Name,whereClause,sLine.get_TrxName())
+
+		final String whereClause = "C_InvoiceLine.M_InOutLine_ID=? AND C_Invoice.Processed='Y'";
+		final String joinInvoice = "JOIN C_Invoice ON (C_Invoice.C_Invoice_ID = C_InvoiceLine.C_Invoice_ID)";
+		List<MInvoiceLine> list = new Query(sLine.getCtx(),I_C_InvoiceLine.Table_Name,whereClause,sLine.get_TrxName()).addJoinClause(joinInvoice)
 		.setParameters(sLine.getM_InOutLine_ID())
 		.list();
 		
@@ -159,6 +161,49 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	{
 		super(ctx, rs, trxName);
 	}	//	MInvoiceLine
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInvoiceLine(MInvoiceLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInvoiceLine(Properties ctx, MInvoiceLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInvoiceLine(Properties ctx, MInvoiceLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_tax = copy.m_tax != null ? new MTax(ctx, copy.m_tax, trxName) : null;
+		this.m_M_PriceList_ID = copy.m_M_PriceList_ID;
+		this.m_DateInvoiced = copy.m_DateInvoiced;
+		this.m_C_BPartner_ID = copy.m_C_BPartner_ID;
+		this.m_C_BPartner_Location_ID = copy.m_C_BPartner_Location_ID;
+		this.m_IsSOTrx = copy.m_IsSOTrx;
+		this.m_product = copy.m_product != null ? new MProduct(ctx, copy.m_product, trxName) : null;
+		this.m_charge = copy.m_charge != null ? new MCharge(ctx, copy.m_charge, trxName) : null;
+		this.m_name = copy.m_name;
+		this.m_precision = copy.m_precision;
+		this.m_parent = null;
+		this.m_priceSet = copy.m_priceSet;
+	}
 
 	protected int			m_M_PriceList_ID = 0;
 	protected Timestamp	m_DateInvoiced = null;
@@ -487,17 +532,17 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	public MCharge getCharge()
 	{
 		if (m_charge == null && getC_Charge_ID() != 0)
-			m_charge =  MCharge.get (getCtx(), getC_Charge_ID());
+			m_charge =  MCharge.getCopy(getCtx(), getC_Charge_ID(), get_TrxName());
 		return m_charge;
 	}
 	/**
-	 * 	Get Tax
+	 * 	Get Tax (immutable)
 	 *	@return tax
 	 */
 	protected MTax getTax()
 	{
 		if (m_tax == null)
-			m_tax = MTax.get(getCtx(), getC_Tax_ID());
+			m_tax = MTax.get(getCtx(), getC_Tax_ID());		
 		return m_tax;
 	}	//	getTax
 
@@ -603,7 +648,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	public MProduct getProduct()
 	{
 		if (m_product == null && getM_Product_ID() != 0)
-			m_product =  MProduct.get (getCtx(), getM_Product_ID());
+			m_product =  MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return m_product;
 	}	//	getProduct
 

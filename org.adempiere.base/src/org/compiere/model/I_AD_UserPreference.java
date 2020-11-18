@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserPreference
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 public interface I_AD_UserPreference 
 {
@@ -185,6 +185,15 @@ public interface I_AD_UserPreference
 
 	/** Get Use Similar To	  */
 	public boolean isUseSimilarTo();
+
+    /** Column name MigrationScriptComment */
+    public static final String COLUMNNAME_MigrationScriptComment = "MigrationScriptComment";
+
+	/** Set Migration Script Comment	  */
+	public void setMigrationScriptComment (String MigrationScriptComment);
+
+	/** Get Migration Script Comment	  */
+	public String getMigrationScriptComment();
 
     /** Column name ToggleOnDoubleClick */
     public static final String COLUMNNAME_ToggleOnDoubleClick = "ToggleOnDoubleClick";

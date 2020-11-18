@@ -3,7 +3,6 @@
 <%-- breadcrumb --%>
 .breadcrumb-toolbar-button {
 	background-color: transparent; 
-	height: 22px;
 }
 .breadcrumb-toolbar-button img {
 	width: 22px;
@@ -60,6 +59,7 @@
 	display: inline-block;
 	position: absolute;
 	right: 4px;
+	max-width: 90%;
 }
 
 .docstatus-normal .z-label {
@@ -89,12 +89,35 @@
 }
 
 .adwindow-breadcrumb {
-	height: 30px;
+	min-height: 30px;
 	background-color: #FFF;
 	padding: 0px;
 	padding-left: 5px;
 	border-bottom: 1px solid #C5C5C5 !important;
-	clear: both;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+.adwindow-breadcrumb-paths {
+	display: inline-block;
+	padding: 4px 0px;
+}
+.adwindow-breadcrumb-toolbar {
+	display: inline-block; 
+	text-align: right;
+}
+.adwindow-breadcrumb-toolbar .z-toolbar {
+	background-image: none; 
+	background-color: transparent; 
+	border: none;
+}
+.adwindow-breadcrumb .breadcrumb-record-info.link {
+	padding-top: 4px;
+	padding-bottom: 0px;
+}
+.adwindow-breadcrumb .z-toolbarbutton-content {
+	line-height: inherit;
 }
 
 .adwindow-detailpane {
@@ -116,6 +139,8 @@
 
 .adwindow-detailpane-toolbar {
 	border: none;
+	height: 2em;
+	background: none;
 }
 
 .adwindow-detailpane-toolbar .z-toolbar-body {
@@ -166,6 +191,8 @@
 
 .adwindow-detailpane-adtab-grid-south .z-paging {
 	padding: 0px !important;
+	height: 2em;
+	border: none;
 }
 
 .adwindow-detailpane-adtab-grid-south .z-paging .z-paging-inp {
@@ -302,6 +329,9 @@
 .activity-card .help-content {
 	font-size: 13px;
 }
+.mobile .activity-card .help-content {
+	font-size: 16px;
+}
 .record-info-dialog .record-info-radiogroup {
 	padding: 4px 4px 8px 4px;
 }
@@ -309,3 +339,94 @@
 	margin-left: 3px;
 	margin-right: 3px;
 }
+
+@media only screen 
+  and (max-device-width: 700px) {
+	.mobile .adtab-grid > .z-cell > .z-label {
+		white-space: pre-line;
+	}	
+}
+.adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
+	text-overflow: ellipsis;	
+}
+@media only screen 
+  and (max-device-width: 700px) {
+	.mobile .adtab-grid > .z-grid-header > table > tbody > tr.z-columns > th.z-column > .z-column-content {
+		white-space: pre-line;
+	}
+}
+
+.mobile-overflow-link {
+	font-weight: 700; 
+	text-decoration: none;
+	transition: background 0.8s;
+	background-position: center;
+}
+.mobile-overflow-link:active {
+	background-color: #ddd;
+  	background-size: 80%;
+	transition: background 0s;
+}
+.adwindow-status-docstatus .z-label.mobile-overflow-link {
+	width: 18px;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.slide-right-out {
+    animation: slide-right-out 0.3s forwards;
+    animation-timing-function: ease-in;
+}
+@keyframes slide-right-out {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(100%); }
+}
+.slide-right-in {
+    animation: slide-right-in 0.3s forwards;
+    animation-timing-function: ease-out;
+}
+@keyframes slide-right-in {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+}
+
+.slide-left-out {
+    animation: slide-left-out 0.3s forwards;
+    animation-timing-function: ease-in;
+}
+@keyframes slide-left-out {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+.slide-left-in {
+    animation: slide-left-in 0.3s forwards;
+    animation-timing-function: ease-out;
+}
+@keyframes slide-left-in {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0%); }
+}
+
+@media only screen 
+  and (max-device-width: 700px) {
+	.adwindow-detailpane-toolbar .z-paging-button {
+		margin-right: 2px;
+	}
+	.adwindow-detailpane-toolbar .z-paging-input {
+		margin-left: 3px;
+	}
+	.adwindow-detailpane-toolbar .z-paging-text {
+		margin-right: 3px;
+	}
+	.adwindow-detailpane-toolbar {
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+}
+@media only screen 
+  and (max-device-width: 350px) {
+ 	.adwindow-detailpane-toolbar .z-paging-input {
+		width: 30px;
+	}
+}
+  

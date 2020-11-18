@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Transfer
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_A_Asset_Transfer (Properties ctx, int A_Asset_Transfer_ID, String trxName)
@@ -118,28 +118,6 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public int getA_Accumdepreciation_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Accumdepreciation_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Accumdepreciation_Acct_() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Accumdepreciation_Acct_New(), get_TrxName());	}
-
-	/** Set New Accum Depreciation Acct.
-		@param A_Accumdepreciation_Acct_New New Accum Depreciation Acct	  */
-	public void setA_Accumdepreciation_Acct_New (int A_Accumdepreciation_Acct_New)
-	{
-		set_Value (COLUMNNAME_A_Accumdepreciation_Acct_New, Integer.valueOf(A_Accumdepreciation_Acct_New));
-	}
-
-	/** Get New Accum Depreciation Acct.
-		@return New Accum Depreciation Acct	  */
-	public int getA_Accumdepreciation_Acct_New () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Accumdepreciation_Acct_New);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -235,28 +213,6 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public int getA_Asset_Acct_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Acct_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Asset_Acct_() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Asset_Acct_New(), get_TrxName());	}
-
-	/** Set New Asset Cost Acct.
-		@param A_Asset_Acct_New New Asset Cost Acct	  */
-	public void setA_Asset_Acct_New (int A_Asset_Acct_New)
-	{
-		set_Value (COLUMNNAME_A_Asset_Acct_New, Integer.valueOf(A_Asset_Acct_New));
-	}
-
-	/** Get New Asset Cost Acct.
-		@return New Asset Cost Acct	  */
-	public int getA_Asset_Acct_New () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Acct_New);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -411,28 +367,6 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getA_Depreciation_Acct_() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Depreciation_Acct_New(), get_TrxName());	}
-
-	/** Set New Depreciation Exp Acct.
-		@param A_Depreciation_Acct_New New Depreciation Exp Acct	  */
-	public void setA_Depreciation_Acct_New (int A_Depreciation_Acct_New)
-	{
-		set_Value (COLUMNNAME_A_Depreciation_Acct_New, Integer.valueOf(A_Depreciation_Acct_New));
-	}
-
-	/** Get New Depreciation Exp Acct.
-		@return New Depreciation Exp Acct	  */
-	public int getA_Depreciation_Acct_New () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Acct_New);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set A_Depreciation_Acct_Str.
 		@param A_Depreciation_Acct_Str A_Depreciation_Acct_Str	  */
 	public void setA_Depreciation_Acct_Str (String A_Depreciation_Acct_Str)
@@ -508,28 +442,6 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getA_Disposal_Loss_() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Loss_New(), get_TrxName());	}
-
-	/** Set New Disposal Loss.
-		@param A_Disposal_Loss_New New Disposal Loss	  */
-	public void setA_Disposal_Loss_New (int A_Disposal_Loss_New)
-	{
-		set_Value (COLUMNNAME_A_Disposal_Loss_New, Integer.valueOf(A_Disposal_Loss_New));
-	}
-
-	/** Get New Disposal Loss.
-		@return New Disposal Loss	  */
-	public int getA_Disposal_Loss_New () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Loss_New);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getA_Disposal_Loss_New_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -600,28 +512,6 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public int getA_Disposal_Revenue_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Revenue_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Disposal_Revenue_() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Revenue_New(), get_TrxName());	}
-
-	/** Set New Disposal Revenue.
-		@param A_Disposal_Revenue_New New Disposal Revenue	  */
-	public void setA_Disposal_Revenue_New (int A_Disposal_Revenue_New)
-	{
-		set_Value (COLUMNNAME_A_Disposal_Revenue_New, Integer.valueOf(A_Disposal_Revenue_New));
-	}
-
-	/** Get New Disposal Revenue.
-		@return New Disposal Revenue	  */
-	public int getA_Disposal_Revenue_New () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Revenue_New);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

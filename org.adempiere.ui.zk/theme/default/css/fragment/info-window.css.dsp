@@ -32,3 +32,8 @@
 .info-panel.z-window .z-borderlayout > div > .z-north {
 	max-height: 50%;
 }
+
+.info-panel .z-listheader > .z-listheader-content {
+	white-space: pre-line;
+	text-overflow: ellipsis;
+}

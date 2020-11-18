@@ -46,7 +46,7 @@ public class DocActionTemplate extends PO implements DocAction
 	 */
 	private DocActionTemplate()
 	{
-		super(null);
+		super((Properties)null);
 	}	//	DocActionTemplate
 	/**
 	 * 	Init PO

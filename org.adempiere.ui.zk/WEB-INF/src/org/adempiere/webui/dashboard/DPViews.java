@@ -25,6 +25,7 @@ import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MUserDefInfo;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -102,9 +103,16 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			MInfoWindow info = infos[i];
 			if (MInfoWindow.get(info.getAD_InfoWindow_ID(), null) != null)
 			{
+				// Load User Def
+				String name = info.get_Translation("Name");
+				MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
+				if(userDef != null && !Util.isEmpty(userDef.getName())) {
+					name = userDef.getName();
+				} 
+				
 				ToolBarButton btnViewItem = new ToolBarButton(info.getName());
 				btnViewItem.setSclass("link");
-				btnViewItem.setLabel(info.get_Translation("Name"));
+				btnViewItem.setLabel(name);
 				String image = (Util.isEmpty(info.getImageURL()) ? "Info16.png" : info.getImageURL());
 				if (ThemeManager.isUseFontIconForImage())
 				{

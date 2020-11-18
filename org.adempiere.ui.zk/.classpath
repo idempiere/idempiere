@@ -7,8 +7,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="WEB-INF/src/"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/ckez.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/daisydiff.jar"/>
-	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/owasp-java-html-sanitizer.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ckez.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/daisydiff.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/owasp-java-html-sanitizer.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

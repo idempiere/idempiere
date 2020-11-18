@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -33,7 +34,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.adempiere.exceptions.DBException;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
@@ -42,6 +42,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.Secure;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  User Model
@@ -53,12 +55,12 @@ import org.compiere.util.Util;
  * 			<li>FR [ 2788430 ] MUser.getOfBPartner add trxName parameter
  * 				https://sourceforge.net/tracker/index.php?func=detail&aid=2788430&group_id=176962&atid=879335
  */
-public class MUser extends X_AD_User
+public class MUser extends X_AD_User implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1366564982801896588L;
+	private static final long serialVersionUID = 1351277092193923708L;
 
 	/**
 	 * Get active Users of BPartner
@@ -128,7 +130,18 @@ public class MUser extends X_AD_User
 	}	//	getWithRole
 
 	/**
-	 * 	Get User (cached)
+	 * 	Get User (cached) (immutable)
+	 * 	Also loads Admninistrator (0)
+	 *	@param AD_User_ID id
+	 *	@return user
+	 */
+	public static MUser get (int AD_User_ID)
+	{
+		return get(Env.getCtx(), AD_User_ID);
+	}
+	
+	/**
+	 * 	Get User (cached) (immutable)
 	 * 	Also loads Admninistrator (0)
 	 *	@param ctx context
 	 *	@param AD_User_ID id
@@ -137,16 +150,21 @@ public class MUser extends X_AD_User
 	public static MUser get (Properties ctx, int AD_User_ID)
 	{
 		Integer key = Integer.valueOf(AD_User_ID);
-		MUser retValue = (MUser)s_cache.get(key);
+		MUser retValue = s_cache.get(ctx, key, e -> new MUser(ctx, e));
 		if (retValue == null)
 		{
-			retValue = new MUser (ctx, AD_User_ID, null);
+			retValue = new MUser (ctx, AD_User_ID, (String)null);
 			if (AD_User_ID == 0)
 			{
 				String trxName = null;
 				retValue.load(trxName);	//	load System Record
 			}
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == AD_User_ID)
+			{
+				s_cache.put(key, retValue, e -> new MUser(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get
@@ -161,6 +179,21 @@ public class MUser extends X_AD_User
 		return get(ctx, Env.getAD_User_ID(ctx));
 	}	//	get
 
+	/**
+	 * Get updateable copy of MUser from cache
+	 * @param ctx
+	 * @param AD_User_ID
+	 * @param trxName
+	 * @return MUser
+	 */
+	public static MUser getCopy(Properties ctx, int AD_User_ID, String trxName)
+	{
+		MUser user = get(AD_User_ID);
+		if (user != null)
+			user = new MUser(ctx, user, trxName);
+		return user;
+	}
+	
 	/**
 	 * 	Get User
 	 *	@param ctx context
@@ -267,7 +300,7 @@ public class MUser extends X_AD_User
 	}	//	isSalesRep
 	
 	/**	Cache					*/
-	static private CCache<Integer,MUser> s_cache = new CCache<Integer,MUser>(Table_Name, 30, 60);
+	static private ImmutableIntPOCache<Integer,MUser> s_cache = new ImmutableIntPOCache<Integer,MUser>(Table_Name, 30, 60);
 	/**	Static Logger			*/
 	private static CLogger	s_log	= CLogger.getCLogger (MUser.class);
 	
@@ -311,6 +344,41 @@ public class MUser extends X_AD_User
 		super(ctx, rs, trxName);
 	}	//	MUser
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MUser(MUser copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUser(Properties ctx, MUser copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUser(Properties ctx, MUser copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_roles = copy.m_roles != null ? Arrays.stream(copy.m_roles).map(e ->{return new MRole(ctx, e, trxName);}).toArray(MRole[]::new) : null;
+		this.m_rolesAD_Org_ID = copy.m_rolesAD_Org_ID;
+		this.m_isAdministrator = copy.m_isAdministrator;
+		this.m_bpAccess = copy.m_bpAccess != null ? Arrays.copyOf(copy.m_bpAccess, copy.m_bpAccess.length) : null;
+	}
+
 	/**	Roles of User with Org	*/
 	private MRole[] 			m_roles = null;
 	/**	Roles of User with Org	*/
@@ -318,7 +386,7 @@ public class MUser extends X_AD_User
 	/** Is Administrator		*/
 	private Boolean				m_isAdministrator = null;
 	/** User Access Rights				*/
-	private X_AD_UserBPAccess[]	m_bpAccess = null;
+	private MUserBPAccess[]	m_bpAccess = null;
 	/** Password Hashed **/
 	private boolean being_hashed = false;
 	
@@ -755,7 +823,7 @@ public class MUser extends X_AD_User
 			pstmt.setInt (4, AD_Org_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
-				list.add (new MRole(getCtx(), rs, get_TrxName()));
+				list.add (new MRole(Env.getCtx(), rs, get_TrxName()));
 		}
 		catch (Exception e)
 		{
@@ -767,6 +835,9 @@ public class MUser extends X_AD_User
 			rs = null; pstmt = null;
 		}
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
+		
 		m_rolesAD_Org_ID = AD_Org_ID;
 		m_roles = new MRole[list.size()];
 		list.toArray (m_roles);
@@ -848,12 +919,12 @@ public class MUser extends X_AD_User
 	 *	@param requery requery
 	 *	@return access list
 	 */
-	public X_AD_UserBPAccess[] getBPAccess (boolean requery)
+	public MUserBPAccess[] getBPAccess (boolean requery)
 	{
 		if (m_bpAccess != null && !requery)
 			return m_bpAccess;
 		String sql = "SELECT * FROM AD_UserBPAccess WHERE AD_User_ID=? AND IsActive='Y'";
-		ArrayList<X_AD_UserBPAccess> list = new ArrayList<X_AD_UserBPAccess>();
+		ArrayList<MUserBPAccess> list = new ArrayList<MUserBPAccess>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -863,7 +934,7 @@ public class MUser extends X_AD_User
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
-				list.add (new X_AD_UserBPAccess (getCtx(), rs, null));
+				list.add (new MUserBPAccess (getCtx(), rs, null));
 			}
 		}
 		catch (Exception e)
@@ -874,7 +945,11 @@ public class MUser extends X_AD_User
 		{
 			DB.close(rs, pstmt);
 		}
-		m_bpAccess = new X_AD_UserBPAccess[list.size ()];
+		
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
+		
+		m_bpAccess = new MUserBPAccess[list.size ()];
 		list.toArray (m_bpAccess);
 		return m_bpAccess;
 	}	//	getBPAccess
@@ -1011,7 +1086,7 @@ public class MUser extends X_AD_User
 			rs = pstmt.executeQuery ();
 			if (rs.next())
 			{
-				retValue = MUser.get(ctx, rs.getInt(1));
+				retValue = MUser.getCopy(ctx, rs.getInt(1), (String)null);
 				if (rs.next())
 					s_log.warning ("More then one user with Name/Password = " + name);
 			}
@@ -1092,12 +1167,7 @@ public class MUser extends X_AD_User
 				MPasswordHistory passwordHistory = new MPasswordHistory(this.getCtx(), 0, this.get_TrxName());
 				passwordHistory.setSalt(this.getSalt());
 				passwordHistory.setPassword(this.getPassword());
-				// http://wiki.idempiere.org/en/System_user
-				if (!this.is_new() && this.getAD_User_ID() == 0){
-					passwordHistory.set_Value(MPasswordHistory.COLUMNNAME_AD_User_ID, 0);
-				}else{
-					passwordHistory.setAD_User_ID(this.getAD_User_ID());
-				}
+				passwordHistory.setAD_User_ID(this.getAD_User_ID());
 				passwordHistory.setDatePasswordChanged(this.getUpdated());
 				passwordHistory.saveEx();
 			}
@@ -1115,6 +1185,20 @@ public class MUser extends X_AD_User
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public MUser markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_roles != null && m_roles.length > 0)
+			Arrays.stream(m_roles).forEach(e -> e.markImmutable());
+		if (m_bpAccess != null && m_bpAccess.length > 0)
+			Arrays.stream(m_bpAccess).forEach(e -> e.markImmutable());
+		
+		return this;
 	}
 
 }	//	MUser

@@ -25,6 +25,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Zoom Condition model
@@ -32,12 +33,12 @@ import org.compiere.util.Util;
  *  @author Nico
  *  @version $Id: MZoomCondition.java
  */
-public class MZoomCondition extends X_AD_ZoomCondition
+public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3077830061348224074L;
+	private static final long serialVersionUID = -2472970418557589702L;
 
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -61,6 +62,37 @@ public class MZoomCondition extends X_AD_ZoomCondition
 		super (ctx, rs, trxName);
 	}	//	MZoomCondition
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MZoomCondition(MZoomCondition copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MZoomCondition(Properties ctx, MZoomCondition copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MZoomCondition(Properties ctx, MZoomCondition copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/** Cache of Table Conditions Array		**/
 	private static CCache<Integer,MZoomCondition[]> s_conditions = new CCache<Integer,MZoomCondition[]>(Table_Name, 0);
 
@@ -79,8 +111,10 @@ public class MZoomCondition extends X_AD_ZoomCondition
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MZoomCondition.COLUMNNAME_SeqNo)
 				.list();
+			list.stream().forEach(e -> e.markImmutable());
 			conditions = list.toArray(new MZoomCondition[list.size()]);
 			s_conditions.put(AD_Table_ID, conditions);
+			return conditions;
 		}
 		return conditions;
 	}	//	getConditions
@@ -297,4 +331,14 @@ public class MZoomCondition extends X_AD_ZoomCondition
 		int no = DB.getSQLValue(null, builder.toString());		
 		return no == 1;
 	}
+	
+	@Override
+	public MZoomCondition markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MZoomCondition

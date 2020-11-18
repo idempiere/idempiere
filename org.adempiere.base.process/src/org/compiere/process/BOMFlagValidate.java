@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.compiere.model.MProduct;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 

@@ -33,11 +33,23 @@ public class WDashboardContentEditor extends WEditor {
 	private final static CLogger logger  = CLogger.getCLogger(WDashboardContentEditor.class);
 	
 	/**
-	 * @param comp
+	 * 
 	 * @param gridField
+	 * @param windowNo
 	 */
 	public WDashboardContentEditor(GridField gridField, int windowNo) {
-		super(new Panel(), gridField);
+		this(gridField, windowNo, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param windowNo
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WDashboardContentEditor(GridField gridField, int windowNo, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+		super(new Panel(), gridField, tableEditor, editorConfiguration);
 		dashboardController = new DashboardController();
 		content = new MDashboardContent(Env.getCtx(), gridField.getPA_DashboardContent_ID(), null);
 		Panelchildren pc = new Panelchildren();

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>7.1.0-SNAPSHOT</version>
+		<version>8.1.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.server.feature</artifactId>
@@ -141,7 +141,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/database/7.1/Adempiere_pg.jar</url>
+							<url>${url.file.srv}/database/8.1/Adempiere_pg.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>data/seed</outputDirectory>
 							<retries>5</retries>
@@ -154,7 +154,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/database/7.1/Adempiere.jar</url>
+							<url>${url.file.srv}/database/8.1/Adempiere.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>data/seed</outputDirectory>
 							<retries>5</retries>

@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Acct
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_A_Asset_Acct (Properties ctx, int A_Asset_Acct_ID, String trxName)
@@ -197,31 +197,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 	public int getA_Asset_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_A_Asset_Spread getA_Asset_Spread() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Spread)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Spread.Table_Name)
-			.getPO(getA_Asset_Spread_ID(), get_TrxName());	}
-
-	/** Set A_Asset_Spread_ID.
-		@param A_Asset_Spread_ID A_Asset_Spread_ID	  */
-	public void setA_Asset_Spread_ID (int A_Asset_Spread_ID)
-	{
-		if (A_Asset_Spread_ID < 1) 
-			set_Value (COLUMNNAME_A_Asset_Spread_ID, null);
-		else 
-			set_Value (COLUMNNAME_A_Asset_Spread_ID, Integer.valueOf(A_Asset_Spread_ID));
-	}
-
-	/** Get A_Asset_Spread_ID.
-		@return A_Asset_Spread_ID	  */
-	public int getA_Asset_Spread_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Spread_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -496,28 +471,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 		return bd;
 	}
 
-	public I_C_ValidCombination getA_Disposal_G() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Gain(), get_TrxName());	}
-
-	/** Set Disposal Gain.
-		@param A_Disposal_Gain Disposal Gain	  */
-	public void setA_Disposal_Gain (int A_Disposal_Gain)
-	{
-		set_Value (COLUMNNAME_A_Disposal_Gain, Integer.valueOf(A_Disposal_Gain));
-	}
-
-	/** Get Disposal Gain.
-		@return Disposal Gain	  */
-	public int getA_Disposal_Gain () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Gain);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getA_Disposal_Gain_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -540,28 +493,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getA_Disposal_L() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Loss(), get_TrxName());	}
-
-	/** Set Loss on Disposal.
-		@param A_Disposal_Loss Loss on Disposal	  */
-	public void setA_Disposal_Loss (int A_Disposal_Loss)
-	{
-		set_Value (COLUMNNAME_A_Disposal_Loss, Integer.valueOf(A_Disposal_Loss));
-	}
-
-	/** Get Loss on Disposal.
-		@return Loss on Disposal	  */
-	public int getA_Disposal_Loss () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Loss);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getA_Disposal_Loss_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -579,28 +510,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 	public int getA_Disposal_Loss_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Loss_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Disposal_Reve() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Revenue(), get_TrxName());	}
-
-	/** Set Disposal Revenue.
-		@param A_Disposal_Revenue Disposal Revenue	  */
-	public void setA_Disposal_Revenue (int A_Disposal_Revenue)
-	{
-		set_Value (COLUMNNAME_A_Disposal_Revenue, Integer.valueOf(A_Disposal_Revenue));
-	}
-
-	/** Get Disposal Revenue.
-		@return Disposal Revenue	  */
-	public int getA_Disposal_Revenue () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Revenue);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -657,50 +566,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 	public int getA_Period_Start () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Period_Start);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Reval_Accumdep_Offset_() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Reval_Accumdep_Offset_Cur(), get_TrxName());	}
-
-	/** Set Revaluation Accumulated Depreciation Offset for Current Year.
-		@param A_Reval_Accumdep_Offset_Cur Revaluation Accumulated Depreciation Offset for Current Year	  */
-	public void setA_Reval_Accumdep_Offset_Cur (int A_Reval_Accumdep_Offset_Cur)
-	{
-		set_Value (COLUMNNAME_A_Reval_Accumdep_Offset_Cur, Integer.valueOf(A_Reval_Accumdep_Offset_Cur));
-	}
-
-	/** Get Revaluation Accumulated Depreciation Offset for Current Year.
-		@return Revaluation Accumulated Depreciation Offset for Current Year	  */
-	public int getA_Reval_Accumdep_Offset_Cur () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Reval_Accumdep_Offset_Cur);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Reval_Accumdep_Offset_Pr() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Reval_Accumdep_Offset_Prior(), get_TrxName());	}
-
-	/** Set Revaluation Accumulated Depreciation Offset for Prior Year.
-		@param A_Reval_Accumdep_Offset_Prior Revaluation Accumulated Depreciation Offset for Prior Year	  */
-	public void setA_Reval_Accumdep_Offset_Prior (int A_Reval_Accumdep_Offset_Prior)
-	{
-		set_Value (COLUMNNAME_A_Reval_Accumdep_Offset_Prior, Integer.valueOf(A_Reval_Accumdep_Offset_Prior));
-	}
-
-	/** Get Revaluation Accumulated Depreciation Offset for Prior Year.
-		@return Revaluation Accumulated Depreciation Offset for Prior Year	  */
-	public int getA_Reval_Accumdep_Offset_Prior () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Reval_Accumdep_Offset_Prior);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -773,28 +638,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Reval_Cal_Method);
 	}
 
-	public I_C_ValidCombination getA_Reval_Cost_Off() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Reval_Cost_Offset(), get_TrxName());	}
-
-	/** Set Revaluation Cost Offset for Current Year.
-		@param A_Reval_Cost_Offset Revaluation Cost Offset for Current Year	  */
-	public void setA_Reval_Cost_Offset (int A_Reval_Cost_Offset)
-	{
-		set_Value (COLUMNNAME_A_Reval_Cost_Offset, Integer.valueOf(A_Reval_Cost_Offset));
-	}
-
-	/** Get Revaluation Cost Offset for Current Year.
-		@return Revaluation Cost Offset for Current Year	  */
-	public int getA_Reval_Cost_Offset () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Reval_Cost_Offset);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getA_Reval_Cost_Offset_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -817,28 +660,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getA_Reval_Cost_Offset_Pr() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Reval_Cost_Offset_Prior(), get_TrxName());	}
-
-	/** Set Revaluation Cost Offset for Prior Year.
-		@param A_Reval_Cost_Offset_Prior Revaluation Cost Offset for Prior Year	  */
-	public void setA_Reval_Cost_Offset_Prior (int A_Reval_Cost_Offset_Prior)
-	{
-		set_Value (COLUMNNAME_A_Reval_Cost_Offset_Prior, Integer.valueOf(A_Reval_Cost_Offset_Prior));
-	}
-
-	/** Get Revaluation Cost Offset for Prior Year.
-		@return Revaluation Cost Offset for Prior Year	  */
-	public int getA_Reval_Cost_Offset_Prior () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Reval_Cost_Offset_Prior);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getA_Reval_Cost_Offset_Prior_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -856,28 +677,6 @@ public class X_A_Asset_Acct extends PO implements I_A_Asset_Acct, I_Persistent
 	public int getA_Reval_Cost_Offset_Prior_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Reval_Cost_Offset_Prior_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Reval_Depexp_Off() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Reval_Depexp_Offset(), get_TrxName());	}
-
-	/** Set Revaluation Expense Offs.
-		@param A_Reval_Depexp_Offset Revaluation Expense Offs	  */
-	public void setA_Reval_Depexp_Offset (int A_Reval_Depexp_Offset)
-	{
-		set_Value (COLUMNNAME_A_Reval_Depexp_Offset, Integer.valueOf(A_Reval_Depexp_Offset));
-	}
-
-	/** Get Revaluation Expense Offs.
-		@return Revaluation Expense Offs	  */
-	public int getA_Reval_Depexp_Offset () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Reval_Depexp_Offset);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

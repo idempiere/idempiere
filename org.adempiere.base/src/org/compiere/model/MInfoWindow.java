@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -68,6 +69,20 @@ public class MInfoWindow extends X_AD_InfoWindow
 		super (ctx, rs, trxName);
 	}	//	MInfoWindow
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoWindow(MInfoWindow copy)
+	{
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_validateEachColumn = copy.m_validateEachColumn;
+		this.m_infocolumns = copy.m_infocolumns != null ? Arrays.stream(copy.m_infocolumns).map(MInfoColumn::new).toArray(MInfoColumn[]::new) : null;
+		this.m_infoProcess = copy.m_infoProcess != null ? Arrays.stream(copy.m_infoProcess).map(MInfoProcess::new).toArray(MInfoProcess[]::new) : null;
+		this.m_infoRelated = copy.m_infoRelated != null ? Arrays.stream(copy.m_infoRelated).map(MInfoRelated::new).toArray(MInfoRelated[]::new) : null;
+	}
+	
 	public static MInfoWindow get(String tableName, String trxName) {
 		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), MInfoWindow.Table_ID), MInfoWindow.COLUMNNAME_AD_Table_ID+"=? AND IsValid='Y' ", null);
 		MTable table = MTable.get(Env.getCtx(), tableName);

@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.report.jasper.feature"
       label="JasperReport-feature"
-      version="7.1.0.qualifier"
+      version="8.1.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -21,13 +21,13 @@
          id="org.adempiere.report.jasper"
          download-size="0"
          install-size="0"
-         version="7.1.0.qualifier"/>
+         version="8.1.0.qualifier"/>
 
    <plugin
          id="org.adempiere.report.jasper.library"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="8.1.0.qualifier"
          fragment="true"/>
 
    <plugin
@@ -117,7 +117,7 @@
          id="org.w3c.dom.smil"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v200806040011"
          unpack="false"/>
 
    <plugin
@@ -271,7 +271,7 @@
          id="javax.validation.api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.0.Final"
          unpack="false"/>
 
    <plugin
@@ -304,13 +304,6 @@
 
    <plugin
          id="json"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.events"
          download-size="0"
          install-size="0"
          version="0.0.0"

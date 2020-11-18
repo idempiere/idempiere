@@ -110,6 +110,7 @@ public class GridTable extends AbstractTableModel
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
 	public static final String DATA_INSERTED_MESSAGE = "Inserted";
 	public static final String DATA_IGNORED_MESSAGE = "Ignored";
+	public static final String DATA_SAVED_MESSAGE = "Saved";
 
 	/**
 	 *	JDBC Based Buffered Table
@@ -347,7 +348,7 @@ public class GridTable extends AbstractTableModel
 			if (i > 0)
 				select.append(",");
 			GridField field = (GridField)m_fields.get(i);
-			select.append(field.getColumnSQL(true));	//	ColumnName or Virtual Column
+			select.append(field.isVirtualColumn() ? field.getColumnSQL(true) : DB.getDatabase().quoteColumnName(field.getColumnSQL(true)));	//	ColumnName or Virtual Column
 		}
 		//
 		select.append(" FROM ").append(m_tableName);
@@ -424,8 +425,10 @@ public class GridTable extends AbstractTableModel
 			m_SQL += " ORDER BY " + m_orderClause;
 		}
 		//
-		log.fine(m_SQL_Count);
-		Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_SQL, m_SQL);
+		if (log.isLoggable(Level.FINE))
+			log.fine(m_SQL_Count);
+		if (log.isLoggable(Level.INFO))
+			Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_SQL, m_SQL);
 		return m_SQL;
 	}	//	createSelectSql
 
@@ -2165,6 +2168,18 @@ public class GridTable extends AbstractTableModel
 		if (po == null)
 			throw new ClassNotFoundException ("No Persistent Object");
 		
+		if (!po.is_new())
+		{
+			if (hasChanged(po))
+			{				
+				// return error stating that current record has changed and it cannot be saved
+				String adMessage = "CurrentRecordModified";
+				String msg = Msg.getMsg(Env.getCtx(), adMessage);
+				fireDataStatusEEvent(adMessage, msg, true);
+				return SAVE_ERROR;
+			}
+		}
+		
 		int size = m_fields.size();
 		for (int col = 0; col < size; col++)
 		{
@@ -3788,8 +3803,8 @@ public class GridTable extends AbstractTableModel
 			int colUpdated = findColumn("Updated");
 			int colProcessed = findColumn("Processed");
 			
-			boolean hasUpdated = (colUpdated > 0);
-			boolean hasProcessed = (colProcessed > 0);
+			boolean hasUpdated = (colUpdated >= 0);
+			boolean hasProcessed = (colProcessed >= 0);
 			
 			String columns = null;
 			if (hasUpdated && hasProcessed) {
@@ -3799,7 +3814,7 @@ public class GridTable extends AbstractTableModel
 			} else if (hasProcessed) {
 				columns = new String("Processed");
 			} else {
-				// no columns updated or processed to commpare
+				// no columns updated or processed to compare
 				return false;
 			}
 			
@@ -3870,7 +3885,53 @@ public class GridTable extends AbstractTableModel
 		return false;
 	}
 
-	
+	// verify if the current record has changed
+	private boolean hasChanged(PO po) {
+		if (m_rowChanged < 0)
+			return false;
+		
+		// not so aggressive (it can has still concurrency problems)
+		// compare Updated, IsProcessed
+		int colUpdated = findColumn("Updated");
+		int colProcessed = findColumn("Processed");
+		
+		boolean hasUpdated = colUpdated >= 0;
+		boolean hasProcessed = colProcessed >= 0;
+
+		if (!hasUpdated && !hasProcessed) {
+			// no columns updated or processed to compare
+			return false;
+		}
+				
+    	Timestamp dbUpdated = (Timestamp) po.get_Value("Updated");
+    	if (hasUpdated) {
+			Timestamp memUpdated = null;
+			memUpdated = (Timestamp) getOldValue(m_rowChanged, colUpdated);
+			if (memUpdated == null)
+				memUpdated = (Timestamp) getValueAt(m_rowChanged, colUpdated);
+
+			if (memUpdated != null && ! memUpdated.equals(dbUpdated))
+				return true;
+    	}
+    	
+    	if (hasProcessed) {
+			Boolean memProcessed = null;
+			memProcessed = (Boolean) getOldValue(m_rowChanged, colProcessed);
+			if (memProcessed == null){
+				if(getValueAt(m_rowChanged, colProcessed) instanceof Boolean )
+				   memProcessed = (Boolean) getValueAt(m_rowChanged, colProcessed); 
+				else if (getValueAt(m_rowChanged, colProcessed) instanceof String )
+				   memProcessed = Boolean.valueOf((String)getValueAt(m_rowChanged, colProcessed)); 
+			}
+    			
+			Boolean dbProcessed = po.get_ValueAsBoolean("Processed");
+			if (memProcessed != null && ! memProcessed.equals(dbProcessed))
+				return true;
+    	}
+
+		return false;
+	}
+		
 	/**
 	 * get Parent Tab No
 	 * @return Tab No

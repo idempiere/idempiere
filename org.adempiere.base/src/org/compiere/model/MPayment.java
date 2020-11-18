@@ -822,7 +822,39 @@ public class MPayment extends X_C_Payment
 				}
 			}
 		}
-		
+
+		if (!isProcessed())
+		{
+			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+			MAcctSchema as = MAcctSchema.get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			if (as.getC_Currency_ID() != getC_Currency_ID())
+			{
+				if (isOverrideCurrencyRate())
+				{
+					if(getCurrencyRate() == null || getCurrencyRate().signum() == 0)
+					{
+						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_CurrencyRate));
+						return false;
+					}
+					if (getConvertedAmt() == null || getConvertedAmt().signum() == 0)
+					{
+						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_ConvertedAmt));
+						return false;
+					}
+				}
+				else
+				{
+					setCurrencyRate(null);
+					setConvertedAmt(null);
+				}
+			}
+			else
+			{
+				setCurrencyRate(null);
+				setConvertedAmt(null);
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 
@@ -2014,14 +2046,23 @@ public class MPayment extends X_C_Payment
 		{
 			MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
 			DB.getDatabase().forUpdate(bp, 0);
-			//	Update total balance to include this payment 
-			BigDecimal payAmt = MConversionRate.convertBase(getCtx(), getPayAmt(), 
-				getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
-			if (payAmt == null)
+			//	Update total balance to include this payment
+			BigDecimal payAmt = null;
+			int baseCurrencyId = Env.getContextAsInt(getCtx(), "$C_Currency_ID");
+			if (getC_Currency_ID() != baseCurrencyId && isOverrideCurrencyRate()) 
 			{
-				m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
-						getC_Currency_ID(), MClient.get(getCtx()).getC_Currency_ID(), getC_ConversionType_ID(), getDateAcct(), get_TrxName());
-				return DocAction.STATUS_Invalid;
+				payAmt = getConvertedAmt();
+			}
+			else
+			{
+				payAmt = MConversionRate.convertBase(getCtx(), getPayAmt(), 
+					getC_Currency_ID(), getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
+				if (payAmt == null)
+				{
+					m_processMsg = MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
+							getC_Currency_ID(), MClient.get(getCtx()).getC_Currency_ID(), getC_ConversionType_ID(), getDateAcct(), get_TrxName());
+					return DocAction.STATUS_Invalid;
+				}
 			}
 			//	Total Balance
 			BigDecimal newBalance = bp.getTotalOpenBalance();
@@ -2314,6 +2355,8 @@ public class MPayment extends X_C_Payment
 				pa.saveEx();
 			}
 		}
+		//do not post immediate alloc, alloc should post after payment
+		alloc.set_Attribute(DocumentEngine.DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE, Boolean.FALSE);
 		// added AdempiereException by zuhri
 		if (!alloc.processIt(DocAction.ACTION_Complete))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
@@ -2354,6 +2397,8 @@ public class MPayment extends X_C_Payment
 		aLine.setDocInfo(getC_BPartner_ID(), 0, getC_Invoice_ID());
 		aLine.setC_Payment_ID(getC_Payment_ID());
 		aLine.saveEx(get_TrxName());
+		//do not post immediate alloc
+		alloc.set_Attribute(DocumentEngine.DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE, Boolean.FALSE);
 		// added AdempiereException by zuhri
 		if (!alloc.processIt(DocAction.ACTION_Complete))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
@@ -2451,6 +2496,8 @@ public class MPayment extends X_C_Payment
 		}
 		else
 		{
+			//do not post immediate alloc
+			alloc.set_Attribute(DocumentEngine.DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE, Boolean.FALSE);
 			// added Adempiere Exception by zuhri
 			if (alloc.processIt(DocAction.ACTION_Complete)) {
 				addDocsPostProcess(alloc);
@@ -2742,6 +2789,8 @@ public class MPayment extends X_C_Payment
 		if (!aLine.save(get_TrxName()))
 			log.warning("Automatic allocation - reversal line not saved");
 		
+		//do not post immediate alloc
+		alloc.set_Attribute(DocumentEngine.DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE, Boolean.FALSE);
 		// added AdempiereException by zuhri
 		if (!alloc.processIt(DocAction.ACTION_Complete))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());

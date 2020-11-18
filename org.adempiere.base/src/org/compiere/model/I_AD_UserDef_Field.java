@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 public interface I_AD_UserDef_Field 
 {
@@ -48,6 +48,21 @@ public interface I_AD_UserDef_Field
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_FieldGroup_ID */
+    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
+
+	/** Set Field Group.
+	  * Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
+
+	/** Get Field Group.
+	  * Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID();
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_Field_ID */
     public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
@@ -180,6 +195,21 @@ public interface I_AD_UserDef_Field
 	public int getAD_Val_Rule_ID();
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
+
+    /** Column name AD_Val_Rule_Lookup_ID */
+    public static final String COLUMNNAME_AD_Val_Rule_Lookup_ID = "AD_Val_Rule_Lookup_ID";
+
+	/** Set Dynamic Validation (Lookup).
+	  * Override Dynamic Validation Rule for Lookup Window
+	  */
+	public void setAD_Val_Rule_Lookup_ID (int AD_Val_Rule_Lookup_ID);
+
+	/** Get Dynamic Validation (Lookup).
+	  * Override Dynamic Validation Rule for Lookup Window
+	  */
+	public int getAD_Val_Rule_Lookup_ID();
+
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
 
     /** Column name ColumnSpan */
     public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";

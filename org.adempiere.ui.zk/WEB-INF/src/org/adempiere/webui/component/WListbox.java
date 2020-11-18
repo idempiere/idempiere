@@ -168,7 +168,22 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	    }
 	    else if (head.getChildren().size() > 0)
 	    {
-	    	return;
+	    	if (this.getItemRenderer() instanceof WListItemRenderer)
+	    	{
+	    		WListItemRenderer renderer = (WListItemRenderer) this.getItemRenderer();
+	    		if (renderer.getTableColumns().size() != head.getChildren().size())
+	    		{
+	    			head.getChildren().clear();
+	    		}
+	    		else
+	    		{
+	    			return;
+	    		}
+	    	}
+	    	else
+	    	{
+	    		return;
+	    	}
 	    }
 
 	    // render list head
@@ -1112,6 +1127,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
                 && (event.getFirstRow() == WTableModelEvent.ALL_ROWS))
         {
             this.repaint();
+            //sync model with listbox
+            ListModelTable model = this.getModel();
+            model.updateComponent(0, model.getSize()-1);
         }
         else if ((event.getType() == WTableModelEvent.CONTENTS_CHANGED)
         		&& event.getFirstRow() != WTableModelEvent.ALL_ROWS

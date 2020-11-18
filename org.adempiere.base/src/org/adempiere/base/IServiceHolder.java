@@ -22,9 +22,14 @@ package org.adempiere.base;
 public interface IServiceHolder<T> {
 
 	/**
-	 * 
+	 * Get service with highest service.ranking value
 	 * @return service instance. null if not available or no matching service found
 	 */
 	public T getService();
 	
+	/**
+	 * Get service reference for service with highest service.ranking value
+	 * @return {@link IServiceReferenceHolder}
+	 */
+	public IServiceReferenceHolder<T> getServiceReference();
 }

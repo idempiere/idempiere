@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.adempiere.pipo2.handler;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,16 +34,17 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.MColumn;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.MViewComponent;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Column;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Table;
 import org.compiere.process.DatabaseViewValidate;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.xml.sax.SAXException;
@@ -165,85 +164,67 @@ public class TableElementHandler extends AbstractElementHandler {
 			createTableBinding(ctx,document,m_Table);
 		}
 
-		String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID = ? "
-				+ " ORDER BY IsKey DESC, AD_Column_ID";  // Export key column as the first one
-
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
 		try {
-			pstmt = DB.prepareStatement (sql, getTrxName(ctx));
-			pstmt.setInt(1, AD_Table_ID);
-			rs = pstmt.executeQuery();
-
-			while (rs.next()){
+			List<MColumn> cols = new Query(ctx.ctx, MColumn.Table_Name, "AD_Table_ID=?", getTrxName(ctx))
+					.setParameters(AD_Table_ID)
+					.setOrderBy("IsKey DESC, AD_Column_ID")  // Export key column as the first one
+					.list();
+			for (MColumn col : cols) {
 				ElementHandler handler = packOut.getHandler("AD_Element");
-				handler.packOut(packOut,document,null,rs.getInt(X_AD_Column.COLUMNNAME_AD_Element_ID));
+				handler.packOut(packOut,document,null,col.getAD_Element_ID());
 
-				if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID)>0)
+				if (col.getAD_Reference_ID()>0)
 				{
 					handler = packOut.getHandler("AD_Reference");
-					handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID));
+					handler.packOut(packOut,document,null,col.getAD_Reference_ID());
 				}
 
-				if (rs.getInt("AD_Reference_Value_ID")>0)
+				if (col.getAD_Reference_Value_ID()>0)
 				{
 					handler = packOut.getHandler("AD_Reference");
-					handler.packOut(packOut,document,null,rs.getInt("AD_Reference_Value_ID"));
+					handler.packOut(packOut,document,null,col.getAD_Reference_Value_ID());
 				}
 
-				if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID)>0)
+				if (col.getAD_Process_ID()>0)
 				{
 					handler = packOut.getHandler("AD_Process");
-					handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID));
+					handler.packOut(packOut,document,null,col.getAD_Process_ID());
 				}
 
-				if (rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID)>0)
+				if (col.getAD_Val_Rule_ID()>0)
 				{
 					handler = packOut.getHandler("AD_Val_Rule");
-					handler.packOut(packOut,document,null,rs.getInt(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID));
+					handler.packOut(packOut,document,null,col.getAD_Val_Rule_ID());
 				}
 
-				createColumn(ctx, document, rs.getInt("AD_Column_ID"));
+				createColumn(ctx, document, col.getAD_Column_ID());
 			}
 		} catch (Exception e)	{
 			throw new AdempiereException(e);
-		} finally	{
-			DB.close(rs, pstmt);
 		}
-			
-		sql = "SELECT * FROM AD_TableIndex WHERE AD_Table_ID = ? ORDER BY AD_TableIndex_ID";
-		pstmt = null;
-		rs = null;
-		try {
-			pstmt = DB.prepareStatement (sql, getTrxName(ctx));
-			pstmt.setInt(1, AD_Table_ID);
-			rs = pstmt.executeQuery();
 
-			while (rs.next()) {
-				createTableIndex(ctx, document, rs.getInt(MTableIndex.COLUMNNAME_AD_TableIndex_ID));
+		try {
+			List<MTableIndex> tis = new Query(ctx.ctx, MTableIndex.Table_Name, "AD_Table_ID=?", getTrxName(ctx))
+					.setParameters(AD_Table_ID)
+					.setOrderBy("AD_TableIndex_ID")
+					.list();
+			for (MTableIndex ti : tis) {
+				createTableIndex(ctx, document, ti.getAD_TableIndex_ID());
 			}
 		} catch (Exception e)	{
 			throw new AdempiereException(e);
-		} finally	{
-			DB.close(rs, pstmt);
 		}
-		
-		sql = "SELECT * FROM AD_ViewComponent WHERE AD_Table_ID = ? ORDER BY SeqNo, AD_ViewComponent_ID";
-		pstmt = null;
-		rs = null;
-		try {
-			pstmt = DB.prepareStatement (sql, getTrxName(ctx));
-			pstmt.setInt(1, AD_Table_ID);
-			rs = pstmt.executeQuery();
 
-			while (rs.next()) {
-				createViewComponent(ctx, document, rs.getInt(MViewComponent.COLUMNNAME_AD_ViewComponent_ID));
+		try {
+			List<MViewComponent> vcs = new Query(ctx.ctx, MViewComponent.Table_Name, "AD_Table_ID=?", getTrxName(ctx))
+					.setParameters(AD_Table_ID)
+					.setOrderBy("SeqNo, AD_ViewComponent_ID")
+					.list();
+			for (MViewComponent vc : vcs) {
+				createViewComponent(ctx, document, vc.getAD_ViewComponent_ID());
 			}
 		} catch (Exception e)	{
 			throw new AdempiereException(e);
-		} finally	{
-			DB.close(rs, pstmt);
 		}
 		
 		if (createElement) {

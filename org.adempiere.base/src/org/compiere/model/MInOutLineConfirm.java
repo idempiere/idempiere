@@ -144,7 +144,7 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 		{
 			line.setTargetQty(getTargetQty());
 			BigDecimal qty = getConfirmedQty();
-			if (!isSOTrx)	//	In PO, we have the responsibility for scapped
+			if (!isSOTrx)	//	In PO, we have the responsibility for scrapped
 				qty = qty.add(getScrappedQty());
 			line.setMovementQty(qty);				//	Entered NOT changed
 			//

@@ -27,6 +27,8 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -35,12 +37,12 @@ import org.compiere.util.DB;
  *  @version $Id: MProductDownload.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  *	@author	Michael Judd BF [ 2736995 ] - toURL() in java.io.File has been deprecated
  */
-public class MProductDownload extends X_M_ProductDownload
+public class MProductDownload extends X_M_ProductDownload implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2388247976802030211L;
+	private static final long serialVersionUID = 6930118119436114158L;
 
 	/**
 	 * 	Migrate Download URLs (2.5.2c)
@@ -132,6 +134,37 @@ public class MProductDownload extends X_M_ProductDownload
 	{
 		super (ctx, rs, trxName);
 	}	//	MProductDownload
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProductDownload(MProductDownload copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProductDownload(Properties ctx, MProductDownload copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProductDownload(Properties ctx, MProductDownload copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	String Representation
@@ -258,5 +291,13 @@ public class MProductDownload extends X_M_ProductDownload
 		return in;
 	}	//	getDownloadStream
 
-	
+	@Override
+	public MProductDownload markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MProductDownload

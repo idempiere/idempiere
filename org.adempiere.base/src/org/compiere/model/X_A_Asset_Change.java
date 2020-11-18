@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Change
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.1 - $Id$ */
 public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201103L;
 
     /** Standard Constructor */
     public X_A_Asset_Change (Properties ctx, int A_Asset_Change_ID, String trxName)
@@ -283,28 +283,6 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 		return (Timestamp)get_Value(COLUMNNAME_A_Asset_RevalDate);
 	}
 
-	public org.compiere.model.I_A_Asset_Spread getA_Asset_Spread_T() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Spread)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Spread.Table_Name)
-			.getPO(getA_Asset_Spread_Type(), get_TrxName());	}
-
-	/** Set Spread Type.
-		@param A_Asset_Spread_Type Spread Type	  */
-	public void setA_Asset_Spread_Type (int A_Asset_Spread_Type)
-	{
-		set_Value (COLUMNNAME_A_Asset_Spread_Type, Integer.valueOf(A_Asset_Spread_Type));
-	}
-
-	/** Get Spread Type.
-		@return Spread Type	  */
-	public int getA_Asset_Spread_Type () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Spread_Type);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getA_Depreciation_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -322,28 +300,6 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public int getA_Depreciation_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_A_Depreciation_Method getA_Depreciation_Calc_T() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Depreciation_Method)MTable.get(getCtx(), org.compiere.model.I_A_Depreciation_Method.Table_Name)
-			.getPO(getA_Depreciation_Calc_Type(), get_TrxName());	}
-
-	/** Set Calculation Type.
-		@param A_Depreciation_Calc_Type Calculation Type	  */
-	public void setA_Depreciation_Calc_Type (int A_Depreciation_Calc_Type)
-	{
-		set_Value (COLUMNNAME_A_Depreciation_Calc_Type, Integer.valueOf(A_Depreciation_Calc_Type));
-	}
-
-	/** Get Calculation Type.
-		@return Calculation Type	  */
-	public int getA_Depreciation_Calc_Type () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Calc_Type);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -429,28 +385,6 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 		return bd;
 	}
 
-	public I_C_ValidCombination getA_Disposal_L() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Loss(), get_TrxName());	}
-
-	/** Set Loss on Disposal.
-		@param A_Disposal_Loss Loss on Disposal	  */
-	public void setA_Disposal_Loss (int A_Disposal_Loss)
-	{
-		set_Value (COLUMNNAME_A_Disposal_Loss, Integer.valueOf(A_Disposal_Loss));
-	}
-
-	/** Get Loss on Disposal.
-		@return Loss on Disposal	  */
-	public int getA_Disposal_Loss () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Loss);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getA_Disposal_Loss_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -468,28 +402,6 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public int getA_Disposal_Loss_Acct () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Loss_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getA_Disposal_Reve() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Revenue(), get_TrxName());	}
-
-	/** Set Disposal Revenue.
-		@param A_Disposal_Revenue Disposal Revenue	  */
-	public void setA_Disposal_Revenue (int A_Disposal_Revenue)
-	{
-		set_Value (COLUMNNAME_A_Disposal_Revenue, Integer.valueOf(A_Disposal_Revenue));
-	}
-
-	/** Get Disposal Revenue.
-		@return Disposal Revenue	  */
-	public int getA_Disposal_Revenue () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Disposal_Revenue);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -1178,28 +1090,6 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_A_Depreciation_Convention getConventionT() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Depreciation_Convention)MTable.get(getCtx(), org.compiere.model.I_A_Depreciation_Convention.Table_Name)
-			.getPO(getConventionType(), get_TrxName());	}
-
-	/** Set ConventionType.
-		@param ConventionType ConventionType	  */
-	public void setConventionType (int ConventionType)
-	{
-		set_Value (COLUMNNAME_ConventionType, Integer.valueOf(ConventionType));
-	}
-
-	/** Get ConventionType.
-		@return ConventionType	  */
-	public int getConventionType () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ConventionType);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public I_C_ValidCombination getC_ValidCombination() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
@@ -1243,28 +1133,6 @@ public class X_A_Asset_Change extends PO implements I_A_Asset_Change, I_Persiste
 	public Timestamp getDateAcct () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
-	}
-
-	public org.compiere.model.I_A_Depreciation getDepreciationT() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Depreciation)MTable.get(getCtx(), org.compiere.model.I_A_Depreciation.Table_Name)
-			.getPO(getDepreciationType(), get_TrxName());	}
-
-	/** Set DepreciationType.
-		@param DepreciationType DepreciationType	  */
-	public void setDepreciationType (int DepreciationType)
-	{
-		set_Value (COLUMNNAME_DepreciationType, Integer.valueOf(DepreciationType));
-	}
-
-	/** Get DepreciationType.
-		@return DepreciationType	  */
-	public int getDepreciationType () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_DepreciationType);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Depreciate.

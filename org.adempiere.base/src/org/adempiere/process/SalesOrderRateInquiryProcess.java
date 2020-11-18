@@ -176,12 +176,12 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			getProcessInfo().setError(true);
 			getProcessInfo().addLog(new ProcessInfoLog(getProcessInfo().getAD_Process_ID(), 
 					new Timestamp(System.currentTimeMillis()), null, st.getErrorMessage()));
-			return st.getErrorMessage();
+			return "@Error@";
 		}
 		
 		getProcessInfo().addLog(new ProcessInfoLog(getProcessInfo().getAD_Process_ID(), 
 				new Timestamp(System.currentTimeMillis()), null, st.getShippingRespMessage()));
-		return st.getShippingRespMessage();
+		return "@OK@";
 	}
 	
 	public static MShippingTransaction createShippingTransaction(Properties ctx, MOrder m_order, String action, boolean isPriviledgedRate, String trxName)

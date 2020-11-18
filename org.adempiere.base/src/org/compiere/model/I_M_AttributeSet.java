@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.1
  */
 public interface I_M_AttributeSet 
 {
@@ -268,6 +268,15 @@ public interface I_M_AttributeSet
 	  * Product Attribute Set
 	  */
 	public int getM_AttributeSet_ID();
+
+    /** Column name M_AttributeSet_Type */
+    public static final String COLUMNNAME_M_AttributeSet_Type = "M_AttributeSet_Type";
+
+	/** Set AttributeSet Type	  */
+	public void setM_AttributeSet_Type (String M_AttributeSet_Type);
+
+	/** Get AttributeSet Type	  */
+	public String getM_AttributeSet_Type();
 
     /** Column name M_AttributeSet_UU */
     public static final String COLUMNNAME_M_AttributeSet_UU = "M_AttributeSet_UU";

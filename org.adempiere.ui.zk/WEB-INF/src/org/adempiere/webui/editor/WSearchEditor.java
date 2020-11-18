@@ -50,11 +50,15 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -92,9 +96,24 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	
 	private ADWindow adwindow;
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WSearchEditor (GridField gridField)
 	{
-		super(new CustomSearchBox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WSearchEditor (GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new CustomSearchBox(), gridField, tableEditor, editorConfiguration);
 
 		lookup = gridField.getLookup();
 
@@ -228,17 +247,55 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	@Override
 	public void setValue(Object value)
 	{
+		Object curValue = this.value;
         this.value = value;
 		if (value != null && !"".equals(String.valueOf(value)))
-		{
-		    String text = lookup.getDisplay(value);
+		{		
+			NamePair namePair = lookup.get(value);
+			if (namePair != null)
+			{
+				String text = namePair.toString();
 
-            if (text.startsWith("_"))
+	            if (text.startsWith("_"))
+	            {
+	                text = text.substring(1);
+	            }
+	            getComponent().setText(text);
+			}
+			else
             {
-                text = text.substring(1);
-            }
-
-            getComponent().setText(text);
+				if (value instanceof Integer && gridField != null && gridField.getDisplayType() != DisplayType.ID && 
+						(gridTab==null || !gridTab.getTableModel().isImporting())) // for IDs is ok to be out of the list
+				{
+					//if it is problem with record lock, just keep value (no trigger change) and set field readonly
+					MRole role = MRole.getDefault(Env.getCtx(), false);
+					int refTableID = -1;
+					if (gridTab != null) // fields process para don't represent a column ID
+					{
+						MColumn col = MColumn.get(Env.getCtx(), gridField.getAD_Column_ID());
+						if (col.get_ID() > 0) {
+							String refTable = col.getReferenceTableName();
+							if (refTable != null) {
+								MTable table = MTable.get(Env.getCtx(), refTable);
+								refTableID = table.getAD_Table_ID();
+							}
+						}
+					}
+					if (refTableID > 0 && ! role.isRecordAccess(refTableID, (int)value, false))
+					{
+						setReadWrite(false);
+					}
+					else
+					{
+						getComponent().setText("");
+						if (curValue == null)
+							curValue = value;
+						ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), curValue, null);
+						super.fireValueChange(changeEvent);
+						this.value = null;
+					}
+				}
+			}
 		}
 		else
 		{
@@ -799,7 +856,18 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		super.dynamicDisplay(ctx);
 	}
 
-
+	@Override
+	public String getDisplayTextForGridView(Object value) {
+		String s = super.getDisplayTextForGridView(value);
+		if (ClientInfo.isMobile() && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
+			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, null, Env.getAD_Client_ID(Env.getCtx()));
+			if (!Util.isEmpty(separator, true) && s.indexOf(separator) >= 0) {
+				s = s.replace(separator, "\n");
+			}
+		}
+		return s;
+	}
+	
 	static class CustomSearchBox extends ComboEditorBox {
 
 		/**
