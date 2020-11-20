@@ -160,7 +160,6 @@ public class WFPopupItem extends Menuitem {
 			}
 		});
 		
-		ZKUpdateUtil.setWidth(w, "250px");
 		w.setBorder("normal");
 		w.setPage(this.getPage());
 		w.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -173,7 +172,7 @@ public class WFPopupItem extends Menuitem {
 					m_node.setName(name);
 					m_node.setDescription(textDescription.getText());
 					m_node.saveEx();
-					wfp.reload(m_AD_Workflow_ID, false);
+					wfp.reload(m_AD_Workflow_ID, true);
 				}				
 			}
 		});
