@@ -138,6 +138,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		}
 		if (retVars.size() > 0)
 			statement = recoverQuotedStrings(statement, retVars, nonce);
+		result.add(statement);
 
 		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
 			String filterPgDebug = System.getProperty("org.idempiere.db.debug.filter");
