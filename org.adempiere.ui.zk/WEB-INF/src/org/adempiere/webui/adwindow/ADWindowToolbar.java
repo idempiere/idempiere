@@ -781,10 +781,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			keyEvent.stopPropagation();
 			if (!btn.isDisabled() && btn.isVisible()) {
 				Events.sendEvent(btn, new Event(Events.ON_CLICK, btn));
-				//client side script to close combobox popup
-				String script = "var w=zk.Widget.$('#" + btn.getUuid()+"'); " +
-						"zWatch.fire('onFloatUp', w);";
-				Clients.response(new AuScript(script));
 			}
 		}
 	}

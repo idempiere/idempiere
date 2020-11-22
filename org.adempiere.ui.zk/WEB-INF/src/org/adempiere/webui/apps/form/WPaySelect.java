@@ -269,6 +269,12 @@ public class WPaySelect extends PaySelect
 		}
 		row.appendChild(new Space());
 		row.appendChild(onlyPositiveBalance);
+		if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
+		{
+			row.appendChild(new Space());
+			row = rows.newRow();
+			row.appendChild(new Space());
+		}
 		row.appendCellChild(chkOnePaymentPerInv);
 		row.appendChild(new Space());
 		

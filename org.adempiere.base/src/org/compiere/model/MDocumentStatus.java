@@ -102,14 +102,15 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	}
 
 	public static String getWhereClause(MDocumentStatus documentStatus) {
-		StringBuilder where = new StringBuilder(" AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );
+		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
+		StringBuilder where = new StringBuilder(" ").append(tableName).append(".AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );
 		if (documentStatus.getC_Project_ID() > 0) 
 		{
-			where.append(" AND C_Project_ID=").append(documentStatus.getC_Project_ID());
+			where.append(" AND ").append(tableName).append(".C_Project_ID=").append(documentStatus.getC_Project_ID());
 		}
 		if (documentStatus.getAD_Org_ID() > 0) 
 		{
-			where.append(" AND AD_Org_ID=").append(documentStatus.getAD_Org_ID());
+			where.append(" AND ").append(tableName).append(".AD_Org_ID=").append(documentStatus.getAD_Org_ID());
 		}
 		String extra = documentStatus.getWhereClause();
 		if (extra != null && extra.trim().length() > 0)
