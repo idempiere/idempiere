@@ -280,7 +280,12 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	{
 		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
 		if (instance == null)
+		{
 			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(), M_AttributeSetInstance_ID, valueInt, get_TrxName());
+			if (value == null)
+				value = String.valueOf(valueInt);
+			instance.setValue(value);
+		}
 		else
 			instance.setValueInt(valueInt, value);
 		instance.saveEx();
