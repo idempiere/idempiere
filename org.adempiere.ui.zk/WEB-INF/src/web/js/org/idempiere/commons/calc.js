@@ -119,4 +119,4 @@ function Calc()
 	}
 }
 
-var calc = new Calc();
+window.calc = new Calc();

@@ -1,33 +1,36 @@
-function zoom(cmpid, column, value){
+if (typeof window.idempiere === 'undefined')
+	window.idempiere = {};
+	
+window.idempiere.zoom = function(cmpid, column, value){
 	zAu.cmd0.showBusy(null);
 	var widget = zk.Widget.$(cmpid);
 	var event = new zk.Event(widget, 'onZoom', {data: [column, value]}, {toServer: true});
 	zAu.send(event);
-}
+};
 
-function zoomWindow(cmpid, column, value, windowuu){
+window.idempiere.zoomWindow = function(cmpid, column, value, windowuu){
 	zAu.cmd0.showBusy(null);
 	var widget = zk.Widget.$(cmpid);
 	var event = new zk.Event(widget, 'onZoom', {data: [column, value, 'AD_Window_UU', windowuu]}, {toServer: true});
 	zAu.send(event);
-}
+};
 
-function drillAcross(cmpid, column, value){
+window.idempiere.drillAcross = function(cmpid, column, value){
 	zAu.cmd0.showBusy(null);
 	var widget = zk.Widget.$(cmpid);
 	var event = new zk.Event(widget, 'onDrillAcross', {data: [column, value]}, {toServer: true});
 	zAu.send(event);
-}
+};
 
-function drillDown(cmpid, column, value){
+window.idempiere.drillDown = function(cmpid, column, value){
 	zAu.cmd0.showBusy(null);
 	var widget = zk.Widget.$(cmpid);
 	var event = new zk.Event(widget, 'onDrillDown', {data: [column, value]}, {toServer: true});
 	zAu.send(event);
-}
+};
 
-function showColumnMenu(e, columnName, row) {
-	var d = getMenu (e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"));
+window.idempiere.showColumnMenu = function(doc, e, columnName, row) {
+	var d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"));
 	
 	var posx = 0;
 	var posy = 0;
@@ -37,26 +40,27 @@ function showColumnMenu(e, columnName, row) {
 		posy = e.pageY;
 	}
 	else if (e.clientX || e.clientY) 	{
-		posx = e.clientX + document.body.scrollLeft
-			+ document.documentElement.scrollLeft;
-		posy = e.clientY + document.body.scrollTop
-			+ document.documentElement.scrollTop;
+		posx = e.clientX + doc.body.scrollLeft
+			+ doc.documentElement.scrollLeft;
+		posy = e.clientY + doc.body.scrollTop
+			+ doc.documentElement.scrollTop;
 	}
 	
 	d.style.top = posy;	
 	d.style.left = posx;
 	d.style.display = "block";
 	
-	setTimeout("getMenu().style.display='none'", 3000);
-}
+	var f = function() {
+		doc.contextMenu.style.display='none'
+	};
+	setTimeout(f, 3000);
+};
 
-var contextMenu;
-
-function getMenu (componentId, foreignColumnName, value){
-	if (componentId != null){
-	
+window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
+	doc.contextMenu = null;
+	if (componentId != null){	
 		//menu div
-		var menu = document.createElement("div");
+		var menu = doc.createElement("div");
 		menu.style.position = "absolute";
 		menu.style.display = "none";
 		menu.style.top = "0";
@@ -66,57 +70,53 @@ function getMenu (componentId, foreignColumnName, value){
 		menu.style.backgroundColor = "white";
 		
 		//window menu item
-		var windowMenu = document.createElement("div");
+		var windowMenu = doc.createElement("div");
 		windowMenu.style.padding = "3px";
 		windowMenu.style.verticalAlign = "middle";
 		windowMenu.setAttribute("onmouseover", "this.style.backgroundColor = 'lightgray'");
 		windowMenu.setAttribute("onmouseout", "this.style.backgroundColor = 'white'");									
 		
-		var href = document.createElement("a");
+		var href = doc.createElement("a");
 		href.style.fontSize = "11px";
 		href.style.textDecoration = "none";
 		href.style.verticalAlign = "middle";
 		href.href = "javascript:void(0)";
-		href.setAttribute("onclick", "parent.zoom('" + componentId + "','" + foreignColumnName + "','" + value + "')");
+		href.setAttribute("onclick", "parent.idempiere.zoom('" + componentId + "','" + foreignColumnName + "','" + value + "')");
 		
 		windowMenu.appendChild(href);
 		menu.appendChild(windowMenu);				
 		
-		var image = document.createElement("img"); 
-		image.src = window.document.body.getAttribute ("windowIco"); 	
+		var image = doc.createElement("img"); 
+		image.src = doc.body.getAttribute ("windowIco"); 	
 		image.setAttribute("align", "middle");
 		href.appendChild(image);
-		href.appendChild(document.createTextNode(window.document.body.getAttribute ("windowLabel")));
+		href.appendChild(doc.createTextNode(doc.body.getAttribute ("windowLabel")));
 		
 		//report menu item
-		var report = document.createElement("div");			
+		var report = doc.createElement("div");			
 		report.style.padding = "3px";
 		report.style.verticalAlign = "middle";
 		
 		report.setAttribute("onmouseover", "this.style.backgroundColor = 'lightgray'");
 		report.setAttribute("onmouseout", "this.style.backgroundColor = 'white'");									
 		
-		var reportHref = document.createElement("a");
+		var reportHref = doc.createElement("a");
 		reportHref.href = "javascript:void(0)";	
 		reportHref.style.textDecoration = "none";
 		reportHref.style.fontSize = "11px";
 		reportHref.style.verticalAlign = "middle";
-		reportHref.setAttribute("onclick", "parent.drillDown('" + componentId + "','" + foreignColumnName + "','" + value + "')");
+		reportHref.setAttribute("onclick", "parent.idempiere.drillDown('" + componentId + "','" + foreignColumnName + "','" + value + "')");
 		
 		report.appendChild(reportHref);
 		menu.appendChild(report);
-		var reportimage = document.createElement("img"); 
-		reportimage.src = window.document.body.getAttribute ("reportIco");
+		var reportimage = doc.createElement("img"); 
+		reportimage.src = doc.body.getAttribute ("reportIco");
 		reportimage.setAttribute("align", "middle");
 		reportHref.appendChild(reportimage);
-		reportHref.appendChild(document.createTextNode(window.document.body.getAttribute ("reportLabel")));
+		reportHref.appendChild(doc.createTextNode(doc.body.getAttribute ("reportLabel")));
 		
-		contextMenu = menu;
-		window.document.body.appendChild (contextMenu);
-	}
-	
-	contextMenu.setAttribute ("componentId", componentId);
-	contextMenu.setAttribute ("foreignColumnName", foreignColumnName);
-	contextMenu.setAttribute ("value", value);
-	return contextMenu;
-}
+		doc.contextMenu = menu;
+		doc.body.appendChild (doc.contextMenu);
+	}	
+	return doc.contextMenu;
+};

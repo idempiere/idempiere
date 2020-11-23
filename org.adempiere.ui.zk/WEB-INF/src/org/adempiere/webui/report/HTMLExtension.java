@@ -55,13 +55,12 @@ public class HTMLExtension implements IHTMLExtension {
 
 		this.classPrefix = classPrefix;
 		this.componentId = componentId;
-		this.scriptURL = contextPath + theme + "js/report.js";
 		this.styleURL = contextPath + theme + "css/report.css";
 	}
 	
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
 			PrintDataElement dataElement) {
-		href.addAttribute("onclick", "showColumnMenu(event, '" + dataElement.getColumnName() + "', " + row + ")");		
+		href.addAttribute("onclick", "parent.idempiere.showColumnMenu(document, event, '" + dataElement.getColumnName() + "', " + row + ")");		
 		href.addAttribute ("componentId", componentId);
 		href.addAttribute ("foreignColumnName", dataElement.getForeignColumnName());
 		href.addAttribute ("value", dataElement.getValueAsString());
@@ -71,7 +70,7 @@ public class HTMLExtension implements IHTMLExtension {
 		PrintDataElement pkey = printData.getPKey();
 		if (pkey != null)
 		{
-			row.addAttribute("ondblclick", "parent.drillAcross('" 
+			row.addAttribute("ondblclick", "parent.idempiere.drillAcross('" 
 					+ componentId + "', '" 
 					+ pkey.getColumnName() + "', '" 
 					+ pkey.getValueAsString() + "')");

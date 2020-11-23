@@ -18,7 +18,6 @@ package org.adempiere.webui.window;
 
 import java.util.logging.Level;
 
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.IHelpContext;
@@ -197,8 +196,6 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 		//
 		confirmPanel.addActionListener(this);
 		confirmPanel.getOKButton().setEnabled(false);
-
-		LayoutUtils.sendDeferLayoutEvent(layout, 100);
 	}   //  jbInit
 
 
