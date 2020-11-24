@@ -65,6 +65,7 @@ import org.compiere.model.MPreference;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.MTreeFavorite;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_CtxHelp;
@@ -1048,13 +1049,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		if (isActionURL())  // IDEMPIERE-2334 vs IDEMPIERE-3000 - do not open windows when coming from an action URL
 			return;
 
-		StringBuilder sql = new StringBuilder("SELECT m.Action, COALESCE(m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, AD_InfoWindow_ID) ")
-		.append(" FROM AD_TreeBar tb")
-		.append(" INNER JOIN AD_Menu m ON (tb.Node_ID = m.AD_Menu_ID)")
-		.append(" WHERE tb.AD_Tree_ID = ").append(getMenuID())
-		.append(" AND tb.AD_User_ID = ").append(Env.getAD_User_ID(ctx))
-		.append(" AND tb.IsActive = 'Y' AND tb.LoginOpenSeqNo > 0")
-		.append(" ORDER BY tb.LoginOpenSeqNo");
+		StringBuilder sql = new StringBuilder("SELECT m.Action, COALESCE(m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_InfoWindow_ID) ")
+		.append(" FROM AD_Tree_Favorite_Node tfn ")
+		.append(" INNER JOIN AD_Menu m ON (tfn.AD_Menu_ID = m.AD_Menu_ID) ")
+		.append(" WHERE tfn.AD_Tree_Favorite_ID = ")
+		.append(MTreeFavorite.getFavoriteTreeID(Env.getAD_User_ID(Env.getCtx())))
+		.append(" AND tfn.IsActive = 'Y' AND tfn.LoginOpenSeqNo >= 0 ")
+		.append(" ORDER BY tfn.LoginOpenSeqNo ");
 
 		List<List<Object>> rows = DB.getSQLArrayObjectsEx(null, sql.toString());
 		if (rows != null && rows.size() > 0) {

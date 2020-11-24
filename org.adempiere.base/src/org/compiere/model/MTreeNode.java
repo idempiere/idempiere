@@ -70,6 +70,28 @@ public class MTreeNode extends DefaultMutableTreeNode
 		m_color = color;
 	}   //  MTreeNode
 
+	/**
+	 * Construct Model TreeNode [Used MTreeFavorite]
+	 * 
+	 * @param node_ID
+	 * @param seqNo
+	 * @param name
+	 * @param description
+	 * @param parent_ID
+	 * @param menu_ID
+	 * @param img
+	 * @param isSummary
+	 * @param isCollapsible
+	 * @param isFavourite
+	 */
+	public MTreeNode(int node_ID, int seqNo, String name, String description, int parent_ID, int menu_ID,
+			String img, boolean isSummary, boolean isCollapsible, boolean isFavourite)
+	{
+		this(node_ID, seqNo, name, description, parent_ID, isSummary, img, isFavourite, null);
+		setMenu_ID(menu_ID);
+		setCollapsible(isCollapsible);
+	}
+	
 	/** Node ID         */
 	private int     	m_node_ID;
 	/**	SeqNo			*/
@@ -80,7 +102,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	private String  	m_description;
 	/**	Parent ID		*/
 	private int     	m_parent_ID;
-	/**	Summaty			*/
+	/**	Summary			*/
 	private boolean 	m_isSummary;
 	/** Image Indicator				*/
 	private String      m_imageIndicator;
@@ -90,7 +112,11 @@ public class MTreeNode extends DefaultMutableTreeNode
 	private boolean 	m_onBar;
 	/**	Color			*/
 	private Color 		m_color;
-
+	/** Menu ID			*/
+	private int			m_menu_ID;
+	/** Is Collapsible	*/
+	private boolean		m_iscollapsible;
+	
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(MTreeNode.class);
 	
@@ -197,6 +223,14 @@ public class MTreeNode extends DefaultMutableTreeNode
 	}	//	getParent
 
 	/**
+	 * @param parent_ID the m_parent_ID to set
+	 */
+	public void setParent_ID(int parent_ID)
+	{
+		this.m_parent_ID = parent_ID;
+	}
+	
+	/**
 	 *  Print Name
 	 *  @return info
 	 */
@@ -256,6 +290,25 @@ public class MTreeNode extends DefaultMutableTreeNode
 		return m_isSummary;
 	}   //  isSummary
 
+	public int getMenu_ID()
+	{
+		return m_menu_ID;
+	}
+
+	public void setMenu_ID(int m_menu_ID)
+	{
+		this.m_menu_ID = m_menu_ID;
+	}
+
+	public boolean isCollapsible()
+	{
+		return m_iscollapsible;
+	}
+
+	public void setCollapsible(boolean m_iscollapsible)
+	{
+		this.m_iscollapsible = m_iscollapsible;
+	}
 
 	/**************************************************************************
 	 *  Get Image Indicator/Index
