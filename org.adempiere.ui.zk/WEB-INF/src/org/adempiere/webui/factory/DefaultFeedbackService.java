@@ -72,11 +72,11 @@ public class DefaultFeedbackService implements IFeedbackService {
 			this.errorOnly = errorOnly;
 			SessionManager.getAppDesktop().getComponent().addEventListener("onEmailSupport", this);
 			
-			String script = "html2canvas(document.body, { onrendered: function(canvas) " +
-					"{ var dataUrl = canvas.toDataURL();" +
+			String script = "html2canvas(document.body).then(canvas => " +
+					"{ const dataUrl = canvas.toDataURL();" +
 					"  var widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
 		    		"  var event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});" +
-		    		"  zAu.send(event); } " +
+		    		"  zAu.send(event);" +
 		    		"});";
 			Clients.response(new AuScript(script));
 		}
@@ -150,11 +150,11 @@ public class DefaultFeedbackService implements IFeedbackService {
 		protected CreateNewRequestAction() {
 			SessionManager.getAppDesktop().getComponent().addEventListener("onCreateFeedbackRequest", this);
 			
-			String script = "html2canvas(document.body, { onrendered: function(canvas) " +
+			String script = "html2canvas(document.body).then(canvas => " +
 					"{ var dataUrl = canvas.toDataURL();" +
 					"  var widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
 		    		"  var event = new zk.Event(widget, 'onCreateFeedbackRequest', dataUrl, {toServer: true});" +
-		    		"  zAu.send(event); } " +
+		    		"  zAu.send(event); " +
 		    		"});";
 			Clients.response(new AuScript(script));
 		}

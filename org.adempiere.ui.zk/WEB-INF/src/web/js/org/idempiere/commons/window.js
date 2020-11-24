@@ -1,8 +1,11 @@
-function _idempiere_popup_window(refid, windowid, position) {
+if (typeof window.idempiere === 'undefined')
+	window.idempiere = {};
+	
+window.idempiere.show_popup_window = function(refid, windowid, position) {
 	var ref = zk.Widget.$(refid);
 	var window = zk(windowid);
 	window.position(ref.$n(), position);
-}
+};
 
 zk.override(zk.Widget.prototype, "canActivate",
 	function () {

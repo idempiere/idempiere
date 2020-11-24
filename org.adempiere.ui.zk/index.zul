@@ -15,7 +15,13 @@ Copyright (C) 2007 Ashley G Ramdass.
 <?link rel="manifest" href="manifest.json"?>
 <zk>
 	<script><![CDATA[
+		zk.load("jawwa.atmosphere");
+		zk.load("org.idempiere.websocket");
 		zk.load("adempiere.local.storage");	
+		zk.load("html2canvas");
+		zk.load("org.idempiere.commons");
+		zk.load("jquery.maskedinput");
+		zk.load("photobooth");
 		
 		zk.afterLoad(function() {
 			zk._Erbx.push = function(msg) {
