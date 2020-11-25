@@ -53,6 +53,21 @@ public final class LayoutUtils {
 	public static final String ON_REDRAW_EVENT = "onRedraw";
 	
 	/**
+	 * @param layout
+	 */
+	@Deprecated
+	public static void sendDeferLayoutEvent(org.zkoss.zul.Borderlayout layout, int timeout) {
+		/* this is not required anymore */
+//		StringBuilder content = new StringBuilder();
+//		content.append("ad_deferRenderBorderLayout('")
+//			   .append(layout.getUuid())
+//			   .append("',").append(timeout).append(");");
+//
+//		AuScript as = new AuScript(null, content.toString());
+//		Clients.response("deferRenderBorderLayout", as);
+	}
+	
+	/**
 	 * 
 	 * @param cls
 	 * @param target
