@@ -1,0 +1,34 @@
+#Master Tracing Options
+#Thu Nov 26 18:25:35 ICT 2020
+org.eclipse.osgi/resolver/providers=false
+org.eclipse.osgi/debug/loader=false
+org.eclipse.osgi/monitor/activation=false
+org.eclipse.osgi/debug/events=false
+org.eclipse.osgi/debug/objectPool/adds=false
+org.eclipse.osgi/debug/services=false
+org.eclipse.osgi/eclipseadaptor/debug/platformadmin/resolver=false
+org.eclipse.osgi/resolver/report=false
+org.eclipse.osgi/debug/systemBundle=false
+org.eclipse.osgi/eclipseadaptor/converter/debug=false
+org.eclipse.osgi/debug/storage=false
+org.eclipse.osgi/debug/filter=false
+org.eclipse.osgi/monitor/lazy=false
+org.eclipse.osgi/debug/manifest=false
+org.eclipse.osgi/debug/bundleFile=false
+org.eclipse.osgi/debug/startlevel=false
+org.eclipse.osgi/debug/packageadmin=false
+org.eclipse.osgi/eclipseadaptor/debug=false
+org.eclipse.osgi/resolver/roots=false
+org.eclipse.osgi/resolver/hooks=false
+org.eclipse.osgi/debug/bundleTime=false
+org.eclipse.osgi/debug/objectPool/dups=false
+org.eclipse.osgi/resolver=false
+org.eclipse.osgi/debug/location=false
+org.eclipse.osgi/resolver/uses=false
+org.eclipse.osgi/resolver/wiring=false
+org.eclipse.osgi/debug=false
+org.eclipse.osgi/debug/messageBundles=false
+org.eclipse.osgi/debug/security=false
+org.eclipse.osgi/debug/cachedmanifest=false
+org.eclipse.osgi/debug/bundleStartTime=false
+org.eclipse.osgi/eclipseadaptor/debug/platformadmin=false

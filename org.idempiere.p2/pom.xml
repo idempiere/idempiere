@@ -316,7 +316,7 @@
 						</goals>
 						<phase>pre-integration-test</phase>
 						<configuration>
-							<appArgLine>-consoleLog -application org.eclipse.cbi.targetplatform.tpd.converter ${tpdLocalPath}</appArgLine>
+							<appArgLine>-consoleLog -application org.eclipse.cbi.targetplatform.tpd.converter ${tpdLocalPath} -debug ${project.basedir}/../.options</appArgLine>
 	 						<skip>${skipGenerateTarget}</skip>
 							<dependencies>
 								<dependency>

@@ -70,6 +70,10 @@ def forceUpdateRespository = false
 if (getPropertyValue('updateRepository') != null)
 	forceUpdateRespository = getPropertyValue('updateRepository') == 'true'
 
+def forceGenerate = false
+if (getPropertyValue('generateTarget') != null)
+	forceGenerate = getPropertyValue('generateTarget') == 'true'
+
 println ">> param updateRepository:" + getPropertyValue('updateRepository')
 println ">> updateRepository:" + forceUpdateRespository
 
@@ -103,13 +107,10 @@ if (!isRepository(reposDevDir) || forceUpdateRespository){
 
 	println ">> copy folder = " + reposOutputDir.getAbsolutePath()
 	println " to " + reposDevDir.getAbsolutePath()
+
+	forceGenerate = true // re-generate target when repository update
 	//ant.ReplaceRegExp(file:tpdLocalPath, match:"location\\s+\"[^\"]+\"\\s+{", replace:"location \"file:/" + reposDevDir.getAbsolutePath() + "\" {", byline:"true")
 }
-
-
-def forceGenerate = false
-if (getPropertyValue('generateTarget') != null)
-	forceGenerate = getPropertyValue('generateTarget') == 'true'
 
 def devTargetFile = new File(targetPluginPath + "/org.idempiere.p2.targetplatformlocal.target")
 
