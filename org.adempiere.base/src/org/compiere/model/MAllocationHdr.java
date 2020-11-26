@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -304,7 +303,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		return true;
 	}	//	beforeSave
 
-	private List<Integer> m_bps_beforeDelete = Collections.synchronizedList(new ArrayList<Integer>());;
+	private List<Integer> m_bps_beforeDelete = new ArrayList<Integer>();
 
 	/**
 	 * 	Before Delete.
@@ -327,11 +326,6 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 
 		//	Unlink
 		getLines(true);
-		String prevStatus = getDocStatus();
-		setDocStatus(STATUS_Reversed);
-		if (!updateBP())
-			return false;
-		setDocStatus(prevStatus);
 		
 		m_bps_beforeDelete.clear();
 		for (int i = 0; i < m_lines.length; i++)
