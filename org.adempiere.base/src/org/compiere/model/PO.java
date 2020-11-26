@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1330388218446118451L;
+	private static final long serialVersionUID = -2086165095004944867L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -208,6 +208,8 @@ public abstract class PO
 			load(rs);		//	will not have virtual columns
 		else
 			load(ID, trxName);
+
+		checkValidClient(false);
 	}   //  PO
 
 	/**
@@ -2078,6 +2080,7 @@ public abstract class PO
 		checkImmutable();
 		
 		checkValidContext();
+		checkValidClient(true);
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
@@ -3265,6 +3268,7 @@ public abstract class PO
 		checkImmutable();
 		
 		checkValidContext();
+		checkValidClient(true);
 		CLogger.resetLast();
 		if (is_new())
 			return true;
@@ -4973,6 +4977,22 @@ public abstract class PO
 	private void checkValidContext() {
 		if (getCtx().isEmpty() && getCtx().getProperty("#AD_Client_ID") == null)
 			throw new AdempiereException("Context lost");
+	}
+
+	private void checkValidClient(boolean writing) {		
+		int envClientID = Env.getAD_Client_ID(getCtx());
+		// processes running from system client can read/write always
+		if (envClientID > 0) {
+			int poClientID = getAD_Client_ID();
+			if (poClientID != envClientID &&
+					(poClientID != 0 || writing)) {
+				log.severe("Table="+get_TableName()+" Record_ID="+get_ID()+" Env.AD_Client_ID="+envClientID+" PO.AD_Client_ID="+poClientID);
+				String message = "Cross tenant PO request detected from session " 
+						+ Env.getContext(getCtx(), "#AD_Session_ID") + " for table " + get_TableName()
+						+ " Record_ID=" + get_ID();
+				throw new AdempiereException(message);
+			}
+		}
 	}
 
 }   //  PO

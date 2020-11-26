@@ -119,8 +119,19 @@ public final class UserPreference implements Serializable {
 						preference = new MUserPreference(Env.getCtx(), preference.getAD_Preference_ID(), null);
 					}
 				}
-				preference.setValue(value);
-				preference.saveEx();
+				
+				int cid = Env.getAD_Client_ID(Env.getCtx());
+				try {				
+					if (preference.getAD_Client_ID() == 0 && cid > 0) {
+						Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+					}
+					preference.setValue(value);
+					preference.saveEx();
+				} finally {
+					if (preference.getAD_Client_ID() == 0 && cid > 0) {
+						Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, cid);
+					}
+				}
 			}
 		}
 	}
