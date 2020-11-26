@@ -85,7 +85,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4486118071892173802L;
+	private static final long serialVersionUID = -4763398859555693370L;
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -411,7 +411,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_ROLE );
 			}
-            KeyNamePair clientKNPair = new KeyNamePair(Integer.valueOf((String)lstItemClient.getValue()), lstItemClient.getLabel());
+			int clientId = Integer.valueOf((String)lstItemClient.getValue());
+            KeyNamePair clientKNPair = new KeyNamePair(clientId, lstItemClient.getLabel());
             KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair, LoginPanel.ROLE_TYPES_WEBUI);
             if (roleKNPairs != null && roleKNPairs.length > 0)
             {
@@ -433,7 +434,16 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             //
 
             //force reload of default role
-            MRole.getDefault(m_ctx, true);
+            int cid = Env.getAD_Client_ID(m_ctx);
+            try 
+            {
+            	Env.setContext(m_ctx, Env.AD_CLIENT_ID, clientId);
+            	MRole.getDefault(m_ctx, true);
+            } 
+            finally
+            {
+            	Env.setContext(m_ctx, Env.AD_CLIENT_ID, cid);
+            }
 
     		// If we have only one role, we can make readonly the combobox
     		if (lstRole.getItemCount() == 1)
