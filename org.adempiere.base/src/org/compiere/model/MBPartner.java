@@ -710,6 +710,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	 */
 	public void setTotalOpenBalance ()
 	{
+		log.info("");
 		BigDecimal SO_CreditUsed = null;
 		BigDecimal TotalOpenBalance = null;
 		//AZ Goodwill -> BF2041226 : only count completed/closed docs.
