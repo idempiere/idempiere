@@ -150,6 +150,8 @@ public class Doc_MatchInv extends Doc
 		ArrayList<FactLine> invGainLossFactLines = new ArrayList<FactLine>();
 		// invoice list
 		ArrayList<MInvoice> invList = new ArrayList<MInvoice>();
+		// invoice line list
+		ArrayList<MInvoiceLine> invLineList = new ArrayList<MInvoiceLine>();
 		// C_Invoice_ID and the current M_MatchInv inventory clearing/expense accounting fact lines
 		HashMap<Integer, ArrayList<FactLine>> htFactLineInv = new HashMap<Integer, ArrayList<FactLine>>();
 		
@@ -316,6 +318,8 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = m_invoiceLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
+			if (!invLineList.contains(m_invoiceLine))
+				invLineList.add(m_invoiceLine);
 			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
 			if (factLineList == null)
 				factLineList = new ArrayList<FactLine>();
@@ -328,7 +332,7 @@ public class Doc_MatchInv extends Doc
 		// rounding adjustment
 		if (!htFactLineInv.isEmpty())
 		{
-			p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, htFactLineInv);
+			p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, invLineList, htFactLineInv);
 			if (p_Error != null)
 				return null;
 		}
@@ -618,6 +622,8 @@ public class Doc_MatchInv extends Doc
 		ArrayList<FactLine> invGainLossFactLines = new ArrayList<FactLine>();
 		// invoice list
 		ArrayList<MInvoice> invList = new ArrayList<MInvoice>();
+		// invoice line list
+		ArrayList<MInvoiceLine> invLineList = new ArrayList<MInvoiceLine>();
 		// C_Invoice_ID and the current M_MatchInv inventory clearing/expense accounting fact lines
 		HashMap<Integer, ArrayList<FactLine>> htFactLineInv = new HashMap<Integer, ArrayList<FactLine>>();
 		
@@ -755,6 +761,8 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = m_invoiceLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
+			if (!invLineList.contains(m_invoiceLine))
+				invLineList.add(m_invoiceLine);
 			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
 			if (factLineList == null)
 				factLineList = new ArrayList<FactLine>();
@@ -767,7 +775,7 @@ public class Doc_MatchInv extends Doc
 		// rounding adjustment
 		if (!htFactLineInv.isEmpty())
 		{
-			p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, htFactLineInv);
+			p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, invLineList, htFactLineInv);
 			if (p_Error != null)
 				return null;
 		}
@@ -849,6 +857,8 @@ public class Doc_MatchInv extends Doc
 		ArrayList<FactLine> invGainLossFactLines = new ArrayList<FactLine>();
 		// invoice list
 		ArrayList<MInvoice> invList = new ArrayList<MInvoice>();
+		// invoice line list
+		ArrayList<MInvoiceLine> invLineList = new ArrayList<MInvoiceLine>();
 		// C_Invoice_ID and the current M_MatchInv inventory clearing/expense accounting fact lines
 		HashMap<Integer, ArrayList<FactLine>> htFactLineInv = new HashMap<Integer, ArrayList<FactLine>>();
 		
@@ -1037,6 +1047,8 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = refInvLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
+			if (!invLineList.contains(refInvLine))
+				invLineList.add(refInvLine);
 			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
 			if (factLineList == null)
 				factLineList = new ArrayList<FactLine>();
@@ -1051,6 +1063,8 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice = m_invoiceLine.getParent();
 			if (!invList.contains(invoice))
 				invList.add(invoice);
+			if (!invLineList.contains(m_invoiceLine))
+				invLineList.add(m_invoiceLine);
 			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
 			if (factLineList == null)
 				factLineList = new ArrayList<FactLine>();
@@ -1064,7 +1078,7 @@ public class Doc_MatchInv extends Doc
 		// rounding adjustment
 		if (!htFactLineInv.isEmpty())
 		{
-			p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, htFactLineInv);
+			p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, invLineList, htFactLineInv);
 			if (p_Error != null)
 				return null;
 		}
@@ -1203,11 +1217,26 @@ public class Doc_MatchInv extends Doc
 		}
 		else	// partial or MC
 		{
-			BigDecimal matchInvAccounted0 = MConversionRate.convert(getCtx(),
-					matchInvSource, invoice.getC_Currency_ID(),
+			BigDecimal matchInvConvRate = MConversionRate.getRate(invoice.getC_Currency_ID(),
+					as.getC_Currency_ID(), getDateAcct(),
+					invoice.getC_ConversionType_ID(), 
+					getAD_Client_ID(), getAD_Org_ID());
+			
+			BigDecimal invConvRate = MConversionRate.getRate(invoice.getC_Currency_ID(),
 					as.getC_Currency_ID(), invoice.getDateAcct(),
-					invoice.getC_ConversionType_ID(), invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
-			acctDifference = matchInvAccounted0.abs().subtract(matchInvAccounted.abs());
+					invoice.getC_ConversionType_ID(), 
+					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
+
+			if (invConvRate.compareTo(matchInvConvRate) != 0) {
+				BigDecimal matchInvAccounted0 = MConversionRate.convert(getCtx(),
+						matchInvSource, invoice.getC_Currency_ID(),
+						as.getC_Currency_ID(), invoice.getDateAcct(),
+						invoice.getC_ConversionType_ID(), invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
+				acctDifference = matchInvAccounted0.abs().subtract(matchInvAccounted.abs());
+			} else {
+				acctDifference = Env.ZERO;
+			}
+			
 			//	ignore Tolerance
 			if (acctDifference.abs().compareTo(TOLERANCE) < 0)
 				acctDifference = Env.ZERO;
@@ -1267,9 +1296,29 @@ public class Doc_MatchInv extends Doc
 	}	//	createInvoiceGainLoss
 	
 	private String createInvoiceRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
-			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, HashMap<Integer, ArrayList<FactLine>> htFactLineInv) 
+			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, ArrayList<MInvoiceLine> invLineList,
+			HashMap<Integer, ArrayList<FactLine>> htFactLineInv) 
 	{
+		ArrayList<FactLine> invRoundingLines = new ArrayList<FactLine>();
+		boolean isLineFullyMatched = createInvoiceLineRoundingCorrection(as, fact, acct, invGainLossFactLines, invList, invLineList, htFactLineInv, invRoundingLines);
+		
+		if (!isLineFullyMatched)
+			return null;
+		
 		BigDecimal totalInvClrAccounted = Env.ZERO;
+		for (FactLine invRoundingLine : invRoundingLines)
+		{
+			if (invRoundingLine.getAccount() == acct)
+				totalInvClrAccounted = totalInvClrAccounted.add(invRoundingLine.getAmtAcctDr()).subtract(invRoundingLine.getAmtAcctCr());
+		}
+		
+		StringBuilder sqlInv = new StringBuilder()
+				.append("SELECT SUM(AmtSourceDr)-SUM(AmtSourceCr), SUM(AmtAcctDr)-SUM(AmtAcctCr)")
+				.append(" FROM Fact_Acct ")
+				.append("WHERE AD_Table_ID=? AND Record_ID=?")
+				.append(" AND C_AcctSchema_ID=?")
+				.append(" AND Account_ID=?")
+				.append(" AND PostingType='A'");
 		
 		// C_Invoice_ID and the total source amount from C_Invoice accounting fact lines
 		HashMap<Integer, BigDecimal> htInvSource = new HashMap<Integer, BigDecimal>();
@@ -1277,34 +1326,40 @@ public class Doc_MatchInv extends Doc
 		HashMap<Integer, BigDecimal> htInvAccounted = new HashMap<Integer, BigDecimal>();
 		for (MInvoice invoice : invList)
 		{
-			StringBuilder sql = new StringBuilder()
-				.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-				.append(" FROM Fact_Acct ")
-				.append("WHERE AD_Table_ID=? AND Record_ID=?")
-				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND Account_ID=?")
-				.append(" AND PostingType='A'");
-
+			BigDecimal invoiceSource = Env.ZERO;
+			BigDecimal invoiceAccounted = Env.ZERO;
+			
 			// For Invoice
-			List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
+			List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sqlInv.toString(),
 					MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
 			if (valuesInv != null) {
-				BigDecimal invoiceSourceDr = (BigDecimal) valuesInv.get(0); // AmtSourceDr
-				BigDecimal invoiceAccountedDr = (BigDecimal) valuesInv.get(1); // AmtAcctDr
-				BigDecimal invoiceSourceCr = (BigDecimal) valuesInv.get(2); // AmtSourceCr
-				BigDecimal invoiceAccountedCr = (BigDecimal) valuesInv.get(3); // AmtAcctCr
+				BigDecimal invoiceSourceDrCr = (BigDecimal) valuesInv.get(0); // AmtSource
+				BigDecimal invoiceAccountedDrCr = (BigDecimal) valuesInv.get(1); // AmtAcct
 				
-				BigDecimal invoiceSource = invoiceSourceDr;
-				BigDecimal invoiceAccounted = invoiceAccountedDr;
-				if (invoiceSource.signum() == 0 && invoiceAccounted.signum() == 0) {
-					invoiceSource = invoiceSourceCr;
-					invoiceAccounted = invoiceAccountedCr;
-				}
-				htInvSource.put(invoice.getC_Invoice_ID(), invoiceSource);
-				htInvAccounted.put(invoice.getC_Invoice_ID(), invoiceAccounted);
+				invoiceSource = invoiceSource.add(invoiceSourceDrCr);
+				invoiceAccounted = invoiceAccounted.add(invoiceAccountedDrCr);
 				
-				totalInvClrAccounted = totalInvClrAccounted.add(invoiceAccountedDr).subtract(invoiceAccountedCr);
+				totalInvClrAccounted = totalInvClrAccounted.add(invoiceAccountedDrCr);
 			}
+			
+			// Currency Balancing
+			valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sqlInv.toString(),
+					MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getC_AcctSchema_ID(), as.getCurrencyBalancing_Acct().getAccount_ID());
+			if (valuesInv != null) {
+				BigDecimal invoiceSourceDrCr = (BigDecimal) valuesInv.get(0); // AmtSource
+				BigDecimal invoiceAccountedDrCr = (BigDecimal) valuesInv.get(1); // AmtAcct
+				
+				if (invoiceSourceDrCr == null)
+					invoiceSourceDrCr = Env.ZERO;
+				if (invoiceAccountedDrCr == null)
+					invoiceAccountedDrCr = Env.ZERO;
+				
+				invoiceSource = invoiceSource.add(invoiceSourceDrCr);
+				invoiceAccounted = invoiceAccounted.add(invoiceAccountedDrCr);
+			}
+			
+			htInvSource.put(invoice.getC_Invoice_ID(), invoiceSource.abs());
+			htInvAccounted.put(invoice.getC_Invoice_ID(), invoiceAccounted.abs());
 		}
 		
 		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
@@ -1595,8 +1650,6 @@ public class Doc_MatchInv extends Doc
 			}
 		}
 		
-		boolean isOneInvoice = invList.size() == 1;
-		boolean isFull = true;
 		for (MInvoice invoice : invList)
 		{
 			BigDecimal invSource = htInvSource.get(invoice.getC_Invoice_ID());
@@ -1624,7 +1677,7 @@ public class Doc_MatchInv extends Doc
 				description.append(" - ").append(d2);
 			}
 			else
-				isFull = false;
+				isLineFullyMatched = false;
 			
 			if (acctDifference == null || acctDifference.signum() == 0)
 			{
@@ -1638,34 +1691,13 @@ public class Doc_MatchInv extends Doc
 				continue;
 			}
 			
-			if (isOneInvoice && isFull) {
-				if (invoice.isSOTrx()) {
-					if (acctDifference.signum() < 0) {
-						if (acctDifference.compareTo(totalInvClrAccounted.subtract(acctDifference)) == 0)
-							continue;
-					} else {
-						if (acctDifference.compareTo(totalInvClrAccounted.add(acctDifference)) == 0)
-							continue;
-					}
-					
-				} else {
-					acctDifference.negate();
-					if (acctDifference.negate().signum() < 0) {
-						if (acctDifference.negate().compareTo(totalInvClrAccounted.subtract(acctDifference.negate())) == 0)
-							continue;
-					} else {
-						if (acctDifference.negate().compareTo(totalInvClrAccounted.add(acctDifference.negate())) == 0)
-							continue;
-					}
-				}
-			}
-			
 			//
 			if (invoice.isSOTrx())
 			{
 				FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
 				fl.setDescription(description.toString());
 				updateFactLine(fl);
+				invRoundingLines.add(fl);
 				
 				totalInvClrAccounted = totalInvClrAccounted.add(fl.getAmtAcctDr()).subtract(fl.getAmtAcctCr());
 				
@@ -1675,12 +1707,14 @@ public class Doc_MatchInv extends Doc
 					fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());	
 				fl.setDescription(description.toString());
 				updateFactLine(fl);
+				invRoundingLines.add(fl);
 			}
 			else
 			{
 				FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference.negate());
 				fl.setDescription(description.toString());
 				updateFactLine(fl);
+				invRoundingLines.add(fl);
 				
 				totalInvClrAccounted = totalInvClrAccounted.add(fl.getAmtAcctDr()).subtract(fl.getAmtAcctCr());
 				
@@ -1690,10 +1724,30 @@ public class Doc_MatchInv extends Doc
 					fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference);
 				fl.setDescription(description.toString());
 				updateFactLine(fl);
+				invRoundingLines.add(fl);
 			}
 		}
 		
-		if (isFull) {
+		if (isLineFullyMatched) {
+			if (totalInvClrAccounted != null && totalInvClrAccounted.signum() != 0 && totalInvClrAccounted.abs().compareTo(TOLERANCE) < 0)
+			{
+				BigDecimal totalRounding = Env.ZERO;
+				for (FactLine invRoundingLine : invRoundingLines)
+				{
+					if (invRoundingLine.getAccount() == acct)
+						totalRounding = totalRounding.add(invRoundingLine.getAmtAcctDr()).subtract(invRoundingLine.getAmtAcctCr());
+				}
+				
+				if (totalRounding.compareTo(totalInvClrAccounted.negate()) == 0)
+				{
+					for (FactLine invRoundingLine : invRoundingLines)
+					{
+						fact.remove(invRoundingLine);
+					}
+					totalInvClrAccounted = Env.ZERO;
+				}
+			}
+
 			if (totalInvClrAccounted != null && totalInvClrAccounted.signum() != 0 && totalInvClrAccounted.abs().compareTo(TOLERANCE) < 0)
 			{
 				StringBuilder description = new StringBuilder("Invoice - MatchInv - (full) = ").append(totalInvClrAccounted);
@@ -1713,6 +1767,228 @@ public class Doc_MatchInv extends Doc
 		}
 		
 		return null;
+	}
+	
+	private boolean createInvoiceLineRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
+			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, ArrayList<MInvoiceLine> invLineList,
+			HashMap<Integer, ArrayList<FactLine>> htFactLineInv, ArrayList<FactLine> invRoundingLines) 
+	{
+		if (m_matchInv.getReversal_ID() > 0)
+			return true;
+			
+		StringBuilder sqlInvLine = new StringBuilder()
+				.append("SELECT SUM(AmtSourceDr)-SUM(AmtSourceCr), SUM(AmtAcctDr)-SUM(AmtAcctCr)")
+				.append(" FROM Fact_Acct ")
+				.append("WHERE AD_Table_ID=? AND Record_ID=? AND Line_ID=?")
+				.append(" AND C_AcctSchema_ID=?")
+				.append(" AND Account_ID=?")
+				.append(" AND PostingType='A'");
+		
+		// C_InvoiceLine_ID and the total source amount from C_Invoice accounting fact lines
+		HashMap<Integer, BigDecimal> htInvLineSource = new HashMap<Integer, BigDecimal>();
+		// C_InvoiceLine_ID and the total accounted amount from C_Invoice accounting fact lines
+		HashMap<Integer, BigDecimal> htInvLineAccounted = new HashMap<Integer, BigDecimal>();
+		for (MInvoiceLine invoiceLine : invLineList)
+		{
+			// For Invoice Line
+			List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sqlInvLine.toString(),
+					MInvoice.Table_ID, invoiceLine.getC_Invoice_ID(), invoiceLine.getC_InvoiceLine_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
+			if (valuesInv != null) {
+				BigDecimal invoiceSourceDrCr = (BigDecimal) valuesInv.get(0); // AmtSource
+				BigDecimal invoiceAccountedDrCr = (BigDecimal) valuesInv.get(1); // AmtAcct
+				
+				htInvLineSource.put(invoiceLine.getC_InvoiceLine_ID(), invoiceSourceDrCr.abs());
+				htInvLineAccounted.put(invoiceLine.getC_InvoiceLine_ID(), invoiceAccountedDrCr.abs());
+			}
+		}
+		
+		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
+		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
+		
+		// C_Invoice_ID and the total source amount from M_MatchInv accounting fact lines
+		HashMap<Integer, BigDecimal> htInvClrSource = new HashMap<Integer, BigDecimal>();
+		// C_Invoice_ID and the total accounted amount from M_MatchInv accounting fact lines
+		HashMap<Integer, BigDecimal> htInvClrAccounted = new HashMap<Integer, BigDecimal>();
+		for (Integer C_Invoice_ID : htFactLineInv.keySet())
+		{
+			ArrayList<FactLine> factLineList = htFactLineInv.get(C_Invoice_ID);
+			for (FactLine factLine : factLineList)
+			{
+				if (factLine.getAccount_ID() == acct.getAccount_ID())
+				{
+					BigDecimal invClrSource = htInvClrSource.get(C_Invoice_ID);
+					if (invClrSource == null)
+						invClrSource = Env.ZERO;
+					invClrSource = invClrSource.add(factLine.getAmtSourceDr()).subtract(factLine.getAmtSourceCr());
+					htInvClrSource.put(C_Invoice_ID, invClrSource);
+					
+					BigDecimal invClrAccounted = htInvClrAccounted.get(C_Invoice_ID);
+					if (invClrAccounted == null)
+						invClrAccounted = Env.ZERO;
+					invClrAccounted = invClrAccounted.add(factLine.getAmtAcctDr()).subtract(factLine.getAmtAcctCr());
+					htInvClrAccounted.put(C_Invoice_ID, invClrAccounted);
+				}
+			}
+		}
+		
+		for (MInvoiceLine invoiceLine : invLineList)
+		{
+			if (m_matchInv.getReversal_ID() == 0)
+			{
+				MMatchInv[] matchInvs = MMatchInv.getInvoiceLine(getCtx(), invoiceLine.get_ID(), getTrxName());
+				
+				ArrayList<Integer> skipMatchInvIdList = new ArrayList<Integer>();
+				skipMatchInvIdList.add(m_matchInv.get_ID());
+				for (MMatchInv matchInv : matchInvs)
+				{
+					if (matchInv.getReversal_ID() > 0)
+						skipMatchInvIdList.add(matchInv.get_ID());
+				}
+				
+				for (MMatchInv matchInv : matchInvs)
+				{
+					if (matchInv.get_ID() == m_matchInv.get_ID())
+						continue;
+					
+					if (skipMatchInvIdList.contains(matchInv.get_ID()))
+						continue;
+					
+					StringBuilder sql = new StringBuilder()
+						.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
+						.append(" FROM Fact_Acct ")
+						.append("WHERE AD_Table_ID=? AND (Record_ID=? OR Record_ID=?)")	//	match inv
+						.append(" AND C_AcctSchema_ID=?")
+						.append(" AND PostingType='A'")
+						.append(" AND Account_ID=?");
+					
+					if (matchInv.getRef_MatchInv_ID() > 0)
+					{
+						if (invoiceLine.getParent().isCreditMemo() && matchInv.getQty().compareTo(BigDecimal.ZERO) < 0)
+							sql.append(" AND Qty > 0");
+						else
+							sql.append(" AND Qty < 0");
+					}
+					
+					// For Match Inv
+					List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
+							MMatchInv.Table_ID, matchInv.get_ID(), matchInv.getRef_MatchInv_ID() > 0 ? matchInv.getRef_MatchInv_ID() : -1, as.getC_AcctSchema_ID(), acct.getAccount_ID());
+					if (valuesMatchInv != null) {
+						BigDecimal totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
+						if (totalAmtSourceDr == null)
+							totalAmtSourceDr = Env.ZERO;
+						BigDecimal totalAmtAcctDr = (BigDecimal) valuesMatchInv.get(1);
+						if (totalAmtAcctDr == null)
+							totalAmtAcctDr = Env.ZERO;
+						BigDecimal totalAmtSourceCr = (BigDecimal) valuesMatchInv.get(2);
+						if (totalAmtSourceCr == null)
+							totalAmtSourceCr = Env.ZERO;
+						BigDecimal totalAmtAcctCr = (BigDecimal) valuesMatchInv.get(3);
+						if (totalAmtAcctCr == null)
+							totalAmtAcctCr = Env.ZERO;
+						
+						BigDecimal invClrSource = htInvClrSource.get(invoiceLine.getC_Invoice_ID());
+						if (invClrSource == null)
+							invClrSource = Env.ZERO;
+						invClrSource = invClrSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
+						htInvClrSource.put(invoiceLine.getC_Invoice_ID(), invClrSource);
+						
+						BigDecimal invClrAccounted = htInvClrAccounted.get(invoiceLine.getC_Invoice_ID());
+						if (invClrAccounted == null)
+							invClrAccounted = Env.ZERO;
+						invClrAccounted = invClrAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
+						htInvClrAccounted.put(invoiceLine.getC_Invoice_ID(), invClrAccounted);
+					}
+					
+					sql = new StringBuilder()
+						.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
+						.append(" FROM Fact_Acct ")
+						.append("WHERE AD_Table_ID=? AND (Record_ID=? OR Record_ID=?)")	//	match inv
+						.append(" AND C_AcctSchema_ID=?")
+						.append(" AND PostingType='A'")
+						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
+						.append(" AND Description LIKE 'Invoice Line%'");
+					
+					// For Match Inv
+					valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
+							MMatchInv.Table_ID, matchInv.get_ID(), matchInv.getRef_MatchInv_ID() > 0 ? matchInv.getRef_MatchInv_ID() : -1, as.getC_AcctSchema_ID(), 
+							gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID());
+					if (valuesMatchInv != null) {
+						BigDecimal totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
+						if (totalAmtSourceDr == null)
+							totalAmtSourceDr = Env.ZERO;
+						BigDecimal totalAmtAcctDr = (BigDecimal) valuesMatchInv.get(1);
+						if (totalAmtAcctDr == null)
+							totalAmtAcctDr = Env.ZERO;
+						BigDecimal totalAmtSourceCr = (BigDecimal) valuesMatchInv.get(2);
+						if (totalAmtSourceCr == null)
+							totalAmtSourceCr = Env.ZERO;
+						BigDecimal totalAmtAcctCr = (BigDecimal) valuesMatchInv.get(3);
+						if (totalAmtAcctCr == null)
+							totalAmtAcctCr = Env.ZERO;
+						
+						BigDecimal invClrSource = htInvClrSource.get(invoiceLine.getC_Invoice_ID());
+						if (invClrSource == null)
+							invClrSource = Env.ZERO;
+						invClrSource = invClrSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
+						htInvClrSource.put(invoiceLine.getC_Invoice_ID(), invClrSource);
+						
+						// ignore totalAmtAcctDr and totalAmtAccrCr
+					}
+				}
+			}
+		}
+		
+		boolean isLineFullyMatched = true;
+		for (MInvoiceLine invoiceLine : invLineList)
+		{
+			BigDecimal invLineSource = htInvLineSource.get(invoiceLine.get_ID());
+			if (invLineSource == null)
+				invLineSource = Env.ZERO;
+			BigDecimal invLineAccounted = htInvLineAccounted.get(invoiceLine.get_ID());
+			if (invLineAccounted == null)
+				invLineAccounted = Env.ZERO;			
+			BigDecimal invClrSource = htInvClrSource.get(invoiceLine.getC_Invoice_ID());
+			if (invClrSource == null)
+				invClrSource = Env.ZERO;
+			BigDecimal invClrAccounted = htInvClrAccounted.get(invoiceLine.getC_Invoice_ID());
+			if (invClrAccounted == null)
+				invClrAccounted = Env.ZERO;
+			StringBuilder description = new StringBuilder("Invoice Line=(").append(getC_Currency_ID()).append(")").append(invLineSource).append("/").append(invLineAccounted)
+					.append(" - Match Invoice=(").append(getC_Currency_ID()).append(")").append(invClrSource).append("/").append(invClrAccounted);
+			if (log.isLoggable(Level.FINE)) log.fine(description.toString());
+			BigDecimal acctDifference = invLineAccounted.abs().subtract(invClrAccounted.abs());	//	gain is negative
+			if (invClrSource.abs().compareTo(invLineSource.abs()) == 0)
+			{
+				if (acctDifference != null && acctDifference.signum() != 0 && acctDifference.abs().compareTo(TOLERANCE) < 0)
+				{
+					StringBuilder d2 = new StringBuilder("(full) = ").append(invClrAccounted);
+					if (log.isLoggable(Level.FINE)) log.fine(d2.toString());
+					description.append(" - ").append(d2);
+					
+					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference.negate());
+					fl.setDescription(description.toString());
+					updateFactLine(fl);
+					invRoundingLines.add(fl);
+					
+					if (as.isCurrencyBalancing())
+						fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference);
+					else
+						fl = fact.createLine (null, loss, gain, as.getC_Currency_ID(), acctDifference);
+					fl.setDescription(description.toString());
+					updateFactLine(fl);
+					invRoundingLines.add(fl);
+				}
+			}
+			else
+			{
+				if (acctDifference != null && acctDifference.signum() != 0 && acctDifference.abs().compareTo(TOLERANCE) < 0)
+					;
+				else
+					isLineFullyMatched = false;
+			}
+		}
+		
+		return isLineFullyMatched;
 	}
 	
 	private String createReceiptGainLoss(MAcctSchema as, Fact fact, MAccount acct, 
