@@ -433,18 +433,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             }
             //
 
-            //force reload of default role
-            int cid = Env.getAD_Client_ID(m_ctx);
-            try 
-            {
-            	Env.setContext(m_ctx, Env.AD_CLIENT_ID, clientId);
-            	MRole.getDefault(m_ctx, true);
-            } 
-            finally
-            {
-            	Env.setContext(m_ctx, Env.AD_CLIENT_ID, cid);
-            }
-
     		// If we have only one role, we can make readonly the combobox
     		if (lstRole.getItemCount() == 1)
     		{
@@ -697,6 +685,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         userPreference.setProperty(UserPreference.P_ORG, (String) lstItemOrg.getValue());
         userPreference.setProperty(UserPreference.P_WAREHOUSE, lstItemWarehouse != null ? (String) lstItemWarehouse.getValue() : "0");
         userPreference.savePreference();
+
+        //force reload of default role
+        MRole.getDefault(m_ctx, true);
+
         //
     }
 
