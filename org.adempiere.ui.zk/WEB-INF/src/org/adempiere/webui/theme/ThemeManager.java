@@ -32,6 +32,12 @@ import org.zkoss.image.AImage;
  */
 public final class ThemeManager {
 
+	//zk predefined starting path for classpath resources (src/web)
+	public static final String ZK_PREFIX_FOR_CLASSPATH_RESOURCE = "/web";
+	
+	//zk predefined url prefix for resources loaded from classpath 
+	public static final String ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE = "~./";
+
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ThemeManager.class);
 
@@ -72,7 +78,8 @@ public final class ThemeManager {
 			if (! theme.equals(m_theme)) {
 				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
 					// Verify the theme.css.dsp exists in the theme folder
-					if (ThemeManager.class.getResource(ITheme.THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET) == null) {
+					String themeCSSURL = ITheme.THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET;
+					if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) == null) {
 						log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to default");
 						m_brokenTheme = theme;
 						theme = ITheme.ZK_THEME_DEFAULT;
@@ -182,7 +189,8 @@ public final class ThemeManager {
 		Boolean flag = s_themeHasCustomCSSCache.get(theme);
 		if (flag != null)
 			return flag;
-		if (ThemeManager.class.getResource(ITheme.THEME_PATH_PREFIX +  theme + "/css/fragment/custom.css.dsp") == null) {
+		String customCSSURL = ITheme.THEME_PATH_PREFIX + theme + "/css/fragment/custom.css.dsp";
+		if (ThemeManager.class.getResource(toClassPathResourcePath(customCSSURL)) == null) {
 			flag = Boolean.FALSE;
 		} else {
 			flag = Boolean.TRUE;
@@ -197,5 +205,19 @@ public final class ThemeManager {
 	
 	public static boolean isUseFontIconForImage() {
 		return "Y".equals(Env.getContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE));
-	}	
+	}
+	
+	/**
+	 * @param zkResourceURL zk resource url for classpath resources (url start with ~./)
+	 * @return Resource path for lookup/loading through class loader (absolute path start with /web)
+	 */
+	public static String toClassPathResourcePath(String zkResourceURL) {
+		if (zkResourceURL == null)
+			return zkResourceURL;
+		
+		if (!zkResourceURL.startsWith(ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE))
+			return zkResourceURL;
+		
+		return ZK_PREFIX_FOR_CLASSPATH_RESOURCE+zkResourceURL.substring(2);
+	}
 }

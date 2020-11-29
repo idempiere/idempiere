@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?component name="divarrow" macro-uri="/theme/default/zul/calendar/divarrow.zul"?>
+<?component name="divarrow" macro-uri="~./theme/default/zul/calendar/divarrow.zul"?>
 <zk>
 <zscript><![CDATA[
 	var calendarIcon = org.adempiere.webui.theme.ThemeManager.getThemeResource("images/Calendar16.png");
@@ -19,7 +19,7 @@
 	calendarIcon = isFontIcon ? "" : calendarIcon;
 	
 ]]></zscript>
-<style src="/theme/default/zul/calendar/calendar.css"/>
+<style src="~./theme/default/zul/calendar/calendar.css"/>
 <calendars sclass="${calendarClass}" firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
 	<toolbar sclass="calendar-toolbar">
 		<div class="float-left">

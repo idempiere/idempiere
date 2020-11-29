@@ -51,4 +51,8 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript-module name="org.idempiere.commons" version="202011230530"/>
 	<javascript-module name="jquery.maskedinput" version="1.4.1" />
 	<javascript-module name="photobooth"	version="0.7-rsd3" />
+	
+	<!-- this js module doesn't actually exists and it is here for default theme version -->
+	<!-- since loading of  js module is on demand, it doesn't cause any error as long as you don't try to load it -->
+	<javascript-module name="idempiere.theme.default" version="202011282132" />
 </language>
