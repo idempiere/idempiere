@@ -112,10 +112,14 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		yesList.setSeltype("multiple");
 		noList.setSeltype("multiple");
 
-		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
+		if (ThemeManager.isUseFontIconForImage()) {
+    		bAdd.setIconSclass("z-icon-Next");
+    		bRemove.setIconSclass("z-icon-Previous");
+    	} else {
+    		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
+    		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
+    	}
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
-
-		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		EventListener<Event> crossListMouseListener = new DragListener();
@@ -160,11 +164,15 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 				migrateValueWithinYesList(event);
 			}
 		};
-		
-		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
-		bUp.addEventListener(Events.ON_CLICK, actionListener2);
 
-		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
+    	if (ThemeManager.isUseFontIconForImage()) {
+    		bUp.setIconSclass("z-icon-Parent");
+    		bDown.setIconSclass("z-icon-Detail");
+    	} else {
+    		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
+    		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
+    	}
+		bUp.addEventListener(Events.ON_CLICK, actionListener2);
 		bDown.addEventListener(Events.ON_CLICK, actionListener2);
 		
 		vbox = new Vbox();
