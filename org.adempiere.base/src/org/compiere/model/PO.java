@@ -4986,7 +4986,7 @@ public abstract class PO
 			int poClientID = getAD_Client_ID();
 			if (poClientID != envClientID &&
 					(poClientID != 0 || writing)) {
-				log.severe("Table="+get_TableName()+" Record_ID="+get_ID()+" Env.AD_Client_ID="+envClientID+" PO.AD_Client_ID="+poClientID);
+				log.warning("Table="+get_TableName()+" Record_ID="+get_ID()+" Env.AD_Client_ID="+envClientID+" PO.AD_Client_ID="+poClientID);
 				String message = "Cross tenant PO request detected from session " 
 						+ Env.getContext(getCtx(), "#AD_Session_ID") + " for table " + get_TableName()
 						+ " Record_ID=" + get_ID();
