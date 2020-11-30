@@ -142,12 +142,16 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 			}
 		};
 
-		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
+    	if (ThemeManager.isUseFontIconForImage()) {
+    		bUp.setIconSclass("z-icon-Parent");
+    		bDown.setIconSclass("z-icon-Detail");
+    	} else {
+    		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
+    		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
+    	}
 		bUp.addEventListener(Events.ON_CLICK, actionListener);
-
-		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
-		
+
 		Vbox vbox = new Vbox();
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
