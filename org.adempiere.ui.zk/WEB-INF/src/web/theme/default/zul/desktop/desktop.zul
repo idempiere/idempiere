@@ -3,7 +3,7 @@
   <div height="100%">
 	<borderlayout id="layout" sclass="desktop-layout">
 		<north sclass="desktop-north">
-			<include src="/theme/default/zul/desktop/header.zul" id="northBody"/>
+			<include src="~./theme/default/zul/desktop/header.zul" id="northBody"/>
 		</north>
 		<west id="desktop-left-column" sclass="desktop-left-column" collapsible="true" splittable="true"
 			hflex="1">

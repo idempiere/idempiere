@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?component name="divtab" macro-uri="/theme/default/zul/calendar/divtab.zul"?>
-<?component name="divarrow" macro-uri="/theme/default/zul/calendar/divarrow.zul"?>
+<?component name="divtab" macro-uri="~./theme/default/zul/calendar/divtab.zul"?>
+<?component name="divarrow" macro-uri="~./theme/default/zul/calendar/divarrow.zul"?>
 <zk>
 <zscript><![CDATA[
 	import org.compiere.util.Msg;
@@ -26,7 +26,7 @@
 	var calendarClass = isFontIcon ? "z-cal-font-theme" : "";
 
 ]]></zscript>
-<style src="/theme/default/zul/calendar/calendar.css"/>
+<style src="~./theme/default/zul/calendar/calendar.css"/>
 <borderlayout id="main">
 <center border="none">
 <calendars class="${calendarClass}" firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
