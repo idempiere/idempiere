@@ -41,15 +41,17 @@ public final class ThemeManager {
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(ThemeManager.class);
 
-	private static String m_theme = null;
+	private static String m_theme = ITheme.ZK_THEME_DEFAULT;
 	private static String m_brokenTheme = null;
-
+	
+	public static String THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V8;
+	
 	/**
 	 * @return url for large logo
 	 */
 	public static String getLargeLogo() {
 		String theme = getTheme();
-		String def = ITheme.THEME_PATH_PREFIX+theme+ITheme.LOGIN_LOGO_IMAGE;
+		String def = THEME_PATH_PREFIX+theme+ITheme.LOGIN_LOGO_IMAGE;
 		return MSysConfig.getValue(MSysConfig.ZK_LOGO_LARGE, def);
 	}
 
@@ -58,7 +60,7 @@ public final class ThemeManager {
 	 */
 	public static String getSmallLogo() {
 		String theme = getTheme();
-		String def = ITheme.THEME_PATH_PREFIX+theme+ITheme.HEADER_LOGO_IMAGE;
+		String def = THEME_PATH_PREFIX+theme+ITheme.HEADER_LOGO_IMAGE;
 		String url = MSysConfig.getValue(MSysConfig.ZK_LOGO_SMALL, null);
 		if (url == null)
 			url = MSysConfig.getValue(MSysConfig.WEBUI_LOGOURL, def);
@@ -78,12 +80,21 @@ public final class ThemeManager {
 			if (! theme.equals(m_theme)) {
 				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
 					// Verify the theme.css.dsp exists in the theme folder
-					String themeCSSURL = ITheme.THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET;
+					String themeCSSURL = THEME_PATH_PREFIX + theme + ITheme.THEME_STYLESHEET;
 					if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) == null) {
-						log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to default");
-						m_brokenTheme = theme;
-						theme = ITheme.ZK_THEME_DEFAULT;
+						// verify if is a v7 theme
+						themeCSSURL = ITheme.THEME_PATH_PREFIX_V7 + theme + ITheme.THEME_STYLESHEET;
+						if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) != null) {
+							THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V7;
+						} else {
+							log.warning("The theme " + theme + " does not exist or is not properly configured, falling back to default");
+							m_brokenTheme = theme;
+							THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V8;
+							theme = ITheme.ZK_THEME_DEFAULT;
+						}
 					}
+				} else {
+					THEME_PATH_PREFIX = ITheme.THEME_PATH_PREFIX_V8;
 				}
 				m_theme = theme;
 			}
@@ -95,21 +106,21 @@ public final class ThemeManager {
 	 * @return url of theme stylesheet
 	 */
 	public static String getStyleSheet() {
-		return ITheme.THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET;
+		return THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET;
 	}
 
 	/**
 	 * @return url of theme stylesheet by browser
 	 */
 	public static String getStyleSheetByBrowser() {
-		return ITheme.THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET_BY_BROWSER;
+		return THEME_PATH_PREFIX + getTheme() + ITheme.THEME_STYLESHEET_BY_BROWSER;
 	}
 
 	/**
 	 * @return url of theme preference page
 	 */
 	public static String getPreference() {
-		return ITheme.THEME_PATH_PREFIX + getTheme() + ITheme.THEME_PREFERENCE;
+		return THEME_PATH_PREFIX + getTheme() + ITheme.THEME_PREFERENCE;
 	}
 	
 	/**
@@ -124,7 +135,7 @@ public final class ThemeManager {
 	 */
 	public static String getBrowserIcon() {
 		String theme = getTheme();
-		String def = ITheme.THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
+		String def = THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
 		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_ICON, def);
 	}
 	
@@ -134,7 +145,7 @@ public final class ThemeManager {
 	 * @return full resource url
 	 */
 	public static String getThemeResource(String name) {
-		StringBuilder builder = new StringBuilder(ITheme.THEME_PATH_PREFIX);
+		StringBuilder builder = new StringBuilder(THEME_PATH_PREFIX);
 		builder.append(getTheme());
 		builder.append("/").append(name);
 		String url = builder.toString().intern();
@@ -180,7 +191,7 @@ public final class ThemeManager {
 	}
 
 	private static final CCache<String, Boolean> s_themeHasCustomCSSCache = new CCache<String, Boolean>(null, "ThemeHasCustomCSSCache", 2, -1, false);
-	
+
 	/**
 	 * @return true if custom css exists
 	 */
@@ -189,7 +200,7 @@ public final class ThemeManager {
 		Boolean flag = s_themeHasCustomCSSCache.get(theme);
 		if (flag != null)
 			return flag;
-		String customCSSURL = ITheme.THEME_PATH_PREFIX + theme + "/css/fragment/custom.css.dsp";
+		String customCSSURL = THEME_PATH_PREFIX + theme + "/css/fragment/custom.css.dsp";
 		if (ThemeManager.class.getResource(toClassPathResourcePath(customCSSURL)) == null) {
 			flag = Boolean.FALSE;
 		} else {
