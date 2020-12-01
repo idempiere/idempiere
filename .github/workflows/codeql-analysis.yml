@@ -18,18 +18,12 @@ env:
     java: 11
 
 jobs:
-  analyze:
-    name: Analyze
+  analyze_java:
+    name: Analyze java
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        # Override automatic language detection by changing the below list
-        # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
-        language: ['java', 'javascript']
-        # Learn more...
-        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
 
@@ -66,7 +60,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: ${{ matrix.language }}
+        languages: java
         # If you wish to specify custom queries, you can do so here or in a config file.
         # By default, queries listed here will override any specified in a config file. 
         # Prefix the list here with "+" to use these queries and those in the config file.
@@ -88,13 +82,41 @@ jobs:
     #   make bootstrap
     #   make release
 
-    - name: Build and analyze
+    - name: Build and sonar analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        export MAVEN_OPTS="-Xmx4G"
-        mvn -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true -Dsonar.java.source=$java -Dsonar.java.target=$java verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        export MAVEN_OPTS="-Xmx5G -Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
+        sonarProject="-Dsonar.projectKey=idempiere_idempiere -Dsonar.organization=idempiere"
+        sonar="-Dsonar.java.source=$java -Dsonar.java.target=$java -Dsonar.host.url=https://sonarcloud.io -Dsonar.log.level=WARN"
+        codeql="-Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true"
+        mvn -B -V -e $codeql $sonar $sonarProject verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
+  analyze_javascript:
+    name: Analyze javascript
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+
+    - run: git checkout HEAD^2
+      if: ${{ github.event_name == 'pull_request' }}
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: javascript
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
