@@ -133,14 +133,13 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
         fAnswerList.setMold("select");
 
-        if (ThemeManager.isUseFontIconForImage())
+        if (ThemeManager.isUseFontIconForImage()) {
         	bZoom.setIconSclass("z-icon-Zoom");
-        else
-        	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
-        if (ThemeManager.isUseFontIconForImage())
         	bOK.setIconSclass("z-icon-Ok");
-        else
+        } else {
+        	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
         	bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+        }
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
                 0, 10443, DisplayType.Search);

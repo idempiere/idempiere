@@ -821,7 +821,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, po, fields,trx,requestCtx, resp, ret);
 			if (retResp != null)
 				return retResp;
-			
+
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 	    	if (!po.save())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 	
@@ -1023,6 +1026,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			if (retResp != null)
 				return retResp;
 	
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 			if (!po.save())
 				return rollbackAndSetError(trx, resp, ret, true,
 						"Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
@@ -1294,6 +1300,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
 			if (retResp != null)
 				return retResp;
+
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 
 	    	if (!po.save())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));

@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2086165095004944867L;
+	private static final long serialVersionUID = 1556095090658747371L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -1943,6 +1943,8 @@ public abstract class PO
 
 	/**	Cache						*/
 	private static CCache<String,String> trl_cache	= new CCache<String,String>("PO_Trl", 5);
+	/** Cache for foreign keys */
+	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
 	public String get_Translation (String columnName, String AD_Language)
 	{
@@ -4986,13 +4988,106 @@ public abstract class PO
 			int poClientID = getAD_Client_ID();
 			if (poClientID != envClientID &&
 					(poClientID != 0 || writing)) {
-				log.severe("Table="+get_TableName()+" Record_ID="+get_ID()+" Env.AD_Client_ID="+envClientID+" PO.AD_Client_ID="+poClientID);
-				String message = "Cross tenant PO request detected from session " 
+				log.warning("Table="+get_TableName()
+					+" Record_ID="+get_ID()
+					+" Env.AD_Client_ID="+envClientID
+					+" PO.AD_Client_ID="+poClientID
+					+" writing="+writing
+					+" Session="+Env.getContext(getCtx(), "#AD_Session_ID"));
+				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
 						+ Env.getContext(getCtx(), "#AD_Session_ID") + " for table " + get_TableName()
 						+ " Record_ID=" + get_ID();
 				throw new AdempiereException(message);
 			}
 		}
+	}
+
+	/**
+	 * Validate Foreign keys for cross tenant
+	 * to be called programmatically before saving in programs that can receive arbitrary values in IDs
+	 * This is an expensive operation in terms of database, use it wisely
+	 * 
+	 * TODO: there is huge room for performance improvement, for example:
+	 * - caching the valid values found on foreign tables
+	 * - caching the column ID of the foreign column
+	 * - caching the systemAccess
+	 *  
+	 * @return true if all the foreign keys are valid
+	 */
+	public boolean validForeignKeys() {
+		List<ValueNamePair> fks = getForeignColumnIdxs();
+		if (fks == null) {
+			return true;
+		}
+		for (ValueNamePair vnp : fks) {
+			String fkcol = vnp.getID();
+			String fktab = vnp.getName();
+			int index = get_ColumnIndex(fkcol); 
+			if (is_new() || is_ValueChanged(index)) {
+				int fkval = get_ValueAsInt(index);
+				if (fkval > 0) {
+					MTable ft = MTable.get(getCtx(), fktab);
+					boolean systemAccess = false;
+					String accessLevel = ft.getAccessLevel();
+					if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+						|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+						|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+						systemAccess = true;
+					}
+					StringBuilder sql = new StringBuilder("SELECT AD_Client_ID FROM ")
+							.append(fktab)
+							.append(" WHERE ")
+							.append(ft.getKeyColumns()[0])
+							.append("=?");
+					int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), fkval);
+					if (pocid < 0) {
+						log.saveError("Error", "Foreign ID " + fkval + " not found in " + fkcol);
+						return false;
+					}
+					if (pocid == 0 && !systemAccess) {
+						log.saveError("Error", "System ID " + fkval + " cannot be used in " + fkcol);
+						return false;
+					}
+					int curcid = Env.getAD_Client_ID(getCtx());
+					if (pocid > 0 && pocid != curcid) {
+						log.saveError("Error", "Cross tenant ID " + fkval + " not allowed in " + fkcol);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns a list of indexes for the foreign columns, null if none
+	 * @return array of int indexes
+	 */
+	private List<ValueNamePair> getForeignColumnIdxs() {
+		List<ValueNamePair> retValue;
+		if (fks_cache.containsKey(get_Table_ID())) {
+			retValue = fks_cache.get(get_Table_ID());
+			return retValue;
+		}
+		retValue = new ArrayList<ValueNamePair>();
+		int size = get_ColumnCount();
+		for (int i = 0; i < size; i++) {
+			int dt = p_info.getColumnDisplayType(i);
+			if (dt != DisplayType.ID && DisplayType.isID(dt)) {
+				MColumn col = MColumn.get(p_info.getColumn(i).AD_Column_ID);
+				if ("AD_Client_ID".equals(col.getColumnName())) {
+					// ad_client_id is verified with checkValidClient
+					continue;
+				}
+				String refTable = col.getReferenceTableName();
+				retValue.add(new ValueNamePair(col.getColumnName(), refTable));
+			}
+		}
+		if (retValue.size() == 0) {
+			retValue = null;
+		}
+		fks_cache.put(get_Table_ID(), retValue);
+		return retValue;
 	}
 
 }   //  PO
