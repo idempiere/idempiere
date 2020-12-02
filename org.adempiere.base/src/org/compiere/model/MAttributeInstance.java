@@ -125,6 +125,14 @@ public class MAttributeInstance extends X_M_AttributeInstance
 		setValue(Value);
 	} // MAttributeInstance
 
+	/**
+	 * Integer Value Constructor
+	 * @param ctx
+	 * @param M_Attribute_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param Value
+	 * @param trxName
+	 */
 	public MAttributeInstance (Properties ctx, int M_Attribute_ID, 
 		int M_AttributeSetInstance_ID, int Value, String trxName)
 	{
@@ -132,6 +140,14 @@ public class MAttributeInstance extends X_M_AttributeInstance
 		setValueNumber(BigDecimal.valueOf(Value));
 	} // MAttributeInstance
 
+	/**
+	 * TimeStamp Value Constructor
+	 * @param ctx
+	 * @param M_Attribute_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param value
+	 * @param trxName
+	 */
 	public MAttributeInstance(Properties ctx, int M_Attribute_ID, int M_AttributeSetInstance_ID, Timestamp value,
 			String trxName)
 	{
@@ -139,6 +155,15 @@ public class MAttributeInstance extends X_M_AttributeInstance
 		setValueDate(value);
 	} // MAttributeInstance
 
+	/**
+	 * KeyNamePair Value Constructor
+	 * Use for table direct or table type reference
+	 * @param ctx
+	 * @param M_Attribute_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param value
+	 * @param trxName
+	 */
 	public MAttributeInstance(Properties ctx, int M_Attribute_ID, int M_AttributeSetInstance_ID, KeyNamePair value, String trxName)
 	{
 		this(ctx, M_Attribute_ID, M_AttributeSetInstance_ID, trxName);
@@ -251,15 +276,8 @@ public class MAttributeInstance extends X_M_AttributeInstance
 	 */
 	public void setValueKeyNamePair(KeyNamePair value)
 	{
-		if (value.getName() == null)
-		{
-			setValueNumber(BigDecimal.valueOf(value.getKey()));
-		}
-		else
-		{
-			super.setValueNumber(BigDecimal.valueOf(value.getKey()));
-			setValue(value.getName());
-		}
+		super.setValueNumber(BigDecimal.valueOf(value.getKey()));
+		setValue(value.getName());
 	} // setValueKeyNamePair
 	
 	/**
