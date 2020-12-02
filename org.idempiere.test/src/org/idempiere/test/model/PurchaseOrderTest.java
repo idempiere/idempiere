@@ -34,6 +34,8 @@ import java.util.Properties;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
@@ -56,7 +58,9 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	private static final int BP_PATIO = 121;
 	private static final int DOCTYPE_PO = 126;
 	private static final int DOCTYPE_RECEIPT = 122;
+	private static final int DOCTYPE_AP_INVOICE = 123;
 	private static final int PRODUCT_SEEDER = 143;
+	private static final int PRODUCT_WEEDER = 141;
 	private static final int USER_GARDENADMIN = 101;
 
 	/**
@@ -88,7 +92,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		assertFalse(info.isError());
-		order.load(trxName);		
+		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().intValue());
@@ -111,6 +115,87 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().intValue());		
+	}
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4577
+	 */
+	@Test
+	public void testPositiveAndNegativeOrderThenReceiptThenInvoice() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, BP_PATIO));
+		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, PRODUCT_WEEDER));
+		line1.setQty(new BigDecimal("10"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		MOrderLine line2 = new MOrderLine(order);
+		line2.setLine(20);
+		line2.setProduct(MProduct.get(ctx, PRODUCT_SEEDER));
+		line2.setQty(new BigDecimal("-1"));
+		line2.setDatePromised(today);
+		line2.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+		MInOut receipt = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.saveEx();
+
+		MInOutLine receiptLine1 = new MInOutLine(receipt);
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("10"));
+		receiptLine1.setQty(new BigDecimal("10"));
+		receiptLine1.saveEx();
+
+		MInOutLine receiptLine2 = new MInOutLine(receipt);
+		receiptLine2.setOrderLine(line2, 0, new BigDecimal("-1"));
+		receiptLine2.setQty(new BigDecimal("-1"));
+		receiptLine2.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		receipt.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+
+		MInvoice invoice = new MInvoice(order, DOCTYPE_AP_INVOICE, order.getDateOrdered());
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MInvoiceLine invoiceLine1 = new MInvoiceLine(invoice);
+		invoiceLine1.setOrderLine(line1);
+		invoiceLine1.setQty(new BigDecimal("10"));
+		invoiceLine1.saveEx();
+
+		MInvoiceLine invoiceLine2 = new MInvoiceLine(invoice);
+		invoiceLine2.setOrderLine(line2);
+		invoiceLine2.setQty(new BigDecimal("-1"));
+		invoiceLine2.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		invoice.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+
 	}
 
 }
