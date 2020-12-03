@@ -86,10 +86,13 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 		windowMenu.appendChild(href);
 		menu.appendChild(windowMenu);				
 		
-		var image = doc.createElement("img"); 
-		image.src = doc.body.getAttribute ("windowIco"); 	
-		image.setAttribute("align", "middle");
-		href.appendChild(image);
+		var windowIco = doc.body.getAttribute ("windowIco");
+		if (typeof windowIco === 'string' && windowIco.length > 0) {
+			var image = doc.createElement("img"); 
+			image.src = windowIco;
+			image.setAttribute("align", "middle");
+			href.appendChild(image);
+		}
 		href.appendChild(doc.createTextNode(doc.body.getAttribute ("windowLabel")));
 		
 		//report menu item
@@ -109,10 +112,13 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 		
 		report.appendChild(reportHref);
 		menu.appendChild(report);
-		var reportimage = doc.createElement("img"); 
-		reportimage.src = doc.body.getAttribute ("reportIco");
-		reportimage.setAttribute("align", "middle");
-		reportHref.appendChild(reportimage);
+		var reportIco = doc.body.getAttribute ("reportIco");
+		if (typeof reportIco === 'string' && reportIco.length > 0) {
+			var reportimage = doc.createElement("img"); 
+			reportimage.src = reportIco;
+			reportimage.setAttribute("align", "middle");
+			reportHref.appendChild(reportimage);
+		}
 		reportHref.appendChild(doc.createTextNode(doc.body.getAttribute ("reportLabel")));
 		
 		doc.contextMenu = menu;
