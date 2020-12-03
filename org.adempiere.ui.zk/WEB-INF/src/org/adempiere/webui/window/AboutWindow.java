@@ -28,15 +28,12 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.FolderBrowser;
-import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
-import org.adempiere.webui.component.Row;
-import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
@@ -56,6 +53,7 @@ import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogErrorBuffer;
 import org.compiere.util.CLogMgt;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
@@ -78,6 +76,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
@@ -94,7 +93,10 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7922577248288156723L;
+	private static final long serialVersionUID = -4235323239552159150L;
+
+	/**	Logger			*/
+	private static final CLogger log = CLogger.getCLogger(AboutWindow.class);
 
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
@@ -562,112 +564,26 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	}
 
 	protected Tabpanel createCredit() {
-		Tabpanel tabPanel = new Tabpanel();		
-		Div div = new Div();
-		LayoutUtils.addSclass("about-credit-panel", div);
-		div.setParent(tabPanel);
-		ZKUpdateUtil.setWidth(div, "100%");
-		ZKUpdateUtil.setHeight(div, "100%");
-		div.setStyle("overflow: auto;");
-		Vbox vbox = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-logo", vbox);
-		vbox.setParent(div);
-		Label caption = new Label("Top iDempiere sponsor");
-		caption.setStyle("font-weight: bold;");
-		caption.setParent(vbox);
-		ToolBarButton link = new ToolBarButton();
-		ZKUpdateUtil.setHeight(link, "72px");
-		link.setImage("images/TrekGlobal.jpg");
-		link.setParent(vbox);
-		link.setHref("http://www.trekglobal.com");
-		link.setTarget("_blank");
-
-		Separator separator = new Separator();
-		separator.setParent(div);
-
-		Div panel = new Div();
-		LayoutUtils.addSclass("about-credit-panel-sponsors", panel);
-		panel.setParent(div);
-		ZKUpdateUtil.setWidth(panel, "100%");
-		vbox = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-sponsors-header", vbox);
-		ZKUpdateUtil.setWidth(vbox, "100%");
-		vbox.setParent(panel);
-		caption = new Label("Sponsors");
-		caption.setStyle("font-weight: bold;");
-		caption.setParent(vbox);
-		Vbox content = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-sponsors-links", content);
-		ZKUpdateUtil.setWidth(content, "100%");
-		content.setParent(panel);
-
-		Grid grid = new Grid();
-		grid.setParent(content);
-
-		Rows rows = new Rows();
-		rows.setParent(grid);
-
-		Row row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("GlobalQSS", "http://www.globalqss.com/"));
-		row.appendCellChild(addLink("Adaxa", "http://www.adaxa.com/"));
-		row.appendCellChild(addLink("Sysnova", "http://www.sysnova.com/"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("See also ...", "http://www.idempiere.org/sponsors"), 3);
-
-		panel = new Div();
-		LayoutUtils.addSclass("about-credit-panel-contributors", panel);
-		panel.setParent(div);
-		ZKUpdateUtil.setWidth(panel, "100%");
-		vbox = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-contributors-header", vbox);
-		ZKUpdateUtil.setWidth(vbox, "100%");
-		vbox.setParent(panel);
-		caption = new Label("Contributors");
-		caption.setStyle("font-weight: bold;");
-		caption.setParent(vbox);
-		content = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-contributors-links", content);
-		ZKUpdateUtil.setWidth(content, "100%");
-		content.setParent(panel);
-
-		grid = new Grid();
-		grid.setParent(content);
-
-		rows = new Rows();
-		rows.setParent(grid);
-
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Low Heng Sin", "http://www.adempiere.com/User:Hengsin"));
-		row.appendCellChild(addLink("Carlos Ruiz", "http://wiki.idempiere.org/en/User:CarlosRuiz"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Hiep Lq", "http://wiki.idempiere.org/en/User:Hieplq"));
-		row.appendCellChild(addLink("Nicolas Micoud", "http://wiki.idempiere.org/en/User:Nmicoud"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Jan Thielemann", "http://wiki.idempiere.org/en/User:Jan.thielemann"));
-		row.appendCellChild(addLink("Redhuan D. Oon", "http://www.red1.org"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Thomas Bayen", "http://wiki.idempiere.org/en/User:TBayen"));
-		row.appendCellChild(addLink("Ashley G Ramdass", "http://www.adempiere.com/User:Agramdass"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Teo Sarca", "http://www.adempiere.com/User:Teo_sarca"));
-		row.appendCellChild(addLink("Trifon Trifonov", "http://www.adempiere.com/User:Trifonnt"));
+		Tabpanel tabPanel = new Tabpanel();
+		String fileName = Adempiere.getAdempiereHome() + File.separator + "Credits.html";
+		File file = new File(fileName);
+		AMedia media = null;
+		try {
+			media = new AMedia(file.getName(), "html", "text/html", file, false);
+		} catch (FileNotFoundException e) {
+			log.warning("File " + fileName + " not found");
+		}
+		Iframe iframe = new Iframe();
+		ZKUpdateUtil.setWidth(iframe, "100%");
+		ZKUpdateUtil.setHeight(iframe, "100%");
+		iframe.setStyle("overflow: auto;");
+		iframe.setId("creditsFrame");
+		iframe.setParent(tabPanel);
+		iframe.setSrc(null);
+		if (media != null)
+			iframe.setContent(media);
 
 		return tabPanel;
-	}
-
-	private ToolBarButton addLink(String label, String href) {
-		ToolBarButton link = new ToolBarButton();
-		link.setLabel(label);
-		link.setHref(href);
-		link.setTarget("_blank");
-		return link;
 	}
 
 	protected Tabpanel createAbout() {
