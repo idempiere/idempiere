@@ -24,8 +24,8 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -37,7 +37,7 @@ import org.compiere.Adempiere;
  * @author hengsin
  *
  */
-public class ModelGeneratorDialog extends JDialog implements ActionListener {
+public class ModelGeneratorDialog extends JFrame implements ActionListener {
 
 	/**
 	 * default generated serial version Id
