@@ -33,20 +33,12 @@ jobs:
       with:
         java-version: '${{ env.java }}'
 
+    # on case PR it check out to commit is merger of PR to base (master)
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         # fetch all commit so sornar can know who change a line, it's resolved Warning:  Shallow clone detected, no blame information will be provided. You can convert to non-shallow with 'git fetch --unshallow'.
         fetch-depth: 0
-      if: github.event_name != 'pull_request'
-
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.pull_request.head.sha }} # check out PR head
-        # fetch all commit so sornar can know who change a line, it's resolved Warning:  Shallow clone detected, no blame information will be provided. You can convert to non-shallow with 'git fetch --unshallow'.
-        fetch-depth: 0
-      if: github.event_name == 'pull_request'
 
     - name: Cache material
       uses: actions/cache@v2
@@ -82,16 +74,24 @@ jobs:
     #   make bootstrap
     #   make release
 
+    # run sonar on master only because sonar for PR come from other repository isn't support at moment (already on develop) 
+    # https://stackoverflow.com/a/39720346
+    # https://docs.sonarqube.org/latest/analysis/pr-decoration/
     - name: Build and sonar analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        export MAVEN_OPTS="-Xmx5G -Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
+        export MAVEN_OPTS="-Xmx7G -Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
         sonarProject="-Dsonar.projectKey=idempiere_idempiere -Dsonar.organization=idempiere"
         sonar="-Dsonar.java.source=$java -Dsonar.java.target=$java -Dsonar.host.url=https://sonarcloud.io -Dsonar.log.level=WARN"
         codeql="-Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true"
         mvn -B -V -e $codeql $sonar $sonarProject verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+      if: github.event_name != 'pull_request'
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v1
+      if: github.event_name == 'pull_request'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
@@ -105,13 +105,9 @@ jobs:
 
     steps:
 
+    # on case PR it check out to commit is merger of PR to base (master)
     - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
-
-    - run: git checkout HEAD^2
-      if: ${{ github.event_name == 'pull_request' }}
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
