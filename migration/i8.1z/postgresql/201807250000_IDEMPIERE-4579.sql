@@ -1,3 +1,5 @@
+-- IDEMPIERE-4579 Function altercolumn fails when a role name has a dash
+
 CREATE OR REPLACE FUNCTION adempiere.altercolumn(tablename name, columnname name, datatype name, nullclause character varying, defaultclause character varying, namespace name)
  RETURNS void
  LANGUAGE plpgsql
@@ -142,12 +144,8 @@ begin
    end if;
 end;
 $function$
+;
 
-/*
-create table t_alter_column
-( tablename name, columnname name, datatype name, nullclause varchar(10), defaultclause varchar(200));
+SELECT register_migration_script('201807250000_IDEMPIERE-4579.sql') FROM dual
+;
 
-create rule alter_column_rule as on insert to t_alter_column
-do instead select altercolumn(new.tablename, new.columnname, new.datatype, new.nullclause,
-new.defaultclause);
-*/
