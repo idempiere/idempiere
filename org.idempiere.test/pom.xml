@@ -13,6 +13,7 @@
 	<properties>
 		<idempiere.home>..</idempiere.home>
 		<skipTests>true</skipTests>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 
 	<build>
