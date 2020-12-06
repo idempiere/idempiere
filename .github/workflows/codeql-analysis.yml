@@ -18,8 +18,10 @@ env:
     java: 11
 
 jobs:
-  analyze_java:
-    name: Analyze java
+  analyze_java_sonar:
+    if: github.event_name != 'pull_request'
+
+    name: Analyze java by sonar
     runs-on: ubuntu-latest
 
     strategy:
@@ -45,8 +47,48 @@ jobs:
       with:
         path: |
           ~/.sonar/cache
+        key: ${{ runner.os }}-sonar-master
+
+    # run sonar on master only because sonar for PR come from other repository isn't support at moment (already on develop) 
+    # https://stackoverflow.com/a/39720346
+    # https://docs.sonarqube.org/latest/analysis/pr-decoration/
+    - name: Build and sonar analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        export MAVEN_OPTS="-Xmx7G -Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
+        sonarProject="-Dsonar.projectKey=${{ github.repository_owner }}_idempiere -Dsonar.organization=${{ github.repository_owner }}"
+        sonar="-Dsonar.java.source=$java -Dsonar.java.target=$java -Dsonar.host.url=https://sonarcloud.io -Dsonar.log.level=WARN"
+        sonarExclusions="-Dsonar.exclusions=**/I_*.java,**/X_*.java"
+        codeql="-Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true"
+        mvn -B -V -e $codeql $sonar $sonarProject $sonarExclusions package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+
+  analyze_java_codeQL:
+    name: Analyze java by code QL
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+
+    # Install Java 14
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '${{ env.java }}'
+
+    # on case PR it check out to commit is merger of PR to base (master)
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Cache material
+      uses: actions/cache@v2
+      with:
+        path: |
           ~/.m2
-        key: ${{ runner.os }}-master
+        key: ${{ runner.os }}-maven-master
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -58,46 +100,15 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    #- name: Autobuild
-    #  uses: github/codeql-action/autobuild@v1
-    
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://git.io/JvXDl
-
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
-
-    #- run: |
-    #   make bootstrap
-    #   make release
-
-    # run sonar on master only because sonar for PR come from other repository isn't support at moment (already on develop) 
-    # https://stackoverflow.com/a/39720346
-    # https://docs.sonarqube.org/latest/analysis/pr-decoration/
-    - name: Build and sonar analyze
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        export MAVEN_OPTS="-Xmx7G -Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
-        sonarProject="-Dsonar.projectKey=idempiere_idempiere -Dsonar.organization=idempiere"
-        sonar="-Dsonar.java.source=$java -Dsonar.java.target=$java -Dsonar.host.url=https://sonarcloud.io -Dsonar.log.level=WARN"
-        codeql="-Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true"
-        mvn -B -V -e $codeql $sonar $sonarProject verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-      if: github.event_name != 'pull_request'
-
     - name: Autobuild
       uses: github/codeql-action/autobuild@v1
-      if: github.event_name == 'pull_request'
-
+    
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
 
-  analyze_javascript:
-    name: Analyze javascript
+
+  analyze_javascript_codeQL:
+    name: Analyze javascript by code QL
     runs-on: ubuntu-latest
 
     strategy:
