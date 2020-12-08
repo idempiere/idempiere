@@ -104,19 +104,13 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	private static MUserDefWin[] getAll (Properties ctx, int window_ID )
 	{
 		if (m_fullList == null) {
-			int cid = Env.getAD_Client_ID(Env.getCtx());
 			try {
-				if (cid > 0) {
-					// forced potential cross tenant read - requires System client in context
-					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
-				}
+				PO.setCrossTenantSafe();
 				m_fullList = new Query(ctx, MUserDefWin.Table_Name, null, null)
 						.setOnlyActiveRecords(true)
 						.list();
 			} finally {
-				if (cid > 0) {
-					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, cid);
-				}
+				PO.clearCrossTenantSafe();
 			}
 		}
 		
