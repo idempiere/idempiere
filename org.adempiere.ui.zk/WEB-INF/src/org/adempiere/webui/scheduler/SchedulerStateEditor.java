@@ -332,7 +332,7 @@ public class SchedulerStateEditor extends WEditor {
 		schedulerState=0;
 		MScheduler scheduler = new MScheduler(Env.getCtx(), getAD_Scheduler_ID(), null);
 		IServerManager serverMgr = getServerMgr();
-		schedulerState = serverMgr.getServerStatus(scheduler.getServerID());
+		schedulerState = serverMgr != null ? serverMgr.getServerStatus(scheduler.getServerID()) : -1;
 		String label = null;
 		if (schedulerState == IServerManager.SERVER_STATE_NOT_SCHEDULE)
 			label = Msg.getMsg(Env.getCtx(), "SchedulerNotSchedule");
