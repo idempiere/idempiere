@@ -290,8 +290,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		pathLabel.addEventListener(Events.ON_MOUSE_OVER, listener);
 		pathLabel.addEventListener(Events.ON_MOUSE_OUT, listener);
 		pathLabel.addEventListener(ON_MOUSE_OVER_ECHO_EVENT, listener);
-		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('theme/" + ThemeManager.getTheme() + 
-				"/images/downarrow.png') no-repeat right center");
+		String imageUrl = Executions.getCurrent().encodeURL(ThemeManager.getThemeResource("images/downarrow.png"));		
+		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('" + imageUrl + "') no-repeat right center");
 	}
 
 	@Override
