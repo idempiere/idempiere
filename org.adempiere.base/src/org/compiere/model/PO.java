@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1556095090658747371L;
+	private static final long serialVersionUID = -7231417421289556724L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -4981,7 +4981,30 @@ public abstract class PO
 			throw new AdempiereException("Context lost");
 	}
 
-	private void checkValidClient(boolean writing) {		
+	/*
+	 * To force a cross tenant safe read/write the client program must write code like this:
+		try {
+			PO.setCrossTenantSafe();
+			// write here the Query.list or PO.saveEx that is cross tenant safe
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+	 */
+	private static ThreadLocal<Boolean> isSafeCrossTenant = new ThreadLocal<Boolean>() {
+		@Override protected Boolean initialValue() {
+			return Boolean.FALSE;
+		};
+	};
+	public static void setCrossTenantSafe() {
+		isSafeCrossTenant.set(Boolean.TRUE);
+	}
+	public static void clearCrossTenantSafe() {
+		isSafeCrossTenant.set(Boolean.FALSE);
+	}
+
+	private void checkValidClient(boolean writing) {
+		if (isSafeCrossTenant.get())
+			return;
 		int envClientID = Env.getAD_Client_ID(getCtx());
 		// processes running from system client can read/write always
 		if (envClientID > 0) {

@@ -822,18 +822,12 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			pstmt.setInt (3, getAD_User_ID());
 			pstmt.setInt (4, AD_Org_ID);
 			rs = pstmt.executeQuery ();
-			int cid = Env.getAD_Client_ID(Env.getCtx());
 			try {
-				if (cid > 0) {
-					// forced potential cross tenant read - requires System client in context
-					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
-				}
+				PO.setCrossTenantSafe();
 				while (rs.next ())
 					list.add (new MRole(Env.getCtx(), rs, get_TrxName()));
 			} finally {
-				if (cid > 0) {
-					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, cid);
-				}
+				PO.clearCrossTenantSafe();
 			}
 		}
 		catch (Exception e)
