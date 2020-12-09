@@ -393,9 +393,10 @@ public class MOrder extends X_C_Order implements DocAction
 		String sql = "SELECT C_DocType_ID FROM C_DocType "
 			+ "WHERE AD_Client_ID=? AND AD_Org_ID IN (0," + getAD_Org_ID()
 			+ ") AND DocSubTypeSO=? "
+			+ " AND IsSOTrx=? "
 			+ " AND IsActive='Y' "
 			+ "ORDER BY AD_Org_ID DESC, IsDefault DESC";
-		int C_DocType_ID = DB.getSQLValue(null, sql, getAD_Client_ID(), DocSubTypeSO_x);
+		int C_DocType_ID = DB.getSQLValue(null, sql, getAD_Client_ID(), DocSubTypeSO_x, isSOTrx() ? "Y" : "N");
 		if (C_DocType_ID <= 0)
 			log.severe ("Not found for AD_Client_ID=" + getAD_Client_ID () + ", SubType=" + DocSubTypeSO_x);
 		else
