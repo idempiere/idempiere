@@ -2188,6 +2188,10 @@ public class MOrder extends X_C_Order implements DocAction
 			MInOutLine ioLine = new MInOutLine(shipment);
 			//	Qty = Ordered - Delivered
 			BigDecimal MovementQty = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered()); 
+			if (MovementQty.signum() == 0 && getProcessedOn().signum() != 0) {
+				// do not create lines with qty = 0 when the order is reactivated and completed again
+				continue;
+			}
 			//	Location
 			int M_Locator_ID = MStorageOnHand.getM_Locator_ID (oLine.getM_Warehouse_ID(), 
 					oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), 
