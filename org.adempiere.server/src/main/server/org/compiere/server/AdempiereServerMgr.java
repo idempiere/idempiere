@@ -31,6 +31,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.Service;
 import org.adempiere.server.AdempiereServerActivator;
 import org.adempiere.server.IServerFactory;
+import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.MScheduler;
@@ -344,16 +345,23 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	{
 		log.info ("");
 		LocalServerController[] servers = getInActive();
+		Properties currentContext = ServerContext.getCurrentInstance();
 		for (int i = 0; i < servers.length; i++)
 		{
 			LocalServerController server = servers[i];
+			Properties temp = null;
 			try
 			{
 				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 					continue;
 				//	Do start
 				//	replace
-				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+				if (Env.getAD_Client_ID(currentContext) != server.getServer().getModel().getAD_Client_ID())
+				{
+					temp = new Properties(currentContext);
+					Env.setContext(temp, Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+					ServerContext.setCurrentInstance(temp);
+				}
 				server.getServer().recalculateSleepMS();
 				server.start();
 			}
@@ -361,8 +369,12 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 			{
 				log.log(Level.SEVERE, "Server: " + server, e);
 			}
-		}	//	for all servers
-		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+			finally
+			{
+				if (temp != null)
+					ServerContext.setCurrentInstance(currentContext);
+			}
+		}	//	for all servers		
 		
 		//	Final Check
 		int noRunning = 0;
@@ -407,10 +419,17 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 			return "Server is already running";
 		
+		Properties currentContext = ServerContext.getCurrentInstance();
+		Properties temp = null;
 		try
 		{
 			//	replace
-			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+			if (Env.getAD_Client_ID(currentContext) != server.getServer().getModel().getAD_Client_ID())
+			{
+				temp = new Properties(currentContext);
+				Env.setContext(temp, Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+				ServerContext.setCurrentInstance(temp);
+			}
 			server.getServer().recalculateSleepMS();
 			server.start();
 		}
@@ -421,7 +440,8 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		}
 		finally
 		{
-			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+			if (temp != null)
+				ServerContext.setCurrentInstance(currentContext);
 		}
 		if (log.isLoggable(Level.INFO)) log.info(server.toString());
 		return (server.scheduleFuture != null && !server.scheduleFuture.isDone()) ? null : "Failed to start server"; 
