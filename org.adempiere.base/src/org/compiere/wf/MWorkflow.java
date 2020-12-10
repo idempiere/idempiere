@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -129,18 +130,17 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		//	Reload
 		if (s_cacheDocValue.isReset())
 		{
-			final String whereClause = "WorkflowType=? AND IsValid=?";
-			List<MWorkflow> workflows;
-			try {
-				PO.setCrossTenantSafe();
-				workflows = new Query(ctx, Table_Name, whereClause, trxName)
+			final String whereClause = "WorkflowType=? AND IsValid=?";			
+			final AtomicReference<List<MWorkflow>> workflowsReference = new AtomicReference<List<MWorkflow>>();
+			Env.runAsSystemTenant(() -> {
+				List<MWorkflow> workflows = new Query(ctx, Table_Name, whereClause, trxName)
 						.setParameters(new Object[]{WORKFLOWTYPE_DocumentValue, true})
 						.setOnlyActiveRecords(true)
 						.setOrderBy("AD_Client_ID, AD_Table_ID")
 						.list();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+				workflowsReference.set(workflows);
+			});
+			List<MWorkflow> workflows = workflowsReference.get();
 			ArrayList<MWorkflow> list = new ArrayList<MWorkflow>();
 			String oldKey = "";
 			String newKey = null;

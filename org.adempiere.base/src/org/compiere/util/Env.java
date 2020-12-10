@@ -2039,7 +2039,26 @@ public final class Env
 		return AD_Window_ID;
 	}
 	
-	
+	/**
+	 * Temporary switch to system tenant and invoke runnable.
+	 * This should only be use if absolutely necessary due to the security risk involve. 
+	 * @param runnable
+	 */
+	public static void runAsSystemTenant(Runnable runnable) {
+		Properties currentContext = ServerContext.getCurrentInstance();
+		if (Env.getAD_Client_ID(currentContext) != 0) {
+			try {
+				Properties temp = new Properties(currentContext);
+				Env.setContext(temp, AD_CLIENT_ID, 0);
+				ServerContext.setCurrentInstance(temp);
+				runnable.run();
+			} finally {
+				ServerContext.setCurrentInstance(currentContext);
+			}
+		} else {
+			runnable.run();
+		}
+	}
 	
 	/**************************************************************************
 	 *  Static Variables

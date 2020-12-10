@@ -15,10 +15,10 @@ package org.adempiere.webui.util;
 
 import java.io.Serializable;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MPreference;
-import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -121,12 +121,17 @@ public final class UserPreference implements Serializable {
 					}
 				}
 				
-				try {
-					PO.setCrossTenantSafe();
-					preference.setValue(value);
-					preference.saveEx();
-				} finally {
-					PO.clearCrossTenantSafe();
+				AtomicReference<MPreference> preferenceReference = new AtomicReference<MPreference>(preference);
+				Runnable runnable = () -> {
+					MPreference p = preferenceReference.get();
+					p.setValue(value);					
+					p.saveEx();
+				};
+				
+				if (preference.getAD_Client_ID() == 0 && Env.getAD_Client_ID(Env.getCtx()) > 0) {
+					Env.runAsSystemTenant(runnable);					
+				} else {
+					runnable.run();
 				}
 			}
 		}

@@ -795,7 +795,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		// Extension of sql query so that not only roles with org acces for this user
 		// are found but also roles which delegate org access to the user level where
 		// this user has access to the org in question
-		String sql = "SELECT * FROM AD_Role r " 
+		final String sql = "SELECT * FROM AD_Role r " 
 			+ "WHERE r.IsActive='Y'" 
 			+ " AND EXISTS (SELECT * FROM AD_User_Roles ur" 
 			+ " WHERE r.AD_Role_ID=ur.AD_Role_ID AND ur.IsActive='Y' AND ur.AD_User_ID=?) "
@@ -812,33 +812,30 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			+ " )"
 			+ " ) "
 			+ "ORDER BY AD_Role_ID";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, getAD_User_ID());
-			pstmt.setInt (2, AD_Org_ID);
-			pstmt.setInt (3, getAD_User_ID());
-			pstmt.setInt (4, AD_Org_ID);
-			rs = pstmt.executeQuery ();
-			try {
-				PO.setCrossTenantSafe();
-				while (rs.next ())
-					list.add (new MRole(Env.getCtx(), rs, get_TrxName()));
-			} finally {
-				PO.clearCrossTenantSafe();
+		Env.runAsSystemTenant(() -> {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement (sql, get_TrxName());
+				pstmt.setInt (1, getAD_User_ID());
+				pstmt.setInt (2, AD_Org_ID);
+				pstmt.setInt (3, getAD_User_ID());
+				pstmt.setInt (4, AD_Org_ID);
+				rs = pstmt.executeQuery ();
+					while (rs.next ())
+						list.add (new MRole(Env.getCtx(), rs, get_TrxName()));
 			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}
+		});
 		//
 		if (list.size() > 0 && is_Immutable())
 			list.stream().forEach(e -> e.markImmutable());

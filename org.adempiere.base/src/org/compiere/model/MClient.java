@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.mail.internet.InternetAddress;
@@ -104,15 +105,14 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	 */
 	public static MClient[] getAll (Properties ctx, String orderBy)
 	{
-		List<MClient> list = null;
-		try {
-			PO.setCrossTenantSafe();
-			list = new Query(ctx,I_AD_Client.Table_Name,(String)null,(String)null)
+		AtomicReference<List<MClient>> clientsReference = new AtomicReference<List<MClient>>();
+		Env.runAsSystemTenant(() -> {
+			List<MClient> list = new Query(ctx,I_AD_Client.Table_Name,(String)null,(String)null)
 					.setOrderBy(orderBy)
 					.list();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+			clientsReference.set(list);
+		});
+		List<MClient> list = clientsReference.get();
 		for(MClient client:list ){
 			s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client, e -> new MClient(Env.getCtx(), e));
 		}

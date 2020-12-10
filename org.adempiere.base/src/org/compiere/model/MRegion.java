@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
@@ -53,15 +54,15 @@ public class MRegion extends X_C_Region
 	private static void loadAllRegions ()
 	{
 		s_regions.clear();
-		List<MRegion> regions;
-		try {
-			PO.setCrossTenantSafe();
-			regions = new Query(Env.getCtx(), Table_Name, "", null)
+		
+		AtomicReference<List<MRegion>> regionsReference = new AtomicReference<List<MRegion>>();
+		Env.runAsSystemTenant(() -> {
+			List<MRegion> regions = new Query(Env.getCtx(), Table_Name, "", null)
 					.setOnlyActiveRecords(true)
 					.list();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+			regionsReference.set(regions);
+		});
+		List<MRegion> regions = regionsReference.get();
 		for (MRegion r : regions) {
 			r.markImmutable();
 			s_regions.put(r.getC_Region_ID(), r);
