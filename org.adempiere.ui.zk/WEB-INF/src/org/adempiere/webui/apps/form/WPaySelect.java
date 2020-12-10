@@ -499,6 +499,11 @@ public class WPaySelect extends PaySelect
 		if (m_noSelected == 0)
 			return;
 
+		if(fieldPayDate.getComponent().getValue() == null)
+		{
+			throw new WrongValueException(fieldPayDate.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory") + labelPayDate.getValue());
+		}
+		
 		String msg = generatePaySelect(miniTable, (ValueNamePair) fieldPaymentRule.getSelectedItem().getValue(), 
 				new Timestamp(fieldPayDate.getComponent().getValue().getTime()), 
 				(BankInfo)fieldBankAccount.getSelectedItem().getValue());
