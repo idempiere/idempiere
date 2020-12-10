@@ -56,7 +56,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2781791828528639980L;
+	private static final long serialVersionUID = -4813116760490243399L;
 
 	/**
 	 * Get Period from Cache (immutable)
@@ -127,6 +127,21 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	public static MPeriod get (Properties ctx, Timestamp DateAcct, int AD_Org_ID)
 	{
 		return get(ctx, DateAcct, AD_Org_ID, null);
+	}
+
+	/**
+	 * Get updateable copy of MPeriod from cache
+	 * @param ctx
+	 * @param C_Period_ID
+	 * @param trxName
+	 * @return MPeriod
+	 */
+	public static MPeriod getCopy(Properties ctx, int C_Period_ID, String trxName)
+	{
+		MPeriod period = get(C_Period_ID);
+		if (period != null)
+			period = new MPeriod(ctx, period, trxName);
+		return period;
 	}
 
 	/**
