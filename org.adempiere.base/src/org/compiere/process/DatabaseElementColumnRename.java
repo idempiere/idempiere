@@ -33,7 +33,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
-public class DatabaseColumnRename extends SvrProcess {
+public class DatabaseElementColumnRename extends SvrProcess {
 
 	private int p_AD_Element_ID = 0;
 	// New Column Name
@@ -63,7 +63,7 @@ public class DatabaseColumnRename extends SvrProcess {
 		}
 		// Validate there is not another element with new column name
 		int cnt = DB.getSQLValueEx(get_TrxName(),
-				"SELECT COUNT(*) FROM AD_Element WHERE LOWER(ColumnName)=LOWER(?)",
+				"SELECT COUNT(*) FROM AD_Element WHERE UPPER(ColumnName)=UPPER(?)",
 				p_NewColumnName);
 		if (cnt > 0) {
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@AlreadyExists@: @ColumnName@ = " + p_NewColumnName)));
@@ -81,4 +81,4 @@ public class DatabaseColumnRename extends SvrProcess {
 		
 		return "@OK@";
 	}
-} // DatabaseColumnRename
+} // DatabaseElementColumnRename

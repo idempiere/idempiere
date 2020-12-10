@@ -178,12 +178,18 @@ import org.compiere.util.Util;
 		}
 		// Initialize lookup lists
 		MTable table = MTable.get(Env.getCtx(), X_C_BankAccount.Table_ID);
-		Query query = table.createQuery("IsActive='Y'", null);
-		bankAccountList = query.list();
+		Query query = table.createQuery(null, get_TrxName());
+		bankAccountList = query
+				.setOnlyActiveRecords(true)
+				.setClient_ID()
+				.list();
 
 		table = MTable.get(Env.getCtx(), X_C_Currency.Table_ID);
-		query = table.createQuery("IsActive='Y'", null);
-		List<X_C_Currency> currencyList = query.list();
+		query = table.createQuery("AD_Client_ID IN (0, ?)", get_TrxName());
+		List<X_C_Currency> currencyList = query
+				.setOnlyActiveRecords(true)
+				.setParameters(getAD_Client_ID())
+				.list();
 		currencyMap = new HashMap<String,Integer>() ;
 		
 		for (X_C_Currency currency : currencyList) {

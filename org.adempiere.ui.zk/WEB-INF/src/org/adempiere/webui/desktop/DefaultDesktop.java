@@ -463,6 +463,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	int userId = Env.getAD_User_ID(Env.getCtx());
         	MPreference preference = query.setOnlyActiveRecords(true)
         			.setApplyAccessFilter(true)
+        			.setClient_ID()
         			.setParameters("SideController.Width", userId)
         			.first();
         	
@@ -506,6 +507,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	int userId = Env.getAD_User_ID(Env.getCtx());
         	MPreference preference = query.setOnlyActiveRecords(true)
         			.setApplyAccessFilter(true)
+        			.setClient_ID()
         			.setParameters("HelpController.Width", userId)
         			.first();
         	
