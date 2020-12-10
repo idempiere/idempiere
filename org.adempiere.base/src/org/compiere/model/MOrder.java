@@ -1550,7 +1550,9 @@ public class MOrder extends X_C_Order implements DocAction
 				else if (ol.getM_Product_ID() > 0)
 				{
 					MProduct product = new MProduct(getCtx(), ol.getM_Product_ID(), get_TrxName());
-					
+					if (product.isService())
+						continue;
+
 					BigDecimal weight = product.getWeight();
 					if (weight == null || weight.compareTo(BigDecimal.ZERO) == 0)
 					{
