@@ -1,7 +1,12 @@
 <?page title="iDempiere" contentType="text/html;charset=UTF-8" automaticTimeout="false" ?>
 <zk>
-<script defer="true">
+<script>
 <![CDATA[
+	zk.load("adempiere.local.storage");
+]]>
+</script>
+<script defer="true">
+<![CDATA[		
 	var callback = function(ok, val) {
 		if (ok && !!val)
 		{
