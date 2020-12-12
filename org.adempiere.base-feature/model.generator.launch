@@ -21,30 +21,20 @@
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--add-modules java.se --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-exports java.desktop/sun.awt=ALL-UNNAMED --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="--add-modules java.se --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-exports java.desktop/sun.awt=ALL-UNNAMED --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED -Dosgi.noShutdown=true"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}"/>
     <stringAttribute key="pde.version" value="3.3"/>
     <stringAttribute key="product" value="org.adempiere.server.server_product"/>
     <stringAttribute key="productFile" value="/org.adempiere.server-feature/server.product"/>
     <setAttribute key="selected_target_bundles">
         <setEntry value="bcprov@default:default"/>
-        <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
         <setEntry value="com.google.zxing.core@default:default"/>
         <setEntry value="com.itextpdf@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
-        <setEntry value="com.sun.mail.imap@default:default"/>
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
-        <setEntry value="com.sun.mail.smtp@default:default"/>
-        <setEntry value="groovy-console@default:false"/>
-        <setEntry value="groovy-datetime@default:false"/>
-        <setEntry value="groovy-json@default:false"/>
-        <setEntry value="groovy-jsr223@default:false"/>
-        <setEntry value="groovy-nio@default:false"/>
-        <setEntry value="groovy-sql@default:false"/>
-        <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="javax.jms@default:default"/>
@@ -52,7 +42,6 @@
         <setEntry value="org.apache.activemq.activemq-core@default:default"/>
         <setEntry value="org.apache.activemq.kahadb@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
-        <setEntry value="org.apache.commons.codec@default:default"/>
         <setEntry value="org.apache.commons.collections@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
         <setEntry value="org.apache.commons.compress@default:default"/>
@@ -66,10 +55,6 @@
         <setEntry value="org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="org.apache.poi.poi@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib.source"/>
-        <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>
-        <setEntry value="org.apache.servicemix.bundles.xerces@default:default"/>
-        <setEntry value="org.apache.xml.resolver@default:default"/>
-        <setEntry value="org.apache.xml.serializer@default:default"/>
         <setEntry value="org.apache.xmlbeans@default:default"/>
         <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
@@ -93,18 +78,11 @@
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
-        <setEntry value="slf4j.jcl@default:default"/>
+        <setEntry value="slf4j.jcl@default:false"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
-        <setEntry value="org.adempiere.base.callout@default:default"/>
-        <setEntry value="org.adempiere.base.process@default:default"/>
         <setEntry value="org.adempiere.base@default:default"/>
         <setEntry value="org.adempiere.install@default:default"/>
-        <setEntry value="org.adempiere.payment.processor@default:default"/>
-        <setEntry value="org.adempiere.pipo.handlers@default:default"/>
-        <setEntry value="org.adempiere.pipo@default:true"/>
-        <setEntry value="org.adempiere.plugin.utils@default:default"/>
-        <setEntry value="org.adempiere.replication@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
