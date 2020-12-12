@@ -122,11 +122,11 @@ public final class UserPreference implements Serializable {
 				}
 				
 				try {
-					PO.setCrossTenantSafe();
+					PO.enterSystemRecordsWritable();
 					preference.setValue(value);
 					preference.saveEx();
 				} finally {
-					PO.clearCrossTenantSafe();
+					PO.exitSystemRecordsWritable();
 				}
 			}
 		}

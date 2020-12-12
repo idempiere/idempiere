@@ -4982,35 +4982,35 @@ public abstract class PO
 	}
 
 	/*
-	 * To force a cross tenant safe read/write the client program must write code like this:
+	 * To update records belongs to the system tenant from non-system tenant, you must write code like this:
 		try {
-			PO.setCrossTenantSafe();
-			// write here the Query.list or PO.saveEx that is cross tenant safe
+			PO.enterSystemRecordsWritable();
+			// write here code that update records belongs to system tenant
 		} finally {
-			PO.clearCrossTenantSafe();
+			PO.exitSystemRecordsWritable();
 		}
+	   This could be dangerous, use with care.
 	 */
-	private static ThreadLocal<Boolean> isSafeCrossTenant = new ThreadLocal<Boolean>() {
+	private static ThreadLocal<Boolean> isSystemRecordsWritable = new ThreadLocal<Boolean>() {
 		@Override protected Boolean initialValue() {
 			return Boolean.FALSE;
 		};
 	};
-	public static void setCrossTenantSafe() {
-		isSafeCrossTenant.set(Boolean.TRUE);
+	public static void enterSystemRecordsWritable() {
+		isSystemRecordsWritable.set(Boolean.TRUE);
 	}
-	public static void clearCrossTenantSafe() {
-		isSafeCrossTenant.set(Boolean.FALSE);
+	public static void exitSystemRecordsWritable() {
+		isSystemRecordsWritable.set(Boolean.FALSE);
 	}
 
 	private void checkCrossTenant(boolean writing) {
-		if (isSafeCrossTenant.get())
-			return;
+		boolean systemWritable = isSystemRecordsWritable.get();
 		int envClientID = Env.getAD_Client_ID(getCtx());
 		// processes running from system client can read/write always
 		if (envClientID > 0) {
 			int poClientID = getAD_Client_ID();
 			if (poClientID != envClientID &&
-					(poClientID != 0 || writing)) {
+					(poClientID != 0 || (writing && !(poClientID == 0 && systemWritable)))) {
 				log.warning("Table="+get_TableName()
 					+" Record_ID="+get_ID()
 					+" Env.AD_Client_ID="+envClientID

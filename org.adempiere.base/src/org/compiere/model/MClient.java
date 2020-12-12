@@ -105,14 +105,9 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	public static MClient[] getAll (Properties ctx, String orderBy)
 	{
 		List<MClient> list = null;
-		try {
-			PO.setCrossTenantSafe();
-			list = new Query(ctx,I_AD_Client.Table_Name,(String)null,(String)null)
-					.setOrderBy(orderBy)
-					.list();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		list = new Query(ctx,I_AD_Client.Table_Name,(String)null,(String)null)
+				.setOrderBy(orderBy)
+				.list();
 		for(MClient client:list ){
 			s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client, e -> new MClient(Env.getCtx(), e));
 		}

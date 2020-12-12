@@ -54,14 +54,9 @@ public class MRegion extends X_C_Region
 	{
 		s_regions.clear();
 		List<MRegion> regions;
-		try {
-			PO.setCrossTenantSafe();
-			regions = new Query(Env.getCtx(), Table_Name, "", null)
-					.setOnlyActiveRecords(true)
-					.list();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		regions = new Query(Env.getCtx(), Table_Name, "AD_Client_ID=0", null)
+				.setOnlyActiveRecords(true)
+				.list();
 		for (MRegion r : regions) {
 			r.markImmutable();
 			s_regions.put(r.getC_Region_ID(), r);
