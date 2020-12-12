@@ -190,7 +190,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			m_product = null;	//	reset
 		if (m_product == null)
 		{
-			m_product = MProduct.getCopy(getCtx(), M_Product_ID, get_TrxName());
+			m_product = MProduct.get(getCtx(), M_Product_ID, get_TrxName());
 		}
 		return m_product;
 	}	//	getProduct
