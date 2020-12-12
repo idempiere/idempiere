@@ -151,8 +151,8 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.ckez.ext.CKeditor.plugins.wsc.dialogs,
  web.js.ckez.ext.CKeditor.plugins.wsc.skins,
  web.js.ckez.ext.CKeditor.skins,
- web.js.zkforge,
- web.js.zkforge.mold
+ web.js.zkforge.keylistener,
+ web.js.zkforge.keylistener.mold
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.ui;bundle-version="0.0.0",
  org.idempiere.zk.extra;bundle-version="0.0.0",

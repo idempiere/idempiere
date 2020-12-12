@@ -26,7 +26,7 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<component>
 		<component-name>keylistener</component-name>
 		<component-class>org.zkforge.keylistener.Keylistener</component-class>
-		<widget-class>zkforge.KeyListener</widget-class>
+		<widget-class>zkforge.keylistener.KeyListener</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
 			<mold-uri>mold/key-listener.js</mold-uri>
@@ -52,6 +52,7 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript-module name="jquery.maskedinput" version="1.4.1" />
 	<javascript-module name="photobooth"	version="0.7-rsd3" />
 	<javascript-module name="chosenbox" version="202012041500"/>
+	<javascript-module name="zkforge.keylistener" version="202012120100"/>
 	
 	<!-- this js module doesn't actually exists and it is here for default theme version -->
 	<!-- since loading of  js module is on demand, it doesn't cause any error as long as you don't try to load it -->

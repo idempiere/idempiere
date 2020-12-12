@@ -2,7 +2,7 @@
 
 {{IS_NOTE
 	Purpose:
-		zkforge.KeyListener
+		zkforge.keylistener.KeyListener
 	Description:
 		Keylistener component for ZK.
 }}IS_NOTE
@@ -15,8 +15,8 @@ Copyright 2007 by Easit AB. All rights reserved.
 }}IS_RIGHT
 */
 
-zk.$package('zkforge');
-zkforge.KeyListener = zk.$extends(zul.Widget, {
+zk.$package('zkforge.keylistener');
+zkforge.keylistener.KeyListener = zk.$extends(zul.Widget, {
 	_ctrlKeys: null,
 	_autoBlur: true,
 
