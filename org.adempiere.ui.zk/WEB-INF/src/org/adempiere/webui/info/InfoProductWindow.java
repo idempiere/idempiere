@@ -360,7 +360,7 @@ public class InfoProductWindow extends InfoWindow {
 					m_PAttributeButton.setEnabled(false);
 					int colIdx = findColumnIndex("IsInstanceAttribute");
 
-					if (colIdx > 0) {
+					if (colIdx >= 0) {
 						Object value = contentPanel.getValueAt(row, colIdx);
 						if (value != null && value.toString().equals("true"))
 							m_PAttributeButton.setEnabled(true);
