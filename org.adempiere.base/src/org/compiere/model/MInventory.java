@@ -384,7 +384,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			//	Product requires ASI
 			if (line.getM_AttributeSetInstance_ID() == 0)
 			{
-				MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
+				MProduct product = MProduct.get(getCtx(), line.getM_Product_ID(), get_TrxName());
 				if (product != null && product.isASIMandatory(line.isSOTrx()))
 				{
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, line.isSOTrx())) {
@@ -728,7 +728,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		//	Attribute Set Instance
 		if (line.getM_AttributeSetInstance_ID() == 0)
 		{
-			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
+			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID(), get_TrxName());
 			if (qtyDiff.signum() > 0)	//	Incoming Trx
 			{
 				//auto balance negative on hand
