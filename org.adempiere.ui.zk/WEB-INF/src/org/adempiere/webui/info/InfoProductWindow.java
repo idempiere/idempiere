@@ -52,7 +52,7 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7892916038089331016L;
+	private static final long serialVersionUID = -640644572459126094L;
 
 	protected Tabbox tabbedPane;
 	protected WListbox warehouseTbl;
@@ -357,11 +357,13 @@ public class InfoProductWindow extends InfoWindow {
 						}
 					}
 					
-					Object value = contentPanel.getValueAt(row, findColumnIndex("IsInstanceAttribute"));
-					if (value != null && value.toString().equals("true")) {
-						m_PAttributeButton.setEnabled(true);
-					} else {
-						m_PAttributeButton.setEnabled(false);
+					m_PAttributeButton.setEnabled(false);
+					int colIdx = findColumnIndex("IsInstanceAttribute");
+
+					if (colIdx >= 0) {
+						Object value = contentPanel.getValueAt(row, colIdx);
+						if (value != null && value.toString().equals("true"))
+							m_PAttributeButton.setEnabled(true);
 					}
 				}
 			}
