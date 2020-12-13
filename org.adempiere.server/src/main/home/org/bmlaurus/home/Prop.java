@@ -75,7 +75,7 @@ public final class Prop implements Serializable {
 	private static final String	DEF_SENDREQUEST_LINK=	"/wstore/request.jsp";
 	private static final String	DEF_RESOURCE_LINK	=	"http://www.idempiere.org";
 	private static final String DEF_SUPPORT_LINK 	=	"#";
-	private static final String DEF_IRC_LINK 		=	"http://webchat.freenode.net/?channels=idempiere";
+	private static final String DEF_IRC_LINK 		=	"https://mattermost.idempiere.org";
 	private static final String	DEF_WIKI_LINK 		=	"http://wiki.idempiere.org/";
 	private static final String DEF_FORUMS_LINK		=	"http://groups.google.com/group/idempiere";
 	private static final String	DEF_SUPPORTREQ_LINK	=	"http://jira.idempiere.com";
