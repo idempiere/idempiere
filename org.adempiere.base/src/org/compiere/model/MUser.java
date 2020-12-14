@@ -798,7 +798,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		// are found but also roles which delegate org access to the user level where
 		// this user has access to the org in question
 		String sql = "SELECT * FROM AD_Role r " 
-			+ "WHERE r.IsActive='Y' AND r.AD_Client_ID=? " 
+			+ "WHERE r.IsActive='Y' AND r.AD_Client_ID IN (0, ?) " 
 			+ " AND EXISTS (SELECT * FROM AD_User_Roles ur" 
 			+ " WHERE r.AD_Role_ID=ur.AD_Role_ID AND ur.IsActive='Y' AND ur.AD_User_ID=?) "
 			+ " AND ( ( r.isaccessallorgs = 'Y' ) OR "
