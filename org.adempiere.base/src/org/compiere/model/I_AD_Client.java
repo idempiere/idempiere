@@ -230,19 +230,6 @@ public interface I_AD_Client
 	  */
 	public boolean isSecureSMTP();
 
-    /** Column name IsServerEMail */
-    public static final String COLUMNNAME_IsServerEMail = "IsServerEMail";
-
-	/** Set Server EMail.
-	  * Send EMail from Server
-	  */
-	public void setIsServerEMail (boolean IsServerEMail);
-
-	/** Get Server EMail.
-	  * Send EMail from Server
-	  */
-	public boolean isServerEMail();
-
     /** Column name IsSmtpAuthorization */
     public static final String COLUMNNAME_IsSmtpAuthorization = "IsSmtpAuthorization";
 

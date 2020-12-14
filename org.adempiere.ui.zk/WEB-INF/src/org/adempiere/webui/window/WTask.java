@@ -87,10 +87,7 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 
 			//
 			m_task = task;
-			if (task.isServerProcess())
-				info.setContent("Executing on Server ...");
-			else
-				info.setContent("Executing locally ...");
+			info.setContent("Executing task ...");
 			
 			addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 

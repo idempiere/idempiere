@@ -30,7 +30,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201103L;
+	private static final long serialVersionUID = 20201214L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -45,7 +45,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 // N
 			setIsSecureSMTP (false);
 // N
-			setIsServerEMail (false);
 			setIsSmtpAuthorization (false);
 // N
 			setIsUseASP (false);
@@ -316,30 +315,6 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	public boolean isSecureSMTP () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsSecureSMTP);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Server EMail.
-		@param IsServerEMail 
-		Send EMail from Server
-	  */
-	public void setIsServerEMail (boolean IsServerEMail)
-	{
-		set_Value (COLUMNNAME_IsServerEMail, Boolean.valueOf(IsServerEMail));
-	}
-
-	/** Get Server EMail.
-		@return Send EMail from Server
-	  */
-	public boolean isServerEMail () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsServerEMail);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

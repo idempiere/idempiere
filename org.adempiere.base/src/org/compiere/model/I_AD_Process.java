@@ -329,19 +329,6 @@ public interface I_AD_Process
 	  */
 	public boolean isReport();
 
-    /** Column name IsServerProcess */
-    public static final String COLUMNNAME_IsServerProcess = "IsServerProcess";
-
-	/** Set Server Process.
-	  * Run this Process on Server only
-	  */
-	public void setIsServerProcess (boolean IsServerProcess);
-
-	/** Get Server Process.
-	  * Run this Process on Server only
-	  */
-	public boolean isServerProcess();
-
     /** Column name JasperReport */
     public static final String COLUMNNAME_JasperReport = "JasperReport";
 

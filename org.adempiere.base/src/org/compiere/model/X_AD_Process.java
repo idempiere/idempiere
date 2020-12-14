@@ -30,7 +30,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201103L;
+	private static final long serialVersionUID = 20201214L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -44,7 +44,6 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 // @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setIsBetaFunctionality (false);
 			setIsReport (false);
-			setIsServerProcess (false);
 			setName (null);
 			setValue (null);
         } */
@@ -483,30 +482,6 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public boolean isReport () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsReport);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Server Process.
-		@param IsServerProcess 
-		Run this Process on Server only
-	  */
-	public void setIsServerProcess (boolean IsServerProcess)
-	{
-		set_Value (COLUMNNAME_IsServerProcess, Boolean.valueOf(IsServerProcess));
-	}
-
-	/** Get Server Process.
-		@return Run this Process on Server only
-	  */
-	public boolean isServerProcess () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsServerProcess);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
