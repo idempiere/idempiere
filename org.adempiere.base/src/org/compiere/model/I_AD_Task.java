@@ -178,19 +178,6 @@ public interface I_AD_Task
 	  */
 	public boolean isActive();
 
-    /** Column name IsServerProcess */
-    public static final String COLUMNNAME_IsServerProcess = "IsServerProcess";
-
-	/** Set Server Process.
-	  * Run this Process on Server only
-	  */
-	public void setIsServerProcess (boolean IsServerProcess);
-
-	/** Get Server Process.
-	  * Run this Process on Server only
-	  */
-	public boolean isServerProcess();
-
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
