@@ -2,7 +2,7 @@
 	width: 375px;
 	height: 600px;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 375px) {
 	.about-window {
 		width: 100%;
 	}
