@@ -23,7 +23,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -125,46 +127,43 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 			, String trxName //Bug 1568766 Trx should be kept all along the road		
 	)
 	{
-		String key = "C" + AD_Client_ID + "T" + AD_Table_ID;
 		//	Reload
-		if (s_cacheDocValue.isReset())
+		Map<Integer, MWorkflow[]> cachedMap = s_cacheDocValue.get(AD_Client_ID);
+		if (cachedMap == null)
 		{
-			final String whereClause = "WorkflowType=? AND IsValid=?";
+			final String whereClause = "WorkflowType=? AND IsValid=? AND AD_Client_ID=?";
 			List<MWorkflow> workflows;
-			try {
-				PO.setCrossTenantSafe();
-				workflows = new Query(ctx, Table_Name, whereClause, trxName)
-						.setParameters(new Object[]{WORKFLOWTYPE_DocumentValue, true})
-						.setOnlyActiveRecords(true)
-						.setOrderBy("AD_Client_ID, AD_Table_ID")
-						.list();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			workflows = new Query(ctx, Table_Name, whereClause, trxName)
+					.setParameters(new Object[]{WORKFLOWTYPE_DocumentValue, true, Env.getAD_Client_ID(ctx)})
+					.setOnlyActiveRecords(true)
+					.setOrderBy("AD_Table_ID")
+					.list();
+			cachedMap = new HashMap<Integer, MWorkflow[]>();
+			s_cacheDocValue.put(AD_Client_ID, cachedMap);
 			ArrayList<MWorkflow> list = new ArrayList<MWorkflow>();
-			String oldKey = "";
-			String newKey = null;
+			int previousTableId = -1;
+			int currentTableId = -1;
 			for (MWorkflow wf : workflows)
 			{
-				newKey = "C" + wf.getAD_Client_ID() + "T" + wf.getAD_Table_ID();
-				if (!newKey.equals(oldKey) && list.size() > 0)
+				currentTableId = wf.getAD_Table_ID();
+				if (currentTableId !=  previousTableId && list.size() > 0)
 				{
-					s_cacheDocValue.put (oldKey, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
+					cachedMap.put (previousTableId, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
 					list = new ArrayList<MWorkflow>();
 				}
-				oldKey = newKey;
+				previousTableId = currentTableId;
 				list.add(wf);
 			}
 			
 			//	Last one
 			if (list.size() > 0)
 			{
-				s_cacheDocValue.put (oldKey, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
+				cachedMap.put (previousTableId, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
 			}
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + s_cacheDocValue.size());
+			if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + cachedMap.size());
 		}
 		//	Look for Entry
-		MWorkflow[] retValue = (MWorkflow[])s_cacheDocValue.get(key);
+		MWorkflow[] retValue = (MWorkflow[])cachedMap.get(AD_Table_ID);
 		//hengsin: this is not threadsafe
 		/*
 		//set trxName to all workflow instance
@@ -180,9 +179,19 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	
 	
 	/**	Single Cache					*/
-	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name+"|Language_Workflow", 20);
+	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name, 20);
 	/**	Document Value Cache			*/
-	private static CCache<String,MWorkflow[]>	s_cacheDocValue = new CCache<String,MWorkflow[]> (Table_Name, Table_Name+"|AD_Client_Table", 5);
+	private static final CCache<Integer,Map<Integer, MWorkflow[]>> s_cacheDocValue = new CCache<> (Table_Name, Table_Name+"|DocumentValue", 5) {
+		/**
+		 * generated serial id
+		 */
+		private static final long serialVersionUID = 2548097748351277269L;
+
+		@Override
+		public int reset(int recordId) {
+			return reset();
+		}		
+	};
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWorkflow.class);
 	
