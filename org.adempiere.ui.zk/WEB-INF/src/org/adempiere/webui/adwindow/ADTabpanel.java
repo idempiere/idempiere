@@ -147,7 +147,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6023888511495744589L;
+	private static final long serialVersionUID = -5335610241895151024L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -2122,5 +2122,17 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 		
 		return hasQuickForm;
+	}
+
+	@Override
+	public boolean isEnableCustomizeButton()
+	{
+		return isGridView();
+	}
+
+	@Override
+	public boolean isEnableProcessButton()
+	{
+		return getToolbarButtons().size() > 0 && !gridTab.isNew();
 	}
 }

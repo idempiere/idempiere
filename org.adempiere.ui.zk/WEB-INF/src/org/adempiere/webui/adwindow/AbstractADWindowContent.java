@@ -38,6 +38,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
@@ -636,7 +637,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			gTab.setUpdateWindowContext(false);
 		}
 
-		if (gTab.isSortTab())
+		String type = gTab.getTabType();
+		if (!Util.isEmpty(type))
+		{
+			IADTabpanel adTabPanal = Extensions.getADTabPanel(type);
+			if (adTabPanal != null)
+			{
+				initTabPanel(query, tabIndex, gTab, adTabPanal);
+			}
+			else
+			{
+				logger.log(Level.SEVERE, "No implementaton for tab type " + type + " Found");
+			}
+		}
+		else if (gTab.isSortTab())
 		{
 			ADSortTab sortTab = new ADSortTab(curWindowNo, gTab);
 			adTabbox.addTab(gTab, sortTab);
@@ -653,14 +667,23 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		else
 		{
 			ADTabpanel fTabPanel = new ADTabpanel();
-			fTabPanel.addEventListener(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT, this);
-	    	gTab.addDataStatusListener(this);
-	    	fTabPanel.init(this, curWindowNo, gTab, gridWindow);
-	    	adTabbox.addTab(gTab, fTabPanel);
-		    if (tabIndex == 0) {
-		    	fTabPanel.createUI();
-		    	if (!m_queryInitiating)
-				{
+			initTabPanel(query, tabIndex, gTab, fTabPanel);
+		}
+
+		return gTab;
+	} // initTab
+
+	private void initTabPanel(MQuery query, int tabIndex, final GridTab gTab, IADTabpanel adTabPanal)
+	{
+		adTabPanal.addEventListener(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT, this);
+		gTab.addDataStatusListener(this);
+		adTabPanal.init(this, curWindowNo, gTab, gridWindow);
+		adTabbox.addTab(gTab, adTabPanal);
+		if (tabIndex == 0)
+		{
+			adTabPanal.createUI();
+			if (!m_queryInitiating)
+			{
 		    		try {
 						initFirstTabpanel();
 		    		} catch (Exception e) {
@@ -668,17 +691,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		        			FDialog.error(curWindowNo, GridTable.LOAD_TIMEOUT_ERROR_MESSAGE);
 		        		}
 		    		}
-				}
-		    }
-
-		    if (!m_queryInitiating && tabIndex == 0)
-		    {
-		    	initQueryOnNew(query);
-		    }
+			}
 		}
 
-		return gTab;
-	}
+		if (!m_queryInitiating && tabIndex == 0)
+		{
+			initQueryOnNew(query);
+		}
+	} // initTabPanel
 
 	private void initFirstTabpanel() {
 		adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, adTabbox.getSelectedGridTab().getMaxQueryRecords());
@@ -1113,7 +1133,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	adTabbox.getSelectedTabpanel().switchRowPresentation();
     	//Deepak-Enabling customize button IDEMPIERE-364
         if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        	toolbar.enableCustomize(((ADTabpanel)adTabbox.getSelectedTabpanel()).isGridView());
+        	toolbar.enableCustomize(adTabbox.getSelectedTabpanel().isGridView());
     	focusToActivePanel();
     }
 
@@ -1260,7 +1280,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
     	{
-    		ADTabpanel adtab = (ADTabpanel) event.getTarget();
+    		IADTabpanel adtab = (IADTabpanel) event.getTarget();
     		if (adtab == adTabbox.getSelectedTabpanel()) {
     			toolbar.enableProcessButton(adtab.getToolbarButtons().size() > 0 && !adTabbox.getSelectedGridTab().isNew());
     			toolbar.dynamicDisplay();
@@ -1462,7 +1482,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	toolbar.enableProcessButton (false);
         	toolbar.enableCustomize(false);
         }else{
-        	ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+        	IADTabpanel adtab = adTabbox.getSelectedTabpanel();
             toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
             toolbar.enableCustomize(adtab.isGridView());
         }
@@ -1877,7 +1897,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	toolbar.enableProcessButton (false);
         	toolbar.enableCustomize(false);
         }else{
-        	ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+        	IADTabpanel adtab = adTabbox.getSelectedTabpanel();
             toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
             toolbar.enableCustomize(adtab.isGridView());
         }
@@ -3647,7 +3667,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void onProcess() {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
 		popup.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "processButtonPopup");
-		ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+		IADTabpanel adtab = adTabbox.getSelectedTabpanel();
 		popup.render(adtab.getToolbarButtons());
 		if (popup.getChildren().size() > 0) {
 			popup.setPage(this.getComponent().getPage());

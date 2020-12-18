@@ -27,8 +27,10 @@ import java.util.stream.Collectors;
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
+import org.adempiere.webui.factory.IADTabPanelFactory;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFormFactory;
 import org.adempiere.webui.panel.ADForm;
@@ -219,5 +221,26 @@ public class Extensions {
 	 */
 	public static final List<IChartRendererService> getChartRendererServices() {
 		return Service.locator().list(IChartRendererService.class).getServices();
-	}	
+	}
+
+	/**
+	 * @param  tabType
+	 * @return         {@link IADTabpanel}
+	 */
+	public static IADTabpanel getADTabPanel(String tabType)
+	{
+		IADTabpanel Object = null;
+		List<IADTabPanelFactory> factoryList = Service.locator().list(IADTabPanelFactory.class).getServices();
+		if (factoryList == null)
+			return null;
+
+		for (IADTabPanelFactory factory : factoryList)
+		{
+			Object = factory.getInstance(tabType);
+			if (Object != null)
+				return Object;
+		}
+		return null;
+	} // getADTabPanel
+
 }
