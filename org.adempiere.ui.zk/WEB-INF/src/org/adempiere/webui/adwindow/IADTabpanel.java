@@ -12,9 +12,13 @@
  *****************************************************************************/
 package org.adempiere.webui.adwindow;
 
+import java.util.List;
+
 import org.compiere.model.GridTab;
+import org.compiere.model.GridWindow;
 import org.compiere.util.Evaluatee;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Button;
 
 /**
  * Interface for UI component that edit/display record using ad_tab definitions
@@ -25,6 +29,14 @@ public interface IADTabpanel extends Component, Evaluatee {
 
 	public static final String ON_ACTIVATE_EVENT = "onActivate";
 	public static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.IADTabpanel.onActivatePosted";
+
+	/**
+	 * @param winPanel
+	 * @param windowNo
+	 * @param gridTab
+	 * @param gridWindow
+	 */
+	public void init(AbstractADWindowContent winPanel, int windowNo, GridTab gridTab, GridWindow gridWindow);
 
 	/**
 	 * @return display logic
@@ -141,7 +153,7 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 * 
 	 * @return gridview instance
 	 */
-	public abstract GridView getGridView();	
+	public GridView getGridView();	
 	
 	/**
 	 * 
@@ -184,15 +196,30 @@ public interface IADTabpanel extends Component, Evaluatee {
 	/**
 	 * reset detail data grid when parent tab current record is new and not saved yet
 	 */
-	public abstract void resetDetailForNewParentRecord();
+	public void resetDetailForNewParentRecord();
 	
 	/**
 	 * @return treepanel instance
 	 */
-	public abstract ADTreePanel getTreePanel();	
+	public ADTreePanel getTreePanel();	
 
 	/**
 	 * @return Quick Form Button Enabled/Disabled
 	 */
-	public abstract boolean isEnableQuickFormButton();
+	public boolean isEnableQuickFormButton();
+
+	/**
+	 * @return List of toolbar buttons
+	 */
+	public List<Button> getToolbarButtons();
+
+	/**
+	 * @return customization enabled/disabled for tab
+	 */
+	public boolean isEnableCustomizeButton();
+
+	/**
+	 * @return process Button Enabled/Disabled
+	 */
+	public boolean isEnableProcessButton();
 }

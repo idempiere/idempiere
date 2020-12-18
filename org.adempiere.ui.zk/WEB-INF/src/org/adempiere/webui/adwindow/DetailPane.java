@@ -60,7 +60,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8807016961597158305L;
+	private static final long serialVersionUID = 6251897492168864784L;
 
 	private static final String BTN_PROCESS_ID = "BtnProcess";
 
@@ -479,8 +479,9 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 	protected void onProcess(Component button) {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
-		ADTabpanel adtab = (ADTabpanel) getSelectedADTabpanel();
-		popup.render(adtab.getToolbarButtons());
+		IADTabpanel adtab = getSelectedADTabpanel();
+		if (adtab.getToolbarButtons() != null && adtab.getToolbarButtons().size() > 0)
+			popup.render(adtab.getToolbarButtons());
 		if (popup.getChildren().size() > 0) {
 			popup.setPage(button.getPage());
 			popup.open(button, "after_start");
@@ -796,7 +797,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         			if (adtab.getGridTab().isSortTab()) {
         				btn.setDisabled(true);
         			} else {
-        				btn.setDisabled(((ADTabpanel)adtab).getToolbarButtons().isEmpty());
+						boolean isToolbarDisabled = (adtab.getToolbarButtons() == null || adtab.getToolbarButtons().isEmpty());
+						btn.setDisabled(isToolbarDisabled);
         			}
         			break;
         		}
