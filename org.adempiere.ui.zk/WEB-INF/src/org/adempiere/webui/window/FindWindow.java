@@ -37,6 +37,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import org.adempiere.exceptions.DBException;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -2422,7 +2423,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         catch (SQLException e)
         {
-            log.log(Level.SEVERE, finalSQL, e);
+        	throw new DBException(e);
         }
         finally
         {
