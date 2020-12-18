@@ -26,8 +26,6 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.swing.JOptionPane;
 
-import org.adempiere.base.Service;
-import org.compiere.interfaces.Server;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 
@@ -303,16 +301,6 @@ public class CConnection implements Serializable, Cloneable
 			log.severe(e.toString ());
 		}
 	}
-
-	/**
-	 * 	Get Server
-	 * 	@return Server
-	 */
-	public Server getServer()
-	{
-		return Service.locator().locate(Server.class).getService();
-	}	//	getServer
-
 
 	/**
 	 *  Get Apps Server Version
