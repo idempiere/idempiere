@@ -23,14 +23,14 @@ import java.util.Properties;
 
 /** Generated Model for C_CountryGroupCountry
  *  @author iDempiere (generated) 
- *  @version Release 8.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCountry, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201103L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName)

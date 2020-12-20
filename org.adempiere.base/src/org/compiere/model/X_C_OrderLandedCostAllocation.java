@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCostAllocation
  *  @author iDempiere (generated) 
- *  @version Release 8.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLandedCostAllocation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201103L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCostAllocation (Properties ctx, int C_OrderLandedCostAllocation_ID, String trxName)

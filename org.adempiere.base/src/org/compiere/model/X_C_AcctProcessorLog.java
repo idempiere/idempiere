@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_AcctProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 8.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201103L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_AcctProcessorLog (Properties ctx, int C_AcctProcessorLog_ID, String trxName)

@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for M_CommodityShipment
  *  @author iDempiere (generated) 
- *  @version Release 8.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201103L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)

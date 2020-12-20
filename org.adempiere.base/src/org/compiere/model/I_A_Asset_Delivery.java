@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Delivery
  *  @author iDempiere (generated) 
- *  @version Release 8.1
+ *  @version Release 8.2
  */
 public interface I_A_Asset_Delivery 
 {

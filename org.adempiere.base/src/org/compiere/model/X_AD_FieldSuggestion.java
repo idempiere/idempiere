@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_FieldSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 8.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201103L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName)
