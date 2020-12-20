@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.report.jasper.feature"
       label="JasperReport-feature"
-      version="8.1.0.qualifier"
+      version="8.2.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -21,13 +21,13 @@
          id="org.adempiere.report.jasper"
          download-size="0"
          install-size="0"
-         version="8.1.0.qualifier"/>
+         version="8.2.0.qualifier"/>
 
    <plugin
          id="org.adempiere.report.jasper.library"
          download-size="0"
          install-size="0"
-         version="8.1.0.qualifier"
+         version="8.2.0.qualifier"
          fragment="true"/>
 
    <plugin

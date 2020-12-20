@@ -5,7 +5,7 @@
 
 	<groupId>org.idempiere</groupId>
 	<artifactId>org.idempiere.parent</artifactId>
-	<version>8.1.0-SNAPSHOT</version>
+	<version>8.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Maven parent project for idempiere</name>
 
@@ -536,7 +536,7 @@
 				            <artifact>
 					            <groupId>org.idempiere</groupId>
 					            <artifactId>${idempiere.target}</artifactId>
-					            <version>8.1.0-SNAPSHOT</version>
+					            <version>8.2.0-SNAPSHOT</version>
 				            </artifact>
 			            </target>
 

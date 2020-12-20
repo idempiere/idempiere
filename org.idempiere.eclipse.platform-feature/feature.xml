@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.eclipse.platform.feature"
       label="Eclipse Platform for iDempiere"
-      version="8.1.0.qualifier"
+      version="8.2.0.qualifier"
       provider-name="www.idempiere.org">
 
    <description url="http://www.example.com/description">

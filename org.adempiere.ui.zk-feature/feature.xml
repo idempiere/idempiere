@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.ui.zk.feature"
       label="Zk Client-feature"
-      version="8.1.0.qualifier"
+      version="8.2.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -25,7 +25,7 @@
          id="org.adempiere.ui.zk"
          download-size="0"
          install-size="0"
-         version="8.1.0.qualifier"/>
+         version="8.2.0.qualifier"/>
 
    <plugin
          id="org.atmosphere.runtime"
