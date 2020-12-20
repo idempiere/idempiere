@@ -5,7 +5,6 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;

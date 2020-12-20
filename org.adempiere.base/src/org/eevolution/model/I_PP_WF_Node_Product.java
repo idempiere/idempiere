@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_WF_Node_Product
  *  @author iDempiere (generated) 
- *  @version Release 8.1
+ *  @version Release 8.2
  */
 @SuppressWarnings("all")
 public interface I_PP_WF_Node_Product 
