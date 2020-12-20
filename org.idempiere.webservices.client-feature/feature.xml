@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.webservices.client.feature"
       label="Webservices Client Library"
-      version="8.1.0.qualifier"
+      version="8.2.0.qualifier"
       provider-name="www.idempiere.org">
 
    <description url="http://www.example.com/description">

@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.zk.feature"
       label="Materialize zk osgi libary"
-      version="8.1.0.qualifier"
+      version="8.2.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">

@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.webservices.feature"
       label="Web Service Feature"
-      version="8.1.0.qualifier"
+      version="8.2.0.qualifier"
       provider-name="iDempiere">
 
    <description url="http://www.example.com/description">
