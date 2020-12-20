@@ -49,6 +49,7 @@
 			tofile="jettyhome/etc/jetty-http.xml" filtering="yes" overwrite="yes"/>
 		<copy file="hazelcast-template.xml"
 			tofile="hazelcast.xml" filtering="yes" overwrite="yes"/>
+		<chmod file="jettyhome/etc/jetty-ssl-context.xml" perm="0600"/>
 
 		<mkdir dir="jettyhome/work"/>
 		<mkdir dir="log"/>
@@ -98,6 +99,9 @@
 		<!--	Fix OS stuff	-->
 		<fixcrlf srcdir="." eol="lf" eof="remove" includes="**/*.sh" />
 		<chmod dir="." perm="ugo+x" includes="**/*.sh" />
+		<chmod file="idempiereEnv.properties" perm="0600"/>
+		<chmod file="idempiere.properties" perm="0600"/>
+		<chmod file="utils/myEnvironment.sh" perm="0700"/>
 
 		<delete>
 			<fileset dir="." includes="*.bat" />

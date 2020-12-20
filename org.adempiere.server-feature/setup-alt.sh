@@ -19,9 +19,5 @@ echo ... Setup Jetty
 #setup jetty
 $JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
 
-echo ... Make .sh executable
-chmod -R a+x -- *.sh
-find . -name '*.sh' -exec chmod a+x '{}' \;
-
 echo ...
 echo For problems, check log file in base directory
