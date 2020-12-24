@@ -26,7 +26,6 @@ Import-Package: javax.jms;version="1.1.0",
  org.osgi.util.tracker;version="1.5.0",
  org.w3c.dom
 Export-Package: org.adempiere.server,
- org.compiere.ldap,
  org.compiere.server,
  org.idempiere.server.cluster,
  org.idempiere.server.cluster.callable,
