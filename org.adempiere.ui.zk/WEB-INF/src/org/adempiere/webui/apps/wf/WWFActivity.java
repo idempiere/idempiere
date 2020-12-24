@@ -546,7 +546,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 					}
 					fAnswerList.setVisible(true);
 				}
-				else if (dt == DisplayType.List)
+				else if (DisplayType.isList(dt))
 				{
 					ValueNamePair[] values = MRefList.getList(Env.getCtx(), m_column.getAD_Reference_Value_ID(), false);
 					for(int i = 0; i < values.length; i++)
@@ -680,7 +680,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				//	Do we have an answer?
 				int dt = m_column.getAD_Reference_ID();
 				String value = fAnswerText.getText();
-				if (dt == DisplayType.YesNo || dt == DisplayType.List)
+				if (dt == DisplayType.YesNo || DisplayType.isList(dt))
 				{
 					ListItem li = fAnswerList.getSelectedItem();
 					if(li != null) value = li.getValue().toString();
