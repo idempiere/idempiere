@@ -380,7 +380,7 @@ public final class DisplayType
 		if (cache != null) {
 			IDisplayTypeFactory service = cache.getService();
 			if (service != null)
-				return service.isDate(displayType);
+				return service.isList(displayType);
 		}
 		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isList(displayType))
