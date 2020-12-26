@@ -188,7 +188,7 @@ public class MLookupFactory
 		MLookupInfo info = null;
 		boolean needToAddSecurity = true;
 		//	List
-		if (AD_Reference_ID == DisplayType.List || AD_Reference_ID == DisplayType.ChosenMultipleSelectionList || AD_Reference_ID == DisplayType.RadiogroupList)	//	17
+		if (DisplayType.isList(AD_Reference_ID))	//	17
 		{
 			info = getLookup_List(language, AD_Reference_Value_ID);
 			needToAddSecurity = false;
@@ -925,7 +925,7 @@ public class MLookupFactory
 					displayColumn.append("(").append(embeddedSQL).append(")");
 			}
 			//  List
-			else if (ldc.DisplayType == DisplayType.List)
+			else if (DisplayType.isList(ldc.DisplayType))
 			{
 				String embeddedSQL = getLookup_ListEmbed(language, ldc.AD_Reference_ID, ldc.ColumnName);
 				if (embeddedSQL != null)

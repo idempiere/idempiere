@@ -1095,7 +1095,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				AD_Reference_ID = ((MLookup)lookup).getDisplayType();
 			}
 			
-			if(AD_Reference_ID==DisplayType.List)
+			if(DisplayType.isList(AD_Reference_ID))
 			{
 				if (lookup.getSize() == 0)
 					lookup.refresh();
