@@ -1313,7 +1313,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
 		{
 			if (DisplayType.isText(column.getAD_Reference_ID()) 
-					|| column.getAD_Reference_ID() == DisplayType.List
+					|| DisplayType.isList(column.getAD_Reference_ID())
 					|| column.getAD_Reference_ID() == DisplayType.YesNo
 					// Two special columns: Defined as Table but DB Type is String 
 					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")

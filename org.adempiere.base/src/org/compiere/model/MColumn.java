@@ -800,7 +800,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				foreignTable = "AD_Org";
 			else if ("C_ProjectType_ID".equalsIgnoreCase(getColumnName()))
 				foreignTable = "C_ProjectType";
-		} else if (DisplayType.List == refid || DisplayType.Payment == refid) {
+		} else if (DisplayType.isList(refid) || DisplayType.Payment == refid) {
 			foreignTable = "AD_Ref_List";
 		} else if (DisplayType.Location == refid) {
 			foreignTable = "C_Location";
@@ -941,7 +941,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())) && !column.isVirtualColumn())
 		{
 			int refid = column.getAD_Reference_ID();
-			if (refid != DisplayType.List && refid != DisplayType.Payment)
+			if (!DisplayType.isList(refid) && refid != DisplayType.Payment)
 			{
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)
@@ -1153,7 +1153,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				return "";
 
 			int refid = column.getAD_Reference_ID();
-			if (refid != DisplayType.List && refid != DisplayType.Payment)
+			if (!DisplayType.isList(refid) && refid != DisplayType.Payment)
 			{
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)

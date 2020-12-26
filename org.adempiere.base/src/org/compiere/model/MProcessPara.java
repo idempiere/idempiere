@@ -348,7 +348,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 				if (rt != null)
 					foreignTable = rt.getAD_Table().getTableName();
 			}
-		} else 	if (DisplayType.List == getAD_Reference_ID()) {
+		} else 	if (DisplayType.isList(getAD_Reference_ID())) {
 			foreignTable = "AD_Ref_List";
 		}
 
