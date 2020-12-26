@@ -370,7 +370,7 @@ public class KeyStoreMgt
 		if (l != null && l.length() > 0)
 			dname.append(", L=").append(escapeCommas(l));	//	locality
 		if (s != null && s.length() > 0)
-			dname.append(", S=").append(escapeCommas(s));	//	state
+			dname.append(", ST=").append(escapeCommas(s));	//	state
 		dname.append(", C=").append(escapeCommas(c));		//	country
 		return dname.toString();
 	}	//	getDname
