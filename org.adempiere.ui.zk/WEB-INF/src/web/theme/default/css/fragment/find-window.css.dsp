@@ -13,3 +13,24 @@
 .find-window-advanced .img-btn, .find-window-advanced .img-btn.btn-ok.z-button, .find-window-advanced .img-btn.btn-cancel.z-button {
 	margin: 0 2px;
 }
+ 
+.find-window .z-window-content{
+	padding-bottom: 0px;	
+}
+
+.find-window .status{
+    height: 20px;
+}
+
+.find-window .statusbar{
+    height: 22px;
+}
+
+.find-window .z-grid,
+.find-window .z-listbox.z-flex-item{
+	width: calc(100% - 1px) !important;
+}
+
+.find-window .z-toolbar{
+	border-bottom-width: 0px;
+}
