@@ -8,20 +8,5 @@
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.install</artifactId>
-	<packaging>eclipse-plugin</packaging>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<configuration>
-					<compilerArgs>
-		      			<arg>--add-exports</arg>
-		      			<arg>java.base/sun.security.tools.keytool=ALL-UNNAMED</arg>
-					</compilerArgs>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<packaging>eclipse-plugin</packaging>	
 </project>
