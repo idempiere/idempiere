@@ -3,12 +3,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
-			<attribute name="add-exports" value="java.naming/com.sun.jndi.ldap=ALL-UNNAMED"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src/main/server/"/>
-	<classpathentry kind="src" path="src/main/servlet/"/>
-	<classpathentry kind="src" path="src/main/home/"/>
+	<classpathentry kind="src" path="src/main/server"/>
+	<classpathentry kind="src" path="src/main/servlet"/>
+	<classpathentry kind="src" path="src/main/home"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
