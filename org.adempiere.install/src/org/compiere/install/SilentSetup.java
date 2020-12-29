@@ -1,15 +1,14 @@
 package org.compiere.install;
 
 import java.io.File;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 
 import org.apache.tools.ant.Main;
-import org.compiere.util.CLogFile;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 
+@Deprecated
 public class SilentSetup {
 
 	public SilentSetup()
@@ -62,16 +61,17 @@ public class SilentSetup {
 	public static void main(String[] args)
 	{
 		CLogMgt.initialize(true);
-		Handler fileHandler = new CLogFile(System.getProperty("user.dir"), false, false);
-		CLogMgt.addHandler(fileHandler);
+		// Duplicate log file - not required
+		// Handler fileHandler = new CLogFile(System.getProperty("user.dir"), false, false);
+		// CLogMgt.addHandler(fileHandler);
 		//	Log Level
 		if (args.length > 0)
 			CLogMgt.setLevel(args[0]);
 		else
 			CLogMgt.setLevel(Level.INFO);
 		//	File Logger at least FINE
-		if (fileHandler.getLevel().intValue() > Level.FINE.intValue())
-			fileHandler.setLevel(Level.FINE);
+		// if (fileHandler.getLevel().intValue() > Level.FINE.intValue())
+		//	fileHandler.setLevel(Level.FINE);
 
 		new SilentSetup();
 	}

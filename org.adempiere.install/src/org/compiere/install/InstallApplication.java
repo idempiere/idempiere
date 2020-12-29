@@ -29,7 +29,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class InstallApplication implements IApplication {
 
 	public Object start(IApplicationContext context) throws Exception {
-		Setup.main(new String[]{});
+		Setup.main((String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
 		Thread.sleep(10000);
 		while (Setup.instance.isDisplayable()) {
 			Thread.sleep(2000);

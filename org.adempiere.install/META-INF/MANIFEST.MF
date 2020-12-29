@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.adempiere.install;singleton:=true
 Bundle-Version: 8.2.0.qualifier
 Export-Package: org.adempiere.install,
  org.compiere.install
-Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.eclipse.jetty.util
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: javax.mail;version="1.5",
