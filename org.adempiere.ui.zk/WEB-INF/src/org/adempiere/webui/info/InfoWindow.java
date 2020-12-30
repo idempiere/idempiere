@@ -153,6 +153,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected WQuickEntry vqe;
 	
 	private List<GridField> gridFields;
+	private TreeMap<Integer, List<Object[]>> parameterTree;
 	private Checkbox checkAND;
 		
 	// F3P: Keep original values: when a row is unselected, restore original values
@@ -593,6 +594,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			infoColumns = InfoColumnVO.create(Env.getCtx(), p_infoColumns);
 		
 			gridFields = new ArrayList<GridField>();
+			parameterTree = new TreeMap<Integer, List<Object[]>>();
 			
 			for(InfoColumnVO infoColumn : infoColumns) {
 				if (infoColumn.isKey())
@@ -624,6 +626,40 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				vo.IsReadOnly = infoColumn.isReadOnly();
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
+
+				//IDEMPIERE-4485 Store new Gridfields with IsReadOnly = false
+				if(infoColumn.isQueryCriteria()) {
+					vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), infoWindow.getAD_InfoWindow_ID(), 0,
+							columnName, infoColumn.getNameTrl(), infoColumn.getAD_Reference_ID(), 
+							infoColumn.getAD_Reference_Value_ID(), isMandatory, false, infoColumn.getPlaceHolderTrl());
+					
+					if (infoColumn.getAD_Val_Rule_ID() > 0) {
+						vo.ValidationCode = infoColumn.getValidationCode();
+						if (vo.lookupInfo != null) {
+							vo.lookupInfo.ValidationCode = vo.ValidationCode;
+							vo.lookupInfo.IsValidated = false;
+						}
+					}
+					if (infoColumn.getDisplayLogic() != null)					
+						vo.DisplayLogic =  infoColumn.getDisplayLogic();
+					if (infoColumn.isQueryCriteria() && infoColumn.getDefaultValue() != null)
+						vo.DefaultValue = infoColumn.getDefaultValue();
+					desc = infoColumn.getDescriptionTrl();
+					vo.Description = desc != null ? desc : "";
+					help = infoColumn.getHelpTrl();
+					vo.Help = help != null ? help : "";
+					vo.AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
+					vo.IsAutocomplete = infoColumn.isAutocomplete();
+					vo.IsReadOnly = false;
+					gridField = new GridField(vo);
+					List<Object[]> list = parameterTree.get(infoColumn.getSeqNoSelection());
+					if (list == null) {
+						list = new ArrayList<Object[]>();
+						parameterTree.put(infoColumn.getSeqNoSelection(), list);
+					}
+					
+					list.add(new Object[]{infoColumn, gridField});	
+				}
 			}
 			
 			// If we have a process and at least one process and an editable field, change to the info window rendered
@@ -1421,21 +1457,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			editors = new ArrayList<WEditor>();
 			identifiers = new ArrayList<WEditor>();
 		}
-		TreeMap<Integer, List<Object[]>> tree = new TreeMap<Integer, List<Object[]>>();
-		for (int i = 0; i < infoColumns.length; i++)
-		{
-			if (infoColumns[i].isQueryCriteria()) {
-				List<Object[]> list = tree.get(infoColumns[i].getSeqNoSelection());
-				if (list == null) {
-					list = new ArrayList<Object[]>();
-					tree.put(infoColumns[i].getSeqNoSelection(), list);
-				}
-				list.add(new Object[]{infoColumns[i], gridFields.get(i)});				
-			}
-		}
-		
-		for (Integer i : tree.keySet()) {
-			List<Object[]> list = tree.get(i);
+
+		for (Integer i : parameterTree.keySet()) {
+			List<Object[]> list = parameterTree.get(i);
 			for(Object[] value : list) {
 				if (update) {
 					for (WEditor editor : editors) {
