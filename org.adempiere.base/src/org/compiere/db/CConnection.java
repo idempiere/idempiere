@@ -26,6 +26,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.swing.JOptionPane;
 
+import org.compiere.model.MSystem;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
 
@@ -41,7 +42,7 @@ public class CConnection implements Serializable, Cloneable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -858558852550858165L;
+	private static final long serialVersionUID = -1823868178123935209L;
 
 	/** Connection      */
 	private volatile static CConnection	s_cc = null;
@@ -59,6 +60,13 @@ public class CConnection implements Serializable, Cloneable
 			String attributes = Ini.getProperty (Ini.P_CONNECTION);
 			s_cc = new CConnection (null);
 			s_cc.setAttributes (attributes);
+			if (! attributes.contains("PWD=") && MSystem.isSecureProps())
+			{
+				// get the password from secret properties
+				String dbPwd = Ini.getVar("ADEMPIERE_DB_PASSWORD");
+				if (dbPwd != null)
+					s_cc.setDbPwd(dbPwd);
+			}
 			if (log.isLoggable(Level.FINE)) log.fine(s_cc.toString());
 		}
 
@@ -865,11 +873,23 @@ public class CConnection implements Serializable, Cloneable
 
 	/**
 	 *  String representation.
-	 *  Used also for Instanciation
+	 *  Used also for Instantiation
 	 *  @return string representation
 	 *	@see #setAttributes(String) setAttributes
 	 */
 	public String toStringLong ()
+	{
+		return toStringLong(true);
+	}
+
+	/**
+	 *  String representation.
+	 *  Used also for Instantiation
+	 *  @param includePass flag to include the password in the String
+	 *  @return string representation
+	 *	@see #setAttributes(String) setAttributes
+	 */
+	public String toStringLong (boolean includePass)
 	{
 		StringBuilder sb = new StringBuilder ("CConnection[");
 		sb.append ("name=").append (escape(m_name))
@@ -885,9 +905,11 @@ public class CConnection implements Serializable, Cloneable
 		  .append (",FWhost=").append (escape(m_fw_host))
 		  .append (",FWport=").append (m_fw_port)
 		  .append (",UID=").append (escape(m_db_uid))
-		  .append (",PWD=").append (escape(m_db_pwd))
-		  .append("]");
 		  ;		//	the format is read by setAttributes
+		if (includePass) {
+		  sb.append (",PWD=").append (escape(m_db_pwd));
+		}
+		sb.append("]");
 		return sb.toString ();
 	}	//  toStringLong
 

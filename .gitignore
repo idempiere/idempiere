@@ -9,6 +9,7 @@
 /Oracle/
 /log/
 /*.log
+/.idpass
 /idempiere.properties
 /idempiereEnv.properties
 /hazelcast.xml
