@@ -60,7 +60,7 @@ public class ConvertLead extends SvrProcess {
 			throw new FillMandatoryException("AD_User_ID");
 		
 		MUser lead = new MUser(getCtx(), p_AD_User_ID, get_TrxName());
-		if (!lead.isSalesLead() && lead.getC_BPartner_ID() != 0)
+		if (!lead.isSalesLead() && !lead.isVendorLead() && lead.getC_BPartner_ID() != 0)
 			throw new AdempiereUserError("Lead already converted");
 		
 		MBPartner bp = MBPartner.getTemplate(getCtx(), Env.getAD_Client_ID(getCtx()));
@@ -159,6 +159,7 @@ public class ConvertLead extends SvrProcess {
 		}
 		
 		lead.setIsSalesLead(false);
+		lead.setIsVendorLead(false);
 		lead.setLeadStatus(MUser.LEADSTATUS_Converted);
 		lead.saveEx();
 		
