@@ -981,7 +981,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					builder.append(whereClause);
 				}
 			} else if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
-				InfoColumnVO InfoColumnVO = findInfoColumn(editor.getGridField());
+				InfoColumnVO InfoColumnVO = findInfoColumnParameter(editor.getGridField());
 				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0")) {
 					continue;
 				}
@@ -1085,6 +1085,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return null;
 	}
 
+	protected InfoColumnVO findInfoColumnParameter(GridField gridField) {
+		for (Integer i : parameterTree.keySet()) {
+			List<Object[]> list = parameterTree.get(i);
+			for(Object[] value : list) {
+				if (gridField == value[1]) {
+					return (InfoColumnVO) value[0];
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Check has new parameter is change or new input
 	 * in case first time search, return true
@@ -1110,7 +1122,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				continue;
 			
 			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
-				InfoColumnVO InfoColumnVO = findInfoColumn(editor.getGridField());
+				InfoColumnVO InfoColumnVO = findInfoColumnParameter(editor.getGridField());
 				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0")) {
 					continue;
 				}
@@ -1152,7 +1164,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				continue;
 			
 			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
-				InfoColumnVO InfoColumnVO = findInfoColumn(editor.getGridField());
+				InfoColumnVO InfoColumnVO = findInfoColumnParameter(editor.getGridField());
 				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0")) {
 					continue;
 				}
