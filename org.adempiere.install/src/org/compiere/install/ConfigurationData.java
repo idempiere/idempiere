@@ -56,6 +56,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.EMailAuthenticator;
 import org.compiere.util.Ini;
+import org.eclipse.jetty.util.security.Password;
 
 
 /**
@@ -238,6 +239,13 @@ public class ConfigurationData
 			if (log.isLoggable(Level.INFO)) log.info(env.toString());
 			if (p_properties.size() > 5)
 				envLoaded = true;
+
+			// deobfuscate keystore pass
+			String obfKeystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
+			if (obfKeystorePass.startsWith(Password.__OBFUSCATE)) {
+				String keystorePass = Password.deobfuscate(obfKeystorePass);
+				p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);
+			}
 
 			Properties loaded = new Properties();
 			loaded.putAll(p_properties);
@@ -829,12 +837,17 @@ public class ConfigurationData
 
 		//	Save Environment
 		fileName = m_adempiereHome.getAbsolutePath() + File.separator + IDEMPIERE_ENV_FILE;
+		FileOutputStream fos = null;
 		try
 		{
-			FileOutputStream fos = new FileOutputStream(new File(fileName));
+			fos = new FileOutputStream(new File(fileName));
+			// obfuscate keystore pass
+			String keystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
+			String obfKeystorePass = Password.obfuscate(keystorePass);
+			p_properties.put(ADEMPIERE_KEYSTOREPASS, obfKeystorePass);
 			p_properties.store(fos, IDEMPIERE_ENV_FILE);
+			p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);
 			fos.flush();
-			fos.close();
 		}
 		catch (Exception e)
 		{
@@ -859,6 +872,24 @@ public class ConfigurationData
 			else
 				System.err.println(ConfigurationPanel.res.getString("ErrorSave"));
 			return false;
+		}
+		finally
+		{
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					log.severe("Cannot close file " + fileName);
+					if (p_panel != null)
+						JOptionPane.showConfirmDialog(p_panel,
+							ConfigurationPanel.res.getString("ErrorSave"),
+							ConfigurationPanel.res.getString("AdempiereServerSetup"),
+							JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+					else
+						System.err.println(ConfigurationPanel.res.getString("ErrorSave"));
+					return false;
+				}
+			}
 		}
 		log.info(fileName);
 		return saveIni();
