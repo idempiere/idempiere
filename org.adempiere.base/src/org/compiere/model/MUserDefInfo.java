@@ -81,7 +81,7 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	private static MUserDefInfo[] getAll (Properties ctx, int infowindow_ID )
 	{
 		if (m_fullList == null) {
-			m_fullList = new Query(ctx, MUserDefInfo.Table_Name, "IsActive='Y'", null).list();
+			m_fullList = new Query(ctx, MUserDefInfo.Table_Name, "IsActive='Y'", null).setClient_ID().list();
 		}
 		
 		if (m_fullList.size() == 0) {

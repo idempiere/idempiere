@@ -64,6 +64,7 @@ public class MUserRoles extends X_AD_User_Roles
 		final String whereClause = I_AD_User_Roles.COLUMNNAME_AD_User_ID+"=?";	
 		List<MUserRoles> list = new Query(ctx,I_AD_User_Roles.Table_Name,whereClause,null)
 		.setParameters(AD_User_ID)
+		.setClient_ID()
 		.list();
 		MUserRoles[] retValue = new MUserRoles[list.size ()];
 		list.toArray (retValue);
