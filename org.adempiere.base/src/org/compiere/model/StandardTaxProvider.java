@@ -97,8 +97,6 @@ public class StandardTaxProvider implements ITaxProvider {
 				}
 				if (!oTax.delete(true, order.get_TrxName()))
 					return false;
-				if (!oTax.save(order.get_TrxName()))
-					return false;
 			}
 			else
 			{
