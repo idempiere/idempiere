@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_AllClients_V
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_AllClients_V (Properties ctx, int AD_AllClients_V_ID, String trxName)

@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -55,6 +56,8 @@ public class MLookupFactory
 	private static CLogger		s_log = CLogger.getCLogger(MLookupFactory.class);
 	/** Table Reference Cache				*/
 	private static CCache<String,MLookupInfo> s_cacheRefTable = new CCache<String,MLookupInfo>(I_AD_Ref_Table.Table_Name, 30, 60);	//	1h
+	/** List Reference Cache				*/
+	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, 60);	//	1h
 
 
 	/**
@@ -185,7 +188,7 @@ public class MLookupFactory
 		MLookupInfo info = null;
 		boolean needToAddSecurity = true;
 		//	List
-		if (AD_Reference_ID == DisplayType.List || AD_Reference_ID == DisplayType.ChosenMultipleSelectionList)	//	17
+		if (DisplayType.isList(AD_Reference_ID))	//	17
 		{
 			info = getLookup_List(language, AD_Reference_Value_ID);
 			needToAddSecurity = false;
@@ -295,6 +298,23 @@ public class MLookupFactory
 	 */
 	static public MLookupInfo getLookup_List(Language language, int AD_Reference_Value_ID)
 	{
+		String lang;
+		if (language == null) {
+			lang = Env.getAD_Language(Env.getCtx());
+		} else {
+			lang = language.getAD_Language();
+		}
+		StringBuilder key = new StringBuilder()
+				.append(Env.getAD_Client_ID(Env.getCtx())).append("|")
+				.append(lang).append("|")
+				.append(String.valueOf(AD_Reference_Value_ID));
+		MLookupInfo retValue = (MLookupInfo)s_cacheRefList.get(key.toString());
+		if (retValue != null)
+		{
+			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
+			return retValue.cloneIt();
+		}
+		
 		String byValue = DB.getSQLValueString(null, "SELECT IsOrderByValue FROM AD_Reference WHERE AD_Reference_ID = ? ", AD_Reference_Value_ID);
 		StringBuilder realSQL = new StringBuilder ("SELECT NULL, AD_Ref_List.Value,");
 		MClient client = MClient.get(Env.getCtx());
@@ -332,6 +352,8 @@ public class MLookupFactory
 		MLookupInfo info = new MLookupInfo(realSQL.toString(), "AD_Ref_List", "AD_Ref_List.Value",
 			101,101, MQuery.getEqualQuery("AD_Reference_ID", AD_Reference_Value_ID));	//	Zoom Window+Query
 		info.QueryDirect = directSql;
+		
+		s_cacheRefList.put(key.toString(), info.cloneIt());
 		
 		return info;
 	}	//	getLookup_List
@@ -597,7 +619,12 @@ public class MLookupFactory
 		retValue.DisplayColumn = lookupDisplayColumn;		
 		retValue.InfoWindowId = infoWindowId;
 		retValue.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
+		List<String> lookupDisplayColumns = new ArrayList<String>();
+		if (isValueDisplayed)
+			lookupDisplayColumns.add("Value");
+		lookupDisplayColumns.add(lookupDisplayColumn != null ? lookupDisplayColumn : DisplayColumn);
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
+		retValue.lookupDisplayColumns = lookupDisplayColumns;
 		return retValue;
 	}	//	getLookup_Table
 
@@ -829,6 +856,11 @@ public class MLookupFactory
 			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
 		lInfo.DisplayColumn = displayColumn.toString();
 		lInfo.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
+		List<String> lookupDisplayColumns = new ArrayList<String>();
+		for (LookupDisplayColumn ldc : list) {
+			lookupDisplayColumns.add(ldc.ColumnName);
+		}
+		lInfo.lookupDisplayColumns = lookupDisplayColumns;
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir
@@ -893,7 +925,7 @@ public class MLookupFactory
 					displayColumn.append("(").append(embeddedSQL).append(")");
 			}
 			//  List
-			else if (ldc.DisplayType == DisplayType.List)
+			else if (DisplayType.isList(ldc.DisplayType))
 			{
 				String embeddedSQL = getLookup_ListEmbed(language, ldc.AD_Reference_ID, ldc.ColumnName);
 				if (embeddedSQL != null)

@@ -42,19 +42,19 @@ import org.compiere.model.MRole;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerLog;
 import org.compiere.model.MSchedulerPara;
+import org.compiere.model.MSession;
 import org.compiere.model.MUser;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
-
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Scheduler
@@ -85,7 +85,7 @@ public class Scheduler extends AdempiereServer
 
 	protected int AD_Scheduler_ID;
 
-	private static CCache<Integer,MScheduler> s_cache = new CCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60, true);
+	private static ImmutableIntPOCache<Integer,MScheduler> s_cache = new ImmutableIntPOCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60, true);
 
 	/**
 	 * 	Work
@@ -117,6 +117,8 @@ public class Scheduler extends AdempiereServer
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
 		Env.setContext(getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 
+		//Create new Session and set #AD_Session_ID to context
+		MSession session = MSession.get(getCtx(), true);
 		MProcess process = new MProcess(getCtx(), scheduler.getAD_Process_ID(), null);
 		try
 		{
@@ -136,6 +138,9 @@ public class Scheduler extends AdempiereServer
 		{
 			if (m_trx != null)
 				m_trx.close();
+
+			session.logout();
+			getCtx().remove("#AD_Session_ID");
 		}
 		
 		//
@@ -605,6 +610,7 @@ public class Scheduler extends AdempiereServer
 	}	//	getServerInfo
 
 	/**
+	 * Get MScheduler from cache (immutable)
 	 * @param ctx
 	 * @param AD_Scheduler_ID
 	 * @return MScheduler
@@ -612,16 +618,21 @@ public class Scheduler extends AdempiereServer
 	protected static MScheduler get(Properties ctx, int AD_Scheduler_ID)
 	{
 		Integer key = Integer.valueOf(AD_Scheduler_ID);
-		MScheduler retValue = (MScheduler)s_cache.get(key);
+		MScheduler retValue = s_cache.get(ctx, key, e -> new MScheduler(ctx, e));
 		if (retValue == null)
 		{
-			retValue = new MScheduler(ctx, AD_Scheduler_ID, null);
+			retValue = new MScheduler(ctx, AD_Scheduler_ID, (String)null);
 			if (AD_Scheduler_ID == 0)
 			{
 				String trxName = null;
 				retValue.load(trxName);	//	load System Record
 			}
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == AD_Scheduler_ID)
+			{
+				s_cache.put(key, retValue, e -> new MScheduler(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get

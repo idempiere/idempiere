@@ -29,6 +29,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.ComboEditorBox;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.EditorBox;
@@ -93,7 +94,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     private String description;
 
-    private boolean readOnly;
+    protected boolean readOnly;
 
     private String columnName;
 
@@ -153,16 +154,45 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		
 	}
 	
+	/**
+	 * 
+	 * @param comp
+	 * @param gridField
+	 */
     public WEditor(Component comp, GridField gridField) {
     	this(comp, gridField, -1);
 	}
 
-	/**
-     *
+    /**
+     * 
      * @param comp
      * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
      */
-    public WEditor(Component comp, GridField gridField, int rowIndex)
+    public WEditor(Component comp, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+    	this(comp, gridField, -1, tableEditor, editorConfiguration);
+	}
+    
+    /**
+     * 
+     * @param comp
+     * @param gridField
+     * @param rowIndex
+     */
+    public WEditor(Component comp, GridField gridField, int rowIndex) {
+	   this(comp, gridField, rowIndex, false, null);
+    }
+   
+	/**
+	 * 
+	 * @param comp
+	 * @param gridField
+	 * @param rowIndex
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WEditor(Component comp, GridField gridField, int rowIndex, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
         if (comp == null)
         {
@@ -174,7 +204,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
             throw new IllegalArgumentException("Grid field cannot be null");
         }
 
-        this.setComponent(comp);
+        this.setComponent(comp);        
         this.gridField = gridField;
         if (gridField.getGridTab() != null) {
         	comp.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getGridTab().getTableName()+"0"+gridField.getColumnName());
@@ -182,8 +212,15 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         } else {
         	comp.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, gridField.getColumnName());
         }
-        this.setMandatory(gridField.isMandatory(true));
-        this.readOnly = gridField.isReadOnly();
+        if (editorConfiguration != null && editorConfiguration.getMandatory() != null)
+        	this.setMandatory(editorConfiguration.getMandatory());
+        else
+        	this.setMandatory(gridField.isMandatory(true));
+        this.tableEditor = tableEditor;
+        if (editorConfiguration != null && editorConfiguration.getReadonly() != null)
+        	this.readOnly = editorConfiguration.getReadonly();
+        else
+        	this.readOnly = gridField.isReadOnly();
         this.description = gridField.getDescription();
         this.columnName = gridField.getColumnName();
         this.strLabel = gridField.getHeader();
@@ -612,6 +649,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			} else {
 				label.setStyle(style);
 			}
+//			if (this instanceof WRadioGroupEditor)
+//				System.out.println(getComponent().getUuid() + " label stype="+label.getStyle());
 		}
 	}
 
@@ -641,17 +680,23 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setSclass(sclass);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setSclass(sclass);
 			else
 				component.setSclass(sclass);
 		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
 			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setZclass(zclass);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setZclass(zclass);
 			else
 				component.setZclass(zclass);
 		} else {
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setStyle(style);
+			else if (component instanceof ComboEditorBox)
+				((ComboEditorBox)component).getCombobox().setStyle(style);
 			else
 				component.setStyle(style);
 		}
@@ -774,9 +819,14 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      * @param popupMenu
      */
 	protected void addTextEditorMenu(WEditorPopupMenu popupMenu) {
-		Menuitem editor = new Menuitem(Msg.getMsg(Env.getCtx(), "Editor"), ThemeManager.getThemeResource("images/Editor16.png"));
+		Menuitem editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.EDITOR_EVENT);
-		editor.addEventListener(Events.ON_CLICK, popupMenu);
+		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Editor")).intern());
+        if (ThemeManager.isUseFontIconForImage())
+        	editor.setIconSclass("z-icon-Edit");
+        else
+        	editor.setImage(ThemeManager.getThemeResource("images/Editor16.png"));
+        editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
 	}
 	

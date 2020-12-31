@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -73,6 +73,34 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID 
+		Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
     {
@@ -309,6 +337,34 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
+			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());	}
+
+	/** Set Dynamic Validation (Lookup).
+		@param AD_Val_Rule_Lookup_ID 
+		Override Dynamic Validation Rule for Lookup Window
+	  */
+	public void setAD_Val_Rule_Lookup_ID (int AD_Val_Rule_Lookup_ID)
+	{
+		if (AD_Val_Rule_Lookup_ID < 1) 
+			set_Value (COLUMNNAME_AD_Val_Rule_Lookup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Val_Rule_Lookup_ID, Integer.valueOf(AD_Val_Rule_Lookup_ID));
+	}
+
+	/** Get Dynamic Validation (Lookup).
+		@return Override Dynamic Validation Rule for Lookup Window
+	  */
+	public int getAD_Val_Rule_Lookup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_Lookup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Column Span.
 		@param ColumnSpan 
 		Number of column for a box of field
@@ -439,6 +495,30 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public String getIsAlwaysUpdateable () 
 	{
 		return (String)get_Value(COLUMNNAME_IsAlwaysUpdateable);
+	}
+
+	/** IsAutocomplete AD_Reference_ID=319 */
+	public static final int ISAUTOCOMPLETE_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISAUTOCOMPLETE_Yes = "Y";
+	/** No = N */
+	public static final String ISAUTOCOMPLETE_No = "N";
+	/** Set Autocomplete.
+		@param IsAutocomplete 
+		Automatic completion for textfields
+	  */
+	public void setIsAutocomplete (String IsAutocomplete)
+	{
+
+		set_Value (COLUMNNAME_IsAutocomplete, IsAutocomplete);
+	}
+
+	/** Get Autocomplete.
+		@return Automatic completion for textfields
+	  */
+	public String getIsAutocomplete () 
+	{
+		return (String)get_Value(COLUMNNAME_IsAutocomplete);
 	}
 
 	/** IsDisplayed AD_Reference_ID=319 */

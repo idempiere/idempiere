@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -28,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Business Partner Model
@@ -42,12 +44,12 @@ import org.compiere.util.Msg;
  *      <LI>BF [ 2041226 ] BP Open Balance should count only Completed Invoice
  *			<LI>BF [ 2498949 ] BP Get Not Invoiced Shipment Value return null
  */
-public class MBPartner extends X_C_BPartner
+public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5534148976588041343L;
+	private static final long serialVersionUID = 2256035503713773448L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -323,7 +325,43 @@ public class MBPartner extends X_C_BPartner
 		setC_BP_Group_ID(impBP.getC_BP_Group_ID());
 	}	//	MBPartner
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPartner(MBPartner copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPartner(Properties ctx, MBPartner copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPartner(Properties ctx, MBPartner copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_contacts = copy.m_contacts != null ? Arrays.stream(copy.m_contacts).map(e -> {return new MUser(ctx, e, trxName);}).toArray(MUser[]::new) : null;
+		this.m_locations = copy.m_locations != null ? Arrays.stream(copy.m_locations).map(e -> {return new MBPartnerLocation(ctx, e, trxName);}).toArray(MBPartnerLocation[]::new) : null;
+		this.m_accounts = copy.m_accounts != null ? Arrays.stream(copy.m_accounts).map(e -> {return new MBPBankAccount(ctx, e, trxName);}).toArray(MBPBankAccount[]::new) : null;
+		this.m_primaryC_BPartner_Location_ID = copy.m_primaryC_BPartner_Location_ID;
+		this.m_primaryAD_User_ID = copy.m_primaryAD_User_ID;
+		this.m_group = copy.m_group != null ? new MBPGroup(ctx, copy.m_group, trxName) : null;
+	}
+
 	/** Users							*/
 	protected MUser[]				m_contacts = null;
 	/** Addressed						*/
@@ -672,6 +710,7 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public void setTotalOpenBalance ()
 	{
+		log.info("");
 		BigDecimal SO_CreditUsed = null;
 		BigDecimal TotalOpenBalance = null;
 		//AZ Goodwill -> BF2041226 : only count completed/closed docs.
@@ -843,7 +882,7 @@ public class MBPartner extends X_C_BPartner
 			if (getC_BP_Group_ID() == 0)
 				m_group = MBPGroup.getDefault(getCtx());
 			else
-				m_group = MBPGroup.get(getCtx(), getC_BP_Group_ID(), get_TrxName());
+				m_group = MBPGroup.getCopy(getCtx(), getC_BP_Group_ID(), get_TrxName());
 		}
 		return m_group;
 	}	//	getBPGroup
@@ -992,6 +1031,15 @@ public class MBPartner extends X_C_BPartner
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public MBPartner markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MBPartner

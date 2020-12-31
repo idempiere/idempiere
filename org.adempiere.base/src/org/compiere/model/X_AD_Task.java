@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Task
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_Task extends PO implements I_AD_Task, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_Task (Properties ctx, int AD_Task_ID, String trxName)
@@ -42,8 +42,6 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 			setAD_Task_ID (0);
 			setEntityType (null);
 // @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
-			setIsServerProcess (false);
-// N
 			setName (null);
 			setOS_Command (null);
         } */
@@ -223,30 +221,6 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
-	}
-
-	/** Set Server Process.
-		@param IsServerProcess 
-		Run this Process on Server only
-	  */
-	public void setIsServerProcess (boolean IsServerProcess)
-	{
-		set_Value (COLUMNNAME_IsServerProcess, Boolean.valueOf(IsServerProcess));
-	}
-
-	/** Get Server Process.
-		@return Run this Process on Server only
-	  */
-	public boolean isServerProcess () 
-	{
-		Object oo = get_Value(COLUMNNAME_IsServerProcess);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** Set Name.

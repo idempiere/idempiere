@@ -263,6 +263,38 @@ public class MAsset extends X_A_Asset
 	}
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MAsset(MAsset copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAsset(Properties ctx, MAsset copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAsset(Properties ctx, MAsset copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_DateAcct = copy.m_DateAcct;
+	}
+
+	/**
 	 * Set Asset Group; also it sets other default fields
 	 * @param assetGroup
 	 */
@@ -278,7 +310,7 @@ public class MAsset extends X_A_Asset
 	}
 	
 	public MAssetGroup getAssetGroup() {
-		return MAssetGroup.get(getCtx(), getA_Asset_Group_ID());
+		return MAssetGroup.getCopy(getCtx(), getA_Asset_Group_ID(), get_TrxName());
 	}
 	
 	/**

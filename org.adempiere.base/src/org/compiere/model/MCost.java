@@ -464,7 +464,7 @@ public class MCost extends X_M_Cost
 		int M_ASI_ID, int AD_Org_ID, int C_Currency_ID)
 	{
 		BigDecimal retValue = null;
-		StringBuilder sql = new StringBuilder("SELECT currencyConvert(il.PriceActual, i.C_Currency_ID, ?, i.DateAcct, i.C_ConversionType_ID, il.AD_Client_ID, il.AD_Org_ID) ")
+		StringBuilder sql = new StringBuilder("SELECT currencyConvertInvoice(i.C_Invoice_ID, ?, il.PriceActual, i.DateAcct) ")
 			// ,il.PriceActual, il.QtyInvoiced, i.DateInvoiced, il.Line
 			.append("FROM C_InvoiceLine il ")
 			.append(" INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) ")
@@ -1639,7 +1639,7 @@ public class MCost extends X_M_Cost
 		int M_CostElement_ID = getM_CostElement_ID();
 		if (M_CostElement_ID == 0)
 			return null;
-		return MCostElement.get(getCtx(), M_CostElement_ID);
+		return MCostElement.getCopy(getCtx(), M_CostElement_ID, get_TrxName());
 	}	//	getCostElement
 
 	/**

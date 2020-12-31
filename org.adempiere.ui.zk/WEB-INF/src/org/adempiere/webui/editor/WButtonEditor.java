@@ -83,13 +83,43 @@ public class WButtonEditor extends WEditor implements IProcessButton
 
 	private IADTabpanel adTabpanel;
     
+	/**
+	 * 
+	 * @param gridField
+	 */
     public WButtonEditor(GridField gridField)
     {
         this(gridField, -1);
     }
 
+    /**
+     * 
+     * @param gridField
+     * @param rowIndex
+     */
     public WButtonEditor(GridField gridField, int rowIndex) {
-        super(new Button(), gridField, rowIndex);
+    	this(gridField, rowIndex, false, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WButtonEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+    	this(gridField, -1, tableEditor, editorConfiguration);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param rowIndex
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WButtonEditor(GridField gridField, int rowIndex, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+        super(new Button(), gridField, rowIndex, tableEditor, editorConfiguration);
         m_text = gridField.getHeader();
         AD_Process_ID = gridField.getAD_Process_ID();
         gridfield = gridField;

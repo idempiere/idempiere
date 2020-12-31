@@ -136,8 +136,11 @@ public class MOrder extends X_C_Order implements DocAction
 		//
 		if (!to.save(trxName))
 			throw new IllegalStateException("Could not create Order");
-		if (counter)
+		if (counter){
+			// save to other counter document can re-get refer document  
 			from.setRef_Order_ID(to.getC_Order_ID());
+			from.saveEx();
+		}
 
 		if (to.copyLinesFrom(from, counter, copyASI) == 0)
 			throw new IllegalStateException("Could not create Order Lines");
@@ -390,9 +393,10 @@ public class MOrder extends X_C_Order implements DocAction
 		String sql = "SELECT C_DocType_ID FROM C_DocType "
 			+ "WHERE AD_Client_ID=? AND AD_Org_ID IN (0," + getAD_Org_ID()
 			+ ") AND DocSubTypeSO=? "
+			+ " AND IsSOTrx=? "
 			+ " AND IsActive='Y' "
 			+ "ORDER BY AD_Org_ID DESC, IsDefault DESC";
-		int C_DocType_ID = DB.getSQLValue(null, sql, getAD_Client_ID(), DocSubTypeSO_x);
+		int C_DocType_ID = DB.getSQLValue(null, sql, getAD_Client_ID(), DocSubTypeSO_x, isSOTrx() ? "Y" : "N");
 		if (C_DocType_ID <= 0)
 			log.severe ("Not found for AD_Client_ID=" + getAD_Client_ID () + ", SubType=" + DocSubTypeSO_x);
 		else
@@ -1093,6 +1097,14 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
+		// IDEMPIERE-4318 Validation - Prepay Order must not allow Cash payment rule
+		MDocType dt = MDocType.get(getCtx(), getC_DocTypeTarget_ID());
+		if (   MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
+			&& PAYMENTRULE_Cash.equals(getPaymentRule())) {
+			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Invalid@ @PaymentRule@"));
+			return false;
+		}
+
 		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
 			recursiveCall = true;
 			try {
@@ -1538,7 +1550,9 @@ public class MOrder extends X_C_Order implements DocAction
 				else if (ol.getM_Product_ID() > 0)
 				{
 					MProduct product = new MProduct(getCtx(), ol.getM_Product_ID(), get_TrxName());
-					
+					if (product.isService())
+						continue;
+
 					BigDecimal weight = product.getWeight();
 					if (weight == null || weight.compareTo(BigDecimal.ZERO) == 0)
 					{
@@ -1924,6 +1938,12 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		boolean realTimePOS = MSysConfig.getBooleanValue(MSysConfig.REAL_TIME_POS, false , getAD_Client_ID());
 		
+		// Counter Documents
+		// move by IDEMPIERE-2216
+		MOrder counter = createCounterDoc();
+		if (counter != null)
+			info.append(" - @CounterDoc@: @Order@=").append(counter.getDocumentNo());
+		
 		//	Create SO Shipment - Force Shipment
 		MInOut shipment = null;
 		if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)		//	(W)illCall(I)nvoice
@@ -1968,10 +1988,6 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 
-		//	Counter Documents
-		MOrder counter = createCounterDoc();
-		if (counter != null)
-			info.append(" - @CounterDoc@: @Order@=").append(counter.getDocumentNo());
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
@@ -2175,6 +2191,10 @@ public class MOrder extends X_C_Order implements DocAction
 			MInOutLine ioLine = new MInOutLine(shipment);
 			//	Qty = Ordered - Delivered
 			BigDecimal MovementQty = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered()); 
+			if (MovementQty.signum() == 0 && getProcessedOn().signum() != 0) {
+				// do not create lines with qty = 0 when the order is reactivated and completed again
+				continue;
+			}
 			//	Location
 			int M_Locator_ID = MStorageOnHand.getM_Locator_ID (oLine.getM_Warehouse_ID(), 
 					oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), 
@@ -2375,7 +2395,6 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			MOrderLine counterLine = counterLines[i];
 			counterLine.setOrder(counter);	//	copies header values (BP, etc.)
-			counterLine.setPrice();
 			counterLine.setTax();
 			counterLine.saveEx(get_TrxName());
 		}
@@ -2599,6 +2618,13 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		setProcessed(true);
 		setDocAction(DOCACTION_None);
+
+		// IDEMPIERE-966 thanks to Hideaki Hagiwara
+		if (!calculateTaxTotal()) {
+			m_processMsg = Msg.getMsg(p_ctx,"Error calculating tax");
+			return false;
+		}
+
 		// After Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
@@ -2709,32 +2735,10 @@ public class MOrder extends X_C_Order implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;	
-				
-		
 		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		String DocSubTypeSO = dt.getDocSubTypeSO();
 		
-		//	Replace Prepay with POS to revert all doc
-		if (MDocType.DOCSUBTYPESO_PrepayOrder.equals (DocSubTypeSO))
-		{
-			MDocType newDT = null;
-			MDocType[] dts = MDocType.getOfClient (getCtx());
-			for (int i = 0; i < dts.length; i++)
-			{
-				MDocType type = dts[i];
-				if (MDocType.DOCSUBTYPESO_PrepayOrder.equals(type.getDocSubTypeSO()))
-				{
-					if (type.isDefault() || newDT == null)
-						newDT = type;
-				}
-			}
-			if (newDT == null)
-				return false;
-			else
-				setC_DocType_ID (newDT.getC_DocType_ID());
-		}
-
 		//	PO - just re-open
 		if (!isSOTrx()) {
 			if (log.isLoggable(Level.INFO)) log.info("Existing documents not modified - " + dt);

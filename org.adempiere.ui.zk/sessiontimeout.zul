@@ -15,11 +15,16 @@
 
 <div id="timeoutText"></div>
 <div style="margin-top: 10px">
-	<toolbarbutton id="continueText" href="/index.zul" label="Continue"/>
+	<button id="continueText" href="/index.zul" label="Continue"/>
 </div>
 </vbox>
-<script defer="true">
+<script>
 <![CDATA[
+	zk.load("adempiere.local.storage");
+]]>
+</script>
+<script defer="true">
+<![CDATA[		
 	var callback = function(ok, val) {
 		if (ok && !!val)
 		{

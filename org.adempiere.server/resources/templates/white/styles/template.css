@@ -72,22 +72,22 @@ div.body{
   justify-content: center;
 }
 #main-docuBtns ul {
-  margin: 0px auto;
+  margin: 60px auto;
   padding:28px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: center;
+  align-content: flex-end;
   align-items: flex-start;
   justify-content: flex-start;
-  height: 450px;
+  height: 400px;
   width: 700px;
 }
 #main-docuBtns ul li {
   display: inline-flex;
   flex-direction: column;
-  height:120px;
-  width:130px;
+  height:114px;
+  width:106px;
   padding: 9px 0;
   text-align:center;
   background-color: #fff;

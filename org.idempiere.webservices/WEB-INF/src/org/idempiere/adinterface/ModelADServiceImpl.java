@@ -65,6 +65,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -264,7 +265,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			try {
 				if (!((org.compiere.process.DocAction) po).processIt(docAction))
 					return rollbackAndSetError(trx, resp, ret, true,
-							"Couldn't set docAction: " + ((org.compiere.process.DocAction) po).getProcessMsg());
+							Msg.parseTranslation(ctx, "@FailedProcessingDocument@: " + ((org.compiere.process.DocAction) po).getProcessMsg()));
 			} catch (Exception e) {
 				return rollbackAndSetError(trx, resp, ret, true, e.toString());
 			}
@@ -820,7 +821,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, po, fields,trx,requestCtx, resp, ret);
 			if (retResp != null)
 				return retResp;
-			
+
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 	    	if (!po.save())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 	
@@ -1022,6 +1026,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			if (retResp != null)
 				return retResp;
 	
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 			if (!po.save())
 				return rollbackAndSetError(trx, resp, ret, true,
 						"Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
@@ -1088,7 +1095,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				AD_Reference_ID = ((MLookup)lookup).getDisplayType();
 			}
 			
-			if(AD_Reference_ID==DisplayType.List)
+			if(DisplayType.isList(AD_Reference_ID))
 			{
 				if (lookup.getSize() == 0)
 					lookup.refresh();
@@ -1281,19 +1288,22 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	if (po == null)
 	    		return rollbackAndSetError(trx, resp, ret, true, "No Record " + recordID + " in " + tableName);
 	    	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
-	
-	    	DataRow dr = modelCRUD.getDataRow();
-	    	
-	    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
-			if (retResp != null)
-				return retResp;
-	
+
 	    	if(po.get_ColumnIndex("Processed")>=0 && po.get_ValueAsBoolean("Processed")){
 	    		resp.setError("Record is processed and can not be updated");
 	    		resp.setIsError(true);
 	    		return ret;
 	    	}
+
+	    	DataRow dr = modelCRUD.getDataRow();
 	    	
+	    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
+			if (retResp != null)
+				return retResp;
+
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 	    	if (!po.save())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 	
@@ -1390,8 +1400,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 					if (po.get_Value(i) != null){						
 						if(po.get_Value(i) instanceof byte[]){
 							dfid.setVal(new String(Base64.encodeBase64((byte[]) po.get_Value(i))));
-						}else						
-						    dfid.setVal(po.get_Value(i).toString());
+						}
+						else if(po.get_Value(i) instanceof Boolean) {
+							dfid.setVal((Boolean)po.get_Value(i) ? "Y" : "N");
+						}
+						else {
+							dfid.setVal(po.get_Value(i).toString());
+						}
 					}else
 						dfid.setVal(null);
 				}

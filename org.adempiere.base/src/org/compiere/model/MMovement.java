@@ -54,7 +54,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3201199540429467933L;
+	private static final long serialVersionUID = 5415969431202357692L;
 
 	/**
 	 * 	Standard Constructor
@@ -330,7 +330,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		}
 
 		//	Confirmation
-		if (dt.isInTransit())
+		if (dt.isInTransit() && !isReversal())
 			createConfirmation();
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
@@ -400,19 +400,11 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
-		//	Outstanding (not processed) Incoming Confirmations ?
-		MMovementConfirm[] confirmations = getConfirmations(true);
-		for (int i = 0; i < confirmations.length; i++)
-		{
-			MMovementConfirm confirm = confirmations[i];
-			if (!confirm.isProcessed())
-			{
-				m_processMsg = "Open: @M_MovementConfirm_ID@ - " 
-					+ confirm.getDocumentNo();
-				return DocAction.STATUS_InProgress;
-			}
+		if (pendingConfirmations()) {
+			m_processMsg = "@Open@: @M_MovementConfirm_ID@";
+			return DocAction.STATUS_InProgress;
 		}
-		
+
 		//	Implicit Approval
 		if (!isApproved())
 			approveIt();
@@ -625,7 +617,21 @@ public class MMovement extends X_M_Movement implements DocAction
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
-	
+
+	/**
+	 * Outstanding (not processed) Incoming Confirmations ?
+	 * @return true if there are pending Confirmations
+	 */
+	public boolean pendingConfirmations() {
+		MMovementConfirm[] confirmations = getConfirmations(true);
+		for (int i = 0; i < confirmations.length; i++) {
+			MMovementConfirm confirm = confirmations[i];
+			if (!confirm.isProcessed())
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * 	Set the definite document number after completed
 	 */

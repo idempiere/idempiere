@@ -1,0 +1,218 @@
+.float-left {
+	float: left;
+}
+.float-right {
+	float: right;
+	margin-top: 5px;
+	padding-right: 10px;
+}
+.refresh {
+	background: none !important;
+	text-decoration: underline !important;
+	border: 0 !important;
+	color: blue !important;
+}
+.tabs * {
+	background: #ececec;
+	cursor: pointer;
+}
+.tabs .bd {
+	background: #c5c5c5;
+	zoom: 1;
+}
+.tabs .t1, .tabs .t2, .tabs .t3 {
+	background: #e4e4e4;
+	font-size: 0;
+	line-height: 0;
+	margin: 0 2px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+}
+.tabs .t2 {
+	margin: 0 1px;
+}
+.tabs .t3 {
+	background: white;
+	height: 1px;
+	margin: 0 1px;
+}
+.tabs .b1, .tabs .b2, .tabs .b3 {
+	background: #e4e4e4;
+	font-size: 0;
+	line-height: 0;
+	margin: 0 2px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+}
+.tabs .b2 {
+	margin: 0 1px;
+}
+.tabs .b3 {
+	background: white;
+	height: 1px;
+	margin: 0 1px;
+}
+.tabs .cm {
+	background: #c7c7c7;
+	margin: 0 1px;
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+}
+.tabs .text {
+	line-height: 1.2em;
+	position: relative;
+	vertical-align: middle;
+	text-align: center;
+	white-space: nowrap;
+	color: #000000;
+	padding: 2px 5px;
+}
+.tabs .text, .tabs .text * {
+	background: none;
+}
+.cnt {
+	position: relative;
+}
+.top {
+	border-bottom: 0.2em solid #dedede;
+	overflow: hidden;
+	height: 0.7em;
+	position: absolute;
+	right: 0px;
+	left: 0px;
+	top: 0px;
+}
+.ie6 .top {
+	width: 100%;
+}
+.calendar-toolbar .z-toolbar-body {
+	width: 100%;
+	padding-left: 2px;
+}
+.calendar-toolbar {
+	margin: -3px;
+	padding-top: 5px;
+}
+.calendar-toolbar .z-toolbarbutton img {
+	height: 16px;
+	width: 16px;
+}
+.gecko2 .calendar-toolbar {
+	margin: -3px;
+}
+.arrows .cnt {
+	background: #CCE5F4;
+	zoom: 1;
+}
+.arrow-left {
+	border-color: #CCE5F4 #7EAAC6 #CCE5F4 #CCE5F4;
+	border-style: solid;
+	border-width: 5px;
+	height: 0;
+	width: 0;
+	position: absolute;
+	left: 0px;
+	font-size: 0;
+	line-height: 0;
+}
+.arrow-right {
+	border-color: #CCE5F4 #CCE5F4 #CCE5F4 #7EAAC6;
+	border-style: solid;
+	border-width: 5px;
+	height: 0;
+	width: 0;
+	position: absolute;
+	font-size: 0;
+	line-height: 0;
+}
+.arrow-over .cnt {
+	background-color: #B9D0DE;
+}
+.arrow-over .arrow-left {
+	border-color: #B9D0DE white #B9D0DE #B9D0DE;
+}
+.arrow-over .arrow-right {
+	border-color: #B9D0DE #B9D0DE #B9D0DE white;
+}
+.blue *, .red *, .green *, .purple *, .khaki * {
+	color: white;
+	text-align: center;
+}
+.red {
+	background: #D96666!important;
+}
+.blue {
+	background: #668CD9!important;
+}
+.green {
+	background: #4CB052!important;
+}
+.khaki {
+	background: #BFBF4D!important;
+}
+.purple {
+	background: #B373B3!important;
+}
+.z-font-Calendar .text {
+	color: #333333;
+}
+.z-font-Calendar .cnt {
+	background: #ffffff;
+}
+.z-font-Calendar .bd {
+    background: #ffffff;
+}
+.z-font-Calendar .t1,.z-font-Calendar .t2,.z-font-Calendar .t3 {
+    background: #ffffff;
+}
+.z-font-Calendar .b1,.z-font-Calendar .b2,.z-font-Calendar .b3 {
+    background: #ffffff;
+}
+.z-cal-font-theme .z-calendars-inner {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-body {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-t1,
+.z-cal-font-theme .z-calendars-t2,
+.z-cal-font-theme .z-calendars-t3 {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-b1,
+.z-cal-font-theme .z-calendars-b2,
+.z-cal-font-theme .z-calendars-b3 {
+    background: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-month-header {
+    background-color: #e4e4e4;
+}
+.z-cal-font-theme .z-calendars-month-date {
+    background-color: #e9e9e9;
+}
+.z-cal-font-theme .z-calendars-month-date-off {
+    background-color: #c5c5c5;
+}
+.z-calendars-week-cnt .z-calendars-timezone {
+	background-color: #cfcfcf;
+	border-right: 1px solid #a2a2a2;
+	color: #000000;
+}
+.z-calendars-timezone {
+	color: #000000;
+}
+.z-calendars-week-cnt {
+	background-color: #ececec;
+}
+.z-calendars-daylong-body {
+	background-color: #ececec;
+	border-color: #808080 white white #747474;
+}
+.z-calendars-hour-of-day,
+.z-calendars-day-of-week-inner,
+.z-calendars-day-of-week-inner .z-calendars-week-today,
+.z-calendars-month-header .z-calendars-day-of-week {
+	color: #000000 !important;
+}

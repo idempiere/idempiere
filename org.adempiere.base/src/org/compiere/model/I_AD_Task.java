@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Task
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_AD_Task 
 {
@@ -177,19 +177,6 @@ public interface I_AD_Task
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name IsServerProcess */
-    public static final String COLUMNNAME_IsServerProcess = "IsServerProcess";
-
-	/** Set Server Process.
-	  * Run this Process on Server only
-	  */
-	public void setIsServerProcess (boolean IsServerProcess);
-
-	/** Get Server Process.
-	  * Run this Process on Server only
-	  */
-	public boolean isServerProcess();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

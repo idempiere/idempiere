@@ -105,6 +105,7 @@ public class TabCreateFields extends SvrProcess
 		sql += "ORDER  BY CASE "
 			+ "            WHEN c.ColumnName = 'AD_Client_ID' THEN -100 "
 			+ "            WHEN c.ColumnName = 'AD_Org_ID' THEN -90 "
+			+ "            WHEN c.IsParent = 'Y' THEN -85 "
 			+ "            WHEN c.ColumnName = 'Value' THEN -80 "
 			+ "            WHEN c.ColumnName = 'Name' THEN -70 "
 			+ "            WHEN c.ColumnName = 'Description' THEN -60 "

@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Asset Registration Attribute
@@ -33,12 +34,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MRegistrationAttribute.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MRegistrationAttribute extends X_A_RegistrationAttribute
+public class MRegistrationAttribute extends X_A_RegistrationAttribute implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5306354702182270968L;
+	private static final long serialVersionUID = -5410660542293211173L;
 
 	/**
 	 * 	Get All Asset Registration Attributes (not cached).
@@ -65,7 +66,7 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 			{
 				MRegistrationAttribute value = new MRegistrationAttribute(ctx, rs, null);
 				Integer key = Integer.valueOf(value.getA_RegistrationAttribute_ID());
-				s_cache.put(key, value);
+				s_cache.put(key, value, e -> new MRegistrationAttribute(Env.getCtx(), e));
 				list.add(value);
 			}
 		}
@@ -87,27 +88,69 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 
 	/**
 	 * 	Get Registration Attribute (cached)
+	 *	@param A_RegistrationAttribute_ID id
+	 *	@return Registration Attribute
+	 */
+	public static MRegistrationAttribute get (int A_RegistrationAttribute_ID)
+	{
+		return get(A_RegistrationAttribute_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Registration Attribute (cached) (immutable)
+	 *	@param A_RegistrationAttribute_ID id
+	 *  @param trxName
+	 *	@return Registration Attribute
+	 */
+	public static MRegistrationAttribute get (int A_RegistrationAttribute_ID, String trxName)
+	{
+		return get(Env.getCtx(), A_RegistrationAttribute_ID, trxName);
+	}
+	
+	/**
+	 * 	Get Registration Attribute (cached) (immutable)
 	 *	@param ctx context
 	 *	@param A_RegistrationAttribute_ID id
+	 *  @param trxName
 	 *	@return Registration Attribute
 	 */
 	public static MRegistrationAttribute get (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(A_RegistrationAttribute_ID);
-		MRegistrationAttribute retValue = (MRegistrationAttribute)s_cache.get(key);
+		MRegistrationAttribute retValue = s_cache.get(ctx, key, e -> new MRegistrationAttribute(ctx, e, trxName));
 		if (retValue == null)
 		{
 			retValue = new MRegistrationAttribute (ctx, A_RegistrationAttribute_ID, trxName);
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == A_RegistrationAttribute_ID)
+			{
+				s_cache.put(key, retValue, e -> new MRegistrationAttribute(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
-	}	//	getAll
+	}	//	get
 
+	/**
+	 * Get updateable copy of MRegistrationAttribute from cache
+	 * @param ctx
+	 * @param A_RegistrationAttribute_ID
+	 * @param trxName
+	 * @return MRegistrationAttribute
+	 */
+	public static MRegistrationAttribute getCopy(Properties ctx, int A_RegistrationAttribute_ID, String trxName)
+	{
+		MRegistrationAttribute ra = get(ctx, A_RegistrationAttribute_ID, trxName);
+		if (ra != null)
+			ra = new MRegistrationAttribute(ctx, ra, trxName);
+		return ra;
+	}
+	
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MRegistrationAttribute.class);
 	/**	Cache						*/
-	private static CCache<Integer,MRegistrationAttribute> s_cache 
-		= new CCache<Integer,MRegistrationAttribute>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MRegistrationAttribute> s_cache 
+		= new ImmutableIntPOCache<Integer,MRegistrationAttribute>(Table_Name, 20);
 
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -128,5 +171,45 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute
 	{
 		super(ctx, rs, trxName);
 	}	//	MRegistrationAttribute
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRegistrationAttribute(MRegistrationAttribute copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRegistrationAttribute(Properties ctx, MRegistrationAttribute copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRegistrationAttribute(Properties ctx, MRegistrationAttribute copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	@Override
+	public MRegistrationAttribute markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MRegistrationAttribute

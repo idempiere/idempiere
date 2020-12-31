@@ -13,7 +13,6 @@
 package org.zkoss.zul.impl;
 
 import org.zkoss.lang.Library;
-import org.zkoss.zul.impl.GridDataLoader;
 
 /**
  * @author hengsin

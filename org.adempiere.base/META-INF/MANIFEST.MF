@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 7.1.0.qualifier
+Bundle-Version: 8.2.0.qualifier
 Bundle-ClassPath: .,
  lib/bsh.jar,
  lib/commons-validator.jar,
@@ -36,8 +36,6 @@ Export-Package: bsh,
  org.compiere.dbPort,
  org.compiere.impexp,
  org.compiere.install,
- org.compiere.interfaces,
- org.compiere.interfaces.impl,
  org.compiere.model,
  org.compiere.print,
  org.compiere.print.layout,
@@ -50,9 +48,11 @@ Export-Package: bsh,
  org.compiere.wf,
  org.eevolution.model,
  org.idempiere.broadcast,
+ org.idempiere.cache,
  org.idempiere.distributed,
  org.idempiere.fa.service.api,
  org.idempiere.model
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: com.google.zxing,
  com.google.zxing.qrcode.decoder,

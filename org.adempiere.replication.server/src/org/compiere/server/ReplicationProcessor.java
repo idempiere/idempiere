@@ -38,7 +38,6 @@ import org.compiere.model.MOrgInfo;
 import org.compiere.model.X_IMP_Processor_Type;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
-import org.compiere.server.AdempiereServer;
 import org.compiere.model.MIMPProcessor;
 import org.compiere.model.MIMPProcessorLog;
 

@@ -31,6 +31,7 @@ import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Executions;
 
 /**
  * 
@@ -43,25 +44,32 @@ public class HTMLExtension implements IHTMLExtension {
 	private String componentId;
 	private String scriptURL;
 	private String styleURL;
+	private String contextPath;
 
 	public HTMLExtension(String contextPath, String classPrefix, String componentId) {
 
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
 
-		if (! theme.startsWith("/"))
+		if (! theme.startsWith("/") && !theme.startsWith("~./"))
 			theme = "/" + theme;
 		if (! theme.endsWith("/"))
 			theme = theme + "/";
 
 		this.classPrefix = classPrefix;
 		this.componentId = componentId;
-		this.scriptURL = contextPath + theme + "js/report.js";
-		this.styleURL = contextPath + theme + "css/report.css";
+		if (theme.startsWith("~./")) {
+			if (Executions.getCurrent() != null) {
+				this.styleURL = Executions.encodeURL(theme + "css/report.css");
+			}
+		} else {
+			this.styleURL = contextPath + theme + "css/report.css";
+		}
+		this.contextPath = contextPath;
 	}
 	
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
 			PrintDataElement dataElement) {
-		href.addAttribute("onclick", "showColumnMenu(event, '" + dataElement.getColumnName() + "', " + row + ")");		
+		href.addAttribute("onclick", "parent.idempiere.showColumnMenu(document, event, '" + dataElement.getColumnName() + "', " + row + ")");		
 		href.addAttribute ("componentId", componentId);
 		href.addAttribute ("foreignColumnName", dataElement.getForeignColumnName());
 		href.addAttribute ("value", dataElement.getValueAsString());
@@ -71,7 +79,7 @@ public class HTMLExtension implements IHTMLExtension {
 		PrintDataElement pkey = printData.getPKey();
 		if (pkey != null)
 		{
-			row.addAttribute("ondblclick", "parent.drillAcross('" 
+			row.addAttribute("ondblclick", "parent.idempiere.drillAcross('" 
 					+ componentId + "', '" 
 					+ pkey.getColumnName() + "', '" 
 					+ pkey.getValueAsString() + "')");
@@ -92,8 +100,32 @@ public class HTMLExtension implements IHTMLExtension {
 
 	public void setWebAttribute (body reportBody){
 		// set attribute value for create menu context
-		reportBody.addAttribute("windowIco", "/webui" + ThemeManager.getThemeResource("images/mWindow.png"));
-		reportBody.addAttribute("reportIco", "/webui" + ThemeManager.getThemeResource("images/mReport.png"));
+		StringBuilder windowImageURL = new StringBuilder();
+		String windowIco = ThemeManager.getThemeResource("images/mWindow.png");
+		if (windowIco.startsWith("~./")) {
+			if (Executions.getCurrent() != null) {
+				windowImageURL.append(Executions.encodeURL(windowIco));
+			}
+		} else {
+			windowImageURL.append(contextPath);
+			if (!windowIco.startsWith("/") && !contextPath.endsWith("/"))
+				windowImageURL.append("/");
+			windowImageURL.append(windowIco);
+		}
+		StringBuilder reportImageURL = new StringBuilder();
+		String reportIco = ThemeManager.getThemeResource("images/mReport.png");
+		if (reportIco.startsWith("~./")) {
+			if (Executions.getCurrent() != null) {
+				reportImageURL.append(Executions.encodeURL(reportIco));
+			}
+		} else {
+			reportImageURL.append(contextPath);
+			if (!reportIco.startsWith("/") && !contextPath.endsWith("/"))
+				reportImageURL.append("/");
+			reportImageURL.append(reportIco);
+		}		
+		reportBody.addAttribute("windowIco",windowImageURL.toString());
+		reportBody.addAttribute("reportIco", reportImageURL.toString());
 		reportBody.addAttribute ("reportLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Report").replace("&", ""));
 		reportBody.addAttribute ("windowLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Window"));
 		

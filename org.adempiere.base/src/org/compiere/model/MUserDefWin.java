@@ -16,11 +16,14 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	User overrides for window model
@@ -28,14 +31,13 @@ import org.compiere.util.Env;
  *  @version $Id$
  *  
  */
-public class MUserDefWin extends X_AD_UserDef_Win
+public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5775251886672840324L;
-
-	private volatile static List<MUserDefWin> m_fullList = null;
+	private static final long serialVersionUID = -7542708120229671875L;
+	private static final Map<Integer, List<MUserDefWin>> m_fullMap = new HashMap<Integer, List<MUserDefWin>>();
 
 	/**
 	 * 	Standard constructor.
@@ -65,6 +67,37 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	}	//	MUserDefWin
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefWin(MUserDefWin copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefWin(Properties ctx, MUserDefWin copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefWin(Properties ctx, MUserDefWin copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 *  Get all MUserDefWin entries related to window
 	 * 	@param ctx context
 	 *  @param window_ID window
@@ -72,17 +105,25 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	 */
 	private static MUserDefWin[] getAll (Properties ctx, int window_ID )
 	{
-		if (m_fullList == null) {
-			m_fullList = new Query(ctx, MUserDefWin.Table_Name, "IsActive='Y'", null).list();
+		List<MUserDefWin> fullList = null;
+		synchronized (m_fullMap) {
+			fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
+			if (fullList == null) {
+				fullList = new Query(ctx, MUserDefWin.Table_Name, null, null)
+						.setOnlyActiveRecords(true)
+						.setClient_ID()
+						.list();
+				m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
+			}
 		}
 		
-		if (m_fullList.size() == 0) {
+		if (fullList.size() == 0) {
 			return null;
 		}
 
 		List<MUserDefWin> list = new ArrayList<MUserDefWin>();
 		
-		for (MUserDefWin udw : m_fullList) {
+		for (MUserDefWin udw : fullList) {
 			if (udw.getAD_Window_ID() == window_ID
 				&& udw.getAD_Client_ID() == Env.getAD_Client_ID(ctx)
 				&& (udw.getAD_Language() == null || udw.getAD_Language().equals(Env.getAD_Language(ctx)))
@@ -123,7 +164,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 				.append(AD_User_ID)
 				.toString();
 		if (s_cache.containsKey(key))
-			return s_cache.get(key);
+			return s_cache.get(ctx, key, e -> new MUserDefWin(ctx, e));
 
 		// candidates
 		MUserDefWin[] candidates = getAll(ctx, window_ID);
@@ -186,7 +227,7 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	    if (weight[maxindex] > -1) {
 			MUserDefWin retValue = null;
 	    	retValue=candidates[maxindex];
-	    	s_cache.put(key, retValue);
+	    	s_cache.put(key, retValue, e -> new MUserDefWin(Env.getCtx(), e));
 	    	return retValue;
 	    } else {
 	    	s_cache.put(key, null);
@@ -195,18 +236,32 @@ public class MUserDefWin extends X_AD_UserDef_Win
 	}
 	
 	/**	Cache of selected MUserDefWin entries 					**/
-	private static CCache<String,MUserDefWin> s_cache = new CCache<String,MUserDefWin>(Table_Name, 3);	//  3 weights
+	private static ImmutablePOCache<String,MUserDefWin> s_cache = new ImmutablePOCache<String,MUserDefWin>(Table_Name, 3);	//  3 weights
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		m_fullList = null;
+		synchronized (m_fullMap) {
+			m_fullMap.remove(getAD_Client_ID());
+		}
 		return true;
 	}
 	
 	@Override
 	protected boolean beforeDelete() {
-		m_fullList = null;
+		synchronized (m_fullMap) {
+			m_fullMap.remove(getAD_Client_ID());
+		}
 		return true;
 	}
-	
+
+	@Override
+	public MUserDefWin markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
+
 }	//	MUserDefWin

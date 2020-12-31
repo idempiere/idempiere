@@ -24,8 +24,10 @@ import java.util.logging.Level;
 
 import org.compiere.sla.SLACriteria;
 import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Service Level Agreement Criteria Model
@@ -33,14 +35,34 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: MSLACriteria.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MSLACriteria extends X_PA_SLA_Criteria
+public class MSLACriteria extends X_PA_SLA_Criteria implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3295590987540402184L;
+	private static final long serialVersionUID = 6772238818871223076L;
 
-
+	/**
+	 * 	Get MSLACriteria from Cache
+	 *	@param PA_SLA_Criteria_ID id
+	 *	@return MSLACriteria
+	 */
+	public static MSLACriteria get (int PA_SLA_Criteria_ID)
+	{
+		return get(PA_SLA_Criteria_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MSLACriteria from Cache
+	 *	@param PA_SLA_Criteria_ID id
+	 *	@param trxName transaction
+	 *	@return MSLACriteria
+	 */
+	public static MSLACriteria get (int PA_SLA_Criteria_ID, String trxName)
+	{
+		return get(Env.getCtx(), PA_SLA_Criteria_ID, trxName);
+	}
+	
 	/**
 	 * 	Get MSLACriteria from Cache
 	 *	@param ctx context
@@ -51,17 +73,20 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 	public static MSLACriteria get (Properties ctx, int PA_SLA_Criteria_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(PA_SLA_Criteria_ID);
-		MSLACriteria retValue = (MSLACriteria) s_cache.get (key);
+		MSLACriteria retValue = s_cache.get (ctx, key, e -> new MSLACriteria(ctx, e));
 		if (retValue != null)
 			return retValue;
 		retValue = new MSLACriteria (ctx, PA_SLA_Criteria_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == PA_SLA_Criteria_ID)
+		{
+			s_cache.put (key, retValue, e -> new MSLACriteria(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MSLACriteria>	s_cache	= new CCache<Integer,MSLACriteria>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MSLACriteria>	s_cache	= new ImmutableIntPOCache<Integer,MSLACriteria>(Table_Name, 20);
 	
 	
 	/**
@@ -86,6 +111,37 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 		super(ctx, rs, trxName);
 	}	//	MSLACriteria
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSLACriteria(MSLACriteria copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSLACriteria(Properties ctx, MSLACriteria copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSLACriteria(Properties ctx, MSLACriteria copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Get Goals of Criteria
 	 *	@return array of Goals
@@ -143,4 +199,13 @@ public class MSLACriteria extends X_PA_SLA_Criteria
 		}
 	}	//	newInstance
 	
+	@Override
+	public MSLACriteria markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MSLACriteria

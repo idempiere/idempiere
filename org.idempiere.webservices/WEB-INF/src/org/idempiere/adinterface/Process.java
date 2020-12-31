@@ -543,7 +543,7 @@ public class Process {
 			Object value = valueString;
 			if (valueString != null && valueString.length() == 0)
 				value = null;
-			if (value != null && (DisplayType.List == displayType ||
+			if (value != null && (DisplayType.isList(displayType) ||
 					DisplayType.TableDir== displayType ||
 					DisplayType.Table== displayType)&& value.equals("-1"))
 				value= null;

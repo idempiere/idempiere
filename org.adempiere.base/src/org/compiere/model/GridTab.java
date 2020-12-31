@@ -112,7 +112,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8153324039370820860L;
+	private static final long serialVersionUID = 8443012394354164942L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -229,6 +229,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_FindSQL = "_TabInfo_FindSQL";
 	public static final String CTX_SQL = "_TabInfo_SQL";
 	public static final String CTX_IsSortTab = "_TabInfo_IsSortTab";
+	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
+	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
 	//private HashMap<Integer,Integer>	m_PostIts = null;
 
@@ -1514,6 +1516,24 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	isHighVolume
 
 	/**
+	 * Is Lookup Only By Selection Fields?
+	 * 
+	 * @return true if only selection
+	 */
+	public boolean IsLookupOnlySelection() {
+		return m_vo.IsLookupOnlySelection;
+	} // IsLookupOnlySelection
+
+	/**
+	 * Is Allow Advanced Lookup panel?
+	 * 
+	 * @return true if allow the use
+	 */
+	public boolean IsAllowAdvancedLookup() {
+		return m_vo.IsAllowAdvancedLookup;
+	} // IsAllowAdvancedLookup
+	
+	/**
 	 *	Is Read Only?
 	 *  @return true if read only
 	 */
@@ -2382,7 +2402,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		e.CreatedBy = (Integer)getValue("CreatedBy");
 		e.Updated = (Timestamp)getValue("Updated");
 		e.UpdatedBy = (Integer)getValue("UpdatedBy");
-		e.Record_ID = getValue(m_keyColumnName);
+		if (   e.AD_Table_ID == I_AD_OrgInfo.Table_ID
+			|| e.AD_Table_ID == I_AD_ClientInfo.Table_ID
+			|| e.AD_Table_ID == I_AD_Ref_Table.Table_ID
+			|| e.AD_Table_ID == I_C_AcctSchema_Default.Table_ID
+			|| e.AD_Table_ID == I_C_AcctSchema_GL.Table_ID) {
+			e.Record_ID = getValue(m_parents.get(0));
+		} else {
+			e.Record_ID = getValue(m_keyColumnName);
+		}
 		//  Info
 		StringBuilder info = new StringBuilder(getTableName());
 		

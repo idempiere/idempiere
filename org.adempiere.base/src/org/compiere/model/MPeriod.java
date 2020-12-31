@@ -22,19 +22,20 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.PeriodClosedException;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Calendar Period Model
@@ -50,15 +51,25 @@ import org.compiere.util.Util;
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
  *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
  */
-public class MPeriod extends X_C_Period
+public class MPeriod extends X_C_Period implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 769103495098446073L;
+	private static final long serialVersionUID = -4813116760490243399L;
 
 	/**
-	 * Get Period from Cache
+	 * Get Period from Cache (immutable)
+	 * @param C_Period_ID id
+	 * @return MPeriod
+	 */
+	public static MPeriod get (int C_Period_ID)
+	{
+		return get(Env.getCtx(), C_Period_ID);
+	}
+	
+	/**
+	 * Get Period from Cache (immutable)
 	 * @param ctx context
 	 * @param C_Period_ID id
 	 * @return MPeriod
@@ -69,14 +80,17 @@ public class MPeriod extends X_C_Period
 			return null;
 		//
 		Integer key = Integer.valueOf(C_Period_ID);
-		MPeriod retValue = (MPeriod) s_cache.get (key);
+		MPeriod retValue = s_cache.get (ctx, key, e -> new MPeriod(ctx, e));
 		if (retValue != null)
 			return retValue;
 		//
 		retValue = new MPeriod (ctx, C_Period_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == C_Period_ID)
+		{
+			s_cache.put (key, retValue, e -> new MPeriod(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} 	//	get
 
 	/**
@@ -116,6 +130,21 @@ public class MPeriod extends X_C_Period
 	}
 
 	/**
+	 * Get updateable copy of MPeriod from cache
+	 * @param ctx
+	 * @param C_Period_ID
+	 * @param trxName
+	 * @return MPeriod
+	 */
+	public static MPeriod getCopy(Properties ctx, int C_Period_ID, String trxName)
+	{
+		MPeriod period = get(C_Period_ID);
+		if (period != null)
+			period = new MPeriod(ctx, period, trxName);
+		return period;
+	}
+
+	/**
 	 * 
 	 * @param ctx
 	 * @param DateAcct
@@ -139,10 +168,9 @@ public class MPeriod extends X_C_Period
 		
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		//	Search in Cache first
-		Iterator<MPeriod> it = s_cache.values().iterator();
-		while (it.hasNext())
+		MPeriod[] it = s_cache.values().toArray(new MPeriod[0]);
+		for (MPeriod period : it)
 		{
-			MPeriod period = (MPeriod)it.next();
 			if (period.getC_Calendar_ID() == C_Calendar_ID && period.isStandardPeriod() && period.isInPeriod(DateAcct) 
 					&& period.getAD_Client_ID() == AD_Client_ID)  // globalqss - CarlosRuiz - Fix [ 1820810 ] Wrong Period Assigned to Fact_Acct
 				return period;
@@ -447,7 +475,7 @@ public class MPeriod extends X_C_Period
 	}	//	getFirstInYear
 
 	/**	Cache							*/
-	private static CCache<Integer,MPeriod> s_cache = new CCache<Integer,MPeriod>(Table_Name, 10);
+	private static ImmutableIntPOCache<Integer,MPeriod> s_cache = new ImmutableIntPOCache<Integer,MPeriod>(Table_Name, 10);
 	
 	/**	Logger							*/
 	private static CLogger			s_log = CLogger.getCLogger (MPeriod.class); 
@@ -507,7 +535,39 @@ public class MPeriod extends X_C_Period
 		setEndDate(endDate);
 	}	//	MPeriod
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPeriod(MPeriod copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPeriod(Properties ctx, MPeriod copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPeriod(Properties ctx, MPeriod copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_C_Calendar_ID = copy.m_C_Calendar_ID;
+		this.m_controls = copy.m_controls != null ? Arrays.stream(copy.m_controls).map(e -> {return new MPeriodControl(ctx, e, trxName);}).toArray(MPeriodControl[]::new) : null;
+	}
+
 	/**	Period Controls			*/
 	private MPeriodControl[] m_controls = null;
 		
@@ -544,6 +604,8 @@ public class MPeriod extends X_C_Period
 			rs = null; pstmt = null;
 		}
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_controls = new MPeriodControl[list.size ()];
 		list.toArray (m_controls);
 		return m_controls;
@@ -643,10 +705,14 @@ public class MPeriod extends X_C_Period
 				return false;
 			}
 			//	We are OK
-			if (isInPeriod(today))
+			if (isInPeriod(today) && as.getC_Period_ID() != getC_Period_ID())
 			{
-				as.setC_Period_ID(getC_Period_ID());
-				as.saveEx();
+				as = new MAcctSchema(Env.getCtx(), as.getC_AcctSchema_ID(), null);
+				if (as.getC_Period_ID() != getC_Period_ID())
+				{
+					as.setC_Period_ID(getC_Period_ID());
+					as.saveEx();
+				}
 			}
 			return true;
 		}
@@ -885,4 +951,16 @@ public class MPeriod extends X_C_Period
       return C_Calendar_ID;
     }   //  getC_Calendar_ID
     
+    @Override
+	public MPeriod markImmutable() 
+    {
+    	if (is_Immutable())
+    		return this;
+    	
+		makeImmutable();
+		if (m_controls != null && m_controls.length > 0)
+			Arrays.stream(m_controls).forEach(e -> e.markImmutable());
+		return this;
+	}
+
 }	//	MPeriod

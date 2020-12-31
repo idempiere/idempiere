@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -38,10 +39,11 @@ import org.compiere.util.Evaluatee;
  */
 public class GridTabVO implements Evaluatee, Serializable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9091214632840854495L;
+	private static final long serialVersionUID = 2088372161131336289L;
 
 	/**************************************************************************
 	 *	Create MTab VO
@@ -150,6 +152,8 @@ public class GridTabVO implements Evaluatee, Serializable
 			
 			//	DisplayLogic
 			vo.DisplayLogic = rs.getString("DisplayLogic");
+			if (userDef != null && userDef.getDisplayLogic() != null)
+				vo.DisplayLogic = userDef.getDisplayLogic();
 			
 			//	Access Level
 			vo.AccessLevel = rs.getString("AccessLevel");
@@ -174,11 +178,11 @@ public class GridTabVO implements Evaluatee, Serializable
 			
 			if (rs.getString("IsReadOnly").equals("Y"))
 				vo.IsReadOnly = true;
-			if (userDef != null && userDef.get_ValueAsString("ReadOnlyLogic") != null)
-				vo.IsReadOnly = userDef.isReadOnly();
+			if (userDef != null && userDef.getIsReadOnly() != null)
+				vo.IsReadOnly = MUserDefTab.ISREADONLY_Yes.equals(userDef.getIsReadOnly());
 			vo.ReadOnlyLogic = rs.getString("ReadOnlyLogic");
-			if (userDef != null)
-				vo.ReadOnlyLogic = userDef.get_ValueAsString("ReadOnlyLogic");
+			if (userDef != null && userDef.getReadOnlyLogic() != null)
+				vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
 			
 			if (rs.getString("IsInsertRecord").equals("N"))
 				vo.IsInsertRecord = false;
@@ -198,8 +202,8 @@ public class GridTabVO implements Evaluatee, Serializable
 
 			if (rs.getString("IsSingleRow").equals("Y"))
 				vo.IsSingleRow = true;
-			if (userDef != null)
-				vo.IsSingleRow = userDef.isSingleRow();
+			if (userDef != null && userDef.getIsSingleRow() != null)
+				vo.IsSingleRow = MUserDefTab.ISSINGLEROW_Yes.equals(userDef.getIsSingleRow());
 
 			if (rs.getString("HasTree").equals("Y"))
 				vo.HasTree = true;
@@ -222,6 +226,18 @@ public class GridTabVO implements Evaluatee, Serializable
 			if (rs.getString("IsHighVolume").equals("Y"))
 				vo.IsHighVolume = true;
 
+			// Lookup Only Selection Fields
+			if (rs.getString("IsLookupOnlySelection").equals("Y"))
+				vo.IsLookupOnlySelection = true;
+			if (userDef != null && userDef.getIsLookupOnlySelection() != null)
+				vo.IsLookupOnlySelection =  "Y".equals(userDef.getIsLookupOnlySelection());
+			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsLookupOnlySelection, vo.IsLookupOnlySelection);
+			// Allow Advanced Lookup
+			if (rs.getString("IsAllowAdvancedLookup").equals("Y"))
+				vo.IsAllowAdvancedLookup = true;
+			if (userDef != null && userDef.getIsAllowAdvancedLookup() != null)
+				vo.IsAllowAdvancedLookup =  "Y".equals(userDef.getIsAllowAdvancedLookup());
+			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsAllowAdvancedLookup, vo.IsAllowAdvancedLookup);			
 			vo.CommitWarning = rs.getString("CommitWarning");
 			if (vo.CommitWarning == null)
 				vo.CommitWarning = "";
@@ -235,14 +251,25 @@ public class GridTabVO implements Evaluatee, Serializable
 			if (vo.WhereClause.trim().length() > 0) {
 				vo.WhereClause = "("+vo.WhereClause+")";
 			}
-
+			//	Make sure the tab where is not replaced
+			if (userDef != null && userDef.getWhereClause() != null && !userDef.getWhereClause().trim().isEmpty())
+			{
+				if (vo.WhereClause.trim().length() > 0)
+					vo.WhereClause += " AND ";
+				vo.WhereClause += " (" + userDef.getWhereClause() + ")";
+			}
+			
 			vo.OrderByClause = rs.getString("OrderByClause");
 			if (vo.OrderByClause == null)
 				vo.OrderByClause = "";
+			if (userDef != null && userDef.getOrderByClause() != null && !userDef.getOrderByClause().trim().isEmpty())
+				vo.OrderByClause = userDef.getOrderByClause();
 
 			vo.AD_Process_ID = rs.getInt("AD_Process_ID");
 			if (rs.wasNull())
 				vo.AD_Process_ID = 0;
+			if (userDef != null && userDef.getAD_Process_ID() > 0)
+				vo.AD_Process_ID = userDef.getAD_Process_ID();
 			vo.AD_Image_ID = rs.getInt("AD_Image_ID");
 			if (rs.wasNull())
 				vo.AD_Image_ID = 0;
@@ -283,7 +310,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		return true;
 	}	//	loadTabDetails
 
-
+	private static final CCache<String, ArrayList<GridFieldVO>> s_gridFieldCache = new CCache<String, ArrayList<GridFieldVO>>(MField.Table_Name, "GridFieldVO Cache", 100, 60, false, 1000);
+	
 	/**************************************************************************
 	 *  Create Tab Fields
 	 *  @param mTabVO tab value object
@@ -293,36 +321,55 @@ public class GridTabVO implements Evaluatee, Serializable
 	{
 		//local only or remote fail for vpn profile
 		mTabVO.Fields = new ArrayList<GridFieldVO>();
-
+		
 		String sql = GridFieldVO.getSQL(mTabVO.ctx);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		String cacheKey = sql + "|" + mTabVO.AD_Tab_ID;
+		ArrayList<GridFieldVO> cache = s_gridFieldCache.get(cacheKey);
+		if (cache != null)
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, mTabVO.AD_Tab_ID);
-			rs = pstmt.executeQuery();
-			while (rs.next())
+			for(GridFieldVO gvo : cache)
 			{
-				GridFieldVO voF = GridFieldVO.create (mTabVO.ctx, 
-					mTabVO.WindowNo, mTabVO.TabNo, 
-					mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, 
-					mTabVO.IsReadOnly, rs);
-				if (voF != null)
-					mTabVO.Fields.add(voF);
+				GridFieldVO clone = gvo.clone(mTabVO.ctx, mTabVO.WindowNo, mTabVO.TabNo, mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, mTabVO.IsReadOnly);
+				mTabVO.Fields.add(clone.afterCreate());
 			}
 		}
-		catch (Exception e)
-		{
-			CLogger.get().log(Level.SEVERE, "", e);
-			return false;
+		else
+		{			
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				cache = new ArrayList<GridFieldVO>();
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, mTabVO.AD_Tab_ID);
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					GridFieldVO voF = GridFieldVO.createFromResultSet(mTabVO.ctx, 
+						mTabVO.WindowNo, mTabVO.TabNo, 
+						mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, 
+						mTabVO.IsReadOnly, rs);
+					if (voF != null)
+					{
+						cache.add(voF.clone(Env.getCtx(), mTabVO.WindowNo, mTabVO.TabNo, mTabVO.AD_Window_ID, mTabVO.AD_Tab_ID, mTabVO.IsReadOnly));
+						mTabVO.Fields.add(voF.afterCreate());
+					}					
+				}
+				if (!cache.isEmpty())
+					s_gridFieldCache.put(cacheKey, cache);
+			}
+			catch (Exception e)
+			{
+				CLogger.get().log(Level.SEVERE, "", e);
+				return false;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
 		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}		
 		
 		Collections.sort(mTabVO.Fields, new GridFieldVO.SeqNoComparator());
 		mTabVO.initFields = true;
@@ -460,6 +507,10 @@ public class GridTabVO implements Evaluatee, Serializable
 	public  boolean	    IsDeleteable = false;
 	/** Table High Volume	*/
 	public  boolean     IsHighVolume = false;
+	/** Allow use of advanced Lookup panel **/
+	public boolean IsAllowAdvancedLookup = false;
+	/** Only allow Lookup using selection defined fields **/
+	public boolean IsLookupOnlySelection = false;
 	/** Process			*/
 	public	int		    AD_Process_ID = 0;
 	/** Process UUID		*/
@@ -567,6 +618,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.IsSecurityEnabled = IsSecurityEnabled;
 		clone.IsDeleteable = IsDeleteable;
 		clone.IsHighVolume = IsHighVolume;
+		clone.IsLookupOnlySelection = IsLookupOnlySelection;
+		clone.IsAllowAdvancedLookup = IsAllowAdvancedLookup;
 		clone.AD_Process_ID = AD_Process_ID;
 		clone.CommitWarning = CommitWarning;
 		clone.WhereClause = WhereClause;
@@ -579,6 +632,8 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.ReplicationType = ReplicationType;
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AccessLevel, clone.AccessLevel);
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AD_Table_ID, String.valueOf(clone.AD_Table_ID));
+		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsLookupOnlySelection, clone.IsLookupOnlySelection);
+		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsAllowAdvancedLookup, clone.IsAllowAdvancedLookup);
 
 		//
 		clone.IsSortTab = IsSortTab;

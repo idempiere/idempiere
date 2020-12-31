@@ -16,8 +16,8 @@ import org.netbeans.api.visual.graph.layout.UniversalGraph;
  */
 public class WFGraphLayout extends GraphLayout<Integer, MWFNodeNext> {
 
-	public final static int COLUMN_WIDTH = 250;
-	public final static int ROW_HEIGHT = 150;
+	public final static int COLUMN_WIDTH = 184;
+	public final static int ROW_HEIGHT = 133;
 
 	@Override
 	protected void performGraphLayout(UniversalGraph<Integer, MWFNodeNext> graph) {

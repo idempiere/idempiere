@@ -37,9 +37,9 @@
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
         <setEntry value="com.sun.mail.smtp@default:default"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.mail.api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
-        <setEntry value="javax.annotation-api@default:default"/>
         <setEntry value="javax.jms@default:default"/>
         <setEntry value="net.sf.supercsv.super-csv@default:default"/>
         <setEntry value="org.apache.activemq.activemq-core@default:default"/>
@@ -51,6 +51,8 @@
         <setEntry value="org.apache.commons.compress@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.commons.net@default:default"/>
+        <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
+        <setEntry value="org.apache.felix.gogo.shell@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
         <setEntry value="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec@default:default"/>
         <setEntry value="org.apache.poi.poi-ooxml-schemas@default:default"/>
@@ -66,11 +68,13 @@
         <setEntry value="org.eclipse.core.variables@default:default"/>
         <setEntry value="org.eclipse.equinox.app@default:default"/>
         <setEntry value="org.eclipse.equinox.common@2:true"/>
+        <setEntry value="org.eclipse.equinox.console@default:default"/>
         <setEntry value="org.eclipse.equinox.ds@1:true"/>
         <setEntry value="org.eclipse.equinox.event@default:default"/>
         <setEntry value="org.eclipse.equinox.preferences@default:default"/>
         <setEntry value="org.eclipse.equinox.registry@default:default"/>
         <setEntry value="org.eclipse.jetty.osgi-servlet-api@default:default"/>
+        <setEntry value="org.eclipse.jetty.util@default:default"/>
         <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
         <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>

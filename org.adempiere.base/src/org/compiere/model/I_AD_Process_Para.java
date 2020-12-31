@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_Para
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_AD_Process_Para 
 {
@@ -293,6 +293,19 @@ public interface I_AD_Process_Para
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAutocomplete */
+    public static final String COLUMNNAME_IsAutocomplete = "IsAutocomplete";
+
+	/** Set Autocomplete.
+	  * Automatic completion for textfields
+	  */
+	public void setIsAutocomplete (boolean IsAutocomplete);
+
+	/** Get Autocomplete.
+	  * Automatic completion for textfields
+	  */
+	public boolean isAutocomplete();
 
     /** Column name IsCentrallyMaintained */
     public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";

@@ -182,7 +182,7 @@ public class MOrderTax extends X_C_OrderTax
 	}	//	setPrecision
 
 	/**
-	 * 	Get Tax
+	 * 	Get Tax (immutable)
 	 *	@return tax
 	 */
 	protected MTax getTax()
@@ -266,5 +266,5 @@ public class MOrderTax extends X_C_OrderTax
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
 }	//	MOrderTax

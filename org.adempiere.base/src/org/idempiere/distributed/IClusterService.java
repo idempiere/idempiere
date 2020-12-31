@@ -38,4 +38,12 @@ public interface IClusterService {
 	 * @return Map of IClusterMember and Future
 	 */
 	public <V> Map<IClusterMember, Future<V>> execute(Callable<V> task, Collection<IClusterMember> members);
+	
+	/**
+	 * 
+	 * @return true if instance is stand alone
+	 */
+	public default boolean isStandAlone() {
+		return false;
+	}
 }

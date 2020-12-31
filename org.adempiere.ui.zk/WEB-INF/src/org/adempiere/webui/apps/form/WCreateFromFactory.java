@@ -13,25 +13,24 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
-import java.util.List;
-
-import org.adempiere.base.Service;
+import org.adempiere.webui.Extensions;
 import org.compiere.grid.ICreateFrom;
-import org.compiere.grid.ICreateFromFactory;
 import org.compiere.model.GridTab;
 
+/**
+ * 
+ * @author hengsin
+ *
+ */
 public class WCreateFromFactory
 {
+	/**
+	 * 
+	 * @param mTab
+	 * @return ICreateFrom instance
+	 */
 	public static ICreateFrom create (GridTab mTab)
 	{
-		ICreateFrom createFrom = null;
-		List<ICreateFromFactory> factories = Service.locator().list(ICreateFromFactory.class).getServices();
-		for (ICreateFromFactory factory : factories) 
-		{
-			createFrom = factory.create(mTab);
-			if (createFrom != null)
-				break;
-		}
-		return createFrom;
+		return Extensions.getCreateFrom(mTab);
 	}
 }

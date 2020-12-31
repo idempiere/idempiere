@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Change
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_A_Asset_Change 
 {
@@ -145,17 +145,6 @@ public interface I_A_Asset_Change
 	/** Get Revaluation Date	  */
 	public Timestamp getA_Asset_RevalDate();
 
-    /** Column name A_Asset_Spread_Type */
-    public static final String COLUMNNAME_A_Asset_Spread_Type = "A_Asset_Spread_Type";
-
-	/** Set Spread Type	  */
-	public void setA_Asset_Spread_Type (int A_Asset_Spread_Type);
-
-	/** Get Spread Type	  */
-	public int getA_Asset_Spread_Type();
-
-	public org.compiere.model.I_A_Asset_Spread getA_Asset_Spread_T() throws RuntimeException;
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -174,17 +163,6 @@ public interface I_A_Asset_Change
 	public int getA_Depreciation_Acct();
 
 	public I_C_ValidCombination getA_Depreciation_A() throws RuntimeException;
-
-    /** Column name A_Depreciation_Calc_Type */
-    public static final String COLUMNNAME_A_Depreciation_Calc_Type = "A_Depreciation_Calc_Type";
-
-	/** Set Calculation Type	  */
-	public void setA_Depreciation_Calc_Type (int A_Depreciation_Calc_Type);
-
-	/** Get Calculation Type	  */
-	public int getA_Depreciation_Calc_Type();
-
-	public org.compiere.model.I_A_Depreciation_Method getA_Depreciation_Calc_T() throws RuntimeException;
 
     /** Column name A_Depreciation_Manual_Amount */
     public static final String COLUMNNAME_A_Depreciation_Manual_Amount = "A_Depreciation_Manual_Amount";
@@ -224,17 +202,6 @@ public interface I_A_Asset_Change
 	/** Get Variable Percent	  */
 	public BigDecimal getA_Depreciation_Variable_Perc();
 
-    /** Column name A_Disposal_Loss */
-    public static final String COLUMNNAME_A_Disposal_Loss = "A_Disposal_Loss";
-
-	/** Set Loss on Disposal	  */
-	public void setA_Disposal_Loss (int A_Disposal_Loss);
-
-	/** Get Loss on Disposal	  */
-	public int getA_Disposal_Loss();
-
-	public I_C_ValidCombination getA_Disposal_L() throws RuntimeException;
-
     /** Column name A_Disposal_Loss_Acct */
     public static final String COLUMNNAME_A_Disposal_Loss_Acct = "A_Disposal_Loss_Acct";
 
@@ -245,17 +212,6 @@ public interface I_A_Asset_Change
 	public int getA_Disposal_Loss_Acct();
 
 	public I_C_ValidCombination getA_Disposal_Loss_A() throws RuntimeException;
-
-    /** Column name A_Disposal_Revenue */
-    public static final String COLUMNNAME_A_Disposal_Revenue = "A_Disposal_Revenue";
-
-	/** Set Disposal Revenue	  */
-	public void setA_Disposal_Revenue (int A_Disposal_Revenue);
-
-	/** Get Disposal Revenue	  */
-	public int getA_Disposal_Revenue();
-
-	public I_C_ValidCombination getA_Disposal_Reve() throws RuntimeException;
 
     /** Column name A_Disposal_Revenue_Acct */
     public static final String COLUMNNAME_A_Disposal_Revenue_Acct = "A_Disposal_Revenue_Acct";
@@ -630,17 +586,6 @@ public interface I_A_Asset_Change
 
 	public I_C_Location getC_Location() throws RuntimeException;
 
-    /** Column name ConventionType */
-    public static final String COLUMNNAME_ConventionType = "ConventionType";
-
-	/** Set ConventionType	  */
-	public void setConventionType (int ConventionType);
-
-	/** Get ConventionType	  */
-	public int getConventionType();
-
-	public org.compiere.model.I_A_Depreciation_Convention getConventionT() throws RuntimeException;
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -684,17 +629,6 @@ public interface I_A_Asset_Change
 	  * Accounting Date
 	  */
 	public Timestamp getDateAcct();
-
-    /** Column name DepreciationType */
-    public static final String COLUMNNAME_DepreciationType = "DepreciationType";
-
-	/** Set DepreciationType	  */
-	public void setDepreciationType (int DepreciationType);
-
-	/** Get DepreciationType	  */
-	public int getDepreciationType();
-
-	public org.compiere.model.I_A_Depreciation getDepreciationT() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

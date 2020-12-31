@@ -79,6 +79,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		appendChild(bandbox);
 //		ZKUpdateUtil.setWidth(bandbox, "100%");
 		bandbox.setAutodrop(true);
+		bandbox.setId("globalSearchBox");
 		bandbox.addEventListener(Events.ON_CHANGING, this);
 		bandbox.addEventListener(Events.ON_CHANGE, this);
 		bandbox.setCtrlKeys("#up#down");
@@ -169,7 +170,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         } else if (event.getName().equals(ON_CREATE_ECHO)) {
     		StringBuilder script = new StringBuilder("jq('#")
     			.append(bandbox.getUuid())
-    			.append("').bind('keydown', function(e) {var code=e.keyCode||e.which;console.log(code);if(code==13){")
+    			.append("').bind('keydown', function(e) {var code=e.keyCode||e.which;if(code==13){")
     			.append("var widget=zk.Widget.$(this);")
     			.append("var event=new zk.Event(widget,'")
     			.append(ON_ENTER_KEY)

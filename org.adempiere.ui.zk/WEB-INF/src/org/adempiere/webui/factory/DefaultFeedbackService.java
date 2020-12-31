@@ -22,9 +22,11 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.window.WEMailDialog;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
 import org.compiere.util.ByteArrayDataSource;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -70,11 +72,11 @@ public class DefaultFeedbackService implements IFeedbackService {
 			this.errorOnly = errorOnly;
 			SessionManager.getAppDesktop().getComponent().addEventListener("onEmailSupport", this);
 			
-			String script = "html2canvas(document.body, { onrendered: function(canvas) " +
-					"{ var dataUrl = canvas.toDataURL();" +
+			String script = "html2canvas(document.body).then(canvas => " +
+					"{ const dataUrl = canvas.toDataURL();" +
 					"  var widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
 		    		"  var event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});" +
-		    		"  zAu.send(event); } " +
+		    		"  zAu.send(event);" +
 		    		"});";
 			Clients.response(new AuScript(script));
 		}
@@ -113,10 +115,22 @@ public class DefaultFeedbackService implements IFeedbackService {
 			dialog.setAttribute(Window.MODE_KEY, Mode.OVERLAPPED);			
 			
 			MSystem system = MSystem.get(Env.getCtx());
-			if (!Util.isEmpty(system.getSupportEMail())) 
+
+			for (String s : getFeedbackRecipient(MSysConfig.FEEDBACK_EMAIL_TO).split(",")) {
+				if (!Util.isEmpty(s.trim()) && EMail.validate(s.trim()))
+					dialog.addTo(s.trim(), false);
+			}
+
+			if (Util.isEmpty(dialog.getTo()) && !Util.isEmpty(system.getSupportEMail())) 
 			{
 				dialog.addTo(system.getSupportEMail(), true);
 			}
+
+			for (String s : getFeedbackRecipient(MSysConfig.FEEDBACK_EMAIL_CC).split(",")) {
+				if (!Util.isEmpty(s.trim()) && EMail.validate(s.trim()))
+					dialog.addCC(s.trim(), false);
+			}
+
 			AEnv.showWindow(dialog);
 			if (imageBytes != null && imageBytes.length > 0) {
 				ByteArrayDataSource screenShot = new ByteArrayDataSource(imageBytes, "image/png");
@@ -125,17 +139,22 @@ public class DefaultFeedbackService implements IFeedbackService {
 			}
 			dialog.focus();
 		}
+		
+		protected String getFeedbackRecipient(String scValue) {
+			String retValue = MSysConfig.getValue(scValue, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
+			return Util.isEmpty(retValue) ? "" : retValue;
+		}
 	}
 	
 	protected static class CreateNewRequestAction implements EventListener<Event>{
 		protected CreateNewRequestAction() {
 			SessionManager.getAppDesktop().getComponent().addEventListener("onCreateFeedbackRequest", this);
 			
-			String script = "html2canvas(document.body, { onrendered: function(canvas) " +
+			String script = "html2canvas(document.body).then(canvas => " +
 					"{ var dataUrl = canvas.toDataURL();" +
 					"  var widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
 		    		"  var event = new zk.Event(widget, 'onCreateFeedbackRequest', dataUrl, {toServer: true});" +
-		    		"  zAu.send(event); } " +
+		    		"  zAu.send(event); " +
 		    		"});";
 			Clients.response(new AuScript(script));
 		}

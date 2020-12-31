@@ -24,3 +24,5 @@ External Plug-in Libraries
 /jettyhome/
 
 /org.idempiere.javadoc/API
+/.sonarlint/
+**/org.sonarlint.eclipse.core.prefs

@@ -21,6 +21,7 @@ import java.util.Set;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -52,22 +53,38 @@ public class WGridTabMultiSelectionEditor extends WEditor implements ContextMenu
 
     private Object oldValue;
 
-	private boolean tableEditor = false;
-	
 	private GridTab listViewGridTab = null;
 
 	private String currentLinkValue = null;
 
 	private boolean readWrite;
 	
+	/**
+	 * 
+	 * @param gridField
+	 */
     public WGridTabMultiSelectionEditor(GridField gridField) {
     	this(gridField, false);
     }
 
-    public WGridTabMultiSelectionEditor(GridField gridField, boolean tableEditor)
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     */
+    public WGridTabMultiSelectionEditor(GridField gridField, boolean tableEditor) {
+    	this(gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WGridTabMultiSelectionEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(tableEditor ? new Textbox() : new GridTabSelectionListView(true, gridField.getWindowNo()), gridField);
-        this.tableEditor = tableEditor;
+        super(tableEditor ? new Textbox() : new GridTabSelectionListView(true, gridField.getWindowNo()), gridField, tableEditor, editorConfiguration);
         init();
     }
 

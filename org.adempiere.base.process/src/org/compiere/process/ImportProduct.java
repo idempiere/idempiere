@@ -152,6 +152,17 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 
 
 		//	****	Find Product
+		// first check for duplicate UPCs
+		sql = new StringBuilder ("UPDATE I_Product i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=more than one product with this UPC,' ")
+			.append("WHERE I_IsImported<>'Y'")
+			.append(" AND EXISTS (SELECT 1 FROM M_Product mp")
+			.append(" JOIN M_Product mp2 on mp.AD_Client_ID=mp2.AD_Client_ID AND mp.upc = mp2.upc AND mp.M_Product_ID <> mp2.M_Product_ID")
+			.append(" WHERE i.AD_Client_ID=mp.AD_Client_ID AND i.upc = mp.upc)").append(clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning("Not Unique UPC=" + no);
+
 		//	EAN/UPC
 		sql = new StringBuilder ("UPDATE I_Product i ")
 			.append("SET M_Product_ID=(SELECT M_Product_ID FROM M_Product p")
@@ -180,6 +191,16 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.INFO)) log.info("Product Existing Vendor ProductNo=" + no);
 
+		//now check whether found product is inactive
+		sql = new StringBuilder ("UPDATE I_Product i ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Product is not active,' ")
+			.append("WHERE I_IsImported<>'Y' AND M_Product_ID IS NOT NULL")
+			.append(" AND EXISTS (SELECT 1 FROM M_Product mp")
+			.append(" WHERE i.AD_Client_ID=mp.AD_Client_ID AND i.M_Product_ID= mp.M_Product_ID AND mp.IsActive='N')").append(clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+		log.warning("Product inactive");
+		
 		//	Set Product Category
 		sql = new StringBuilder ("UPDATE I_Product ")
 			.append("SET ProductCategory_Value=(SELECT MAX(Value) FROM M_Product_Category")
@@ -558,11 +579,13 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 					}
 					catch (SQLException ex)
 					{
+						rollback();
 						log.warning("Update Product - " + ex.toString());
 						StringBuilder sql0 = new StringBuilder ("UPDATE I_Product i ")
 							.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Update Product: " + ex.toString()))
 							.append("WHERE I_Product_ID=").append(I_Product_ID);
 						DB.executeUpdate(sql0.toString(), get_TrxName());
+						commitEx(); //to keep the error message even if next product fails, too
 						continue;
 					}
 					finally
@@ -613,6 +636,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 								.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Update Product_PO: " + ex.toString()))
 								.append("WHERE I_Product_ID=").append(I_Product_ID);
 							DB.executeUpdate(sql0.toString(), get_TrxName());
+							commitEx(); //to keep the error message even if next product fails, too
 							continue;
 						}
 						finally
@@ -641,6 +665,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 								.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||").append(DB.TO_STRING("Insert Product_PO: " + ex.toString()))
 								.append("WHERE I_Product_ID=").append(I_Product_ID);
 							DB.executeUpdate(sql0.toString(), get_TrxName());
+							commitEx(); //to keep the error message even if next product fails, too							
 							continue;
 						}
 					}

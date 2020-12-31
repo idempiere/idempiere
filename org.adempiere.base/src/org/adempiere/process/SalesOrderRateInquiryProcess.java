@@ -96,7 +96,9 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			else if (ol.getM_Product_ID() > 0)
 			{
 				MProduct product = new MProduct(getCtx(), ol.getM_Product_ID(), get_TrxName());
-				
+				if (product.isService())
+					continue;
+
 				BigDecimal weight = product.getWeight();
 				if (weight == null || weight.compareTo(BigDecimal.ZERO) == 0)
 					throw new AdempiereException("No weight defined for product " + product.toString());
@@ -176,12 +178,12 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			getProcessInfo().setError(true);
 			getProcessInfo().addLog(new ProcessInfoLog(getProcessInfo().getAD_Process_ID(), 
 					new Timestamp(System.currentTimeMillis()), null, st.getErrorMessage()));
-			return st.getErrorMessage();
+			return "@Error@";
 		}
 		
 		getProcessInfo().addLog(new ProcessInfoLog(getProcessInfo().getAD_Process_ID(), 
 				new Timestamp(System.currentTimeMillis()), null, st.getShippingRespMessage()));
-		return st.getShippingRespMessage();
+		return "@OK@";
 	}
 	
 	public static MShippingTransaction createShippingTransaction(Properties ctx, MOrder m_order, String action, boolean isPriviledgedRate, String trxName)
@@ -250,7 +252,9 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			else if (ol.getM_Product_ID() > 0)
 			{
 				MProduct product = new MProduct(ctx, ol.getM_Product_ID(), trxName);
-				
+				if (product.isService())
+					continue;
+
 				BigDecimal weight = product.getWeight();
 				if (weight == null || weight.compareTo(BigDecimal.ZERO) == 0)
 					throw new AdempiereException("No weight defined for product " + product.toString());
