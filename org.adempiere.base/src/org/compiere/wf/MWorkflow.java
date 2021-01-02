@@ -330,8 +330,8 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 */
 	private void loadNodes()
 	{
-		m_nodes = new Query(getCtx(), MWFNode.Table_Name, "AD_WorkFlow_ID=?", get_TrxName())
-			.setParameters(new Object[]{get_ID()})
+		m_nodes = new Query(getCtx(), MWFNode.Table_Name, "AD_WorkFlow_ID=? AND AD_Client_ID IN (0, ?)", get_TrxName())
+			.setParameters(get_ID(), Env.getAD_Client_ID(Env.getCtx()))
 			.setOnlyActiveRecords(true)
 			.list();
 		if (m_nodes.size() > 0 && is_Immutable())
