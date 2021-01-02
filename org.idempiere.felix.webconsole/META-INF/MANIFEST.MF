@@ -21,8 +21,6 @@ Import-Package: javax.servlet;version="2.5.0",
  javax.servlet.resources;version="2.5.0",
  org.adempiere.eclipse.equinox.http.servlet,
  org.apache.felix.webconsole;version="3.1.2",
- org.compiere.model,
- org.compiere.util,
  org.eclipse.equinox.http.registry;version="1.0.0",
  org.eclipse.equinox.http.servlet;version="1.1.0",
  org.eclipse.equinox.servletbridge;version="1.1.0",
@@ -34,3 +32,4 @@ Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.felix.webconsole
 Bundle-Vendor: iDempiere Community
 Export-Package: org.idempiere.felix.webconsole;x-internal:=true
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
