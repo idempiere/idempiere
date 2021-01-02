@@ -2076,7 +2076,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
 				+ ") Balance=" + bp.getTotalOpenBalance() + " -> " + newBalance);
 		}
-		bp.setTotalOpenBalance(newBalance);
+		// the payment just created already updated the open balance
+		if ( ! (PAYMENTRULE_Cash.equals(getPaymentRule()) && !fromPOS ) )
+		{
+			bp.setTotalOpenBalance(newBalance);
+		}
 		bp.setSOCreditStatus();
 		if (!bp.save(get_TrxName()))
 		{
