@@ -41,7 +41,7 @@ IDEMPIERE_USER=idempiere
 IDEMPIERE_HOME=/opt/idempiere-server
 # in case you manual install java by use zip or your linux distros, or your java provider have difference pattern of path, please update here
 JAVA_HOME=$(ls -r /usr/lib/jvm/java-1[1234]-openjdk*/bin/javac | head -1)
-JAVA_HOME=$(dirname "$JAVA_HOME")
+JAVA_HOME=$(dirname $( dirname "$JAVA_HOME") )
 SU=su
 export IDEMPIERE_HOME
 export TELNET_PORT=12612
@@ -212,36 +212,10 @@ configure_perform()
     sed -i "s/:8080/:${ADEMPIERE_WEB_PORT}/g" /usr/share/applications/idempiere-homepage.desktop
     sed -i "s/:8443/:${ADEMPIERE_SSL_PORT}/g" /usr/share/applications/idempiere-webclient.desktop
 
-    if [ -f ${IDEMPIERE_HOME}/console-setup.sh ]
+    if [ -f ${IDEMPIERE_HOME}/silent-setup.sh ]
     then
      	echo -n "Deploying iDempiere ERP server..."
-       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}; ./console-setup.sh" <<!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-!
+       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}; ./silent-setup.sh"
 	echo "Done"
     fi
     grep "${ADEMPIERE_WEB_PORT}" ${IDEMPIERE_HOME}/jettyhome/etc/jetty-http.xml > /dev/null 2>&1
@@ -263,6 +237,12 @@ configure_perform()
     then
         echo -n "Importing seed database..."
        	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}/utils; ( echo "" | ./RUN_ImportIdempiere.sh )" # > /dev/null 2>&1
+	echo "Done"
+        echo -n "Applying latest migration scripts ..."
+       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}/utils; ./RUN_SyncDB.sh" # > /dev/null 2>&1
+	echo "Done"
+        echo -n "Signing DB ..."
+       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}; ./sign-database-build.sh" # > /dev/null 2>&1
 	echo "Done"
     fi
     $SU ${IDEMPIERE_USER} -c "cd; export PGPASSWORD=${ADEMPIERE_DB_PASSWORD}; psql -d idempiere -U adempiere -h localhost -p 5432 -c ''" > /dev/null 2>&1

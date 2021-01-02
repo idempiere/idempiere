@@ -150,17 +150,17 @@ public class Setup extends JFrame implements ActionListener
 	public static void main(String[] args)
 	{
 		CLogMgt.initialize(false);
-		// Duplicate log file - not required
-		// Handler fileHandler = new CLogFile(System.getProperty("user.dir"), false, false);
-		// CLogMgt.addHandler(fileHandler);
+
 		//	Log Level
-		if (args.length > 0)
-			CLogMgt.setLevel(args[0]);
-		else
-			CLogMgt.setLevel(Level.INFO);
-		//	File Logger at least FINE
-		// if (fileHandler.getLevel().intValue() > Level.FINE.intValue())
-		//	fileHandler.setLevel(Level.FINE);
+		Level logLevel = Level.INFO;
+		if (args.length > 0) {
+			try {
+				logLevel = Level.parse(args[0]);
+			} catch (IllegalArgumentException e) {
+				CLogger.get().warning("Unrecognized log level: " + args[0] + " defaulting to: " + logLevel);
+			}
+		}
+		CLogMgt.setLevel(logLevel);
 
 		instance = new Setup();
 	}	//	main
