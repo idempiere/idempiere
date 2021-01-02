@@ -383,6 +383,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         Panel pnlButtonRight = new Panel();
         pnlButtonRight.appendChild(btnOk);
+        Separator sep = new Separator("vertical");
+        sep.setWidth("2px");
+        pnlButtonRight.appendChild(sep);
         pnlButtonRight.appendChild(btnCancel);
         pnlButtonRight.setStyle("text-align:right");
         ZKUpdateUtil.setWidth(pnlButtonRight, "100%");
@@ -390,7 +393,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         Panel pnlButtonLeft = new Panel();
         pnlButtonLeft.appendChild(btnNew);
-        Separator sep = new Separator("vertical");
+        sep = new Separator("vertical");
         sep.setWidth("2px");
         pnlButtonLeft.appendChild(sep);
         pnlButtonLeft.appendChild(btnClear);
@@ -399,13 +402,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Hbox hboxButton = new Hbox();
         hboxButton.appendChild(pnlButtonLeft);
         hboxButton.appendChild(pnlButtonRight);
-        ZKUpdateUtil.setWidth(hboxButton, "100%");
 
         contentSimple = new Grid();
         contentSimple.setId("contentSimple");
-        contentSimple.setStyle("width: 100%; position: relative");
         contentSimple.makeNoStrip();
-        ZKUpdateUtil.setHflex(contentSimple, "1");
         
         Columns columns = new Columns();
         Column column = new Column();
@@ -437,7 +437,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         layout.appendChild(center);
         center.appendChild(contentSimple);
         ZKUpdateUtil.setVflex(contentSimple, "1");
-		ZKUpdateUtil.setHflex(contentSimple, "1");
 
         South south = new South();
         layout.appendChild(south);
@@ -481,19 +480,20 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         Panel pnlButtonRight = new Panel();
         pnlButtonRight.appendChild(btnOk);
+        Separator sep = new Separator("vertical");
+        sep.setWidth("2px");
+        pnlButtonRight.appendChild(sep);
         pnlButtonRight.appendChild(btnCancel);
         pnlButtonRight.setStyle("text-align: right");
 
         advancedPanelToolBar = new ToolBar();
         advancedPanelToolBar.appendChild(btnNew);
         advancedPanelToolBar.appendChild(btnDelete);
-        ZKUpdateUtil.setWidth(advancedPanelToolBar, "100%");
 
         fQueryName.addEventListener(Events.ON_SELECT, this);
 
         Hbox confirmPanel = new Hbox();
         confirmPanel.appendChild(pnlButtonRight);
-        ZKUpdateUtil.setWidth(confirmPanel, "100%");
         confirmPanel.setPack("end");
 
         advancedPanel = new Listbox();
@@ -564,7 +564,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         layout.appendChild(center);
         center.appendChild(advancedPanel);
         ZKUpdateUtil.setVflex(advancedPanel, "1");
-        ZKUpdateUtil.setHflex(advancedPanel, "1");
 
         South south = new South();
         layout.appendChild(south);
