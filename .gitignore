@@ -26,3 +26,4 @@ External Plug-in Libraries
 /org.idempiere.javadoc/API
 /.sonarlint/
 **/org.sonarlint.eclipse.core.prefs
+/runtime-*.app/
