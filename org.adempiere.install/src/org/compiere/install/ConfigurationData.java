@@ -29,6 +29,7 @@ import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -50,6 +51,7 @@ import org.adempiere.install.IDatabaseConfig;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.db.Database;
+import org.compiere.model.MSystem;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -195,6 +197,11 @@ public class ConfigurationData
 	/** 				*/
 	public static final String	ADEMPIERE_WEBSTORES		= "ADEMPIERE_WEBSTORES";
 
+	public static final List<String> secretVars = Arrays.asList(new String[] {
+			ADEMPIERE_DB_PASSWORD,
+			ADEMPIERE_DB_SYSTEM,
+			ADEMPIERE_MAIL_PASSWORD
+	});
 
 	public void updateProperty(String property, String value) {
 		if (value == null) value = "";
@@ -240,6 +247,15 @@ public class ConfigurationData
 			if (p_properties.size() > 5)
 				envLoaded = true;
 
+			if (MSystem.isSecureProps()) {
+				// add secret variables reading with getVar
+				for (String secretVar : secretVars) {
+					if (! p_properties.containsKey(secretVar)) {
+						String val = Ini.getVar(secretVar);
+						p_properties.put(secretVar, val);
+					}
+				}
+			}
 			// deobfuscate keystore pass
 			String obfKeystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
 			if (obfKeystorePass.startsWith(Password.__OBFUSCATE)) {
@@ -634,11 +650,23 @@ public class ConfigurationData
 		try
 		{
 			String admail = adminEMail.toString();
+			StringBuilder msg = new StringBuilder("Test: \n");
+		    getProperties().forEach((k, v) -> {
+		        String key = k.toString();
+		        String value = v.toString();
+		    	msg.append(key).append("=");
+		    	if (secretVars.contains(key)) {
+			    	msg.append("********");
+		    	} else {
+			    	msg.append(value);
+		    	}
+		    	msg.append("\n");
+		    });
 			EMail email = new EMail (new Properties(),
 					mailServer.getHostName (),
 					admail, admail,
-					"Adempiere Server Setup Test",
-					"Test: " + getProperties());
+					"iDempiere Server Setup Test",
+					msg.toString());
 			email.createAuthenticator (mailUser, mailPassword);
 			if (EMail.SENT_OK.equals (email.send ()))
 			{
@@ -841,12 +869,27 @@ public class ConfigurationData
 		try
 		{
 			fos = new FileOutputStream(new File(fileName));
+			Properties secretProperties = new Properties();
+			if (MSystem.isSecureProps()) {
+				// separate secret variables from properties and save them with setVar
+				for (String secretVar : secretVars) {
+					String secretValue = p_properties.getProperty(secretVar);
+					if (secretValue != null) {
+						secretProperties.put(secretVar, secretValue);
+						Ini.setVar(secretVar, secretValue);
+					}
+					p_properties.remove(secretVar);
+				}
+			}
 			// obfuscate keystore pass
 			String keystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
 			String obfKeystorePass = Password.obfuscate(keystorePass);
 			p_properties.put(ADEMPIERE_KEYSTOREPASS, obfKeystorePass);
 			p_properties.store(fos, IDEMPIERE_ENV_FILE);
 			p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);
+			// put back secrets in properties
+			if (MSystem.isSecureProps())
+				p_properties.putAll(secretProperties);
 			fos.flush();
 		}
 		catch (Exception e)
@@ -922,7 +965,12 @@ public class ConfigurationData
 			log.log(Level.SEVERE, "connection", e);
 			return false;
 		}
-		Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong());
+		if (MSystem.isSecureProps()) {
+			// do not save PWD to the attributes - must be obtained with getVar
+			Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong(false));
+		} else {
+			Ini.setProperty(Ini.P_CONNECTION, cc.toStringLong(true));
+		}
 		Ini.saveProperties(false);
 		return true;
 	}	//	saveIni
