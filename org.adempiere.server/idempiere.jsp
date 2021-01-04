@@ -77,12 +77,6 @@ Author URI: http://www.bmlaurus.com
 							</a>
 							<div class="main-txt-btn"><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></div>
 						</li>
-						<li id ="main-docuBtns-btnIrc">
-							<a href="<%=Prop.getProperty(Prop.IRC_LINK)%>" target="_blank">
-								<img name="img_irc" src="<%=Prop.getImage("img_irc.png")%>" border="0" />
-							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.IRC_TEXT)%></div>
-						</li>
 						<li id ="main-requestBtns-btnReq">
 							<a href="<%=Prop.getProperty(Prop.WEBSTORE_LINK)%>" target="_blank">
 								<img name="img_webstore" src="<%=Prop.getImage("img_webstore.png")%>" border="0" />

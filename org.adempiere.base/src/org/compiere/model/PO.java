@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1330388218446118451L;
+	private static final long serialVersionUID = -7231417421289556724L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -208,6 +208,8 @@ public abstract class PO
 			load(rs);		//	will not have virtual columns
 		else
 			load(ID, trxName);
+
+		checkCrossTenant(false);
 	}   //  PO
 
 	/**
@@ -285,6 +287,9 @@ public abstract class PO
 
 	/** Trifon - Indicates that this record is created by replication functionality.*/
 	private boolean m_isReplication = false;
+	
+	/** Immutable flag **/
+	private boolean m_isImmutable = false;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -727,6 +732,8 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
 	{
+		checkImmutable();
+		
 		if (value instanceof String && ColumnName.equals("WhereClause")
 			&& value.toString().toUpperCase().indexOf("=NULL") != -1)
 			log.warning("Invalid Null Value - " + ColumnName + "=" + value);
@@ -785,6 +792,8 @@ public abstract class PO
 	 */
 	protected final boolean set_Value (int index, Object value, boolean checkWritable)
 	{
+		checkImmutable();
+		
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.log(Level.WARNING, "Index invalid - " + index);
@@ -940,6 +949,8 @@ public abstract class PO
 	   Fill the column ProcessedOn (if it exists) with a bigdecimal representation of current timestamp (with nanoseconds)
 	*/
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
+		checkImmutable();
+		
 		if ("Processed".equals(ColumnName)
 				&& value instanceof Boolean
 				&& ((Boolean)value).booleanValue() == true
@@ -1058,6 +1069,8 @@ public abstract class PO
 	 */
 	public final boolean set_CustomColumnReturningBoolean (String columnName, Object value)
 	{
+		checkImmutable();
+		
 		// [ 1845793 ] PO.set_CustomColumn not updating correctly m_newValues
 		// this is for columns not in PO - verify and call proper method if exists
 		int poIndex = get_ColumnIndex(columnName);
@@ -1091,6 +1104,8 @@ public abstract class PO
 	 */
 	private void set_Keys (String ColumnName, Object value)
 	{
+		checkImmutable();
+		
 		//	Update if KeyColumn
 		for (int i = 0; i < m_IDs.length; i++)
 		{
@@ -1309,6 +1324,8 @@ public abstract class PO
 	 */
 	protected void load (int ID, String trxName)
 	{
+		checkImmutable();
+		
 		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
 		if (ID > 0)
 		{
@@ -1408,6 +1425,8 @@ public abstract class PO
 		finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			if (is_Immutable())
+				m_trxName = null;
 		}
 		loadComplete(success);
 		return success;
@@ -1494,6 +1513,8 @@ public abstract class PO
 	 */
 	protected boolean load (HashMap<String,String> hmIn)
 	{
+		checkImmutable();
+		
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
@@ -1547,6 +1568,13 @@ public abstract class PO
 		loadComplete(success);
 		return success;
 	}	//	load
+
+	protected void checkImmutable() {
+		if (is_Immutable())
+		{
+			throw new IllegalStateException("PO is Immutable: " + getClass().getName());
+		}
+	}
 
 	/**
 	 *  Create Hashmap with data as Strings
@@ -1915,6 +1943,8 @@ public abstract class PO
 
 	/**	Cache						*/
 	private static CCache<String,String> trl_cache	= new CCache<String,String>("PO_Trl", 5);
+	/** Cache for foreign keys */
+	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
 	public String get_Translation (String columnName, String AD_Language)
 	{
@@ -2049,7 +2079,10 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
+		checkImmutable();
+		
 		checkValidContext();
+		checkCrossTenant(true);
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
@@ -2406,6 +2439,7 @@ public abstract class PO
 
 	public void saveReplica (boolean isFromReplication) throws AdempiereException
 	{
+		checkImmutable();
 		setReplication(isFromReplication);
 		saveEx();
 	}
@@ -3233,7 +3267,10 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
+		checkImmutable();
+		
 		checkValidContext();
+		checkCrossTenant(true);
 		CLogger.resetLast();
 		if (is_new())
 			return true;
@@ -4256,6 +4293,10 @@ public abstract class PO
 	 */
 	public void set_TrxName (String trxName)
 	{
+		if (trxName != null)
+		{
+			checkImmutable();
+		}
 		m_trxName = trxName;
 	}	//	setTrx
 
@@ -4711,7 +4752,7 @@ public abstract class PO
 	 *      @param doc Document
 	 */
 	public void setDoc(Doc doc) {
-		m_doc = doc;
+		m_doc = doc;		
 	}
 
 	public void setReplication(boolean isFromReplication)
@@ -4845,22 +4886,57 @@ public abstract class PO
 	    p_info = initPO(p_ctx);
 	}
 	
-	public void set_Attribute(String columnName, Object value) {
+	/**
+	 * set attribute value
+	 * @param attributeName
+	 * @param value
+	 */
+	public void set_Attribute(String attributeName, Object value) {
+		checkImmutable();
+		
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
-		m_attributes.put(columnName, value);
+		m_attributes.put(attributeName, value);
 	}
 	
-	public Object get_Attribute(String columnName) {
+	/**
+	 * 
+	 * @param attributeName
+	 * @return attribute value
+	 */
+	public Object get_Attribute(String attributeName) {
 		if (m_attributes != null)
-			return m_attributes.get(columnName);
+			return m_attributes.get(attributeName);
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return map of attributes
+	 */
 	public HashMap<String,Object> get_Attributes() {
 		return m_attributes;
 	}
 
+	/**
+	 * Turn on immutable check
+	 */
+	protected void makeImmutable() {
+		if (is_Immutable()) 
+			return;
+		
+		m_isImmutable = true;
+		m_trxName = null;
+	}
+	
+	/**
+	 * 
+	 * @return true if PO is immutable, false otherwise
+	 */
+	public boolean is_Immutable() {
+		return m_isImmutable;
+	}
+	
 	private void validateUniqueIndex()
 	{
 		ValueNamePair ppE = CLogger.retrieveError();
@@ -4903,6 +4979,138 @@ public abstract class PO
 	private void checkValidContext() {
 		if (getCtx().isEmpty() && getCtx().getProperty("#AD_Client_ID") == null)
 			throw new AdempiereException("Context lost");
+	}
+
+	/*
+	 * To force a cross tenant safe read/write the client program must write code like this:
+		try {
+			PO.setCrossTenantSafe();
+			// write here the Query.list or PO.saveEx that is cross tenant safe
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+	 */
+	private static ThreadLocal<Boolean> isSafeCrossTenant = new ThreadLocal<Boolean>() {
+		@Override protected Boolean initialValue() {
+			return Boolean.FALSE;
+		};
+	};
+	public static void setCrossTenantSafe() {
+		isSafeCrossTenant.set(Boolean.TRUE);
+	}
+	public static void clearCrossTenantSafe() {
+		isSafeCrossTenant.set(Boolean.FALSE);
+	}
+
+	private void checkCrossTenant(boolean writing) {
+		if (isSafeCrossTenant.get())
+			return;
+		int envClientID = Env.getAD_Client_ID(getCtx());
+		// processes running from system client can read/write always
+		if (envClientID > 0) {
+			int poClientID = getAD_Client_ID();
+			if (poClientID != envClientID &&
+					(poClientID != 0 || writing)) {
+				log.warning("Table="+get_TableName()
+					+" Record_ID="+get_ID()
+					+" Env.AD_Client_ID="+envClientID
+					+" PO.AD_Client_ID="+poClientID
+					+" writing="+writing
+					+" Session="+Env.getContext(getCtx(), "#AD_Session_ID"));
+				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
+						+ Env.getContext(getCtx(), "#AD_Session_ID") + " for table " + get_TableName()
+						+ " Record_ID=" + get_ID();
+				throw new AdempiereException(message);
+			}
+		}
+	}
+
+	/**
+	 * Validate Foreign keys for cross tenant
+	 * to be called programmatically before saving in programs that can receive arbitrary values in IDs
+	 * This is an expensive operation in terms of database, use it wisely
+	 * 
+	 * TODO: there is huge room for performance improvement, for example:
+	 * - caching the valid values found on foreign tables
+	 * - caching the column ID of the foreign column
+	 * - caching the systemAccess
+	 *  
+	 * @return true if all the foreign keys are valid
+	 */
+	public boolean validForeignKeys() {
+		List<ValueNamePair> fks = getForeignColumnIdxs();
+		if (fks == null) {
+			return true;
+		}
+		for (ValueNamePair vnp : fks) {
+			String fkcol = vnp.getID();
+			String fktab = vnp.getName();
+			int index = get_ColumnIndex(fkcol); 
+			if (is_new() || is_ValueChanged(index)) {
+				int fkval = get_ValueAsInt(index);
+				if (fkval > 0) {
+					MTable ft = MTable.get(getCtx(), fktab);
+					boolean systemAccess = false;
+					String accessLevel = ft.getAccessLevel();
+					if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+						|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+						|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+						systemAccess = true;
+					}
+					StringBuilder sql = new StringBuilder("SELECT AD_Client_ID FROM ")
+							.append(fktab)
+							.append(" WHERE ")
+							.append(ft.getKeyColumns()[0])
+							.append("=?");
+					int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), fkval);
+					if (pocid < 0) {
+						log.saveError("Error", "Foreign ID " + fkval + " not found in " + fkcol);
+						return false;
+					}
+					if (pocid == 0 && !systemAccess) {
+						log.saveError("Error", "System ID " + fkval + " cannot be used in " + fkcol);
+						return false;
+					}
+					int curcid = Env.getAD_Client_ID(getCtx());
+					if (pocid > 0 && pocid != curcid) {
+						log.saveError("Error", "Cross tenant ID " + fkval + " not allowed in " + fkcol);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns a list of indexes for the foreign columns, null if none
+	 * @return array of int indexes
+	 */
+	private List<ValueNamePair> getForeignColumnIdxs() {
+		List<ValueNamePair> retValue;
+		if (fks_cache.containsKey(get_Table_ID())) {
+			retValue = fks_cache.get(get_Table_ID());
+			return retValue;
+		}
+		retValue = new ArrayList<ValueNamePair>();
+		int size = get_ColumnCount();
+		for (int i = 0; i < size; i++) {
+			int dt = p_info.getColumnDisplayType(i);
+			if (dt != DisplayType.ID && DisplayType.isID(dt)) {
+				MColumn col = MColumn.get(p_info.getColumn(i).AD_Column_ID);
+				if ("AD_Client_ID".equals(col.getColumnName())) {
+					// ad_client_id is verified with checkValidClient
+					continue;
+				}
+				String refTable = col.getReferenceTableName();
+				retValue.add(new ValueNamePair(col.getColumnName(), refTable));
+			}
+		}
+		if (retValue.size() == 0) {
+			retValue = null;
+		}
+		fks_cache.put(get_Table_ID(), retValue);
+		return retValue;
 	}
 
 }   //  PO

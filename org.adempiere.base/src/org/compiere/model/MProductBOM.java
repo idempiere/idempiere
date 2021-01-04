@@ -117,7 +117,7 @@ public class MProductBOM extends X_M_Product_BOM
 	public MProduct getProduct()
 	{
 		if (m_product == null && getM_ProductBOM_ID() != 0)
-			m_product = MProduct.get (getCtx(), getM_ProductBOM_ID());
+			m_product = MProduct.getCopy(getCtx(), getM_ProductBOM_ID(), get_TrxName());
 		return m_product;
 	}	//	getProduct
 

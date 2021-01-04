@@ -393,9 +393,10 @@ public class MOrder extends X_C_Order implements DocAction
 		String sql = "SELECT C_DocType_ID FROM C_DocType "
 			+ "WHERE AD_Client_ID=? AND AD_Org_ID IN (0," + getAD_Org_ID()
 			+ ") AND DocSubTypeSO=? "
+			+ " AND IsSOTrx=? "
 			+ " AND IsActive='Y' "
 			+ "ORDER BY AD_Org_ID DESC, IsDefault DESC";
-		int C_DocType_ID = DB.getSQLValue(null, sql, getAD_Client_ID(), DocSubTypeSO_x);
+		int C_DocType_ID = DB.getSQLValue(null, sql, getAD_Client_ID(), DocSubTypeSO_x, isSOTrx() ? "Y" : "N");
 		if (C_DocType_ID <= 0)
 			log.severe ("Not found for AD_Client_ID=" + getAD_Client_ID () + ", SubType=" + DocSubTypeSO_x);
 		else
@@ -1549,7 +1550,9 @@ public class MOrder extends X_C_Order implements DocAction
 				else if (ol.getM_Product_ID() > 0)
 				{
 					MProduct product = new MProduct(getCtx(), ol.getM_Product_ID(), get_TrxName());
-					
+					if (product.isService())
+						continue;
+
 					BigDecimal weight = product.getWeight();
 					if (weight == null || weight.compareTo(BigDecimal.ZERO) == 0)
 					{
@@ -2188,6 +2191,10 @@ public class MOrder extends X_C_Order implements DocAction
 			MInOutLine ioLine = new MInOutLine(shipment);
 			//	Qty = Ordered - Delivered
 			BigDecimal MovementQty = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered()); 
+			if (MovementQty.signum() == 0 && getProcessedOn().signum() != 0) {
+				// do not create lines with qty = 0 when the order is reactivated and completed again
+				continue;
+			}
 			//	Location
 			int M_Locator_ID = MStorageOnHand.getM_Locator_ID (oLine.getM_Warehouse_ID(), 
 					oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), 
@@ -2388,7 +2395,6 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			MOrderLine counterLine = counterLines[i];
 			counterLine.setOrder(counter);	//	copies header values (BP, etc.)
-			counterLine.setPrice();
 			counterLine.setTax();
 			counterLine.saveEx(get_TrxName());
 		}

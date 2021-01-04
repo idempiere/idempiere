@@ -59,9 +59,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  * @author Elaine
@@ -202,7 +204,12 @@ public class ReportAction implements EventListener<Event>
 			confirmPanel.addActionListener(this);
 		}
 
-		LayoutUtils.openPopupWindow(panel.getToolbar().getToolbarItem("Report"), winReport, "after_start");
+		LabelImageElement toolbarItem = panel.getToolbar().getToolbarItem("Report");
+		Popup popup = LayoutUtils.findPopup(toolbarItem);
+		if (popup != null)
+			popup.appendChild(winReport);
+		LayoutUtils.openPopupWindow(toolbarItem, winReport, "after_start");
+		winReport.setFocus(true);
 	}
 	
 	@Override

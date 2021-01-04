@@ -14,12 +14,17 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -28,13 +33,16 @@ import org.compiere.util.DB;
  *  @version $Id$
  *  
  */
-public class MUserDefTab extends X_AD_UserDef_Tab
+public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 20120403111900L;
 
+	/**	Cache of selected MUserDefTab entries 					**/
+	private static ImmutablePOCache<String,MUserDefTab> s_cache = new ImmutablePOCache<String,MUserDefTab>(Table_Name, 10);
+	
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency
@@ -63,6 +71,37 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 	}	//	MUserDefTab
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefTab(MUserDefTab copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefTab(Properties ctx, MUserDefTab copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefTab(Properties ctx, MUserDefTab copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * Get matching MUserDefTab related to current tab and user definition for window
 	 * @param ctx
 	 * @param AD_Tab_ID
@@ -73,6 +112,14 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 	{
 
 		MUserDefTab retValue = null;
+		
+		//  Check Cache
+		String key = new StringBuilder().append(AD_Tab_ID).append("_")
+				.append(AD_UserDefWin_ID)
+				.toString();
+		if (s_cache.containsKey(key))
+			return s_cache.get(ctx, key, e -> new MUserDefTab(ctx, e));
+		
 
 		StringBuilder sql = new StringBuilder("SELECT * "
 				+ " FROM AD_UserDef_Tab " 
@@ -93,6 +140,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 			{
 				retValue = new MUserDefTab(ctx,rs,null);
 			}
+			s_cache.put(key, retValue, e -> new MUserDefTab(Env.getCtx(), e));
 		}
 		catch (SQLException ex)
 		{
@@ -124,6 +172,15 @@ public class MUserDefTab extends X_AD_UserDef_Tab
 		
 		return getMatch(ctx, AD_Tab_ID, userdefWin.getAD_UserDef_Win_ID());
 		
+	}
+
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 		
 }	//	MUserDefTab

@@ -1813,7 +1813,10 @@ public class FinReport extends SvrProcess
 			m_report.saveEx();
 		}
 		else
+		{
 			pf = MPrintFormat.get (getCtx(), AD_PrintFormat_ID, false);	//	use Cache
+			pf = new MPrintFormat(getCtx(), pf);
+		}
 
 		//	Print Format Sync
 		if (!m_report.getName().equals(pf.getName())) {

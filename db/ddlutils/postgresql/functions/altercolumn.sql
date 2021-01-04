@@ -75,7 +75,7 @@ begin
 		if i > 0 then
 		   begin
 		     for j in 1 .. i loop
-			SELECT String_agg('grant ' || privilege_type || ' on ' || viewname[j] || ' to ' || grantee, '; ') 
+			SELECT String_agg('grant ' || privilege_type || ' on ' || viewname[j] || ' to "' || grantee || '"', '; ')
 				into privs
 				FROM information_schema.role_table_grants 
 				WHERE table_name=viewname[j];

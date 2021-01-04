@@ -590,6 +590,8 @@ public class CalloutPayment extends CalloutEngine
 		if (colName.equals(I_C_Payment.COLUMNNAME_C_Currency_ID) || colName.equals(I_C_Payment.COLUMNNAME_PayAmt) 
 				|| colName.equals(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate) ) {
 			Boolean override = (Boolean)(colName.equals(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate) ? value : mTab.getValue(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate));
+			if (override == null)
+				override = Boolean.FALSE;
 			int baseCurrencyId = Env.getContextAsInt(ctx, "$C_Currency_ID");
 			if (baseCurrencyId == C_Currency_ID) {
 				mTab.setValue(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate, false);

@@ -1416,7 +1416,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							}
 						}
 						
-						if (oLine!=null && mtrx!=null && oLine.getQtyOrdered().signum() > 0)
+						if (oLine!=null && mtrx!=null && oLine.getQtyOrdered().signum() >= 0)
 						{					
 							if (sLine.getC_OrderLine_ID() != 0)
 							{
@@ -1467,7 +1467,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-						if (oLine!=null && oLine.getQtyOrdered().signum() > 0)  
+						if (oLine!=null && oLine.getQtyOrdered().signum() >= 0)  
 						{
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
 									sLine.getM_Product_ID(),
@@ -1496,7 +1496,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				//	Correct Order Line
 				if (product != null && oLine != null)		//	other in VMatch.createMatchRecord
 				{
-					if (oLine.getQtyOrdered().signum() > 0)
+					if (oLine.getQtyOrdered().signum() >= 0)
 					{
 						oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty().subtract(sLine.getQtyOverReceipt())));
 
@@ -1816,6 +1816,8 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (log.isLoggable(Level.FINE)) log.fine(dropShipment.toString());
 
 		dropShipment.setDocAction(DocAction.ACTION_Complete);
+		// do not post immediate dropshipment, should post after source shipment
+		dropShipment.set_Attribute(DocumentEngine.DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE, Boolean.FALSE);
 		// added AdempiereException by Zuhri
 		if (!dropShipment.processIt(DocAction.ACTION_Complete))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + dropShipment.getProcessMsg());

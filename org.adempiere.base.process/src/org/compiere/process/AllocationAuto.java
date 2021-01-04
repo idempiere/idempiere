@@ -17,21 +17,21 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.Query;
 import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -106,68 +106,33 @@ public class AllocationAuto extends SvrProcess
 			if (countAlloc > 0)
 				countBP++;
 		}
-		else if (p_C_BP_Group_ID != 0)
-		{
-			String sql = "SELECT C_BPartner_ID FROM C_BPartner WHERE C_BP_Group_ID=? ORDER BY Value";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement (sql, get_TrxName());
-				pstmt.setInt (1, p_C_BP_Group_ID);
-				rs = pstmt.executeQuery ();
-				while (rs.next ())
-				{
-					int C_BPartner_ID = rs.getInt(1);
-					int count = allocateBP (C_BPartner_ID);
-					if (count > 0)
-					{
-						countBP++;
-						countAlloc += count;
-						commitEx();
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, sql, e);
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-		}
 		else
 		{
-			String sql = "SELECT C_BPartner_ID FROM C_BPartner WHERE AD_Client_ID=? ORDER BY Value";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
+			String where;
+			int parameter;
+			if (p_C_BP_Group_ID != 0)
 			{
-				pstmt = DB.prepareStatement (sql, get_TrxName());
-				pstmt.setInt (1, Env.getAD_Client_ID(getCtx()));
-				rs = pstmt.executeQuery ();
-				while (rs.next ())
-				{
-					int C_BPartner_ID = rs.getInt(1);
-					int count = allocateBP (C_BPartner_ID);
-					if (count > 0)
-					{
-						countBP++;
-						countAlloc += count;
-						commitEx();
-					}
-				}
- 			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, sql, e);
+				where = "C_BP_Group_ID=?";
+				parameter = p_C_BP_Group_ID;
 			}
-			finally
+			else
 			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
+				where = "AD_Client_ID=?";
+				parameter = Env.getAD_Client_ID(getCtx());
+			}
+			int[] ids = new Query(getCtx(), MBPartner.Table_Name, where, get_TrxName())
+					.setOrderBy("Value")
+					.setParameters(parameter)
+					.getIDs();
+			for (int C_BPartner_ID : ids)
+			{
+				int count = allocateBP (C_BPartner_ID);
+				if (count > 0)
+				{
+					countBP++;
+					countAlloc += count;
+					commitEx();
+				}
 			}
 		}
 		//
@@ -259,43 +224,27 @@ public class AllocationAuto extends SvrProcess
 	 */
 	private MPayment[] getPayments (int C_BPartner_ID)
 	{
-		ArrayList<MPayment> list = new ArrayList<MPayment>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM C_Payment ")
-			.append("WHERE IsAllocated='N' AND Processed='Y' AND C_BPartner_ID=?")
-			.append(" AND IsPrepayment='N' AND C_Charge_ID IS NULL ");
+		StringBuilder where = new StringBuilder("IsAllocated='N' AND Processed='Y' AND C_BPartner_ID=?"
+				+ " AND IsPrepayment='N' AND C_Charge_ID IS NULL ");
 		if (ONLY_AP.equals(p_APAR))
-			sql.append("AND IsReceipt='N' ");
+			where.append("AND IsReceipt='N'");
 		else if (ONLY_AR.equals(p_APAR))
-			sql.append("AND IsReceipt='Y' ");
-		sql.append("ORDER BY DateTrx");
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+			where.append("AND IsReceipt='Y'");
+		List<MPayment> queryList = new Query(getCtx(), MPayment.Table_Name, where.toString(), get_TrxName())
+				.setOrderBy("DateTrx, Created, C_Payment_ID")
+				.setParameters(C_BPartner_ID)
+				.list();
+		ArrayList<MPayment> list = new ArrayList<MPayment>();
+		for (MPayment payment : queryList)
 		{
-			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			pstmt.setInt (1, C_BPartner_ID);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
+			BigDecimal allocated = payment.getAllocatedAmt(); 
+			if (allocated != null && allocated.compareTo(payment.getPayAmt()) == 0)
 			{
-				MPayment payment = new MPayment (getCtx(), rs, get_TrxName());
-				BigDecimal allocated = payment.getAllocatedAmt(); 
-				if (allocated != null && allocated.compareTo(payment.getPayAmt()) == 0)
-				{
-					payment.setIsAllocated(true);
-					payment.saveEx();
-				}
-				else
-					list.add (payment);
+				payment.setIsAllocated(true);
+				payment.saveEx();
 			}
- 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
+			else
+				list.add (payment);
 		}
 		m_payments = new MPayment[list.size ()];
 		list.toArray (m_payments);
@@ -309,41 +258,25 @@ public class AllocationAuto extends SvrProcess
 	 */
 	private MInvoice[] getInvoices (int C_BPartner_ID)
 	{
-		ArrayList<MInvoice> list = new ArrayList<MInvoice>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM C_Invoice ")
-			.append("WHERE IsPaid='N' AND Processed='Y' AND C_BPartner_ID=? ");
+		StringBuilder where = new StringBuilder("IsPaid='N' AND Processed='Y' AND C_BPartner_ID=? ");
 		if (ONLY_AP.equals(p_APAR))
-			sql.append("AND IsSOTrx='N' ");
+			where.append("AND IsSOTrx='N' ");
 		else if (ONLY_AR.equals(p_APAR))
-			sql.append("AND IsSOTrx='Y' ");
-		sql.append("ORDER BY DateInvoiced");
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+			where.append("AND IsSOTrx='Y' ");
+		List<MInvoice> queryList = new Query(getCtx(), MInvoice.Table_Name, where.toString(), get_TrxName())
+				.setOrderBy("DateInvoiced, Created, C_Invoice_ID")
+				.setParameters(C_BPartner_ID)
+				.list();
+		ArrayList<MInvoice> list = new ArrayList<MInvoice>();
+		for (MInvoice invoice : queryList)
 		{
-			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
-			pstmt.setInt (1, C_BPartner_ID);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
+			if (invoice.getOpenAmt(false, null).signum() == 0)
 			{
-				MInvoice invoice = new MInvoice (getCtx(), rs, get_TrxName());
-				if (invoice.getOpenAmt(false, null).signum() == 0)
-				{
-					invoice.setIsPaid(true);
-					invoice.saveEx();
-				}
-				else
-					list.add (invoice);
+				invoice.setIsPaid(true);
+				invoice.saveEx();
 			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
+			else
+				list.add (invoice);
 		}
 		m_invoices = new MInvoice[list.size ()];
 		list.toArray (m_invoices);

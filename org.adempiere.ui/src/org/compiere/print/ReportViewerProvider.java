@@ -23,5 +23,9 @@ package org.compiere.print;
  *
  */
 public interface ReportViewerProvider {
+	/**
+	 * Open report viewer
+	 * @param re
+	 */
 	public void openViewer(ReportEngine re);
 }

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -65,11 +66,43 @@ public class MDistribution extends X_GL_Distribution
 
 	/**
 	 * 	Get Distributions for combination
-	 *	@param ctx context
 	 *	@param C_AcctSchema_ID schema
 	 *	@param PostingType posting type
 	 *	@param C_DocType_ID document type
 	 *	@param dateAcct date (to be tested with ValidFrom/ValidTo)
+	 *	@param AD_Org_ID org
+	 *	@param Account_ID account
+	 *	@param M_Product_ID product
+	 *	@param C_BPartner_ID partner
+	 *	@param C_Project_ID project
+	 *	@param C_Campaign_ID campaign
+	 *	@param C_Activity_ID activity
+	 *	@param AD_OrgTrx_ID trx org
+	 *	@param C_SalesRegion_ID
+	 *	@param C_LocTo_ID location to
+	 *	@param C_LocFrom_ID location from
+	 *	@param User1_ID user 1
+	 *	@param User2_ID user 2
+	 *	@return array of distributions or null
+	 */
+	public static MDistribution[] get (int C_AcctSchema_ID, 
+		String PostingType, int C_DocType_ID, Timestamp dateAcct,
+		int AD_Org_ID, int Account_ID,
+		int M_Product_ID, int C_BPartner_ID, int C_Project_ID,
+		int C_Campaign_ID, int C_Activity_ID, int AD_OrgTrx_ID,
+		int C_SalesRegion_ID, int C_LocTo_ID, int C_LocFrom_ID,
+		int User1_ID, int User2_ID)
+	{
+		return get(Env.getCtx(), C_AcctSchema_ID, PostingType, C_DocType_ID, dateAcct, AD_Org_ID, Account_ID, M_Product_ID, C_BPartner_ID, 
+				C_Project_ID, C_Campaign_ID, C_Activity_ID, AD_OrgTrx_ID, C_SalesRegion_ID, C_LocTo_ID, C_LocFrom_ID, User1_ID, User2_ID);
+	}
+	
+	/**
+	 * 	Get Distributions for combination
+	 *  @param ctx context
+	 *	@param C_AcctSchema_ID schema
+	 *	@param PostingType posting type
+	 *	@param C_DocType_ID document type
 	 *	@param AD_Org_ID org
 	 *	@param Account_ID account
 	 *	@param M_Product_ID product
@@ -93,7 +126,7 @@ public class MDistribution extends X_GL_Distribution
 		int C_SalesRegion_ID, int C_LocTo_ID, int C_LocFrom_ID,
 		int User1_ID, int User2_ID)
 	{
-		MDistribution[] acctList = getAll(ctx);
+		MDistribution[] acctList = getAll();
 		if (acctList == null || acctList.length == 0)
 			return null;
 		//
@@ -154,12 +187,23 @@ public class MDistribution extends X_GL_Distribution
 	
 	/**
 	 * 	Get Distributions for Account
-	 *	@param ctx context
+	 *	@param ctx ignore
 	 *	@param Account_ID id
 	 *	@return array of distributions
 	 */
 	public static MDistribution[] get (Properties ctx, int Account_ID)
 	{
+		return get(Account_ID);
+	}
+	
+	/**
+	 * 	Get Distributions for Account
+	 *	@param Account_ID id
+	 *	@return array of distributions
+	 */
+	public static MDistribution[] get (int Account_ID)
+	{
+		Properties ctx = Env.getCtx();
 		Integer key = Integer.valueOf(Account_ID);
 		MDistribution[] retValue = (MDistribution[])s_accounts.get(key);
 		if (retValue != null)
@@ -177,20 +221,31 @@ public class MDistribution extends X_GL_Distribution
 			.list();
 		//
 		retValue = new MDistribution[list.size ()];
-		list.toArray (retValue);
+		retValue = list.toArray (retValue);
 		s_accounts.put(key, retValue);
 		return retValue;
 	}	//	get
 	
 	/**
 	 * 	Get All Distributions
-	 *	@param ctx context
+	 *	@param ctx ignore
 	 *	@param Account_ID id
 	 *	@return array of distributions
+	 *  @deprecated
 	 */
 	public static MDistribution[] getAll (Properties ctx)
 	{
-		return get(ctx, -1);
+		return getAll();
+	}
+	
+	/**
+	 * 	Get All Distributions
+	 *	@param Account_ID id
+	 *	@return array of distributions
+	 */
+	public static MDistribution[] getAll ()
+	{
+		return get(-1);
 	}	//	get
 	
 	/**	Static Logger	*/
@@ -245,6 +300,38 @@ public class MDistribution extends X_GL_Distribution
 		super(ctx, rs, trxName);
 	}	//	MDistribution
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDistribution(MDistribution copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDistribution(Properties ctx, MDistribution copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDistribution(Properties ctx, MDistribution copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {var v = new MDistributionLine(ctx, e, trxName); v.setParent(this); return v;}).toArray(MDistributionLine[]::new) : null;
+	}
+	
 	/**	The Lines						*/
 	private MDistributionLine[]		m_lines = null;
 	
@@ -449,5 +536,5 @@ public class MDistribution extends X_GL_Distribution
 			setUser2_ID(0);
 		return true;
 	}	//	beforeSave
-	
+
 }	//	MDistribution

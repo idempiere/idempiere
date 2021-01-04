@@ -1,0 +1,6 @@
+ALTER TABLE AD_Column ADD CONSTRAINT ADValRuleLookup_ADColumn FOREIGN KEY (AD_Val_Rule_Lookup_ID) REFERENCES AD_Val_Rule DEFERRABLE INITIALLY DEFERRED;
+;
+
+SELECT register_migration_script('202011031656_IDEMPIERE-4521_AddMissingFKs.sql') FROM dual
+;
+

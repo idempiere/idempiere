@@ -32,6 +32,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 /**
  *	Web Services Parameters Model
  *	
@@ -72,6 +74,37 @@ public class MWebServicePara extends X_WS_WebService_Para
 		super(ctx, rs, trxName);
 	}	//	MWebServicePara
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWebServicePara(MWebServicePara copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWebServicePara(Properties ctx, MWebServicePara copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWebServicePara(Properties ctx, MWebServicePara copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (   "Filter".equalsIgnoreCase(getParameterName())

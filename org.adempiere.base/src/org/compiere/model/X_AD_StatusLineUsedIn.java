@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_StatusLineUsedIn
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
         {
 			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
 			setIsStatusLine (true);
 // Y
         } */
@@ -213,6 +215,26 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** EntityType AD_Reference_ID=389 */
+	public static final int ENTITYTYPE_AD_Reference_ID=389;
+	/** Set Entity Type.
+		@param EntityType 
+		Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public void setEntityType (String EntityType)
+	{
+
+		set_Value (COLUMNNAME_EntityType, EntityType);
+	}
+
+	/** Get Entity Type.
+		@return Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public String getEntityType () 
+	{
+		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Status Line.

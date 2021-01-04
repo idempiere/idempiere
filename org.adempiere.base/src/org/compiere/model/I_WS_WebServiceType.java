@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebServiceType
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_WS_WebServiceType 
 {
@@ -118,6 +118,15 @@ public interface I_WS_WebServiceType
 	  * Comment or Hint
 	  */
 	public String getHelp();
+
+    /** Column name InsertParameters */
+    public static final String COLUMNNAME_InsertParameters = "InsertParameters";
+
+	/** Set Create Default Parameters	  */
+	public void setInsertParameters (String InsertParameters);
+
+	/** Get Create Default Parameters	  */
+	public String getInsertParameters();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

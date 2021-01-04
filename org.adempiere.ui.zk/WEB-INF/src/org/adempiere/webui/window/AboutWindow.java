@@ -22,21 +22,16 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.WebUIActivator;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.FolderBrowser;
-import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHead;
 import org.adempiere.webui.component.ListHeader;
-import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
-import org.adempiere.webui.component.Row;
-import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
@@ -44,7 +39,6 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
@@ -52,20 +46,15 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.Adempiere;
-import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogErrorBuffer;
 import org.compiere.util.CLogMgt;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
-import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Util;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.wiring.BundleRevision;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Pre;
 import org.zkoss.zhtml.Text;
@@ -78,6 +67,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
@@ -94,7 +84,10 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7922577248288156723L;
+	private static final long serialVersionUID = -4235323239552159150L;
+
+	/**	Logger			*/
+	private static final CLogger log = CLogger.getCLogger(AboutWindow.class);
 
 	private Checkbox bErrorsOnly;
 	private Listbox logTable;
@@ -110,19 +103,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	protected Button btnReloadLogProps;
 
 	private Listbox levelListBox;
-
-	private WListbox pluginsTable;
-	private Listbox pluginActions;
-	private Button pluginProcess;
-	private Vector<Vector<Object>> pluginData;
-	private Vector<String> pluginColumnNames;
-
-	private static final int PLUGIN_ACTION_NONE = 0;
-	private static final int PLUGIN_ACTION_STOP = 1;
-	private static final int PLUGIN_ACTION_START = 2;
-	private static final int PLUGIN_ACTION_UPDATE = 3;
-	private static final int PLUGIN_ACTION_UNINSTALL = 4;
-	private static final int PLUGIN_ACTION_INSTALL = 5;
 
 	public AboutWindow() {
 		super();
@@ -220,15 +200,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		tabPanel = createTrace();
 		tabPanel.setParent(tabPanels);
 
-		//Plugins
-		tab = new Tab();
-		tab.setLabel("Plugins");
-		tabPlugins= tab;
-		tabPanel = createPlugins();
-		if (tabPanel != null) {
-			tab.setParent(tabs);
-			tabPanel.setParent(tabPanels);
-		}
 	}
 
 	protected Tabpanel createTrace() {
@@ -355,197 +326,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			tabLog.setLabel(Msg.getMsg(Env.getCtx(), "TraceInfo") + " (" + data.size() + ")");
 	}
 
-	protected Tabpanel createPlugins() {
-		Properties ctx = Env.getCtx();
-		MUser user = MUser.get(ctx);
-		Tabpanel tabPanel = null;
-		if (Env.getAD_Client_ID(ctx) == 0 && user.isAdministrator()) {
-			tabPanel = new Tabpanel();
-			Vbox vbox = new Vbox();
-			ZKUpdateUtil.setHflex(vbox, "1");
-			ZKUpdateUtil.setVflex(vbox, "1");
-
-			pluginColumnNames = new Vector<String>();
-			pluginColumnNames.add("");
-			pluginColumnNames.add(Msg.getMsg(ctx, "Id"));
-			pluginColumnNames.add(Msg.getMsg(ctx, "State"));
-			pluginColumnNames.add(Msg.getCleanMsg(ctx, "Name"));
-			pluginColumnNames.add(Msg.getMsg(ctx, "Version"));
-
-			pluginsTable = ListboxFactory.newDataTableAutoSize();
-			pluginData = new Vector<Vector<Object>>();
-			int i = 0;
-			pluginsTable.setColumnClass(i++, IDColumn.class, true);        //  0-bundleId
-			pluginsTable.setColumnClass(i++, Integer.class, true);         //  1-bundleId
-			pluginsTable.setColumnClass(i++, String.class, true);          //  2-State
-			pluginsTable.setColumnClass(i++, String.class, true);          //  3-SymbolicName
-			pluginsTable.setColumnClass(i++, String.class, true);          //  4-Version
-			vbox.appendChild(pluginsTable);
-			ZKUpdateUtil.setVflex(pluginsTable, "1");
-			ZKUpdateUtil.setHflex(pluginsTable, "1");
-			refreshPluginTable();
-			pluginsTable.autoSize();
-			pluginsTable.addEventListener(Events.ON_SELECT, this);
-			
-			pluginActions = new Listbox(
-					new KeyNamePair[] {
-							new KeyNamePair(PLUGIN_ACTION_NONE, ""),
-							new KeyNamePair(PLUGIN_ACTION_STOP, Msg.getMsg(ctx, "Stop")),
-							new KeyNamePair(PLUGIN_ACTION_START, Msg.getMsg(ctx, "Start")),
-							new KeyNamePair(PLUGIN_ACTION_UPDATE, Msg.getMsg(ctx, "Update")),
-							new KeyNamePair(PLUGIN_ACTION_UNINSTALL, Msg.getMsg(ctx, "Uninstall")),
-							new KeyNamePair(PLUGIN_ACTION_INSTALL, Msg.getMsg(ctx, "Install"))
-					});
-			pluginActions.setId("pluginActions");
-			pluginActions.setRows(0);
-			pluginActions.setMold("select");
-			ZKUpdateUtil.setWidth(pluginActions, "200px");
-			refreshActionList();
-			pluginProcess = new Button(Msg.getMsg(ctx, "Process"));
-			pluginProcess.addEventListener(Events.ON_CLICK, this);
-			Div div = new Div();
-			div.setStyle("text-align: right;");
-			div.appendChild(pluginActions);
-			div.appendChild(pluginProcess);
-			vbox.appendChild(div);
-			vbox.setParent(tabPanel);
-
-			tabPlugins.setLabel(Msg.getMsg(ctx, "Plugins") + " (" + pluginData.size() + ")");
-		}
-
-		return tabPanel;
-	}
-
-	private String state(int state) {
-		switch (state) {
-		case Bundle.ACTIVE:
-			return "ACTIVE";
-		case Bundle.INSTALLED:
-			return "INSTALLED";
-		case Bundle.RESOLVED:
-			return "RESOLVED";
-		case Bundle.STARTING:
-			return "STARTING";
-		case Bundle.STOPPING:
-			return "STOPPING";
-		case Bundle.UNINSTALLED:
-			return "UNINSTALLED";
-		default:
-			return "UNKNOWN";
-		}
-	}
-
-	private void refreshActionList() {
-		pluginActions.getItemAtIndex(PLUGIN_ACTION_UPDATE).setVisible(false); // not implemented yet
-		pluginActions.getItemAtIndex(PLUGIN_ACTION_UNINSTALL).setVisible(false); // not implemented yet
-		pluginActions.getItemAtIndex(PLUGIN_ACTION_INSTALL).setVisible(false); // not implemented yet
-		pluginActions.getItemAtIndex(PLUGIN_ACTION_STOP).setVisible(false);
-		pluginActions.getItemAtIndex(PLUGIN_ACTION_START).setVisible(false);
-		pluginActions.setSelectedItem(null);
-		Bundle bundle = getSelectedBundle();
-		if (bundle == null)
-			return;
-		int state = bundle.getState();
-		boolean isFragment = false;
-		BundleRevision rev = bundle.adapt(BundleRevision.class);
-		if (rev != null) {
-			isFragment = (rev.getTypes() & BundleRevision.TYPE_FRAGMENT) != 0;
-		}
-		/*
-		boolean hasFragments = false;
-		if (!isFragment) {
-			if (rev.getWiring() != null) {
-				if (rev.getWiring().getProvidedWires(BundleRevision.HOST_NAMESPACE).size() > 0) {
-					hasFragments = true;
-				}
-			}
-		}
-		*/
-		if (bundle.getBundleId() == 0) {
-			// bundle 0 cannot be stopped
-		} else if (state == Bundle.ACTIVE) {
-			pluginActions.getItemAtIndex(PLUGIN_ACTION_STOP).setVisible(true);
-		} else if (state == Bundle.RESOLVED) {
-			if (!isFragment) {
-				pluginActions.getItemAtIndex(PLUGIN_ACTION_START).setVisible(true);
-			}
-		} else if (state == Bundle.INSTALLED) {
-			if (!isFragment) {
-				pluginActions.getItemAtIndex(PLUGIN_ACTION_START).setVisible(true);
-			}
-		} else if (state == Bundle.STARTING) {
-			if (!isFragment) {
-				pluginActions.getItemAtIndex(PLUGIN_ACTION_START).setVisible(true);
-			}
-		} else if (state == Bundle.STOPPING) {
-			// no options yet for stopping
-		} else if (state == Bundle.UNINSTALLED) {
-			// no options yet for uninstalled
-		}
-	}
-
-	private Bundle getSelectedBundle() {
-		Bundle retValue = null;
-		int idx = pluginsTable.getSelectedIndex();
-		if (idx >= 0) {
-			Vector<Object> pluginVector = pluginData.get(idx);
-			int pluginId = ((IDColumn)pluginVector.get(0)).getRecord_ID();
-			BundleContext bundleCtx = WebUIActivator.getBundleContext();
-			retValue = bundleCtx.getBundle(pluginId);
-		}
-		return retValue;
-	}
-
-	private void processPlugin() {
-		Listitem actionItem = pluginActions.getSelectedItem();
-		if (actionItem != null && actionItem.getValue() instanceof Integer) {
-			int action = (Integer)actionItem.getValue();
-			Bundle bundle = getSelectedBundle();
-			if (action == PLUGIN_ACTION_STOP && bundle != null) {
-				try {
-					bundle.stop();
-				} catch (BundleException e) {
-					throw new AdempiereException(e);
-				}
-			} else if (action == PLUGIN_ACTION_START && bundle != null) {
-				try {
-					bundle.start();
-				} catch (BundleException e) {
-					throw new AdempiereException(e);
-				}
-			} else if (action == PLUGIN_ACTION_UPDATE && bundle != null) {
-				// PLUGIN_ACTION_UPDATE not implemented yet
-			} else if (action == PLUGIN_ACTION_UNINSTALL && bundle != null) {
-				// PLUGIN_ACTION_UNINSTALL not implemented yet
-			} else if (action == PLUGIN_ACTION_INSTALL && bundle != null) {
-				// PLUGIN_ACTION_INSTALL not implemented yet
-			}
-		}
-		refreshPluginTable();
-		refreshActionList();
-	}
-
-	private void refreshPluginTable() {
-		int idx = pluginsTable.getSelectedIndex();
-		pluginsTable.getModel().removeAll(pluginData);
-		pluginData.removeAllElements();
-
-		BundleContext bundleCtx = WebUIActivator.getBundleContext();
-		for (Bundle bundle : bundleCtx.getBundles()) {
-			Vector<Object> line = new Vector<Object>();
-			Integer bundl = Long.valueOf(bundle.getBundleId()).intValue(); // potential problem converting Long to Integer, but WListBox cannot order Long
-			line.add(new IDColumn(bundl));
-			line.add(bundl);
-			line.add(state(bundle.getState()));
-			line.add(bundle.getSymbolicName());
-			line.add(bundle.getVersion());
-			pluginData.add(line);
-		}
-		ListModelTable model = new ListModelTable(pluginData);
-		pluginsTable.setData(model, pluginColumnNames);
-		pluginsTable.setSelectedIndex(idx);
-	}
-
 	protected Tabpanel createInfo() {
 		Tabpanel tabPanel = new Tabpanel();
 		Div div = new Div();
@@ -562,112 +342,26 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	}
 
 	protected Tabpanel createCredit() {
-		Tabpanel tabPanel = new Tabpanel();		
-		Div div = new Div();
-		LayoutUtils.addSclass("about-credit-panel", div);
-		div.setParent(tabPanel);
-		ZKUpdateUtil.setWidth(div, "100%");
-		ZKUpdateUtil.setHeight(div, "100%");
-		div.setStyle("overflow: auto;");
-		Vbox vbox = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-logo", vbox);
-		vbox.setParent(div);
-		Label caption = new Label("Top iDempiere sponsor");
-		caption.setStyle("font-weight: bold;");
-		caption.setParent(vbox);
-		ToolBarButton link = new ToolBarButton();
-		ZKUpdateUtil.setHeight(link, "72px");
-		link.setImage("images/TrekGlobal.jpg");
-		link.setParent(vbox);
-		link.setHref("http://www.trekglobal.com");
-		link.setTarget("_blank");
-
-		Separator separator = new Separator();
-		separator.setParent(div);
-
-		Div panel = new Div();
-		LayoutUtils.addSclass("about-credit-panel-sponsors", panel);
-		panel.setParent(div);
-		ZKUpdateUtil.setWidth(panel, "100%");
-		vbox = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-sponsors-header", vbox);
-		ZKUpdateUtil.setWidth(vbox, "100%");
-		vbox.setParent(panel);
-		caption = new Label("Sponsors");
-		caption.setStyle("font-weight: bold;");
-		caption.setParent(vbox);
-		Vbox content = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-sponsors-links", content);
-		ZKUpdateUtil.setWidth(content, "100%");
-		content.setParent(panel);
-
-		Grid grid = new Grid();
-		grid.setParent(content);
-
-		Rows rows = new Rows();
-		rows.setParent(grid);
-
-		Row row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("GlobalQSS", "http://www.globalqss.com/"));
-		row.appendCellChild(addLink("Adaxa", "http://www.adaxa.com/"));
-		row.appendCellChild(addLink("Sysnova", "http://www.sysnova.com/"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("See also ...", "http://www.idempiere.org/sponsors"), 3);
-
-		panel = new Div();
-		LayoutUtils.addSclass("about-credit-panel-contributors", panel);
-		panel.setParent(div);
-		ZKUpdateUtil.setWidth(panel, "100%");
-		vbox = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-contributors-header", vbox);
-		ZKUpdateUtil.setWidth(vbox, "100%");
-		vbox.setParent(panel);
-		caption = new Label("Contributors");
-		caption.setStyle("font-weight: bold;");
-		caption.setParent(vbox);
-		content = new Vbox();
-		LayoutUtils.addSclass("about-credit-panel-contributors-links", content);
-		ZKUpdateUtil.setWidth(content, "100%");
-		content.setParent(panel);
-
-		grid = new Grid();
-		grid.setParent(content);
-
-		rows = new Rows();
-		rows.setParent(grid);
-
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Low Heng Sin", "http://www.adempiere.com/User:Hengsin"));
-		row.appendCellChild(addLink("Carlos Ruiz", "http://wiki.idempiere.org/en/User:CarlosRuiz"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Hiep Lq", "http://wiki.idempiere.org/en/User:Hieplq"));
-		row.appendCellChild(addLink("Nicolas Micoud", "http://wiki.idempiere.org/en/User:Nmicoud"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Jan Thielemann", "http://wiki.idempiere.org/en/User:Jan.thielemann"));
-		row.appendCellChild(addLink("Redhuan D. Oon", "http://www.red1.org"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Thomas Bayen", "http://wiki.idempiere.org/en/User:TBayen"));
-		row.appendCellChild(addLink("Ashley G Ramdass", "http://www.adempiere.com/User:Agramdass"));
-		row = new Row();
-		row.setParent(rows);
-		row.appendCellChild(addLink("Teo Sarca", "http://www.adempiere.com/User:Teo_sarca"));
-		row.appendCellChild(addLink("Trifon Trifonov", "http://www.adempiere.com/User:Trifonnt"));
+		Tabpanel tabPanel = new Tabpanel();
+		String fileName = Adempiere.getAdempiereHome() + File.separator + "Credits.html";
+		File file = new File(fileName);
+		AMedia media = null;
+		try {
+			media = new AMedia(file.getName(), "html", "text/html", file, false);
+		} catch (FileNotFoundException e) {
+			log.warning("File " + fileName + " not found");
+		}
+		Iframe iframe = new Iframe();
+		ZKUpdateUtil.setWidth(iframe, "100%");
+		ZKUpdateUtil.setHeight(iframe, "100%");
+		iframe.setStyle("overflow: auto;");
+		iframe.setId("creditsFrame");
+		iframe.setParent(tabPanel);
+		iframe.setSrc(null);
+		if (media != null)
+			iframe.setContent(media);
 
 		return tabPanel;
-	}
-
-	private ToolBarButton addLink(String label, String href) {
-		ToolBarButton link = new ToolBarButton();
-		link.setLabel(label);
-		link.setHref(href);
-		link.setTarget("_blank");
-		return link;
 	}
 
 	protected Tabpanel createAbout() {
@@ -752,14 +446,8 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			reloadLogProps();
 		else if (event.getTarget() == levelListBox)
 			setTraceLevel();
-        else if (Events.ON_SELECT.equals(event.getName()) && event.getTarget() == pluginsTable)
-        	refreshActionList();
-		else if (Events.ON_CLICK.equals(event.getName())) {
-			if (event.getTarget() == pluginProcess)
-				processPlugin();
-			else
-				this.detach();
-		}
+		else if (Events.ON_CLICK.equals(event.getName()))
+			this.detach();
 	}
 
 	private void reloadLogProps() {

@@ -48,7 +48,15 @@ ADEMPIERE_DB_NAME="$(expr "$CONN" : ".*DBname.=\(.*\),BQ.=")"
 ADEMPIERE_DB_SERVER="$(expr "$CONN" : ".*DBhost.=\(.*\),DBport.=")"
 ADEMPIERE_DB_PORT="$(expr "$CONN" : ".*DBport.=\(.*\),DBname.=")"
 ADEMPIERE_DB_USER="$(expr "$CONN" : ".*UID.=\(.*\),PWD.=")"
+if [ "x$ADEMPIERE_DB_USER" = "x" ]
+then
+    ADEMPIERE_DB_USER="$(expr "$CONN" : ".*UID.=\(.*\)\]")"
+fi
 ADEMPIERE_DB_PASSWORD="$(expr "$CONN" : ".*PWD.=\(.*\)]")"
+if [ "x$ADEMPIERE_DB_PASSWORD" = "x" ]
+then
+    ADEMPIERE_DB_PASSWORD="$( $IDEMPIERE_HOME/org.adempiere.server-feature/utils.unix/getVar.sh ADEMPIERE_DB_PASSWORD )"
+fi
 ADEMPIERE_DB_PATH="$(expr "$CONN" : ".*type.=\(.*\),DBhost.=")"
 ADEMPIERE_DB_PATH="${ADEMPIERE_DB_PATH,,}"
 export IDEMPIERE_HOME

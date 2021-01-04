@@ -21,10 +21,11 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	GL Category
@@ -32,30 +33,42 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MGLCategory.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MGLCategory extends X_GL_Category
+public class MGLCategory extends X_GL_Category implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -272365151811522531L;
-
+	private static final long serialVersionUID = 7294511214194057235L;
 
 	/**
-	 * 	Get MGLCategory from Cache
-	 *	@param ctx context
+	 * 	Get MGLCategory from Cache (immutable)
 	 *	@param GL_Category_ID id
 	 *	@return MGLCategory
+	 */
+	public static MGLCategory get (int GL_Category_ID)
+	{
+		return get(Env.getCtx(), GL_Category_ID);
+	}
+	
+	/**
+	 * 	Get MGLCategory from Cache (immutable)
+	 *  @param ctx context
+	 *	@param GL_Category_ID id
+	 *	@return immutable instance of MGLCategory
 	 */
 	public static MGLCategory get (Properties ctx, int GL_Category_ID)
 	{
 		Integer key = Integer.valueOf(GL_Category_ID);
-		MGLCategory retValue = (MGLCategory)s_cache.get (key);
+		MGLCategory retValue = s_cache.get (ctx, key, e -> new MGLCategory(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MGLCategory (ctx, GL_Category_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MGLCategory (ctx, GL_Category_ID, (String)null);
+		if (retValue.get_ID () == GL_Category_ID)
+		{
+			s_cache.put (key, retValue, e -> new MGLCategory(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -126,8 +139,8 @@ public class MGLCategory extends X_GL_Category
 	/**	Logger						*/
 	private static CLogger s_log = CLogger.getCLogger (MGLCategory.class);
 	/**	Cache						*/
-	private static CCache<Integer, MGLCategory> s_cache 
-		= new CCache<Integer, MGLCategory> (Table_Name, 5);
+	private static ImmutableIntPOCache<Integer, MGLCategory> s_cache 
+		= new ImmutableIntPOCache<Integer, MGLCategory> (Table_Name, 5);
 	
 
 	/**************************************************************************
@@ -158,6 +171,37 @@ public class MGLCategory extends X_GL_Category
 		super(ctx, rs, trxName);
 	}	//	MGLCategory
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MGLCategory(MGLCategory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MGLCategory(Properties ctx, MGLCategory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MGLCategory(Properties ctx, MGLCategory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	@Override
 	public String toString()
 	{
@@ -169,4 +213,14 @@ public class MGLCategory extends X_GL_Category
 				.append("]");
 		return msgreturn.toString();
 	}
+	
+	@Override
+	public MGLCategory markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MGLCategory

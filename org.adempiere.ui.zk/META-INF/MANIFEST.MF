@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
-Bundle-Version: 7.1.0.qualifier
+Bundle-Version: 8.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: groovy.transform.stc;version="2.4.7",
  javax.annotation,
@@ -22,23 +23,20 @@ Import-Package: groovy.transform.stc;version="2.4.7",
  net.sf.jasperreports.engine.export.ooxml,
  net.sf.jasperreports.engine.util,
  net.sf.jasperreports.export,
- org.adempiere.report.jasper,
  org.apache.commons.codec.binary,
  org.apache.commons.fileupload;version="1.2.2",
  org.apache.commons.fileupload.disk;version="1.2.2",
  org.apache.commons.fileupload.portlet;version="1.2.2",
  org.apache.commons.fileupload.servlet;version="1.2.2",
  org.apache.commons.fileupload.util;version="1.2.2",
+ org.apache.commons.lang3;version="3.1.0",
  org.apache.ecs,
  org.apache.ecs.xhtml,
  org.apache.tools.ant,
  org.apache.tools.ant.taskdefs,
- org.compiere.css,
- org.compiere.server,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.jetty.websocket.jsr356;version="9.4.12",
  org.eclipse.jetty.websocket.jsr356.server;version="9.4.12",
- org.idempiere.server.cluster,
  org.jfree.chart,
  org.jfree.chart.encoders,
  org.jfree.chart.entity,
@@ -150,9 +148,11 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.ckez.ext.CKeditor.plugins.wsc.dialogs,
  web.js.ckez.ext.CKeditor.plugins.wsc.skins,
  web.js.ckez.ext.CKeditor.skins,
- web.js.zkforge,
- web.js.zkforge.mold
+ web.js.zkforge.keylistener,
+ web.js.zkforge.keylistener.mold
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.adempiere.report.jasper;bundle-version="0.0.0",
+ org.adempiere.server;bundle-version="0.0.0",
  org.adempiere.ui;bundle-version="0.0.0",
  org.idempiere.zk.extra;bundle-version="0.0.0",
  zcommon;bundle-version="0.0.0",

@@ -218,11 +218,13 @@ public class M_PriceList_Create extends SvrProcess {
 						+ " INNER JOIN M_Product p ON (p.M_Product_ID=po.M_Product_ID)"
 						+ " INNER JOIN M_DiscountSchemaLine dl ON (dl.M_DiscountSchemaLine_ID=?) "	//	#2
 						+ "WHERE p.AD_Client_ID IN (?, 0)"		//	#3
-						+ " AND p.IsActive='Y' AND po.IsActive='Y' AND po.IsCurrentVendor='Y'"
+						+ " AND p.IsActive='Y' AND po.IsActive='Y'"
 						//	Optional Restrictions
 						+ " AND (dl.Group1 IS NULL OR p.Group1=dl.Group1)"
 						+ " AND (dl.Group2 IS NULL OR p.Group2=dl.Group2)"
-						+ " AND (dl.C_BPartner_ID IS NULL OR po.C_BPartner_ID=dl.C_BPartner_ID)"
+						+ " AND (dl.C_BPartner_ID IS NULL OR po.C_BPartner_ID=dl.C_BPartner_ID)" 
+						+ " AND (dl.VendorCategory IS NULL OR po.VendorCategory=dl.VendorCategory)"
+						+ " AND (dl.IsIgnoreIsCurrentVendor='Y' OR po.IsCurrentVendor='Y')"
 						+ " AND (dl.M_Product_ID IS NULL OR p.M_Product_ID=dl.M_Product_ID)");
 				if (dsLine.getM_Product_Category_ID() > 0) {
 					sqlb.append(" AND p.M_Product_Category_ID IN (")
@@ -240,10 +242,12 @@ public class M_PriceList_Create extends SvrProcess {
 						//	Optional Restrictions
 						+ " AND (dl.Group1 IS NULL OR p.Group1=dl.Group1)"
 						+ " AND (dl.Group2 IS NULL OR p.Group2=dl.Group2)"
-						+ " AND (dl.C_BPartner_ID IS NULL OR EXISTS "
-						+ "(SELECT * FROM M_Product_PO po "
-						+ "WHERE po.M_Product_ID=p.M_Product_ID AND po.C_BPartner_ID=dl.C_BPartner_ID))"
-						+ " AND (dl.M_Product_ID IS NULL OR p.M_Product_ID=dl.M_Product_ID)");
+						+ " AND ((dl.C_BPartner_ID IS NULL AND dl.VendorCategory IS NULL) OR EXISTS "
+						+ "(SELECT * FROM M_Product_PO po"
+						+ " WHERE po.M_Product_ID=p.M_Product_ID"
+						+ "   AND (dl.C_BPartner_ID IS NULL OR po.C_BPartner_ID=dl.C_BPartner_ID)"
+						+ "   AND (dl.VendorCategory IS NULL OR po.VendorCategory=dl.VendorCategory)))"
+ 						+ " AND (dl.M_Product_ID IS NULL OR p.M_Product_ID=dl.M_Product_ID)");
 				if (dsLine.getM_Product_Category_ID() > 0) {
 					sqlb.append(" AND p.M_Product_Category_ID IN (")
 						.append(getSubCategoryWhereClause(dsLine.getM_Product_Category_ID()))
@@ -295,7 +299,9 @@ public class M_PriceList_Create extends SvrProcess {
 						+ " INNER JOIN M_DiscountSchemaLine dl ON (dl.M_DiscountSchemaLine_ID=?) "	//	#3
 						//
 						+ "WHERE EXISTS (SELECT * FROM T_Selection s WHERE s.AD_PInstance_ID=? AND po.M_Product_ID=s.T_Selection_ID)"	//	#4
-						+ " AND po.IsCurrentVendor='Y' AND po.IsActive='Y'";
+						+ " AND ((dl.C_BPartner_ID IS NULL AND po.IsCurrentVendor='Y')"
+						+ "      OR (po.C_BPartner_ID=dl.C_BPartner_ID AND (dl.IsIgnoreIsCurrentVendor='Y' OR po.IsCurrentVendor='Y')))"
+						+ " AND po.IsActive='Y'";
 			} else {
 				/**	Copy and Convert from other PriceList_Version	*/
 				sql += "SELECT plv.M_PriceList_Version_ID, pp.M_Product_ID,"
@@ -336,7 +342,7 @@ public class M_PriceList_Create extends SvrProcess {
 			/** Calculations	**/
 			MProductPrice[] pp = m_plv.getProductPrice(
 					"AND EXISTS (SELECT * FROM T_Selection s "
-							+ "WHERE s.T_Selection_ID=M_ProductPrice.M_Product_ID)");
+							+ "WHERE s.AD_PInstance_ID = " + m_AD_PInstance_ID + " AND s.T_Selection_ID=M_ProductPrice.M_Product_ID)");
 			for (MProductPrice price : pp) {
 				BigDecimal priceList = price.getPriceList();
 				BigDecimal priceStd = price.getPriceStd();

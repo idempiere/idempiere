@@ -31,13 +31,13 @@ import java.util.logging.Level;
 
 import javax.mail.internet.InternetAddress;
 
-import org.compiere.db.CConnection;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Client Model
@@ -51,15 +51,25 @@ import org.compiere.util.Language;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1886480 ] Print Format Item Trl not updated even if not multilingual
  */
-public class MClient extends X_AD_Client
-{
+public class MClient extends X_AD_Client implements ImmutablePOSupport
+{	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8418331925351272377L;
+	private static final long serialVersionUID = 1820358079361924020L;
 
 	/**
-	 * 	Get client
+	 * 	Get client from cache (immutable)
+	 * 	@param AD_Client_ID id
+	 *	@return client
+	 */
+	public static MClient get (int AD_Client_ID)
+	{
+		return get(Env.getCtx(), AD_Client_ID);
+	}
+	
+	/**
+	 * 	Get client from cache (immutable)
 	 *	@param ctx context
 	 * 	@param AD_Client_ID id
 	 *	@return client
@@ -67,11 +77,11 @@ public class MClient extends X_AD_Client
 	public static MClient get (Properties ctx, int AD_Client_ID)
 	{
 		Integer key = Integer.valueOf(AD_Client_ID);
-		MClient client = (MClient)s_cache.get(key);
+		MClient client = (MClient)s_cache.get(ctx, key, e -> new MClient(ctx, e));
 		if (client != null)
 			return client;
-		client = new MClient (ctx, AD_Client_ID, null);
-		s_cache.put (key, client);
+		client = new MClient (ctx, AD_Client_ID, (String)null);
+		s_cache.put (key, client, e -> new MClient(Env.getCtx(), e));
 		return client;
 	}	//	get
 
@@ -93,11 +103,17 @@ public class MClient extends X_AD_Client
 	 */
 	public static MClient[] getAll (Properties ctx, String orderBy)
 	{
-		List<MClient> list = new Query(ctx,I_AD_Client.Table_Name,null,null)
-		.setOrderBy(orderBy)
-		.list();
+		List<MClient> list = null;
+		try {
+			PO.setCrossTenantSafe();
+			list = new Query(ctx,I_AD_Client.Table_Name,(String)null,(String)null)
+					.setOrderBy(orderBy)
+					.list();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 		for(MClient client:list ){
-			s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client);
+			s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client, e -> new MClient(Env.getCtx(), e));
 		}
 		MClient[] retValue = new MClient[list.size ()];
 		list.toArray (retValue);
@@ -118,7 +134,7 @@ public class MClient extends X_AD_Client
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MClient.class);
 	/**	Cache						*/
-	private static CCache<Integer,MClient>	s_cache = new CCache<Integer,MClient>(Table_Name, 3, 120, true);
+	private static ImmutableIntPOCache<Integer,MClient>	s_cache = new ImmutableIntPOCache<Integer,MClient>(Table_Name, 3, 120, true);
 
 
 	/**************************************************************************
@@ -142,7 +158,6 @@ public class MClient extends X_AD_Client
 				setIsMultiLingualDocument (false);
 				setIsSmtpAuthorization (false);
 				setIsUseBetaFunctions (true);
-				setIsServerEMail(false);
 				setAD_Language(Language.getBaseAD_Language());
 				setAutoArchive(AUTOARCHIVE_None);
 				setMMPolicy (MMPOLICY_FiFo);	// F
@@ -185,6 +200,40 @@ public class MClient extends X_AD_Client
 		this (ctx, Env.getAD_Client_ID(ctx), trxName);
 	}	//	MClient
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MClient(MClient copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MClient(Properties ctx, MClient copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MClient(Properties ctx, MClient copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_info = copy.m_info != null ? new MClientInfo(ctx, copy.m_info, trxName) : null;
+		this.m_AD_Tree_Account_ID = copy.m_AD_Tree_Account_ID;
+		this.m_fieldAccess = copy.m_fieldAccess != null ? new ArrayList<Integer>(copy.m_fieldAccess) : null;
+	}
+
 	/**	Client Info					*/
 	private MClientInfo 		m_info = null;
 	/** Language					*/
@@ -201,7 +250,12 @@ public class MClient extends X_AD_Client
 	public MClientInfo getInfo()
 	{
 		if (m_info == null)
-			m_info = MClientInfo.get (getCtx(), getAD_Client_ID(), get_TrxName());
+		{
+			if (is_Immutable())
+				m_info = MClientInfo.get (getCtx(), getAD_Client_ID(), get_TrxName());
+			else
+				m_info = MClientInfo.getCopy(getCtx(), getAD_Client_ID(), get_TrxName());
+		}
 		return m_info;
 	}	//	getMClientInfo
 
@@ -437,7 +491,7 @@ public class MClient extends X_AD_Client
 		{
 			int C_AcctSchema_ID = m_info.getC_AcctSchema1_ID();
 			if (C_AcctSchema_ID != 0)
-				return MAcctSchema.get(getCtx(), C_AcctSchema_ID);
+				return MAcctSchema.getCopy(getCtx(), C_AcctSchema_ID, get_TrxName());
 		}
 		return null;
 	}	//	getMClientInfo
@@ -484,15 +538,7 @@ public class MClient extends X_AD_Client
 		}	
 		try
 		{
-			String msg = null;
-			if (isServerEMail())
-			{
-				msg = CConnection.get().getServer().sendEMail(Env.getRemoteCallCtx(Env.getCtx()), email);
-			}
-			else
-			{
-				msg = email.send();
-			}
+			String msg = email.send();			
 			if (EMail.SENT_OK.equals (msg))
 			{
 				if (log.isLoggable(Level.INFO)) log.info("Sent Test EMail to " + getRequestEMail());
@@ -662,15 +708,7 @@ public class MClient extends X_AD_Client
 			email.addAttachment(attachment);
 		try
 		{
-			String msg = null;
-			if (isServerEMail())
-			{
-				msg = CConnection.get().getServer().sendEMail(Env.getRemoteCallCtx(Env.getCtx()), email);
-			}
-			else
-			{
-				msg = email.send();
-			}
+			String msg = email.send();
 			if (EMail.SENT_OK.equals (msg))
 			{
 				if (log.isLoggable(Level.INFO)) log.info("Sent EMail " + subject + " to " + to);
@@ -748,15 +786,7 @@ public class MClient extends X_AD_Client
 	 */
 	public boolean sendEmailNow(MUser from, MUser to, EMail email)
 	{
-		String msg = null;
-		if (isServerEMail())
-		{
-			msg = CConnection.get().getServer().sendEMail(Env.getRemoteCallCtx(Env.getCtx()), email);
-		}
-		else
-		{
-			msg = email.send();
-		}
+		String msg = email.send();
 		//
 		X_AD_UserMail um = new X_AD_UserMail(getCtx(), 0, to.get_TrxName());
 		um.setClientOrg(this);
@@ -1140,6 +1170,17 @@ public class MClient extends X_AD_Client
 			s = "localhost";
 		return s;
 	}	//	getSMTPHost
+
+	@Override
+	public MClient markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		if (m_info != null)
+			m_info.markImmutable();
+		return this;
+	}
 
 	// IDEMPIERE-722
 	private static final String MAIL_SEND_CREDENTIALS_USER = "U";

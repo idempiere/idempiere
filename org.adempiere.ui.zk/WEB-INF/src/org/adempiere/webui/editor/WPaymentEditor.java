@@ -58,8 +58,22 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
 	private MPaymentLookup lookup;
 	private Object oldValue;
 	
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WPaymentEditor(GridField gridField) {
-		super(new Paymentbox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WPaymentEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+		super(new Paymentbox(), gridField, tableEditor, editorConfiguration);
 		lookup = (MPaymentLookup) gridField.getLookup();
 		init();
 	}

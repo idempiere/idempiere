@@ -75,7 +75,7 @@ public final class Prop implements Serializable {
 	private static final String	DEF_SENDREQUEST_LINK=	"/wstore/request.jsp";
 	private static final String	DEF_RESOURCE_LINK	=	"http://www.idempiere.org";
 	private static final String DEF_SUPPORT_LINK 	=	"#";
-	private static final String DEF_IRC_LINK 		=	"http://webchat.freenode.net/?channels=idempiere";
+	private static final String DEF_IRC_LINK 		=	"https://mattermost.idempiere.org";
 	private static final String	DEF_WIKI_LINK 		=	"http://wiki.idempiere.org/";
 	private static final String DEF_FORUMS_LINK		=	"http://groups.google.com/group/idempiere";
 	private static final String	DEF_SUPPORTREQ_LINK	=	"http://jira.idempiere.com";
@@ -90,7 +90,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 7.1 Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 8.2z Phong Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	

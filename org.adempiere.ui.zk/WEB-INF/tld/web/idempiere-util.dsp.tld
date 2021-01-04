@@ -39,4 +39,15 @@
 	Clean all ampersand from string
 		</description>
 	</function>
+	
+	<function>
+		<name>isThemeHasCustomCSSFragment</name>
+		<function-class>org.adempiere.webui.theme.ThemeManager</function-class>
+		<function-signature>
+	java.lang.Boolean isThemeHasCustomCSSFragment()
+		</function-signature>
+		<description>
+	Returns whether theme has fragment/custom.css.dsp
+		</description>
+	</function>
 </taglib>

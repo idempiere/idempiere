@@ -48,8 +48,22 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	private DateFormat			m_dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
 	private NumberFormat		m_qtyFormat = DisplayType.getNumberFormat(DisplayType.Quantity);
 	
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WAssignmentEditor(GridField gridField) {
-		super(new EditorBox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WAssignmentEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+		super(new EditorBox(), gridField, tableEditor, editorConfiguration);
 		
 		initComponents();
 	}

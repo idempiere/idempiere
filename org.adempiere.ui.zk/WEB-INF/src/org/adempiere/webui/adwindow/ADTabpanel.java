@@ -102,7 +102,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
@@ -136,6 +135,14 @@ import org.zkoss.zul.impl.XulElement;
 public class ADTabpanel extends Div implements Evaluatee, EventListener<Event>,
 DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 {
+	private static final String SLIDE_LEFT_IN_CSS = "slide-left-in";
+
+	private static final String SLIDE_LEFT_OUT_CSS = "slide-left-out";
+
+	private static final String SLIDE_RIGHT_IN_CSS = "slide-right-in";
+
+	private static final String SLIDE_RIGHT_OUT_CSS = "slide-right-out";
+
 	/**
 	 * 
 	 */
@@ -260,11 +267,62 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         form.setVflex(false);
         form.setSclass("grid-layout adwindow-form");
         form.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "form");
+        if (ClientInfo.isMobile())
+        {
+	        form.addEventListener("onSwipeRight", e -> {
+	        	if (windowPanel != null && windowPanel.getBreadCrumb() != null && windowPanel.getBreadCrumb().isPreviousEnabled())
+	        	{
+	        		windowPanel.saveAndNavigate(b -> {
+	        			if (b) {
+	        				LayoutUtils.addSclass(SLIDE_RIGHT_OUT_CSS, form);
+	    					windowPanel.onPrevious();
+	        			}
+	        		});	        		
+	        	}
+	        });
+	        form.addEventListener("onSwipeLeft", e -> {
+	        	if (windowPanel != null && windowPanel.getBreadCrumb() != null && windowPanel.getBreadCrumb().isNextEnabled())
+	        	{
+	        		windowPanel.saveAndNavigate(b -> {
+	        			if (b) {
+	        				LayoutUtils.addSclass(SLIDE_LEFT_OUT_CSS, form);	        	
+	    					windowPanel.onNext();
+	        			}
+	        		});	        		
+	        	}
+	        });
+        }
         
         listPanel = new GridView();
         if( "Y".equals(Env.getContext(Env.getCtx(), "P|ToggleOnDoubleClick")) )
         	listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
     }
+
+	private void setupFormSwipeListener() {
+		String uuid = form.getUuid();
+		StringBuilder script = new StringBuilder("var w=zk.Widget.$('")
+				.append(uuid)
+				.append("');");
+		script.append("jq(w).on('touchstart', function(e) {var w=zk.Widget.$(this);w._touchstart=e;});");
+		script.append("jq(w).on('touchmove', function(e) {var w=zk.Widget.$(this);w._touchmove=e;});");
+		script.append("jq(w).on('touchend', function(e) {var w=zk.Widget.$(this);var ts = w._touchstart; var tl = w._touchmove;"
+				+ "w._touchstart=null;w._touchmove=null;"
+				+ "if (ts && tl) {"
+				+ "if (ts.originalEvent) ts = ts.originalEvent;"
+				+ "if (tl.originalEvent) tl = tl.originalEvent;"
+				+ "if (ts.changedTouches && ts.changedTouches.length==1 && tl.changedTouches && tl.changedTouches.length==1) {"
+				+ "var diff=(tl.timeStamp-ts.timeStamp)/1000;if (diff > 1) return;"
+				+ "var diffx=tl.changedTouches[0].pageX-ts.changedTouches[0].pageX;"
+				+ "var diffy=tl.changedTouches[0].pageY-ts.changedTouches[0].pageY;"
+				+ "if (Math.abs(diffx) >= 100 && Math.abs(diffy) < 80) {"
+				+ "if (diffx > 0) {var event = new zk.Event(w, 'onSwipeRight', null, {toServer: true});zAu.send(event);} "
+				+ "else {var event = new zk.Event(w, 'onSwipeLeft', null, {toServer: true});zAu.send(event);}"
+				+ "}"
+				+ "}"
+				+ "}"
+				+ "});");
+		Clients.response(new AuScript(script.toString()));
+	}
     
     @Override
     public void setDetailPane(DetailPane component) {
@@ -277,23 +335,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			LayoutUtils.addSlideSclass(south);
 			borderLayout.appendChild(south);
 			south.addEventListener(Events.ON_OPEN, this);
-			south.addEventListener(Events.ON_SLIDE, this);
-			
-			south.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
-
-				@Override
-				public void onEvent(SwipeEvent event) throws Exception {
-					if ("down".equals(event.getSwipeDirection())) {
-						Borderlayout borderLayout = (Borderlayout) formContainer;
-						South south = borderLayout.getSouth();
-						if (south.isOpen()) {
-							south.setOpen(false);
-							OpenEvent openEvent = new OpenEvent(Events.ON_OPEN, south, false);
-							Events.postEvent(openEvent);
-						}
-					}
-				}
-			});
+			south.addEventListener(Events.ON_SLIDE, this);			
 		} 
 		south.appendChild(component);
 		
@@ -475,7 +517,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	    			diff = numCols - 6;
 	    			numCols=6;
 	    		}
-	    	}
+	    	}			
 		}
     	
     	this.numberOfFormColumns = numCols;
@@ -852,6 +894,20 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             return;
         }
 
+        if (form.getSclass() != null && form.getSclass().contains(SLIDE_RIGHT_OUT_CSS)) {
+        	Executions.schedule(getDesktop(), e -> {
+        		LayoutUtils.removeSclass(SLIDE_RIGHT_OUT_CSS, form);
+        		LayoutUtils.addSclass(SLIDE_RIGHT_IN_CSS, form);
+        		Executions.schedule(getDesktop(), e1 -> onAfterSlide(e1), new Event("onAfterSlide", form));
+        	}, new Event("onAfterSlideRightOut", form));
+        } else if (form.getSclass() != null && form.getSclass().contains(SLIDE_LEFT_OUT_CSS)) {
+        	Executions.schedule(getDesktop(), e -> {
+        		LayoutUtils.removeSclass(SLIDE_LEFT_OUT_CSS, form);
+        		LayoutUtils.addSclass(SLIDE_LEFT_IN_CSS, form);
+        		Executions.schedule(getDesktop(), e1 -> onAfterSlide(e1), new Event("onAfterSlide", form));
+        	}, new Event("onAfterSlideLeftOut", form));
+        }
+        
     	List<Group> collapsedGroups = new ArrayList<Group>();
     	for (Group group : allCollapsibleGroups) {
     		if (! group.isOpen())
@@ -993,6 +1049,15 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         echoDeferSetSelectedNodeEvent();
         if (logger.isLoggable(Level.CONFIG)) logger.config(gridTab.toString() + " - fini - " + (col<=0 ? "complete" : "seletive"));
     }   //  dynamicDisplay
+
+	private void onAfterSlide(Event e) {
+		//delay to let animation complete
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {}
+		LayoutUtils.removeSclass(SLIDE_LEFT_IN_CSS, form);
+		LayoutUtils.removeSclass(SLIDE_RIGHT_IN_CSS, form);
+	}
 
 	private void echoDeferSetSelectedNodeEvent() {
 		if (getAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR) == null) {
@@ -1181,7 +1246,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         if (gridTab.getRecord_ID() > 0 && gridTab.isTreeTab() && treePanel != null) {
         	echoDeferSetSelectedNodeEvent();
         }
-        
+      
         Event event = new Event(ON_ACTIVATE_EVENT, this, activate);
         Events.postEvent(event);
     }
@@ -1271,6 +1336,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			int userId = Env.getAD_User_ID(Env.getCtx());
     			MPreference preference = query.setOnlyActiveRecords(true)
     										  .setApplyAccessFilter(true)
+    										  .setClient_ID()
     										  .setParameters(windowId, adTabId+"|DetailPane.IsOpen", userId)
     										  .first();
     			if (preference == null || preference.getAD_Preference_ID() <= 0) {
@@ -1302,6 +1368,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	if (tabPanel != null) {
     		if (!tabPanel.isActivated()) {
     			tabPanel.activate(true);
+    		} else {
+    			tabPanel.getGridView().invalidateGridView();
     		}
 	    	if (!tabPanel.isGridView()) {
 	    		tabPanel.switchRowPresentation();	
@@ -1503,7 +1571,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	listPanel.dynamicDisplay(col);
         	if (GridTable.DATA_REFRESH_MESSAGE.equals(e.getAD_Message()) || 
         		"Sorted".equals(e.getAD_Message())) {
-        		listPanel.getListbox().invalidate();
+        		listPanel.invalidateGridView();
         	}
         }
     }
@@ -1656,7 +1724,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
 			listPanel.scrollToCurrentRow();
-			listPanel.getListbox().invalidate();
+			listPanel.invalidate();
 		} else {
 			listPanel.deactivate();
 		}
@@ -1921,6 +1989,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		super.setParent(parent);
 		if (parent != null) {
 			listPanel.onADTabPanelParentChanged();
+			if (ClientInfo.isMobile())
+				setupFormSwipeListener();
 		}
 	}
 
@@ -1966,6 +2036,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			int userId = Env.getAD_User_ID(Env.getCtx());
 			MPreference preference = query.setOnlyActiveRecords(true)
 					.setApplyAccessFilter(true)
+					.setClient_ID()
 					.setParameters(windowId, adTabId+"|"+attribute, userId)
 					.first();
 			if (preference == null || preference.getAD_Preference_ID() <= 0) {

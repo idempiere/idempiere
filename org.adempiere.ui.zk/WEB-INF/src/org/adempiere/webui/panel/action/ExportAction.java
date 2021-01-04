@@ -174,6 +174,7 @@ public class ExportAction implements EventListener<Event>
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winExportFile, "middle_center");
 		winExportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
 		winExportFile.addEventListener("onExporterException", this);
+		winExportFile.focus();
 
 	}
 	

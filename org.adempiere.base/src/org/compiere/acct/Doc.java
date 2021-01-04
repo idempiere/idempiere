@@ -1228,9 +1228,9 @@ public abstract class Doc
 	/**	Account Type - Invoice - AP  */
 	public static final int 	ACCTTYPE_V_Liability    = 2;
 	/**	Account Type - Invoice - AP Service  */
-	public static final int 	ACCTTYPE_V_Liability_Services    = 3;
+	public static final int 	ACCTTYPE_V_Liability_Services    = 3; // Deprecated IDEMPIERE-362
 	/**	Account Type - Invoice - AR Service  */
-	public static final int 	ACCTTYPE_C_Receivable_Services   = 4;
+	public static final int 	ACCTTYPE_C_Receivable_Services   = 4; // Deprecated IDEMPIERE-362
 
 	/** Account Type - Payment - Unallocated */
 	public static final int     ACCTTYPE_UnallocatedCash = 10;
@@ -1313,7 +1313,7 @@ public abstract class Doc
 			sql = "SELECT V_Liability_Acct FROM C_BP_Vendor_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
 		}
-		else if (AcctType == ACCTTYPE_V_Liability_Services)
+		else if (AcctType == ACCTTYPE_V_Liability_Services) // Deprecated IDEMPIERE-362
 		{
 			sql = "SELECT V_Liability_Services_Acct FROM C_BP_Vendor_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
@@ -1323,7 +1323,7 @@ public abstract class Doc
 			sql = "SELECT C_Receivable_Acct FROM C_BP_Customer_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
 		}
-		else if (AcctType == ACCTTYPE_C_Receivable_Services)
+		else if (AcctType == ACCTTYPE_C_Receivable_Services) // Deprecated IDEMPIERE-362
 		{
 			sql = "SELECT C_Receivable_Services_Acct FROM C_BP_Customer_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
@@ -1465,13 +1465,13 @@ public abstract class Doc
 
 		else
 		{
-			log.severe ("Not found AcctType=" + AcctType);
+			log.warning("Not found AcctType=" + AcctType);
 			return 0;
 		}
 		//  Do we have sql & Parameter
 		if (sql == null || para_1 == 0)
 		{
-			log.severe ("No Parameter for AcctType=" + AcctType + " - SQL=" + sql);
+			log.warning("No Parameter for AcctType=" + AcctType + " - SQL=" + sql);
 			return 0;
 		}
 
@@ -1505,7 +1505,7 @@ public abstract class Doc
 		//	No account
 		if (Account_ID == 0)
 		{
-			log.severe ("NO account Type="
+			log.warning("NO account Type="
 				+ AcctType + ", Record=" + p_po.get_ID());
 			return 0;
 		}

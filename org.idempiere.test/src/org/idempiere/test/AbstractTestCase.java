@@ -106,6 +106,7 @@ public abstract class AbstractTestCase {
 		Env.verifyLanguage(Env.getCtx(), getLanguage());
     	Env.setContext(Env.getCtx(), Env.LANGUAGE, getLanguage().getAD_Language());
     	Env.setContext(Env.getCtx(), Env.LOCALE, getLanguage().getLocale().toString());
+    	Env.setContext(Env.getCtx(), Env.RUNNING_UNIT_TESTING_TEST_CASE, true);
 		
 		if (loginDetails.getRoleId() > 0) {
 			if (MRole.getDefault(Env.getCtx(), false).isShowAcct())

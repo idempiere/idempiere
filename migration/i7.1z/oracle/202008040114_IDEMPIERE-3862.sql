@@ -19,21 +19,21 @@ DECLARE
     sql_cre_idxs varchar2(32767) := ''; -- create indexes
     sql_cre_comma varchar2(1) := ''; -- create indexes
     sql_cre_close varchar2(14) := ');';
-    sql_add_cols varchar2(4000) := ''; -- add tmp columns
-    sql_nul_cols varchar2(4000) := ''; -- make columns nullable
-    sql_upd_cols varchar2(4000) := ''; -- update tmp=old, old=null
-    sql_mod_cols varchar2(4000) := ''; -- make all columns varchar2
-    sql_upb_cols varchar2(4000) := ''; -- update back old=tmp (restore)
-    sql_nnl_cols varchar2(4000) := ''; -- make back columns not null
-    sql_drp_cols varchar2(4000) := ''; -- drop tmp columns
-    sql_add_comma varchar2(4000) := '';
-    sql_nul_comma varchar2(4000) := '';
-    sql_upd_comma varchar2(4000) := '';
-    sql_mod_comma varchar2(4000) := '';
-    sql_upb_comma varchar2(4000) := '';
-    sql_nnl_comma varchar2(4000) := '';
-    sql_drp_comma varchar2(4000) := '';
-    sql_com_view varchar2(4000) := '';
+    sql_add_cols varchar2(32767) := ''; -- add tmp columns
+    sql_nul_cols varchar2(32767) := ''; -- make columns nullable
+    sql_upd_cols varchar2(32767) := ''; -- update tmp=old, old=null
+    sql_mod_cols varchar2(32767) := ''; -- make all columns varchar2
+    sql_upb_cols varchar2(32767) := ''; -- update back old=tmp (restore)
+    sql_nnl_cols varchar2(32767) := ''; -- make back columns not null
+    sql_drp_cols varchar2(32767) := ''; -- drop tmp columns
+    sql_add_comma varchar2(32767) := '';
+    sql_nul_comma varchar2(32767) := '';
+    sql_upd_comma varchar2(32767) := '';
+    sql_mod_comma varchar2(32767) := '';
+    sql_upb_comma varchar2(32767) := '';
+    sql_nnl_comma varchar2(32767) := '';
+    sql_drp_comma varchar2(32767) := '';
+    sql_com_view varchar2(32767) := '';
     idx integer;
     tmpcolname varchar2(128);
     dryrun varchar2(1) := 'N'; -- change this to 'Y' to generate the script to execute, 'N' to execute immediate

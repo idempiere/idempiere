@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,9 +37,9 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
@@ -46,6 +47,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.POCopyCache;
 
 /**
  *	Role Model.
@@ -58,12 +61,12 @@ import org.compiere.wf.MWorkflow;
  *  @contributor KittiU - FR [ 3062553 ] - Duplicated action in DocAction list for Multiple Role Users
  *  @version $Id: MRole.java,v 1.5 2006/08/09 16:38:47 jjanke Exp $
  */
-public final class MRole extends X_AD_Role
+public final class MRole extends X_AD_Role implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4649095180532036099L;
+	private static final long serialVersionUID = -6317084960843429042L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -112,7 +115,7 @@ public final class MRole extends X_AD_Role
 	}
 
 	/**
-	 * 	Get Role for User
+	 * 	Get Role for User from cache
 	 * 	@param ctx context
 	 * 	@param AD_Role_ID role
 	 * 	@param AD_User_ID user
@@ -123,11 +126,10 @@ public final class MRole extends X_AD_Role
 	{
 		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
 		String key = AD_Role_ID + "_" + AD_User_ID;
-		MRole role = (MRole)s_roles.get (key);
+		MRole role = (MRole)s_roles.get (key, e -> new MRole(ctx, e));
 		if (role == null || reload)
 		{
-			role = new MRole (ctx, AD_Role_ID, null);
-			s_roles.put (key, role);
+			role = new MRole (ctx, AD_Role_ID, null);			
 			if (AD_Role_ID == 0)
 			{
 				String trxName = null;
@@ -135,6 +137,7 @@ public final class MRole extends X_AD_Role
 			}
 			role.setAD_User_ID(AD_User_ID);
 			role.loadAccess(reload);
+			s_roles.put (key, role, e -> new MRole(Env.getCtx(), e));
 			if (s_log.isLoggable(Level.INFO)) s_log.info(role.toString());
 		}
 		return role;
@@ -174,17 +177,28 @@ public final class MRole extends X_AD_Role
 	 */
 	public static MRole[] getOfClient (Properties ctx)
 	{
+		return getOfClient(ctx, (String)null);
+	}
+	
+	/**
+	 * 	Get Roles Of Client
+	 *	@param ctx context
+	 *  @param trxName
+	 *	@return roles of client
+	 */
+	public static MRole[] getOfClient (Properties ctx, String trxName)
+	{
 		String sql = "SELECT * FROM AD_Role WHERE AD_Client_ID=?";
 		ArrayList<MRole> list = new ArrayList<MRole> ();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
+			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt (1, Env.getAD_Client_ID(ctx));
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
-				list.add (new MRole(ctx, rs, null));
+				list.add (new MRole(ctx, rs, trxName));
 		}
 		catch (Exception e)
 		{
@@ -236,7 +250,7 @@ public final class MRole extends X_AD_Role
 	}	//	getOf
 		
 	/** Role/User Cache			*/
-	private static CCache<String,MRole> s_roles = new CCache<String,MRole>(Table_Name, 5);
+	private static POCopyCache<String,MRole> s_roles = new POCopyCache<String,MRole>(Table_Name, 5);
 	/** Log						*/ 
 	private static CLogger			s_log = CLogger.getCLogger(MRole.class);
 	
@@ -297,6 +311,57 @@ public final class MRole extends X_AD_Role
 	{
 		super(ctx, rs, trxName);
 	}	//	MRole
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRole(MRole copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRole(Properties ctx, MRole copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRole(Properties ctx, MRole copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_AD_User_ID = copy.m_AD_User_ID;
+		this.m_orgAccess = copy.m_orgAccess != null ? Arrays.copyOf(copy.m_orgAccess, copy.m_orgAccess.length) : null;
+		this.m_tableAccess = copy.m_tableAccess != null ? Arrays.copyOf(copy.m_tableAccess, copy.m_tableAccess.length): null;
+		this.m_columnAccess = copy.m_columnAccess != null ? Arrays.copyOf(copy.m_columnAccess, copy.m_columnAccess.length) : null;
+		this.m_recordAccess = copy.m_recordAccess != null ? Arrays.copyOf(copy.m_recordAccess, copy.m_recordAccess.length) : null;
+		this.m_recordDependentAccess = copy.m_recordDependentAccess != null ? Arrays.copyOf(copy.m_recordDependentAccess, copy.m_recordDependentAccess.length) : null;
+		this.m_tableAccessLevel = copy.m_tableAccessLevel != null ? new HashMap<Integer, String>(copy.m_tableAccessLevel) : null;
+		this.m_tableName = copy.m_tableName != null ? new HashMap<String, Integer>(copy.m_tableName) : null;
+		this.m_viewName = copy.m_viewName != null ? new HashSet<String>(copy.m_viewName) : null;
+		this.m_tableIdName = copy.m_tableIdName != null ? new HashMap<String, String>(copy.m_tableIdName) : null;
+		this.m_windowAccess = copy.m_windowAccess != null ? new HashMap<Integer, Boolean>(copy.m_windowAccess) : null;
+		this.m_processAccess = copy.m_processAccess != null ? new HashMap<Integer, Boolean>(copy.m_processAccess) : null;
+		this.m_taskAccess = copy.m_taskAccess != null ? new HashMap<Integer, Boolean>(copy.m_taskAccess) : null;
+		this.m_workflowAccess = copy.m_workflowAccess != null ? new HashMap<Integer, Boolean>(copy.m_workflowAccess) : null;
+		this.m_formAccess = copy.m_formAccess != null ? new HashMap<Integer, Boolean>(copy.m_formAccess) : null;
+		this.m_infoAccess = copy.m_infoAccess != null ? new HashMap<Integer, Boolean>(copy.m_infoAccess) : null;
+		this.m_includedRoles = copy.m_includedRoles != null ? new ArrayList<MRole>(copy.m_includedRoles) : null;
+		this.m_parent = copy.m_parent != null ? new MRole(ctx, copy.m_parent, trxName) : null;
+		this.m_includedSeqNo = copy.m_includedSeqNo;
+		this.m_canAccess_Info_Product = copy.m_canAccess_Info_Product;
+	}
 
 	/**
 	 * 	Get Confirm Query Records
@@ -816,7 +881,7 @@ public final class MRole extends X_AD_Role
 		//	Do we look for trees?
 		if (getAD_Tree_Org_ID() == 0)
 			return;
-		MOrg org = MOrg.get(getCtx(), oa.AD_Org_ID);
+		MOrg org = MOrg.get(oa.AD_Org_ID);
 		if (!org.isSummary())
 			return;
 		//	Summary Org - Get Dependents
@@ -1399,7 +1464,15 @@ public final class MRole extends X_AD_Role
 		if (!isTableAccess(AD_Table_ID, ro))		//	No Access to Table		
 			return false;
 		loadColumnAccess(false);
-		
+
+		// Verify access to process for buttons
+		MColumn column = MColumn.get(Env.getCtx(), AD_Column_ID);
+		if (column.getAD_Reference_ID() == DisplayType.Button && column.getAD_Process_ID() > 0) {
+			Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
+			if (access == null)
+				return false;
+		}
+
 		boolean retValue = true;		//	assuming exclusive
 		for (int i = 0; i < m_columnAccess.length; i++)
 		{
@@ -2538,7 +2611,7 @@ public final class MRole extends X_AD_Role
 				clientName = MClient.get(getCtx(), AD_Client_ID).getName();
 			String orgName = "*";
 			if (AD_Org_ID != 0)
-				orgName = MOrg.get(getCtx(), AD_Org_ID).getName();
+				orgName = MOrg.get(AD_Org_ID).getName();
 			StringBuilder sb = new StringBuilder();
 			sb.append(Msg.translate(getCtx(), "AD_Client_ID")).append("=")
 				.append(clientName).append(" - ")
@@ -3342,6 +3415,36 @@ public final class MRole extends X_AD_Role
 			}
 		}
 		return access;
+	}
+	
+	/**
+	 * Does the table is excluded for current role (this method doesn't check the level of the table, use isTableAccess for this purpose)
+	 * @param tableID ID of the table
+	 * @return
+	 */
+	public boolean isTableAccessExcluded(int tableID)
+	{
+		loadTableAccess(false);
+
+		for (int i = 0; i < m_tableAccess.length; i++) {
+			if (   m_tableAccess[i].isExclude()
+					&& m_tableAccess[i].getAD_Table_ID() == tableID
+					&& ! m_tableAccess[i].isReadOnly()
+					&& MTableAccess.ACCESSTYPERULE_Accessing.equals(m_tableAccess[i].getAccessTypeRule())
+					)
+				return true;
+		}
+
+		return false;
+	}	//	isTableAccessExcluded
+
+	@Override
+	public MRole markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MRole

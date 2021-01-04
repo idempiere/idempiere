@@ -213,7 +213,8 @@ public class MRfQResponse extends X_C_RfQResponse
 	public MRfQ getRfQ()
 	{
 		if (m_rfq == null)
-			m_rfq = MRfQ.get (getCtx(), getC_RfQ_ID(), get_TrxName());
+			m_rfq = MRfQ.get(getCtx(), getC_RfQ_ID(), get_TrxName());
+		
 		return m_rfq;
 	}	//	getRfQ
 	
@@ -281,7 +282,7 @@ public class MRfQResponse extends X_C_RfQResponse
 	 */
 	public File createPDF (File file)
 	{
-		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.RFQ, getC_RfQResponse_ID());
+		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.RFQ, getC_RfQResponse_ID(),get_TrxName());
 		if (re == null)
 			return null;
 		MPrintFormat format = re.getPrintFormat();

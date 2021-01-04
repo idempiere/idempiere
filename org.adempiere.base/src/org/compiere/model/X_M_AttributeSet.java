@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -47,6 +47,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 			setIsSerNoMandatory (false);
 			setMandatoryType (null);
 			setM_AttributeSet_ID (0);
+			setM_AttributeSet_Type (null);
+// MMS
 			setName (null);
         } */
     }
@@ -386,6 +388,25 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** M_AttributeSet_Type AD_Reference_ID=200115 */
+	public static final int M_ATTRIBUTESET_TYPE_AD_Reference_ID=200115;
+	/** Material Management System = MMS */
+	public static final String M_ATTRIBUTESET_TYPE_MaterialManagementSystem = "MMS";
+	/** Set AttributeSet Type.
+		@param M_AttributeSet_Type AttributeSet Type	  */
+	public void setM_AttributeSet_Type (String M_AttributeSet_Type)
+	{
+
+		set_Value (COLUMNNAME_M_AttributeSet_Type, M_AttributeSet_Type);
+	}
+
+	/** Get AttributeSet Type.
+		@return AttributeSet Type	  */
+	public String getM_AttributeSet_Type () 
+	{
+		return (String)get_Value(COLUMNNAME_M_AttributeSet_Type);
 	}
 
 	/** Set M_AttributeSet_UU.

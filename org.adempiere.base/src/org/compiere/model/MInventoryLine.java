@@ -36,12 +36,12 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 1817757 ] Error on saving MInventoryLine in a custom environment
  * 			<li>BF [ 1722982 ] Error with inventory when you enter count qty in negative
  */
-public class MInventoryLine extends X_M_InventoryLine 
+public class MInventoryLine extends X_M_InventoryLine
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7083622834698840042L;
+	private static final long serialVersionUID = 3973418005721380194L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -137,6 +137,39 @@ public class MInventoryLine extends X_M_InventoryLine
 		this(inventory, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, QtyBook, QtyCount, null);
 	}
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInventoryLine(MInventoryLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInventoryLine(Properties ctx, MInventoryLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInventoryLine(Properties ctx, MInventoryLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_parent = null;
+		this.m_product = copy.m_product != null ? new MProduct(ctx, copy.m_product, trxName) : null;
+	}
+
 	/** Manually created				*/
 	//protected boolean 	m_isManualEntry = true;
 	/** Parent							*/
@@ -156,7 +189,9 @@ public class MInventoryLine extends X_M_InventoryLine
 		if (m_product != null && m_product.getM_Product_ID() != M_Product_ID)
 			m_product = null;	//	reset
 		if (m_product == null)
-			m_product = MProduct.get(getCtx(), M_Product_ID);
+		{
+			m_product = MProduct.get(getCtx(), M_Product_ID, get_TrxName());
+		}
 		return m_product;
 	}	//	getProduct
 	
@@ -461,4 +496,5 @@ public class MInventoryLine extends X_M_InventoryLine
 	public boolean isSOTrx() {
 		return getMovementQty().signum() < 0;
 	}
+	
 }	//	MInventoryLine

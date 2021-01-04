@@ -19,22 +19,38 @@ package org.compiere.install;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.InetAddress;
+import java.nio.file.Files;
 import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.KeyStore.PasswordProtection;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.cert.Certificate;
-import java.util.ArrayList;
+import java.security.cert.X509Certificate;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import javax.swing.JFrame;
 
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 
-import sun.security.tools.keytool.Main;
+//import sun.security.tools.keytool.Main;
 
 /**
  *	Class to manage SSL KeyStore
@@ -236,7 +252,6 @@ public class KeyStoreMgt
 		//
 		try
 		{
-			genkey (alias, m_password, m_file.getAbsolutePath(), dname);
 			selfcert (alias, m_password, m_file.getAbsolutePath(), dname);
 		}
 		catch (Exception e)
@@ -355,7 +370,7 @@ public class KeyStoreMgt
 		if (l != null && l.length() > 0)
 			dname.append(", L=").append(escapeCommas(l));	//	locality
 		if (s != null && s.length() > 0)
-			dname.append(", S=").append(escapeCommas(s));	//	state
+			dname.append(", ST=").append(escapeCommas(s));	//	state
 		dname.append(", C=").append(escapeCommas(c));		//	country
 		return dname.toString();
 	}	//	getDname
@@ -382,91 +397,72 @@ public class KeyStoreMgt
 	}	//	escapeCommas
 	
 	/**
-	 * 	Generate Key
-	 *	@param alias adempiere
-	 *	@param password password
-	 *	@param fileName key store file name (may have spaces)
-	 *	@param dname distinguished name
-	 */
-	public static void genkey (String alias, char[] password, String fileName, String dname)
-	{
-		StringBuilder cmd = new StringBuilder ("-genkey -keyalg rsa");
-		cmd.append(" -alias ").append(alias);
-		cmd.append(" -dname \"").append(dname).append("\"");
-		cmd.append(" -keypass ").append(password).append(" -validity 999");
-		if (fileName.indexOf(' ') != -1)
-			cmd.append(" -keystore \"").append(fileName).append("\" -storepass ").append(password);
-		else
-			cmd.append(" -keystore ").append(fileName).append(" -storepass ").append(password);
-		keytool (cmd.toString());
-	}	//	genkey
-	
-	/**
-	 * 	Generate Key
-	 *	@param alias adempiere
+	 * 	Generate Key and Cert
+	 *	@param alias keystore alias
 	 *	@param password password
 	 *	@param fileName key store file name (may have spaces)
 	 *	@param dname distinguished name
 	 */
 	public static void selfcert (String alias, char[] password, String fileName, String dname)
 	{
-		StringBuilder cmd = new StringBuilder ("-selfcert");
-		cmd.append(" -alias ").append(alias);
-		cmd.append(" -dname \"").append(dname).append("\"");
-		cmd.append(" -keypass ").append(password).append(" -validity 999");
-		if (fileName.indexOf(' ') != -1)
-			cmd.append(" -keystore \"").append(fileName).append("\" -storepass ").append(password);
-		else
-			cmd.append(" -keystore ").append(fileName).append(" -storepass ").append(password);
-		keytool (cmd.toString());
-	}	//	selfcert
-	
-	/**
-	 * 	Submit Command to Key Tool
-	 *	@param cmd command
-	 */
-	public static void keytool(String cmd)
-	{
-		if (log.isLoggable(Level.INFO)) log.info("keytool " + cmd);
-		ArrayList<String> list = new ArrayList<String>();
-		StringTokenizer st = new StringTokenizer(cmd, " ");
-		String quoteBuffer = null;
-		while (st.hasMoreTokens())
+		try 
 		{
-			String token = st.nextToken();
-		//	System.out.println("= " + token + " = quoteBuffer=" + quoteBuffer + " - Size=" + list.size() );
-			if (quoteBuffer == null)
-			{
-				if (token.startsWith("\""))
-					quoteBuffer = token.substring(1);
-				else
-					list.add(token);
-			}
-			else
-				quoteBuffer += " " + token;
-			if (token.endsWith("\""))
-			{
-				String str = quoteBuffer.substring(0, quoteBuffer.length()-1); 
-			//	System.out.println("  Buffer= " + str );
-				list.add(str);
-				quoteBuffer = null;
-			}
-		}	//	all tokens
-		
-		//
-		String[] args = new String[list.size()];
-		list.toArray(args);
-	//	System.out.println(" args #" + args.length);
-                //vpj-cd add support java 6
-		try
-        {
-			Main.main(args);;
-        }
-        catch (Exception e)
-        {
-        	e.printStackTrace();
-        }
-	}	//	ketyool
+			File storeFile = new File(fileName);
+			if (storeFile.exists())
+				return;
+			
+			CertificateKeyPair certKeyPair = createCertificate(dname);
+			KeyStore keyStore = KeyStore.getInstance("JKS");
+			keyStore.load(null, null);			
+			PasswordProtection protParam = new KeyStore.PasswordProtection(password);
+			KeyStore.Entry entry = new PrivateKeyEntry(certKeyPair.keyPair.getPrivate(),
+	                new Certificate[] { certKeyPair.cert });
+            keyStore.setEntry(alias, entry, protParam);
+            try (OutputStream fos = Files.newOutputStream(storeFile.toPath())) 
+            {
+            	keyStore.store(fos, password);
+            }
+		} 
+		catch (Exception e) 
+		{
+			throw new RuntimeException(e);
+		}
+	}	//	selfcert
+
+	/**
+	 * 
+	 * @param dname
+	 * @return pair of key and cert
+	 * @throws Exception
+	 */
+	private static CertificateKeyPair createCertificate(String dname) throws Exception {
+	    // Generate the key-pair with the official Java API's
+	    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+	    keyGen.initialize(2048, new SecureRandom());
+	    KeyPair certKeyPair = keyGen.generateKeyPair();
+	    X500Name dnName = new X500Name(dname);
+	    BigInteger serialNumber = BigInteger.valueOf(System.currentTimeMillis());
+	    Instant validFrom = Instant.now();
+	    Instant validUntil = validFrom.plus(999, ChronoUnit.DAYS);
+
+	    // If there is no issuer, we self-sign our certificate.
+	    X500Name issuerName = dnName;
+	    PrivateKey issuerKey = certKeyPair.getPrivate();
+
+	    // The cert builder to build up our certificate information
+	    JcaX509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(
+	            issuerName,
+	            serialNumber,
+	            Date.from(validFrom), Date.from(validUntil),
+	            dnName, certKeyPair.getPublic());
+
+	    // Finally, sign the certificate:
+	    ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSA").build(issuerKey);
+	    X509CertificateHolder certHolder = builder.build(signer);
+	    X509Certificate cert = new JcaX509CertificateConverter().getCertificate(certHolder);
+
+	    return new CertificateKeyPair(certKeyPair, cert);
+	}
 	
 	/**
 	 * 	Get Keystore File Name
@@ -484,6 +480,15 @@ public class KeyStoreMgt
 		return fileName;
 	}	//	getKeystoreFileName
 	
+	private static class CertificateKeyPair {
+		private KeyPair keyPair;
+		private X509Certificate cert;
+		
+		private CertificateKeyPair(KeyPair keyPair, X509Certificate cert) {
+			this.keyPair = keyPair;
+			this.cert = cert;
+		}
+	}
 	
 	/**************************************************************************
 	 * 	Test
