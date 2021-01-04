@@ -71,6 +71,8 @@ public class ConvertLead extends SvrProcess {
 			bp.setName(lead.getName());
 
 		bp.setIsActive(true);
+		bp.setIsCustomer(lead.isSalesLead());
+		bp.setIsVendor(lead.isVendorLead());
 		bp.saveEx();
 		addBufferLog(bp.getC_BPartner_ID(), null, null, "@C_BPartner_ID@ @Created@", MBPartner.Table_ID, bp.getC_BPartner_ID());
 		

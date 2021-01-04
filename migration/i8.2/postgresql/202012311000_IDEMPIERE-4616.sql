@@ -91,5 +91,37 @@ UPDATE AD_Field SET SeqNo=260, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, 
 UPDATE AD_Tab SET WhereClause='(AD_User.IsSalesLead=''Y'' OR AD_User.IsVendorLead=''Y'')',Updated=TO_TIMESTAMP('2020-12-31 09:49:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Tab_ID=53429
 ;
 
+-- 2021-01-04 10:34:12
+UPDATE AD_Window SET Help='The Lead Window allows you to maintain Leads (can be Sales or Purchase). These are unqualified contacts to who you wish to recruit or market to. ',Updated=TO_TIMESTAMP('2021-01-04 10:34:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=53153
+;
+
+-- 2021-01-04 10:34:37
+UPDATE AD_Process_Para SET DisplayLogic='@CreateOpportunity@ = Y',Updated=TO_TIMESTAMP('2021-01-04 10:34:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=53583
+;
+
+-- 2021-01-04 10:34:40
+UPDATE AD_Process_Para SET DisplayLogic='@CreateOpportunity@ = Y',Updated=TO_TIMESTAMP('2021-01-04 10:34:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=53584
+;
+
+-- 2021-01-04 10:34:46
+UPDATE AD_Process_Para SET DisplayLogic='@CreateOpportunity@ = Y',Updated=TO_TIMESTAMP('2021-01-04 10:34:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=53585
+;
+
+-- 2021-01-04 10:34:48
+UPDATE AD_Process_Para SET DisplayLogic='@CreateOpportunity@ = Y',Updated=TO_TIMESTAMP('2021-01-04 10:34:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=53586
+;
+
+-- 2021-01-04 10:34:51
+UPDATE AD_Process_Para SET DisplayLogic='@CreateOpportunity@ = Y',Updated=TO_TIMESTAMP('2021-01-04 10:34:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=53587
+;
+
+-- 2021-01-04 10:34:53
+UPDATE AD_Process_Para SET DisplayLogic='@CreateOpportunity@ = Y',Updated=TO_TIMESTAMP('2021-01-04 10:34:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=53588
+;
+
+-- 2021-01-04 10:35:09
+UPDATE AD_Process_Para SET DefaultValue='@IsSalesLead@',Updated=TO_TIMESTAMP('2021-01-04 10:35:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=53582
+;
+
 SELECT register_migration_script('202012311000_IDEMPIERE-4616.sql') FROM dual
 ;
