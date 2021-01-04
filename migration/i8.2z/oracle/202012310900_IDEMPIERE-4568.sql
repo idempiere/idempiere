@@ -73,11 +73,11 @@ UPDATE C_Country SET Name = 'Congo (DRC)',Description = 'the Democratic Republic
 UPDATE C_Country SET Description = 'the Central African Republic', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 150;
 UPDATE C_Country SET Description = 'the Republic of the Congo', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 158;
 UPDATE C_Country SET Description = 'the Swiss Confederation', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 107;
-UPDATE C_Country SET Name = 'Côte d’’Ivoire',Description = 'the Republic of Côte d’’Ivoire', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 162;
+UPDATE C_Country SET Name = 'Côte d''Ivoire',Description = 'the Republic of Côte d''Ivoire', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 162;
 UPDATE C_Country SET Description = 'the Cook Islands', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 160;
 UPDATE C_Country SET Description = 'the Republic of Chile', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 152;
 UPDATE C_Country SET Description = 'the Republic of Cameroon', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 146;
-UPDATE C_Country SET Description = 'the People’’s Republic of China', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 153;
+UPDATE C_Country SET Description = 'the People''s Republic of China', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 153;
 UPDATE C_Country SET Description = 'the Republic of Colombia', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 156;
 UPDATE C_Country SET Description = 'the Republic of Costa Rica', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 161;
 UPDATE C_Country SET Description = 'the Republic of Cuba', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 164;
@@ -90,7 +90,7 @@ UPDATE C_Country SET Description = 'the Republic of Djibouti', Updated = TO_DATE
 UPDATE C_Country SET Description = 'the Kingdom of Denmark', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 167;
 UPDATE C_Country SET Description = 'the Commonwealth of Dominica', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 169;
 UPDATE C_Country SET Description = 'the Dominican Republic', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 170;
-UPDATE C_Country SET Description = 'the People’’s Democratic Republic of Algeria', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 112;
+UPDATE C_Country SET Description = 'the People''s Democratic Republic of Algeria', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 112;
 UPDATE C_Country SET Description = 'the Republic of Ecuador', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 171;
 UPDATE C_Country SET Description = 'the Republic of Estonia', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 176;
 UPDATE C_Country SET Description = 'the Arab Republic of Egypt', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 172;
@@ -154,7 +154,7 @@ UPDATE C_Country SET Name = 'Korea Republic of',Description = 'the Republic of K
 UPDATE C_Country SET Description = 'the State of Kuwait', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 223;
 UPDATE C_Country SET Description = 'the Cayman Islands', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 149;
 UPDATE C_Country SET Description = 'the Republic of Kazakhstan', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 218;
-UPDATE C_Country SET Description = 'the Lao People’’s Democratic Republic', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 225;
+UPDATE C_Country SET Description = 'the Lao People''s Democratic Republic', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 225;
 UPDATE C_Country SET Description = 'the Lebanese Republic', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 227;
 
 UPDATE C_Country SET Description = 'the Principality of Liechtenstein', Updated = TO_DATE('2020-12-31 22:22:22','YYYY-MM-DD HH24:MI:SS') WHERE C_Country_ID = 231;
