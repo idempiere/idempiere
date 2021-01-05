@@ -87,7 +87,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	private static MUserDefProc[] getAll (Properties ctx, int processID)
 	{
 		if (m_fullList == null) {
-			m_fullList = new Query(ctx, MUserDefProc.Table_Name, "IsActive='Y'", null).setClient_ID().list();
+			m_fullList = new Query(ctx, MUserDefProc.Table_Name, "IsActive='Y' AND AD_Client_ID IN (0,?)", null).setParameters(Env.getAD_Client_ID(ctx)).list();
 		}
 
 		if (m_fullList.size() == 0) {
