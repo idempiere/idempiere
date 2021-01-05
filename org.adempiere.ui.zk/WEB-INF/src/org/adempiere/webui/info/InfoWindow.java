@@ -630,6 +630,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				//IDEMPIERE-4485 Clone new Gridfields with IsReadOnly = false
 				if(infoColumn.isQueryCriteria()) {
 					vo = vo.clone(infoContext, p_WindowNo, 0, vo.AD_Window_ID, 0, false);
+					vo.IsReadOnly = false;
 					gridField = new GridField(vo);
 					List<Object[]> list = parameterTree.get(infoColumn.getSeqNoSelection());
 					if (list == null) {
