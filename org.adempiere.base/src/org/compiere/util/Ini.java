@@ -816,8 +816,7 @@ public final class Ini implements Serializable
 				secretVar,
 				secretValue
 		};
-		@SuppressWarnings("unused") // used for debugging purposes
-		String retValue = runCommand(command);
+		runCommand(command);
 	}
 
 	private static String getUtilsCmd(String script) {
@@ -855,10 +854,8 @@ public final class Ini implements Serializable
 			while ((s = stdError.readLine()) != null) {
 				msg.append(s);
 			}
-			try {
-				p.waitFor(5, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				throw new AdempiereException("Timeout waiting for " + command[0], e);
+			if ( !p.waitFor(5, TimeUnit.SECONDS)) {
+				throw new AdempiereException("Timeout waiting 5 seconds for " + command[0]);
 			} 
 			if (p.exitValue() != 0) {
 				throw new Exception(msg.toString());
