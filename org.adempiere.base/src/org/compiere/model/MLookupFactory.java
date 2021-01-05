@@ -770,7 +770,8 @@ public class MLookupFactory
 	{
 		if (!ColumnName.endsWith("_ID"))
 		{
-			s_log.log(Level.SEVERE, "Key does not end with '_ID': " + ColumnName);
+			String error = "Key does not end with '_ID': " + ColumnName;
+			s_log.log(Level.SEVERE, error, new Exception(error));
 			return null;
 		}
 
