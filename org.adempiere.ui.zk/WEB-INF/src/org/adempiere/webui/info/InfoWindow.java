@@ -627,30 +627,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
 
-				//IDEMPIERE-4485 Store new Gridfields with IsReadOnly = false
+				//IDEMPIERE-4485 Clone new Gridfields with IsReadOnly = false
 				if(infoColumn.isQueryCriteria()) {
-					vo = GridFieldVO.createParameter(infoContext, p_WindowNo, AEnv.getADWindowID(p_WindowNo), infoWindow.getAD_InfoWindow_ID(), 0,
-							columnName, infoColumn.getNameTrl(), infoColumn.getAD_Reference_ID(), 
-							infoColumn.getAD_Reference_Value_ID(), isMandatory, false, infoColumn.getPlaceHolderTrl());
-					
-					if (infoColumn.getAD_Val_Rule_ID() > 0) {
-						vo.ValidationCode = infoColumn.getValidationCode();
-						if (vo.lookupInfo != null) {
-							vo.lookupInfo.ValidationCode = vo.ValidationCode;
-							vo.lookupInfo.IsValidated = false;
-						}
-					}
-					if (infoColumn.getDisplayLogic() != null)					
-						vo.DisplayLogic =  infoColumn.getDisplayLogic();
-					if (infoColumn.isQueryCriteria() && infoColumn.getDefaultValue() != null)
-						vo.DefaultValue = infoColumn.getDefaultValue();
-					desc = infoColumn.getDescriptionTrl();
-					vo.Description = desc != null ? desc : "";
-					help = infoColumn.getHelpTrl();
-					vo.Help = help != null ? help : "";
-					vo.AD_FieldStyle_ID = infoColumn.getAD_FieldStyle_ID();
-					vo.IsAutocomplete = infoColumn.isAutocomplete();
-					vo.IsReadOnly = false;
+					vo = vo.clone(infoContext, p_WindowNo, 0, vo.AD_Window_ID, 0, false);
 					gridField = new GridField(vo);
 					List<Object[]> list = parameterTree.get(infoColumn.getSeqNoSelection());
 					if (list == null) {
