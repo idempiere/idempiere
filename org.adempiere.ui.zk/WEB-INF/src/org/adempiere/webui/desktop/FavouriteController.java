@@ -20,6 +20,7 @@ import org.compiere.model.MTreeFavorite;
 import org.compiere.model.MTreeFavoriteNode;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Session;
@@ -121,8 +122,15 @@ public class FavouriteController
 		else
 		{
 			MTreeFavoriteNode favNode = MTreeFavoriteNode.getFavouriteTreeNodeFromMenuID(m_AD_Tree_Favorite_ID, Menu_ID);
-			if (favNode != null)
-				return favNode.delete(true);
+			if (favNode != null) {
+				try {
+					//For service users, needs to persist data in system tenant
+					PO.setCrossTenantSafe();
+					return favNode.delete(true);
+				}finally {
+					PO.clearCrossTenantSafe();
+				}
+			}
 		}
 		return false;
 	} // barUpdate
