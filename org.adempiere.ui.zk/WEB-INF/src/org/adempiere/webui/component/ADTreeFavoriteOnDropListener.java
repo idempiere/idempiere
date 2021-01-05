@@ -19,6 +19,7 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MTable;
 import org.compiere.model.MTreeFavoriteNode;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -403,7 +404,13 @@ public class ADTreeFavoriteOnDropListener implements EventListener<Event>
 		{
 			favNode.setParent_ID(parentTNode.getNode_ID());
 			favNode.setSeqNo(seqNo);
-			favNode.save();
+			try {
+				//For service users, needs to persist data in system tenant
+				PO.setCrossTenantSafe();
+				favNode.save();
+			}finally {
+				PO.clearCrossTenantSafe();
+			}
 		}
 	} // updateTFNParentAndSeqNo
 

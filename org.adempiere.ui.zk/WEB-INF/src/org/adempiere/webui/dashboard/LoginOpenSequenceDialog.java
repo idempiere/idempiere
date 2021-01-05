@@ -40,6 +40,7 @@ import org.compiere.model.MMenu;
 import org.compiere.model.MTable;
 import org.compiere.model.MTreeFavorite;
 import org.compiere.model.MTreeFavoriteNode;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -501,32 +502,39 @@ public class LoginOpenSequenceDialog extends Window
 	 */
 	public void saveData()
 	{
-		// yesList
-		for (int i = 0; i < yesModel.getSize(); i++)
-		{
-			ListElement pp = (ListElement) yesModel.getElementAt(i);
-			if (!pp.isUpdateable())
-				continue;
+		try {
+			//For service users, needs to persist data in system tenant
+			PO.setCrossTenantSafe();
+			// yesList
+			for (int i = 0; i < yesModel.getSize(); i++)
+			{
+				ListElement pp = (ListElement) yesModel.getElementAt(i);
+				if (!pp.isUpdateable())
+					continue;
+	
+				// Set seq no
+				MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable.get(MTreeFavoriteNode.Table_ID).getPO(pp.getKey(), null);
+				favNode.setLoginOpenSeqNo(i);
+				favNode.saveEx();
+				
+			}
+	
+			// noList
+			for (int i = 0; i < noModel.getSize(); i++)
+			{
+				ListElement pp = (ListElement) noModel.getElementAt(i);
+				if (!pp.isUpdateable())
+					continue;
+	
+				// remove seq no if exists
+				MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable.get(MTreeFavoriteNode.Table_ID).getPO(pp.getKey(), null);
+				favNode.set_ValueNoCheck(MTreeFavoriteNode.COLUMNNAME_LoginOpenSeqNo, null);
+				favNode.saveEx();
+			}
 
-			// Set seq no
-			MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable.get(MTreeFavoriteNode.Table_ID).getPO(pp.getKey(), null);
-			favNode.setLoginOpenSeqNo(i);
-			favNode.saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
 		}
-
-		// noList
-		for (int i = 0; i < noModel.getSize(); i++)
-		{
-			ListElement pp = (ListElement) noModel.getElementAt(i);
-			if (!pp.isUpdateable())
-				continue;
-
-			// remove seq no if exists
-			MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable.get(MTreeFavoriteNode.Table_ID).getPO(pp.getKey(), null);
-			favNode.set_ValueNoCheck(MTreeFavoriteNode.COLUMNNAME_LoginOpenSeqNo, null);
-			favNode.saveEx();
-		}
-
 		//
 		detach();
 	} // saveData

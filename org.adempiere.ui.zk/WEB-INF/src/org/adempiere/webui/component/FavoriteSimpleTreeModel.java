@@ -31,6 +31,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTreeFavoriteNode;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -328,7 +329,13 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 								MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable	.get(Env.getCtx(), MTreeFavoriteNode.Table_ID)
 																						.getPO(mtn.getNode_ID(), null);
 								favNode.setName(editorDialog.getText());
-								favNode.saveEx();
+								try {
+									//For service users, needs to persist data in system tenant
+									PO.setCrossTenantSafe();
+									favNode.saveEx();
+								}finally {
+									PO.clearCrossTenantSafe();
+								}
 
 								@SuppressWarnings("unchecked")
 								int path[] = sftModel.getPath((TreeNode<Object>) dtNode);
