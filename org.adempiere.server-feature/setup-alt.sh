@@ -13,7 +13,7 @@ else
 fi
 
 #setup idempiere.properties and idempiereEnv.propertiess
-$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.application
+$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.application $@
 
 echo ... Setup Jetty
 #setup jetty
