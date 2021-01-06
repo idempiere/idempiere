@@ -1395,8 +1395,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		{
 			if (m_printFormat != null && m_printFormat.getJasperProcess_ID() > 0) {
 				ProcessInfo pi = new ProcessInfo ("", m_printFormat.getJasperProcess_ID(), m_printFormat.getAD_Table_ID(), m_info.getRecord_ID());
-				ProcessInfoParameter reportLanguagePip = new ProcessInfoParameter("AD_Language", m_printFormat.getLanguage().getAD_Language(), null, null, null);
-				pi.setParameter(new ProcessInfoParameter[] {reportLanguagePip});
+				if (m_printFormat.getLanguage() != null && m_printFormat.getLanguage().getAD_Language() != null) {
+					ProcessInfoParameter reportLanguagePip = new ProcessInfoParameter("AD_Language", m_printFormat.getLanguage().getAD_Language(), null, null, null);
+					pi.setParameter(new ProcessInfoParameter[] {reportLanguagePip});
+				}
 				pi.setIsBatch(true);
 				pi.setPDFFileName(fileName);
 				ServerProcessCtl.process(pi, (m_trxName == null ? null : Trx.get(m_trxName, false)));
