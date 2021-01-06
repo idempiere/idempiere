@@ -279,7 +279,7 @@ public class MQuery implements Serializable, Cloneable
 			return "C_BPartner_Location_ID";
 		if (columnName.equals("Account_ID"))
 			return "C_ElementValue_ID";
-		if (columnName.equals("C_LocFrom_ID") || columnName.equals("C_LocTo_ID"))
+		if (columnName.equals("C_LocFrom_ID") || columnName.equals("C_LocTo_ID") || columnName.equals("BP_Location_ID"))
 			return "C_Location_ID";
 		if (columnName.equals("C_UOM_To_ID"))
 			return "C_UOM_ID";
