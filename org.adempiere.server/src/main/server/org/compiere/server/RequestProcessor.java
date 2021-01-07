@@ -34,6 +34,7 @@ import org.compiere.model.MRequestProcessorRoute;
 import org.compiere.model.MStatus;
 import org.compiere.model.MUser;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 
@@ -433,7 +434,7 @@ public class RequestProcessor extends AdempiereServer
 			+ "WHERE r.R_Status_ID=s.R_Status_ID"
 			+ " AND s.TimeoutDays > 0 AND s.Next_Status_ID > 0"
 			+ " AND r.DateLastAction+s.TimeoutDays < getDate()"
-			+ ") "
+			+ ") AND r.AD_Client_ID = ? "
 			+ "ORDER BY R_Status_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -442,6 +443,7 @@ public class RequestProcessor extends AdempiereServer
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt(1, m_model.getAD_Client_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
@@ -494,7 +496,8 @@ public class RequestProcessor extends AdempiereServer
 			+ "AND EXISTS ("
 				+ "SELECT * FROM R_Group g "
 				+ "WHERE g.R_Group_ID=r.R_Group_ID"
-				+ " AND (g.M_BOM_ID IS NOT NULL OR g.M_ChangeNotice_ID IS NOT NULL)	)";
+				+ " AND (g.M_BOM_ID IS NOT NULL OR g.M_ChangeNotice_ID IS NOT NULL)	)"
+			+ " AND r.AD_CLient_ID = ? ";
 		//
 		int count = 0;
 		int failure = 0;
@@ -504,6 +507,7 @@ public class RequestProcessor extends AdempiereServer
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt(1, m_model.getAD_Client_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
