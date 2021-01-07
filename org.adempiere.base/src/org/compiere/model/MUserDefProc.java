@@ -14,13 +14,15 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * Model class for Process Customizations
@@ -34,7 +36,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	 * 
 	 */
 	private static final long serialVersionUID = 1599140293008534080L;
-	private volatile static List<MUserDefProc> m_fullList = null;
+	private static final Map<Integer, List<MUserDefProc>> m_fullMap = new HashMap<Integer, List<MUserDefProc>>();
 
 	/**
 	 * @param ctx
@@ -86,17 +88,25 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	
 	private static MUserDefProc[] getAll (Properties ctx, int processID)
 	{
-		if (m_fullList == null) {
-			m_fullList = new Query(ctx, MUserDefProc.Table_Name, "IsActive='Y'", null).list();
+		List<MUserDefProc> fullList = null;
+		synchronized (m_fullMap) {
+			fullList = m_fullMap.get(Env.getAD_Client_ID(ctx));
+			if (fullList == null) {
+				fullList = new Query(ctx, MUserDefProc.Table_Name, null, null)
+						.setOnlyActiveRecords(true)
+						.setClient_ID()
+						.list();
+				m_fullMap.put(Env.getAD_Client_ID(ctx), fullList);
+			}
 		}
 
-		if (m_fullList.size() == 0) {
+		if (fullList.size() == 0) {
 			return null;
 		}
 
 		List<MUserDefProc> list = new ArrayList<MUserDefProc>();
 
-		for (MUserDefProc udp : m_fullList) {
+		for (MUserDefProc udp : fullList) {
 			if (udp.getAD_Process_ID() == processID
 				&& udp.getAD_Client_ID() == Env.getAD_Client_ID(ctx)
 				&& (udp.getAD_Language() == null || udp.getAD_Language().equals(Env.getAD_Language(ctx)))
@@ -225,13 +235,17 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 				throw new AdempiereException("Esta personalização de processo já possui parametros configurados.");
 		}
 
-		m_fullList = null;
+		synchronized (m_fullMap) {
+			m_fullMap.remove(getAD_Client_ID());
+		}
 		return true;
 	}
 
 	@Override
 	protected boolean beforeDelete() {
-		m_fullList = null;
+		synchronized (m_fullMap) {
+			m_fullMap.remove(getAD_Client_ID());
+		}
 		return true;
 	}
 
