@@ -47,6 +47,7 @@
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
@@ -109,7 +110,7 @@
         <setEntry value="com.sun.org.apache.xml.internal.resolver@default:default"/>
         <setEntry value="com.sun.xml.bind.jaxb-impl@default:default"/>
         <setEntry value="com.sun.xml.fastinfoset.FastInfoset@default:default"/>
-        <setEntry value="com.sun.xml.messaging.saaj.impl*1.5.2.b01@default:default"/>
+        <setEntry value="com.sun.xml.messaging.saaj.impl@default:default"/>
         <setEntry value="com.sun.xml.stream.buffer.streambuffer@default:default"/>
         <setEntry value="com.sun.xml.ws.jaxws-rt@default:default"/>
         <setEntry value="com.sun.xml.ws.policy@default:default"/>
