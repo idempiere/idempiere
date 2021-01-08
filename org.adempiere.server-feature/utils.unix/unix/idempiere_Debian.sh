@@ -46,6 +46,7 @@ start () {
     fi
     echo -n "Starting iDempiere ERP: "
     cd $IDEMPIERE_HOME/utils || exit
+    export ID_ENV=Server
     . $ENVFILE
     export LOGFILE=$IDEMPIERE_HOME/log/idempiere_$(date +%Y%m%d%H%M%S).log
     su $IDEMPIEREUSER -c "mkdir -p $IDEMPIERE_HOME/log"
@@ -88,6 +89,7 @@ stop () {
     fi
     echo -n "Stopping iDempiere ERP: "
     cd $IDEMPIERE_HOME/utils || exit
+    export ID_ENV=Server
     . $ENVFILE
     # try shutdown from OSGi console, then direct kill with signal 15, then signal 9
     log_warning_msg "Trying shutdown from OSGi console"
