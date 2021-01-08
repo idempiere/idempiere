@@ -10,7 +10,7 @@ Bundle-ClassPath: .,
  lib/mchange-commons-java.jar,
  lib/postgresql.jar
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.install;bundle-version="0.0.0"
+ org.adempiere.install;bundle-version="0.0.0";resolution:=optional
 Import-Package: org.osgi.framework,
  org.slf4j;version="1.7.2"
 Bundle-ActivationPolicy: lazy
