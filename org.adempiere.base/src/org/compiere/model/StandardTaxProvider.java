@@ -352,8 +352,6 @@ public class StandardTaxProvider implements ITaxProvider {
 				}
 				if (!oTax.delete(true, rma.get_TrxName()))
 					return false;
-				if (!oTax.save(rma.get_TrxName()))
-					return false;
 			}
 			else
 			{
