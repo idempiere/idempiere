@@ -153,6 +153,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected WQuickEntry vqe;
 	
 	private List<GridField> gridFields;
+	private TreeMap<Integer, List<Object[]>> parameterTree;
 	private Checkbox checkAND;
 		
 	// F3P: Keep original values: when a row is unselected, restore original values
@@ -593,6 +594,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			infoColumns = InfoColumnVO.create(Env.getCtx(), p_infoColumns);
 		
 			gridFields = new ArrayList<GridField>();
+			parameterTree = new TreeMap<Integer, List<Object[]>>();
 			
 			for(InfoColumnVO infoColumn : infoColumns) {
 				if (infoColumn.isKey())
@@ -624,6 +626,20 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				vo.IsReadOnly = infoColumn.isReadOnly();
 				GridField gridField = new GridField(vo);
 				gridFields.add(gridField);
+
+				//IDEMPIERE-4485 Clone new Gridfields with IsReadOnly = false
+				if(infoColumn.isQueryCriteria()) {
+					vo = vo.clone(infoContext, p_WindowNo, 0, vo.AD_Window_ID, 0, false);
+					vo.IsReadOnly = false;
+					gridField = new GridField(vo);
+					List<Object[]> list = parameterTree.get(infoColumn.getSeqNoSelection());
+					if (list == null) {
+						list = new ArrayList<Object[]>();
+						parameterTree.put(infoColumn.getSeqNoSelection(), list);
+					}
+					
+					list.add(new Object[]{infoColumn, gridField});	
+				}
 			}
 			
 			// If we have a process and at least one process and an editable field, change to the info window rendered
@@ -945,7 +961,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					builder.append(whereClause);
 				}
 			} else if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
-				InfoColumnVO InfoColumnVO = findInfoColumn(editor.getGridField());
+				InfoColumnVO InfoColumnVO = findInfoColumnParameter(editor.getGridField());
 				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0")) {
 					continue;
 				}
@@ -1049,6 +1065,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return null;
 	}
 
+	protected InfoColumnVO findInfoColumnParameter(GridField gridField) {
+		for (Integer i : parameterTree.keySet()) {
+			List<Object[]> list = parameterTree.get(i);
+			for(Object[] value : list) {
+				if (gridField == value[1]) {
+					return (InfoColumnVO) value[0];
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Check has new parameter is change or new input
 	 * in case first time search, return true
@@ -1074,7 +1102,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				continue;
 			
 			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
-				InfoColumnVO InfoColumnVO = findInfoColumn(editor.getGridField());
+				InfoColumnVO InfoColumnVO = findInfoColumnParameter(editor.getGridField());
 				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0")) {
 					continue;
 				}
@@ -1116,7 +1144,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				continue;
 			
 			if (editor.getGridField() != null && editor.getValue() != null && editor.getValue().toString().trim().length() > 0) {
-				InfoColumnVO InfoColumnVO = findInfoColumn(editor.getGridField());
+				InfoColumnVO InfoColumnVO = findInfoColumnParameter(editor.getGridField());
 				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0")) {
 					continue;
 				}
@@ -1421,21 +1449,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			editors = new ArrayList<WEditor>();
 			identifiers = new ArrayList<WEditor>();
 		}
-		TreeMap<Integer, List<Object[]>> tree = new TreeMap<Integer, List<Object[]>>();
-		for (int i = 0; i < infoColumns.length; i++)
-		{
-			if (infoColumns[i].isQueryCriteria()) {
-				List<Object[]> list = tree.get(infoColumns[i].getSeqNoSelection());
-				if (list == null) {
-					list = new ArrayList<Object[]>();
-					tree.put(infoColumns[i].getSeqNoSelection(), list);
-				}
-				list.add(new Object[]{infoColumns[i], gridFields.get(i)});				
-			}
-		}
-		
-		for (Integer i : tree.keySet()) {
-			List<Object[]> list = tree.get(i);
+
+		for (Integer i : parameterTree.keySet()) {
+			List<Object[]> list = parameterTree.get(i);
 			for(Object[] value : list) {
 				if (update) {
 					for (WEditor editor : editors) {

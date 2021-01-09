@@ -20,6 +20,7 @@
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -arch ${target.arch} -nl ${target.nl} -consoleLog&#10;import ../globalqss-idempiere-lco/es_CO es_CO"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
@@ -93,13 +94,12 @@
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
-        <setEntry value="slf4j.jcl@default:default"/>
+        <setEntry value="slf4j.jcl@default:false"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.adempiere.base.callout@default:default"/>
         <setEntry value="org.adempiere.base.process@default:default"/>
         <setEntry value="org.adempiere.base@default:default"/>
-        <setEntry value="org.adempiere.install@default:default"/>
         <setEntry value="org.adempiere.payment.processor@default:default"/>
         <setEntry value="org.adempiere.pipo.handlers@default:default"/>
         <setEntry value="org.adempiere.pipo@default:true"/>

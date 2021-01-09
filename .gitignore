@@ -9,6 +9,7 @@
 /Oracle/
 /log/
 /*.log
+/.idpass
 /idempiere.properties
 /idempiereEnv.properties
 /hazelcast.xml
@@ -26,3 +27,4 @@ External Plug-in Libraries
 /org.idempiere.javadoc/API
 /.sonarlint/
 **/org.sonarlint.eclipse.core.prefs
+/runtime-*.app/

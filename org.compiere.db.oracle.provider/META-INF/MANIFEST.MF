@@ -6,7 +6,7 @@ Bundle-Version: 8.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.install;bundle-version="0.0.0"
+ org.adempiere.install;bundle-version="0.0.0";resolution:=optional
 Bundle-ClassPath: .,
  lib/c3p0-oracle-thin-extras.jar,
  lib/c3p0.jar,

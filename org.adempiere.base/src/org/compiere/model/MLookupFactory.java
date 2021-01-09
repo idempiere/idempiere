@@ -770,7 +770,8 @@ public class MLookupFactory
 	{
 		if (!ColumnName.endsWith("_ID"))
 		{
-			s_log.log(Level.SEVERE, "Key does not end with '_ID': " + ColumnName);
+			String error = "Key does not end with '_ID': " + ColumnName;
+			s_log.log(Level.SEVERE, error, new Exception(error));
 			return null;
 		}
 
@@ -1027,6 +1028,8 @@ public class MLookupFactory
 	private static ArrayList<LookupDisplayColumn> getListIdentifiers(String TableName) {
 		ArrayList<LookupDisplayColumn> list = new ArrayList<LookupDisplayColumn>();
 		MTable table = MTable.get(Env.getCtx(), TableName);
+		if (table == null)
+			return null;
 		for (String idColumnName : table.getIdentifierColumns()) {
 			MColumn column = table.getColumn(idColumnName);
 			LookupDisplayColumn ldc = new LookupDisplayColumn(column.getColumnName(), column.getColumnSQL(true), column.isTranslated(), column.getAD_Reference_ID(), column.getAD_Reference_Value_ID());

@@ -14,10 +14,13 @@ fi
 
 
 # Setup idempiere.properties and idempiereEnv.properties
-$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.console-application $@
+$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.silent-application $@
 
-# Setup Jetty
-$JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
+if [ -s idempiere.properties ]
+then
+    # Setup Jetty
+    $JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.eclipse.ant.core.antRunner -buildfile build.xml
+fi
 
 echo .
 echo For problems, check log file in base directory

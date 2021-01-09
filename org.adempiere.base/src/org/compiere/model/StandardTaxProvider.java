@@ -97,8 +97,6 @@ public class StandardTaxProvider implements ITaxProvider {
 				}
 				if (!oTax.delete(true, order.get_TrxName()))
 					return false;
-				if (!oTax.save(order.get_TrxName()))
-					return false;
 			}
 			else
 			{
@@ -353,8 +351,6 @@ public class StandardTaxProvider implements ITaxProvider {
 						grandTotal = grandTotal.add(taxAmt);
 				}
 				if (!oTax.delete(true, rma.get_TrxName()))
-					return false;
-				if (!oTax.save(rma.get_TrxName()))
 					return false;
 			}
 			else

@@ -3,7 +3,7 @@
 echo Setup idempiere Server
 
 # Setup idempiere.properties and idempiereEnv.properties
-./idempiere --launcher.ini setup.ini -application org.adempiere.install.console-application
+./idempiere --launcher.ini setup.ini -application org.adempiere.install.console-application $@
 
 # Setup Jetty
 ./idempiere --launcher.ini setup.ini -application org.eclipse.ant.core.antRunner -buildfile build.xml

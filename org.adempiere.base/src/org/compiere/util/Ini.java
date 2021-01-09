@@ -18,18 +18,22 @@ package org.compiere.util;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.ModelValidationEngine;
 
 /**
@@ -62,10 +66,10 @@ public final class Ini implements Serializable
 	private static final String	DEFAULT_UID = 		"GardenAdmin";
 	/** Apps Password		*/
 	public static final String	P_PWD = 			"ApplicationPassword";
-	private static final String	DEFAULT_PWD = 		"GardenAdmin";
+	private static final String	DEFAULT_PWD = 		"";
 	/** Store Password		*/
 	public static final String	P_STORE_PWD = 		"StorePassword";
-	private static final boolean DEFAULT_STORE_PWD = true;
+	private static final boolean DEFAULT_STORE_PWD = false;
 	/** Trace Level			*/
 	public static final String	P_TRACELEVEL = 		"TraceLevel";
 	private static final String DEFAULT_TRACELEVEL = "WARNING";
@@ -794,4 +798,73 @@ public final class Ini implements Serializable
 	{
 		return s_propertyFileName;
 	}
+
+	public static String getVar(String secretVar) {
+		String cmd = getUtilsCmd("getVar");
+		String[] command = new String[] {
+				cmd,
+				secretVar
+		};
+		String retValue = runCommand(command);
+		return retValue;
+	}
+
+	public static void setVar(String secretVar, String secretValue) {
+		String cmd = getUtilsCmd("setVar");
+		String[] command = new String[] {
+				cmd,
+				secretVar,
+				secretValue
+		};
+		runCommand(command);
+	}
+
+	private static String getUtilsCmd(String script) {
+		File utilsFolder = new File(getAdempiereHome() + File.separator + "utils");
+		if (! utilsFolder.exists()) {
+			// /utils does not exist, probably running on eclipse
+			if (Env.isWindows()) {
+				utilsFolder = new File(getAdempiereHome() + File.separator + "org.adempiere.server-feature" + File.separator + "utils.windows");
+			} else {
+				utilsFolder = new File(getAdempiereHome() + File.separator + "org.adempiere.server-feature" + File.separator + "utils.unix");
+			}
+			if (! utilsFolder.exists()) {
+				throw new AdempiereException("Folder utils does not exist");
+			}
+		}
+		File cmd = new File(utilsFolder, script + (Env.isWindows() ? ".bat" : ".sh"));
+		if (! cmd.exists() || ! cmd.canExecute()) {
+			throw new AdempiereException("File does not exist or canno execute " + cmd.getAbsolutePath());
+		}
+		return cmd.getAbsolutePath();
+	}
+
+	public static String runCommand(String[] command) {
+		StringBuilder msg = new StringBuilder();
+		try {
+			String s;
+			Process p = Runtime.getRuntime().exec(command);
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			// read the output from the command
+			while ((s = stdInput.readLine()) != null) {
+				msg.append(s);
+			}
+			// read any errors from the attempted command
+			while ((s = stdError.readLine()) != null) {
+				msg.append(s);
+			}
+			if ( !p.waitFor(5, TimeUnit.SECONDS)) {
+				throw new AdempiereException("Timeout waiting 5 seconds for " + command[0]);
+			} 
+			if (p.exitValue() != 0) {
+				throw new Exception(msg.toString());
+			}
+		}
+		catch (Exception e) {
+			throw new AdempiereException("Could not execute " + command[0], e);
+		}
+		return msg.toString();
+	}
+
 }	//	Ini
