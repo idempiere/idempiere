@@ -107,7 +107,7 @@ public class Login
 			}
 		}
 		//
-		Env.setContext(ctx, "#Date", "2000-01-01");
+		Env.setContext(ctx, Env.DATE, "2000-01-01");
 	//	logger.exiting("Env", "initTest");
 		return ctx;
 	}   //  testInit
@@ -830,7 +830,7 @@ public class Login
 		long today = System.currentTimeMillis();
 		if (timestamp != null)
 			today = timestamp.getTime();
-		Env.setContext(m_ctx, "#Date", new java.sql.Timestamp(today));
+		Env.setContext(m_ctx, Env.DATE, new java.sql.Timestamp(today));
 
 		//	Optional Printer
 		if (printerName == null)

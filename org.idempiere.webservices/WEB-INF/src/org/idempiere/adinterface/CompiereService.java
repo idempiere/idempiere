@@ -281,8 +281,8 @@ public class CompiereService {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat( dateFormatOnlyForCtx ); 
-		Env.setContext( getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
-		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
+		Env.setContext( getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), Env.DATE));
 
 		Env.setContext( getCtx(), "#M_Warehouse_ID", M_Warehouse_ID );
 		Env.setContext(getCtx(), Env.LANGUAGE, m_language.getAD_Language());

@@ -115,7 +115,7 @@ public class Scheduler extends AdempiereServer
 			Env.setContext(getCtx(), "#AD_Role_ID", schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
-		Env.setContext(getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		Env.setContext(getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 
 		//Create new Session and set #AD_Session_ID to context
 		MSession session = MSession.get(getCtx(), true);
@@ -555,7 +555,7 @@ public class Scheduler extends AdempiereServer
 			else
 				value = env;
 			
-			if (tail != null && columnName.equals("#Date"))
+			if (tail != null && columnName.equals(Env.DATE))
 			{
 				tail = tail.trim();
 				if (tail.startsWith("-") || tail.startsWith("+"))

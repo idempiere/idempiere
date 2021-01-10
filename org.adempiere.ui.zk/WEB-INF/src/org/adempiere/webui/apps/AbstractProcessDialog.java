@@ -1173,7 +1173,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			Env.setContext(m_ctx, "#M_Warehouse_ID", ctx.getProperty("#M_Warehouse_ID"));
 			Env.setContext(m_ctx, "#AD_Language", ctx.getProperty("#AD_Language"));
 			Env.setContext(m_ctx, "#AD_User_ID", ctx.getProperty("#AD_User_ID"));
-			Env.setContext(m_ctx, "#Date", ctx.getProperty("#Date"));
+			Env.setContext(m_ctx, Env.DATE, ctx.getProperty(Env.DATE));
 		}
 		
 		@Override

@@ -50,7 +50,7 @@ public class MatchInvReverse extends SvrProcess {
 		
 		if (inv.isProcessed())
 		{		
-			Timestamp reversalDate = Env.getContextAsDate(getCtx(), "#Date");
+			Timestamp reversalDate = Env.getContextAsDate(getCtx(), Env.DATE);
 			if (reversalDate == null) {
 				reversalDate = new Timestamp(System.currentTimeMillis());
 			}

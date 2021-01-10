@@ -528,7 +528,7 @@ public class CLogMgt
 		sb.append(getMsg("AD_Client_ID")).append(eq).append(Env.getContext(Env.getCtx(), "#AD_Client_Name")).append(NL);
 		sb.append(getMsg("AD_Org_ID")).append(eq)   .append(Env.getContext(Env.getCtx(), "#AD_Org_Name")).append(NL);
 		//
-		sb.append(getMsg("Date")).append(eq)        .append(Env.getContext(Env.getCtx(), "#Date")).append(NL);
+		sb.append(getMsg("Date")).append(eq)        .append(Env.getContext(Env.getCtx(), Env.DATE)).append(NL);
 		sb.append(getMsg("Printer")).append(eq)     .append(Env.getContext(Env.getCtx(), "#Printer")).append(NL);
 		// Show Implementation Vendor / Version - teo_sarca, [ 1622855 ]
 		sb.append(getMsg("ImplementationVendor")).append(eq).append(org.compiere.Adempiere.getImplementationVendor()).append(NL);

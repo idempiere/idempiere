@@ -82,7 +82,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		setC_Activity_ID(project.getC_Activity_ID());
 		setC_ProjectPhase_ID(line.getC_ProjectPhase_ID());
 		setC_ProjectTask_ID(line.getC_ProjectTask_ID());
-		setMovementDate( Env.getContextAsDate(p_ctx, "#Date"));
+		setMovementDate( Env.getContextAsDate(p_ctx, Env.DATE));
 	}
 
 	@Override
@@ -704,7 +704,7 @@ public class MProduction extends X_M_Production implements DocAction {
 	}
 
 	protected MProduction reverse(boolean accrual) {
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}

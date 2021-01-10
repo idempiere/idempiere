@@ -178,7 +178,7 @@ public abstract class AdempiereServer implements Runnable
 		}
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
-		Env.setContext(context, "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		Env.setContext(context, Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 		
 		Properties prevContext = ServerContext.getCurrentInstance();
 		try {

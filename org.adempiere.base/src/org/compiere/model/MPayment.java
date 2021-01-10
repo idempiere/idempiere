@@ -2700,7 +2700,7 @@ public class MPayment extends X_C_Payment
 			return null;
 		
 		//	Std Period open?
-		Timestamp dateAcct = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		Timestamp dateAcct = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getDateAcct();
 		if (dateAcct == null) {
 			dateAcct = new Timestamp(System.currentTimeMillis());
 		}

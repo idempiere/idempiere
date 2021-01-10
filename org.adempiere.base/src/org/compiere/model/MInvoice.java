@@ -2513,7 +2513,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}	//	reverseCorrectIt
 
 	private MInvoice reverse(boolean accrual) {
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getDateAcct();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}

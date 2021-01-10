@@ -165,7 +165,7 @@ public class MSession extends X_AD_Session
 				+ Adempiere.DATE_VERSION + " "
 				+ Adempiere.getImplementationVersion());
 		setAD_Role_ID(Env.getContextAsInt(ctx, "#AD_Role_ID"));
-		setLoginDate(Env.getContextAsDate(ctx, "#Date"));
+		setLoginDate(Env.getContextAsDate(ctx, Env.DATE));
 	}	//	MSession
 
 	/**
@@ -186,7 +186,7 @@ public class MSession extends X_AD_Session
 					+ Adempiere.DATE_VERSION + " "
 					+ Adempiere.getImplementationVersion());
 			setAD_Role_ID(Env.getContextAsInt(ctx, "#AD_Role_ID"));
-			setLoginDate(Env.getContextAsDate(ctx, "#Date"));
+			setLoginDate(Env.getContextAsDate(ctx, Env.DATE));
 		}
 		catch (UnknownHostException e)
 		{

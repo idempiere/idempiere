@@ -875,7 +875,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		//	Journal
 		MJournal reverse = new MJournal (this);
 		reverse.setGL_JournalBatch_ID(GL_JournalBatch_ID);
-		Timestamp reversalDate = Env.getContextAsDate(getCtx(), "#Date");
+		Timestamp reversalDate = Env.getContextAsDate(getCtx(), Env.DATE);
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
