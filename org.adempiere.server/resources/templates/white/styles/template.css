@@ -100,8 +100,7 @@ div.body{
 }
 #main-docuBtns ul li > a > img {
 	position: relative;
-	top: 50%;
-  	transform: translate(0%,-45%);
+  	transform: translate(0%,5%);
 }
 .main-txt-btn {
 	padding-top:2px;
