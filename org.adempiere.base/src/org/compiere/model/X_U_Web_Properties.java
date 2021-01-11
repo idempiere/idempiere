@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for U_Web_Properties
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_U_Web_Properties (Properties ctx, int U_Web_Properties_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_U_Web_Properties[")
+      StringBuilder sb = new StringBuilder ("X_U_Web_Properties[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

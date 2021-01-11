@@ -17,15 +17,10 @@
 package org.adempiere.webui.process;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.Window;
-import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MDunningLevel;

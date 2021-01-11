@@ -27,10 +27,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import org.adempiere.base.IServiceHolder;
+import org.adempiere.base.Core;
 import org.adempiere.base.Service;
 import org.adempiere.server.AdempiereServerActivator;
 import org.adempiere.server.IServerFactory;
+import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.MScheduler;
@@ -142,7 +143,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		if (clusterId != null) {
 			Map<String, String> map = getServerOwnerMap();
 			if (map != null) {
-				ICacheService cacheService = getCacheService();
+				ICacheService cacheService = Core.getCacheService();
 				try {
 					String reloadLockKey = "cluster.server.owner.map.reload";
 					if (cacheService.tryLock(map, reloadLockKey, 30, TimeUnit.SECONDS)) {
@@ -200,7 +201,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 						if (clusterId != null) {
 							Map<String, String> map = getServerOwnerMap();
 							if (map != null) {
-								ICacheService cacheService = getCacheService();
+								ICacheService cacheService = Core.getCacheService();
 								try {
 									if (cacheService.tryLock(map, server.getServerID(), 30, TimeUnit.SECONDS)) {
 										try {
@@ -257,7 +258,7 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 							if (clusterId != null) {
 								Map<String, String> map = getServerOwnerMap();
 								if (map != null) {
-									ICacheService cacheService = getCacheService();
+									ICacheService cacheService = Core.getCacheService();
 									try {
 										if (cacheService.tryLock(map, server.getServerID(), 30, TimeUnit.SECONDS)) {
 											try {
@@ -344,16 +345,23 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 	{
 		log.info ("");
 		LocalServerController[] servers = getInActive();
+		Properties currentContext = ServerContext.getCurrentInstance();
 		for (int i = 0; i < servers.length; i++)
 		{
 			LocalServerController server = servers[i];
+			Properties temp = null;
 			try
 			{
 				if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 					continue;
 				//	Do start
 				//	replace
-				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+				if (Env.getAD_Client_ID(currentContext) != server.getServer().getModel().getAD_Client_ID())
+				{
+					temp = new Properties(currentContext);
+					Env.setContext(temp, Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+					ServerContext.setCurrentInstance(temp);
+				}
 				server.getServer().recalculateSleepMS();
 				server.start();
 			}
@@ -361,8 +369,12 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 			{
 				log.log(Level.SEVERE, "Server: " + server, e);
 			}
-		}	//	for all servers
-		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+			finally
+			{
+				if (temp != null)
+					ServerContext.setCurrentInstance(currentContext);
+			}
+		}	//	for all servers		
 		
 		//	Final Check
 		int noRunning = 0;
@@ -407,10 +419,17 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		if (server.scheduleFuture != null && !server.scheduleFuture.isDone())
 			return "Server is already running";
 		
+		Properties currentContext = ServerContext.getCurrentInstance();
+		Properties temp = null;
 		try
 		{
 			//	replace
-			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+			if (Env.getAD_Client_ID(currentContext) != server.getServer().getModel().getAD_Client_ID())
+			{
+				temp = new Properties(currentContext);
+				Env.setContext(temp, Env.AD_CLIENT_ID, server.getServer().getModel().getAD_Client_ID());
+				ServerContext.setCurrentInstance(temp);
+			}
 			server.getServer().recalculateSleepMS();
 			server.start();
 		}
@@ -421,7 +440,8 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		}
 		finally
 		{
-			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+			if (temp != null)
+				ServerContext.setCurrentInstance(currentContext);
 		}
 		if (log.isLoggable(Level.INFO)) log.info(server.toString());
 		return (server.scheduleFuture != null && !server.scheduleFuture.isDone()) ? null : "Failed to start server"; 
@@ -730,8 +750,10 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		public void run() {
 			if (server.isSleeping()) {
 				server.run();
-				if (server.getSleepMS() != 0) {
-					scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getSleepMS(), TimeUnit.MILLISECONDS);
+				if (!isInterrupted()) {
+					if (server.getSleepMS() != 0) {
+						scheduleFuture = Adempiere.getThreadPoolExecutor().schedule(this, server.getSleepMS(), TimeUnit.MILLISECONDS);
+					}
 				}
 			}  else {
 				//server busy, try again after one minute
@@ -851,14 +873,8 @@ public class AdempiereServerMgr implements ServiceTrackerCustomizer<IServerFacto
 		return null;
 	}
 	
-	private ICacheService getCacheService( ) {
-		IServiceHolder<ICacheService> holder = Service.locator().locate(ICacheService.class);
-		ICacheService service = holder != null ? holder.getService() : null;
-		return service;
-	}
-	
 	private Map<String, String> getServerOwnerMap() {
-		ICacheService service = getCacheService();
+		ICacheService service = Core.getCacheService();
 		if (service != null) {
 			return service.getMap("cluster.server.owner.map");
 		}

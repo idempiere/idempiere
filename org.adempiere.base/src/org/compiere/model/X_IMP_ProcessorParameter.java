@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorParameter
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParameter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorParameter (Properties ctx, int IMP_ProcessorParameter_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_IMP_ProcessorParameter[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_IMP_ProcessorParameter[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

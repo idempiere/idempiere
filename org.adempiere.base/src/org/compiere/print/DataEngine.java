@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.regex.Pattern;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
+import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogMgt;
@@ -454,7 +456,7 @@ public class DataEngine
 				}
 
 				//	-- List or Button with ReferenceValue --
-				else if (AD_Reference_ID == DisplayType.List 
+				else if (DisplayType.isList(AD_Reference_ID) 
 					|| (AD_Reference_ID == DisplayType.Button && AD_Reference_Value_ID != 0))
 				{
 					if (ColumnSQL.length() > 0)
@@ -656,6 +658,9 @@ public class DataEngine
 			hasLevelNo = true;
 			if (sqlSELECT.indexOf("LevelNo") == -1)
 				sqlSELECT.append("LevelNo,");
+
+			if (tableName.equals("T_Report") && sqlSELECT.indexOf("PA_ReportLine_ID") == -1)
+				sqlSELECT.append("PA_ReportLine_ID,");
 		}
 
 		/**
@@ -709,7 +714,7 @@ public class DataEngine
 		}
 
 		//	Add ORDER BY clause
-		if (orderColumns != null)
+		if (orderColumns != null && orderColumns.size() > 0)
 		{
 			for (int i = 0; i < orderColumns.size(); i++)
 			{
@@ -723,7 +728,15 @@ public class DataEngine
 				finalSQL.append(by);
 			}
 		}	//	order by
-		
+		else if (format.getAD_ReportView_ID() > 0)
+		{
+			MReportView reportView = MReportView.get(Env.getCtx(),format.getAD_ReportView_ID());
+
+			if (reportView!=null && !Util.isEmpty(reportView.getOrderByClause(), true))
+			{
+				finalSQL.append(" ORDER BY ").append(reportView.getOrderByClause());
+			}
+		} // Report view order by clause.
 
 		//	Print Data
 		PrintData pd = new PrintData (ctx, reportName);
@@ -827,6 +840,7 @@ public class DataEngine
 		PrintDataColumn pdc = null;
 		boolean hasLevelNo = pd.hasLevelNo();
 		int levelNo = 0;
+		int reportLineID = 0;
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -834,11 +848,30 @@ public class DataEngine
 		{
 			pstmt = DB.prepareNormalReadReplicaStatement(pd.getSQL(), m_trxName);
 			rs = pstmt.executeQuery();
+
+			boolean isExistsT_Report_PA_ReportLine_ID = false;
+			if (pd.getTableName().equals("T_Report"))
+			{
+				ResultSetMetaData rsmd = rs.getMetaData();
+				for (int i = 1; i <= rsmd.getColumnCount(); i++)
+				{
+					if (rsmd.getColumnLabel(i).equalsIgnoreCase("PA_ReportLine_ID"))
+					{
+						isExistsT_Report_PA_ReportLine_ID = true;
+						break;
+					}
+				}
+			}
+
 			//	Row Loop
 			while (rs.next())
 			{
 				if (hasLevelNo)
+				{
 					levelNo = rs.getInt("LevelNo");
+					if (isExistsT_Report_PA_ReportLine_ID)
+						reportLineID = rs.getInt("PA_ReportLine_ID");
+				}
 				else
 					levelNo = 0;
 				//	Check Group Change ----------------------------------------
@@ -914,8 +947,8 @@ public class DataEngine
 				printRunningTotal(pd, levelNo, rowNo++);
 
 				/** Report Summary FR [ 2011569 ]**/ 
-				if(!m_summary)					
-					pd.addRow(false, levelNo);
+				if (!m_summary)
+					pd.addRow(false, levelNo, reportLineID);
 				int counter = 1;
 				//	get columns
 				for (int i = 0; i < pd.getColumnInfo().length; i++)

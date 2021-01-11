@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_POSPayment
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_POSPayment (Properties ctx, int C_POSPayment_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_POSPayment[")
+      StringBuilder sb = new StringBuilder ("X_C_POSPayment[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BankAccount_Processor
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Processor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName)
@@ -91,7 +91,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BankAccount_Processor[")
+      StringBuilder sb = new StringBuilder ("X_C_BankAccount_Processor[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

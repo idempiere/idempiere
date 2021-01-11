@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -86,7 +88,7 @@ public class POInfo implements Serializable
 	}   //  getPOInfo
 
 	/** Cache of POInfo     */
-	private static CCache<Integer,POInfo>  s_cache = new CCache<Integer,POInfo>(I_AD_Table.Table_Name, "POInfo", 200);
+	private static CCache<Integer,POInfo>  s_cache = new CCache<Integer,POInfo>(I_AD_Table.Table_Name, "POInfo", 200, 0, false, 0);
 	
 	/**************************************************************************
 	 *  Create Persistent Info
@@ -115,7 +117,7 @@ public class POInfo implements Serializable
 	}   //  PInfo
 
 	/** Context             	*/
-	private Properties  m_ctx = null;
+	private transient Properties  m_ctx = null;
 	/** Table_ID            	*/
 	private int         m_AD_Table_ID = 0;
 	/** Table Name          	*/
@@ -835,4 +837,10 @@ public class POInfo implements Serializable
 		return m_IsChangeLog;
 	}
 	
+	private void readObject(ObjectInputStream ois)
+			throws ClassNotFoundException, IOException {
+	    // default deserialization
+	    ois.defaultReadObject();
+	    m_ctx = Env.getCtx();
+	}
 }   //  POInfo

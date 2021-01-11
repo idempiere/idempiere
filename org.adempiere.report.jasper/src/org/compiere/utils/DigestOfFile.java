@@ -4,9 +4,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * @author rlemeill
@@ -32,14 +34,13 @@ public class DigestOfFile
     synchronized public byte[] digestAsByteArray(File file) throws Exception
     {
         digestAgent.reset();
-        InputStream is = new BufferedInputStream(new FileInputStream(file));
-        for (int bytesRead = 0; (bytesRead = is.read(buffer)) >= 0;)
+        try (InputStream is = new BufferedInputStream(new FileInputStream(file));
+        	 DigestInputStream dis = new DigestInputStream(is, digestAgent))
         {
-            digestAgent.update(buffer, 0, bytesRead);
-        }
-        is.close();
-        byte[] digest = digestAgent.digest();
-        return digest;
+	        while(dis.read() != -1){}
+	        byte[] digest = digestAgent.digest();
+	        return digest;
+        }                
     }
 
     public synchronized byte[] digestAsByteArray(byte[] input) throws Exception
@@ -76,13 +77,31 @@ public class DigestOfFile
         return digestAsBase64;
     }
 
+    /**
+     * 
+     * @param file
+     * @return hex encoded md5 string
+     * @throws Exception
+     */
+    public synchronized String digestAsHex(File file) throws Exception
+    {
+        byte[] digest = digestAsByteArray(file);
+        return Hex.encodeHexString(digest);
+    }
 
-
-    //private static final char[] HEX_CHARS = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-
+    /**
+     * 
+     * @param input
+     * @return hex encoded md5 string
+     * @throws Exception
+     */
+    public synchronized String digestAsHex(byte[] input) throws Exception
+    {
+    	byte[] digest = digestAsByteArray(input);
+    	return Hex.encodeHexString(digest);
+    }
+    
     private MessageDigest digestAgent;
-    //private Base64 base64Encoder = new Base64();
-    private byte[] buffer = new byte[4096];
 
     /**
      * @author rlemeill
@@ -114,15 +133,15 @@ public class DigestOfFile
      * @param file2 second file to compare
      * @return true if files are identic false otherwise
      */
-    public static boolean md5localHashCompare(File file1,File file2)
+    public static boolean md5HashCompare(File file1,File file2)
     {
     	//compute Hash of exisiting and downloaded
     	String hashFile1;
     	String hashFile2;
     	try{
     		DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
-    		hashFile1 = md5DigestAgent.digestAsBase64(file1);
-    		hashFile2 = md5DigestAgent.digestAsBase64(file2);
+    		hashFile1 = md5DigestAgent.digestAsHex(file1);
+    		hashFile2 = md5DigestAgent.digestAsHex(file2);
     		return hashFile1.equals(hashFile2) ; }
     	catch (Exception e)
 		{
@@ -134,13 +153,15 @@ public class DigestOfFile
      * @param file
      * @return md5 hash null if file is not found or other error
      */
-    public static String GetLocalMD5Hash(File file)
+    public static String getMD5Hash(File file)
     {
     	String hash;
-    	try{
+    	try
+    	{
     		DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
-    		hash = md5DigestAgent.digestAsBase64(file);
-    		return hash; }
+    		hash = md5DigestAgent.digestAsHex(file);
+    		return hash; 
+    	}
     	catch (Exception e)
 		{
     		return null;			//if there is an error during comparison return files are difs
@@ -155,10 +176,12 @@ public class DigestOfFile
     public static String getMD5Hash(byte[] input)
     {
     	String hash;
-    	try{
+    	try
+    	{
     		DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
-    		hash = md5DigestAgent.digestAsBase64(input);
-    		return hash; }
+    		hash = md5DigestAgent.digestAsHex(input);
+    		return hash; 
+    	}
     	catch (Exception e)
 		{
     		return null;			//if there is an error during comparison return files are difs

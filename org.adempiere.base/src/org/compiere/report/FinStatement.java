@@ -103,7 +103,7 @@ public class FinStatement extends SvrProcess
 	 */
 	protected void prepare()
 	{
-		StringBuffer sb = new StringBuffer ("Record_ID=")
+		StringBuilder sb = new StringBuilder ("Record_ID=")
 			.append(getRecord_ID());
 		//	Parameter
 		ProcessInfoParameter[] para = getParameter();
@@ -325,7 +325,7 @@ public class FinStatement extends SvrProcess
 	 */
 	private void createDetailLines()
 	{
-		StringBuffer sb = new StringBuffer ("INSERT INTO T_ReportStatement "
+		StringBuilder sb = new StringBuilder ("INSERT INTO T_ReportStatement "
 			+ "(AD_PInstance_ID, Fact_Acct_ID, LevelNo,"
 			+ "DateAcct, Name, Description,"
 			+ "AmtAcctDr, AmtAcctCr, Balance, Qty) ");
@@ -359,7 +359,7 @@ public class FinStatement extends SvrProcess
 					+ "WHERE r.Fact_Acct_ID=fa.Fact_Acct_ID";
 		}
 		//	Translated Version ...
-		sb = new StringBuffer ("UPDATE T_ReportStatement r SET (Name,Description)=(")
+		sb = new StringBuilder ("UPDATE T_ReportStatement r SET (Name,Description)=(")
 			.append(sql_select).append(") "
 			+ "WHERE Fact_Acct_ID <> 0 AND AD_PInstance_ID=").append(getAD_PInstance_ID());
 		//

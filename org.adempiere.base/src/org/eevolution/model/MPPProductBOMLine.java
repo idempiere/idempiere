@@ -35,6 +35,7 @@ import org.compiere.model.MUOM;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  PP Product BOM Line Model.
@@ -48,14 +49,13 @@ import org.compiere.util.Env;
  * @author Victor Perez www.e-evolution.com     
  * @author Teo Sarca, www.arhipac.ro
  */
-public class MPPProductBOMLine extends X_PP_Product_BOMLine
+public class MPPProductBOMLine extends X_PP_Product_BOMLine implements ImmutablePOSupport
 {
-
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5792418944606756221L;
+	private static final long serialVersionUID = 5942313871247489972L;
+	
 	MPPProductBOM m_bom = null;
 	
 	/**
@@ -105,6 +105,38 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine
 	} //	 MPPProductBOMLine
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MPPProductBOMLine(MPPProductBOMLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPPProductBOMLine(Properties ctx, MPPProductBOMLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPPProductBOMLine(Properties ctx, MPPProductBOMLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_bom = copy.m_bom != null ? new MPPProductBOM(ctx, copy.m_bom, trxName) : null;
+	}
+	
+	/**
 	 * Calculate Low Level of a Product
 	 * @param ID Product
 	 * @return int low level
@@ -129,7 +161,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine
 	
 	public MProduct getProduct()
 	{
-		return MProduct.get(getCtx(), getM_Product_ID());
+		return MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 	}
 	
 	/**
@@ -275,6 +307,16 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine
 		}
 		return allocationPercent;
 	}
+	
+	@Override
+	public MPPProductBOMLine markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }
 
 class ProductLowLevelCalculator

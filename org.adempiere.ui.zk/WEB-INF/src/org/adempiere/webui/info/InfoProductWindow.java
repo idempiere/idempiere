@@ -41,7 +41,6 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
@@ -53,7 +52,7 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7892916038089331016L;
+	private static final long serialVersionUID = -640644572459126094L;
 
 	protected Tabbox tabbedPane;
 	protected WListbox warehouseTbl;
@@ -327,15 +326,6 @@ public class InfoProductWindow extends InfoWindow {
 		south.setSplittable(true);
 		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
 		south.setTooltiptext(Msg.translate(Env.getCtx(), "WarehouseStock"));
-		south.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
-			@Override
-			public void onEvent(SwipeEvent event) throws Exception {
-				South south = (South) event.getTarget();
-				if ("down".equals(event.getSwipeDirection())) {
-					south.setOpen(false);
-				}
-			}
-		});
 		south.setSclass("south-collapsible-with-title");
 		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
 		{
@@ -367,11 +357,13 @@ public class InfoProductWindow extends InfoWindow {
 						}
 					}
 					
-					Object value = contentPanel.getValueAt(row, findColumnIndex("IsInstanceAttribute"));
-					if (value != null && value.toString().equals("true")) {
-						m_PAttributeButton.setEnabled(true);
-					} else {
-						m_PAttributeButton.setEnabled(false);
+					m_PAttributeButton.setEnabled(false);
+					int colIdx = findColumnIndex("IsInstanceAttribute");
+
+					if (colIdx >= 0) {
+						Object value = contentPanel.getValueAt(row, colIdx);
+						if (value != null && value.toString().equals("true"))
+							m_PAttributeButton.setEnabled(true);
 					}
 				}
 			}

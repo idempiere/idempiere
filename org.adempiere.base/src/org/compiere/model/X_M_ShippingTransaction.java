@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ShippingTransaction
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransaction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_M_ShippingTransaction (Properties ctx, int M_ShippingTransaction_ID, String trxName)
@@ -107,7 +107,7 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ShippingTransaction[")
+      StringBuilder sb = new StringBuilder ("X_M_ShippingTransaction[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

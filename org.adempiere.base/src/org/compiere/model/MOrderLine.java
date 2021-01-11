@@ -369,11 +369,11 @@ public class MOrderLine extends X_C_OrderLine
 	public MCharge getCharge()
 	{
 		if (m_charge == null && getC_Charge_ID() != 0)
-			m_charge =  MCharge.get (getCtx(), getC_Charge_ID());
+			m_charge =  MCharge.getCopy(getCtx(), getC_Charge_ID(), get_TrxName());
 		return m_charge;
 	}
 	/**
-	 * 	Get Tax
+	 * 	Get Tax (immutable)
 	 *	@return tax
 	 */
 	protected MTax getTax()
@@ -472,7 +472,7 @@ public class MOrderLine extends X_C_OrderLine
 	public MProduct getProduct()
 	{
 		if (m_product == null && getM_Product_ID() != 0)
-			m_product =  MProduct.get (getCtx(), getM_Product_ID());
+			m_product =  MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return m_product;
 	}	//	getProduct
 	
@@ -605,7 +605,7 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MOrderLine[")
+		StringBuilder sb = new StringBuilder ("MOrderLine[")
 			.append(get_ID())
 			.append(", Line=").append(getLine())
 			.append(", Ordered=").append(getQtyOrdered())

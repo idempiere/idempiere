@@ -516,12 +516,12 @@ public class DistributionRun extends SvrProcess
 					order.setC_DocType_ID(m_docType.getC_DocType_ID());
 					order.setIsSOTrx(m_docType.isSOTrx());
 					//	Counter Doc
-					if (counter && bp.getAD_OrgBP_ID_Int() > 0)
+					if (counter && bp.getAD_OrgBP_ID() > 0)
 					{
-						if (log.isLoggable(Level.FINE)) log.fine("Counter - From_BPOrg=" + bp.getAD_OrgBP_ID_Int() 
+						if (log.isLoggable(Level.FINE)) log.fine("Counter - From_BPOrg=" + bp.getAD_OrgBP_ID() 
 							+ "-" + bp + ", To_BP=" + runBPartner);
-						order.setAD_Org_ID(bp.getAD_OrgBP_ID_Int());
-						MOrgInfo oi = MOrgInfo.get(getCtx(), bp.getAD_OrgBP_ID_Int(), get_TrxName());
+						order.setAD_Org_ID(bp.getAD_OrgBP_ID());
+						MOrgInfo oi = MOrgInfo.get(getCtx(), bp.getAD_OrgBP_ID(), get_TrxName());
 						if (oi.getM_Warehouse_ID() > 0)
 							order.setM_Warehouse_ID(oi.getM_Warehouse_ID());
 						order.setBPartner(runBPartner);
@@ -557,7 +557,7 @@ public class DistributionRun extends SvrProcess
 
 			//	Create Order Line
 			MOrderLine line = new MOrderLine(order);
-			if (counter && bp.getAD_OrgBP_ID_Int() > 0)
+			if (counter && bp.getAD_OrgBP_ID() > 0)
 				;	//	don't overwrite counter doc
 			else	//	normal - optionally overwrite
 			{
@@ -929,7 +929,7 @@ public class DistributionRun extends SvrProcess
 			lastC_BPartner_Location_ID = detail.getC_BPartner_Location_ID();
 			
 			bp = new MBPartner (getCtx(), detail.getC_BPartner_ID(), get_TrxName());
-			MOrgInfo oi_target = MOrgInfo.get(getCtx(), bp.getAD_OrgBP_ID_Int(), get_TrxName());
+			MOrgInfo oi_target = MOrgInfo.get(getCtx(), bp.getAD_OrgBP_ID(), get_TrxName());
 			m_target = MWarehouse.get(getCtx(), oi_target.getM_Warehouse_ID());
 			if(m_target==null)
 				throw new AdempiereException("Do not exist Default Warehouse Target");
@@ -944,7 +944,7 @@ public class DistributionRun extends SvrProcess
 			if(p_ConsolidateDocument)
 			{
 				
-				StringBuilder whereClause = new StringBuilder("DocStatus IN ('DR','IN') AND AD_Org_ID=").append(bp.getAD_OrgBP_ID_Int()).append(" AND ")	
+				StringBuilder whereClause = new StringBuilder("DocStatus IN ('DR','IN') AND AD_Org_ID=").append(bp.getAD_OrgBP_ID()).append(" AND ")	
 									    .append(MDDOrder.COLUMNNAME_C_BPartner_ID).append("=? AND ")
 									    .append(MDDOrder.COLUMNNAME_M_Warehouse_ID).append("=?  AND ")
 									    .append(MDDOrder.COLUMNNAME_DatePromised).append("<=? ");
@@ -961,16 +961,16 @@ public class DistributionRun extends SvrProcess
 				if (!p_IsTest)
 				{
 					order = new MDDOrder (getCtx(), 0, get_TrxName());
-					order.setAD_Org_ID(bp.getAD_OrgBP_ID_Int());
+					order.setAD_Org_ID(bp.getAD_OrgBP_ID());
 					order.setC_DocType_ID(m_docType.getC_DocType_ID());
 					order.setIsSOTrx(m_docType.isSOTrx());					
 
 					//	Counter Doc
-					if (counter && bp.getAD_OrgBP_ID_Int() > 0)
+					if (counter && bp.getAD_OrgBP_ID() > 0)
 					{
-						if (log.isLoggable(Level.FINE)) log.fine("Counter - From_BPOrg=" + bp.getAD_OrgBP_ID_Int() 
+						if (log.isLoggable(Level.FINE)) log.fine("Counter - From_BPOrg=" + bp.getAD_OrgBP_ID() 
 							+ "-" + bp + ", To_BP=" + runBPartner);
-						order.setAD_Org_ID(bp.getAD_OrgBP_ID_Int());
+						order.setAD_Org_ID(bp.getAD_OrgBP_ID());
 						if (ws[0].getM_Warehouse_ID() > 0)
 						order.setM_Warehouse_ID(ws[0].getM_Warehouse_ID());
 						order.setBPartner(runBPartner);
@@ -979,7 +979,7 @@ public class DistributionRun extends SvrProcess
 					{
 						if (log.isLoggable(Level.FINE)) log.fine("From_Org=" + runAD_Org_ID 
 							+ ", To_BP=" + bp);
-						order.setAD_Org_ID(bp.getAD_OrgBP_ID_Int());
+						order.setAD_Org_ID(bp.getAD_OrgBP_ID());
 						order.setBPartner(bp);
 						if (detail.getC_BPartner_Location_ID() != 0)
 							order.setC_BPartner_Location_ID(detail.getC_BPartner_Location_ID());
@@ -1015,7 +1015,7 @@ public class DistributionRun extends SvrProcess
 				if (DD_OrderLine_ID  <= 0)
 				{	
 					MDDOrderLine line = new MDDOrderLine(order);
-					line.setAD_Org_ID(bp.getAD_OrgBP_ID_Int());
+					line.setAD_Org_ID(bp.getAD_OrgBP_ID());
 					line.setM_Locator_ID(m_locator.getM_Locator_ID());
 					line.setM_LocatorTo_ID(m_locator_to.getM_Locator_ID());
 					line.setIsInvoiced(false);
@@ -1059,7 +1059,7 @@ public class DistributionRun extends SvrProcess
 			{	
 				//	Create Order Line
 				MDDOrderLine line = new MDDOrderLine(order);
-				if (counter && bp.getAD_OrgBP_ID_Int() > 0)
+				if (counter && bp.getAD_OrgBP_ID() > 0)
 					;	//	don't overwrite counter doc
 				/*else	//	normal - optionally overwrite
 				{
@@ -1068,7 +1068,7 @@ public class DistributionRun extends SvrProcess
 						line.setC_BPartner_Location_ID(detail.getC_BPartner_Location_ID());
 				}*/
 				//
-				line.setAD_Org_ID(bp.getAD_OrgBP_ID_Int());
+				line.setAD_Org_ID(bp.getAD_OrgBP_ID());
 				line.setM_Locator_ID(m_locator.getM_Locator_ID());
 				line.setM_LocatorTo_ID(m_locator_to.getM_Locator_ID());
 				line.setIsInvoiced(false);

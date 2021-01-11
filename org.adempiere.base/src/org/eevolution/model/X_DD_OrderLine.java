@@ -27,14 +27,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for DD_OrderLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_DD_OrderLine (Properties ctx, int DD_OrderLine_ID, String trxName)
@@ -83,7 +83,7 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_DD_OrderLine[")
+      StringBuilder sb = new StringBuilder ("X_DD_OrderLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.sys.WebAppCtrl;
  */
 public class ZkAtmosphereHandler implements AtmosphereHandler {
 
+	private static final String SESSION_NOT_FOUND = "SessionNotFound";
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
     @Override
@@ -53,8 +54,10 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
         if (session.getWebApp() instanceof WebAppCtrl) {
         	WebAppCtrl webAppCtrl = (WebAppCtrl) session.getWebApp();
         	Desktop desktop = webAppCtrl.getDesktopCache(session).getDesktopIfAny(dtid);
-        	if (desktop == null)
-        		log.warn("Could not find desktop: " + dtid);
+        	if (desktop == null) {
+        		if (log.isDebugEnabled())
+        			log.debug("Could not find desktop: " + dtid);
+        	}
             return new Either<String, Desktop>("Could not find desktop", desktop);
         }
         return new Either<String, Desktop>("Webapp does not implement WebAppCtrl", null);
@@ -109,7 +112,7 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
     	Session session = WebManager.getSession(resource.getAtmosphereConfig().getServletContext(), request, false);
     	if (session == null) {
     		log.warn("Could not find session: " + request.getRequestURI());
-    		return new Either<String, Session>("Could not find session", null);
+    		return new Either<String, Session>(SESSION_NOT_FOUND, null);
     	} else {
     		return new Either<String, Session>(null, session);
     	}
@@ -124,9 +127,10 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
         Either<String, AtmosphereServerPush> serverPushEither = getServerPush(resource);
         String error = serverPushEither.getLeftValue();
         if (error != null && serverPushEither.getRightValue() == null) {
-        	log.warn("Bad Request. Error="+error+", Request="+resource.getRequest().getRequestURI());
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(error);
+        	if (log.isDebugEnabled())
+        		log.warn("Bad Request. Error="+error+", Request="+resource.getRequest().getRequestURI());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST, error);
+            response.getWriter().write("");
             response.getWriter().flush();
             return;
         }

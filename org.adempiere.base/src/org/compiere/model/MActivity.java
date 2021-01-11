@@ -19,7 +19,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -31,18 +33,28 @@ import org.compiere.util.CCache;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2736867 ] Add caching support to MActivity
  */
-public class MActivity extends X_C_Activity
+public class MActivity extends X_C_Activity implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3014706648686670575L;
+	private static final long serialVersionUID = -5939026057597689130L;
 	
 	/** Static Cache */
-	private static CCache<Integer, MActivity> s_cache = new CCache<Integer, MActivity>(Table_Name, 30);
+	private static ImmutableIntPOCache<Integer, MActivity> s_cache = new ImmutableIntPOCache<Integer, MActivity>(Table_Name, 30);
 
 	/**
-	 * Get/Load Activity [CACHED]
+	 * Get/Load Activity [CACHED] (immutable)
+	 * @param C_Activity_ID
+	 * @return activity or null
+	 */
+	public static MActivity get(int C_Activity_ID)
+	{
+		return get(Env.getCtx(), C_Activity_ID);
+	}
+	
+	/**
+	 * Get/Load Activity [CACHED] (immutable)
 	 * @param ctx context
 	 * @param C_Activity_ID
 	 * @return activity or null
@@ -54,22 +66,19 @@ public class MActivity extends X_C_Activity
 			return null;
 		}
 		// Try cache
-		MActivity activity = s_cache.get(C_Activity_ID);
+		MActivity activity = s_cache.get(ctx, C_Activity_ID, e -> new MActivity(ctx, e));
 		if (activity != null)
 		{
 			return activity;
 		}
 		// Load from DB
-		activity = new MActivity(ctx, C_Activity_ID, null);
+		activity = new MActivity(ctx, C_Activity_ID, (String)null);
 		if (activity.get_ID() == C_Activity_ID)
 		{
-			s_cache.put(C_Activity_ID, activity);
+			s_cache.put(C_Activity_ID, activity, e -> new MActivity(Env.getCtx(), e));
+			return activity;
 		}
-		else
-		{
-			activity = null;
-		}
-		return activity;
+		return null;
 	}
 
 	/**
@@ -94,6 +103,36 @@ public class MActivity extends X_C_Activity
 		super(ctx, rs, trxName);
 	}	//	MActivity
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MActivity(MActivity copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MActivity(Properties ctx, MActivity copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MActivity(Properties ctx, MActivity copy, String trxName)
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	After Save.
@@ -130,5 +169,14 @@ public class MActivity extends X_C_Activity
 			delete_Tree(MTree_Base.TREETYPE_Activity);
 		return success;
 	}	//	afterDelete
+
+	@Override
+	public MActivity markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MActivity

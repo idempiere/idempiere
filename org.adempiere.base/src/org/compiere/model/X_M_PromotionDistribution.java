@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionDistribution
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistribution, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName)
@@ -74,7 +74,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_PromotionDistribution[")
+      StringBuilder sb = new StringBuilder ("X_M_PromotionDistribution[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

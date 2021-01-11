@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 /**
  * Partner Location Model
  * 
@@ -122,6 +124,40 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		super(ctx, rs, trxName);
 	} // MBPartner_Location
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPartnerLocation(MBPartnerLocation copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPartnerLocation(Properties ctx, MBPartnerLocation copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPartnerLocation(Properties ctx, MBPartnerLocation copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_location = copy.m_location != null ? new MLocation(ctx, copy.m_location, trxName) : null;
+		this.m_uniqueName = copy.m_uniqueName;
+		this.m_unique = copy.m_unique;
+	}
+
 	/** Cached Location */
 	private MLocation m_location = null;
 	/** Unique Name */
@@ -136,7 +172,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	 */
 	public MLocation getLocation(boolean requery) {
 		if (requery || m_location == null)
-			m_location = MLocation.get(getCtx(), getC_Location_ID(), get_TrxName());
+			m_location = MLocation.getCopy(getCtx(), getC_Location_ID(), get_TrxName());
 		return m_location;
 	} // getLocation
 

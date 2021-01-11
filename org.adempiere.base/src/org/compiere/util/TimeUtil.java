@@ -849,7 +849,7 @@ public class TimeUtil
 		}
 
 		final String sql = "SELECT Date1 FROM C_NonBusinessDay WHERE IsActive='Y' AND AD_Client_ID=? AND Date1 BETWEEN ? AND ? AND COALESCE(C_Country_ID,0) IN (0, ?)";
-		List<Object> nbd = DB.getSQLValueObjectsEx(trxName, sql, clientID, startDate, endDate, MCountry.getDefault(Env.getCtx()).getC_Country_ID());
+		List<Object> nbd = DB.getSQLValueObjectsEx(trxName, sql, clientID, startDate, endDate, MCountry.getDefault().getC_Country_ID());
 
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(startDate);

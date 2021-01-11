@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for T_Reconciliation
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_T_Reconciliation (Properties ctx, int T_Reconciliation_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_Reconciliation[")
+      StringBuilder sb = new StringBuilder ("X_T_Reconciliation[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

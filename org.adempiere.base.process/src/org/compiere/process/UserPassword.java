@@ -79,8 +79,7 @@ public class UserPassword extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("AD_User_ID=" + p_AD_User_ID + " from " + getAD_User_ID());
 		
-		MUser user = MUser.get(getCtx(), p_AD_User_ID);
-		user.load(get_TrxName());
+		MUser user = new MUser(getCtx(), p_AD_User_ID, get_TrxName());
 		MUser operator = MUser.get(getCtx(), getAD_User_ID());
 		if (log.isLoggable(Level.FINE)) log.fine("User=" + user + ", Operator=" + operator);
 		

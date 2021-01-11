@@ -379,7 +379,6 @@ public abstract class AbstractElementHandler implements ElementHandler {
     protected List<String> defaultExcludeList(String tableName) {
     	List<String> excludes = new ArrayList<String>();
     	excludes.add("ad_client_id");
-    	excludes.add("ad_org_id");
     	excludes.add("created");
     	excludes.add("createdby");
     	excludes.add("updated");

@@ -275,7 +275,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 	public MProduct getProduct()
 	{
 		if (m_product == null && getM_Product_ID() != 0)
-			m_product =  MProduct.get (getCtx(), getM_Product_ID());
+			m_product =  MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return m_product;
 	}	//	getProduct
 	
@@ -405,7 +405,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDDOrderLine[")
+		StringBuilder sb = new StringBuilder ("MDDOrderLine[")
 			.append(get_ID()).append(",Line=").append(getLine())
 			.append(",Ordered=").append(getQtyOrdered())
 			.append(",Delivered=").append(getQtyDelivered())

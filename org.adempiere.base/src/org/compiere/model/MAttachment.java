@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.tools.ant.Project;
@@ -135,6 +136,17 @@ public class MAttachment extends X_AD_Attachment
 		super(ctx, rs, trxName);
 		initAttachmentStoreDetails(ctx, trxName);
 	}	//	MAttachment
+	
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MAttachment(MAttachment copy)
+	{
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_items = copy.m_items != null ? copy.m_items.stream().map(MAttachmentEntry::new).collect(Collectors.toCollection(ArrayList::new)) : null;
+	}
 	
 	/** Indicator for no data   */
 	public static final String 	NONE = ".";

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_TopicSubscriberOnly
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubscriberOnly, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_RfQ_TopicSubscriberOnly (Properties ctx, int C_RfQ_TopicSubscriberOnly_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_RfQ_TopicSubscriberOnly[")
+      StringBuilder sb = new StringBuilder ("X_C_RfQ_TopicSubscriberOnly[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

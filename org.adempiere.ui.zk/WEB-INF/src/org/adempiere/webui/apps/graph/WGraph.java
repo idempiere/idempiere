@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.adempiere.apps.graph.GraphColumn;
-import org.adempiere.base.Service;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.model.GoalModel;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -277,7 +277,7 @@ public class WGraph extends Div implements IdSpace {
 		goalModel.xAxisLabel = m_xAxisLabel;
 		goalModel.yAxisLabel = m_yAxisLabel;
 		goalModel.zoomFactor = zoomFactor;
-		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+		List<IChartRendererService> list = Extensions.getChartRendererServices();
 		for (IChartRendererService renderer : list) {
 			if (renderer.renderPerformanceGraph(panel.getPanelchildren(), width, height, goalModel))
 				break;

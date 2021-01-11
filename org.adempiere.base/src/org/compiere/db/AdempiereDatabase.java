@@ -380,7 +380,14 @@ public interface AdempiereDatabase
 	 * @return variable length character data type name
 	 */
 	public String getVarcharDataType();
-	
+
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public default String getVarcharLengthSuffix() {
+		return "";
+	};
+
 	/**
 	 * 
 	 * @return binary large object data type name
@@ -406,10 +413,10 @@ public interface AdempiereDatabase
 	 */
 	public default String getSQLCreate(MTable table)
 	{
-		StringBuffer sb = new StringBuffer("CREATE TABLE ")
+		StringBuilder sb = new StringBuilder("CREATE TABLE ")
 			.append(table.getTableName()).append(" (");
 		//
-		StringBuffer constraints = new StringBuffer();
+		StringBuilder constraints = new StringBuilder();
 		MColumn[] columns = table.getColumns(true);
 		boolean columnAdded = false;
 		for (int i = 0; i < columns.length; i++)
@@ -460,6 +467,7 @@ public interface AdempiereDatabase
 	 * @return alter column sql
 	 */
 	public String getSQLModify (MTable table, MColumn column, boolean setNullOption);
-		
+
+	
 }   //  AdempiereDatabase
 

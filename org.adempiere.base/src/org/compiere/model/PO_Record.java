@@ -36,20 +36,16 @@ public class PO_Record
 {
 	/**	Parent Tables		*/
 	private static int[]	s_parents =	new int[]{
-		X_C_Order.Table_ID,
-		X_CM_Container.Table_ID
+		X_C_Order.Table_ID
 	};
 	private static String[]	s_parentNames = new String[]{
-		X_C_Order.Table_Name,
-		X_CM_Container.Table_Name
+		X_C_Order.Table_Name
 	};
 	private static int[]	s_parentChilds = new int[]{
-		X_C_OrderLine.Table_ID,
-		X_CM_Container_Element.Table_ID
+		X_C_OrderLine.Table_ID
 	};
 	private static String[]	s_parentChildNames = new String[]{
-		X_C_OrderLine.Table_Name,
-		X_CM_Container_Element.Table_Name
+		X_C_OrderLine.Table_Name
 	};
 	
 	
@@ -58,9 +54,6 @@ public class PO_Record
 	private static int[]	s_cascades =	new int[]{
 		X_AD_Attachment.Table_ID,
 		X_AD_Archive.Table_ID,
-	//	X_CM_ContainerTTable.Table_ID,
-	//	X_CM_CStageTTable.Table_ID,
-		X_K_Index.Table_ID,
 		X_AD_Note.Table_ID,
 		X_AD_RecentItem.Table_ID,
 		X_AD_PostIt.Table_ID	
@@ -69,9 +62,6 @@ public class PO_Record
 	private static String[]	s_cascadeNames = new String[]{
 		X_AD_Attachment.Table_Name,
 		X_AD_Archive.Table_Name,
-	//	X_CM_ContainerTTable.Table_Name,
-	//	X_CM_CStageTTable.Table_Name,
-		X_K_Index.Table_Name,
 		X_AD_Note.Table_Name,
 		X_AD_RecentItem.Table_Name,
 		X_AD_PostIt.Table_Name
@@ -120,7 +110,7 @@ public class PO_Record
 				}
 				else 
 				{
-					StringBuffer sql = new StringBuffer ("DELETE FROM ")
+					StringBuilder sql = new StringBuilder ("DELETE FROM ")
 							.append(s_cascadeNames[i])
 							.append(" WHERE AD_Table_ID=? AND Record_ID=?");
 					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
@@ -144,7 +134,7 @@ public class PO_Record
 				Object[] params = new Object[]{Integer.valueOf(AD_Table_IDchild), Integer.valueOf(Record_ID)};
 				for (int i = 0; i < s_cascades.length; i++)
 				{
-					StringBuffer sql = new StringBuffer ("DELETE FROM ")
+					StringBuilder sql = new StringBuilder ("DELETE FROM ")
 						.append(s_cascadeNames[i])
 						.append(" WHERE AD_Table_ID=? AND Record_ID IN (SELECT ")
 						.append(s_parentChildNames[j]).append("_ID FROM ")
@@ -214,7 +204,7 @@ public class PO_Record
 		for (int i = 0; i < s_restricts.length; i++)
 		{
 			//	SELECT COUNT(*) FROM table WHERE AD_Table_ID=#1 AND Record_ID=#2
-			StringBuffer sql = new StringBuffer ("SELECT COUNT(*) FROM ")
+			StringBuilder sql = new StringBuilder ("SELECT COUNT(*) FROM ")
 				.append(s_restrictNames[i])
 				.append(" WHERE AD_Table_ID=? AND Record_ID=?");
 			int no = DB.getSQLValue(trxName, sql.toString(), AD_Table_ID, Record_ID);
@@ -273,7 +263,7 @@ public class PO_Record
 	{
 		for (int i = 0; i < s_cascades.length; i++)
 		{
-			StringBuffer sql = new StringBuffer ("DELETE FROM ")
+			StringBuilder sql = new StringBuilder ("DELETE FROM ")
 				.append(s_cascadeNames[i])
 				.append(" WHERE AD_Table_ID=").append(AD_Table_ID)
 				.append(" AND Record_ID NOT IN (SELECT ")

@@ -26,6 +26,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.WFieldSuggestion;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.compiere.model.MFieldSuggestion;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MZoomCondition;
@@ -141,23 +142,16 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	    		Boolean canAccessZoom = MRole.getDefault().getWindowAccess(zoomCondition.getAD_Window_ID());
     	    		if (canAccessZoom != null && canAccessZoom) {
     	    	    	this.zoomEnabled = true;
+    	    	    	    if (hasQuickEntryField(zoomCondition.getAD_Window_ID(), 0, tableName)) {
+    	    	    		this.newEnabled = true;
+    	    	    		this.updateEnabled = true;
+    	    	    	}
+
     	    			break;
     	    		}
     	    	}
     		} else {
-    			int cnt = DB.getSQLValueEx(null,
-    					"SELECT COUNT(*) "
-    							+ "FROM   AD_Field f "
-    							+ "       JOIN AD_Tab t "
-    							+ "         ON ( t.AD_Tab_ID = f.AD_Tab_ID ) "
-    							+ "WHERE  t.AD_Window_ID IN (?,?) "
-    							+ "       AND f.IsActive = 'Y' "
-    							+ "       AND t.IsActive = 'Y' "
-    							+ "       AND f.IsQuickEntry = 'Y' "
-    							+ "       AND (t.TabLevel = 0 "
-    							+ "          AND   t.AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE TableName = ? )) ",
-    					winID,winIDPO,tableName);
-    			if (cnt > 0) {
+    			if (hasQuickEntryField(winID,winIDPO,tableName)) {
         	    	this.newEnabled = true;
         	    	this.updateEnabled = true;
     			} else {
@@ -167,6 +161,21 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     		}
     	}
     	init();
+    }
+
+    boolean hasQuickEntryField(int winID, int winIDPO, String tableName) {
+    	return DB.getSQLValueEx(null,
+    			"SELECT COUNT(*) "
+    					+ "FROM   AD_Field f "
+    					+ "       JOIN AD_Tab t "
+    					+ "         ON ( t.AD_Tab_ID = f.AD_Tab_ID ) "
+    					+ "WHERE  t.AD_Window_ID IN (?,?) "
+    					+ "       AND f.IsActive = 'Y' "
+    					+ "       AND t.IsActive = 'Y' "
+    					+ "       AND f.IsQuickEntry = 'Y' "
+    					+ "       AND (t.TabLevel = 0 "
+    					+ "          AND   t.AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE TableName = ? )) ",
+    					winID,winIDPO,tableName) > 0;
     }
 
 	public boolean isZoomEnabled() {
@@ -281,17 +290,19 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     }
 
 	public void addSuggestion(final GridField field) {
-		Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));
-		if (ThemeManager.isUseFontIconForImage())
-			editor.setIconSclass("z-icon-FieldSuggestion");
-		editor.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				WFieldSuggestion fieldSuggestion = new WFieldSuggestion(field.getAD_Field_ID());
-				fieldSuggestion.setPage(WEditorPopupMenu.this.getPage());
-				fieldSuggestion.doHighlighted();
-			}
-		});
-		appendChild(editor);		
+		if (!MRole.getDefault().isTableAccessExcluded(MFieldSuggestion.Table_ID)) {
+			Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));
+			if (ThemeManager.isUseFontIconForImage())
+				editor.setIconSclass("z-icon-FieldSuggestion");
+			editor.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					WFieldSuggestion fieldSuggestion = new WFieldSuggestion(field.getAD_Field_ID());
+					fieldSuggestion.setPage(WEditorPopupMenu.this.getPage());
+					fieldSuggestion.doHighlighted();
+				}
+			});
+			appendChild(editor);
+		}
 	}	
 }

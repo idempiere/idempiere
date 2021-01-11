@@ -82,7 +82,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			cLine.saveEx(move.get_TrxName());
 		}
 		return confirm;
-	}	//	MInOutConfirm
+	}	//	create
 
 	
 	/**************************************************************************
@@ -124,7 +124,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		this (move.getCtx(), 0, move.get_TrxName());
 		setClientOrg(move);
 		setM_Movement_ID(move.getM_Movement_ID());
-	}	//	MInOutConfirm
+	}	//	MMovementConfirm
 	
 	/**	Confirm Lines					*/
 	protected MMovementLineConfirm[]	m_lines = null;
@@ -235,7 +235,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			log.severe("Could not create PDF - " + e.getMessage());
 		}
 		return null;
-	}	//	getPDF
+	}	//	createPDF
 
 	/**
 	 * 	Create PDF file
@@ -409,7 +409,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 						+ " - Difference=" + confirm.getDifferenceQty());
 					
 					if (m_processMsg == null)
-						m_processMsg = "Differnce Doc not created";
+						m_processMsg = "Difference Doc not created";
 					return DocAction.STATUS_Invalid;
 				}
 			}
@@ -604,12 +604,39 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
 		if (m_processMsg != null)
 			return false;
+
+		
+		MMovement move = new MMovement (getCtx(), getM_Movement_ID(), get_TrxName());
+		for (MMovementLineConfirm confirmLine : getLines(true))
+		{
+			confirmLine.setTargetQty(Env.ZERO);
+			confirmLine.setConfirmedQty(Env.ZERO);
+			confirmLine.setScrappedQty(Env.ZERO);
+			confirmLine.setDifferenceQty(Env.ZERO);
+			confirmLine.setProcessed(true);
+			confirmLine.saveEx();
+		}
+		
+		// set confirmation as processed to allow voiding the inventory move
+		setProcessed(true);
+		saveEx();
+
+		// voiding the confirmation voids also the inventory move
+		ProcessInfo processInfo = MWorkflow.runDocumentActionWorkflow(move, DocAction.ACTION_Void);
+		if (processInfo.isError())
+		{
+			m_processMsg = processInfo.getSummary();
+			setProcessed(false);
+			return false;
+		}
+
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
 			return false;
-		
-		return false;
+
+		setDocAction(DOCACTION_None);
+		return true;
 	}	//	voidIt
 	
 	/**

@@ -5,20 +5,22 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**	Convention for the first year of depreciation (ex. FMCON, FYCON ...)
  *	@author Teo Sarca, SC Arhipac SRL
  *	@version $Id$
  */
-public class MDepreciationConvention extends X_A_Depreciation_Convention
+public class MDepreciationConvention extends X_A_Depreciation_Convention implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2274629486216430723L;
-
+	private static final long serialVersionUID = -3735111030292424391L;
+	
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -43,24 +45,69 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 		super (ctx, rs, trxName);
 	}	//	MDepreciationConvention
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDepreciationConvention(MDepreciationConvention copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDepreciationConvention(Properties ctx, MDepreciationConvention copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDepreciationConvention(Properties ctx, MDepreciationConvention copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**		Cache									*/
-	private static CCache<Integer,MDepreciationConvention> s_cache = new CCache<Integer,MDepreciationConvention>(Table_Name, 5);
+	private static ImmutableIntPOCache<Integer,MDepreciationConvention> s_cache = new ImmutableIntPOCache<Integer,MDepreciationConvention>(Table_Name, 5);
 	//~ /**		Static logger							*/
 	//~ private static Logger s_log = CLogger.getCLogger(MDepreciationConvention.class);
 	
+	/**
+	 * Get MDepreciationConvention from cache (immutable)
+	 * @param A_Depreciation_Convention_ID
+	 * @return MDepreciationConvention
+	 */
+	public static MDepreciationConvention get(int A_Depreciation_Convention_ID) {
+		return get(Env.getCtx(), A_Depreciation_Convention_ID);
+	}
+	
+	/**
+	 * Get MDepreciationConvention from cache (immutable)
+	 * @param ctx context
+	 * @param A_Depreciation_Convention_ID
+	 * @return MDepreciationConvention
+	 */
 	public static MDepreciationConvention get(Properties ctx, int A_Depreciation_Convention_ID) {
 		Integer key = Integer.valueOf(A_Depreciation_Convention_ID);
-		MDepreciationConvention conv = s_cache.get(key);
-		if (conv != null) {
+		MDepreciationConvention conv = s_cache.get(ctx, key, e -> new MDepreciationConvention(ctx, e));
+		if (conv != null) 
+			return conv;
+		
+		conv = new MDepreciationConvention(ctx, A_Depreciation_Convention_ID, (String)null);
+		if (conv.get_ID() == A_Depreciation_Convention_ID) {
+			s_cache.put(key, conv, e -> new MDepreciationConvention(Env.getCtx(), e));
 			return conv;
 		}
-		conv = new MDepreciationConvention(ctx, A_Depreciation_Convention_ID, null);
-		if (conv.get_ID() > 0) {
-			s_cache.put(key, conv);
-		} else {
-			conv = null;
-		}
-		return conv;
+		return null;
 	} // get
 
 	/**	*/
@@ -114,4 +161,14 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention
 	public BigDecimal apply_FMCON(int A_Asset_ID, String PostingType, int A_Asset_Acct_ID, int Flag, int Period) {
 		return BigDecimal.ONE;
 	}
+	
+	@Override
+	public MDepreciationConvention markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

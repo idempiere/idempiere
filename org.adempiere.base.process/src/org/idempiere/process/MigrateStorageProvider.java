@@ -157,7 +157,7 @@ public class MigrateStorageProvider extends SvrProcess {
 		// for each client
 		for (int clientid : clients) {
 			idxClient++;
-			MClientInfo clientInfo = MClientInfo.get(getCtx(), clientid);
+			MClientInfo clientInfo = MClientInfo.getCopy(getCtx(), clientid, (String)null);
 			MClient client = MClient.get(getCtx(), clientid);
 			int odometer = 10;
 

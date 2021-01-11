@@ -15,6 +15,7 @@ package org.adempiere.webui.util;
 
 import javax.activation.DataSource;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.factory.IFeedbackService;
@@ -52,9 +53,30 @@ public class FeedbackManager {
 	 */
 	public static void emailSupport(boolean errorOnly)
 	{
-		IFeedbackService service = Service.locator().locate(IFeedbackService.class).getService();
+		IFeedbackService service = getFeedbackService();
 		if (service != null)
 			service.emailSupport(errorOnly);
+	}
+
+	private static IServiceReferenceHolder<IFeedbackService> s_feedbackServiceReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IFeedbackService}
+	 */
+	public static synchronized IFeedbackService getFeedbackService() {
+		IFeedbackService service = null;
+		if (s_feedbackServiceReference != null) {
+			service = s_feedbackServiceReference.getService();
+			if (service != null)
+				return service;
+		}
+		IServiceReferenceHolder<IFeedbackService> serviceReference = Service.locator().locate(IFeedbackService.class).getServiceReference();
+		if (serviceReference != null) {
+			service = serviceReference.getService();
+			s_feedbackServiceReference = serviceReference;
+		}
+		return service;
 	}	
 	
 	/**
@@ -62,7 +84,7 @@ public class FeedbackManager {
 	 */
 	public static void createNewRequest()
 	{
-		IFeedbackService service = Service.locator().locate(IFeedbackService.class).getService();
+		IFeedbackService service = getFeedbackService();
 		if (service != null)
 			service.createNewRequest();
 	}

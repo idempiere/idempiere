@@ -22,9 +22,11 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Warehouse Locator Object
@@ -34,12 +36,12 @@ import org.compiere.util.DB;
  *  @see [ 1966333 ] New Method to get the Default Locator based in Warehouse http://sourceforge.net/tracker/index.php?func=detail&aid=1966333&group_id=176962&atid=879335
  *  @version 	$Id: MLocator.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MLocator extends X_M_Locator
+public class MLocator extends X_M_Locator implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4502919527066173270L;
+	private static final long serialVersionUID = 539879105479299988L;
 
 	/**
 	 * 	Get oldest Default Locator of warehouse with locator
@@ -168,30 +170,56 @@ public class MLocator extends X_M_Locator
 			retValue.saveEx();
 		}
 		return retValue;
-	 }	//	get
+	}	//	get
 
 	/**
-	 * 	Get Locator from Cache
-	 *	@param ctx context
+	 * 	Get Locator from Cache (immutable)
+	 *	@param M_Locator_ID id
+	 *	@return MLocator
+	 */
+	public static MLocator get (int M_Locator_ID)
+	{
+		return get(Env.getCtx(), M_Locator_ID);
+	}
+	
+	/**
+	 * 	Get Locator from Cache (immutable)
+	 *  @param ctx context
 	 *	@param M_Locator_ID id
 	 *	@return MLocator
 	 */
 	public static MLocator get (Properties ctx, int M_Locator_ID)
 	{
-		if (s_cache == null)
-			s_cache	= new CCache<Integer,MLocator>(Table_Name, 20);
 		Integer key = Integer.valueOf(M_Locator_ID);
-		MLocator retValue = (MLocator) s_cache.get (key);
+		MLocator retValue = s_cache.get (ctx, key, e -> new MLocator(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MLocator (ctx, M_Locator_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MLocator (ctx, M_Locator_ID, (String)null);
+		if (retValue.get_ID () == M_Locator_ID)
+		{
+			s_cache.put (key, retValue, e -> new MLocator(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MLocator from cache
+	 * @param ctx
+	 * @param M_Locator_ID
+	 * @param trxName
+	 * @return MLocator
+	 */
+	public static MLocator getCopy(Properties ctx, int M_Locator_ID, String trxName)
+	{
+		MLocator locator = get(M_Locator_ID);
+		if (locator != null)
+			locator = new MLocator(ctx, locator, trxName);
+		return locator;
+	}
+	
 	/**	Cache						*/
-	protected volatile static CCache<Integer,MLocator> s_cache; 
+	private final static ImmutableIntPOCache<Integer,MLocator> s_cache = new ImmutableIntPOCache<Integer,MLocator>(Table_Name, 20); 
 	 
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MLocator.class);
@@ -244,6 +272,37 @@ public class MLocator extends X_M_Locator
 		super(ctx, rs, trxName);
 	}	//	MLocator
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MLocator(MLocator copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLocator(Properties ctx, MLocator copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLocator(Properties ctx, MLocator copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 *	Get String Representation
 	 * 	@return Value
@@ -358,4 +417,13 @@ public class MLocator extends X_M_Locator
 		*/
 	}	//	isCanStoreProduct
 	
+	@Override
+	public MLocator markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MLocator

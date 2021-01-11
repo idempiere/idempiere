@@ -27,9 +27,24 @@ import org.compiere.model.GridField;
  */
 public class WUnknownEditor extends WStringEditor
 {
-    public WUnknownEditor(GridField gridField)
+	/**
+	 * 
+	 * @param gridField
+	 */
+	public WUnknownEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WUnknownEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(gridField);
+        super(gridField, tableEditor, editorConfiguration);
         init();
     }
     

@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for PA_DashboardContent_Access
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardContent_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)
@@ -64,7 +64,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_DashboardContent_Access[")
+      StringBuilder sb = new StringBuilder ("X_PA_DashboardContent_Access[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -30,7 +30,6 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
@@ -53,8 +52,6 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
     private String oldValue;
 
-	private boolean tableEditor = false;
-
 	private AbstractADWindowContent adwindowContent;
 
     /**
@@ -65,14 +62,33 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     	this("String", false, false, true, 30, 30, "", null);
     }
 
+    /**
+     * 
+     * @param gridField
+     */
     public WStringEditor(GridField gridField) {
     	this(gridField, false);
     }
 
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     */
     public WStringEditor(GridField gridField, boolean tableEditor)
     {
-        super(gridField.isAutocomplete() ? new Combobox() : new Textbox(), gridField);
-        this.tableEditor = tableEditor;
+    	this(gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WStringEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+    {
+        super(gridField.isAutocomplete() ? new Combobox() : new Textbox(), gridField, tableEditor, editorConfiguration);
 
         if (gridField.getVFormat() != null && !gridField.getVFormat().isEmpty())
         	getComponent().setWidgetListener("onBind", "jq(this).mask('" + gridField.getVFormat() + "');");
@@ -148,8 +164,6 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	            getComponent().setMultiline(false);
 	        if (! gridField.isAutocomplete()) // avoid -> Combobox doesn't support multiple rows
 	        	getComponent().setRows(gridField.getNumLines() <= 0 || tableEditor ? 1 : gridField.getNumLines());
-	        if (getComponent().getRows() > 1)
-	        	ZKUpdateUtil.setHeight(getComponent(), "100%");
 
 	        if (getComponent() instanceof Textbox)
 	        	((Textbox)getComponent()).setObscureType(obscureType);

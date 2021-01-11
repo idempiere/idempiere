@@ -40,6 +40,8 @@ import org.zkoss.zul.Messagebox;
  **/
 public final class ConfirmPanel extends Div
 {
+	private static final String SMALL_SCREEN_BUTTON_CLASS = "btn-small small-img-btn";
+
 	/**
 	 * 
 	 */
@@ -243,6 +245,8 @@ public final class ConfirmPanel extends Div
 
 	private String extraButtonSClass;
 
+	private boolean useSmallButtonClassForSmallScreen;
+
     /**
      * initialise components
      */
@@ -301,6 +305,8 @@ public final class ConfirmPanel extends Div
     	if (!buttonMap.containsKey(button.getId()))
     		buttonMap.put(button.getId(), button);
         pnlBtnLeft.appendChild(button);
+        if (useSmallButtonClassForSmallScreen)
+        	LayoutUtils.addSclass(SMALL_SCREEN_BUTTON_CLASS, button);
     }
 
     /**
@@ -312,6 +318,8 @@ public final class ConfirmPanel extends Div
     	if (!buttonMap.containsKey(button.getId()))
     		buttonMap.put(button.getId(), button);
         pnlBtnRight.appendChild(button);
+        if (useSmallButtonClassForSmallScreen)
+        	LayoutUtils.addSclass(SMALL_SCREEN_BUTTON_CLASS, button);
     }
 
     /**
@@ -324,6 +332,8 @@ public final class ConfirmPanel extends Div
     	if (!buttonMap.containsKey(button.getId()))
     		buttonMap.put(button.getId(), button);
         pnlBtnCenter.appendChild(button);
+        if (useSmallButtonClassForSmallScreen)
+        	LayoutUtils.addSclass(SMALL_SCREEN_BUTTON_CLASS, button);
     }
 
     /**
@@ -560,5 +570,10 @@ public final class ConfirmPanel extends Div
 		for(Button btn : buttonMap.values()) {
 			LayoutUtils.removeSclass(cls, btn);
 		}
+	}
+
+	public void useSmallButtonClassForSmallScreen() {
+		useSmallButtonClassForSmallScreen = true;
+		addButtonSclass(SMALL_SCREEN_BUTTON_CLASS);
 	}
 }   //  ConfirmPanel

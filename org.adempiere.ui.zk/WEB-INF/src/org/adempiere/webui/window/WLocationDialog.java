@@ -180,7 +180,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		initComponents();
 		init();
 		//      Current Country
-		for (MCountry country:MCountry.getCountries(Env.getCtx()))
+		for (MCountry country:MCountry.getCountries())
 		{
 			lstCountry.appendItem(country.toString(), country);
 		}
@@ -190,7 +190,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		m_origCountry_ID = m_location.getC_Country_ID();
 		//  Current Region
 		lstRegion.appendItem("", null);
-		for (MRegion region : MRegion.getRegions(Env.getCtx(), m_origCountry_ID))
+		for (MRegion region : MRegion.getRegions(m_origCountry_ID))
 		{
 			lstRegion.appendItem(region.getName(),region);
 		}
@@ -313,7 +313,6 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		txtResult = new Textbox();
 		txtResult.setCols(2);
 		txtResult.setRows(3);
-		ZKUpdateUtil.setHeight(txtResult, "100%");
 		txtResult.setReadonly(true);
 		
 		cbxValid = new Checkbox();
@@ -541,7 +540,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			lstRegion.getChildren().clear();
 			if (country.isHasRegion()) {
 				lstRegion.appendItem("", null);
-				for (MRegion region : MRegion.getRegions(Env.getCtx(), country.getC_Country_ID()))
+				for (MRegion region : MRegion.getRegions(country.getC_Country_ID()))
 				{
 					lstRegion.appendItem(region.getName(),region);
 				}

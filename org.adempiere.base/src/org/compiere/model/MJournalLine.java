@@ -294,6 +294,16 @@ public class MJournalLine extends X_GL_JournalLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_JournalLine"));
 			return false;
 		}
+
+		if (getAD_Org_ID() <= 0) //	Set Line Org to Doc Org if still not set 
+			setAD_Org_ID(getParent().getAD_Org_ID()); 
+		if (getLine() == 0)
+			setLine(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(Line), 0) + 10 FROM GL_JournalLine WHERE GL_Journal_ID = ?", getGL_Journal_ID()));
+		if (getC_Currency_ID() == 0)
+			setC_Currency_ID(getParent().getC_Currency_ID());
+		if (getC_ConversionType_ID() == 0)
+			setC_ConversionType_ID(getParent().getC_ConversionType_ID());
+
 		// idempiere 344 - nmicoud
 		if (!getOrCreateCombination())
 			return false;
@@ -305,9 +315,6 @@ public class MJournalLine extends X_GL_JournalLine
 		fillDimensionsFromCombination();
 		// end idempiere 344 - nmicoud
 
-		if (getLine() == 0)
-			setLine(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(Line), 0) + 10 FROM GL_JournalLine WHERE GL_Journal_ID = ?", getGL_Journal_ID()));
-
 		//	Acct Amts
 		BigDecimal rate = getCurrencyRate();
 		BigDecimal amt = rate.multiply(getAmtSourceDr());
@@ -318,11 +325,7 @@ public class MJournalLine extends X_GL_JournalLine
 		if (amt.scale() > getPrecision())
 			amt = amt.setScale(getPrecision(), RoundingMode.HALF_UP);
 		setAmtAcctCr(amt);
-		//	Set Line Org to Doc Org if still not set
-		if(getAD_Org_ID() <= 0) 
-		{ 
-			setAD_Org_ID(getParent().getAD_Org_ID()); 
-		} 
+ 
 		return true;
 	}	//	beforeSave
 	

@@ -182,6 +182,8 @@ public class WProcessCtl extends AbstractProcessCtl {
 			return;
 		}
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+	  } else {
+		  instance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
 	  }
 
 		//	Get Parameters

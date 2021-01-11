@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9208749663408576569L;
+	private static final long serialVersionUID = 8581992138870649241L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -85,7 +86,6 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
 	public static final String DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS = "DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS";
 	public static final String DB_READ_REPLICA_URLS = "DB_READ_REPLICA_URLS";
-    public static final String DICTIONARY_ID_COMMENTS = "DICTIONARY_ID_COMMENTS";
     public static final String DICTIONARY_ID_PASSWORD = "DICTIONARY_ID_PASSWORD";
     public static final String DICTIONARY_ID_USE_CENTRALIZED_ID = "DICTIONARY_ID_USE_CENTRALIZED_ID";
     public static final String DICTIONARY_ID_USER = "DICTIONARY_ID_USER";
@@ -94,7 +94,10 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String DPViews_ShowInfoAccount = "DPViews_ShowInfoAccount";
     public static final String DPViews_ShowInfoSchedule = "DPViews_ShowInfoSchedule";
     public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
+    public static final String EMAIL_TEST_MAILTEXT_ID = "EMAIL_TEST_MAILTEXT_ID";
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
+    public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
+    public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
@@ -121,6 +124,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
     public static final String MAX_TEXT_LENGTH_ON_GRID_VIEW = "MAX_TEXT_LENGTH_ON_GRID_VIEW";
     public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
+    public static final String MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS";
+    public static final String MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS";
     public static final String MFG_ValidateCostsDifferenceOnCreate = "MFG_ValidateCostsDifferenceOnCreate";
     public static final String MFG_ValidateCostsOnCreate = "MFG_ValidateCostsOnCreate";
     public static final String PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT = "PAYMENT_OVERWRITE_DOCUMENTNO_WITH_CHECK_ON_PAYMENT";
@@ -130,7 +135,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PDF_FONT_DIR = "PDF_FONT_DIR";
     public static final String ProductUOMConversionRateValidate = "ProductUOMConversionRateValidate";
     public static final String ProductUOMConversionUOMValidate = "ProductUOMConversionUOMValidate";
-    public static final String PROJECT_ID_COMMENTS = "PROJECT_ID_COMMENTS";
     public static final String PROJECT_ID_PASSWORD = "PROJECT_ID_PASSWORD";
     public static final String PROJECT_ID_PROJECT = "PROJECT_ID_PROJECT";
     public static final String PROJECT_ID_USE_CENTRALIZED_ID = "PROJECT_ID_USE_CENTRALIZED_ID";
@@ -175,13 +179,18 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_FOOTER_SERVER_MSG = "ZK_FOOTER_SERVER_MSG";
     public static final String ZK_GRID_AFTER_FIND = "ZK_GRID_AFTER_FIND";
     public static final String ZK_GRID_EDIT_MODELESS = "ZK_GRID_EDIT_MODELESS";
+    public static final String ZK_GRID_MOBILE_EDITABLE = "ZK_GRID_MOBILE_EDITABLE";
     public static final String ZK_GRID_MOBILE_EDIT_MODELESS = "ZK_GRID_MOBILE_EDIT_MODELESS";
+    public static final String ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR = "ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR";
     public static final String ZK_GRID_MOBILE_MAX_COLUMNS = "ZK_GRID_MOBILE_MAX_COLUMNS";
+    public static final String ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR = "ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR";
+    public static final String ZK_GRID_VIEW_USE_DEFER_RENDERING = "ZK_GRID_VIEW_USE_DEFER_RENDERING";
     public static final String ZK_INFO_NUM_PAGE_PRELOAD = "ZK_INFO_NUM_PAGE_PRELOAD";
     public static final String ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD = "ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD";
     public static final String ZK_LOGIN_ALLOW_REMEMBER_ME = "ZK_LOGIN_ALLOW_REMEMBER_ME";
     public static final String ZK_LOGO_LARGE = "ZK_LOGO_LARGE";
     public static final String ZK_LOGO_SMALL = "ZK_LOGO_SMALL";
+    public static final String ZK_MAX_ATTACHMENT_PREVIEW_SIZE = "ZK_MAX_ATTACHMENT_PREVIEW_SIZE";
     public static final String ZK_MAX_UPLOAD_SIZE = "ZK_MAX_UPLOAD_SIZE";
     public static final String ZK_MOBILE_PAGING_SIZE = "ZK_MOBILE_PAGING_SIZE";
     public static final String ZK_PAGING_DETAIL_SIZE = "ZK_PAGING_DETAIL_SIZE";
@@ -195,6 +204,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME_USE_FONT_ICON_FOR_IMAGE = "ZK_THEME_USE_FONT_ICON_FOR_IMAGE";
     public static final String ZK_THEME = "ZK_THEME";
+    public static final String ZK_TOOLBAR_SHOW_MORE_VERTICAL = "ZK_TOOLBAR_SHOW_MORE_VERTICAL";
+    public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
 	/**
@@ -273,12 +284,13 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue)
 	{
@@ -296,7 +308,30 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue)
+	{
+		String s = getValue(Name);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name
@@ -366,13 +401,14 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
 	 * @param Client ID
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID)
 	{
@@ -390,7 +426,31 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID)
+	{
+		String s = getValue(Name, AD_Client_ID);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name
@@ -510,7 +570,7 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Get system configuration property of type double
 	 * @param Name
@@ -518,6 +578,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @param Client ID
 	 * @param Organization ID
 	 * @return double
+	 * @deprecated use better getBigDecimalValue
 	 */
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
@@ -535,7 +596,32 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return defaultValue;
 	}
-	
+
+	/**
+	 * Get system configuration property of type BigDecimal
+	 * @param Name
+	 * @param defaultValue
+	 * @param Client ID
+	 * @param Organization ID
+	 * @return BigDecimal
+	 */
+	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID, int AD_Org_ID)
+	{
+		String s = getValue(Name, AD_Client_ID, AD_Org_ID);
+		if (s == null || s.length() == 0)
+			return defaultValue;
+		//
+		try
+		{
+			return new BigDecimal(s);
+		}
+		catch (NumberFormatException e)
+		{
+			s_log.log(Level.SEVERE, "getBigDecimalValue (" + Name + ") = " + s, e);
+		}
+		return defaultValue;
+	}
+
 	/**
 	 * Get system configuration property of type boolean
 	 * @param Name

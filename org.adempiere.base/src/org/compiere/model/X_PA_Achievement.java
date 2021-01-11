@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Achievement
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)
@@ -73,8 +73,8 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_Achievement[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_Achievement[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

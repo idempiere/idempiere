@@ -25,7 +25,7 @@ import java.util.Properties;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
@@ -45,8 +45,10 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
+import org.compiere.model.MLocator;
 import org.compiere.model.MLookup;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -66,6 +68,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Comboitem;
@@ -100,14 +103,24 @@ ContextMenuListener, IZoomableEditor
 
 	private boolean onselecting = false;
 
-    public WTableDirEditor(GridField gridField)
+	/**
+	 * 
+	 * @param gridField
+	 */
+	public WTableDirEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WTableDirEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        this(gridField.isAutocomplete() ? new EditorAutoComplete() : new EditorCombobox(), gridField);
-    }
-    
-    private WTableDirEditor(Component comp, GridField gridField)
-    {
-        super(comp, gridField);
+        super(gridField.isAutocomplete() ? new EditorAutoComplete() : new EditorCombobox(), gridField, tableEditor, editorConfiguration);
         ((ITableDirEditor)getComponent()).setEditor(this);
         lookup = gridField.getLookup();
         init();
@@ -241,7 +254,10 @@ ContextMenuListener, IZoomableEditor
         			searchMode = new Menuitem();
         			searchMode.setAttribute(WEditorPopupMenu.EVENT_ATTRIBUTE, SHORT_LIST_EVENT);
         			searchMode.setLabel(Msg.getMsg(Env.getCtx(), "ShortListSwitchSearchMode"));
-        			searchMode.setImage(ThemeManager.getThemeResource("images/Lock16.png"));
+        			if(ThemeManager.isUseFontIconForImage())
+        				searchMode.setIconSclass("z-icon-Lock");
+        			else
+        				searchMode.setImage(ThemeManager.getThemeResource("images/Lock16.png"));
         			searchMode.addEventListener(Events.ON_CLICK, popupMenu);
         			popupMenu.appendChild(searchMode);
         		}
@@ -369,7 +385,7 @@ ContextMenuListener, IZoomableEditor
             getComponent().setSelectedItem(null);
             oldValue = value;
             
-            if (getComponent() instanceof EditorAutoComplete)
+            if (getComponent() instanceof EditorAutoComplete && gridField!=null)	// IDEMPIERE-4442 Fix NPE, for Autocomplete in non Grid Usage.
             	updateStyle();
         }                                
     }
@@ -420,6 +436,15 @@ ContextMenuListener, IZoomableEditor
 	                    ValueNamePair lookupKNPair = (ValueNamePair) obj;
 	                    getComponent().appendItem(lookupKNPair.getName(), lookupKNPair.getValue());
 	                    if (!found && oldValue != null && lookupKNPair.getValue().equals(oldValue.toString()))
+		                {
+	                    	found = true;
+	                	}
+	            	}
+	                else if (obj instanceof MLocator)
+	                {
+	                	MLocator lookupKNPair = (MLocator) obj;
+	                    getComponent().appendItem(lookupKNPair.getValue(), lookupKNPair.getM_Locator_ID());
+	                    if (!found && oldValue != null && lookupKNPair.getM_Locator_ID() == (Integer) oldValue)
 		                {
 	                    	found = true;
 	                	}
@@ -599,7 +624,12 @@ ContextMenuListener, IZoomableEditor
 			Object curValue = getValue();
 			
 			if (isReadWrite())
-				lookup.refresh();
+			{
+				if (lookup instanceof MLookup)
+					((MLookup) lookup).refreshItemsAndCache();
+				else
+					lookup.refresh();
+			}
 			else
 				refreshList();
             if (curValue != null)
@@ -626,7 +656,7 @@ ContextMenuListener, IZoomableEditor
 	 *	Action - Special Quick Entry Screen
 	 *  @param newRecord true if new record should be created
 	 */
-	private void actionQuickEntry (boolean newRecord)
+	protected void actionQuickEntry (boolean newRecord)
 	{
 		if(!getComponent().isEnabled())
 			return;
@@ -672,7 +702,7 @@ ContextMenuListener, IZoomableEditor
 		AEnv.showWindow(vqe);		
 	}	//	actionQuickEntry
 
-	private void actionLocation() {
+	protected void actionLocation() {
 		int BPLocation_ID = 0;
 		Object value = getValue();
 		if (value instanceof Integer)
@@ -771,7 +801,19 @@ ContextMenuListener, IZoomableEditor
 		public void setEditor(WTableDirEditor editor);
 		public void cleanup();
 	}
-	
+		
+	@Override
+	public String getDisplayTextForGridView(Object value) {
+		String s = super.getDisplayTextForGridView(value);
+		if (ClientInfo.isMobile( )&& MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
+			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, null, Env.getAD_Client_ID(Env.getCtx()));
+			if (!Util.isEmpty(separator, true) && s.indexOf(separator) >= 0) {
+				s = s.replace(separator, "\n");
+			}
+		}
+		return s;
+	}
+
 	private static class EditorCombobox extends Combobox implements ITableDirEditor {
 		/**
 		 * generated serial id
@@ -895,6 +937,8 @@ ContextMenuListener, IZoomableEditor
 				refresh("");
 			}
 		}
+		
+		
 	}
 	
 	private static class CCacheListener extends CCache<String, Object> {
@@ -918,11 +962,16 @@ ContextMenuListener, IZoomableEditor
 		}
 
 		private void refreshLookupList() {
-			int failures = 0;
 			Desktop desktop = editor.getComponent().getDesktop();
-			Object attr = desktop.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
-			if (attr != null && attr instanceof Integer)
-				failures = ((Integer)attr).intValue();
+			boolean alive = false;
+			if (desktop.isAlive() && desktop.getSession() != null) {
+				SessionCtrl ctrl = (SessionCtrl) desktop.getSession();
+				alive = !ctrl.isInvalidated();
+			}
+			if (!alive) {
+				((ITableDirEditor)editor.getComponent()).cleanup();
+				return;
+			}
 			Executions.schedule(desktop, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) {
@@ -932,13 +981,6 @@ ContextMenuListener, IZoomableEditor
 					} catch (Exception e) {}
 				}
 			}, new Event("onResetLookupList"));
-			attr = desktop.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
-			if (attr != null && attr instanceof Integer) {
-				int f = ((Integer)attr).intValue();
-				if (f > failures) {
-					((ITableDirEditor)editor.getComponent()).cleanup();
-				}
-			}
 		}
 				
 		@Override

@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for C_BP_ShippingAcct
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_BP_ShippingAcct (Properties ctx, int C_BP_ShippingAcct_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BP_ShippingAcct[")
+      StringBuilder sb = new StringBuilder ("X_C_BP_ShippingAcct[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

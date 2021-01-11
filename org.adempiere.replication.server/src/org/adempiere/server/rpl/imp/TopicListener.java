@@ -261,7 +261,7 @@ public class TopicListener implements MessageListener {
 		if(replicationProcessor !=null)
 		{	
 			MIMPProcessorLog pLog = new MIMPProcessorLog(replicationProcessor.getMImportProcessor(), "Connected to JMS Server. Waiting for messages!");
-			StringBuffer logReference = new StringBuffer("topicName = ").append(topicName)
+			StringBuilder logReference = new StringBuilder("topicName = ").append(topicName)
 				.append(", subscriptionName = ").append( subscriptionName )
 			;
 			pLog.setReference( logReference.toString() );

@@ -55,6 +55,7 @@ import org.idempiere.adInterface.x10.OutputFields;
 import org.idempiere.adInterface.x10.StandardResponse;
 import org.idempiere.adInterface.x10.StandardResponseDocument;
 import org.idempiere.adinterface.CompiereService;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.webservices.fault.IdempiereServiceFault;
 
 
@@ -207,7 +208,7 @@ public class AbstractService {
 		return authenticate(webService, method, serviceType, m_cs);
 	}
 
-	private static CCache<String,MWebServiceType> s_WebServiceTypeCache	= new CCache<String,MWebServiceType>(MWebServiceType.Table_Name, 10, 60);	//60 minutes
+	private static ImmutablePOCache<String,MWebServiceType> s_WebServiceTypeCache	= new ImmutablePOCache<String,MWebServiceType>(MWebServiceType.Table_Name, 10, 60);	//60 minutes
 	private static CCache<String,Boolean> s_RoleAccessCache = new CCache<>(X_WS_WebServiceTypeAccess.Table_Name, 60, 60);
 
 	/**
@@ -232,7 +233,7 @@ public class AbstractService {
 		String key = m_cs.getAD_Client_ID() + "|" + m_webservice.getWS_WebService_ID() + "|" 
 				+ m_webservicemethod.getWS_WebServiceMethod_ID() + "|" + serviceTypeValue;
 		synchronized (s_WebServiceTypeCache) {
-			m_webservicetype = s_WebServiceTypeCache.get(key);
+			m_webservicetype = s_WebServiceTypeCache.get(m_cs.getCtx(), key, e -> new MWebServiceType(m_cs.getCtx(), e));
 			if (m_webservicetype == null) {
 				m_webservicetype = new Query(m_cs.getCtx(), MWebServiceType.Table_Name,
 						"AD_Client_ID IN (0,?) AND WS_WebService_ID=? AND WS_WebServiceMethod_ID=? AND Value=?",
@@ -242,7 +243,7 @@ public class AbstractService {
 						.setOrderBy("AD_Client_ID DESC") // IDEMPIERE-3394 give precedence to tenant defined if there are system+tenant
 						.first();
 				if (m_webservicetype != null) {
-					s_WebServiceTypeCache.put(key, m_webservicetype);
+					s_WebServiceTypeCache.put(key, m_webservicetype, e -> new MWebServiceType(Env.getCtx(), e));
 				}
 			}
 		}

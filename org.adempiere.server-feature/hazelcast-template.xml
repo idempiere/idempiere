@@ -32,7 +32,7 @@
            http://www.hazelcast.com/schema/config/hazelcast-config-3.11.xsd">
 
     <group>
-        <name>@ADEMPIERE_DB_USER@.@ADEMPIERE_DB_NAME@/@ADEMPIERE_DB_SERVER@</name>
+        <name>@ADEMPIERE_DB_USER@.@ADEMPIERE_DB_NAME@/@ADEMPIERE_DB_SERVER@:@ADEMPIERE_DB_PORT@</name>
         <!-- https://github.com/hazelcast/hazelcast/issues/11667 -->
     </group>
     <management-center enabled="false">http://localhost:8080/hazelcast-mancenter</management-center>

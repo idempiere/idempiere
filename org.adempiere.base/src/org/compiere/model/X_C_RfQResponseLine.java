@@ -23,14 +23,14 @@ import java.util.Properties;
 
 /** Generated Model for C_RfQResponseLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_RfQResponseLine[")
+      StringBuilder sb = new StringBuilder ("X_C_RfQResponseLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

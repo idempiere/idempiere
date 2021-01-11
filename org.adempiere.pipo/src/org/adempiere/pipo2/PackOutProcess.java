@@ -162,6 +162,8 @@ public class PackOutProcess extends SvrProcess
 			return "Code_Snipit";
 		else if (X_AD_Package_Exp_Detail.TYPE_Data.equals(type))
 			return IHandlerRegistry.TABLE_GENERIC_HANDLER;
+		else if (X_AD_Package_Exp_Detail.TYPE_DataSingle.equals(type))
+			return IHandlerRegistry.TABLE_GENERIC_SINGLE_HANDLER;
 		else if (X_AD_Package_Exp_Detail.TYPE_DynamicValidationRule.equals(type))
 			return I_AD_Val_Rule.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_File_CodeOrOther.equals(type))
@@ -204,7 +206,7 @@ public class PackOutProcess extends SvrProcess
 	private Map<String, Object> getExpProperties(MPackageExpDetail dtl) {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		String type = dtl.getType();
-		if (MPackageExpDetail.TYPE_Data.equals(type)) {
+		if (MPackageExpDetail.TYPE_Data.equals(type) || MPackageExpDetail.TYPE_DataSingle.equals(type)) {
 			properties.put(DataElementParameters.AD_TABLE_ID, dtl.getAD_Table_ID());
 			properties.put(DataElementParameters.SQL_STATEMENT, dtl.getSQLStatement());
 		} else if (MPackageExpDetail.TYPE_SQLStatement.equals(type) || MPackageExpDetail.TYPE_SQLMandatory.equals(type)) {

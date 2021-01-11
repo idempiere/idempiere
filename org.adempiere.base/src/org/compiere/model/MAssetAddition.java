@@ -293,6 +293,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setA_SourceType(A_SOURCETYPE_Imported);
 		//
 		setM_Product_ID(ifa.getM_Product_ID());
+		setAssetValueAmt(ifa.getA_Asset_Cost());
 		setSourceAmt(ifa.getA_Asset_Cost());
 		setDateDoc(ifa.getAssetServiceDate());
 		setM_Locator_ID(ifa.getM_Locator_ID());
@@ -311,6 +312,13 @@ public class MAssetAddition extends X_A_Asset_Addition
 			if (log.isLoggable(Level.FINE)) log.fine("DateAcct=" + dateAcct);
 			setDateAcct(dateAcct);
 		}
+		if (ifa.getA_Asset_ID() > 0)
+			setA_Asset_ID(ifa.getA_Asset_ID());
+		if (ifa.getC_Currency_ID() > 0)
+			setC_Currency_ID(ifa.getC_Currency_ID());
+		setAssetAmtEntered(ifa.getAssetAmtEntered());
+		setAssetSourceAmt(ifa.getAssetSourceAmt());
+		
 		setI_FixedAsset(ifa);
 	}
 	
@@ -445,6 +453,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 	 */
 	private void setAssetValueAmt()
 	{
+		if (A_SOURCETYPE_Imported.equals(getA_SourceType()))
+			return;
 		getDateAcct();
 		MConversionRateUtil.convertBase(SetGetUtil.wrap(this),
 				COLUMNNAME_DateAcct,
@@ -554,7 +564,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 		// Only New assets can be activated
 		if (isA_CreateAsset() && !MAsset.A_ASSET_STATUS_New.equals(asset.getA_Asset_Status()))
 		{
-			throw new AssetException("Only new assets can be activated");
+			if (!A_SOURCETYPE_Imported.equals(getA_SourceType()))
+				throw new AssetException("Only new assets can be activated");
 		}
 		//
 		// Validate Source - Project
@@ -667,9 +678,10 @@ public class MAssetAddition extends X_A_Asset_Addition
 		MDepreciationWorkfile assetwk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());
 		if (assetwk == null)
 		{
-		
 			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), asset.getA_Asset_Group_ID(), getPostingType()))
 			{
+				if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetgrpacct.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+					continue;
 				assetwk = new MDepreciationWorkfile(asset, getPostingType(), assetgrpacct);
 			}
 		}
@@ -685,17 +697,23 @@ public class MAssetAddition extends X_A_Asset_Addition
 		//
 		for (MDepreciationWorkfile assetworkFile :  MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName()))
 		{
+			if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetworkFile.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+				continue;
+			
 			assetworkFile.setDateAcct(getDateAcct());
-			if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
-			{
-				BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
-						getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
-						getDateAcct(), getC_ConversionType_ID(),
-						getAD_Client_ID(), getAD_Org_ID());
-				assetworkFile.adjustCost(convertedAssetCost, getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+			if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
+				assetworkFile.adjustCost(getI_FixedAsset().getA_Asset_Cost(), getA_QTY_Current(), isA_CreateAsset());
 			} else {
-				assetworkFile.adjustCost(getAssetSourceAmt(), getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
-
+				if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+				{				
+					BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
+							getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+							getDateAcct(), getC_ConversionType_ID(),
+							getAD_Client_ID(), getAD_Org_ID());
+					assetworkFile.adjustCost(convertedAssetCost, getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+				} else {
+					assetworkFile.adjustCost(getAssetSourceAmt(), getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+				}				
 			}
 			// Do we have entries that are not processed and before this date:
 			if (this.getA_CapvsExp().equals(A_CAPVSEXP_Capital)) { 
@@ -703,15 +721,19 @@ public class MAssetAddition extends X_A_Asset_Addition
 			MDepreciationExp.checkExistsNotProcessedEntries(assetworkFile.getCtx(), assetworkFile.getA_Asset_ID(), getDateAcct(), assetworkFile.getPostingType(), assetworkFile.get_TrxName());
 			//
 			if (this.getA_Salvage_Value().signum() > 0) {
-				if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
-				{
-					BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
-							getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
-							getDateAcct(), getC_ConversionType_ID(),
-							getAD_Client_ID(), getAD_Org_ID());
-					assetworkFile.setA_Salvage_Value(salvageValue);
-				} else{
+				if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
 					assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
+				} else {
+					if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+					{
+						BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
+								getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+								getDateAcct(), getC_ConversionType_ID(),
+								getAD_Client_ID(), getAD_Org_ID());
+						assetworkFile.setA_Salvage_Value(salvageValue);
+					} else{
+						assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
+					}
 				}
 			}
 			assetworkFile.setDateAcct(getDateAcct());
@@ -721,8 +743,11 @@ public class MAssetAddition extends X_A_Asset_Addition
 			//@win set initial depreciation period = 1 
 			if (isA_CreateAsset())
 			{
-				assetworkFile.setA_Current_Period(1);
-				assetworkFile.saveEx();
+				if (assetworkFile.getA_Current_Period() == 0)
+				{
+					assetworkFile.setA_Current_Period(1);
+					assetworkFile.saveEx();
+				}
 			}
 			//
 			// Rebuild depreciation:
@@ -1168,6 +1193,10 @@ public class MAssetAddition extends X_A_Asset_Addition
 		if (DOCSTATUS_Voided.equals(getDocStatus()))
 		{
 			setA_CreateAsset(false);
+		}
+		else if (A_SOURCETYPE_Imported.equals(getA_SourceType()))
+		{
+			setA_CreateAsset(true);
 		}
 		else
 		{

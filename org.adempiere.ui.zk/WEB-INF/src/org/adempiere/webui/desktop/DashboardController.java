@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -37,7 +37,6 @@ import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
-import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -472,14 +471,7 @@ public class DashboardController implements EventListener<Event> {
     	{
         	try {
         		
-                Component component = null;
-                List<IDashboardGadgetFactory> f = Service.locator().list(IDashboardGadgetFactory.class).getServices();
-                for (IDashboardGadgetFactory factory : f) {
-                        component = factory.getGadget(url.toString(),content);
-                        if(component != null)
-                                break;
-                }
-                
+                Component component = Extensions.getDashboardGadget(url, content);                
                 if(component != null)
                 {
                 	if (component instanceof Include)
@@ -528,11 +520,7 @@ public class DashboardController implements EventListener<Event> {
 	        		chartPanel.getChildren().clear();
 	        		ChartModel model = new ChartModel();
 	        		model.chart = chartModel;
-	        		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
-	        		for (IChartRendererService renderer : list) {
-	        			if (renderer.renderChart(chartPanel, width, height, model))
-	        				break;
-	        		}
+	        		renderChart(chartPanel, width, height, model);
 				}
 			});
     	}
@@ -655,7 +643,7 @@ public class DashboardController implements EventListener<Event> {
 			MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), 0, null);
 			preference.setAD_Org_ID(0);
 			preference.setAD_Role_ID(AD_Role_ID);
-			preference.set_ValueNoCheck("AD_User_ID", AD_User_ID);
+			preference.setAD_User_ID(AD_User_ID); // allow System
 			preference.setColumnNo(dc.getColumnNo());
 			preference.setIsCollapsedByDefault(dc.isCollapsedByDefault());
 			preference.setIsShowInDashboard(dc.isShowInDashboard());
@@ -682,7 +670,7 @@ public class DashboardController implements EventListener<Event> {
 				MDashboardPreference preference = new MDashboardPreference(ctx,0, null);
 				preference.setAD_Org_ID(0);
 				preference.setAD_Role_ID(Env.getAD_Role_ID(ctx));
-				preference.set_ValueNoCheck("AD_User_ID",Env.getAD_User_ID(ctx));
+				preference.setAD_User_ID(Env.getAD_User_ID(ctx));  // allow System
 				preference.setColumnNo(dcs[i].getColumnNo());
 				preference.setIsCollapsedByDefault(dcs[i].isCollapsedByDefault());
 				preference.setIsShowInDashboard(dcs[i].isShowInDashboard());
@@ -966,5 +954,13 @@ public class DashboardController implements EventListener<Event> {
 	        	}
         	}
 		}			
+	}
+
+	private void renderChart(final Div chartPanel, int width, int height, ChartModel model) {
+		List<IChartRendererService> list = Extensions.getChartRendererServices();
+		for (IChartRendererService renderer : list) {
+			if (renderer.renderChart(chartPanel, width, height, model))
+				break;
+		}
 	}
 }

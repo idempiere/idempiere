@@ -17,11 +17,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.Database;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -328,5 +330,23 @@ public class M_Element extends X_AD_Element
 		sb.append (get_ID()).append ("-").append (getColumnName()).append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	public void renameDBColumn(String newColumnName, ProcessInfo pi) {
+		List<MColumn> columns = new Query(getCtx(), MColumn.Table_Name, "AD_Element_ID=?", get_TrxName())
+				.setParameters(getAD_Element_ID())
+				.setOrderBy("AD_Column_ID")
+				.list();
+
+		for (MColumn column : columns) {
+			String msg = column.renameDBColumn(newColumnName);
+			column.saveEx();
+			if (pi != null) {
+				pi.addLog(0, null, null, msg, MColumn.Table_ID, column.getAD_Column_ID());
+			}
+		}
+
+		setColumnName(newColumnName);
+		return;
+	}
+
 }	//	M_Element

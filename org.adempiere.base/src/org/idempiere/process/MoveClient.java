@@ -786,8 +786,9 @@ public class MoveClient extends SvrProcess {
 					columnsSB.append(",");
 					valuesSB.append(",");
 				}
-				qColumnsSB.append(tableName).append(".").append(columnName);
-				columnsSB.append(columnName);
+				String quoteColumnName = DB.getDatabase().quoteColumnName(columnName);
+				qColumnsSB.append(tableName).append(".").append(quoteColumnName);
+				columnsSB.append(quoteColumnName);
 				valuesSB.append("?");
 				columns.add(column);
 				ncols++;

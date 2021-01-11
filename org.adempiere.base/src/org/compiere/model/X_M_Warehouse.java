@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Warehouse
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)
@@ -72,8 +72,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_Warehouse[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_Warehouse[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

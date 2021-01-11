@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for PA_DocumentStatus
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_DocumentStatus[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_DocumentStatus[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

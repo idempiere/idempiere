@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceType
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_S_ResourceType (Properties ctx, int S_ResourceType_ID, String trxName)
@@ -88,8 +88,8 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_S_ResourceType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_S_ResourceType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

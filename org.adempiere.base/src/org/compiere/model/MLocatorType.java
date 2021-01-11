@@ -27,41 +27,52 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Warehouse Locator Type Object
  *
  * 	@author 	Carlos Ruiz - Quality Systems & Solutions - globalqss
  */
-public class MLocatorType extends X_M_LocatorType {
+public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7567584133468332781L;
+	private static final long serialVersionUID = 3021833597380696668L;
 
 	/**
-	 * 	Get Locator Type from Cache
-	 *	@param ctx context
+	 * 	Get Locator Type from Cache (immutable)
+	 *	@param M_LocatorType_ID id
+	 *	@return MLocator
+	 */
+	public static MLocatorType get (int M_LocatorType_ID) {
+		return get(Env.getCtx(), M_LocatorType_ID);
+	}
+	
+	/**
+	 * 	Get Locator Type from Cache (immutable)
+	 *  @param ctx context
 	 *	@param M_LocatorType_ID id
 	 *	@return MLocator
 	 */
 	public static MLocatorType get (Properties ctx, int M_LocatorType_ID) {
-		if (s_cache == null)
-			s_cache	= new CCache<Integer,MLocatorType>(Table_Name, 20);
 		Integer key = Integer.valueOf(M_LocatorType_ID);
-		MLocatorType retValue = (MLocatorType) s_cache.get (key);
+		MLocatorType retValue = s_cache.get (ctx, key, e -> new MLocatorType(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MLocatorType (ctx, M_LocatorType_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MLocatorType (ctx, M_LocatorType_ID, (String)null);
+		if (retValue.get_ID () == M_LocatorType_ID) {
+			s_cache.put (key, retValue, e -> new MLocatorType(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
 	/**	Cache						*/
-	private volatile static CCache<Integer,MLocatorType> s_cache; 
+	private final static ImmutableIntPOCache<Integer,MLocatorType> s_cache = new ImmutableIntPOCache<Integer,MLocatorType>(Table_Name, 20); 
 
 	/**	Logger						*/
 	@SuppressWarnings("unused")
@@ -93,11 +104,48 @@ public class MLocatorType extends X_M_LocatorType {
 	}	//	MLocatorType
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MLocatorType(MLocatorType copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLocatorType(Properties ctx, MLocatorType copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLocatorType(Properties ctx, MLocatorType copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 *	Get String Representation
 	 * 	@return Name
 	 */
 	public String toString() {
 		return getName();
 	}	//	toString
+
+	@Override
+	public MLocatorType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MLocatorType

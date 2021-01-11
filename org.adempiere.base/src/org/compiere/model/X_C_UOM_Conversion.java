@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UOM_Conversion
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_UOM_Conversion (Properties ctx, int C_UOM_Conversion_ID, String trxName)
@@ -71,7 +71,7 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_UOM_Conversion[")
+      StringBuilder sb = new StringBuilder ("X_C_UOM_Conversion[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

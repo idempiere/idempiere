@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InvoiceGL
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_T_InvoiceGL (Properties ctx, int T_InvoiceGL_ID, String trxName)
@@ -80,7 +80,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_InvoiceGL[")
+      StringBuilder sb = new StringBuilder ("X_T_InvoiceGL[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

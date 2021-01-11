@@ -21,4 +21,16 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="org.adempiere.install.silent-application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.compiere.install.console.SilentInstallApplication">
+         </run>
+      </application>
+   </extension>
 </plugin>

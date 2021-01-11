@@ -19,19 +19,22 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  * 	Currency Model.
  *
  *  @author Jorg Janke
  */
-public class MCurrency extends X_C_Currency
+public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2262097171335518186L;
+	private static final long serialVersionUID = 4325153934518648373L;
 
 	/**
 	 * 	Currency Constructor
@@ -85,14 +88,54 @@ public class MCurrency extends X_C_Currency
 		setIsEuro (false);
 	}	//	MCurrency
 
-
-	/**	Store System Currencies			**/
-	private static CCache<Integer,MCurrency> s_currencies = new CCache<Integer,MCurrency>(Table_Name, 50);
-	/** Cache System Currencies by using ISO code as key **/
-	private static CCache<String,MCurrency> s_currenciesISO = new CCache<String,MCurrency>(Table_Name, "C_CurrencyISO", 50);
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MCurrency(MCurrency copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
 	/**
-	 * 	Get Currency using ISO code
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCurrency(Properties ctx, MCurrency copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCurrency(Properties ctx, MCurrency copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**	Store System Currencies			**/
+	private static ImmutableIntPOCache<Integer,MCurrency> s_currencies = new ImmutableIntPOCache<Integer,MCurrency>(Table_Name, 50);
+	/** Cache System Currencies by using ISO code as key **/
+	private static ImmutablePOCache<String,MCurrency> s_currenciesISO = new ImmutablePOCache<String,MCurrency>(Table_Name, "C_CurrencyISO", 50);
+
+	/**
+	 * 	Get Currency using ISO code from cache (immutable)
+	 *	@param ISOcode	Iso code
+	 *	@return MCurrency
+	 */
+	public static MCurrency get (String ISOcode)
+	{
+		return get(Env.getCtx(), ISOcode);
+	}
+	
+	/**
+	 * 	Get Currency using ISO code from cache (immutable)
 	 *	@param ctx Context
 	 *	@param ISOcode	Iso code
 	 *	@return MCurrency
@@ -100,24 +143,34 @@ public class MCurrency extends X_C_Currency
 	public static MCurrency get (Properties ctx, String ISOcode)
 	{
 		//	Try Cache
-		MCurrency retValue = (MCurrency)s_currenciesISO.get(ISOcode);
+		MCurrency retValue = (MCurrency)s_currenciesISO.get(ctx, ISOcode, e -> new MCurrency(ctx, e));
 		if (retValue != null)
 			return retValue;
 
 		//	Try database
-		Query query = new Query(ctx, I_C_Currency.Table_Name, "ISO_Code=?", null);
+		Query query = new Query(ctx, I_C_Currency.Table_Name, "ISO_Code=?", (String)null);
 		query.setParameters(ISOcode);
 		retValue = (MCurrency)query.firstOnly();
 		
 		//	Save 
-		if (retValue!=null)
-			s_currenciesISO.put(ISOcode, retValue);
+		if (retValue!=null) {
+			s_currenciesISO.put(ISOcode, retValue, e -> new MCurrency(Env.getCtx(), e));
+		}
 		return retValue;
 	}	
 	
-
 	/**
-	 * 	Get Currency
+	 * 	Get Currency (immutable)
+	 *	@param C_Currency_ID currency
+	 *	@return ISO Code
+	 */
+	public static MCurrency get (int C_Currency_ID)
+	{
+		return get(Env.getCtx(), C_Currency_ID);
+	}
+	
+	/**
+	 * 	Get Currency (immutable)
 	 *	@param ctx Context
 	 *	@param C_Currency_ID currency
 	 *	@return ISO Code
@@ -126,16 +179,20 @@ public class MCurrency extends X_C_Currency
 	{
 		//	Try Cache
 		Integer key = Integer.valueOf(C_Currency_ID);
-		MCurrency retValue = (MCurrency)s_currencies.get(key);
+		MCurrency retValue = s_currencies.get(ctx, key, e -> new MCurrency(ctx, e));
 		if (retValue != null)
 			return retValue;
 
 		//	Create it
-		retValue = new MCurrency(ctx, C_Currency_ID, null);
+		retValue = new MCurrency(ctx, C_Currency_ID, (String)null);
 		//	Save in System
-		if (retValue.getAD_Client_ID() == 0)
-			s_currencies.put(key, retValue);
-		return retValue;
+		if (retValue.get_ID() == C_Currency_ID)
+		{
+			if (retValue.getAD_Client_ID() == 0)
+				s_currencies.put(key, retValue, e -> new MCurrency(Env.getCtx(), e));
+			return (MCurrency) retValue.markImmutable();
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -192,6 +249,15 @@ public class MCurrency extends X_C_Currency
 	public static int getCostingPrecision(Properties ctx, int C_Currency_ID) {
 		MCurrency c = get(ctx, C_Currency_ID);
 		return c.getCostingPrecision();
+	}
+
+	@Override
+	public MCurrency markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 

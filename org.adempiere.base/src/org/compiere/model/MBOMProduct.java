@@ -113,7 +113,7 @@ public class MBOMProduct extends X_M_BOMProduct
 	private MBOM getBOM()
 	{
 		if (m_bom == null && getM_BOM_ID() != 0)
-			m_bom = MBOM.get(getCtx(), getM_BOM_ID());
+			m_bom = MBOM.getCopy(getCtx(), getM_BOM_ID(), get_TrxName());
 		return m_bom;
 	}	//	getBOM
 	
@@ -190,7 +190,7 @@ public class MBOMProduct extends X_M_BOMProduct
 		//	Set Line Number
 		if (getLine() == 0)
 		{
-			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM M_BOMProduct WHERE M_BOM_ID=?";
+			String sql = "SELECT NVL(MAX(Line),0)+10 FROM M_BOMProduct WHERE M_BOM_ID=?";
 			int ii = DB.getSQLValue (get_TrxName(), sql, getM_BOM_ID());
 			setLine (ii);
 		}

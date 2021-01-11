@@ -27,6 +27,7 @@ import org.compiere.model.MSysConfig;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.awt.DefaultFontMapper;
+import com.itextpdf.awt.PdfGraphics2D;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -76,7 +77,7 @@ public class Document {
             	}
             	
 	            PdfTemplate tp = cb.createTemplate(w, h);
-	            Graphics2D g2 = tp.createGraphics(w, h, mapper);
+	            Graphics2D g2 = new PdfGraphics2D(tp, w, h, mapper);
 	            tp.setWidth(w);
 	            tp.setHeight(h);
 	            pageable.getPrintable(page).print(g2, pf, page);

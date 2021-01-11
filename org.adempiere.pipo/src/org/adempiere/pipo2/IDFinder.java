@@ -76,7 +76,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer sqlB = new StringBuffer ("SELECT ")
+		StringBuilder sqlB = new StringBuilder ("SELECT ")
 		 	.append(tableName)
 		 	.append("_ID FROM ")
 		 	.append(tableName)
@@ -203,7 +203,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer parentSql = new StringBuffer("SELECT ")
+		StringBuilder parentSql = new StringBuilder("SELECT ")
 				.append(tableNameMaster)
 				.append("_ID FROM ")
 				.append(tableNameMaster)
@@ -212,7 +212,7 @@ public class IDFinder {
 		int parentId = DB.getSQLValue(trxName, parentSql.toString(), name, Env.getAD_Client_ID(Env.getCtx()));
 
 		if (parentId > 0) {
-			StringBuffer sqlB = new StringBuffer ("SELECT ")
+			StringBuilder sqlB = new StringBuilder ("SELECT ")
 				.append(tableName)
 				.append("_ID FROM ")
 				.append(tableName)
@@ -277,7 +277,7 @@ public class IDFinder {
 		if (idCache.containsKey(key))
 			return idCache.get(key);
 
-		StringBuffer sqlB = new StringBuffer ("SELECT ")
+		StringBuilder sqlB = new StringBuilder ("SELECT ")
 			.append(tableName)
 			.append("_ID FROM ")
 			.append(tableName)
@@ -354,7 +354,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer sqlB = new StringBuffer ("SELECT ")
+		StringBuilder sqlB = new StringBuilder ("SELECT ")
 			.append(tableName)
 			.append("_ID FROM ")
 			.append(tableName)
@@ -410,7 +410,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer sql = new StringBuffer("SELECT ")
+		StringBuilder sql = new StringBuilder("SELECT ")
 			.append(tableName)
 			.append("_ID ")
 			.append("FROM ")

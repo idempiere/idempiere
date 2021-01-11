@@ -26,14 +26,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for DD_NetworkDistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDistributionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistributionLine (Properties ctx, int DD_NetworkDistributionLine_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_DD_NetworkDistributionLine[")
+      StringBuilder sb = new StringBuilder ("X_DD_NetworkDistributionLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

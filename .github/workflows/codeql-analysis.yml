@@ -1,0 +1,129 @@
+# For most projects, this workflow file will not need changing; you simply need
+# to commit it to your repository.
+#
+# You may wish to alter this file to override the set of languages analyzed,
+# or to provide custom queries or build logic.
+name: "CodeQL"
+
+on:
+  push:
+    branches: [master, release-7.1]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [master]
+  schedule:
+    - cron: '0 7 * * 4'
+
+env:
+    java: 11
+
+jobs:
+  analyze_java_sonar:
+    if: github.event_name != 'pull_request'
+
+    name: Analyze java by sonar
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+
+    # Install Java 14
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '${{ env.java }}'
+
+    # on case PR it check out to commit is merger of PR to base (master)
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        # fetch all commit so sornar can know who change a line, it's resolved Warning:  Shallow clone detected, no blame information will be provided. You can convert to non-shallow with 'git fetch --unshallow'.
+        fetch-depth: 0
+
+    - name: Cache material
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.sonar/cache
+        key: ${{ runner.os }}-sonar-master
+
+    # run sonar on master only because sonar for PR come from other repository isn't support at moment (already on develop) 
+    # https://stackoverflow.com/a/39720346
+    # https://docs.sonarqube.org/latest/analysis/pr-decoration/
+    - name: Build and sonar analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        export MAVEN_OPTS="-Xmx7G -Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
+        sonarProject="-Dsonar.projectKey=${{ github.repository_owner }}_idempiere -Dsonar.organization=${{ github.repository_owner }}"
+        sonar="-Dsonar.java.source=$java -Dsonar.java.target=$java -Dsonar.host.url=https://sonarcloud.io -Dsonar.log.level=WARN"
+        sonarExclusions="-Dsonar.exclusions=**/I_*.java,**/X_*.java"
+        codeql="-Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec -Dlicense.skip=true -Drat.skip=true"
+        mvn -B -V -e $codeql $sonar $sonarProject $sonarExclusions package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+
+  analyze_java_codeQL:
+    name: Analyze java by code QL
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+
+    # Install Java 14
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '${{ env.java }}'
+
+    # on case PR it check out to commit is merger of PR to base (master)
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Cache material
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2
+        key: ${{ runner.os }}-maven-master
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: java
+        # If you wish to specify custom queries, you can do so here or in a config file.
+        # By default, queries listed here will override any specified in a config file. 
+        # Prefix the list here with "+" to use these queries and those in the config file.
+        # queries: ./path/to/local/query, your-org/your-repo/queries@main
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v1
+    
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
+
+  analyze_javascript_codeQL:
+    name: Analyze javascript by code QL
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+
+    # on case PR it check out to commit is merger of PR to base (master)
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: javascript
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1

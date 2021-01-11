@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_PaySelectionCheck
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_PaySelectionCheck extends PO implements I_C_PaySelectionCheck, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_PaySelectionCheck (Properties ctx, int C_PaySelectionCheck_ID, String trxName)
@@ -80,7 +80,7 @@ public class X_C_PaySelectionCheck extends PO implements I_C_PaySelectionCheck, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_PaySelectionCheck[")
+      StringBuilder sb = new StringBuilder ("X_C_PaySelectionCheck[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

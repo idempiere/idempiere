@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for ASP_ClientException
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_ASP_ClientException extends PO implements I_ASP_ClientException, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_ASP_ClientException (Properties ctx, int ASP_ClientException_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_ClientException[")
+      StringBuilder sb = new StringBuilder ("X_ASP_ClientException[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

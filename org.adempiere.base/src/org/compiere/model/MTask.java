@@ -72,8 +72,6 @@ public class MTask extends X_AD_Task
 		if (cmd == null || cmd.equals(""))
 			return "Cannot execute '" + getOS_Command() + "'";
 		//
-		if (isServerProcess())
-			return executeRemote(cmd);
 		return executeLocal(cmd);
 	}	//	execute
 	
@@ -118,18 +116,6 @@ public class MTask extends X_AD_Task
 	}	//	executeLocal
 	
 	/**
-	 * 	Execute Task locally and wait
-	 * 	@param cmd command
-	 *	@return execution info
-	 */
-	public String executeRemote(String cmd)
-	{
-		log.config(cmd);
-		return "Remote:\n";
-	}	//	executeRemote
-	
-	
-	/**
 	 * 	String Representation
 	 *	@return info
 	 */
@@ -138,7 +124,6 @@ public class MTask extends X_AD_Task
 		StringBuilder sb = new StringBuilder ("MTask[");
 		sb.append(get_ID())
 			.append("-").append(getName())
-			.append(";Server=").append(isServerProcess())
 			.append(";").append(getOS_Command())
 			.append ("]");
 		return sb.toString ();

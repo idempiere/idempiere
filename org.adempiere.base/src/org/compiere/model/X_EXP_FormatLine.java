@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for EXP_FormatLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_EXP_FormatLine (Properties ctx, int EXP_FormatLine_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_EXP_FormatLine[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_EXP_FormatLine[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

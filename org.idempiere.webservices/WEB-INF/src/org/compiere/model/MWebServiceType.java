@@ -31,6 +31,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Web Services Type Model
@@ -45,12 +48,12 @@ import org.compiere.util.DB;
  *  @author Carlos Ruiz
  *  @author Deepak Pansheriya - Updated to support CreateUpdate service
  */
-public class MWebServiceType extends X_WS_WebServiceType
+public class MWebServiceType extends X_WS_WebServiceType implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7216001796414414950L;
+	private static final long serialVersionUID = -6105547694847198509L;
 
 	/**	Parameters	*/
 	private MWebServicePara[]	m_para = null;
@@ -242,6 +245,42 @@ public class MWebServiceType extends X_WS_WebServiceType
 	
 	/**
 	 * 
+	 * @param copy
+	 */
+	public MWebServiceType(MWebServiceType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWebServiceType(Properties ctx, MWebServiceType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWebServiceType(Properties ctx, MWebServiceType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_para = copy.m_para != null ? Arrays.stream(copy.m_para).map(e -> {return new MWebServicePara(ctx, e, trxName);}).toArray(MWebServicePara[]::new) : null;
+		this.m_inputcolumnnames = copy.m_inputcolumnnames != null ? Arrays.copyOf(copy.m_inputcolumnnames, copy.m_inputcolumnnames.length) : null;
+		this.m_outputcolumnnames = copy.m_outputcolumnnames != null ? Arrays.copyOf(copy.m_outputcolumnnames, copy.m_outputcolumnnames.length) : null;
+		this.m_inputFieldMap = copy.m_inputFieldMap != null ? new HashMap<String, X_WS_WebServiceFieldInput>(copy.m_inputFieldMap) : null;
+		this.m_keyColumns = copy.m_keyColumns != null ? new ArrayList<String>(copy.m_keyColumns) : null;
+	}
+
+	/**
+	 * 
 	 * @param requery
 	 */
 	public void getInputFieldMap(boolean requery){
@@ -286,5 +325,60 @@ public class MWebServiceType extends X_WS_WebServiceType
 		
 		return m_inputFieldMap.get(colName);
 	}
+
+	public void insertParameters() {
+
+		MWebService ws = MWebService.get(getCtx(), getWS_WebService_ID());
+		if (ws != null && "ModelADService".equals(ws.getValue())) {
+			X_WS_WebServiceMethod wsm = new X_WS_WebServiceMethod(getCtx(), getWS_WebServiceMethod_ID(), get_TrxName());
+			String method = wsm.getValue();
+
+			if ("getList".equals(method)) {
+				addWsParameter("AD_Reference_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			} else if ("runProcess".equals(method)) {
+				addWsParameter("AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // can't fill it as the process is unknown
+				addWsParameter("AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0");
+				addWsParameter("AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			} else {
+				String value = "";
+				if ("createData".equals(method))
+					value = "Create";
+				else if ("deleteData".equals(method))
+					value = "Delete";
+				else if ("queryData".equals(method))
+					value = "Read";
+				else if ("readData".equals(method))
+					value = "Read";
+				else if ("updateData".equals(method))
+					value = "Update";
+
+				addWsParameter("TableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(getCtx(), getAD_Table_ID()).getTableName());
+				addWsParameter("Action", X_WS_WebService_Para.PARAMETERTYPE_Constant, value);
+				addWsParameter("RecordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			}
+		}
+	}
+
+	private void addWsParameter(String name, String type, String value) {
+		
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM WS_WebService_Para WHERE WS_WebServiceType_ID = ? AND ParameterName = ?", getWS_WebServiceType_ID(), name) != 1) {
+			MWebServicePara wsp = new MWebServicePara(getCtx(), 0, get_TrxName());
+			wsp.setAD_Org_ID(getAD_Org_ID());
+			wsp.setWS_WebServiceType_ID(getWS_WebServiceType_ID());
+			wsp.setParameterName(name);
+			wsp.setParameterType(type);
+			wsp.setConstantValue(value);
+			wsp.saveEx();	
+		}
+	}
 	
+	@Override
+	public MWebServiceType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MWebServiceType

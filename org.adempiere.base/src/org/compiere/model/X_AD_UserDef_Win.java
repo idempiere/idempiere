@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Win
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Win (Properties ctx, int AD_UserDef_Win_ID, String trxName)
@@ -69,8 +69,8 @@ public class X_AD_UserDef_Win extends PO implements I_AD_UserDef_Win, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_UserDef_Win[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_UserDef_Win[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

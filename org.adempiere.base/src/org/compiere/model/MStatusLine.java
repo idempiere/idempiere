@@ -33,6 +33,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Status Line Model
@@ -40,17 +42,16 @@ import org.compiere.util.Msg;
  *  @author Nicolas Micoud
  *  @version $Id: MStatusLine.java
  */
-public class MStatusLine extends X_AD_StatusLine
+public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2473407023692665378L;
-
+	private static final long serialVersionUID = -2804602992872075936L;
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MStatusLine.class);
 	/** Status Line Cache				*/
-	private static CCache<String, MStatusLine> s_cache = new CCache<String, MStatusLine>(Table_Name, 10);
+	private static ImmutablePOCache<String, MStatusLine> s_cache = new ImmutablePOCache<String, MStatusLine>(Table_Name, 10);
 	private static CCache<String, MStatusLine[]> s_cachew = new CCache<String, MStatusLine[]>(Table_Name, Table_Name+"|MStatusLine[]", 10);
 
 	/**
@@ -76,7 +77,38 @@ public class MStatusLine extends X_AD_StatusLine
 	}	//	MStatusLine
 
 	/**
-	 * Get the status line defined for the window|tab|table
+	 * 
+	 * @param copy
+	 */
+	public MStatusLine(MStatusLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStatusLine(Properties ctx, MStatusLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStatusLine(Properties ctx, MStatusLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
+	 * Get the status line defined for the window|tab|table (immutable)
 	 * @param window_ID
 	 * @param tab_ID
 	 * @param table_ID
@@ -128,13 +160,12 @@ public class MStatusLine extends X_AD_StatusLine
 		if (slid > 0) {
 			retValue = new MStatusLine(Env.getCtx(), slid, null);
 		}
-		s_cache.put(key.toString(), retValue);
-
+		s_cache.put(key.toString(), retValue, e -> new MStatusLine(Env.getCtx(), e));
 		return retValue;
 	}
 
 	/**
-	 * Get the widget lines defined for the window&tab&table
+	 * Get the widget lines defined for the window&tab&table (immutable)
 	 * @param window_ID
 	 * @param tab_ID
 	 * @param table_ID
@@ -164,6 +195,7 @@ public class MStatusLine extends X_AD_StatusLine
 	        ArrayList<MStatusLine> list = new ArrayList<MStatusLine>();
 	        for (int wlid : wlids) {
 				MStatusLine wl = new MStatusLine(Env.getCtx(), wlid, null);
+				wl.markImmutable();
 				list.add(wl);
 	        }
 			//	Convert to array
@@ -240,6 +272,15 @@ public class MStatusLine extends X_AD_StatusLine
 		if (filled)
 			return mf.format(arguments);
 		return null;
+	}
+
+	@Override
+	public MStatusLine markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MStatusLine

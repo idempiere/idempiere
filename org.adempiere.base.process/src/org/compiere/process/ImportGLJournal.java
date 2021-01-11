@@ -572,7 +572,7 @@ public class ImportGLJournal extends SvrProcess
 		//AZ Goodwill
 		//BF: 2391401 Remove account balance limitation in Import GL Journal 
 		/*
-		sql = new StringBuffer ("UPDATE I_GLJournal i "
+		sql = new StringBuilder ("UPDATE I_GLJournal i "
 			+ "SET I_ErrorMsg=I_ErrorMsg||'WARN=Check Acct Balance, ' "
 			+ "WHERE ABS(AmtAcctDr-AmtAcctCr)>100000000"	//	100 mio
 			+ " AND I_IsImported<>'Y'").append (clientCheck);
@@ -658,8 +658,8 @@ public class ImportGLJournal extends SvrProcess
 		//	Go through Journal Records
 		sql = new StringBuilder ("SELECT * FROM I_GLJournal ")
 			.append("WHERE I_IsImported='N'").append (clientCheck)
-			.append(" ORDER BY COALESCE(BatchDocumentNo, TO_NCHAR(I_GLJournal_ID)||' '), COALESCE(JournalDocumentNo, ")
-					.append("TO_NCHAR(I_GLJournal_ID)||' '), C_AcctSchema_ID, PostingType, C_DocType_ID, GL_Category_ID, ")
+			.append(" ORDER BY NVL(BatchDocumentNo, I_GLJournal_ID||' '), NVL(JournalDocumentNo, ")
+					.append("I_GLJournal_ID||' '), C_AcctSchema_ID, PostingType, C_DocType_ID, GL_Category_ID, ")
 					.append("C_Currency_ID, TRUNC(DateAcct), Line, I_GLJournal_ID");
 		try
 		{

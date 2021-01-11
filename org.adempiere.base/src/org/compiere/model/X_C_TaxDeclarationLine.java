@@ -25,14 +25,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName)
@@ -77,7 +77,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_TaxDeclarationLine[")
+      StringBuilder sb = new StringBuilder ("X_C_TaxDeclarationLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

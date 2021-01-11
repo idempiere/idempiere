@@ -37,7 +37,7 @@ import org.compiere.util.Util;
  */
 public class DefaultModelFactory implements IModelFactory {
 
-	private static CCache<String,Class<?>> s_classCache = new CCache<String,Class<?>>(null, "PO_Class", 20, false);
+	private static CCache<String,Class<?>> s_classCache = new CCache<String,Class<?>>(null, "PO_Class", 100, 120, false, 2000);
 	private final static CLogger s_log = CLogger.getCLogger(DefaultModelFactory.class);
 
 	/**	Packages for Model Classes	*/
@@ -165,7 +165,7 @@ public class DefaultModelFactory implements IModelFactory {
 		//	Search packages
 		for (int i = 0; i < s_packages.length; i++)
 		{
-			StringBuffer name = new StringBuffer(s_packages[i]).append(".M").append(className);
+			StringBuilder name = new StringBuilder(s_packages[i]).append(".M").append(className);
 			Class<?> clazz = getPOclass(name.toString(), tableName);
 			if (clazz != null)
 			{

@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.MDocType;
-import org.compiere.model.MPeriod;
-import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;

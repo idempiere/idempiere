@@ -14,8 +14,6 @@
 
 package org.adempiere.webui.panel;
 
-import java.util.Properties;
-
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.desktop.IDesktop;
@@ -29,12 +27,15 @@ import org.compiere.model.I_AD_InfoWindow;
 import org.compiere.model.I_AD_WF_Node;
 import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.MCtxHelpMsg;
+import org.compiere.model.MCtxHelpSuggestion;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
+import org.compiere.model.MUserDefInfo;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.Env;
@@ -269,16 +270,19 @@ public class HelpController
     	if (ctxHelpMsg != null)
     	{
 	    	sb.append(stripHtml(ctxHelpMsg.get_Translation(I_AD_CtxHelpMsg.COLUMNNAME_MsgText), false) + "<br>\n");
-	    	ContextHelpMenupopup popup = new ContextHelpMenupopup(ctxHelpMsg);
-	    	pnlContextHelp.setAttribute("contextMenu", popup);
-	    	pnlContextHelp.setContext(popup);
-	    	popup.setPage(pnlContextHelp.getPage());
+
+	    	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
+	    		ContextHelpMenupopup popup = new ContextHelpMenupopup(ctxHelpMsg);
+	    		pnlContextHelp.setAttribute("contextMenu", popup);
+	    		pnlContextHelp.setContext(popup);
+	    		popup.setPage(pnlContextHelp.getPage());
+	    	}
     	}
     	else
     	{
     		StringBuilder baseContent = new StringBuilder();
     		StringBuilder translatedContent = new StringBuilder();
-    		ContextHelpMenupopup popup = null;
+
     		if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Tab))
         	{
         		MTab tab = new MTab(Env.getCtx(), recordId, null);
@@ -323,11 +327,8 @@ public class HelpController
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-        		
-        		popup = new ContextHelpMenupopup(tab, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(tab, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Process))
         	{
@@ -374,11 +375,8 @@ public class HelpController
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-        		
-        		popup = new ContextHelpMenupopup(process, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(process, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Form))
         	{
@@ -424,26 +422,35 @@ public class HelpController
 				}
 				
         		sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-        		
-        		popup = new ContextHelpMenupopup(form, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(form, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Info))
         	{
         		MInfoWindow info = new MInfoWindow(Env.getCtx(), recordId, null);
-        		if (!Env.isBaseLanguage(Env.getCtx(), I_AD_InfoWindow.Table_Name)) {
+        		// Load User Def
+    			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
+
+    			if (!Env.isBaseLanguage(Env.getCtx(), I_AD_InfoWindow.Table_Name)) {
 					nameMsg = info.get_Translation("Name",false);
-					if (info != null && nameMsg != null
+	    			if(userDef != null && !Util.isEmpty(userDef.getName())) {
+	    				nameMsg = userDef.getName();
+	    			} 
+					if (nameMsg != null
 							&& nameMsg.length() != 0) 
 						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 
 					descMsg = info.get_Translation("Description",false);
+	    			if(userDef != null && !Util.isEmpty(userDef.getDescription())) {
+	    				descMsg = userDef.getDescription();
+	    			} 
 					if (descMsg != null && descMsg.length() != 0)
 						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 
 					helpMsg = info.get_Translation("Help",false);
+	    			if(userDef != null && !Util.isEmpty(userDef.getHelp())) {
+	    				helpMsg = userDef.getHelp();
+	    			} 
 					if (helpMsg != null && helpMsg.length() != 0)
 						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
@@ -454,17 +461,29 @@ public class HelpController
 					}
 				}
         		
-        		if (info != null && info.getName() != null
-						&& info.getName().length() != 0)
-					baseContent.append("<p><strong>" + info.getName() + "</strong></p>\n");
+    			String name = info.getName();
+    			if(userDef != null && !Util.isEmpty(userDef.getName())) {
+    				name = userDef.getName();
+    			} 
+        		if ( name != null
+						&& name.length() != 0)
+					baseContent.append("<p><strong>" + name + "</strong></p>\n");
 
-				if (info.getDescription() != null
-						&& info.getDescription().length() != 0)
-					baseContent.append("<p><em>" + info.getDescription() + "</em></p>\n");
+    			String description = info.getDescription();
+    			if(userDef != null && !Util.isEmpty(userDef.getDescription())) {
+    				description = userDef.getDescription();
+    			} 
+				if (description != null
+						&& description.length() != 0)
+					baseContent.append("<p><em>" + description + "</em></p>\n");
 
-				if (info.getHelp() != null
-						&& info.getHelp().length() != 0)
-					baseContent.append("<p>" + info.getHelp() + "</p>\n");
+    			String help = info.getHelp();
+    			if(userDef != null && !Util.isEmpty(userDef.getHelp())) {
+    				help = userDef.getHelp();
+    			} 
+				if (help != null
+						&& help.length() != 0)
+					baseContent.append("<p>" + help + "</p>\n");
 				
 				if (baseContent.length() > 0)
 				{
@@ -473,11 +492,8 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-				
-        		popup = new ContextHelpMenupopup(info, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+				addContextHelpMenupopup(info, baseContent, translatedContent);
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Workflow)) 
         	{
@@ -522,12 +538,8 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-		
-				popup = new ContextHelpMenupopup(workflow, baseContent.toString(), translatedContent.toString());
-				pnlContextHelp.setAttribute("contextMenu", popup);
-				pnlContextHelp.setContext(popup);
-				popup.setPage(pnlContextHelp.getPage());
 
+				addContextHelpMenupopup(workflow, baseContent, translatedContent);
         	} 
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Task)) 
         	{
@@ -574,11 +586,8 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-				
-				popup = new ContextHelpMenupopup(task, baseContent.toString(), translatedContent.toString());
-		    	pnlContextHelp.setAttribute("contextMenu", popup);
-		    	pnlContextHelp.setContext(popup);
-		    	popup.setPage(pnlContextHelp.getPage());				
+
+				addContextHelpMenupopup(task, baseContent, translatedContent);
 			} 
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Node)) 
         	{
@@ -624,21 +633,16 @@ public class HelpController
 				}
 				
 				sb.append(Util.isEmpty(translatedContent.toString()) ? baseContent.toString() : translatedContent.toString());
-				
-				popup = new ContextHelpMenupopup(node, baseContent.toString(), translatedContent.toString());
-		    	pnlContextHelp.setAttribute("contextMenu", popup);
-		    	pnlContextHelp.setContext(popup);
-		    	popup.setPage(pnlContextHelp.getPage());				
+
+				addContextHelpMenupopup(node, baseContent, translatedContent);
 			}
         	else
         	{
         		translatedContent.append("<p><em>(" + Msg.getMsg(Env.getCtx(), "NotAvailable") + ")</em></p>");
         		baseContent.append("<p><em>(" + Msg.getMsg(Language.getBaseAD_Language(), "NotAvailable") + ")</em></p>");
         		sb.append(translatedContent.toString());
-        		popup = new ContextHelpMenupopup(null, baseContent.toString(), translatedContent.toString());
-    	    	pnlContextHelp.setAttribute("contextMenu", popup);
-    	    	pnlContextHelp.setContext(popup);
-    	    	popup.setPage(pnlContextHelp.getPage());
+
+        		addContextHelpMenupopup(null, baseContent, translatedContent);
         	}
     	}
 	
@@ -646,7 +650,16 @@ public class HelpController
     	
     	htmlContextHelp.setContent(sb.toString());
     }
-    
+
+    private void addContextHelpMenupopup(PO po, StringBuilder baseContent, StringBuilder translatedContent) {
+    	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
+    		ContextHelpMenupopup popup = new ContextHelpMenupopup(po, baseContent.toString(), translatedContent.toString());
+    		pnlContextHelp.setAttribute("contextMenu", popup);
+    		pnlContextHelp.setContext(popup);
+    		popup.setPage(pnlContextHelp.getPage());
+    	}
+    }
+
     public void renderQuickInfo(GridTab gridTab) {
     	if (gridTab == null) {
         	pnlQuickInfo.setVisible(false);
@@ -684,8 +697,7 @@ public class HelpController
 
     private MCtxHelpMsg getCtxHelpMsg(String ctxType, int recordId)
     {
-    	Properties ctx = Env.getCtx();
-    	MCtxHelpMsg retValue = MCtxHelpMsg.get(ctx, ctxType, recordId);
+    	MCtxHelpMsg retValue = MCtxHelpMsg.get(ctxType, recordId);
     	return retValue;
     }
 

@@ -24,20 +24,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Workflow Node Model
@@ -50,14 +52,23 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 2815732 ] MWFNode.getWorkflow not working in trx
  * 				https://sourceforge.net/tracker/?func=detail&aid=2815732&group_id=176962&atid=879332 
  */
-public class MWFNode extends X_AD_WF_Node
+public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4330589837679937718L;
+	private static final long serialVersionUID = 3328770995394833132L;
 
-
+	/**
+	 * 	Get WF Node from Cache
+	 *	@param AD_WF_Node_ID id
+	 *	@return MWFNode
+	 */
+	public static MWFNode get (int AD_WF_Node_ID)
+	{
+		return get(Env.getCtx(), AD_WF_Node_ID);
+	}
+	
 	/**
 	 * 	Get WF Node from Cache
 	 *	@param ctx context
@@ -67,17 +78,35 @@ public class MWFNode extends X_AD_WF_Node
 	public static MWFNode get (Properties ctx, int AD_WF_Node_ID)
 	{
 		String key = Env.getAD_Language(ctx) + "_" + AD_WF_Node_ID;
-		MWFNode retValue = (MWFNode) s_cache.get (key);
+		MWFNode retValue = s_cache.get (ctx, key, e -> new MWFNode(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MWFNode (ctx, AD_WF_Node_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MWFNode (ctx, AD_WF_Node_ID, (String)null);
+		if (retValue.get_ID () == AD_WF_Node_ID)
+		{
+			s_cache.put (key, retValue, e -> new MWFNode(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MWFNode from cache
+	 * @param ctx
+	 * @param AD_WF_Node_ID
+	 * @param trxName
+	 * @return MWFNode
+	 */
+	public static MWFNode getCopy(Properties ctx, int AD_WF_Node_ID, String trxName)
+	{
+		MWFNode node = get(AD_WF_Node_ID);
+		if (node != null)
+			node = new MWFNode(ctx, node, trxName);
+		return node;
+	}
+	
 	/**	Cache						*/
-	private static CCache<String,MWFNode>	s_cache	= new CCache<String,MWFNode> (Table_Name, 50);
+	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50);
 	
 	
 	/**************************************************************************
@@ -140,21 +169,47 @@ public class MWFNode extends X_AD_WF_Node
 		super(ctx, rs, trxName);
 		loadNext();
 		loadTrl();
-		//	Save to Cache
-		String key = null;
-		try {
-			Integer wfnodeid = Integer.valueOf(rs.getInt("AD_WF_Node_ID"));
-			if (wfnodeid != null && wfnodeid.intValue() > 0)
-				key = Env.getAD_Language(ctx) + "_" + wfnodeid;
-		} catch (SQLException e) {
-			throw new AdempiereException(e);
-		}
-		if (key != null && trxName == null && !s_cache.containsKey(key))
-			s_cache.put (key, this);
 	}	//	MWFNode
 
-	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFNode(MWFNode copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFNode(Properties ctx, MWFNode copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFNode(Properties ctx, MWFNode copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_next = copy.m_next != null ? copy.m_next.stream().map(e -> {return new MWFNodeNext(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_name_trl = copy.m_name_trl;
+		this.m_description_trl = copy.m_description_trl;
+		this.m_help_trl = copy.m_help_trl;
+		this.m_translated = copy.m_translated;
+		this.m_column = copy.m_column != null ? new MColumn(ctx, copy.m_column, trxName) : null;
+		this.m_paras = copy.m_paras != null ? Arrays.stream(copy.m_paras).map(e ->{return new MWFNodePara(ctx, e, trxName);}).toArray(MWFNodePara[]::new) : null;
+		this.m_durationBaseMS = copy.m_durationBaseMS;
+	}
+
 	/**	Next Modes				*/
 	private List<MWFNodeNext>	m_next = new ArrayList<MWFNodeNext>();
 	/**	Translated Name			*/
@@ -197,6 +252,8 @@ public class MWFNode extends X_AD_WF_Node
 		for (MWFNodeNext next : m_next)
 		{
 			next.setFromSplitAnd(splitAnd);
+			if (is_Immutable())
+				next.markImmutable();
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_next.size());
 	}	//	loadNext
@@ -397,7 +454,12 @@ public class MWFNode extends X_AD_WF_Node
 		if (getAD_Column_ID() == 0)
 			return null;
 		if (m_column == null)
-			m_column = MColumn.get(getCtx(), getAD_Column_ID());
+		{
+			if (is_Immutable())
+				m_column = MColumn.get(getCtx(), getAD_Column_ID());
+			else
+				m_column = MColumn.getCopy(getCtx(), getAD_Column_ID(), get_TrxName());
+		}
 		return m_column;
 	}	//	getColumn
 	
@@ -509,7 +571,11 @@ public class MWFNode extends X_AD_WF_Node
 	public MWFNodePara[] getParameters()
 	{
 		if (m_paras == null)
+		{
 			m_paras = MWFNodePara.getParameters(getCtx(), getAD_WF_Node_ID());
+			if (m_paras != null && m_paras.length > 0 && is_Immutable())
+				Arrays.stream(m_paras).forEach(e -> e.markImmutable());
+		}
 		return m_paras;
 	}	//	getParameters
 
@@ -526,10 +592,7 @@ public class MWFNode extends X_AD_WF_Node
 	@Override
 	public MWorkflow getAD_Workflow()
 	{
-		if (get_TrxName() == null)
-			return MWorkflow.get(getCtx(), getAD_Workflow_ID());
-		else 
-			return (MWorkflow)super.getAD_Workflow();
+		return MWorkflow.getCopy(getCtx(), getAD_Workflow_ID(), get_TrxName());
 	}
 	
 	/**
@@ -711,4 +774,22 @@ public class MWFNode extends X_AD_WF_Node
 			return false;
 		return true;
 	}
+	
+	@Override
+	public MWFNode markImmutable() 
+	{
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_column != null)
+			m_column.markImmutable();
+		if (m_next != null && m_next.size() > 0)
+			m_next.stream().forEach(e -> e.markImmutable());
+		if (m_paras != null && m_paras.length > 0)
+			Arrays.stream(m_paras).forEach(e -> e.markImmutable());
+		
+		return this;
+	}
+
 }	//	M_WFNext

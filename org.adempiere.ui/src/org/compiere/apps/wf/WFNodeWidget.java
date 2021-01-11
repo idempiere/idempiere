@@ -3,6 +3,7 @@
  */
 package org.compiere.apps.wf;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -51,6 +52,9 @@ public class WFNodeWidget extends Widget {
 		setLayout (LayoutFactory.createVerticalFlowLayout ());
         setOpaque (true);
         setCheckClipping (true);
+        if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
+            setBackground(new Color(255, 255, 255, 0));
+        }
 
         setPreferredSize(new Dimension(NODE_WIDTH, NODE_HEIGHT));
 
@@ -89,7 +93,7 @@ public class WFNodeWidget extends Widget {
 	        ImageWidget titleIcon = new ImageWidget (scene);
 	        String action = node.getAction();
 	        int index = MTreeNode.getImageIndex(action);
-	        ImageIcon icon = (ImageIcon) MTreeNode.getIcon(index);
+	        ImageIcon icon = (ImageIcon) MTreeNode.getIcon(index);  // TODO: font icon
 	        if (icon != null)
 	        {
 	        	titleIcon.setImage (icon.getImage());

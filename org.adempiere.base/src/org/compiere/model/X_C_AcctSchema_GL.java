@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_GL
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_GL (Properties ctx, int C_AcctSchema_GL_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AcctSchema_GL[")
+      StringBuilder sb = new StringBuilder ("X_C_AcctSchema_GL[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

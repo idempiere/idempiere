@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.PO;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 import org.compiere.model.X_AD_WF_NextCondition;
 
 /**
@@ -34,12 +35,12 @@ import org.compiere.model.X_AD_WF_NextCondition;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 		<li>BF [ 1943720 ] WF Next Condition: handling boolean values is poor
  */
-public class MWFNextCondition extends X_AD_WF_NextCondition
+public class MWFNextCondition extends X_AD_WF_NextCondition implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1690335423407194318L;
+	private static final long serialVersionUID = 1694467559057544172L;
 
 	/**
 	 * 	Default Constructor
@@ -62,6 +63,38 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 	{
 		super(ctx, rs, trxName);
 	}	//	MWFNextCondition
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFNextCondition(MWFNextCondition copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFNextCondition(Properties ctx, MWFNextCondition copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFNextCondition(Properties ctx, MWFNextCondition copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_numeric = copy.m_numeric;
+	}
 	
 	/**	Numeric evaluation		*/
 	private boolean		m_numeric = true;
@@ -301,4 +334,13 @@ public class MWFNextCondition extends X_AD_WF_NextCondition
 		return sb.toString ();
 	} //	toString
 	
+	@Override
+	public MWFNextCondition markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MWFNextCondition

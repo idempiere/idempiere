@@ -91,6 +91,8 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 			return 0;
 		} else if (TYPE_Data.equals(type)) {
 			return 0;
+		} else if (TYPE_DataSingle.equals(type)) {
+			return 0;
 		} else if (TYPE_DynamicValidationRule.equals(type)) {
 			return getAD_Val_Rule_ID();
 		} else if (TYPE_Form.equals(type)) {

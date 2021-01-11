@@ -7,10 +7,16 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>7.1.0-SNAPSHOT</version>
+		<version>8.2.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>idempiere.github.io.maven.zk</id>
+			<url>https://idempiere.github.io/binary.file/maven.zk</url>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 			<plugin>

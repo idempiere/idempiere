@@ -383,7 +383,7 @@ public class ImportBankStatement extends SvrProcess
 				//	Get the bank account for the first statement
 				if (account == null)
 				{
-					account = MBankAccount.get (m_ctx, imp.getC_BankAccount_ID());
+					account = new MBankAccount(m_ctx, imp.getC_BankAccount_ID(), get_TrxName());
 					statement = null;
 					msglog = new StringBuilder("New Statement, Account=").append(account.getAccountNo());
 					if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
@@ -391,7 +391,7 @@ public class ImportBankStatement extends SvrProcess
 				//	Create a new Bank Statement for every account
 				else if (account.getC_BankAccount_ID() != imp.getC_BankAccount_ID())
 				{
-					account = MBankAccount.get (m_ctx, imp.getC_BankAccount_ID());
+					account = new MBankAccount(m_ctx, imp.getC_BankAccount_ID(), get_TrxName());
 					statement = null;
 					msglog = new StringBuilder("New Statement, Account=").append(account.getAccountNo());
 					if (log.isLoggable(Level.INFO)) log.info(msglog.toString());

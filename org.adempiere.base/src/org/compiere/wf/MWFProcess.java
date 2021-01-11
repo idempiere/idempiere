@@ -131,6 +131,7 @@ public class MWFProcess extends X_AD_WF_Process
 		setProcessed (false);
 		//	Lock Entity
 		getPO();
+		setAD_Org_ID(m_po.getAD_Org_ID());//Add by Hideaki Hagiwara
 		//hengsin: remove lock/unlock which is causing deadlock
 		//if (m_po != null)
 			//m_po.lock();
@@ -184,6 +185,7 @@ public class MWFProcess extends X_AD_WF_Process
 		}
 		List<MWFActivity> list = new Query(getCtx(), MWFActivity.Table_Name, whereClause.toString(), trxName)
 								.setParameters(params)
+								.setOrderBy(MWFActivity.COLUMNNAME_AD_WF_Activity_ID)
 								.list();
 		m_activities = new MWFActivity[list.size ()];
 		list.toArray (m_activities);
@@ -493,7 +495,7 @@ public class MWFProcess extends X_AD_WF_Process
 	public MWorkflow getWorkflow()
 	{
 		if (m_wf == null)
-			m_wf = MWorkflow.get (getCtx(), getAD_Workflow_ID());
+			m_wf = MWorkflow.getCopy(getCtx(), getAD_Workflow_ID(), get_TrxName());
 		if (m_wf.get_ID() == 0)
 			throw new IllegalStateException("Not found - AD_Workflow_ID=" + getAD_Workflow_ID());
 		return m_wf;

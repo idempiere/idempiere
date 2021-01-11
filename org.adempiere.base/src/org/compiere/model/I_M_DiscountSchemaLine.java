@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DiscountSchemaLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_M_DiscountSchemaLine 
 {
@@ -134,6 +134,19 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getCreatedBy();
 
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
+
     /** Column name Group1 */
     public static final String COLUMNNAME_Group1 = "Group1";
 
@@ -164,6 +177,19 @@ public interface I_M_DiscountSchemaLine
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsIgnoreIsCurrentVendor */
+    public static final String COLUMNNAME_IsIgnoreIsCurrentVendor = "IsIgnoreIsCurrentVendor";
+
+	/** Set Ignore Current Vendor Flag.
+	  * take all PO prices into account
+	  */
+	public void setIsIgnoreIsCurrentVendor (boolean IsIgnoreIsCurrentVendor);
+
+	/** Get Ignore Current Vendor Flag.
+	  * take all PO prices into account
+	  */
+	public boolean isIgnoreIsCurrentVendor();
 
     /** Column name Limit_AddAmt */
     public static final String COLUMNNAME_Limit_AddAmt = "Limit_AddAmt";
@@ -539,4 +565,17 @@ public interface I_M_DiscountSchemaLine
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name VendorCategory */
+    public static final String COLUMNNAME_VendorCategory = "VendorCategory";
+
+	/** Set Partner Category.
+	  * Product Category of the Business Partner
+	  */
+	public void setVendorCategory (String VendorCategory);
+
+	/** Get Partner Category.
+	  * Product Category of the Business Partner
+	  */
+	public String getVendorCategory();
 }

@@ -174,7 +174,7 @@ public class PrintDataFunction
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("[")
+		StringBuilder sb = new StringBuilder("[")
 			.append("Count=").append(m_count).append(",").append(m_totalCount)
 			.append(",Sum=").append(m_sum)
 			.append(",SumSquare=").append(m_sumSquare)

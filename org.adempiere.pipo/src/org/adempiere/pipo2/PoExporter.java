@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.I_AD_Org;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree;
 import org.compiere.model.PO;
@@ -183,12 +184,12 @@ public class PoExporter {
 		if (AD_Client_ID == 0)
 		{
 			addString("AD_Client_ID", "0", new AttributesImpl());
-			if (excludes == null || !excludes.contains("AD_Org_ID"))
+			if (excludes == null || !excludes.contains("ad_org_id"))
 				addString("AD_Org_ID", "0", new AttributesImpl());
 		}
 		else
 		{
-			if (excludes == null || !excludes.contains("AD_Org_ID"))
+			if (excludes == null || !excludes.contains("ad_org_id"))
 			{
 				int AD_Org_ID = po.getAD_Org_ID();
 				if (AD_Org_ID == 0)
@@ -201,7 +202,8 @@ public class PoExporter {
 						addString("AD_Org_ID", "@AD_Org_ID@", new AttributesImpl());
 					else {
 						addTableReference("AD_Client_ID", X_AD_Client.Table_Name, new AttributesImpl());
-						addTableReference("AD_Org_ID", X_AD_Org.Table_Name, new AttributesImpl());
+						if (!(I_AD_Org.Table_Name.equals(po.get_TableName())))
+							addTableReference("AD_Org_ID", X_AD_Org.Table_Name, new AttributesImpl());
 					}
 				}
 			}
@@ -253,7 +255,7 @@ public class PoExporter {
 					tableName = columnName.substring(0, columnName.length() - 3);
 				}
 				addTableReference(columnName, tableName, new AttributesImpl());
-			} else if (DisplayType.List == displayType) {
+			} else if (DisplayType.isList(displayType)) {
 				add(columnName, "", new AttributesImpl());
 			} else if (DisplayType.isLookup(displayType)) {
 				String tableName = null;

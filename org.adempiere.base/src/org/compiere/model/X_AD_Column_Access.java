@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Column_Access
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_Column_Access extends PO implements I_AD_Column_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_Column_Access (Properties ctx, int AD_Column_Access_ID, String trxName)
@@ -69,7 +69,7 @@ public class X_AD_Column_Access extends PO implements I_AD_Column_Access, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Column_Access[")
+      StringBuilder sb = new StringBuilder ("X_AD_Column_Access[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

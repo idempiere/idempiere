@@ -33,10 +33,11 @@ import java.util.logging.Level;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MImage;
 import org.compiere.model.X_AD_PrintTableFormat;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.IntPOCopyCache;
 
 /**
  *	Table Print Format
@@ -47,12 +48,12 @@ import org.compiere.util.Env;
  * 	<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2011567&group_id=176962&atid=879335
  * 	@version 	$Id: MPrintTableFormat.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
-public class MPrintTableFormat extends X_AD_PrintTableFormat
+public class MPrintTableFormat extends X_AD_PrintTableFormat implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -357529310875242899L;
+	private static final long serialVersionUID = -1608017405401341288L;
 
 	/**
 	 *	Standard Constructor
@@ -85,6 +86,60 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	{
 		super(ctx, rs, trxName);
 	}	//	MPrintTableFormat
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPrintTableFormat(MPrintTableFormat copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintTableFormat(Properties ctx, MPrintTableFormat copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintTableFormat(Properties ctx, MPrintTableFormat copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.standard_Font = copy.standard_Font;
+		this.funct_Font = copy.funct_Font;
+		this.functBG_Color = copy.functBG_Color;
+		this.functFG_Color = copy.functFG_Color;
+		this.hdrLine_Color = copy.hdrLine_Color;
+		this.header_Font = copy.header_Font;
+		this.header_Stroke = copy.header_Stroke;
+		this.headerBG_Color = copy.headerBG_Color;
+		this.headerFG_Color = copy.headerFG_Color;
+		this.lineH_Color = copy.lineH_Color;
+		this.lineH_Stroke = copy.lineH_Stroke;
+		this.lineV_Color = copy.lineV_Color;
+		this.lineV_Stroke = copy.lineV_Stroke;
+		this.m_image = copy.m_image;
+		this.m_image_water_mark = copy.m_image_water_mark;
+		this.pageFooter_Font = copy.pageFooter_Font;
+		this.pageFooterBG_Color = copy.pageFooterBG_Color;
+		this.pageFooterFG_Color = copy.pageFooterFG_Color;
+		this.pageHeader_Font = copy.pageHeader_Font;
+		this.pageHeaderBG_Color = copy.pageHeaderBG_Color;
+		this.pageHeaderFG_Color = copy.pageHeaderFG_Color;
+		this.parameter_Color = copy.parameter_Color;
+		this.parameter_Font = copy.parameter_Font;
+	}
 	
 	/*************************************************************************/
 
@@ -535,8 +590,8 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	
 	/*************************************************************************/
 
-	private static CCache<Integer,MPrintTableFormat>	s_cache
-		= new CCache<Integer,MPrintTableFormat>(Table_Name, 3);
+	private static IntPOCopyCache<Integer,MPrintTableFormat>	s_cache
+		= new IntPOCopyCache<Integer,MPrintTableFormat>(Table_Name, 3);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MPrintTableFormat.class);
 
@@ -550,14 +605,20 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 	static public MPrintTableFormat get (Properties ctx, int AD_PrintTableFormat_ID, Font standard_font)
 	{
 		Integer ii = Integer.valueOf(AD_PrintTableFormat_ID);
-		MPrintTableFormat tf = (MPrintTableFormat)s_cache.get(ii);
+		MPrintTableFormat tf = s_cache.get(ii, e -> new MPrintTableFormat(ctx, e));
 		if (tf == null)
 		{
 			if (AD_PrintTableFormat_ID == 0)
+			{
 				tf = getDefault (ctx);
+			}
 			else
-				tf = new MPrintTableFormat (ctx, AD_PrintTableFormat_ID, null);
-			s_cache.put(ii, tf);
+			{
+				tf = new MPrintTableFormat (ctx, AD_PrintTableFormat_ID, (String)null);
+				if (tf.get_ID() != AD_PrintTableFormat_ID)
+					return null;
+			}
+			s_cache.put(tf.get_ID(), tf, e -> new MPrintTableFormat(Env.getCtx(), e));
 		}
 		tf.setStandard_Font(standard_font);
 		return tf;
@@ -681,4 +742,14 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat
 		}
 		return m_image_water_mark;
 	}	//	getImage
+	
+	@Override
+	public MPrintTableFormat markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MPrintTableFormat

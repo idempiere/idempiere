@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.compiere.Adempiere;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.CConnection;
@@ -561,7 +561,7 @@ public class CLogMgt
 		//
 		//cluster info
 		if (Env.getAD_Client_ID(Env.getCtx()) == 0) {
-			IClusterService service = Service.locator().locate(IClusterService.class).getService();
+			IClusterService service = Core.getClusterService();
 			if (service != null) {
 				IClusterMember local = service.getLocalMember();
 				Collection<IClusterMember> members = service.getMembers();				

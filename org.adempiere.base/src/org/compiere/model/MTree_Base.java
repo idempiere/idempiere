@@ -19,8 +19,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Base Tree Model.
@@ -29,14 +31,12 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: MTree_Base.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MTree_Base extends X_AD_Tree
+public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7657958239525901547L;
-
+	private static final long serialVersionUID = -6785430530028279055L;
 
 	/**
 	 * 	Add Node to correct tree
@@ -196,7 +196,28 @@ public class MTree_Base extends X_AD_Tree
 	}	//	getSourceTableName
 
 	/**
-	 * 	Get MTree_Base from Cache
+	 * 	Get MTree_Base from Cache (immutable)
+	 *	@param AD_Tree_ID id
+	 *	@return MTree_Base
+	 */
+	public static MTree_Base get (int AD_Tree_ID)
+	{
+		return get(AD_Tree_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MTree_Base from Cache (immutable)
+	 *	@param AD_Tree_ID id
+	 *	@param trxName transaction
+	 *	@return MTree_Base
+	 */
+	public static MTree_Base get (int AD_Tree_ID, String trxName)
+	{
+		return get(Env.getCtx(), AD_Tree_ID, trxName);
+	}
+	
+	/**
+	 * 	Get MTree_Base from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Tree_ID id
 	 *	@param trxName transaction
@@ -205,18 +226,21 @@ public class MTree_Base extends X_AD_Tree
 	public static MTree_Base get (Properties ctx, int AD_Tree_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Tree_ID);
-		MTree_Base retValue = (MTree_Base) s_cache.get (key);
+		MTree_Base retValue = s_cache.get (ctx, key, e -> new MTree_Base(ctx, e));
 		if (retValue != null)
 			return retValue;
 		retValue = new MTree_Base (ctx, AD_Tree_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID () == AD_Tree_ID)
+		{
+			s_cache.put (key, retValue, e -> new MTree_Base(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	
 	/**	Cache						*/
-	private static CCache<Integer,MTree_Base> s_cache = new CCache<Integer,MTree_Base>(Table_Name, 10);
+	private static ImmutableIntPOCache<Integer,MTree_Base> s_cache = new ImmutableIntPOCache<Integer,MTree_Base>(Table_Name, 10);
 	
 	
 	/**************************************************************************
@@ -279,6 +303,36 @@ public class MTree_Base extends X_AD_Tree
 		setIsDefault(false);
 	}	//	MTree_Base
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTree_Base(MTree_Base copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTree_Base(Properties ctx, MTree_Base copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTree_Base(Properties ctx, MTree_Base copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 *	Get Node TableName
@@ -407,6 +461,15 @@ public class MTree_Base extends X_AD_Tree
 		
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MTree_Base markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 	/** Returns true if should load all tree nodes immediately */
 	public static boolean isLoadAllNodesImmediately(int treeID, String trxName) {

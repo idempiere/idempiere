@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPriceVendorBreak
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceVendorBreak, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_M_ProductPriceVendorBreak (Properties ctx, int M_ProductPriceVendorBreak_ID, String trxName)
@@ -72,7 +72,7 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ProductPriceVendorBreak[")
+      StringBuilder sb = new StringBuilder ("X_M_ProductPriceVendorBreak[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

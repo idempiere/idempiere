@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_InOutLineConfirm
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_InOutLineConfirm[")
+      StringBuilder sb = new StringBuilder ("X_I_InOutLineConfirm[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

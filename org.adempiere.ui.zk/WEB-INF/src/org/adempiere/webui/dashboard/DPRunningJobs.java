@@ -16,9 +16,8 @@ package org.adempiere.webui.dashboard;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Properties;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
@@ -51,11 +50,10 @@ import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Vbox;
 
 public class DPRunningJobs extends DashboardPanel implements EventListener<Event>, EventHandler {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1946438226234068194L;
+	private static final long serialVersionUID = -8515643315156488709L;
 
 	private static final String AD_PINSTANCE_ID_ATTR = "AD_PInstance_ID";
 	
@@ -65,8 +63,6 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 
 	private int AD_User_ID;
 	
-	private Properties ctx;
-
 	private WeakReference<Desktop> desktop;
 
 	private DesktopCleanup listener;
@@ -75,9 +71,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	{
 		super();
 
-		ctx = new Properties();
-		ctx.putAll(Env.getCtx());
-		AD_User_ID = Env.getAD_User_ID(ctx);
+		AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		
 		Panel panel = new Panel();
 		this.appendChild(panel);
@@ -99,7 +93,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			btn.setIconSclass("z-icon-Refresh");
 			btn.setSclass("trash-toolbarbutton");
 			jobsToolbar.appendChild(btn);
-			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
+			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 			btn.addEventListener(Events.ON_CLICK, this);
 		}
 		else
@@ -107,7 +101,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			Image imgr = new Image(ThemeManager.getThemeResource("images/Refresh24.png"));
 			jobsToolbar.appendChild(imgr);
 			imgr.setStyle("text-align: right; cursor: pointer; width:24px; height:24px;");
-			imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Refresh")));
+			imgr.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 			imgr.addEventListener(Events.ON_CLICK, this);
 		}
 		
@@ -131,7 +125,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	{
 		if (topicSubscriber == null) {
 			topicSubscriber = new TopicSubscriber();
-			IMessageService service = Service.locator().locate(IMessageService.class).getService();
+			IMessageService service = Core.getMessageService();
 			if (service != null) {
 				ITopic<Integer> topic = service.getTopic(MPInstance.ON_RUNNING_JOB_CHANGED_TOPIC);
 				topic.subscribe(topicSubscriber);
@@ -191,7 +185,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			bxJobs.removeChild(comp);
 		}
 		
-		List<MPInstance> pis = getRunningJobForUser(ctx, AD_User_ID);
+		List<MPInstance> pis = getRunningJobForUser(AD_User_ID);
 		for (MPInstance pi : pis) {			
 			MProcess process = new MProcess(pi.getCtx(), pi.getAD_Process_ID(), pi.get_TrxName());
 			String label = process.getName() + " [" + Msg.getElement(pi.getCtx(), "Created") + " = " + pi.getCreated() + "]";
@@ -199,27 +193,25 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			btnJob.setAttribute(AD_PINSTANCE_ID_ATTR, String.valueOf(pi.getAD_PInstance_ID()));
 			bxJobs.appendChild(btnJob);
 			btnJob.setLabel(label);
-			btnJob.setImage(ThemeManager.getThemeResource(getIconFile()));
+			if (ThemeManager.isUseFontIconForImage())
+				btnJob.setIconSclass("z-icon-Window");
+			else
+				btnJob.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 			btnJob.addEventListener(Events.ON_CLICK, this);
 			btnJob.setSclass("menu-href");
 			ZKUpdateUtil.setHflex(btnJob, "1");
 		}
 	}
 	
-	public static List<MPInstance> getRunningJobForUser(Properties ctx, int AD_User_ID) 
+	public static List<MPInstance> getRunningJobForUser(int AD_User_ID) 
 	{
-		List<MPInstance> pis = new Query(ctx, MPInstance.Table_Name, "Coalesce(AD_User_ID,0)=? AND IsProcessing='Y' AND IsRunAsJob='Y'", null)
+		List<MPInstance> pis = new Query(Env.getCtx(), MPInstance.Table_Name, "Coalesce(AD_User_ID,0)=? AND IsProcessing='Y' AND IsRunAsJob='Y'", null)
 			.setOnlyActiveRecords(true)
 			.setClient_ID()
 			.setParameters(AD_User_ID)
 			.setOrderBy("Updated DESC")
 			.list();
 		return pis;
-	}
-		
-	private String getIconFile() 
-	{
-		return "images/mWindow.png";
 	}
 
 	@Override

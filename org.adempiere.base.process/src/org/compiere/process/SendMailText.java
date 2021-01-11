@@ -246,6 +246,9 @@ public class SendMailText extends SvrProcess
 		//
 		MUser to = new MUser (getCtx(), AD_User_ID, null);
 		m_MailText.setUser(AD_User_ID);		//	parse context
+		if (to.getC_BPartner_ID() > 0)
+			m_MailText.setBPartner(to.getC_BPartner_ID()); //	parse context - translate
+
 		StringBuilder message = new StringBuilder(m_MailText.getMailText(true));
 		//	Unsubscribe
 		if (unsubscribe != null)

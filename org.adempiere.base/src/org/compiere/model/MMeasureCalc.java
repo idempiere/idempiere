@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Performance Measure Calculation
@@ -33,34 +34,47 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MMeasureCalc.java,v 1.4 2006/09/25 00:59:41 jjanke Exp $
  */
-public class MMeasureCalc extends X_PA_MeasureCalc
+public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4720674127987683534L;
+	private static final long serialVersionUID = 3143013490477454559L;
 
 	/**
-	 * 	Get MMeasureCalc from Cache
-	 *	@param ctx context
+	 * 	Get MMeasureCalc from Cache (immutable)
+	 *	@param PA_MeasureCalc_ID id
+	 *	@return MMeasureCalc
+	 */
+	public static MMeasureCalc get (int PA_MeasureCalc_ID)
+	{
+		return get(Env.getCtx(), PA_MeasureCalc_ID);
+	}
+	
+	/**
+	 * 	Get MMeasureCalc from Cache (immutable)
+	 *  @param ctx context
 	 *	@param PA_MeasureCalc_ID id
 	 *	@return MMeasureCalc
 	 */
 	public static MMeasureCalc get (Properties ctx, int PA_MeasureCalc_ID)
 	{
 		Integer key = Integer.valueOf(PA_MeasureCalc_ID);
-		MMeasureCalc retValue = (MMeasureCalc)s_cache.get (key);
+		MMeasureCalc retValue = s_cache.get (ctx, key, e -> new MMeasureCalc(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MMeasureCalc (ctx, PA_MeasureCalc_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MMeasureCalc (ctx, PA_MeasureCalc_ID, (String)null);
+		if (retValue.get_ID() == PA_MeasureCalc_ID)
+		{
+			s_cache.put (key, retValue, e -> new MMeasureCalc(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MMeasureCalc> s_cache 
-		= new CCache<Integer, MMeasureCalc> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MMeasureCalc> s_cache 
+		= new ImmutableIntPOCache<Integer, MMeasureCalc> (Table_Name, 10);
 	
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -84,6 +98,36 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		super (ctx, rs, trxName);
 	}	//	MMeasureCalc
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MMeasureCalc(MMeasureCalc copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MMeasureCalc(Properties ctx, MMeasureCalc copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MMeasureCalc(Properties ctx, MMeasureCalc copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Get Sql to return single value for the Performance Indicator
@@ -465,5 +509,13 @@ public class MMeasureCalc extends X_PA_MeasureCalc
 		return sb.toString ();
 	}	//	toString
 	
-	
+	@Override
+	public MMeasureCalc markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MMeasureCalc

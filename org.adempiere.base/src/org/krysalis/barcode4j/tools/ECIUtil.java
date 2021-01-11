@@ -30,7 +30,7 @@ public class ECIUtil {
     /** ECI code for 8-bit binary data */
     public static final int ECI_BINARY = 899;
 
-    private static final Map encodingToECI = new java.util.HashMap();
+    private static final Map<String, Integer> encodingToECI = new java.util.HashMap<String, Integer>();
 
     static {
         mapEncoding("Cp437", 2);
@@ -62,7 +62,7 @@ public class ECIUtil {
     }
 
     private static void mapEncoding(String encoding, int eci) {
-        encodingToECI.put(encoding, new Integer(eci));
+        encodingToECI.put(encoding, Integer.valueOf(eci));
     }
 
     /**
@@ -71,7 +71,7 @@ public class ECIUtil {
      * @return the corresponding ECI code
      */
     public static int getECIForEncoding(String encoding) {
-        Integer code = (Integer)encodingToECI.get(encoding);
+        Integer code = encodingToECI.get(encoding);
         if (code != null) {
             return code.intValue();
         } else {

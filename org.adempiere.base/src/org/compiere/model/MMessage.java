@@ -21,9 +21,11 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  *	Message Model
@@ -31,16 +33,26 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: MMessage.java,v 1.3 2006/07/30 00:54:54 jjanke Exp $
  */
-public class MMessage extends X_AD_Message
+public class MMessage extends X_AD_Message implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7362947218094337783L;
+	private static final long serialVersionUID = -7983736322524189608L;
 
 	/**
-	 * 	Get Message (cached)
-	 *	@param ctx context
+	 * 	Get Message (cached) (immutable)
+	 *	@param Value message value
+	 *	@return message
+	 */
+	public static MMessage get (String Value)
+	{
+		return get(Env.getCtx(), Value);
+	}
+	
+	/**
+	 * 	Get Message (cached) (immutable)
+	 *  @param ctx context
 	 *	@param Value message value
 	 *	@return message
 	 */
@@ -48,7 +60,7 @@ public class MMessage extends X_AD_Message
 	{
 		if (Value == null || Value.length() == 0)
 			return null;
-		MMessage retValue = (MMessage)s_cache.get(Value);
+		MMessage retValue = (MMessage)s_cache.get(ctx, Value, e -> new MMessage(ctx, e));
 		//
 		if (retValue == null)
 		{
@@ -61,7 +73,7 @@ public class MMessage extends X_AD_Message
 				pstmt.setString(1, Value);
 				rs = pstmt.executeQuery();
 				if (rs.next())
-					retValue = new MMessage (ctx, rs, null);
+					retValue = new MMessage (Env.getCtx(), rs, null);
 			}
 			catch (Exception e)
 			{
@@ -74,13 +86,20 @@ public class MMessage extends X_AD_Message
 				pstmt = null;
 			}
 			if (retValue != null)
-				s_cache.put(Value, retValue);
+			{
+				s_cache.put(Value, retValue, e -> new MMessage(Env.getCtx(), e));
+			}
+			return retValue;
 		}
-		return retValue;
+		else
+		{
+			return retValue;
+		}
+		
 	}	//	get
 
 	/**
-	 * 	Get Message (cached)
+	 * 	Get Message (cached) (immutable)
 	 *	@param ctx context
 	 *	@param AD_Message_ID id
 	 *	@return message
@@ -88,18 +107,28 @@ public class MMessage extends X_AD_Message
 	public static MMessage get (Properties ctx, int AD_Message_ID)
 	{
 		String key = String.valueOf(AD_Message_ID);
-		MMessage retValue = (MMessage)s_cache.get(key);
+		MMessage retValue = s_cache.get(ctx, key, e -> new MMessage(ctx, e));
 		if (retValue == null)
 		{
 			retValue = new MMessage (ctx, AD_Message_ID, null);
-			s_cache.put(key, retValue);
+			s_cache.put(key, retValue, e -> new MMessage(Env.getCtx(), e));
 		}
 		return retValue;
 	}	//	get
 	
 	/**
 	 * 	Get Message ID (cached)
-	 *	@param ctx context
+	 *	@param Value message value
+	 *	@return AD_Message_ID
+	 */
+	public static int getAD_Message_ID (String Value)
+	{
+		return getAD_Message_ID(Env.getCtx(), Value);
+	}
+	
+	/**
+	 * 	Get Message ID (cached)
+	 *  @param ctx context
 	 *	@param Value message value
 	 *	@return AD_Message_ID
 	 */
@@ -112,7 +141,7 @@ public class MMessage extends X_AD_Message
 	}	//	getAD_Message_ID
 	
 	/**	Cache					*/
-	static private CCache<String,MMessage> s_cache = new CCache<String,MMessage>(Table_Name, 100);
+	static private ImmutablePOCache<String,MMessage> s_cache = new ImmutablePOCache<String,MMessage>(Table_Name, 100);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MMessage.class);
 	
@@ -137,5 +166,45 @@ public class MMessage extends X_AD_Message
 	{
 		super(ctx, rs, trxName);
 	}	//	MMessage
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MMessage(MMessage copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MMessage(Properties ctx, MMessage copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MMessage(Properties ctx, MMessage copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	@Override
+	public MMessage markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MMessage

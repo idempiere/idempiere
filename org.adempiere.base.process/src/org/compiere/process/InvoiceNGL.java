@@ -125,22 +125,24 @@ public class InvoiceNGL extends SvrProcess
 		sql = new StringBuilder("INSERT INTO T_InvoiceGL (AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy, Updated,UpdatedBy,")
 			.append(" AD_PInstance_ID, C_Invoice_ID, GrandTotal, OpenAmt, ")
 			.append(" Fact_Acct_ID, AmtSourceBalance, AmtAcctBalance, ")
-			.append(" AmtRevalDr, AmtRevalCr, C_DocTypeReval_ID, IsAllCurrencies, ")
+			.append(" AmtRevalDr, AmtRevalCr, ")
+			.append((p_C_DocTypeReval_ID==0 ? "" : "C_DocTypeReval_ID, "))
+			.append("IsAllCurrencies, ")
 			.append(" DateReval, C_ConversionTypeReval_ID, AmtRevalDrDiff, AmtRevalCrDiff, APAR) ")
 			//	--
-			.append("SELECT i.AD_Client_ID, i.AD_Org_ID, i.IsActive, i.Created,i.CreatedBy, i.Updated,i.UpdatedBy,")
-			.append( getAD_PInstance_ID()).append(", i.C_Invoice_ID, i.GrandTotal, invoiceOpen(i.C_Invoice_ID, 0), ")
+			.append("SELECT DISTINCT i.AD_Client_ID, i.AD_Org_ID, i.IsActive, i.Created,i.CreatedBy, i.Updated,i.UpdatedBy,")
+			.append( getAD_PInstance_ID()).append(", i.C_Invoice_ID, ii.GrandTotal, invoiceOpen(i.C_Invoice_ID, 0), ")
 			.append(" fa.Fact_Acct_ID, fa.AmtSourceDr-fa.AmtSourceCr, fa.AmtAcctDr-fa.AmtAcctCr, ") 
 			//	AmtRevalDr, AmtRevalCr,
 			.append(" currencyConvert(fa.AmtSourceDr, i.C_Currency_ID, a.C_Currency_ID, ").append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", i.AD_Client_ID, i.AD_Org_ID),")
 		    .append(" currencyConvert(fa.AmtSourceCr, i.C_Currency_ID, a.C_Currency_ID, ").append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", i.AD_Client_ID, i.AD_Org_ID),")
-		    .append((p_C_DocTypeReval_ID==0 ? "NULL" : String.valueOf(p_C_DocTypeReval_ID))).append(", ")
+		    .append((p_C_DocTypeReval_ID==0 ? "" : String.valueOf(p_C_DocTypeReval_ID)+","))
 		    .append((p_IsAllCurrencies ? "'Y'," : "'N',"))
 		    .append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", 0, 0, '").append(p_APAR).append("' ")
 		    //
-		    .append("FROM C_Invoice_v i")
+		    .append("FROM C_Invoice_v i JOIN C_Invoice ii ON (i.C_Invoice_ID=ii.C_Invoice_ID)")
 		    .append(" INNER JOIN Fact_Acct fa ON (fa.AD_Table_ID=318 AND fa.Record_ID=i.C_Invoice_ID")
-		    	.append(" AND (i.GrandTotal=fa.AmtSourceDr OR i.GrandTotal=fa.AmtSourceCr))")
+		    	.append(" AND (ii.GrandTotal=fa.AmtSourceDr OR ii.GrandTotal=fa.AmtSourceCr))")
 		    .append(" INNER JOIN C_AcctSchema a ON (fa.C_AcctSchema_ID=a.C_AcctSchema_ID) ")
 		    .append("WHERE i.IsPaid='N'")
 		    .append(" AND EXISTS (SELECT * FROM C_ElementValue ev ")
@@ -155,7 +157,7 @@ public class InvoiceNGL extends SvrProcess
 		if (!p_IsAllCurrencies && p_C_Currency_ID != 0)
 			sql.append(" AND i.C_Currency_ID=").append(p_C_Currency_ID);
 		
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0) {
 			if (log.isLoggable(Level.INFO)) log.info("Inserted #" + no);
 		} else if (log.isLoggable(Level.FINER)) {
@@ -328,8 +330,13 @@ public class InvoiceNGL extends SvrProcess
 		}
 		createBalancing (asDefaultAccts, journal, gainTotal, lossTotal, AD_Org_ID, (list.size()+1) * 10);
 
-		StringBuilder msgreturn = new StringBuilder(" - ").append(journal.getDocumentNo()).append(" #").append(list.size());
-		addLog(journal.getGL_Journal_ID(), null, null, msgreturn.toString(), MJournal.Table_ID, journal.getGL_Journal_ID());
+		int noLines = journal.getLines(true).length;
+		if (noLines == 0) {
+			journal.deleteEx(true);
+		} else {
+			StringBuilder msgreturn = new StringBuilder(Msg.getElement(getCtx(), "GL_Journal_ID")).append(" - ").append(journal.getDocumentNo()).append(" #").append(noLines);
+			addLog(journal.getGL_Journal_ID(), null, null, msgreturn.toString(), MJournal.Table_ID, journal.getGL_Journal_ID());
+		}
 		return "OK";
 	}	//	createGLJournal
 

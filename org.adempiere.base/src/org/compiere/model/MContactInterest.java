@@ -112,6 +112,37 @@ public class MContactInterest extends X_R_ContactInterest
 		super(ctx, rs, trxName);
 	}	//	MContactInterest
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MContactInterest(MContactInterest copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MContactInterest(Properties ctx, MContactInterest copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MContactInterest(Properties ctx, MContactInterest copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**	Static Logger				*/
 	private static CLogger		s_log = CLogger.getCLogger (MContactInterest.class);
 

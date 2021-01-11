@@ -26,7 +26,7 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<component>
 		<component-name>keylistener</component-name>
 		<component-class>org.zkforge.keylistener.Keylistener</component-class>
-		<widget-class>zkforge.KeyListener</widget-class>
+		<widget-class>zkforge.keylistener.KeyListener</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
 			<mold-uri>mold/key-listener.js</mold-uri>
@@ -44,18 +44,17 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 		</mold>
 	</component>
 
-	<javascript src="/js/calc.js" charset="UTF-8"/>
-	<javascript src="/js/layout.js" charset="UTF-8"/>
-	<javascript src="/js/report.js" charset="UTF-8"/>	
-	<!-- <javascript src="/js/persist-min.js" charset="UTF-8"/>  -->
-	<javascript src="/js/token.js" charset="UTF-8"/>
-	<javascript src="/js/window.js" charset="UTF-8"/>
-	<javascript src="/js/html2canvas.js" charset="UTF-8"/>
-	<javascript src="/js/jquery.maskedinput.js" charset="UTF-8"/>
-	<javascript src="/js/photobooth_min.js" charset="UTF-8"/>
-
-
-	<javascript package="jawwa.atmosphere" merge="false" />
-	<javascript package="org.idempiere.websocket" merge="false" />
+	<javascript-module name="org.idempiere.websocket" version="202011211500"/>	
+	<javascript-module name="jawwa.atmosphere" version="202011170510"/>
+	<javascript-module name="adempiere.local.storage" version="202011151100"/>
+	<javascript-moudle name="html2canvas" version="1.0.0.rc7"/>
+	<javascript-module name="org.idempiere.commons" version="202012030330"/>
+	<javascript-module name="jquery.maskedinput" version="1.4.1" />
+	<javascript-module name="photobooth"	version="0.7-rsd3" />
+	<javascript-module name="chosenbox" version="202012041500"/>
+	<javascript-module name="zkforge.keylistener" version="202012120100"/>
 	
+	<!-- this js module doesn't actually exists and it is here for default theme version -->
+	<!-- since loading of  js module is on demand, it doesn't cause any error as long as you don't try to load it -->
+	<javascript-module name="idempiere.theme.default" version="202012310310" />
 </language>

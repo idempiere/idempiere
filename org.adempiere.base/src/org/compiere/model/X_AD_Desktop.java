@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Desktop
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_Desktop extends PO implements I_AD_Desktop, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_Desktop (Properties ctx, int AD_Desktop_ID, String trxName)
@@ -66,8 +66,8 @@ public class X_AD_Desktop extends PO implements I_AD_Desktop, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Desktop[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Desktop[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

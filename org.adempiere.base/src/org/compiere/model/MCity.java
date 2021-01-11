@@ -22,8 +22,10 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Location City Model (Value Object)
@@ -31,15 +33,25 @@ import org.compiere.util.CLogger;
  *  @author 	Mario Calderon / Carlos Ruiz
  */
 public class MCity extends X_C_City
-	implements Comparator<Object>, Serializable
+	implements Comparator<Object>, Serializable, ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8905525315954621942L;
+	private static final long serialVersionUID = -3716470269471334172L;
 
 	/**
-	 * 	Get City (cached)
+	 * 	Get City (cached) (immutable)
+	 *	@param C_City_ID ID
+	 *	@return City
+	 */
+	public static MCity get (int C_City_ID)
+	{
+		return get(Env.getCtx(), C_City_ID);
+	}
+	
+	/**
+	 * 	Get City (cached) (immutable)
 	 * 	@param ctx context
 	 *	@param C_City_ID ID
 	 *	@return City
@@ -47,20 +59,20 @@ public class MCity extends X_C_City
 	public static MCity get (Properties ctx, int C_City_ID)
 	{
 		Integer key = Integer.valueOf(C_City_ID);
-		MCity r = s_Cities.get(key);
+		MCity r = s_Cities.get(ctx, key, e -> new MCity(ctx, e));
 		if (r != null)
 			return r;
-		r = new MCity (ctx, C_City_ID, null);
+		r = new MCity (ctx, C_City_ID, (String)null);
 		if (r.getC_City_ID() == C_City_ID)
 		{
-			s_Cities.put(key, r);
+			s_Cities.put(key, r, e -> new MCity(Env.getCtx(), e));
 			return r;
 		}
 		return null;
 	}	//	get
 
 	/**	City Cache				*/
-	private static CCache<Integer,MCity> s_Cities =  new CCache<Integer,MCity>(Table_Name, 20);;
+	private static ImmutableIntPOCache<Integer,MCity> s_Cities =  new ImmutableIntPOCache<Integer,MCity>(Table_Name, 20);;
 	/**	Static Logger				*/
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCity.class);
@@ -106,6 +118,36 @@ public class MCity extends X_C_City
 	}   //  MCity
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MCity(MCity copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCity(Properties ctx, MCity copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCity(Properties ctx, MCity copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	/**
 	 *	Return Name
 	 *  @return Name
 	 */
@@ -131,5 +173,14 @@ public class MCity extends X_C_City
 		Collator collator = Collator.getInstance();
 		return collator.compare(s1, s2);
 	}	//	compare
+
+	@Override
+	public MCity markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MCity

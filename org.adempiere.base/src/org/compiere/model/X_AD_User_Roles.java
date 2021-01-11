@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_User_Roles
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_User_Roles (Properties ctx, int AD_User_Roles_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_User_Roles[")
+      StringBuilder sb = new StringBuilder ("X_AD_User_Roles[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

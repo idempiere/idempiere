@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_RfQLine (Properties ctx, int C_RfQLine_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_RfQLine[")
+      StringBuilder sb = new StringBuilder ("X_C_RfQLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

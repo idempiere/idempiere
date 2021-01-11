@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListVersion
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName)
@@ -71,8 +71,8 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_HR_ListVersion[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_HR_ListVersion[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

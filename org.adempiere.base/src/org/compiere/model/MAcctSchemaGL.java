@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 
@@ -33,15 +35,13 @@ import org.compiere.util.KeyNamePair;
  *  @author victor.perez@e-evolution.com, www.e-evolution.com
  *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
  */
-public class MAcctSchemaGL extends X_C_AcctSchema_GL
+public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSupport
 {
 
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 5303102649110271896L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -53120274583638950L;
 
 	/**
 	 * 	Get Accounting Schema GL Info
@@ -90,6 +90,37 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL
 	}	//	MAcctSchemaGL
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchemaGL(MAcctSchemaGL copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchemaGL(Properties ctx, MAcctSchemaGL copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchemaGL(Properties ctx, MAcctSchemaGL copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Get Acct Info list 
 	 *	@return list
 	 */
@@ -130,5 +161,14 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL
 			setAD_Org_ID(0);
 		return true;
 	}	//	beforeSave
+
+	@Override
+	public MAcctSchemaGL markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MAcctSchemaGL

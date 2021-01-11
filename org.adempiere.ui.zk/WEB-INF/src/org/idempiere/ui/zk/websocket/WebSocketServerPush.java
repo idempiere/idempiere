@@ -30,9 +30,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.adempiere.webui.AdempiereWebUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
@@ -52,7 +52,9 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class WebSocketServerPush implements ServerPush {
 
-    private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
+    private static final String ATMOSPHERE_SERVER_PUSH_ECHO = "AtmosphereServerPush.Echo";
+
+	private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
 
     private final AtomicReference<Desktop> desktop = new AtomicReference<Desktop>();
 
@@ -168,6 +170,11 @@ public class WebSocketServerPush implements ServerPush {
     @SuppressWarnings("unchecked")
 	@Override
     public void onPiggyback() {
+    	if (Executions.getCurrent() != null && Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) != null) {
+    		//has pending serverpush echo, wait for next execution piggyback trigger by the pending serverpush echo
+    		return;
+    	}
+    	    	
     	Schedule<Event>[] pendings = null;
     	synchronized (schedules) {
     		if (!schedules.isEmpty()) {
@@ -177,6 +184,7 @@ public class WebSocketServerPush implements ServerPush {
     	}
     	if (pendings != null && pendings.length > 0) {
     		for(Schedule<Event> p : pendings) {
+    			//schedule and execute in desktop's onPiggyBack listener
     			p.scheduler.schedule(p.task, p.event);
     		}
     	}
@@ -199,25 +207,18 @@ public class WebSocketServerPush implements ServerPush {
 	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
     	if (Executions.getCurrent() == null) {
-    		//save for schedule at on piggyback event
-	        synchronized (schedules) {
+    		//schedule and execute in desktop's onPiggyBack listener
+    		scheduler.schedule(task, event);
+	        echo();
+    	} else {
+    		// in event listener thread, use echo to execute async
+    		synchronized (schedules) {
 				schedules.add(new Schedule(task, event, scheduler));
 			}
-	        boolean ok = echo();
-	        if (!ok) {
-	        	Desktop d = desktop.get();
-	        	if (d != null) {
-	        		Integer count = (Integer) d.getAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES);
-	        		if (count != null)
-	        			count = Integer.valueOf(count.intValue()+1);
-	        		else
-	        			count = Integer.valueOf(1);
-	        		d.setAttribute(AdempiereWebUI.SERVERPUSH_SCHEDULE_FAILURES, count);
-	        	}
-	        }
-    	} else {
-    		//in event listener thread, can schedule immediately
-    		scheduler.schedule(task, event);
+    		if (Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) == null) {
+    			Executions.getCurrent().setAttribute(ATMOSPHERE_SERVER_PUSH_ECHO, Boolean.TRUE);
+    			Clients.response(new AuEcho());
+    		}
     	}
     }
 

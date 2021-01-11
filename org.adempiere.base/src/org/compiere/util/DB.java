@@ -33,7 +33,6 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -219,11 +218,15 @@ public final class DB
 		String mailUser = env.getProperty("ADEMPIERE_MAIL_USER");
 		if (mailUser == null || mailUser.length() == 0)
 			return;
-		String mailPassword = env.getProperty("ADEMPIERE_MAIL_PASSWORD");
+		String mailPassword;
+		if (!env.containsKey("ADEMPIERE_MAIL_PASSWORD") && MSystem.isSecureProps())
+			mailPassword = Ini.getVar("ADEMPIERE_MAIL_PASSWORD");
+		else
+			mailPassword = env.getProperty("ADEMPIERE_MAIL_PASSWORD");
 	//	if (mailPassword == null || mailPassword.length() == 0)
 	//		return;
 		//
-		StringBuffer sql = new StringBuffer("UPDATE AD_Client SET")
+		StringBuilder sql = new StringBuilder("UPDATE AD_Client SET")
 			.append(" SMTPHost=").append(DB.TO_STRING(server))
 			.append(", RequestEMail=").append(DB.TO_STRING(adminEMail))
 			.append(", RequestUser=").append(DB.TO_STRING(mailUser))
@@ -232,7 +235,7 @@ public final class DB
 		int no = DB.executeUpdate(sql.toString(), null);
 		if (log.isLoggable(Level.FINE)) log.fine("Client #"+no);
 		//
-		sql = new StringBuffer("UPDATE AD_User SET ")
+		sql = new StringBuilder("UPDATE AD_User SET ")
 			.append(" EMail=").append(DB.TO_STRING(adminEMail))
 			.append(", EMailUser=").append(DB.TO_STRING(mailUser))
 			.append(", EMailUserPW=").append(DB.TO_STRING(mailPassword))
@@ -240,13 +243,11 @@ public final class DB
 		no = DB.executeUpdate(sql.toString(), null);
 		if (log.isLoggable(Level.FINE)) log.fine("User #"+no);
 		//
-		try
+		try (FileOutputStream out = new FileOutputStream(envFile))
 		{
 			env.setProperty("ADEMPIERE_MAIL_UPDATED", "Y");
-			FileOutputStream out = new FileOutputStream(envFile);
 			env.store(out, "");
 			out.flush();
-			out.close();
 		}
 		catch (Exception e)
 		{
@@ -339,11 +340,6 @@ public final class DB
 
 		//direct connection
 		boolean success = false;
-		CLogErrorBuffer eb = CLogErrorBuffer.get(false);
-		if (eb != null && eb.isIssueError())
-			eb.setIssueError(false);
-		else
-			eb = null;	//	don't reset
 		try
 		{
             Connection conn = getConnectionRW(createNew);   //  try to get a connection
@@ -358,8 +354,6 @@ public final class DB
 		{
 			success = false;
 		}
-		if (eb != null)
-			eb.setIssueError(true);
 		return success;
 	}   //  isConnected
 
@@ -1823,33 +1817,8 @@ public final class DB
 	 * 	@param trxName optional Transaction Name
 	 *  @return next no
 	 */
-	@SuppressWarnings("deprecation")
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
-		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
-		//	Check AdempiereSys
-		boolean adempiereSys = false;
-		if (Ini.isClient()) 
-		{
-			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
-		} 
-		else
-		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
-			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
-
-		if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)
-		{
-			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			if (m_sequence_id == -1) {
-				// try to create the sequence and try again
-				MSequence.createTableSequence(Env.getCtx(), TableName, trxName, true);
-				m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			}
-			return m_sequence_id;
-		}
-
 		return MSequence.getNextID (AD_Client_ID, TableName, trxName); // it is ok to call deprecated method here
 	}	//	getNextID
 
@@ -2127,15 +2096,6 @@ public final class DB
         } catch (SQLException e) {
             ;
         }
-    	if (readReplicaStatements.contains(st)) {
-			try {
-				DBReadReplica.closeReadReplicaStatement(st);
-			} catch (Exception e) {
-				;
-			} finally {
-				readReplicaStatements.remove(st);
-			}
-    	}
     }
 
     /**
@@ -2546,9 +2506,6 @@ public final class DB
     	return rowsArray;
 	}
 
-	/**	Read Replica Statements List	*/
-	private static final List<PreparedStatement> readReplicaStatements = Collections.synchronizedList(new ArrayList<PreparedStatement>());
-
 	/**
 	 *	Prepare Read Replica Statement
 	 *  @param sql sql statement
@@ -2580,9 +2537,8 @@ public final class DB
 			&& resultSetType == ResultSet.TYPE_FORWARD_ONLY
 			&& resultSetConcurrency == ResultSet.CONCUR_READ_ONLY) {
 			// this is a candidate for a read replica connection (read-only, forward-only, no-trx), try to obtain one, otherwise fallback to normal
-			PreparedStatement stmt = DBReadReplica.prepareNormalReadReplicaStatement(sql, resultSetType, resultSetConcurrency, trxName);
+			CPreparedStatement stmt = ProxyFactory.newReadReplicaPreparedStatement(resultSetType, resultSetConcurrency, sql);
 			if (stmt != null) {
-				readReplicaStatements.add(stmt);
 				return stmt;
 			}
 		}

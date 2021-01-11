@@ -27,6 +27,8 @@ import org.idempiere.distributed.IClusterService;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
 import com.hazelcast.core.Member;
+import com.hazelcast.instance.HazelcastInstanceImpl;
+import com.hazelcast.instance.HazelcastInstanceProxy;
 
 /**
  * @author hengsin
@@ -112,6 +114,25 @@ public class ClusterServiceImpl implements IClusterService {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isStandAlone() {
+		HazelcastInstance instance = Activator.getHazelcastInstance();
+		if (instance != null) {
+			if (instance instanceof HazelcastInstanceImpl) {
+				HazelcastInstanceImpl impl = (HazelcastInstanceImpl) instance;
+				return impl.node.getJoiner() == null;
+			} else if (instance instanceof HazelcastInstanceProxy) {
+				HazelcastInstanceProxy proxy = (HazelcastInstanceProxy) instance;
+				HazelcastInstanceImpl impl = proxy.getOriginal();
+				return impl.node.getJoiner() == null;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
 
 }

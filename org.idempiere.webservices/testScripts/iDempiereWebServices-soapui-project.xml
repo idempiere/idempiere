@@ -558,7 +558,7 @@
          </_0:ModelGetListRequest>
       </_0:getList>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/ModelADService/getList"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="queryData" bindingOperationName="queryData" type="Request-Response" outputName="queryDataResponse" inputName="queryData" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Sample get BP Standard &lt; S"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://localhost:8443/ADInterface/services/ModelADService</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://idempiere.org/ADInterface/1_0/ModelADService/getList"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="" name="queryData" bindingOperationName="queryData" type="Request-Response" outputName="queryDataResponse" inputName="queryData" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Sample get BP Standard &gt; S"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>https://localhost:8443/ADInterface/services/ModelADService</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_0="http://idempiere.org/ADInterface/1_0">
    <soapenv:Header/>
    <soapenv:Body>
       <_0:queryData>
@@ -566,7 +566,7 @@
             <_0:ModelCRUD>
                <_0:serviceType>QueryBPartner</_0:serviceType>
                <_0:TableName>C_BPartner</_0:TableName>
-               <_0:Filter>name&lt;'S'</_0:Filter>
+               <_0:Filter>name&gt;'S'</_0:Filter>
                <_0:Action>Read</_0:Action>
                <_0:DataRow>
                   <_0:field column="C_BP_Group_ID">

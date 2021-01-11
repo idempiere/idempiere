@@ -249,6 +249,7 @@ public class InvoicePrint extends SvrProcess
 				boolean printed = false;
 				if (p_EMailPDF)
 				{
+					mText.setBPartner(C_BPartner_ID);	//	Context - Translation
 					String subject = mText.getMailHeader() + " - " + DocumentNo;
 					EMail email = client.createEMail(to.getEMail(), subject, null);
 					if (!email.isValid())
@@ -259,7 +260,6 @@ public class InvoicePrint extends SvrProcess
 						continue;
 					}
 					mText.setUser(to);					//	Context
-					mText.setBPartner(C_BPartner_ID);	//	Context
 					mText.setPO(new MInvoice(getCtx(), C_Invoice_ID, get_TrxName()));
 					String message = mText.getMailText(true);
 					if (mText.isHtml())
@@ -428,7 +428,8 @@ public class InvoicePrint extends SvrProcess
 		}
 		String orgWhere = MRole.getDefault(getCtx(), false).getOrgWhere(MRole.SQL_RO);
 		if (!Util.isEmpty(orgWhere, true)) {
-			sql.append(" AND i.");
+			orgWhere = orgWhere.replaceAll("AD_Org_ID", "i.AD_Org_ID");
+			sql.append(" AND ");
 			sql.append(orgWhere);
 		}
 		sql.append(" ORDER BY i.C_Invoice_ID, pf.AD_Org_ID DESC");	//	more than 1 PF record

@@ -112,7 +112,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8153324039370820860L;
+	private static final long serialVersionUID = 8443012394354164942L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -229,6 +229,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_FindSQL = "_TabInfo_FindSQL";
 	public static final String CTX_SQL = "_TabInfo_SQL";
 	public static final String CTX_IsSortTab = "_TabInfo_IsSortTab";
+	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
+	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
 	//private HashMap<Integer,Integer>	m_PostIts = null;
 
@@ -636,7 +638,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		 *	Set Where Clause
 		 */
 		//	Tab Where Clause
-		StringBuffer where = new StringBuffer(m_vo.WhereClause);
+		StringBuilder where = new StringBuilder(m_vo.WhereClause);
 		if (m_vo.onlyCurrentDays > 0)
 		{
 			if (where.length() > 0)
@@ -739,9 +741,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void resetDetailForNewParentRecord() {
 		if (m_mTable.isOpen())
 		{
-			StringBuffer where = new StringBuffer("2=3");
-			m_extendedWhere = where.toString();
-			m_oldQuery = where.toString();
+			String where = "2=3";
+			m_extendedWhere = where;
+			m_oldQuery = where;
 			m_parentNeedSave = true;
 			
 			m_currentRow = -1;
@@ -749,7 +751,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			 *	Query
 			 */
 			if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);		
-			m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), 0);
+			m_mTable.dataRequery(where, m_vo.onlyCurrentRows && !isDetail(), 0);
 			
 			// Go to Record 0
 			setCurrentRow(0, true);
@@ -888,7 +890,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		query.setTableName("xx");
 		// use IN instead of EXISTS as subquery should be highly selective
-		StringBuffer result = new StringBuffer (getTableName()).append(".").append(tabKeyColumn)
+		StringBuilder result = new StringBuilder (getTableName()).append(".").append(tabKeyColumn)
 			.append(" IN (SELECT xx.").append(tabKeyColumn)
 			.append(" FROM ")
 			.append(tableName).append(" xx WHERE ")
@@ -1514,6 +1516,24 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	isHighVolume
 
 	/**
+	 * Is Lookup Only By Selection Fields?
+	 * 
+	 * @return true if only selection
+	 */
+	public boolean IsLookupOnlySelection() {
+		return m_vo.IsLookupOnlySelection;
+	} // IsLookupOnlySelection
+
+	/**
+	 * Is Allow Advanced Lookup panel?
+	 * 
+	 * @return true if allow the use
+	 */
+	public boolean IsAllowAdvancedLookup() {
+		return m_vo.IsAllowAdvancedLookup;
+	} // IsAllowAdvancedLookup
+	
+	/**
 	 *	Is Read Only?
 	 *  @return true if read only
 	 */
@@ -1809,7 +1829,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			Object[] arguments = new Object[3];
 			boolean filled = false;
 			//
-			String sql = "SELECT COUNT(*), COALESCE(SUM(LineNetAmt),0), COALESCE(SUM(LineTotalAmt),0) "
+			String sql = "SELECT COUNT(*), NVL(SUM(LineNetAmt),0), NVL(SUM(LineTotalAmt),0) "
 				+ "FROM C_InvoiceBatchLine "
 				+ "WHERE C_InvoiceBatch_ID=? AND IsActive='Y'";
 			//
@@ -1855,7 +1875,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			int Record_ID;
 			boolean isOrder = m_vo.TableName.startsWith("C_Order");
 			//
-			StringBuffer sql = new StringBuffer("SELECT COUNT(*) AS Lines,c.ISO_Code,o.TotalLines,o.GrandTotal,"
+			StringBuilder sql = new StringBuilder("SELECT COUNT(*) AS Lines,c.ISO_Code,o.TotalLines,o.GrandTotal,"
 				+ "currencyBase(o.GrandTotal,o.C_Currency_ID,o.DateAcct, o.AD_Client_ID,o.AD_Org_ID) AS ConvAmt ");
 			if (isOrder)
 			{
@@ -2382,7 +2402,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		e.CreatedBy = (Integer)getValue("CreatedBy");
 		e.Updated = (Timestamp)getValue("Updated");
 		e.UpdatedBy = (Integer)getValue("UpdatedBy");
-		e.Record_ID = getValue(m_keyColumnName);
+		if (   e.AD_Table_ID == I_AD_OrgInfo.Table_ID
+			|| e.AD_Table_ID == I_AD_ClientInfo.Table_ID
+			|| e.AD_Table_ID == I_AD_Ref_Table.Table_ID
+			|| e.AD_Table_ID == I_C_AcctSchema_Default.Table_ID
+			|| e.AD_Table_ID == I_C_AcctSchema_GL.Table_ID) {
+			e.Record_ID = getValue(m_parents.get(0));
+		} else {
+			e.Record_ID = getValue(m_keyColumnName);
+		}
 		//  Info
 		StringBuilder info = new StringBuilder(getTableName());
 		

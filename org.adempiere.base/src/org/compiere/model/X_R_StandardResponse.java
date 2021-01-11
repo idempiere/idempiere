@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_StandardResponse
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_StandardResponse[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_R_StandardResponse[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

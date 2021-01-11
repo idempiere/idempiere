@@ -89,10 +89,10 @@ public class Query
     private int pageSize;
 
     /**
-     * Number of pages will be skipped on query run.
+     * Number of records will be skipped on query run.
      */
-    private int pagesToSkip;
-	
+    private int recordsToSkip;
+
 	/**
 	 * 
 	 * @param table
@@ -765,7 +765,7 @@ public class Query
 		}
 		
 		// If have pagination
-        if (pageSize > 0) {
+        if (pageSize > 0 || recordsToSkip > 0) {
             sql = appendPagination(sql);
         }
 
@@ -800,8 +800,25 @@ public class Query
      * @return current Query
      */
     public Query setPage(int pPageSize, int pPagesToSkip) {
-        this.pageSize = pPageSize;
-        this.pagesToSkip = pPagesToSkip;
+    	if (pPageSize > 0) {
+            this.pageSize = pPageSize;
+            this.recordsToSkip = pPagesToSkip * pageSize;
+    	} else {
+    		log.warning("Wrong PageSize <= 0");
+    	}
+        return this;
+    }
+
+    /**
+     * Set the number of records to skip (a.k.a. OFFSET)
+     * 
+     * @param pRecordsToSkip
+     *            Limit current query rows return.
+     * 
+     * @return current Query
+     */
+    public Query setRecordstoSkip(int pRecordsToSkip) {
+        this.recordsToSkip = pRecordsToSkip;
         return this;
     }
 
@@ -819,9 +836,9 @@ public class Query
 
         String query = pQuery;
 
-        if (pageSize > 0) {
+        if (pageSize > 0 || recordsToSkip > 0) {
         	if (DB.getDatabase().isPagingSupported()) {
-        		query = DB.getDatabase().addPagingSQL(query, (pageSize*pagesToSkip) + 1, pageSize * (pagesToSkip+1));
+        		query = DB.getDatabase().addPagingSQL(query, recordsToSkip+1, pageSize <= 0 ? 0 : recordsToSkip + pageSize);
         	} else {
         		throw new IllegalArgumentException("Pagination not supported by database");
         	}

@@ -330,7 +330,7 @@ public class CommissionCalc extends SvrProcess
 		
 		/**
 		String sd = DB.TO_DATE(p_StartDate, true);
-		StringBuffer sql = new StringBuffer ("SELECT ");
+		StringBuilder sql = new StringBuilder ("SELECT ");
 		if (MCommission.FREQUENCYTYPE_Quarterly.equals(m_com.getFrequencyType()))
 			sql.append("TRUNC(").append(sd).append(", 'Q'), TRUNC(").append(sd).append("+92, 'Q')-1");
 		else if (MCommission.FREQUENCYTYPE_Weekly.equals(m_com.getFrequencyType()))

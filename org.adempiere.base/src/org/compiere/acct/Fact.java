@@ -310,6 +310,7 @@ public final class Fact
 		FactLine line = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(), 
 			m_doc.get_ID(), 0, m_trxName);
 		line.setDocumentInfo(m_doc, null);
+		line.setAD_Org_ID(m_doc.getAD_Org_ID());
 		line.setPostingType(m_postingType);
 
 		//	Account
@@ -586,6 +587,7 @@ public final class Fact
 				m_doc.get_ID(), 0, m_trxName);
 			line.setDocumentInfo (m_doc, null);
 			line.setPostingType (m_postingType);
+			line.setAD_Org_ID(m_doc.getAD_Org_ID());
 			line.setAccount (m_acctSchema, m_acctSchema.getCurrencyBalancing_Acct());
 			
 			//  Amount
@@ -700,7 +702,7 @@ public final class Fact
 		{
 			FactLine dLine = (FactLine)m_lines.get(i);
 			MDistribution[] distributions = MDistribution.get (dLine.getAccount(), 
-				m_postingType, m_doc.getC_DocType_ID());
+				m_postingType, m_doc.getC_DocType_ID(), dLine.getDateAcct());
 			//	No Distribution for this line
 			//AZ Goodwill
 			//The above "get" only work in GL Journal because it's using ValidCombination Account
@@ -712,7 +714,7 @@ public final class Fact
 			if (distributions == null || distributions.length == 0)
 			{
 				distributions = MDistribution.get (dLine.getCtx(), dLine.getC_AcctSchema_ID(),
-					m_postingType, m_doc.getC_DocType_ID(),
+					m_postingType, m_doc.getC_DocType_ID(), dLine.getDateAcct(),
 					dLine.getAD_Org_ID(), dLine.getAccount_ID(),
 					dLine.getM_Product_ID(), dLine.getC_BPartner_ID(), dLine.getC_Project_ID(),
 					dLine.getC_Campaign_ID(), dLine.getC_Activity_ID(), dLine.getAD_OrgTrx_ID(),
@@ -724,8 +726,8 @@ public final class Fact
 			//end AZ
 			//	Just the first
 			if (distributions.length > 1)
-				log.warning("More then one Distributiion for " + dLine.getAccount());
-			MDistribution distribution = distributions[0]; 
+				log.warning("More than one Distribution for " + dLine.getAccount());
+			MDistribution distribution = distributions[0];
 
 			// FR 2685367 - GL Distribution delete line instead reverse
 			if (distribution.isCreateReversal()) {

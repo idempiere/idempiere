@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.idempiere</groupId>
+  <artifactId>maven.p2</artifactId>
+  <packaging>war</packaging>
+  <version>9.0.1</version>
+  <properties>
+        <jettyVersion>9.4.28.v20200408</jettyVersion>
+  </properties>
+  <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jettyVersion}</version>
+                <configuration>
+		        <webAppSourceDirectory>${project.basedir}/target/repository</webAppSourceDirectory>
+		        <webApp>
+          			<contextPath>/maven.p2</contextPath>
+          		</webApp>
+		</configuration>
+            </plugin>
+        </plugins>
+  </build>
+</project>

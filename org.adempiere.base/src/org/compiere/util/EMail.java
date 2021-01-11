@@ -252,7 +252,8 @@ public final class EMail implements Serializable
 			return m_sentMsg;
 		}
 		//
-		Properties props = System.getProperties();
+		Properties props = new Properties();
+		props.putAll(System.getProperties());
 		props.put("mail.store.protocol", "smtp");
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.host", m_smtpHost);
@@ -880,7 +881,7 @@ public final class EMail implements Serializable
 	public void setMessageHTML (String subject, String message)
 	{
 		m_subject = subject;
-		StringBuffer sb = new StringBuffer("<HTML>\n")
+		StringBuilder sb = new StringBuilder("<HTML>\n")
 				.append("<HEAD>\n")
 				.append("<TITLE>\n")
 				.append(subject + "\n")

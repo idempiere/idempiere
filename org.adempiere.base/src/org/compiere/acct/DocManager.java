@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.base.IDocFactory;
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.exceptions.AdempiereException;
@@ -31,6 +32,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -108,6 +110,8 @@ public class DocManager {
 		}
 	}
 
+	private static final CCache<String, IServiceReferenceHolder<IDocFactory>> s_DocFactoryCache = new CCache<>(null, "IDocFactory", 100, false);
+	
 	/**
 	 *  Create Posting document
 	 *	@param as accounting schema
@@ -133,29 +137,57 @@ public class DocManager {
 			return null;
 		}
 
-		ServiceQuery query = new ServiceQuery();
-		query.put("gaap", as.getGAAP());
-		List<IDocFactory> factoryList = Service.locator().list(IDocFactory.class, query).getServices();
-		if (factoryList != null)
+		String cacheKey = as.getC_AcctSchema_ID() + "|" + AD_Table_ID;
+		IServiceReferenceHolder<IDocFactory> cache = s_DocFactoryCache.get(cacheKey);
+		if (cache != null)
 		{
-			for(IDocFactory factory : factoryList)
+			IDocFactory service = cache.getService();
+			if (service != null)
 			{
-				Doc doc = factory.getDocument(as, AD_Table_ID, Record_ID, trxName);
+				Doc doc = service.getDocument(as, AD_Table_ID, Record_ID, trxName);
 				if (doc != null)
 					return doc;
+			}
+			s_DocFactoryCache.remove(cacheKey);
+		}
+		
+		ServiceQuery query = new ServiceQuery();
+		query.put("gaap", as.getGAAP());
+		List<IServiceReferenceHolder<IDocFactory>> factoryList = Service.locator().list(IDocFactory.class, query).getServiceReferences();
+		if (factoryList != null)
+		{
+			for(IServiceReferenceHolder<IDocFactory> factory : factoryList)
+			{
+				IDocFactory service = factory.getService();
+				if (service != null)
+				{
+					Doc doc = service.getDocument(as, AD_Table_ID, Record_ID, trxName);
+					if (doc != null)
+					{
+						s_DocFactoryCache.put(cacheKey, factory);
+						return doc;
+					}
+				}
 			}
 		}
 
 		query.clear();
 		query.put("gaap", "*");
-		factoryList = Service.locator().list(IDocFactory.class, query).getServices();
+		factoryList = Service.locator().list(IDocFactory.class, query).getServiceReferences();
 		if (factoryList != null)
 		{
-			for(IDocFactory factory : factoryList)
+			for(IServiceReferenceHolder<IDocFactory> factory : factoryList)
 			{
-				Doc doc = factory.getDocument(as, AD_Table_ID, Record_ID, trxName);
-				if (doc != null)
-					return doc;
+				IDocFactory service = factory.getService();
+				if (service != null)
+				{
+					Doc doc = service.getDocument(as, AD_Table_ID, Record_ID, trxName);
+					if (doc != null)
+					{
+						s_DocFactoryCache.put(cacheKey, factory);
+						return doc;
+					}
+				}
 			}
 		}
 
@@ -173,29 +205,57 @@ public class DocManager {
 	 */
 	public static Doc getDocument(MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName)
 	{
-		ServiceQuery query = new ServiceQuery();
-		query.put("gaap", as.getGAAP());
-		List<IDocFactory> factoryList = Service.locator().list(IDocFactory.class,query).getServices();
-		if (factoryList != null)
+		String cacheKey = as.getC_AcctSchema_ID() + "|" + AD_Table_ID;
+		IServiceReferenceHolder<IDocFactory> cache = s_DocFactoryCache.get(cacheKey);
+		if (cache != null)
 		{
-			for(IDocFactory factory : factoryList)
+			IDocFactory service = cache.getService();
+			if (service != null)
 			{
-				Doc doc = factory.getDocument(as, AD_Table_ID, rs, trxName);
+				Doc doc = service.getDocument(as, AD_Table_ID, rs, trxName);
 				if (doc != null)
 					return doc;
+			}
+			s_DocFactoryCache.remove(cacheKey);
+		}
+		
+		ServiceQuery query = new ServiceQuery();
+		query.put("gaap", as.getGAAP());
+		List<IServiceReferenceHolder<IDocFactory>> factoryList = Service.locator().list(IDocFactory.class,query).getServiceReferences();
+		if (factoryList != null)
+		{
+			for(IServiceReferenceHolder<IDocFactory> factory : factoryList)
+			{
+				IDocFactory service = factory.getService();
+				if (service != null)
+				{
+					Doc doc = service.getDocument(as, AD_Table_ID, rs, trxName);
+					if (doc != null)
+					{
+						s_DocFactoryCache.put(cacheKey, factory);
+						return doc;
+					}
+				}
 			}
 		}
 
 		query.clear();
 		query.put("gaap", "*");
-		factoryList = Service.locator().list(IDocFactory.class,query).getServices();
+		factoryList = Service.locator().list(IDocFactory.class,query).getServiceReferences();
 		if (factoryList != null)
 		{
-			for(IDocFactory factory : factoryList)
+			for(IServiceReferenceHolder<IDocFactory> factory : factoryList)
 			{
-				Doc doc = factory.getDocument(as, AD_Table_ID, rs, trxName);
-				if (doc != null)
-					return doc;
+				IDocFactory service = factory.getService();
+				if (service != null)
+				{
+					Doc doc = service.getDocument(as, AD_Table_ID, rs, trxName);
+					if (doc != null)
+					{
+						s_DocFactoryCache.put(cacheKey, factory);
+						return doc;
+					}
+				}
 			}
 		}
 

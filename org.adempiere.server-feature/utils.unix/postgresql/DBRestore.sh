@@ -1,16 +1,16 @@
 #!/bin/sh
 
-echo	ADempiere Database Import
+echo	iDempiere Database Import
 
-echo	Importing ADempiere DB from $IDEMPIERE_HOME/data/ExpDat.dmp 
+echo	Importing iDempiere DB from "$IDEMPIERE_HOME"/data/ExpDat.dmp
 
-if [ $# -le 2 ] 
+if [ $# -le 2 ]
   then
     echo "Usage:		$0 <systemAccount> <AdempiereID> <AdempierePWD> <PostgresPWD>"
     echo "Example:	$0 postgres adempiere adempiere postgrespwd"
     exit 1
 fi
-if [ "$IDEMPIERE_HOME" = "" -o  "$ADEMPIERE_DB_NAME" = "" -o "$ADEMPIERE_DB_SERVER" = "" -o "$ADEMPIERE_DB_PORT" = "" ]
+if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ] || [ "$ADEMPIERE_DB_SERVER" = "" ] || [ "$ADEMPIERE_DB_PORT" = "" ]
   then
     echo "Please make sure that the environment variables are set correctly:"
     echo "	IDEMPIERE_HOME	e.g. /idempiere"
@@ -60,35 +60,35 @@ then
     # Assuming that adempiere role already exists (it was created out there)
     PGPASSWORD=$3
     export PGPASSWORD
-    dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U $2 $ADEMPIERE_DB_NAME
+    dropdb -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -U "$2" "$ADEMPIERE_DB_NAME"
 else
     if [ "x$2" != xadempiere ]
     then
-        psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres -c "CREATE ROLE adempiere"
+        psql -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -U postgres -c "CREATE ROLE adempiere"
     fi
     if [ $ISAMAZONRDS = Y ]
     then
         PGPASSWORD=$3
-        dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U $2 $ADEMPIERE_DB_NAME
+        dropdb -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -U "$2" "$ADEMPIERE_DB_NAME"
         PGPASSWORD=$4
     else
-        dropdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $ADEMPIERE_DB_NAME
+        dropdb -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -U postgres "$ADEMPIERE_DB_NAME"
     fi
-    dropuser -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres $2
-    psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -U postgres -c "$ADEMPIERE_CREATE_ROLE_SQL"
+    dropuser -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -U postgres "$2"
+    psql -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -U postgres -c "$ADEMPIERE_CREATE_ROLE_SQL"
 fi
 ADEMPIERE_CREATE_ROLE_SQL=
 
 PGPASSWORD=$3
 export PGPASSWORD
-createdb -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -E UNICODE -T template0 -O $2 -U $2 $ADEMPIERE_DB_NAME
+createdb -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -E UNICODE -T template0 -O "$2" -U "$2" "$ADEMPIERE_DB_NAME"
 
 echo -------------------------------------
-echo Import Adempiere_pg.dmp
+echo Import ExpDat.dmp
 echo -------------------------------------
 ADEMPIERE_ALTER_ROLE_SQL="ALTER ROLE $2 SET search_path TO adempiere, pg_catalog"
-psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -c "$ADEMPIERE_ALTER_ROLE_SQL"
-psql -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U $2 -f $IDEMPIERE_HOME/data/ExpDat.dmp
+psql -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -d "$ADEMPIERE_DB_NAME" -U "$2" -c "$ADEMPIERE_ALTER_ROLE_SQL"
+psql -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -d "$ADEMPIERE_DB_NAME" -U "$2" -f "$IDEMPIERE_HOME"/data/ExpDat.dmp
 
 PGPASSWORD=
 export PGPASSWORD

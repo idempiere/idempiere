@@ -56,7 +56,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 			List<Integer> trace = new ArrayList<Integer>();
 			if (hasLoop(Table_Name, COLUMNNAME_Included_Role_ID, COLUMNNAME_AD_Role_ID, getIncluded_Role_ID(), trace, get_TrxName()))
 			{
-				StringBuffer roles = new StringBuffer();
+				StringBuilder roles = new StringBuilder();
 				for (int role_id : trace)
 				{
 					MRole role = MRole.get(getCtx(), role_id);

@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training_Class
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName)
@@ -70,7 +70,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_S_Training_Class[")
+      StringBuilder sb = new StringBuilder ("X_S_Training_Class[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

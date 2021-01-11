@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Greeting
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_Greeting (Properties ctx, int C_Greeting_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_Greeting[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_Greeting[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

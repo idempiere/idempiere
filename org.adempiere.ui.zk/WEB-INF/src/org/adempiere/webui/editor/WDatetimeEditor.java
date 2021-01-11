@@ -13,6 +13,8 @@
 package org.adempiere.webui.editor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.adempiere.webui.ValuePreference;
@@ -46,12 +48,21 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     private Timestamp oldValue = new Timestamp(0);
 
     /**
+    *
+    * @param gridField
+    */
+    public WDatetimeEditor(GridField gridField)
+    {
+    	this(gridField, false, null);
+    }
+    
+    /**
      *
      * @param gridField
      */
-    public WDatetimeEditor(GridField gridField)
+    public WDatetimeEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(new DatetimeBox(), gridField);
+        super(new DatetimeBox(), gridField, tableEditor, editorConfiguration);
         init();
     }
 
@@ -115,7 +126,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 
 	        if (date != null)
 	        {
-	            newValue = new Timestamp(date.getTime());
+	            newValue = Timestamp.valueOf(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 	        }
 	        if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
 	    	    return;
@@ -142,7 +153,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     {
     	// Elaine 2008/07/25
     	if(getComponent().getValue() == null) return null;
-    	return new Timestamp(getComponent().getValue().getTime());
+    	return Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     	//
     }
 
@@ -156,7 +167,9 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     	}
     	else if (value instanceof Timestamp)
         {
-            getComponent().setValue((Timestamp)value);
+    		LocalDateTime localTime =((Timestamp)value).toLocalDateTime();
+    		getComponent().getDatebox().setValueInLocalDateTime(localTime);
+    		getComponent().getTimebox().setValueInLocalDateTime(localTime);
             oldValue = (Timestamp)value;
         }
     	else
@@ -166,7 +179,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     			getComponent().setText(value.toString());
     		} catch (Exception e) {}
     		if (getComponent().getValue() != null)
-    			oldValue = new Timestamp(getComponent().getValue().getTime());
+    			oldValue = Timestamp.valueOf(getComponent().getDatebox().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     		else
     			oldValue = null;
     	}

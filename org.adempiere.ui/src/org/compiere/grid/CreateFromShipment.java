@@ -381,7 +381,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT " // Entered UOM
-				+ "l.QtyInvoiced-SUM(COALESCE(mi.Qty,0)),l.QtyEntered/l.QtyInvoiced,"
+				+ "l.QtyInvoiced-SUM(NVL(mi.Qty,0)),l.QtyEntered/l.QtyInvoiced,"
 				+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name)," // 3..4
 				+ " p.M_Locator_ID, loc.Value, " // 5..6
 				+ " l.M_Product_ID,p.Name, po.VendorProductNo, l.C_InvoiceLine_ID,l.Line," // 7..11
@@ -473,6 +473,14 @@ public abstract class CreateFromShipment extends CreateFrom
 			}
 		}
 		
+		// Try to get from locator field
+		if (locator == null)
+		{
+			if (defaultLocator_ID > 0)
+			{
+				locator = MLocator.get(Env.getCtx(), defaultLocator_ID);
+			}
+		}
 		// Try to use default locator from Order Warehouse
 		if (locator == null && p_order != null && p_order.getM_Warehouse_ID() == getM_Warehouse_ID())
 		{
@@ -480,14 +488,6 @@ public abstract class CreateFromShipment extends CreateFrom
 			if (wh != null)
 			{
 				locator = wh.getDefaultLocator();
-			}
-		}
-		// Try to get from locator field
-		if (locator == null)
-		{
-			if (defaultLocator_ID > 0)
-			{
-				locator = MLocator.get(Env.getCtx(), defaultLocator_ID);
 			}
 		}
 		// Validate Warehouse

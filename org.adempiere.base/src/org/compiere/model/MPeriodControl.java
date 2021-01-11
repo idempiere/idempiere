@@ -19,13 +19,16 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+
 /**
  *	Period Control Model	
  *	
  *  @author Jorg Janke
  *  @version $Id: MPeriodControl.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MPeriodControl extends X_C_PeriodControl
+public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -92,6 +95,37 @@ public class MPeriodControl extends X_C_PeriodControl
 	}	//	MPeriodControl
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MPeriodControl(MPeriodControl copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPeriodControl(Properties ctx, MPeriodControl copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPeriodControl(Properties ctx, MPeriodControl copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Is Period Open
 	 *	@return true if open
 	 */
@@ -113,6 +147,15 @@ public class MPeriodControl extends X_C_PeriodControl
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
+
+	@Override
+	public MPeriodControl markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MPeriodControl
 

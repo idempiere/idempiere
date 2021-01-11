@@ -328,7 +328,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MStorageReservation[")
+		StringBuilder sb = new StringBuilder("MStorageReservation[")
 			.append("M_Warehouse_ID=").append(getM_Warehouse_ID())
 			.append(",M_Product_ID=").append(getM_Product_ID())
 			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())

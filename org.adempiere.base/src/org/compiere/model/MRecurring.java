@@ -64,7 +64,7 @@ public class MRecurring extends X_C_Recurring
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MRecurring[")
+		StringBuilder sb = new StringBuilder ("MRecurring[")
 			.append(get_ID()).append("-").append(getName());
 		if (getRecurringType().equals(MRecurring.RECURRINGTYPE_Order))
 			sb.append(",C_Order_ID=").append(getC_Order_ID());

@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * Payment Callouts. org.compiere.model.CalloutPayment.*
@@ -124,6 +125,7 @@ public class CalloutPayment extends CalloutEngine
 		{
 			DB.close (rs, pstmt);
 		}
+				
 		return docType (ctx, WindowNo, mTab, mField, value);
 	} // invoice
 
@@ -317,6 +319,81 @@ public class CalloutPayment extends CalloutEngine
 		{
 			C_InvoicePaySchedule_ID = Env.getContextAsInt (ctx, WindowNo, Env.TAB_INFO, "C_InvoicePaySchedule_ID");
 		}
+
+		// Get Currency Info
+		Integer curr_int = (Integer) mTab.getValue ("C_Currency_ID");
+		if (curr_int == null)
+			curr_int = Integer.valueOf(0);
+		int C_Currency_ID = curr_int.intValue ();
+		MCurrency currency = MCurrency.get (ctx, C_Currency_ID);
+		int C_ConversionType_ID = 0;
+		Integer ii = (Integer)mTab.getValue ("C_ConversionType_ID");
+		if (ii != null)
+			C_ConversionType_ID = ii.intValue ();
+		int AD_Client_ID = Env.getContextAsInt (ctx, WindowNo, "AD_Client_ID");
+		int AD_Org_ID = Env.getContextAsInt (ctx, WindowNo, "AD_Org_ID");
+
+		if (colName.equals(I_C_Payment.COLUMNNAME_CurrencyRate))
+		{
+			if (value != null)
+			{
+				BigDecimal baseCurrencyRate = (BigDecimal) value;
+				if (baseCurrencyRate.signum() < 0)
+				{
+					mTab.setValue(colName, oldValue);
+					mTab.fireDataStatusEEvent("Invalid", Msg.getElement(ctx, colName), true);
+					return "";
+				}
+				else if (baseCurrencyRate.signum() == 0)
+				{
+					int baseCurrencyId = Env.getContextAsInt(ctx, "$C_Currency_ID");
+					Timestamp dateAcct = (Timestamp) mTab.getValue(I_C_Payment.COLUMNNAME_DateAcct);
+					baseCurrencyRate = MConversionRate.getRate(C_Currency_ID, baseCurrencyId, dateAcct, C_ConversionType_ID, AD_Client_ID, AD_Org_ID);
+					if (baseCurrencyRate == null) 
+						return "";
+					mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, baseCurrencyRate);
+				}
+				BigDecimal payAmt = (BigDecimal) mTab.getValue(I_C_Payment.COLUMNNAME_PayAmt);
+				if (payAmt != null) 
+				{
+					BigDecimal convertedAmt = payAmt.multiply(baseCurrencyRate);
+					mTab.setValue(I_C_Payment.COLUMNNAME_ConvertedAmt, convertedAmt);
+				}
+				return "";
+			}
+			else
+			{
+				mTab.setValue(colName, oldValue);
+				mTab.fireDataStatusEEvent("Invalid", Msg.getElement(ctx, colName), true);
+				return "";
+			}			
+		}
+		else if (colName.equals(I_C_Payment.COLUMNNAME_ConvertedAmt))
+		{
+			if (value != null)
+			{
+				BigDecimal convertedAmt = (BigDecimal) value;
+				if (convertedAmt.signum() == 0)
+				{
+					mTab.setValue(colName, oldValue);
+					mTab.fireDataStatusEEvent("Invalid", Msg.getElement(ctx, colName), true);
+					return "";
+				}
+				BigDecimal payAmt = (BigDecimal) mTab.getValue(I_C_Payment.COLUMNNAME_PayAmt);
+				if (payAmt != null)
+				{
+					BigDecimal baseCurrencyRate = convertedAmt.divide(payAmt, 6, RoundingMode.HALF_UP);
+					mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, baseCurrencyRate);
+				}
+				return "";
+			}
+			else
+			{
+				mTab.setValue(colName, oldValue);
+				mTab.fireDataStatusEEvent("Invalid", Msg.getElement(ctx, colName), true);
+				return "";
+			}
+		}
 		// Get Open Amount & Invoice Currency
 		BigDecimal InvoiceOpenAmt = Env.ZERO;
 		int C_Currency_Invoice_ID = 0;
@@ -377,19 +454,8 @@ public class CalloutPayment extends CalloutEngine
 			OverUnderAmt = Env.ZERO;
 		if (log.isLoggable(Level.FINE)) log.fine ("Pay=" + PayAmt + ", Discount=" + DiscountAmt + ", WriteOff="
 			+ WriteOffAmt + ", OverUnderAmt=" + OverUnderAmt);
-		// Get Currency Info
-		Integer curr_int = (Integer) mTab.getValue ("C_Currency_ID");
-		if (curr_int == null)
-			curr_int = Integer.valueOf(0);
-		int C_Currency_ID = curr_int.intValue ();
-		MCurrency currency = MCurrency.get (ctx, C_Currency_ID);
-		Timestamp ConvDate = (Timestamp)mTab.getValue ("DateTrx");
-		int C_ConversionType_ID = 0;
-		Integer ii = (Integer)mTab.getValue ("C_ConversionType_ID");
-		if (ii != null)
-			C_ConversionType_ID = ii.intValue ();
-		int AD_Client_ID = Env.getContextAsInt (ctx, WindowNo, "AD_Client_ID");
-		int AD_Org_ID = Env.getContextAsInt (ctx, WindowNo, "AD_Org_ID");
+
+		Timestamp ConvDate = (Timestamp)mTab.getValue ("DateTrx");		
 		// Get Currency Rate
 		BigDecimal CurrencyRate = Env.ONE;
 		if ((C_Currency_ID > 0 && C_Currency_Invoice_ID > 0 && C_Currency_ID != C_Currency_Invoice_ID)
@@ -417,21 +483,46 @@ public class CalloutPayment extends CalloutEngine
 				+ InvoiceOpenAmt);
 		}
 		// Currency Changed - convert all
-		if (colName.equals ("C_Currency_ID")
-			|| colName.equals ("C_ConversionType_ID"))
+		if (colName.equals ("C_Currency_ID"))
 		{
-			PayAmt = PayAmt.multiply (CurrencyRate).setScale (
-				currency.getStdPrecision (), RoundingMode.HALF_UP);
-			mTab.setValue ("PayAmt", PayAmt);
-			DiscountAmt = DiscountAmt.multiply (CurrencyRate).setScale (
-				currency.getStdPrecision (), RoundingMode.HALF_UP);
-			mTab.setValue ("DiscountAmt", DiscountAmt);
-			WriteOffAmt = WriteOffAmt.multiply (CurrencyRate).setScale (
-				currency.getStdPrecision (), RoundingMode.HALF_UP);
-			mTab.setValue ("WriteOffAmt", WriteOffAmt);
-			OverUnderAmt = OverUnderAmt.multiply (CurrencyRate).setScale (
-				currency.getStdPrecision (), RoundingMode.HALF_UP);
-			mTab.setValue ("OverUnderAmt", OverUnderAmt);
+			if (oldValue != null && oldValue instanceof Integer)
+			{
+				BigDecimal conversionRate = null;
+				int oldId = (int) oldValue;
+				if (oldId > 0 && oldId == C_Currency_Invoice_ID)
+				{
+					conversionRate = CurrencyRate;
+				}
+				else if (oldId > 0) 
+				{
+					conversionRate = MConversionRate.getRate (oldId,
+							C_Currency_ID, ConvDate, C_ConversionType_ID, AD_Client_ID,
+							AD_Org_ID);
+					if (conversionRate == null)
+					{
+						conversionRate = MConversionRate.getRate (C_Currency_ID,
+								oldId, ConvDate, C_ConversionType_ID, AD_Client_ID,
+								AD_Org_ID);
+						if (conversionRate != null)
+							conversionRate = new BigDecimal("1").divide(conversionRate, 12, RoundingMode.HALF_UP);
+					}
+				}
+				if (conversionRate != null)
+				{
+					PayAmt = PayAmt.multiply (conversionRate).setScale (
+							currency.getStdPrecision (), RoundingMode.HALF_UP);
+					mTab.setValue ("PayAmt", PayAmt);
+					DiscountAmt = DiscountAmt.multiply (conversionRate).setScale (
+							currency.getStdPrecision (), RoundingMode.HALF_UP);
+					mTab.setValue ("DiscountAmt", DiscountAmt);
+					WriteOffAmt = WriteOffAmt.multiply (conversionRate).setScale (
+							currency.getStdPrecision (), RoundingMode.HALF_UP);
+					mTab.setValue ("WriteOffAmt", WriteOffAmt);
+					OverUnderAmt = OverUnderAmt.multiply (conversionRate).setScale (
+							currency.getStdPrecision (), RoundingMode.HALF_UP);
+					mTab.setValue ("OverUnderAmt", OverUnderAmt);
+				}
+			}
 		}
 		// No Invoice - Set Discount, Writeoff, Under/Over to 0
 		else if (C_Invoice_ID == 0)
@@ -493,6 +584,40 @@ public class CalloutPayment extends CalloutEngine
 				PayAmt = InvoiceOpenAmt.subtract (DiscountAmt).subtract (
 					WriteOffAmt).subtract (OverUnderAmt);
 				mTab.setValue ("PayAmt", PayAmt);
+			}
+		}
+
+		if (colName.equals(I_C_Payment.COLUMNNAME_C_Currency_ID) || colName.equals(I_C_Payment.COLUMNNAME_PayAmt) 
+				|| colName.equals(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate) ) {
+			Boolean override = (Boolean)(colName.equals(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate) ? value : mTab.getValue(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate));
+			if (override == null)
+				override = Boolean.FALSE;
+			int baseCurrencyId = Env.getContextAsInt(ctx, "$C_Currency_ID");
+			if (baseCurrencyId == C_Currency_ID) {
+				mTab.setValue(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate, false);
+				mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, null);
+				mTab.setValue(I_C_Payment.COLUMNNAME_ConvertedAmt, null);
+			}
+			else if (!override) {
+				mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, null);
+				mTab.setValue(I_C_Payment.COLUMNNAME_ConvertedAmt, null);
+			} else {
+				BigDecimal payAmt = colName.equals(I_C_Payment.COLUMNNAME_PayAmt) ? (BigDecimal) value : (BigDecimal)mTab.getValue ("PayAmt");
+				if (payAmt == null)
+					return "";
+				if (colName.equals(I_C_Payment.COLUMNNAME_PayAmt) && oldValue != null) {
+					BigDecimal oldPayAmt = (BigDecimal) oldValue;
+					BigDecimal baseConversionRate = (BigDecimal) mTab.getValue(I_C_Payment.COLUMNNAME_CurrencyRate);
+					BigDecimal converted = (BigDecimal) mTab.getValue(I_C_Payment.COLUMNNAME_ConvertedAmt);
+					if (baseConversionRate != null && converted != null && oldPayAmt.multiply(baseConversionRate).compareTo(converted)==0) {
+						converted = payAmt.multiply(baseConversionRate);
+						int stdPrecision = MCurrency.getStdPrecision(ctx, baseCurrencyId);
+						if (converted.scale() > stdPrecision)
+							converted = converted.setScale(stdPrecision, RoundingMode.HALF_UP);
+						mTab.setValue(I_C_Payment.COLUMNNAME_ConvertedAmt, converted);
+						return "";
+					}
+				}
 			}
 		}
 		return "";

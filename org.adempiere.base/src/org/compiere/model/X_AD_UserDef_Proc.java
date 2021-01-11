@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc (Properties ctx, int AD_UserDef_Proc_ID, String trxName)
@@ -66,8 +66,8 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_UserDef_Proc[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_UserDef_Proc[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

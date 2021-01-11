@@ -87,6 +87,10 @@ public class POInfoColumn implements Serializable
 			DisplayType = org.compiere.util.DisplayType.ID;
 			ColumnClass = Integer.class;
 		}
+		else if (displayType == org.compiere.util.DisplayType.Button && columnName.endsWith("_ID"))
+		{
+			ColumnClass = Integer.class;
+		}
 		else
 			ColumnClass = org.compiere.util.DisplayType.getClass(displayType, true);
 		IsMandatory = isMandatory;

@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_ReplicationDocument
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocument, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ReplicationDocument[")
+      StringBuilder sb = new StringBuilder ("X_AD_ReplicationDocument[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

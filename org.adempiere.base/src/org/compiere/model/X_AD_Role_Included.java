@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_Role_Included
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_Role_Included (Properties ctx, int AD_Role_Included_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Role_Included[")
+      StringBuilder sb = new StringBuilder ("X_AD_Role_Included[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

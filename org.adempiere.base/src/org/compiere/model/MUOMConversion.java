@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Unit of Measure Conversion Model
@@ -44,13 +46,12 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: MUOMConversion.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MUOMConversion extends X_C_UOM_Conversion
+public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3555218774291122619L;
-
+	private static final long serialVersionUID = 1772365359514185604L;
 
 	/**
 	 *	Convert qty to target UOM and round.
@@ -605,7 +606,12 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		Integer key = Integer.valueOf(M_Product_ID);
 		MUOMConversion[] result = (MUOMConversion[])s_conversionProduct.get(key);
 		if (result != null)
-			return result;
+		{
+			if (ctx == Env.getCtx())
+				return result;
+			else
+				return Arrays.stream(result).map(e -> {return new MUOMConversion(ctx, e).markImmutable();}).toArray(MUOMConversion[]::new);
+		}
 		
 		ArrayList<MUOMConversion> list = new ArrayList<MUOMConversion>();
 		//	Add default conversion
@@ -620,11 +626,15 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		.setOnlyActiveRecords(true)
 		.list();
 		list.addAll(conversions);
+		list.stream().forEach(e -> e.markImmutable());
 		
 		//	Convert & save
 		result = new MUOMConversion[list.size ()];
 		list.toArray (result);
-		s_conversionProduct.put(key, result);
+		if (ctx == Env.getCtx())
+			s_conversionProduct.put(key, result);
+		else
+			s_conversionProduct.put(key, Arrays.stream(result).map(e -> {return new MUOMConversion(Env.getCtx(), e);}).toArray(MUOMConversion[]::new));
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("getProductConversions - M_Product_ID=" + M_Product_ID + " #" + result.length);
 		return result;
 	}	//	getProductConversions
@@ -695,6 +705,37 @@ public class MUOMConversion extends X_C_UOM_Conversion
 	}	//	MUOMConversion
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MUOMConversion(MUOMConversion copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUOMConversion(Properties ctx, MUOMConversion copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUOMConversion(Properties ctx, MUOMConversion copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true if can be saved
@@ -759,4 +800,13 @@ public class MUOMConversion extends X_C_UOM_Conversion
 		return sb.toString ();
 	}	//	toString
 	
+	@Override
+	public MUOMConversion markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	UOMConversion

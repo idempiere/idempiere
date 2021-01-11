@@ -31,7 +31,7 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7568476952229922042L;
+	private static final long serialVersionUID = -3887344231734476767L;
 
 	public static int getForSessionColumnCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
@@ -104,4 +104,19 @@ public class MDashboardPreference extends X_PA_DashboardPreference
     {
       super (ctx, rs, trxName);
     }
+
+	/** Set User/Contact.
+        @param AD_User_ID
+        User within the system - Internal or Business Partner Contact
+        Overridden to allow saving System record (zero ID)
+	 */
+	@Override
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID == 0) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
+		else 
+			super.setAD_User_ID(AD_User_ID);
+	} //setAD_User_ID
+
 }

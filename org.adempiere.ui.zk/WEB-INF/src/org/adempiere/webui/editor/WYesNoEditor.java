@@ -51,12 +51,36 @@ public class WYesNoEditor extends WEditor implements ContextMenuListener
 
     private boolean oldValue = false;
 
+    /**
+     * 
+     * @param gridField
+     */
     public WYesNoEditor(GridField gridField)
     {
-        super(new Checkbox(), gridField);
+    	this(gridField, false, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WYesNoEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+    {
+        super(new Checkbox(), gridField, tableEditor, editorConfiguration);
         init();
     }
 
+    /**
+     * 
+     * @param columnName
+     * @param label
+     * @param description
+     * @param mandatory
+     * @param readonly
+     * @param updateable
+     */
     public WYesNoEditor(String columnName, String label,
 			String description, boolean mandatory, boolean readonly,
 			boolean updateable) {

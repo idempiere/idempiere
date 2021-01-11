@@ -16,7 +16,7 @@ package org.adempiere.webui.editor;
 
 import java.util.List;
 
-import org.adempiere.base.Service;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.compiere.model.GridField;
@@ -53,9 +53,26 @@ public class WChartEditor extends WEditor
 	@SuppressWarnings("unused")
 	private static final CLogger log = CLogger.getCLogger(WChartEditor.class);
     
-    public WChartEditor(GridField gridField, int windowNo)
+	/**
+	 * 
+	 * @param gridField
+	 * @param windowNo
+	 */
+	public WChartEditor(GridField gridField, int windowNo)
+	{
+		this(gridField, windowNo, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param windowNo
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WChartEditor(GridField gridField, int windowNo, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(new Panel(), gridField);
+        super(new Panel(), gridField, tableEditor, editorConfiguration);
 		chartModel = new MChart(Env.getCtx(), gridField.getAD_Chart_ID(), null);
 		chartModel.setWindowNo(windowNo);
         init();        
@@ -66,7 +83,7 @@ public class WChartEditor extends WEditor
 	        chartDiv.getChildren().clear();
 	        ChartModel model = new ChartModel();
 	        model.chart = chartModel;
-	        List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+	        List<IChartRendererService> list = Extensions.getChartRendererServices();
 			for (IChartRendererService renderer : list) {
 				if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
 					break;
@@ -156,7 +173,7 @@ public class WChartEditor extends WEditor
     		chartDiv.getChildren().clear();
     		ChartModel model = new ChartModel();
     		model.chart = chartModel;
-    		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+    		List<IChartRendererService> list = Extensions.getChartRendererServices();
     		for (IChartRendererService renderer : list) {
     			if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
     				break;

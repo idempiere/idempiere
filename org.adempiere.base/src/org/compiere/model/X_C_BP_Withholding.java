@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Withholding
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_BP_Withholding (Properties ctx, int C_BP_Withholding_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BP_Withholding[")
+      StringBuilder sb = new StringBuilder ("X_C_BP_Withholding[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

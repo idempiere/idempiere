@@ -28,11 +28,11 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -90,11 +90,12 @@ public class NumberBox extends Div
     	ZKUpdateUtil.setHflex(decimalBox, "0");
     	decimalBox.setSclass("editor-input");
         decimalBox.setId(decimalBox.getUuid());
-        
+
         char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, null).getDecimalFormatSymbols().getDecimalSeparator();
         String separator = Character.toString(separatorChar);
         boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
-        if (processDotKeypad) {
+        if (processDotKeypad && ! ".".equals(separator)) {
+        	/* this code works for the decimalbox - the calculator is managed in calc.js */
             StringBuffer funct = new StringBuffer();
             funct.append("function(evt)");
             funct.append("{");
@@ -114,7 +115,10 @@ public class NumberBox extends Div
             funct.append("if (key == 108 || key == 110 || key == 188 || key == 190 || key == 194) {");
             funct.append("    var id = '$'.concat('").append(decimalBox.getId()).append("');");
             funct.append("    var calcText = jq(id)[0];");
-            funct.append("    calcText.value += '").append(separator).append("';");
+            funct.append("    var position = calcText.selectionStart;");
+            funct.append("    var newValue = calcText.value.substring(0, position) + '").append(separator).append("' + calcText.value.substring(position);");
+            funct.append("    calcText.value = newValue;");
+            funct.append("    calcText.setSelectionRange(position+1, position+1);");
             funct.append("    event.stop;");
             funct.append("};");
             decimalBox.setWidgetListener("onKeyDown", funct.toString());
@@ -133,13 +137,18 @@ public class NumberBox extends Div
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (btn.getPopup() != null) {
-					String uid = btn.getPopup();
-					if (uid.startsWith("uuid("))
-						uid = uid.substring(5, uid.length()-1);
-					HtmlBasedComponent comp = (HtmlBasedComponent) btn.getDesktop().getComponentByUuidIfAny(uid);
-					if (comp != null) {						
-						comp.focus();
+			        String curValue = "";
+					if (decimalBox.getValue() != null) {
+						curValue = decimalBox.getValue().toString();
+				        boolean processDotKeypad = MSysConfig.getBooleanValue(MSysConfig.ZK_DECIMALBOX_PROCESS_DOTKEYPAD, true, Env.getAD_Client_ID(Env.getCtx()));
+				        if (processDotKeypad) {
+					        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, null).getDecimalFormatSymbols().getDecimalSeparator();
+					        String separator = Character.toString(separatorChar);
+					        curValue = curValue.replace(".", separator);
+				        }
 					}
+					String txtCalcId = txtCalc.getId();
+					Clients.evalJavaScript("calc.append('" + txtCalcId + "', '" + curValue + "')");
 				}				
 			}
 		});
@@ -270,7 +279,7 @@ public class NumberBox extends Div
         } else {
             // restrict allowed characters
             String decimalSep = separator;
-            if (!processDotKeypad && !".".equals(separator))
+            if (!".".equals(separator))
             	decimalSep += ".";
             funct.append("    if (!this._shallIgnore(evt, '= -/()*%+0123456789").append(decimalSep).append("'))");
         }

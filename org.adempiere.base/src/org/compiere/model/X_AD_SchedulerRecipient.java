@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SchedulerRecipient
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipient, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_SchedulerRecipient[")
+      StringBuilder sb = new StringBuilder ("X_AD_SchedulerRecipient[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

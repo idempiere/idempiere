@@ -24,14 +24,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for PA_DashboardPreference
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPreference, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_PA_DashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
@@ -75,7 +75,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_DashboardPreference[")
+      StringBuilder sb = new StringBuilder ("X_PA_DashboardPreference[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

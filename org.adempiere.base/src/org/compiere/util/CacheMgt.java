@@ -26,8 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
-import org.adempiere.base.IServiceHolder;
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
@@ -107,9 +106,13 @@ public class CacheMgt
 		Map<K, V> map = null;
 		if (distributed) 
 		{
-			ICacheService provider = Service.locator().locate(ICacheService.class).getService();
+			ICacheService provider = Core.getCacheService();
 			if (provider != null)
-				map = provider.getMap(name);
+			{
+				IClusterService clusterService = Core.getClusterService();
+				if (clusterService != null && !clusterService.isStandAlone())
+					map = provider.getMap(name);
+			}
 		}
 		
 		if (map == null)
@@ -158,8 +161,7 @@ public class CacheMgt
 	 * @return number of deleted cache entries
 	 */
 	private int clusterReset(String tableName, int recordId) {
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder.getService();
+		IClusterService service = Core.getClusterService();
 		if (service != null) {			
 			ResetCacheCallable callable = new ResetCacheCallable(tableName, recordId);
 			Map<IClusterMember, Future<Integer>> futureMap = service.execute(callable, service.getMembers());
@@ -172,9 +174,15 @@ public class CacheMgt
 						total += i.get();
 					}
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				} catch (ExecutionException e) {
-					e.printStackTrace();
+					if (e.getCause() != null)
+						if (e.getCause() instanceof RuntimeException)
+							throw (RuntimeException)e.getCause();
+						else
+							throw new RuntimeException(e.getCause());
+					else
+						throw new RuntimeException(e);
 				}
 				return total;
 			} else {
@@ -193,8 +201,7 @@ public class CacheMgt
 	 * @return number of deleted cache entries
 	 */
 	private void clusterNewRecord(String tableName, int recordId) {
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder.getService();
+		IClusterService service = Core.getClusterService();
 		if (service != null) {			
 			CacheNewRecordCallable callable = new CacheNewRecordCallable(tableName, recordId);
 			if (service.execute(callable, service.getMembers()) == null) {
@@ -259,9 +266,9 @@ public class CacheMgt
 	}
 
 	/**
-	 * @return
+	 * @return cache instances
 	 */
-	protected synchronized CacheInterface[] getInstancesAsArray() {
+	public synchronized CacheInterface[] getInstancesAsArray() {
 		return m_instances.toArray(new CacheInterface[0]);
 	}
 	

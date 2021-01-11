@@ -28,8 +28,8 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridTab;
@@ -47,7 +47,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Menuitem;
 
@@ -68,7 +67,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	
 	private static final String BTNPREFIX = "Btn";
 	
-	private Hbox layout;
+	private Hlayout layout;
 
 	private ToolBarButton btnFirst, btnPrevious, btnNext, btnLast, btnRecordInfo;
 	
@@ -91,23 +90,25 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 
 	private GridTab m_gridTab;
 
+	private AbstractADWindowContent windowContent;
+
 	/**
-	 * 
+	 * @param windowContent 
+	 * @param windowNo
 	 */
-	public BreadCrumb(int windowNo) {
+	public BreadCrumb(AbstractADWindowContent windowContent, int windowNo) {
+		this.windowContent = windowContent;
 		this.windowNo = windowNo;
-		layout = new Hbox();
-		layout.setPack("start");
-		layout.setAlign("center");
+		layout = new Hlayout();
+		layout.setValign("middle");
 		this.appendChild(layout);
-		ZKUpdateUtil.setHeight(layout, "100%");
-		layout.setStyle("float: left");
+		layout.setSclass("adwindow-breadcrumb-paths");
 
 		this.setVisible(false);
 		this.setSclass("adwindow-breadcrumb");
 				
 		toolbarContainer = new Hlayout();
-		toolbarContainer.setStyle("display: inline-block; float: right");
+		toolbarContainer.setSclass("adwindow-breadcrumb-toolbar");
 		this.appendChild(toolbarContainer);
 		
 		ToolBar toolbar = new ToolBar();
@@ -132,7 +133,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btnLast.setTooltiptext(btnLast.getTooltiptext()+"    Alt+End");
         toolbar.appendChild(btnLast);
 
-		toolbar.setStyle("background-image: none; background-color: transparent; border: none;");
 		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "breadcrumb");
 		
 		this.addEventListener(ON_MOUSE_OUT_ECHO_EVENT, this);
@@ -290,8 +290,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		pathLabel.addEventListener(Events.ON_MOUSE_OVER, listener);
 		pathLabel.addEventListener(Events.ON_MOUSE_OUT, listener);
 		pathLabel.addEventListener(ON_MOUSE_OVER_ECHO_EVENT, listener);
-		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('theme/" + ThemeManager.getTheme() + 
-				"/images/downarrow.png') no-repeat right center");
+		String imageUrl = Executions.getCurrent().encodeURL(ThemeManager.getThemeResource("images/downarrow.png"));		
+		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('" + imageUrl + "') no-repeat right center");
 	}
 
 	@Override
@@ -324,7 +324,11 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			}
 		} else if (event.getName().equals(Events.ON_CTRL_KEY)) {
 			if (!LayoutUtils.isReallyVisible(this)) return;
-			
+
+			// If Quick form is opened then prevent navigation keyEvent
+			if (windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
+				return;
+
 			KeyEvent keyEvent = (KeyEvent) event;
 			if (keyEvent.isAltKey()) {
 				if (keyEvent.getKeyCode() == KeyEvent.LEFT) {
@@ -384,7 +388,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         btn.setName(BTNPREFIX+name);
         btn.setId(name);
         Executions.createComponents(ThemeManager.getPreference(), this, null);
-        String size = Env.getContext(Env.getCtx(), "#ZK_Toolbar_Button_Size");
+        String size = Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE);
     	String suffix = "24.png";
     	if (!Util.isEmpty(size)) 
     	{

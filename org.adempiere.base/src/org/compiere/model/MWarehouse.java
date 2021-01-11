@@ -17,14 +17,16 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Warehouse Model
@@ -36,15 +38,25 @@ import org.compiere.util.Msg;
  *  			<li>BF [ 1874419 ] JDBC Statement not close in a finally block
  *  @version $Id: MWarehouse.java,v 1.3 2006/07/30 00:58:05 jjanke Exp $
  */
-public class MWarehouse extends X_M_Warehouse
+public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3065089372599460372L;
-
+	private static final long serialVersionUID = 5425515002759989733L;
+	
 	/**
-	 * 	Get from Cache
+	 * 	Get from Cache (immutable)
+	 *	@param M_Warehouse_ID id
+	 *	@return warehouse
+	 */
+	public static MWarehouse get (int M_Warehouse_ID)
+	{
+		return get(Env.getCtx(), M_Warehouse_ID);
+	}
+	
+	/**
+	 * 	Get from Cache (immutable)
 	 *	@param ctx context
 	 *	@param M_Warehouse_ID id
 	 *	@return warehouse
@@ -55,7 +67,7 @@ public class MWarehouse extends X_M_Warehouse
 	}
 	
 	/**
-	 * Retrieves warehouse from cache under transaction scope
+	 * Retrieves warehouse from cache (immutable)
 	 * @param ctx				context
 	 * @param M_Warehouse_ID	id of warehouse to load
 	 * @param trxName			transaction name
@@ -64,13 +76,17 @@ public class MWarehouse extends X_M_Warehouse
 	public static MWarehouse get (Properties ctx, int M_Warehouse_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(M_Warehouse_ID);
-		MWarehouse retValue = (MWarehouse)s_cache.get(key);
+		MWarehouse retValue = s_cache.get(ctx, key, e -> new MWarehouse(ctx, e));
 		if (retValue != null)
 			return retValue;
 		//
 		retValue = new MWarehouse (ctx, M_Warehouse_ID, trxName);
-		s_cache.put (key, retValue);
-		return retValue;
+		if (retValue.get_ID() == M_Warehouse_ID)
+		{
+			s_cache.put (key, retValue, e -> new MWarehouse(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**
@@ -109,7 +125,7 @@ public class MWarehouse extends X_M_Warehouse
 	}	//	get
 	
 	/**	Cache					*/
-	protected static CCache<Integer,MWarehouse> s_cache = new CCache<Integer,MWarehouse>(Table_Name, 50 );	
+	protected static ImmutableIntPOCache<Integer,MWarehouse> s_cache = new ImmutableIntPOCache<Integer,MWarehouse>(Table_Name, 50 );	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -153,6 +169,38 @@ public class MWarehouse extends X_M_Warehouse
 			setC_Location_ID (org.getInfo().getC_Location_ID());
 	}	//	MWarehouse
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWarehouse(MWarehouse copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWarehouse(Properties ctx, MWarehouse copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWarehouse(Properties ctx, MWarehouse copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_locators = copy.m_locators != null ? Arrays.stream(copy.m_locators).map(e -> {return new MLocator(ctx, e, trxName);}).toArray(MLocator[]::new) : null;
+	}
+	
 	/**	Warehouse Locators				*/
 	protected MLocator[]	m_locators = null;
 	
@@ -172,6 +220,8 @@ public class MWarehouse extends X_M_Warehouse
 										.setOnlyActiveRecords(true)
 										.setOrderBy("X,Y,Z")
 										.list();
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_locators = list.toArray(new MLocator[list.size()]);
 		return m_locators;
 	}	//	getLocators
@@ -273,5 +323,19 @@ public class MWarehouse extends X_M_Warehouse
 		
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MWarehouse markImmutable() 
+	{
+		if (this.is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_locators != null && m_locators.length > 0)
+			Arrays.stream(m_locators).forEach(e -> e.markImmutable());
+		
+		return this;
+	}
+
 
 }	//	MWarehouse

@@ -23,11 +23,12 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.IntPOCopyCache;
 
 /**
  *	Business Partner Group Model 
@@ -35,33 +36,36 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: MBPGroup.java,v 1.4 2006/09/23 15:54:22 jjanke Exp $
  */
-public class MBPGroup extends X_C_BP_Group
+public class MBPGroup extends X_C_BP_Group implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8897399796117872715L;
+	private static final long serialVersionUID = 1155912422087010656L;
 
 	/**
-	 * 	Get MBPGroup from Cache
+	 * 	Get MBPGroup from Cache (immutable)
+	 *	@param C_BP_Group_ID id
+	 *	@return MBPGroup
+	 */
+	public static MBPGroup get (int C_BP_Group_ID)
+	{
+		return get(Env.getCtx(), C_BP_Group_ID);
+	}
+	
+	/**
+	 * 	Get MBPGroup from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_BP_Group_ID id
 	 *	@return MBPGroup
 	 */
 	public static MBPGroup get (Properties ctx, int C_BP_Group_ID)
 	{
-		Integer key = Integer.valueOf(C_BP_Group_ID);
-		MBPGroup retValue = (MBPGroup) s_cache.get (key);
-		if (retValue != null)
-			return retValue;
-		retValue = new MBPGroup (ctx, C_BP_Group_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		return get(ctx, C_BP_Group_ID, (String)null);
 	}	//	get
 
 	/**
-	 * 
+	 * Get MBPGroup from cache (immutable)
 	 * @param ctx
 	 * @param C_BP_Group_ID
 	 * @param trxName
@@ -69,10 +73,32 @@ public class MBPGroup extends X_C_BP_Group
 	 */
 	public static MBPGroup get (Properties ctx, int C_BP_Group_ID, String trxName)
 	{
-		if (Util.isEmpty(trxName, true))
-			return get(ctx, C_BP_Group_ID);
-		else
-			return new MBPGroup (ctx, C_BP_Group_ID, trxName);
+		Integer key = Integer.valueOf(C_BP_Group_ID);
+		MBPGroup retValue = s_cache.get (ctx, key, e -> new MBPGroup(ctx, e));
+		if (retValue != null)
+			return retValue;
+		retValue = new MBPGroup (ctx, C_BP_Group_ID, trxName);
+		if (retValue.get_ID () == C_BP_Group_ID)
+		{
+			s_cache.put (key, retValue, e -> new MBPGroup(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
+	}
+	
+	/**
+	 * Get updateable copy of MBPGroup from cache
+	 * @param ctx
+	 * @param C_BP_Group_ID
+	 * @param trxName
+	 * @return MBPGroup
+	 */
+	public static MBPGroup getCopy(Properties ctx, int C_BP_Group_ID, String trxName)
+	{
+		MBPGroup group = get(ctx, C_BP_Group_ID, trxName);
+		if (group != null)
+			group = new MBPGroup(ctx, group, trxName);
+		return group;
 	}
 	
 	/**
@@ -84,7 +110,7 @@ public class MBPGroup extends X_C_BP_Group
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
 		Integer key = Integer.valueOf(AD_Client_ID);
-		MBPGroup retValue = (MBPGroup) s_cacheDefault.get (key);
+		MBPGroup retValue = s_cacheDefault.get (key, e -> new MBPGroup(ctx, e));
 		if (retValue != null)
 			return retValue;
 		
@@ -100,9 +126,11 @@ public class MBPGroup extends X_C_BP_Group
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
-				retValue = new MBPGroup (ctx, rs, null);
-				if (retValue.get_ID () != 0)
-					s_cacheDefault.put (key, retValue);
+				retValue = new MBPGroup (ctx, rs, (String)null);
+				if (retValue.get_ID () != 0) 
+				{
+					s_cacheDefault.put (key, retValue, e -> new MBPGroup(Env.getCtx(), e));
+				}
 			}
 		}
 		catch (Exception e)
@@ -162,11 +190,11 @@ public class MBPGroup extends X_C_BP_Group
 	}	//	getOfBPartner
 	
 	/**	Cache						*/
-	private static CCache<Integer,MBPGroup>	s_cache
-		= new CCache<Integer,MBPGroup>(Table_Name, 10);
+	private static ImmutableIntPOCache<Integer,MBPGroup>	s_cache
+		= new ImmutableIntPOCache<Integer,MBPGroup>(Table_Name, 10);
 	/**	Default Cache					*/
-	private static CCache<Integer,MBPGroup>	s_cacheDefault
-		= new CCache<Integer,MBPGroup>(Table_Name, MBPGroup.class.getName()+".Default", 5);
+	private static IntPOCopyCache<Integer,MBPGroup>	s_cacheDefault
+		= new IntPOCopyCache<Integer,MBPGroup>(Table_Name, MBPGroup.class.getName()+".Default", 5);
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MBPGroup.class);
 	
@@ -200,6 +228,36 @@ public class MBPGroup extends X_C_BP_Group
 		super(ctx, rs, trxName);
 	}	//	MBPGroup
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPGroup(MBPGroup copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPGroup(Properties ctx, MBPGroup copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPGroup(Properties ctx, MBPGroup copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Get Credit Watch Percent
@@ -246,4 +304,12 @@ public class MBPGroup extends X_C_BP_Group
 		return success;
 	}	//	afterSave
 
+	@Override
+	public MBPGroup markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 }	//	MBPGroup

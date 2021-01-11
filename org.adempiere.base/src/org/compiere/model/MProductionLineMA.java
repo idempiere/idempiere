@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.model.X_M_ProductionLineMA;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 

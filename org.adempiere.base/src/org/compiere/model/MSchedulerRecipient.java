@@ -19,18 +19,21 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+
 /**
  * 	Scheduler Recipient Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MSchedulerRecipient.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MSchedulerRecipient extends X_AD_SchedulerRecipient
+public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6521993049769786393L;
+	private static final long serialVersionUID = -4928359768598663557L;
 
 	/**
 	 * 	Standard Constructor
@@ -55,4 +58,44 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient
 		super (ctx, rs, trxName);
 	}	//	MSchedulerRecipient
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSchedulerRecipient(MSchedulerRecipient copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSchedulerRecipient(Properties ctx, MSchedulerRecipient copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSchedulerRecipient(Properties ctx, MSchedulerRecipient copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	@Override
+	public MSchedulerRecipient markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MSchedulerRecipient

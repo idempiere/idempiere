@@ -20,22 +20,70 @@
 *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.of
 */
 
+
 CREATE OR REPLACE FUNCTION addDays(datetime TIMESTAMP WITH TIME ZONE, days Numeric)
-RETURNS DATE AS $$
-declare duration varchar;
+RETURNS TIMESTAMP WITH TIME ZONE AS $$
 BEGIN
 	if datetime is null or days is null then
 		return null;
 	end if;
-	duration = days || ' day';	 
-	return cast(date_trunc('day',datetime) + cast(duration as interval) as date);
+	return datetime + (interval '1' second * (86400 * days));
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+
+CREATE OR REPLACE FUNCTION adddays (in inter interval, in days numeric)
+RETURNS integer AS $$
+BEGIN   
+RETURN ( EXTRACT( EPOCH FROM ( inter ) ) / 86400 ) + days;
+END;    
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+
 CREATE OR REPLACE FUNCTION subtractdays (day TIMESTAMP WITH TIME ZONE, days NUMERIC)
-RETURNS DATE AS $$
+RETURNS TIMESTAMP WITH TIME ZONE AS $$
 BEGIN
     RETURN addDays(day,(days * -1));
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
+
+
+CREATE OR REPLACE FUNCTION subtractdays (in inter interval, in days numeric)
+RETURNS integer AS $$
+BEGIN
+RETURN ( EXTRACT( EPOCH FROM ( inter ) ) / 86400 ) - days;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+
+CREATE OPERATOR + (
+    PROCEDURE = adddays,
+    LEFTARG = timestamp with time zone,
+    RIGHTARG = numeric,
+    COMMUTATOR = OPERATOR(+)
+);
+
+
+CREATE OPERATOR + (
+    PROCEDURE = adddays,
+    LEFTARG = interval,
+    RIGHTARG = numeric,
+    COMMUTATOR = OPERATOR(-)
+);
+
+
+CREATE OPERATOR - (
+    PROCEDURE = subtractdays,
+    LEFTARG = timestamp with time zone,
+    RIGHTARG = numeric,
+    COMMUTATOR = OPERATOR(-)
+);
+
+
+CREATE OPERATOR - (
+    PROCEDURE = subtractdays,
+    LEFTARG = interval,
+    RIGHTARG = numeric,
+    COMMUTATOR = OPERATOR(-)
+);
 

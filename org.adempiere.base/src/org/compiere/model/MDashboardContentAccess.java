@@ -53,7 +53,7 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 		parameters.add(AD_Client_ID);
 		parameters.add(AD_Client_ID);
 		
-		StringBuffer sql= new StringBuffer();
+		StringBuilder sql= new StringBuilder();
 		// First part : dashboards not configured in access and flagged to be shown in login (this is intended to show new dashboards, otherwise new dashboards won't be shown unless the user go and configure them)
 		sql.append("SELECT PA_DashboardContent_ID,ColumnNo ")
 		   .append(" FROM PA_DashboardContent ")

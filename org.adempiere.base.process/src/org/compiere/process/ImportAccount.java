@@ -29,6 +29,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MElementValue;
 import org.compiere.model.X_I_ElementValue;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Import Accounts from I_ElementValue
@@ -605,7 +606,7 @@ public class ImportAccount extends SvrProcess
 				{
 					if (m_createNewCombination)
 					{
-						MAccount acct = MAccount.get(getCtx(), C_ValidCombination_ID);
+						MAccount acct = new MAccount(Env.getCtx(), C_ValidCombination_ID, (String)null);
 						acct.setAccount_ID(C_ElementValue_ID);
 						if (acct.save())
 						{

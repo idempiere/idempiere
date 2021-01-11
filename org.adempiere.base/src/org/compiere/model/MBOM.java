@@ -20,25 +20,36 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	BOM Model
  *  @author Jorg Janke
  *  @version $Id: MBOM.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MBOM extends X_M_BOM
+public class MBOM extends X_M_BOM implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8885316310068284701L;
-
+	private static final long serialVersionUID = -6311001492891936078L;
 
 	/**
-	 * 	Get BOM from Cache
+	 * 	Get BOM from Cache (immutable)
+	 *	@param M_BOM_ID id
+	 *	@return MBOM
+	 */
+	public static MBOM get (int M_BOM_ID)
+	{
+		return get(Env.getCtx(), M_BOM_ID);
+	}
+	
+	/**
+	 * 	Get BOM from Cache (immutable)
 	 *	@param ctx context
 	 *	@param M_BOM_ID id
 	 *	@return MBOM
@@ -46,15 +57,33 @@ public class MBOM extends X_M_BOM
 	public static MBOM get (Properties ctx, int M_BOM_ID)
 	{
 		Integer key = Integer.valueOf(M_BOM_ID);
-		MBOM retValue = (MBOM) s_cache.get (key);
+		MBOM retValue = (MBOM) s_cache.get (ctx, key, e -> new MBOM(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MBOM (ctx, M_BOM_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MBOM (ctx, M_BOM_ID, (String)null);
+		if (retValue.get_ID () == M_BOM_ID)
+		{
+			s_cache.put (key, retValue, e -> new MBOM(Env.getCtx(), e));
+			return retValue.markImmutable();
+		}
+		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MBOM from cache
+	 * @param ctx
+	 * @param M_BOM_ID
+	 * @param trxName
+	 * @return MBOM
+	 */
+	public static MBOM getCopy(Properties ctx, int M_BOM_ID, String trxName)
+	{
+		MBOM bom = get(M_BOM_ID);
+		if (bom != null)
+			bom = new MBOM(ctx, bom, trxName);
+		return bom;
+	}
+	
 	/**
 	 * 	Get BOMs Of Product
 	 *	@param ctx context
@@ -80,8 +109,8 @@ public class MBOM extends X_M_BOM
 	}	//	getOfProduct
 
 	/**	Cache						*/
-	private static CCache<Integer,MBOM>	s_cache	
-		= new CCache<Integer,MBOM>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MBOM>	s_cache	
+		= new ImmutableIntPOCache<Integer,MBOM>(Table_Name, 20);
 	/**	Logger						*/
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MBOM.class);
@@ -116,6 +145,37 @@ public class MBOM extends X_M_BOM
 		super (ctx, rs, trxName);
 	}	//	MBOM
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBOM(MBOM copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBOM(Properties ctx, MBOM copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBOM(Properties ctx, MBOM copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
@@ -161,4 +221,12 @@ public class MBOM extends X_M_BOM
 		return true;
 	}	//	beforeSave
 	
+	@Override
+	public MBOM markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 }	//	MBOM

@@ -634,7 +634,7 @@ public class ReplenishReport extends SvrProcess
 				
 				order = new MDDOrder (getCtx(), 0, get_TrxName());				
 				order.setC_DocType_ID(p_C_DocType_ID);
-				StringBuffer msgsd = new StringBuffer(Msg.getMsg(getCtx(), "Replenishment"))
+				StringBuilder msgsd = new StringBuilder(Msg.getMsg(getCtx(), "Replenishment"))
 						.append(": ").append(whSource.getName()).append("->").append(wh.getName());
 				order.setDescription(msgsd.toString());
 				//	Set Org

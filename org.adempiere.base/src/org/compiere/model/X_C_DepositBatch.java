@@ -26,14 +26,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatch
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
@@ -79,7 +79,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_DepositBatch[")
+      StringBuilder sb = new StringBuilder ("X_C_DepositBatch[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

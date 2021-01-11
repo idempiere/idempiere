@@ -60,7 +60,7 @@ public class BankRegister extends SvrProcess
 	 */
 	protected void prepare()
 	{
-		StringBuffer sb = new StringBuffer ("Record_ID=")
+		StringBuilder sb = new StringBuilder ("Record_ID=")
 			.append(getRecord_ID());
 		//	Parameter
 		ProcessInfoParameter[] para = getParameter();
@@ -147,7 +147,7 @@ public class BankRegister extends SvrProcess
 	 */
 	private void createBalanceLine()
 	{
-		StringBuffer sb = new StringBuffer ("INSERT INTO T_BankRegister "
+		StringBuilder sb = new StringBuilder ("INSERT INTO T_BankRegister "
 			+ "(AD_PInstance_ID, AD_Client_ID, AD_Org_ID, "
 			+ "DateAcct, C_Bank_ID, BankName, C_BPartner_ID, BPartner, DocumentNo," // Account, 
 			+ "AmtAcctDr, AmtAcctCr, Balance) ");
@@ -184,7 +184,7 @@ public class BankRegister extends SvrProcess
 	 */
 	private void createDetailLines()
 	{
-		StringBuffer sb = new StringBuffer ("INSERT INTO T_BankRegister "
+		StringBuilder sb = new StringBuilder ("INSERT INTO T_BankRegister "
 				+ "(AD_PInstance_ID, AD_Client_ID, AD_Org_ID, "
 				+ "DateAcct, C_Bank_ID, BankName, C_BPartner_ID, BPartner, DocumentNo, " //Account, 
 				+ "AmtAcctDr, AmtAcctCr, Balance) ");

@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TaskInstance
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_TaskInstance (Properties ctx, int AD_TaskInstance_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_TaskInstance[")
+      StringBuilder sb = new StringBuilder ("X_AD_TaskInstance[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -17,6 +17,7 @@
 package org.compiere.wf;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Workflow Node Next - Transition
@@ -33,12 +35,12 @@ import org.compiere.util.Env;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MWFNodeNext.java,v 1.3 2006/10/06 00:42:24 jjanke Exp $
  */
-public class MWFNodeNext extends X_AD_WF_NodeNext
+public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7925133581626319200L;
+	private static final long serialVersionUID = -7758585369030074980L;
 
 	/**
 	 * 	Standard Costructor
@@ -83,6 +85,40 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 		setAD_WF_Next_ID(AD_WF_Next_ID);
 	}	//	MWFNodeNext
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFNodeNext(MWFNodeNext copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFNodeNext(Properties ctx, MWFNodeNext copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFNodeNext(Properties ctx, MWFNodeNext copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_conditions = copy.m_conditions != null ? Arrays.stream(copy.m_conditions).map(e ->{return new MWFNextCondition(ctx, e, trxName);}).toArray(MWFNextCondition[]::new) : null;
+		this.m_fromSplitAnd = copy.m_fromSplitAnd;
+		this.m_toJoinAnd = copy.m_toJoinAnd;
+	}
+	
 	/** Transition Conditions			*/
 	private MWFNextCondition[] 	m_conditions = null;
 	/**	From (Split Eleemnt) is AND		*/
@@ -134,6 +170,8 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MWFNextCondition.COLUMNNAME_SeqNo)
 				.list();
+		if (is_Immutable() && list.size() > 0)
+			list.stream().forEach(e -> e.markImmutable());
 		m_conditions = new MWFNextCondition[list.size()];
 		list.toArray (m_conditions);
 		return m_conditions;
@@ -248,5 +286,16 @@ public class MWFNodeNext extends X_AD_WF_NodeNext
 	{
 		m_toJoinAnd = Boolean.valueOf(toJoinAnd);
 	}	//	setToJoinAnd
+
+	@Override
+	public MWFNodeNext markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		if (m_conditions != null && m_conditions.length > 0)
+			Arrays.stream(m_conditions).forEach(e -> e.markImmutable());
+		return this;
+	}
 
 }	//	MWFNodeNext

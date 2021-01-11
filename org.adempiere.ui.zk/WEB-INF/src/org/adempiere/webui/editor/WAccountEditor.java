@@ -52,9 +52,24 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WAccountEditor.class);
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WAccountEditor(GridField gridField)
 	{
-		super(new Combinationbox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WAccountEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new Combinationbox(), gridField, tableEditor, editorConfiguration);
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass("z-icon-Account");
 		else

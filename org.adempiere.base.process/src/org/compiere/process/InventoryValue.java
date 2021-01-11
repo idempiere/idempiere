@@ -201,7 +201,7 @@ public class InventoryValue extends SvrProcess
 		//  Adjust for Valuation Date
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
 			.append("SET QtyOnHand=")
-				.append("(SELECT iv.QtyOnHand - COALESCE(SUM(t.MovementQty), 0) ")
+				.append("(SELECT iv.QtyOnHand - NVL(SUM(t.MovementQty), 0) ")
 				.append("FROM M_Transaction t")
 				.append(" INNER JOIN M_Locator l ON (t.M_Locator_ID=l.M_Locator_ID) ")
 				.append("WHERE t.M_Product_ID=iv.M_Product_ID")
@@ -215,7 +215,7 @@ public class InventoryValue extends SvrProcess
 		//
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
 			.append("SET QtyOnHand=")
-				.append("(SELECT iv.QtyOnHand - COALESCE(SUM(t.MovementQty), 0) ")
+				.append("(SELECT iv.QtyOnHand - NVL(SUM(t.MovementQty), 0) ")
 				.append("FROM M_Transaction t")
 				.append(" INNER JOIN M_Locator l ON (t.M_Locator_ID=l.M_Locator_ID) ")
 				.append("WHERE t.M_Product_ID=iv.M_Product_ID")

@@ -373,7 +373,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDDOrder[")
+		StringBuilder sb = new StringBuilder ("MDDOrder[")
 			.append(get_ID()).append("-").append(getDocumentNo())
 			.append(",IsSOTrx=").append(isSOTrx())
 			.append(",C_DocType_ID=").append(getC_DocType_ID())
@@ -433,7 +433,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 */
 	public MDDOrderLine[] getLines (String whereClause, String orderClause)
 	{
-		StringBuffer whereClauseFinal = new StringBuffer(MDDOrderLine.COLUMNNAME_DD_Order_ID).append("=?");
+		StringBuilder whereClauseFinal = new StringBuilder(MDDOrderLine.COLUMNNAME_DD_Order_ID).append("=?");
 		if (!Util.isEmpty(whereClause, true))
 			whereClauseFinal.append(" AND (").append(whereClause).append(")");
 		//
@@ -1046,7 +1046,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 			return true;
 		
 		if (log.isLoggable(Level.INFO)) log.info("createReversals");
-		StringBuffer info = new StringBuffer();
+		StringBuilder info = new StringBuilder();
 		
 		//	Reverse All *Shipments*
 		info.append("@M_InOut_ID@:");

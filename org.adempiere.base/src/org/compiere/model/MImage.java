@@ -33,8 +33,9 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.adempiere.base.Core;
-import org.compiere.util.CCache;
-import org.compiere.util.Ini;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Image Model
@@ -43,17 +44,27 @@ import org.compiere.util.Ini;
  *  @author Jorg Janke
  *  @version $Id: MImage.java,v 1.5 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MImage extends X_AD_Image
+public class MImage extends X_AD_Image implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7361463683427300715L;
-
+	private static final long serialVersionUID = 1850627989276185947L;
+	
 	private MStorageProvider provider;
 	
 	/**
-	 * 	Get MImage from Cache
+	 * 	Get MImage from Cache (immutable)
+	 *	@param AD_Image_ID id
+	 *	@return MImage
+	 */
+	public static MImage get (int AD_Image_ID)
+	{
+		return get(Env.getCtx(), AD_Image_ID);
+	}
+	
+	/**
+	 * 	Get MImage (Immutable) from Cache
 	 *	@param ctx context
 	 *	@param AD_Image_ID id
 	 *	@return MImage
@@ -64,17 +75,36 @@ public class MImage extends X_AD_Image
 			return new MImage (ctx, AD_Image_ID, null);
 		//
 		Integer key = Integer.valueOf(AD_Image_ID);
-		MImage retValue = (MImage) s_cache.get (key);
+		MImage retValue = s_cache.get (ctx, key, e -> new MImage(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MImage (ctx, AD_Image_ID, null);
-		if (retValue.get_ID () != 0 && Ini.isClient())
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MImage (ctx, AD_Image_ID, (String)null);
+		if (retValue.get_ID () == AD_Image_ID)
+		{
+			s_cache.put (key, retValue, e -> new MImage(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MImage from cache
+	 * @param ctx context
+	 * @param AD_Image_ID
+	 * @param trxName transaction name
+	 * @return MImage
+	 */
+	public static MImage getCopy(Properties ctx, int AD_Image_ID, String trxName)
+	{
+		MImage img = get(AD_Image_ID);
+		if (img != null && img.getAD_Image_ID() > 0)
+			img = new MImage(ctx, img, trxName);
+		
+		return img;
+	}
+	
 	/**	Cache						*/
-	private static CCache<Integer,MImage> s_cache = new CCache<Integer,MImage>(Table_Name, 20, 10);
+	private static ImmutableIntPOCache<Integer,MImage> s_cache = new ImmutableIntPOCache<Integer,MImage>(Table_Name, 20, 10);
 	
 	/**
 	 *  Constructor
@@ -102,6 +132,36 @@ public class MImage extends X_AD_Image
 		initImageStoreDetails(ctx, trxName);
 	}	//	MImage
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MImage(MImage copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MImage(Properties ctx, MImage copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MImage(Properties ctx, MImage copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/** The Image                   */
 	private Image			m_image = null;
@@ -375,4 +435,14 @@ public class MImage extends X_AD_Image
 		if (prov != null && prov.isPendingFlush())
 			prov.flush(this, provider);
 	}
+	
+	@Override
+	public MImage markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }   //  MImage

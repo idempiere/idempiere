@@ -27,7 +27,6 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
-import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPayment;
@@ -126,8 +125,8 @@ public class Allocation
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT p.DateTrx,p.DocumentNo,p.C_Payment_ID,"  //  1..3
 			+ "c.ISO_Code,p.PayAmt,"                            //  4..5
-			+ "currencyConvert(p.PayAmt,p.C_Currency_ID,?,?,p.C_ConversionType_ID,p.AD_Client_ID,p.AD_Org_ID),"//  6   #1, #2
-			+ "currencyConvert(paymentAvailable(C_Payment_ID),p.C_Currency_ID,?,?,p.C_ConversionType_ID,p.AD_Client_ID,p.AD_Org_ID),"  //  7   #3, #4
+			+ "currencyConvertPayment(p.C_Payment_ID,?,null,?),"//  6   #1, #2
+			+ "currencyConvertPayment(p.C_Payment_ID,?,paymentAvailable(p.C_Payment_ID),?),"  //  7   #3, #4
 			+ "p.MultiplierAP "
 			+ "FROM C_Payment_v p"		//	Corrected for AP/AR
 			+ " INNER JOIN C_Currency c ON (p.C_Currency_ID=c.C_Currency_ID) "
@@ -257,10 +256,10 @@ public class Allocation
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT i.DateInvoiced,i.DocumentNo,i.C_Invoice_ID," //  1..3
 			+ "c.ISO_Code,i.GrandTotal*i.MultiplierAP, "                            //  4..5    Orig Currency
-			+ "currencyConvert(i.GrandTotal*i.MultiplierAP,i.C_Currency_ID,?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID), " //  6   #1  Converted, #2 Date
-			+ "currencyConvert(invoiceOpen(C_Invoice_ID,C_InvoicePaySchedule_ID),i.C_Currency_ID,?,?,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID)*i.MultiplierAP, "  //  7   #3, #4  Converted Open
-			+ "currencyConvert(invoiceDiscount"                               //  8       AllowedDiscount
-			+ "(i.C_Invoice_ID,?,C_InvoicePaySchedule_ID),i.C_Currency_ID,?,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID)*i.Multiplier*i.MultiplierAP,"               //  #5, #6
+			+ "currencyConvertInvoice(i.C_Invoice_ID,?,i.GrandTotal*i.MultiplierAP,?), " //  6   #1  Converted, #2 Date
+			+ "currencyConvertInvoice(i.C_Invoice_ID,?,invoiceOpen(C_Invoice_ID,C_InvoicePaySchedule_ID),?)*i.MultiplierAP, "  //  7   #3, #4  Converted Open
+			+ "currencyConvertInvoice(i.C_Invoice_ID"                               //  8       AllowedDiscount
+			+ ",?,invoiceDiscount(i.C_Invoice_ID,?,C_InvoicePaySchedule_ID),i.DateInvoiced)*i.Multiplier*i.MultiplierAP,"               //  #5, #6
 			+ "i.MultiplierAP "
 			+ "FROM C_Invoice_v i"		//  corrected for CM/Split
 			+ " INNER JOIN C_Currency c ON (i.C_Currency_ID=c.C_Currency_ID) "
@@ -285,8 +284,8 @@ public class Allocation
 			pstmt.setTimestamp(2, (Timestamp)date);
 			pstmt.setInt(3, m_C_Currency_ID);
 			pstmt.setTimestamp(4, (Timestamp)date);
-			pstmt.setTimestamp(5, (Timestamp)date);
-			pstmt.setInt(6, m_C_Currency_ID);
+			pstmt.setInt(5, m_C_Currency_ID);
+			pstmt.setTimestamp(6, (Timestamp)date);
 			pstmt.setInt(7, m_C_BPartner_ID);
 			if (!isMultiCurrency)
 				pstmt.setInt(8, m_C_Currency_ID);
@@ -808,9 +807,6 @@ public class Allocation
 			if (log.isLoggable(Level.CONFIG)) log.config("Payment #" + i + (pay.isAllocated() ? " not" : " is") 
 					+ " fully allocated");
 		}
-		MBPartner bpartner = new MBPartner(Env.getCtx(), m_C_BPartner_ID, trxName);
-		bpartner.setTotalOpenBalance();
-		bpartner.saveEx();
 		paymentList.clear();
 		amountList.clear();
 		

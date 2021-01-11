@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumnSet
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_PA_ReportColumnSet (Properties ctx, int PA_ReportColumnSet_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_ReportColumnSet[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_ReportColumnSet[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

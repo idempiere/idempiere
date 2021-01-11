@@ -61,9 +61,26 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 	/**	No Instance Key					*/
 	private static Integer		NO_INSTANCE = Integer.valueOf(0);
 
+	/**
+	 * 
+	 * @param gridTab
+	 * @param gridField
+	 */
 	public WPAttributeEditor(GridTab gridTab, GridField gridField)
 	{
-		super(new PAttributebox(), gridField);
+		this(gridTab, gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridTab
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WPAttributeEditor(GridTab gridTab, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new PAttributebox(), gridField, tableEditor, editorConfiguration);
 		m_GridTab = gridTab;
 		initComponents();
 	}

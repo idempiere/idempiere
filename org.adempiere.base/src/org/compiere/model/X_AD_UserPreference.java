@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserPreference
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_UserPreference[")
+      StringBuilder sb = new StringBuilder ("X_AD_UserPreference[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -256,6 +256,20 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Migration Script Comment.
+		@param MigrationScriptComment Migration Script Comment	  */
+	public void setMigrationScriptComment (String MigrationScriptComment)
+	{
+		set_Value (COLUMNNAME_MigrationScriptComment, MigrationScriptComment);
+	}
+
+	/** Get Migration Script Comment.
+		@return Migration Script Comment	  */
+	public String getMigrationScriptComment () 
+	{
+		return (String)get_Value(COLUMNNAME_MigrationScriptComment);
 	}
 
 	/** Set Toggle on Double Click.

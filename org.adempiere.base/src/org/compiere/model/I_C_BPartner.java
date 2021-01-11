@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_C_BPartner 
 {
@@ -94,12 +94,12 @@ public interface I_C_BPartner
 	/** Set Linked Organization.
 	  * The Business Partner is another Organization for explicit Inter-Org transactions
 	  */
-	public void setAD_OrgBP_ID (String AD_OrgBP_ID);
+	public void setAD_OrgBP_ID (int AD_OrgBP_ID);
 
 	/** Get Linked Organization.
 	  * The Business Partner is another Organization for explicit Inter-Org transactions
 	  */
-	public String getAD_OrgBP_ID();
+	public int getAD_OrgBP_ID();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

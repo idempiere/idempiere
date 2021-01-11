@@ -19,11 +19,6 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MDocType;
-import org.compiere.model.MPeriod;
-import org.compiere.model.ModelValidationEngine;
-import org.compiere.model.ModelValidator;
-import org.compiere.model.PO;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;

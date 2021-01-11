@@ -20,10 +20,11 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Charge Model
@@ -34,12 +35,12 @@ import org.compiere.util.Env;
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>FR [ 2214883 ] Remove SQL code and Replace for Query
  */
-public class MCharge extends X_C_Charge
+public class MCharge extends X_C_Charge implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4628105180010713510L;
+	private static final long serialVersionUID = 1978008783808254164L;
 
 	/**
 	 *  Get Charge Account
@@ -80,7 +81,17 @@ public class MCharge extends X_C_Charge
 	}   //  getAccount
 
 	/**
-	 * 	Get MCharge from Cache
+	 * 	Get MCharge from Cache (immutable)
+	 *	@param C_Charge_ID id
+	 *	@return MCharge
+	 */
+	public static MCharge get (int C_Charge_ID)
+	{
+		return get(Env.getCtx(), C_Charge_ID);
+	}
+	
+	/**
+	 * 	Get MCharge from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_Charge_ID id
 	 *	@return MCharge
@@ -88,18 +99,36 @@ public class MCharge extends X_C_Charge
 	public static MCharge get (Properties ctx, int C_Charge_ID)
 	{
 		Integer key = Integer.valueOf(C_Charge_ID);
-		MCharge retValue = (MCharge)s_cache.get (key);
+		MCharge retValue = (MCharge)s_cache.get (ctx, key, e -> new MCharge(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MCharge (ctx, C_Charge_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MCharge (ctx, C_Charge_ID, (String)null);
+		if (retValue.get_ID() == C_Charge_ID)
+		{
+			s_cache.put (key, retValue, e -> new MCharge(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MCharge from cache
+	 * @param ctx
+	 * @param C_Charge_ID
+	 * @param trxName
+	 * @return MCharge
+	 */
+	public static MCharge getCopy(Properties ctx, int C_Charge_ID, String trxName)
+	{
+		MCharge charge = get(C_Charge_ID);
+		if (charge != null)
+			charge = new MCharge(ctx, charge, trxName);
+		return charge;
+	}
+	
 	/**	Cache						*/
-	private static CCache<Integer, MCharge> s_cache 
-		= new CCache<Integer, MCharge> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MCharge> s_cache 
+		= new ImmutableIntPOCache<Integer, MCharge> (Table_Name, 10);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCharge.class);
@@ -137,6 +166,37 @@ public class MCharge extends X_C_Charge
 	}	//	MCharge
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MCharge(MCharge copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCharge(Properties ctx, MCharge copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MCharge(Properties ctx, MCharge copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	After Save
 	 *	@param newRecord new
 	 *	@param success success
@@ -149,5 +209,14 @@ public class MCharge extends X_C_Charge
 
 		return success;
 	}	//	afterSave
+
+	@Override
+	public MCharge markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MCharge

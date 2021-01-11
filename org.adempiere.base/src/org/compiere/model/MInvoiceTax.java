@@ -136,6 +136,39 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		super(ctx, rs, trxName);
 	}	//	MInvoiceTax
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInvoiceTax(MInvoiceTax copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInvoiceTax(Properties ctx, MInvoiceTax copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInvoiceTax(Properties ctx, MInvoiceTax copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_precision = copy.m_precision;
+		this.m_tax = copy.m_tax != null ? new MTax(ctx, copy.m_tax, trxName) : null;
+	}
+	
 	/** Tax							*/
 	private MTax 		m_tax = null;
 	/** Cached Precision			*/
@@ -163,7 +196,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	}	//	setPrecision
 
 	/**
-	 * 	Get Tax
+	 * 	Get Tax (immutable)
 	 *	@return tax
 	 */
 	protected MTax getTax()
@@ -257,5 +290,4 @@ public class MInvoiceTax extends X_C_InvoiceTax
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-
 }	//	MInvoiceTax

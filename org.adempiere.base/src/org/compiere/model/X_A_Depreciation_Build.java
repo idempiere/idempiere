@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Build
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Build (Properties ctx, int A_Depreciation_Build_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Depreciation_Build[")
+      StringBuilder sb = new StringBuilder ("X_A_Depreciation_Build[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

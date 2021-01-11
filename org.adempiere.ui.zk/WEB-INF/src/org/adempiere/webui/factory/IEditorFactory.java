@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.factory;
 
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WEditor;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -28,7 +29,17 @@ public interface IEditorFactory {
 	 * @param gridTab
 	 * @param gridField
 	 * @param tableEditor
-	 * @return WEditor
+	 * @return {@link WEditor}
 	 */
 	public WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor);
+	
+	/**
+	 * 
+	 * @param gridTab
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 * @return {@link WEditor}
+	 */
+	public WEditor getEditor(GridTab gridTab, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration);
 }

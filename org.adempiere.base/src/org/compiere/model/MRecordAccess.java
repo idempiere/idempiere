@@ -197,7 +197,7 @@ public class MRecordAccess extends X_AD_Record_Access
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MRecordAccess[AD_Role_ID=")
+		StringBuilder sb = new StringBuilder("MRecordAccess[AD_Role_ID=")
 			.append(getAD_Role_ID())
 			.append(",AD_Table_ID=").append(getAD_Table_ID())
 			.append(",Record_ID=").append(getRecord_ID())

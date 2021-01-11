@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_RegistrationAttribute
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAttribute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_A_RegistrationAttribute (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
@@ -70,8 +70,8 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_RegistrationAttribute[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_RegistrationAttribute[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

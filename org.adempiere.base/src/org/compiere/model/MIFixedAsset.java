@@ -8,9 +8,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
-import org.compiere.model.MClient;
-import org.compiere.model.MProduct;
-import org.compiere.model.MUOM;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -57,7 +54,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 		
 		int M_Product_ID = getM_Product_ID();
 		if (M_Product_ID <= 0) {
-			StringBuffer whereClause = new StringBuffer();
+			StringBuilder whereClause = new StringBuilder();
 			String key = getProductValue();
 			if (key == null || key.trim().length() == 0) {
 				key = getName();

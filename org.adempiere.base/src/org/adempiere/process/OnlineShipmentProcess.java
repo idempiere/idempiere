@@ -55,11 +55,11 @@ public class OnlineShipmentProcess extends SvrProcess
 			getProcessInfo().setError(true);
 			getProcessInfo().addLog(new ProcessInfoLog(getProcessInfo().getAD_Process_ID(), 
 					new Timestamp(System.currentTimeMillis()), null, m_package.getErrorMessage()));
-			return m_package.getErrorMessage();
+			return "@Error@"; 
 		}
 		getProcessInfo().addLog(new ProcessInfoLog(getProcessInfo().getAD_Process_ID(), 
 				new Timestamp(System.currentTimeMillis()), null, m_package.getShippingRespMessage()));
-		return m_package.getShippingRespMessage();
+		return "@OK";
 	}
 
 /*	

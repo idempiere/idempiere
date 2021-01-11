@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_C_CashLine (Properties ctx, int C_CashLine_ID, String trxName)
@@ -74,7 +74,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_CashLine[")
+      StringBuilder sb = new StringBuilder ("X_C_CashLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

@@ -124,17 +124,19 @@ public class Aging extends SvrProcess
 		}
 		else
 		{
-			String s = ",oi.C_Currency_ID," + p_ConvertCurrencyTo_ID + ",oi.DateAcct,oi.C_ConversionType_ID,oi.AD_Client_ID,oi.AD_Org_ID)";
-			sql.append("currencyConvert(oi.GrandTotal").append(s);		//	11
+			String s = "," + p_ConvertCurrencyTo_ID;
+			sql.append("currencyConvertInvoice(oi.C_Invoice_ID").append(s).append(")");		//	11
 			if (!p_DateAcct)
 			{
-				sql.append(", currencyConvert(oi.PaidAmt").append(s)  // 12
-				.append(", currencyConvert(oi.OpenAmt").append(s);  // 13
+				sql.append(", currencyConvertInvoice(oi.C_Invoice_ID").append(s)  // 12
+				.append(",oi.PaidAmt), currencyConvertInvoice(oi.C_Invoice_ID").append(s).append(",oi.OpenAmt)");  // 13
 			}
 			else
 			{
-				sql.append(", currencyConvert(invoicePaidToDate(oi.C_Invoice_ID, oi.C_Currency_ID, 1,"+dateacct+")").append(s) // 12
-				.append(", currencyConvert(invoiceOpenToDate(oi.C_Invoice_ID,oi.C_InvoicePaySchedule_ID,"+dateacct+")").append(s);  // 13
+				sql.append(", currencyConvertInvoice(oi.C_Invoice_ID").append(s) // 12
+				.append(",invoicePaidToDate(oi.C_Invoice_ID, oi.C_Currency_ID, 1,"+dateacct+")), "
+						+ "currencyConvertInvoice(oi.C_Invoice_ID").append(s)
+				.append(",invoiceOpenToDate(oi.C_Invoice_ID,oi.C_InvoicePaySchedule_ID,"+dateacct+"))");  // 13
 			}
 		}
 		sql.append(",oi.C_Activity_ID,oi.C_Campaign_ID,oi.C_Project_ID,oi.AD_Org_ID ");	//	14..17

@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.model.Query;
 import org.idempiere.fa.feature.UseLife;
 import org.idempiere.fa.feature.UseLifeImpl;
 
@@ -74,14 +73,7 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 		if (m_parent == null)
 		{
 			int A_Asset_Group_ID = getA_Asset_Group_ID();
-			if (is_new())
-			{
-				m_parent = new MAssetGroup(getCtx(), A_Asset_Group_ID, get_TrxName());
-			}
-			else
-			{
-				m_parent = MAssetGroup.get(getCtx(), A_Asset_Group_ID);
-			}
+			m_parent = MAssetGroup.getCopy(getCtx(), A_Asset_Group_ID, get_TrxName());
 		}
 		return m_parent;
 	}

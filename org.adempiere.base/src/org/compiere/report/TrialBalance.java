@@ -107,7 +107,7 @@ public class TrialBalance extends SvrProcess
 	 */
 	protected void prepare()
 	{
-		StringBuffer sb = new StringBuffer ("AD_PInstance_ID=")
+		StringBuilder sb = new StringBuilder ("AD_PInstance_ID=")
 			.append(getAD_PInstance_ID());
 		//	Parameter
 		ProcessInfoParameter[] para = getParameter();

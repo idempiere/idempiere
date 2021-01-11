@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for T_DistributionRunDetail
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRunDetail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_T_DistributionRunDetail (Properties ctx, int T_DistributionRunDetail_ID, String trxName)
@@ -76,7 +76,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_DistributionRunDetail[")
+      StringBuilder sb = new StringBuilder ("X_T_DistributionRunDetail[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

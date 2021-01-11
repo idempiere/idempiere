@@ -42,6 +42,7 @@ import org.compiere.model.GridTable;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.StateChangeEvent;
 import org.compiere.model.StateChangeListener;
+import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -57,9 +58,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
@@ -74,10 +75,12 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vlayout implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
+	private static final int MIN_COLUMN_MOBILE_WIDTH = 100;
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3046157124327495333L;
+	private static final long serialVersionUID = 3995829393137424527L;
 
 	private static final String HEADER_GRID_STYLE = "border: none; margin:0; padding: 0;";
 
@@ -96,6 +99,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	private static final int MIN_NUMERIC_COL_WIDTH = 120;
 
 	private static final String ATTR_ON_POST_SELECTED_ROW_CHANGED = "org.adempiere.webui.adwindow.GridView.onPostSelectedRowChanged";
+
+	/**	Static Logger	*/
+	private static CLogger	s_log	= CLogger.getCLogger (GridView.class);
 
 	private Grid listbox = null;
 
@@ -140,6 +146,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	
 	boolean isHasCustomizeData = false;
 
+	private boolean showCurrentRowIndicatorColumn = true;
+
 	public GridView()
 	{
 		this(0);
@@ -180,7 +188,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		//default true for better UI experience
 		if (ClientInfo.isMobile())
-			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDIT_MODELESS, false);
+			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDIT_MODELESS, false) && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDITABLE, false);
 		else
 			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
 		
@@ -204,17 +212,60 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		listbox.setEmptyMessage(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Processing")));
 	}
 	
-	public void setDetailPaneMode(boolean detailPaneMode) {
+	public void setDetailPaneMode(boolean detailPaneMode, GridTab gridTab) {
 		if (this.detailPaneMode != detailPaneMode) {
 			this.detailPaneMode = detailPaneMode;
-			pageSize = detailPaneMode ? getDetailPageSize() : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20, Env.getAD_Client_ID(Env.getCtx()));
+			pageSize = detailPaneMode ? getDetailPageSize(gridTab) : MSysConfig.getIntValue(MSysConfig.ZK_PAGING_SIZE, 20, Env.getAD_Client_ID(Env.getCtx()));
 			updatePaging();
 		}
 	}
 
-	/** Returns the number of records to be displayed in detail grid (TODO : manage exceptions defined in SysConfig - see https://idempiere.atlassian.net/browse/IDEMPIERE-3786) */
-	int getDetailPageSize() {
-		return MSysConfig.getIntValue(MSysConfig.ZK_PAGING_DETAIL_SIZE, DEFAULT_DETAIL_PAGE_SIZE, Env.getAD_Client_ID(Env.getCtx()));
+	/** Returns the number of records to be displayed in detail grid */
+	private int getDetailPageSize(GridTab gridTab) {
+		int size = DEFAULT_DETAIL_PAGE_SIZE;
+		String pageDetailSizes = MSysConfig.getValue(MSysConfig.ZK_PAGING_DETAIL_SIZE, Env.getAD_Client_ID(Env.getCtx()));
+		if (Util.isEmpty(pageDetailSizes, true)) {
+			return size;
+		}
+		/* Format of ZK_PAGING_DETAIL_SIZE is a list of components separated by ;
+		 * first component is the wide default
+		 * next components are exceptions defined as pair of tab:size - where tab can be AD_Tab_ID, AD_Tab_UU or AD_TableName
+		 */
+		for (String pageDetailSize : pageDetailSizes.split(";")) {
+			String[] parts = pageDetailSize.split(":");
+			if (parts.length < 1 || parts.length > 2) {
+				s_log.warning("Misconfiguration of ZK_PAGING_DETAIL_SIZE - cannot split : in -> " + pageDetailSize);
+				return size;
+			}
+			String sizeToParse = null;
+			if (parts.length == 1) {
+				sizeToParse = parts[0];
+			} else {
+				String tab = parts[0];
+				if (   tab.equalsIgnoreCase(String.valueOf(gridTab.getAD_Tab_ID()))
+					|| tab.equalsIgnoreCase(String.valueOf(gridTab.getAD_Tab_UU()))
+					|| tab.equalsIgnoreCase(String.valueOf(gridTab.getTableName()))) {
+					sizeToParse = parts[1];
+				}
+			}
+			if (sizeToParse != null) {
+				int sizeParsed = -1;
+				try {
+					sizeParsed = Integer.valueOf(sizeToParse);
+				} catch (NumberFormatException e) {
+					s_log.warning("Misconfiguration of ZK_PAGING_DETAIL_SIZE - cannot parse as integer -> " + sizeToParse);
+					return size;
+				}
+				if (sizeParsed > 0) {
+					size = sizeParsed;
+					if (parts.length > 1) {
+						// found a specific tab size configuration
+						break;
+					}
+				}
+			}
+		}
+		return size;
 	}
 
 	public boolean isDetailPaneMode() {
@@ -225,7 +276,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		if (paging != null && paging.getPageSize() != pageSize) {
 			paging.setPageSize(pageSize);
 			updateModel();
-			if (paging.getPageSize() > 1) {
+			if (paging.getPageCount() > 1) {
 				showPagingControl();
 			} else {
 				hidePagingControl();
@@ -248,9 +299,6 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 
 		setupColumns();
 		render();
-		if (listbox.getFrozen() != null){
-			listbox.getFrozen().setWidgetOverride("syncScroll", "function (){syncScrollOVR(this);}");
-		}
 		
 		updateListIndex();
 
@@ -481,6 +529,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		Columns columns = new Columns();
 		
 		//frozen not working well on tablet devices yet
+		//frozen is implemented poorly on zk ce, not working with scroll and white-space wrap
+		//unlikely to be fixed since the working 'smooth scrolling frozen' is a zk ee only feature
+		/*
 		if (!ClientInfo.isMobile())
 		{
 			Frozen frozen = new Frozen();
@@ -488,8 +539,10 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 			frozen.setColumns(2);
 			listbox.appendChild(frozen);
 		}
+		*/
 		
 		org.zkoss.zul.Column selection = new Column();
+		selection.setHeight("2em");
 		ZKUpdateUtil.setWidth(selection, "22px");
 		try{
 			selection.setSort("none");
@@ -501,13 +554,21 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		selectAll.addEventListener(Events.ON_CHECK, this);
 		columns.appendChild(selection);
 		
-		org.zkoss.zul.Column indicator = new Column();				
-		ZKUpdateUtil.setWidth(indicator, "22px");
-		try {
-			indicator.setSort("none");
-		} catch (Exception e) {}
-		indicator.setStyle("border-left: none");
-		columns.appendChild(indicator);
+		if (ClientInfo.isMobile())
+			showCurrentRowIndicatorColumn = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR, false);
+		
+		if (showCurrentRowIndicatorColumn)
+		{
+			org.zkoss.zul.Column indicator = new Column();
+			indicator.setHeight("2em");
+			ZKUpdateUtil.setWidth(indicator, "22px");
+			try {
+				indicator.setSort("none");
+			} catch (Exception e) {}
+			indicator.setStyle("border-left: none");
+			columns.appendChild(indicator);
+		}
+		
 		listbox.appendChild(columns);
 		columns.setSizable(true);
 		columns.setMenupopup("none");
@@ -524,6 +585,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				colnames.put(index, gridField[i].getHeader());
 				index++;
 				org.zkoss.zul.Column column = new Column();
+				column.setHeight("2em");
 				int colindex =tableModel.findColumn(gridField[i].getColumnName()); 
 				column.setSortAscending(new SortComparator(colindex, true, Env.getLanguage(Env.getCtx())));
 				column.setSortDescending(new SortComparator(colindex, false, Env.getLanguage(Env.getCtx())));
@@ -568,7 +630,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 							estimatedWidth = headerWidth;
 						
 						//hflex=min for first column not working well
-						if (i > 0)
+						if (i > 0 && !ClientInfo.isMobile())
 						{
 							if (DisplayType.isLookup(gridField[i].getDisplayType()))
 							{
@@ -589,10 +651,19 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 						
 						//set estimated width if not using hflex=min
 						if (!"min".equals(column.getHflex())) {
-							if (estimatedWidth > MAX_COLUMN_WIDTH)
-								estimatedWidth = MAX_COLUMN_WIDTH;
-							else if ( estimatedWidth < MIN_COLUMN_WIDTH)
-								estimatedWidth = MIN_COLUMN_WIDTH;
+							if (ClientInfo.isMobile() && ClientInfo.get() != null &&
+								ClientInfo.get().desktopWidth <= ClientInfo.SMALL_WIDTH) {
+								int maxWidth = ClientInfo.get().desktopWidth / 5;
+								if (maxWidth < MIN_COLUMN_MOBILE_WIDTH)
+									maxWidth = MIN_COLUMN_MOBILE_WIDTH;
+								if (estimatedWidth > maxWidth)
+									estimatedWidth = maxWidth;
+							} else {
+								if (estimatedWidth > MAX_COLUMN_WIDTH)
+									estimatedWidth = MAX_COLUMN_WIDTH;
+								else if ( estimatedWidth < MIN_COLUMN_WIDTH)
+									estimatedWidth = MIN_COLUMN_WIDTH;								
+							}
 							ZKUpdateUtil.setWidth(column, Integer.toString(estimatedWidth) + "px");
 						}
 					}
@@ -728,7 +799,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 				gridTab.clearSelection();
-				listbox.invalidate();
+				invalidateGridView();
 			}
 		}
 		else if (event.getTarget() == selectAll)
@@ -760,6 +831,18 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		}
 	}
 
+	private Center findCenter(GridView gridView) {
+		if (gridView == null)
+			return null;
+		Component p = gridView.getParent();
+		while (p != null) {
+			if (p instanceof Center)
+				return (Center)p;
+			p = p.getParent();
+		}
+		return null;
+	}
+	
 	private boolean isAllSelected() {
 		org.zkoss.zul.Rows rows = listbox.getRows();
 		List<Component> childs = rows.getChildren();
@@ -923,7 +1006,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				}
 			}
 			if (cmp != null)
-				Clients.response(new AuScript(null, "scrollToRow('" + cmp.getUuid() + "');"));
+				Clients.response(new AuScript(null, "idempiere.scrollToRow('" + cmp.getUuid() + "');"));
 
 			if (columnOnClick != null && columnOnClick.trim().length() > 0) {
 				List<?> list = row.getChildren();
@@ -932,7 +1015,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 						Div div = (Div) element;
 						if (columnOnClick.equals(div.getAttribute("columnName"))) {
 							cmp = div.getFirstChild();
-							Clients.response(new AuScript(null, "scrollToRow('" + cmp.getUuid() + "');"));
+							Clients.response(new AuScript(null, "idempiere.scrollToRow('" + cmp.getUuid() + "');"));
 							break;
 						}
 					}
@@ -960,6 +1043,19 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		}
 
 		if (gridTab.getCurrentRow() != rowIndex) {
+			ADWindow adwindow = ADWindow.findADWindow(this);
+			if (adwindow != null) {
+				final boolean[] retValue = new boolean[] {false};
+				final int index = rowIndex;
+				adwindow.getADWindowContent().saveAndNavigate(e -> {
+					if (e) {
+						gridTab.navigate(index);
+						retValue[0] = true;
+					}
+				});
+				return retValue[0];
+			}
+			
 			gridTab.navigate(rowIndex);
 			return true;
 		}
@@ -1120,7 +1216,18 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		refresh(gridTab);
 		scrollToCurrentRow();
-		listbox.invalidate();
+		invalidateGridView();
+	}
+
+	/**
+	 * redraw grid view
+	 */
+	public void invalidateGridView() {
+		Center center = findCenter(this);
+		if (center != null)
+			center.invalidate();
+		else
+			this.invalidate();
 	}
 
 	/**
@@ -1218,5 +1325,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	public void editorTraverse(Callback<WEditor> editorTaverseCallback) {
 		editorTraverse(editorTaverseCallback, renderer.getEditors());
 		
+	}
+	
+	public boolean isShowCurrentRowIndicatorColumn() {
+		return showCurrentRowIndicatorColumn;
 	}
 }

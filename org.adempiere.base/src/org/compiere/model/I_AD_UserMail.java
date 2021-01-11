@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserMail
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_AD_UserMail 
 {
@@ -255,17 +255,4 @@ public interface I_AD_UserMail
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name W_MailMsg_ID */
-    public static final String COLUMNNAME_W_MailMsg_ID = "W_MailMsg_ID";
-
-	/** Set Mail Message.
-	  * Web Store Mail Message Template
-	  */
-	public void setW_MailMsg_ID (int W_MailMsg_ID);
-
-	/** Get Mail Message.
-	  * Web Store Mail Message Template
-	  */
-	public int getW_MailMsg_ID();
 }

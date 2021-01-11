@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintTableFormat
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_PrintTableFormat (Properties ctx, int AD_PrintTableFormat_ID, String trxName)
@@ -77,8 +77,8 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_PrintTableFormat[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_PrintTableFormat[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

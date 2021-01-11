@@ -22,14 +22,14 @@ import java.util.Properties;
 
 /** Generated Model for A_Asset_Class
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_A_Asset_Class (Properties ctx, int A_Asset_Class_ID, String trxName)
@@ -68,8 +68,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Class[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Class[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

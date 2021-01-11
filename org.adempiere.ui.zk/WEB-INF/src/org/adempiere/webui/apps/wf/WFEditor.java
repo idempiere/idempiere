@@ -204,10 +204,13 @@ public class WFEditor extends ADForm {
 			if (AD_WF_Node_ID != null) {
 				WFNodeWidget widget = (WFNodeWidget) nodeContainer.getGraphScene().findWidget(AD_WF_Node_ID);
 				if (widget != null) {
-					widget.getModel().setXPosition(xPosition);
-					widget.getModel().setYPosition(yPosition);
-					widget.getModel().saveEx();
-					reload(m_workflowId, true);
+					MWFNode node = widget.getModel();
+					if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
+						node.setXPosition(xPosition);
+						node.setYPosition(yPosition);
+						node.saveEx();
+						reload(m_workflowId, true);
+					}
 				}
 			}
 		}
@@ -240,7 +243,6 @@ public class WFEditor extends ADForm {
 			}
 		});
 		
-		ZKUpdateUtil.setWidth(w, "250px");
 		w.setBorder("normal");
 		w.setPage(this.getPage());
 		w.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -270,7 +272,7 @@ public class WFEditor extends ADForm {
 
 	private void load(int workflowId, boolean reread) {
 		//	Get Workflow
-		m_wf = MWorkflow.get(Env.getCtx(), workflowId);
+		m_wf = MWorkflow.getCopy(Env.getCtx(), workflowId, (String)null);
 		m_workflowId = workflowId;
 		nodeContainer = new WFNodeContainer();
 		nodeContainer.setWorkflow(m_wf);

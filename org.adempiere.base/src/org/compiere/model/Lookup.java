@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.AbstractListModel;
@@ -481,6 +482,21 @@ public abstract class Lookup extends AbstractListModel<Object>
 		return get (key);
 	}	//	getDirect
 
+	/**
+	 * 
+	 * @param keys
+	 * @return name pair arrays
+	 */
+	public NamePair[] getDirect(Object[] keys)
+	{
+		List<NamePair> list = new ArrayList<NamePair>();
+		for (Object key : keys)
+		{
+			list.add(getDirect(key, false, isValidated()));			
+		}
+		return list.toArray(new NamePair[0]);
+	}
+	
 	/**
 	 *  Dispose - clear items w/o firing events
 	 */

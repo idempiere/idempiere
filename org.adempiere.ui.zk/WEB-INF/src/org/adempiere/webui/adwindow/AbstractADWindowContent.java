@@ -90,6 +90,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MQuery;
@@ -120,13 +121,13 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Column;
-import org.zkoss.zul.Columns;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Window.Mode;
+import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  *
@@ -205,6 +206,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	protected StatusBar statusBarQF;
 
 	/**
+	 * Maintain no of quick form tabs open
+	 */
+	ArrayList <Integer>			quickFormOpenTabs	= new ArrayList <Integer>();
+
+	/**
 	 * Constructor
 	 * @param ctx
 	 * @param windowNo
@@ -256,7 +262,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     private void initComponents()
     {
         /** Initalise toolbar */
-        toolbar = new ADWindowToolbar(getWindowNo());
+        toolbar = new ADWindowToolbar(this, getWindowNo());
         toolbar.setId("windowToolbar");
         toolbar.addListener(this);
 
@@ -380,6 +386,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
         toolbar.updateToolbarAccess(adWindowId);
         updateToolbar();
+        if (query == null && toolbar.initDefaultQuery()) {
+        	doOnQueryChange();
+        }
         
         if (detailQuery != null && zoomToDetailTab(detailQuery))
         {
@@ -720,10 +729,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	m_findCancelled = false;
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();
-            findWindow = new FindWindow(curWindowNo,
+            FindWindow findWindow = new FindWindow(curWindowNo, mTab.getTabNo(),
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
                     where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
-            setupEmbeddedFindwindow();
+           	tabFindWindowHashMap.put(mTab, findWindow);
+            setupEmbeddedFindwindow(findWindow);
             if (findWindow.initialize())
             {
 	        	findWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -764,7 +774,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
     } // initialQuery
 
-	private void setupEmbeddedFindwindow() {
+	private void setupEmbeddedFindwindow(FindWindow findWindow) {
 		findWindow.setTitle(null);
 		findWindow.setBorder("none");	
 		findWindow.setStyle("position: absolute;background-color: #fff;");
@@ -897,7 +907,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private Menuitem 	m_lock = null;
 	private Menuitem 	m_access = null;
 
-	private FindWindow findWindow;
+	private HashMap<GridTab, FindWindow> tabFindWindowHashMap = new HashMap<GridTab, FindWindow>();
+	private int masterRecord = -1;
 
 	private Div mask;
 
@@ -948,10 +959,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					AEnv.showWindow(recordAccessDialog);
 				}
 			});
-
-			m_popup.setPage(toolbar.getToolbarItem("Lock").getPage());
+			LayoutUtils.autoDetachOnClose(m_popup);
 		}
-		m_popup.open(toolbar.getToolbarItem("Lock"), "after_start");
+		if (m_popup.getPage() == null) {
+			LabelImageElement btn = toolbar.getToolbarItem("Lock");
+			Popup popup = LayoutUtils.findPopup(btn.getParent());
+			if (popup != null) {
+				popup.appendChild(m_popup);				
+			} else {
+				m_popup.setPage(toolbar.getToolbarItem("Lock").getPage());
+			}
+		}
+		m_popup.open(toolbar.getToolbarItem("Lock"), "after_start");		
 	}	//	lock
 	//
 
@@ -1113,7 +1132,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		logger.log(Level.FINE, "Invoke Quick Form");
 		// Prevent to open Quick Form if already opened.
-		if (!SessionManager.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
+		if (!this.registerQuickFormTab(getADTab().getSelectedGridTab().getAD_Tab_ID()))
 		{
 			logger.fine("TabID=" + getActiveGridTab().getAD_Tab_ID() + "  is already open.");
 			return;
@@ -1137,7 +1156,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		form.setMaximizable(true);
 		form.setMaximized(true);
 		form.setPosition("center");
-		ZkCssHelper.appendStyle(form, "min-width: 500px; min-height: 400px; width: 900px; height:550px; z-index: 900;");
+		ZKUpdateUtil.setWindowHeightX(form, 550);
+		ZKUpdateUtil.setWindowWidthX(form, 900);
+		ZkCssHelper.appendStyle(form, "z-index: 900;");
 
 		AEnv.showWindow(form);
 	} // onQuickForm
@@ -1188,9 +1209,16 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else if (event.getTarget() instanceof ProcessModalDialog)
     	{
+    		if (!DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())){
+    			return;
+    		}
+
     		hideBusyMask();
     		ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
-    		onModalClose(dialog.getProcessInfo());
+    		ProcessInfo pi = dialog.getProcessInfo();
+
+    		onModalClose(pi);
+
 			String s = null;
 			boolean b = false;
 			ProcessInfoLog[] logs = null;
@@ -1206,7 +1234,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				b = statusBar.getStatusError();
 				logs = statusBar.getPLogs();
 			}
-			onRefresh(true, false);
+
+			MPInstance instance = new MPInstance(ctx, pi.getAD_PInstance_ID(), "false");
+			if (!instance.isRunAsJob()){
+				// when run as job, don't expect see its effect when close parameter panel, so don't refresh 
+				onRefresh(true, false);
+			}
+
 			if (getActiveGridTab().isQuickForm)
 			{
 				statusBarQF.setStatusLine(s, b, logs);
@@ -1396,7 +1430,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (callback != null)
 			callback.onCallback(true);
 	}
-
+	
 	private void updateToolbar()
 	{
 		toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
@@ -1428,7 +1462,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		toolbar.setPressed("Find",adTabbox.getSelectedGridTab().isQueryActive() || 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
 		
-		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
+		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow() != null ? getCurrentFindWindow().getAD_UserQuery_ID() : 0);
+
 	}
 
 	/**
@@ -1469,6 +1504,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        	|| GridTable.DATA_INSERTED_MESSAGE.equals(adInfo)
 	        	|| GridTable.DATA_IGNORED_MESSAGE.equals(adInfo)
 	        	|| GridTable.DATA_UPDATE_COPIED_MESSAGE.equals(adInfo)
+	        	|| GridTable.DATA_SAVED_MESSAGE.equals(adInfo)
 	           ) {
 
 		        String prefix = null;
@@ -1800,6 +1836,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         {
         	adTabbox.evaluate(e);
         }
+        
+		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
+
+        if (adTabbox.getSelectedGridTab().getTabLevel() == 0 && record_ID != masterRecord) {
+        	clenFindWindowHashMap();
+        	masterRecord = record_ID;
+        }
 
         boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
         toolbar.enableArchive(!isNewRow);
@@ -1808,7 +1851,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableRequests(!isNewRow);
 		toolbar.setPressed("Find", adTabbox.getSelectedGridTab().isQueryActive() || 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
-		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow != null ? findWindow.getAD_UserQuery_ID() : 0);
+		/*if (adTabbox.getSelectedGridTab().isQueryActive() && 
+				tabFindWindowHashMap.get(adTabbox.getSelectedGridTab()) != null) 
+			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());*/
+		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow() != null ? getCurrentFindWindow().getAD_UserQuery_ID() : 0);
 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
         toolbar.enableReport(!isNewRow);
@@ -1938,8 +1984,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      * @see ToolbarListener#onHelp()
      */
     public void onHelp()
-    {
-    	SessionManager.getAppDesktop().showWindow(new HelpWindow(gridWindow), "center");
+    {	
+    	closeToolbarPopup("Help");
+    	SessionManager.getAppDesktop().showWindow(new HelpWindow(gridWindow), "center");    	    
     }
 
     @Override
@@ -2114,30 +2161,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private void doOnFind() {
 		//  Gets Fields from AD_Field_v
         GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
-        if (findWindow == null || !findWindow.validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
+        if (getCurrentFindWindow() == null || !getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
             adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
             adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
-	        findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-	            adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-	            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
-
-	        setupEmbeddedFindwindow();	        
-	        if (!findWindow.initialize()) {
-	        	if (findWindow.getTotalRecords() == 0) {
-	        		FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
-	        	}
-	        	return;
-	        }
+        	if (!getFindWindow(findFields))
+        		return;
         }
 
-        if (!findWindow.getEventListeners(DialogEvents.ON_WINDOW_CLOSE).iterator().hasNext()) {
-        	findWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+        if (!getCurrentFindWindow().getEventListeners(DialogEvents.ON_WINDOW_CLOSE).iterator().hasNext()) {
+        	getCurrentFindWindow().addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
 					hideBusyMask();
-					if (!findWindow.isCancel())
+					if (!getCurrentFindWindow().isCancel())
 			        {
-				        MQuery query = findWindow.getQuery();
+				        MQuery query = getCurrentFindWindow().getQuery();
 
 				        //  Confirmed query
 				        if (query != null)
@@ -2147,7 +2185,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				            adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, adTabbox.getSelectedGridTab().getMaxQueryRecords());   //  autoSize
 				        }
 
-				        if (findWindow.isCreateNew())
+				        if (getCurrentFindWindow().isCreateNew())
 				        	onNew();
 				        else {
 				        	adTabbox.getSelectedGridTab().dataRefresh(false); // Elaine 2008/07/25
@@ -2171,7 +2209,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				        			adTabbox.getSelectedTabpanel().switchRowPresentation();
 				        	}
 				        }
-				        toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), findWindow.getAD_UserQuery_ID());
+				        toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow().getAD_UserQuery_ID());
 			        }
 					else
 					{
@@ -2182,9 +2220,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			});
         }
 
-        getComponent().getParent().appendChild(findWindow);
-        showBusyMask(findWindow);                
-        LayoutUtils.openEmbeddedWindow(toolbar, findWindow, "after_start");
+        getComponent().getParent().appendChild(getCurrentFindWindow());
+        showBusyMask(getCurrentFindWindow());                
+        LayoutUtils.openEmbeddedWindow(toolbar, getCurrentFindWindow(), "after_start");
 	}
 
 	@Override
@@ -2667,6 +2705,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     @Override
     public void onPrint() {
+    	closeToolbarPopup("Print");
     	final Callback<Boolean> postCallback = new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
@@ -2801,13 +2840,28 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void onActiveWorkflows() {
 		if (toolbar.getEvent() != null)
 		{
-			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
+			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0) {
 				return;
-			else
-				AEnv.startWorkflowProcess(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+			} else {
+				closeToolbarPopup("ActiveWorkflows");
+				try {
+					AEnv.startWorkflowProcess(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+				} catch (Exception e) {
+					CLogger.get().saveError("Error", e);
+					throw new ApplicationException(e.getMessage(), e);
+				}
+			}
 		}
 	}
 	//
+
+	private void closeToolbarPopup(String btnName) {
+		LabelImageElement btn = toolbar.getToolbarItem(btnName);
+		Popup popup = LayoutUtils.findPopup(btn.getParent());
+		if (popup != null) {
+			popup.close();
+		}
+	}
 
 	// Elaine 2008/07/22
 	/**
@@ -2836,6 +2890,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	public void onProductInfo()
 	{
+		closeToolbarPopup("ProductInfo");
 		InfoPanel.showPanel(I_M_Product.Table_Name);
 	}
 	//
@@ -2911,25 +2966,17 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void doOnQueryChange() {
 		//  Gets Fields from AD_Field_v
 		GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
-		if (findWindow == null || !findWindow.validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
+		if (getCurrentFindWindow() == null || !getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
 				adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 				adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
-			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
 
-			setupEmbeddedFindwindow();	        
-			if (!findWindow.initialize()) {
-				if (findWindow.getTotalRecords() == 0) {
-					FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
-				}
-				return;
-			}
+        	if (!getFindWindow(findFields))
+        		return;
 		}
 
-		findWindow.setAD_UserQuery_ID(toolbar.getAD_UserQuery_ID());
-		findWindow.advancedOkClick();
-		MQuery query = findWindow.getQuery();
+		getCurrentFindWindow().setAD_UserQuery_ID(toolbar.getAD_UserQuery_ID());
+		getCurrentFindWindow().advancedOkClick();
+		MQuery query = getCurrentFindWindow().getQuery();
 
 		//  Confirmed query
 		if (query != null) {
@@ -2941,7 +2988,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		adTabbox.getSelectedGridTab().dataRefresh(false);
 
 		focusToActivePanel();
-		findWindow.dispose();
+		getCurrentFindWindow().dispose();
 	}
 
 	/**************************************************************************
@@ -3559,22 +3606,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	public void onCustomize() {
 		ADTabpanel tabPanel = (ADTabpanel) getADTab().getSelectedTabpanel();
-		Columns columns = tabPanel.getGridView().getListbox().getColumns();
-		List<Component> columnList = columns.getChildren();
-		GridField[] fields = tabPanel.getGridView().getFields();
-		Map<Integer, String> columnsWidth = new HashMap<Integer, String>();
-		ArrayList<Integer> gridFieldIds = new ArrayList<Integer>();
-		for (int i = 0; i < fields.length; i++) {
-			// 2 is offset of num of column in grid view and actual data fields.
-			// in grid view, add two function column, indicator column and selection (checkbox) column
-			// @see GridView#setupColumns
-			Column column = (Column) columnList.get(i+2);
-			String width = column.getWidth();
-			columnsWidth.put(fields[i].getAD_Field_ID(), width);
-			gridFieldIds.add(fields[i].getAD_Field_ID());
-
-		}
-		CustomizeGridViewDialog.showCustomize(0, adTabbox.getSelectedGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView(), null, false);
+		CustomizeGridViewDialog.onCustomize(tabPanel);
 	}
 
 	/**
@@ -3594,8 +3626,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	@Override
 	public void onSelect() {
-		if (findWindow != null && findWindow.getPage() != null && findWindow.isVisible() && m_queryInitiating) {
-			LayoutUtils.openEmbeddedWindow(getComponent().getParent(), findWindow, "overlap");
+		if (getCurrentFindWindow() != null && getCurrentFindWindow().getPage() != null && getCurrentFindWindow().isVisible() && m_queryInitiating) {
+			LayoutUtils.openEmbeddedWindow(getComponent().getParent(), getCurrentFindWindow(), "overlap");
 		}
 	}
 
@@ -3609,6 +3641,40 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	
 	public ADWindow getADWindow() {
 		return adwindow;
+	}
+	
+	public boolean getFindWindow(GridField[] findFields) {
+		FindWindow findWindow;
+		if (tabFindWindowHashMap.get(adTabbox.getSelectedGridTab()) != null) {
+			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
+			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
+		} else {
+			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
+					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
+					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+
+			setupEmbeddedFindwindow(findWindow);
+			if (!findWindow.initialize()) {
+				if (findWindow.getTotalRecords() == 0) {
+					FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
+				}
+				return false;
+			}
+			tabFindWindowHashMap.put(adTabbox.getSelectedGridTab(), findWindow);
+		}
+		return true;
+	}
+	
+	public FindWindow getCurrentFindWindow() {
+		return tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
+	}
+	
+	/**
+	 * Clean all the detail cached FindWindow objects
+	 * when the master record is changed
+	 */
+	private void clenFindWindowHashMap() {
+		tabFindWindowHashMap.keySet().removeIf(tab -> tab.getTabLevel() != 0);
 	}
 	
 	private void clearTitleRelatedContext() {
@@ -3676,5 +3742,42 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		this.currQGV = currQGV;
 	}
-	
+
+	/**
+	 * Close Quick form to remove tabID from the list
+	 * 
+	 * @param AD_Tab_ID
+	 */
+	public void closeQuickFormTab(Integer AD_Tab_ID)
+	{
+		quickFormOpenTabs.remove(AD_Tab_ID);
+	} // closeQuickFormTab
+
+	/**
+	 * Get list of open quick form tabs
+	 * 
+	 * @return list of tabIDs
+	 */
+	public ArrayList <Integer> getOpenQuickFormTabs( )
+	{
+		return quickFormOpenTabs;
+	} // getOpenQuickFormTabs
+
+	/**
+	 * Register Quick form against tabID
+	 * 
+	 * @param AD_Tab_ID
+	 * @return False when already quick form opens for same tab
+	 */
+	public boolean registerQuickFormTab(Integer AD_Tab_ID)
+	{
+		if (quickFormOpenTabs.contains(AD_Tab_ID))
+		{
+			return false;
+		}
+
+		quickFormOpenTabs.add(AD_Tab_ID);
+
+		return true;
+	} // registerQuickFormTab
 }

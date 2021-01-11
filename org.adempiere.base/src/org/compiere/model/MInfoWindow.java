@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -67,6 +69,20 @@ public class MInfoWindow extends X_AD_InfoWindow
 		super (ctx, rs, trxName);
 	}	//	MInfoWindow
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoWindow(MInfoWindow copy)
+	{
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_validateEachColumn = copy.m_validateEachColumn;
+		this.m_infocolumns = copy.m_infocolumns != null ? Arrays.stream(copy.m_infocolumns).map(MInfoColumn::new).toArray(MInfoColumn[]::new) : null;
+		this.m_infoProcess = copy.m_infoProcess != null ? Arrays.stream(copy.m_infoProcess).map(MInfoProcess::new).toArray(MInfoProcess[]::new) : null;
+		this.m_infoRelated = copy.m_infoRelated != null ? Arrays.stream(copy.m_infoRelated).map(MInfoRelated::new).toArray(MInfoRelated[]::new) : null;
+	}
+	
 	public static MInfoWindow get(String tableName, String trxName) {
 		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), MInfoWindow.Table_ID), MInfoWindow.COLUMNNAME_AD_Table_ID+"=? AND IsValid='Y' ", null);
 		MTable table = MTable.get(Env.getCtx(), tableName);
@@ -188,27 +204,29 @@ public class MInfoWindow extends X_AD_InfoWindow
 		return null;
 	}
 
-	public MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {
-		Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
-		List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
-				.setOnlyActiveRecords(true)
-				.setOrderBy("SeqNo, AD_InfoColumn_ID")
-				.list();
-		for(int i = list.size() - 1; i >= 0; i--) {
-			MInfoColumn infoColumn = list.get(i);
-			if (!infoColumn.isColumnAccess(tableInfos))
-				list.remove(i);
+	public synchronized MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {
+		getInfoColumns();
+		List<MInfoColumn> list = new ArrayList<MInfoColumn>();
+		for(MInfoColumn ic : m_infocolumns) {
+			if (ic.isColumnAccess(tableInfos))
+				list.add(ic);
 		}
 		return list.toArray(new MInfoColumn[0]);
 	}
 	
-	public MInfoColumn[] getInfoColumns() {
-		Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
-		List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
-				.setOnlyActiveRecords(true)
-				.setOrderBy("SeqNo, AD_InfoColumn_ID")
-				.list();
-		return list.toArray(new MInfoColumn[0]);
+	public synchronized MInfoColumn[] getInfoColumns() {
+		if (m_infocolumns == null) {
+			Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
+			List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
+					.setOnlyActiveRecords(true)
+					.setOrderBy("SeqNo, AD_InfoColumn_ID")
+					.list();
+			m_infocolumns = list.toArray(new MInfoColumn[0]);
+		}
+		
+		if (get_TrxName() != null)
+			set_TrxName(m_infocolumns, get_TrxName());
+		return m_infocolumns;
 	}
 
 	/**
@@ -216,26 +234,22 @@ public class MInfoWindow extends X_AD_InfoWindow
 	 */
 	private MInfoColumn[] m_infocolumns = null;
 
-	public MInfoColumn[] getInfoColumns(boolean requery, boolean checkDisplay) {
-		if ((this.m_infocolumns != null) && (!requery)) {
-			set_TrxName(this.m_infocolumns, get_TrxName());
-			return this.m_infocolumns;
+	public synchronized MInfoColumn[] getInfoColumns(boolean requery, boolean checkDisplay) {
+		if (m_infocolumns == null || requery) {
+			m_infocolumns = null;
+			getInfoColumns();
 		}
+			
 		if (checkDisplay) {
-			List<MInfoColumn> list = new Query(getCtx(), MInfoColumn.Table_Name, "AD_InfoWindow_ID=? AND IsDisplayed='Y'", get_TrxName())
-				.setParameters(get_ID())
-				.setOrderBy("SeqNo")
-				.list();
-			this.m_infocolumns = list.toArray(new MInfoColumn[list.size()]);
+			List<MInfoColumn> list = new ArrayList<MInfoColumn>();
+			for(MInfoColumn ic : m_infocolumns) {
+				if (ic.isDisplayed())
+					list.add(ic);
+			}
+			return list.toArray(new MInfoColumn[list.size()]);
 		} else {
-			List<MInfoColumn> list = new Query(getCtx(), MInfoColumn.Table_Name, "AD_InfoWindow_ID=?", get_TrxName())
-				.setParameters(get_ID())
-				.setOrderBy("SeqNo")
-				.list();
-			this.m_infocolumns = list.toArray(new MInfoColumn[list.size()]);
+			return m_infocolumns;
 		}
-
-		return this.m_infocolumns;
 	}
 
 	/**

@@ -182,7 +182,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDepositBatch[");
+		StringBuilder sb = new StringBuilder ("MDepositBatch[");
 		sb.append(get_ID()).append(",").append(getDescription())
 			.append(",Amount=").append(getDepositAmt())
 			.append ("]");

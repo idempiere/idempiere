@@ -105,7 +105,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 			parentId = ReferenceUtils.resolveReference(ctx.ctx, parentElement, getTrxName(ctx));
 		}
 
-			StringBuffer updateSQL = null;
+			StringBuilder updateSQL = null;
 			int AD_Tree_ID = getDefaultMenuTreeId();
 			String sql = "SELECT count(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID = "+AD_Tree_ID
 					+ " AND Node_ID = " + mMenu.getAD_Menu_ID();
@@ -154,13 +154,13 @@ public class MenuElementHandler extends AbstractElementHandler {
 					DB.close(rs, pstmt);
 				}
 	
-				updateSQL = new StringBuffer("UPDATE AD_TREENODEMM ").append(
+				updateSQL = new StringBuilder("UPDATE AD_TREENODEMM ").append(
 						"SET Parent_ID = " + parentId).append(
 						" , SeqNo = " + getStringValue(element, "SeqNo")).append(
 						" WHERE AD_Tree_ID = "+AD_Tree_ID).append(
 						" AND Node_ID = " + mMenu.getAD_Menu_ID());
 			} else {
-				updateSQL = new StringBuffer("INSERT INTO AD_TREENODEMM").append(
+				updateSQL = new StringBuilder("INSERT INTO AD_TREENODEMM").append(
 						"(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ").append(
 						"Parent_ID, SeqNo, AD_Tree_ID, Node_ID)").append(
 						"VALUES(0, 0, 0, 0, ").append(

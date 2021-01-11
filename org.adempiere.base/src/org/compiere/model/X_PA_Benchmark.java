@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Benchmark
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_PA_Benchmark extends PO implements I_PA_Benchmark, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_PA_Benchmark (Properties ctx, int PA_Benchmark_ID, String trxName)
@@ -67,8 +67,8 @@ public class X_PA_Benchmark extends PO implements I_PA_Benchmark, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_Benchmark[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_Benchmark[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

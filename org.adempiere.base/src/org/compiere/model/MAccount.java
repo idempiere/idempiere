@@ -24,6 +24,8 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Account Object Entity to maintain all segment values.
@@ -34,12 +36,14 @@ import org.compiere.util.Env;
  *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
  *  @version 	$Id: MAccount.java,v 1.4 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MAccount extends X_C_ValidCombination
+public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7980515458720808532L;
+	private static final long serialVersionUID = 1927316490582718406L;
+	
+	private static final ImmutableIntPOCache<Integer, MAccount> s_cache = new ImmutableIntPOCache<Integer, MAccount>(Table_Name, 100);
 
 	/*
 	 * Deprecated - use the same method with trxName instead
@@ -356,17 +360,35 @@ public class MAccount extends X_C_ValidCombination
 		return vc;
 	}   //  getDefault
 
-	
 	/**
-	 *  Get Account
-	 *  @param ctx context
+	 *  Get Account from cache (immutable)
 	 *  @param C_ValidCombination_ID combination
 	 *  @return Account
 	 */
+	public static MAccount get (int C_ValidCombination_ID)
+	{
+		return get(Env.getCtx(), C_ValidCombination_ID);
+	}
+	
+	/**
+	 *  Get Account from cache (immutable)
+	 *  @param ctx context
+	 *  @param C_ValidCombination_ID combination
+	 *  @return Immutable instance of Account
+	 */
 	public static MAccount get (Properties ctx, int C_ValidCombination_ID)
 	{
-		//	Maybe later cache
-		return new MAccount(ctx, C_ValidCombination_ID, null);
+		MAccount account = s_cache.get(ctx, C_ValidCombination_ID, e -> new MAccount(ctx, e));
+		if (account != null)
+			return account;
+				
+		account = new MAccount(ctx, C_ValidCombination_ID, (String)null);
+		if (account.getC_ValidCombination_ID() == C_ValidCombination_ID) 
+		{
+			s_cache.put(C_ValidCombination_ID, account, e -> new MAccount(Env.getCtx(), e));
+			return account;
+		}
+		return null;
 	}   //  getAccount
 
 	/**
@@ -432,6 +454,38 @@ public class MAccount extends X_C_ValidCombination
 		setC_AcctSchema_ID(as.getC_AcctSchema_ID());
 	}	//	Account
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAccount(MAccount copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAccount(Properties ctx, MAccount copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAccount(Properties ctx, MAccount copy, String trxName)
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_accountEV = copy.m_accountEV != null ? new MElementValue(ctx, copy.m_accountEV, trxName) : null;
+	}
+	
 	/**	Account Segment				*/
 	private MElementValue	m_accountEV = null;
 
@@ -506,7 +560,11 @@ public class MAccount extends X_C_ValidCombination
 		if (m_accountEV == null)
 		{
 			if (getAccount_ID() != 0)
+			{
 				m_accountEV = new MElementValue(getCtx(), getAccount_ID(), get_TrxName());
+				if (is_Immutable())
+					m_accountEV.markImmutable();
+			}
 		}
 		return m_accountEV;
 	}	//	setAccount
@@ -823,6 +881,17 @@ public class MAccount extends X_C_ValidCombination
 	}	//	beforeSave
 	
 	
+	@Override
+	public MAccount markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_accountEV != null)
+			m_accountEV.markImmutable();
+		return this;
+	}
+
 	/**
 	 * 	Test
 	 *	@param args

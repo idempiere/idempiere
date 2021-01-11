@@ -477,17 +477,26 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		forcePost.setVisible(false);
 
 		// Elaine 2009/07/29
-		bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bZoom.setIconSclass("z-icon-Zoom");
+		else
+			bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		bZoom.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
 		bZoom.setVisible(tabbedPane.getSelectedIndex() == 1);
 		bZoom.addEventListener(Events.ON_CLICK, this);
 		//
 		
-		bQuery.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bQuery.setIconSclass("z-icon-Refresh");
+		else
+			bQuery.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		bQuery.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		bQuery.addEventListener(Events.ON_CLICK, this);
 
-		bExport.setImage(ThemeManager.getThemeResource("images/Export16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			bExport.setIconSclass("z-icon-Export");
+		else
+			bExport.setImage(ThemeManager.getThemeResource("images/Export16.png"));
 		bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
 		bExport.addEventListener(Events.ON_CLICK, this);
 		bExport.setVisible(false);
@@ -625,7 +634,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		m_data.fillTable(selTable);
 		selTable.addEventListener(Events.ON_SELECT, this);
 
-		selRecord.setImage(ThemeManager.getThemeResource("images/Find16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			selRecord.setIconSclass("z-icon-Find");
+		else
+			selRecord.setImage(ThemeManager.getThemeResource("images/Find16.png"));
 		selRecord.addEventListener(Events.ON_CLICK, this);
 		selRecord.setLabel("");
 
@@ -638,7 +650,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		selAcct.setName("Account_ID");
 		selAcct.addEventListener(Events.ON_CLICK, this);
 		selAcct.setLabel("");
-		selAcct.setImage(ThemeManager.getThemeResource("images/Find16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			selAcct.setIconSclass("z-icon-Find");
+		else
+			selAcct.setImage(ThemeManager.getThemeResource("images/Find16.png"));
 
 		statusLine.setValue(" " + Msg.getMsg(Env.getCtx(), "ViewerOptions"));
 
@@ -855,7 +870,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 				labels[selectionIndex].setVisible(true);
 				buttons[selectionIndex].setName(columnName); // actionCommand
 				buttons[selectionIndex].addEventListener(Events.ON_CLICK, this);
-				buttons[selectionIndex].setImage(ThemeManager.getThemeResource("images/Find16.png"));
+				if (ThemeManager.isUseFontIconForImage())
+					buttons[selectionIndex].setIconSclass("z-icon-Find");
+				else
+					buttons[selectionIndex].setImage(ThemeManager.getThemeResource("images/Find16.png"));
 				buttons[selectionIndex].setLabel("");
 				buttons[selectionIndex].setVisible(true);
 				selectionIndex++;

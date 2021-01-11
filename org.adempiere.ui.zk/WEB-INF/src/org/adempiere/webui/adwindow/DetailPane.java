@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.base.IServiceHolder;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
@@ -24,6 +25,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.compiere.model.MToolBarButton;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -72,6 +74,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	
 	private static final String BTN_QUICK_FORM_ID = "BtnQuickForm";
 
+	private static final String BTN_CUSTOMIZE_ID = "BtnCustomize";
+	
 	private static final String TABBOX_ONSELECT_ATTRIBUTE = "detailpane.tabbox.onselect";
 
 	public static final String ON_POST_SELECT_TAB_EVENT = "onPostSelectTab";
@@ -80,6 +84,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 	private static final String STATUS_ERROR_ATTRIBUTE = "status.error";
 
+	private static final String CUSTOMIZE_IMAGE = "images/Customize16.png";
 	private static final String DELETE_IMAGE = "images/Delete16.png";
 	private static final String EDIT_IMAGE = "images/EditRecord16.png";
 	private static final String NEW_IMAGE = "images/New16.png";
@@ -378,6 +383,17 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")));
 		buttons.put(BTN_QUICK_FORM_ID.substring(3, BTN_QUICK_FORM_ID.length()), button);
 		
+		// ADD Customize grid button
+		button = new ToolBarButton();
+		if (ThemeManager.isUseFontIconForImage())
+			button.setIconSclass("z-icon-Customize");
+		else
+			button.setImage(ThemeManager.getThemeResource(CUSTOMIZE_IMAGE));
+		button.setId(BTN_CUSTOMIZE_ID);
+		button.addEventListener(Events.ON_CLICK, e -> onCustomize(e));
+		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Customize")));
+		buttons.put(BTN_CUSTOMIZE_ID.substring(3, BTN_CUSTOMIZE_ID.length()), button);
+
 		MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("D", null);
 		for (MToolBarButton toolbarButton : officialButtons) {
 			if ( !toolbarButton.isActive() ) {
@@ -432,7 +448,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		messageContainer.setAlign("center");
 		messageContainer.setSclass("adwindow-detailpane-message");
 		messageContainer.setId("messages");
-		
+		if (ClientInfo.minWidth(ClientInfo.SMALL_WIDTH))
+			toolbar.appendChild(new Space());
 		toolbar.appendChild(messageContainer);
 		toolbar.setSclass("adwindow-detailpane-toolbar");
 		ZKUpdateUtil.setVflex(toolbar, "0");
@@ -453,6 +470,13 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		}
 	}
 	
+	protected void onCustomize(Event e) {
+		if (getSelectedADTabpanel() instanceof ADTabpanel) {
+			ADTabpanel tabPanel = (ADTabpanel) getSelectedADTabpanel();
+			CustomizeGridViewDialog.onCustomize(tabPanel);
+		}
+	}
+
 	protected void onProcess(Component button) {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
 		ADTabpanel adtab = (ADTabpanel) getSelectedADTabpanel();
@@ -559,7 +583,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     		label.setStyle("cursor: pointer");
     		messageContainer.appendChild(label);
     		label.addEventListener(Events.ON_CLICK, this);
-    	}    	
+    	} else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH)) {
+    		label.addEventListener(Events.ON_CLICK, this);
+    		label.setStyle("cursor: pointer");
+    	}
     	
     	messageContainer.appendChild(new Space());
 	}
@@ -716,6 +743,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			deleteRecord = adtab.getGridTab().isDeleteRecord();
         }
         boolean enableDelete = !changed && deleteRecord && !adtab.getGridTab().isSortTab();
+        boolean enableCustomize = !adtab.getGridTab().isSortTab();
         
         ADWindow adwindow = ADWindow.findADWindow(this);
         if (adwindow == null)
@@ -734,6 +762,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         			btn.setDisabled(false);
         		} else if (BTN_SAVE_ID.equals(btn.getId())) {
         			btn.setDisabled(!adtab.needSave(true, false));
+				} else if (BTN_CUSTOMIZE_ID.equals(btn.getId())) {
+        			btn.setDisabled(!enableCustomize);
 				}
 				else if (BTN_QUICK_FORM_ID.equals(btn.getId())) {
 					btn.setDisabled(!(adtab.isEnableQuickFormButton() && !adtab.getGridTab().isReadOnly()));
@@ -759,11 +789,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		IADTabpanel adtab = getADTabpanel(index);
 		if (adtab == null) return;
 		
-		String processImage = ThemeManager.getThemeResource(PROCESS_IMAGE);
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
-        		if (processImage.equals(btn.getImage())) {
+        		if (BTN_PROCESS_ID.equals(btn.getId())) {
         			if (adtab.getGridTab().isSortTab()) {
         				btn.setDisabled(true);
         			} else {

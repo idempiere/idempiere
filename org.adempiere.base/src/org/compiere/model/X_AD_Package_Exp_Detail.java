@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Exp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Detail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Package_Exp_Detail[")
+      StringBuilder sb = new StringBuilder ("X_AD_Package_Exp_Detail[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
@@ -945,6 +945,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String TYPE_SQLMandatory = "SQM";
 	/** Info Window = IW */
 	public static final String TYPE_InfoWindow = "IW";
+	/** Data Single = DS */
+	public static final String TYPE_DataSingle = "DS";
 	/** Set Type.
 		@param Type 
 		Type of Validation (SQL, Java Script, Java Language)

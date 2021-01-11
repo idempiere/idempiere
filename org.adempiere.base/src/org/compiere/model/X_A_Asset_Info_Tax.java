@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Info_Tax
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Tax (Properties ctx, int A_Asset_Info_Tax_ID, String trxName)
@@ -66,7 +66,7 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Info_Tax[")
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Info_Tax[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

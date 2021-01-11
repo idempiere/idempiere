@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaBreak
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBreak, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaBreak (Properties ctx, int M_DiscountSchemaBreak_ID, String trxName)
@@ -74,7 +74,7 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_DiscountSchemaBreak[")
+      StringBuilder sb = new StringBuilder ("X_M_DiscountSchemaBreak[")
         .append(get_ID()).append("]");
       return sb.toString();
     }

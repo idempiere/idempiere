@@ -240,7 +240,7 @@ public class WebUser
 			}
 			if (m_bpl != null)
 			{
-				m_loc = MLocation.get (m_ctx, m_bpl.getC_Location_ID(), null);
+				m_loc = MLocation.getCopy (m_ctx, m_bpl.getC_Location_ID(), null);
 				if (log.isLoggable(Level.FINE)) log.fine("Found LOC=" + m_loc);
 			}
 			else

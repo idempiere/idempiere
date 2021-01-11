@@ -44,6 +44,8 @@ import javax.xml.ws.WebServiceContext;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.xmlbeans.StringEnumAbstractBase.Table;
+import org.apache.xmlbeans.XmlInt;
+import org.apache.xmlbeans.impl.values.XmlValueOutOfRangeException;
 import org.compiere.model.I_AD_Column;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
@@ -63,6 +65,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -262,7 +265,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			try {
 				if (!((org.compiere.process.DocAction) po).processIt(docAction))
 					return rollbackAndSetError(trx, resp, ret, true,
-							"Couldn't set docAction: " + ((org.compiere.process.DocAction) po).getProcessMsg());
+							Msg.parseTranslation(ctx, "@FailedProcessingDocument@: " + ((org.compiere.process.DocAction) po).getProcessMsg()));
 			} catch (Exception e) {
 				return rollbackAndSetError(trx, resp, ret, true, e.toString());
 			}
@@ -338,8 +341,16 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	}
 
 	private int validateParameter(String parameterName, int i) {
+		return validateParameter(parameterName, i, null);
+	}
+	
+	private int validateParameter(String parameterName, int i, String uuid) {
 		Integer io = Integer.valueOf(i);
 		String string = validateParameter(parameterName, io.toString());
+		// Use the UUID only if the returned string is empty to not override the constant value if any
+		if (string == null || string.equals("0"))
+			string = uuid;
+		
 		if (string == null)
 			return -1;
 		if (string.equals(io.toString()))
@@ -348,8 +359,8 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			String tableName = parameterName.substring(0, parameterName.length()-3);
 			StringBuilder sql = new StringBuilder("SELECT ");
 			sql.append(parameterName).append(" FROM ").append(tableName)
-				.append(" WHERE ").append(tableName).append("_UU=").append(DB.TO_STRING(string));
-			return DB.getSQLValue(null, sql.toString());
+				.append(" WHERE ").append(tableName).append("_UU=?");
+			return DB.getSQLValue(null, sql.toString(), string);
 		}
 		
 		Map<String, Object> requestCtx = getRequestCtx();
@@ -400,8 +411,24 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			}
 	
 			// Validate parameters
-			modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
-			modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
+			try {
+				modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", modelRunProcess.getADMenuID()));
+			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Menu ID is not an Integer
+				String menuUU = getUUIDValue(modelRunProcess.xgetADMenuID());
+				if (menuUU == null) {
+					throw e;
+				}
+				modelRunProcess.setADMenuID(validateParameter("AD_Menu_ID", 0, menuUU));
+			}
+			try {
+				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", modelRunProcess.getADProcessID()));
+			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Process ID is not an Integer
+				String processUU = getUUIDValue(modelRunProcess.xgetADProcessID());
+				if (processUU == null) {
+					throw e;
+				}
+				modelRunProcess.setADProcessID(validateParameter("AD_Process_ID", 0, processUU));
+			}
 			modelRunProcess.setADRecordID(validateParameter("AD_Record_ID", modelRunProcess.getADRecordID()));
 			modelRunProcess.setDocAction(validateParameter("DocAction", modelRunProcess.getDocAction()));
 	
@@ -421,6 +448,18 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		} finally {
 			getCompiereService().disconnect();
 		}
+	}
+	
+	private String getUUIDValue(XmlInt xmlInt) {
+		if (xmlInt != null) {
+			// String xml <...> blocks
+		    String content = xmlInt.toString().replaceAll("<[^>]*>", "");
+		    if (! Util.isEmpty(content, true) && ADLookup.isUUID(content))
+		    	return content;
+		}
+
+		//No UUID value
+		return null;
 	}
 
 	public WindowTabDataDocument getList(ModelGetListRequestDocument req) {
@@ -446,7 +485,15 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			int roleid = reqlogin.getRoleID();
 	
 	    	// Validate parameters
-			modelGetList.setADReferenceID(validateParameter("AD_Reference_ID", modelGetList.getADReferenceID()));
+			try {
+				modelGetList.setADReferenceID(validateParameter("AD_Reference_ID", modelGetList.getADReferenceID()));
+			} catch(XmlValueOutOfRangeException e) { //	Catch the exception when the Reference ID is not an Integer
+				String refUU = getUUIDValue(modelGetList.xgetADReferenceID());
+				if (refUU == null) {
+					throw e;
+				}
+				modelGetList.setADReferenceID(validateParameter("AD_Reference_ID", 0, refUU));
+			}
 			modelGetList.setFilter(validateParameter("Filter", modelGetList.getFilter()));
 	
 	    	int ref_id = modelGetList.getADReferenceID();
@@ -505,7 +552,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	
 	    	} else if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 	    		// Fill values from a reference table
-	    		MRole role = new MRole(ctx, roleid, null);
+	    		MRole role = MRole.get(ctx, roleid);
 	    		MRefTable rt = MRefTable.get(ctx,  ref_id);
 	    		if (rt == null || rt.get_ID() == 0)
 	    			throw new IdempiereServiceFault("Web service type "
@@ -774,7 +821,10 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	retResp =invokeWSValidator(m_webservicetype, IWSValidator.TIMING_BEFORE_SAVE, po, fields,trx,requestCtx, resp, ret);
 			if (retResp != null)
 				return retResp;
-			
+
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 	    	if (!po.save())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 	
@@ -976,6 +1026,9 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			if (retResp != null)
 				return retResp;
 	
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 			if (!po.save())
 				return rollbackAndSetError(trx, resp, ret, true,
 						"Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
@@ -1042,7 +1095,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 				AD_Reference_ID = ((MLookup)lookup).getDisplayType();
 			}
 			
-			if(AD_Reference_ID==DisplayType.List)
+			if(DisplayType.isList(AD_Reference_ID))
 			{
 				if (lookup.getSize() == 0)
 					lookup.refresh();
@@ -1235,19 +1288,22 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 	    	if (po == null)
 	    		return rollbackAndSetError(trx, resp, ret, true, "No Record " + recordID + " in " + tableName);
 	    	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
-	
-	    	DataRow dr = modelCRUD.getDataRow();
-	    	
-	    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
-			if (retResp != null)
-				return retResp;
-	
+
 	    	if(po.get_ColumnIndex("Processed")>=0 && po.get_ValueAsBoolean("Processed")){
 	    		resp.setError("Record is processed and can not be updated");
 	    		resp.setIsError(true);
 	    		return ret;
 	    	}
+
+	    	DataRow dr = modelCRUD.getDataRow();
 	    	
+	    	StandardResponseDocument retResp = scanFields(dr.getFieldArray(), m_webservicetype, po, poinfo, trx, resp, ret);
+			if (retResp != null)
+				return retResp;
+
+			if (!po.validForeignKeys())
+				return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
+
 	    	if (!po.save())
 	    		return rollbackAndSetError(trx, resp, ret, true, "Cannot save record in " + tableName + ": " + CLogger.retrieveErrorString("no log message"));
 	
@@ -1344,8 +1400,13 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 					if (po.get_Value(i) != null){						
 						if(po.get_Value(i) instanceof byte[]){
 							dfid.setVal(new String(Base64.encodeBase64((byte[]) po.get_Value(i))));
-						}else						
-						    dfid.setVal(po.get_Value(i).toString());
+						}
+						else if(po.get_Value(i) instanceof Boolean) {
+							dfid.setVal((Boolean)po.get_Value(i) ? "Y" : "N");
+						}
+						else {
+							dfid.setVal(po.get_Value(i).toString());
+						}
 					}else
 						dfid.setVal(null);
 				}
@@ -1397,7 +1458,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 						new QName("queryData"));
 	
 			int roleid = reqlogin.getRoleID();
-			MRole role = new MRole(ctx, roleid, null);
+			MRole role = MRole.get(ctx, roleid);
 			
 			// start a trx
 			String trxName = localTrxName;
@@ -1410,7 +1471,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			if (manageTrx)
 				trx.setDisplayName(getClass().getName()+"_"+webServiceName+"_queryData");
 			
-	    	StringBuilder sqlBuilder = new StringBuilder(role.addAccessSQL("SELECT * FROM " + tableName, tableName, true, true));
+	    	StringBuilder sqlBuilder = new StringBuilder(role.addAccessSQL("SELECT * FROM " + tableName, tableName, true, MRole.SQL_RO));
 			
 			ArrayList<Object> sqlParaList = new ArrayList<Object>();
 			PO holderPo = table.getPO(0, trxName);

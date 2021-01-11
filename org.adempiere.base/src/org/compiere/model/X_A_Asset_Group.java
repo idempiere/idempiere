@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Group
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName)
@@ -75,8 +75,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Group[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Group[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 

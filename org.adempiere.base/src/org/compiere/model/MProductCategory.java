@@ -29,6 +29,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Product Category Model
@@ -36,15 +38,25 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: MProductCategory.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MProductCategory extends X_M_Product_Category
+public class MProductCategory extends X_M_Product_Category implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1239249591584452179L;
+	private static final long serialVersionUID = 6444388652482234582L;
 
 	/**
-	 * 	Get from Cache
+	 * 	Get from Cache (immutable)
+	 *	@param M_Product_Category_ID id
+	 *	@return category
+	 */
+	public static MProductCategory get (int M_Product_Category_ID)
+	{
+		return get(Env.getCtx(), M_Product_Category_ID);
+	}
+	
+	/**
+	 * 	Get from Cache (immutable)
 	 *	@param ctx context
 	 *	@param M_Product_Category_ID id
 	 *	@return category
@@ -52,13 +64,16 @@ public class MProductCategory extends X_M_Product_Category
 	public static MProductCategory get (Properties ctx, int M_Product_Category_ID)
 	{
 		Integer ii = Integer.valueOf(M_Product_Category_ID);
-		MProductCategory retValue = (MProductCategory)s_cache.get(ii);
+		MProductCategory retValue = s_cache.get(ctx, ii, e -> new MProductCategory(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MProductCategory (ctx, M_Product_Category_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (M_Product_Category_ID, retValue);
-		return retValue;
+		retValue = new MProductCategory (ctx, M_Product_Category_ID, (String)null);
+		if (retValue.get_ID () == M_Product_Category_ID)
+		{
+			s_cache.put (M_Product_Category_ID, retValue, e -> new MProductCategory(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 	
 	/**
@@ -113,7 +128,7 @@ public class MProductCategory extends X_M_Product_Category
 	}	//	isCategory
 	
 	/**	Categopry Cache				*/
-	private static CCache<Integer,MProductCategory>	s_cache = new CCache<Integer,MProductCategory>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MProductCategory>	s_cache = new ImmutableIntPOCache<Integer,MProductCategory>(Table_Name, 20);
 	/**	Product Cache				*/
 	private static CCache<Integer,Integer> s_products = new CCache<Integer,Integer>(I_M_Product.Table_Name, Table_Name + "|M_Product", 100);
 	/**	Static Logger	*/
@@ -151,6 +166,37 @@ public class MProductCategory extends X_M_Product_Category
 		super(ctx, rs, trxName);
 	}	//	MProductCategory
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProductCategory(MProductCategory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProductCategory(Properties ctx, MProductCategory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProductCategory(Properties ctx, MProductCategory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
@@ -257,6 +303,15 @@ public class MProductCategory extends X_M_Product_Category
 		}
 		return ret;
 	}	//hasLoop
+
+	@Override
+	public MProductCategory markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 	/**
 	 * Simple class for tree nodes.

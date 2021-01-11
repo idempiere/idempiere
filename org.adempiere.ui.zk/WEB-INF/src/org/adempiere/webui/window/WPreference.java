@@ -190,8 +190,10 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 		actionSave();
 
 		// Log Migration Script and AdempiereSys are just in-memory preferences, must not be saved
-		if (logMigrationScript != null)
+		if (logMigrationScript != null) {
 			Env.getCtx().setProperty("LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
+			Env.getCtx().setProperty("P|LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
+		}
 		if (adempiereSys != null)
 			Env.getCtx().setProperty("AdempiereSys", (Boolean)adempiereSys.getValue() ? "Y" : "N");
 

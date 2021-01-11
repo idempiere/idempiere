@@ -22,8 +22,10 @@ import static org.compiere.model.SystemIDs.ENTITYTYPE_DICTIONARY;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.cache.ImmutablePOCache;
 
 /**
  * 	Enitity Type Model
@@ -39,34 +41,47 @@ import org.compiere.util.CLogger;
  * 		<li>BF [ 2861194 ] EntityType is not using normal PO framework for getting IDs
  * 			https://sourceforge.net/tracker/?func=detail&aid=2861194&group_id=176962&atid=879332
  */
-public class MEntityType extends X_AD_EntityType
+public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8449015496292546851L;
+	private static final long serialVersionUID = -7160389442572466581L;
 
 	/**
-	 * Get EntityType object by name  
+	 * Get EntityType object by name (immutable)
+	 * @param entityType
+	 * @return entity type
+	 */
+	public static MEntityType get(String entityType)
+	{
+		return get(Env.getCtx(), entityType);
+	}
+	
+	/**
+	 * Get EntityType object by name (immutable)
 	 * @param ctx
 	 * @param entityType
-	 * @return
+	 * @return entity type
 	 */
 	public static MEntityType get(Properties ctx, String entityType)
 	{
-		MEntityType retValue = (MEntityType) s_cache.get (entityType);
+		MEntityType retValue = s_cache.get (ctx, entityType, e -> new MEntityType(ctx, e));
 		if (retValue != null)
 			return retValue;
+		
 		retValue = new Query(ctx, Table_Name, "EntityType=?", null)
 			.setParameters(entityType)
 			.firstOnly();
+		
 		if (retValue != null)
-			s_cache.put (entityType, retValue);
+			s_cache.put (entityType, retValue, e -> new MEntityType(Env.getCtx(), e));
+		
 		return retValue;
 	}
 	
 	/** Cached EntityTypes						*/
-	private static CCache<String,MEntityType>	s_cache = new CCache<String,MEntityType>(Table_Name, 20);
+	private static ImmutablePOCache<String,MEntityType>	s_cache = new ImmutablePOCache<String,MEntityType>(Table_Name, 20);
 	/**	Logger	*/
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MEntityType.class);
@@ -92,6 +107,37 @@ public class MEntityType extends X_AD_EntityType
 	{
 		super (ctx, rs, trxName);
 	}	//	MEntityType
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MEntityType(MEntityType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MEntityType(Properties ctx, MEntityType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MEntityType(Properties ctx, MEntityType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * First Not System Entity ID
@@ -183,4 +229,13 @@ public class MEntityType extends X_AD_EntityType
 		return true;
 	}	//	beforeDelete
 	
+	@Override
+	public MEntityType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MEntityType

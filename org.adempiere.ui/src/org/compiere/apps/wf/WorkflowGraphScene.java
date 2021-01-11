@@ -4,6 +4,8 @@
 package org.compiere.apps.wf;
 
 
+import java.awt.Color;
+
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
@@ -31,9 +33,12 @@ public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 
     public WorkflowGraphScene() {
     	mainLayer = new LayerWidget (this);
+    	mainLayer.setBackground(new Color(255,255,255,0));
         connectionLayer = new LayerWidget (this);
+        connectionLayer.setBackground(new Color(255,255,255,0));
         addChild (mainLayer);
         addChild (connectionLayer);
+        this.setBackground(new Color(255,255,255,0));
     }
 
 	@Override
@@ -72,7 +77,7 @@ public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 	protected Widget attachNodeWidget(Integer node) {
 		WFNodeWidget widget = (WFNodeWidget) findWidget(node);
 		if (widget == null) {
-			widget = new WFNodeWidget(this, MWFNode.get(Env.getCtx(), node));
+			widget = new WFNodeWidget(this, MWFNode.getCopy(Env.getCtx(), node, null));
 			widget.getActions ().addAction (selectAction);
 			mainLayer.addChild (widget);
 		}

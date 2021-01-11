@@ -23,26 +23,36 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Request Status Model
  *  @author Jorg Janke
  *  @version $Id: MStatus.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MStatus extends X_R_Status
+public class MStatus extends X_R_Status implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4549127671165860354L;
-
+	private static final long serialVersionUID = 446327334122691551L;
 
 	/**
-	 * 	Get Request Status (cached)
+	 * 	Get Request Status (cached) (immutable)
+	 *	@param R_Status_ID id
+	 *	@return Request Status or null
+	 */
+	public static MStatus get (int R_Status_ID)
+	{
+		return get(Env.getCtx(), R_Status_ID);
+	}
+	
+	/**
+	 * 	Get Request Status (cached) (immutable)
 	 *	@param ctx context
 	 *	@param R_Status_ID id
 	 *	@return Request Status or null
@@ -52,15 +62,35 @@ public class MStatus extends X_R_Status
 		if (R_Status_ID == 0)
 			return null;
 		Integer key = Integer.valueOf(R_Status_ID);
-		MStatus retValue = (MStatus)s_cache.get(key);
+		MStatus retValue = s_cache.get(ctx, key, e -> new MStatus(ctx, e));
 		if (retValue == null)
 		{
-			retValue = new MStatus (ctx, R_Status_ID, null);
-			s_cache.put(key, retValue);
+			retValue = new MStatus (ctx, R_Status_ID, (String)null);
+			if (retValue.get_ID() == R_Status_ID)
+			{
+				s_cache.put(key, retValue, e -> new MStatus(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MStatus from cache
+	 * @param ctx
+	 * @param R_Status_ID
+	 * @param trxName
+	 * @return MStatus
+	 */
+	public static MStatus getCopy(Properties ctx, int R_Status_ID, String trxName)
+	{
+		MStatus status = get(R_Status_ID);
+		if (status != null)
+			status = new MStatus(ctx, status, trxName);
+		return status;
+	}
+	
 	/**
 	 * 	Get Default Request Status
 	 *	@param ctx context
@@ -70,7 +100,7 @@ public class MStatus extends X_R_Status
 	public static MStatus getDefault (Properties ctx, int R_RequestType_ID)
 	{
 		Integer key = Integer.valueOf(R_RequestType_ID);
-		MStatus retValue = (MStatus)s_cacheDefault.get(key);
+		MStatus retValue = s_cacheDefault.get(ctx, key, e -> new MStatus(ctx, e));
 		if (retValue != null)
 			return retValue;
 		//	Get New
@@ -100,8 +130,10 @@ public class MStatus extends X_R_Status
 			rs = null;
 			pstmt = null;
 		}
-		if (retValue != null)
-			s_cacheDefault.put(key, retValue);
+		if (retValue != null) 
+		{
+			s_cacheDefault.put(key, retValue, e -> new MStatus(Env.getCtx(), e));
+		}
 		return retValue;
 	}	//	getDefault
 
@@ -146,11 +178,11 @@ public class MStatus extends X_R_Status
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MStatus.class);
 	/**	Cache							*/
-	static private CCache<Integer,MStatus> s_cache
-		= new CCache<Integer,MStatus> (Table_Name, 10);
+	static private ImmutableIntPOCache<Integer,MStatus> s_cache
+		= new ImmutableIntPOCache<Integer,MStatus> (Table_Name, 10);
 	/**	Default Cache (Key=Client)		*/
-	static private CCache<Integer,MStatus> s_cacheDefault
-		= new CCache<Integer,MStatus>(Table_Name, "R_Status_Default", 10);
+	static private ImmutableIntPOCache<Integer,MStatus> s_cacheDefault
+		= new ImmutableIntPOCache<Integer,MStatus>(Table_Name, "R_Status_Default", 10);
 
 
 	/**************************************************************************
@@ -185,7 +217,37 @@ public class MStatus extends X_R_Status
 		super (ctx, rs, trxName);
 	}	//	MStatus
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MStatus(MStatus copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStatus(Properties ctx, MStatus copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStatus(Properties ctx, MStatus copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
@@ -218,4 +280,13 @@ public class MStatus extends X_R_Status
 		return sb.toString ();
 	}	//	toString
 	
+	@Override
+	public MStatus markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MStatus

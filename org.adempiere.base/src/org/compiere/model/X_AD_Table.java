@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_Table extends PO implements I_AD_Table, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -81,8 +81,8 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Table[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Table[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -237,6 +237,20 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	public String getCopyComponentsFromView () 
 	{
 		return (String)get_Value(COLUMNNAME_CopyComponentsFromView);
+	}
+
+	/** Set Create Window From Table.
+		@param CreateWindowFromTable Create Window From Table	  */
+	public void setCreateWindowFromTable (String CreateWindowFromTable)
+	{
+		set_Value (COLUMNNAME_CreateWindowFromTable, CreateWindowFromTable);
+	}
+
+	/** Get Create Window From Table.
+		@return Create Window From Table	  */
+	public String getCreateWindowFromTable () 
+	{
+		return (String)get_Value(COLUMNNAME_CreateWindowFromTable);
 	}
 
 	/** Set Drop view.

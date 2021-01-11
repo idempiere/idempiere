@@ -74,6 +74,12 @@ public class Process {
 	
 	private static final CLogger	log = CLogger.getCLogger(Process.class);
 
+	/**
+	 * @param cs
+	 * @param req
+	 * @return
+	 * @deprecated - method not used - will be deleted in future versions
+	 */
 	public static ProcessParamsDocument getProcessParams( CompiereService cs, GetProcessParamsDocument req ) 
 	{
 		ProcessParamsDocument res = ProcessParamsDocument.Factory.newInstance();
@@ -193,11 +199,15 @@ public class Process {
 		RunProcessResponse r= res.addNewRunProcessResponse();
 
 		RunProcess rp = req.getRunProcess();
+		int AD_Menu_ID = rp.getADMenuID();
 		int AD_Process_ID = rp.getADProcessID();
 		int m_record_id = rp.getADRecordID();
 	  	
-		MProcess process = MProcess.get (m_cs.getCtx() , AD_Process_ID);
-		//	need to check if Role can access
+		MProcess process = null;
+		if (AD_Menu_ID <= 0 && AD_Process_ID > 0)
+			process = MProcess.get(m_cs.getCtx(), AD_Process_ID);
+		else if (AD_Menu_ID > 0 && AD_Process_ID <= 0)
+			process = MProcess.getFromMenu(m_cs.getCtx(), AD_Menu_ID);
 		if (process == null)
 		{
 			r.setError("Process not found");
@@ -345,8 +355,10 @@ public class Process {
 			try
 			{
 				processOK = process.processIt(pi, trx, false);
-				if (trxName == null)
-					trx.commit();				
+				if (trxName == null && processOK)
+					trx.commit();	
+				else if (trxName == null && !processOK)
+					trx.rollback();
 			}
 			catch (Throwable t)
 			{
@@ -531,7 +543,7 @@ public class Process {
 			Object value = valueString;
 			if (valueString != null && valueString.length() == 0)
 				value = null;
-			if (value != null && (DisplayType.List == displayType ||
+			if (value != null && (DisplayType.isList(displayType) ||
 					DisplayType.TableDir== displayType ||
 					DisplayType.Table== displayType)&& value.equals("-1"))
 				value= null;

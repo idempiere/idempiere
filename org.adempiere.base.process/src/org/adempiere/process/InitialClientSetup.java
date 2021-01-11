@@ -172,6 +172,7 @@ public class InitialClientSetup extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
+		boolean isDryRun = "Y".equalsIgnoreCase(Env.getContext(Env.getCtx(), Env.RUNNING_UNIT_TESTING_TEST_CASE));
 		
 		StringBuilder msglog = new StringBuilder("InitialClientSetup")
 								.append(": ClientName=").append(p_ClientName)
@@ -261,7 +262,7 @@ public class InitialClientSetup extends SvrProcess
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CoaFile") +  " " + p_CoAFile + " " + Msg.getMsg(Env.getCtx(), "is empty"));
 
 		// Process
-		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS);
+		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS, isDryRun);
 		try {
 			if (! ms.createClient(p_ClientName, p_OrgValue, p_OrgName, p_AdminUserName, p_NormalUserName
 					, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail, p_IsSetInitialPassword)) {
@@ -289,7 +290,9 @@ public class InitialClientSetup extends SvrProcess
 			addLog(ms.getInfo());
 
 			//	Create Print Documents
-			PrintUtil.setupPrintForm(ms.getAD_Client_ID());
+			PrintUtil.setupPrintForm(ms.getAD_Client_ID(), isDryRun ? ms.getTrxName() : null);
+			if (isDryRun)
+				ms.rollback();
 		} catch (Exception e) {
 			ms.rollback();
 			throw e;

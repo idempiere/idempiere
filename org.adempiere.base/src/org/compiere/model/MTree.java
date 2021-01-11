@@ -237,10 +237,10 @@ public class MTree extends MTree_Base
 	private void loadNodes (int AD_User_ID, String linkColName, int linkID)
 	{
 		//  SQL for TreeNodes
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		if (getTreeType().equals(TREETYPE_Menu))	// specific sql, need to load TreeBar IDEMPIERE 329 - nmicoud
 		{
-			sql = new StringBuffer("SELECT "
+			sql = new StringBuilder("SELECT "
 					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,tb.IsActive "
 					+ "FROM ").append(getNodeTableName()).append(" tn"
 							+ " LEFT OUTER JOIN AD_TreeBar tb ON (tn.AD_Tree_ID=tb.AD_Tree_ID"
@@ -260,7 +260,7 @@ public class MTree extends MTree_Base
 				if (getAD_Table_ID() > 0)
 					sourceTableName = MTable.getTableName(getCtx(), getAD_Table_ID());
 			}
-			sql = new StringBuffer("SELECT "
+			sql = new StringBuilder("SELECT "
 					+ "tn.Node_ID,tn.Parent_ID,tn.SeqNo,st.IsActive "
 					+ "FROM ").append(sourceTableName).append(" st "
 							+ "LEFT OUTER JOIN ").append(getNodeTableName()).append(" tn ON (tn.Node_ID=st."+sourceTableName+"_ID) "
@@ -272,7 +272,7 @@ public class MTree extends MTree_Base
 			sql.append(" ORDER BY COALESCE(tn.Parent_ID, -1), tn.SeqNo");
 			//do not check access if allNodes
 			if (AD_User_ID != -1)
-				sql = new StringBuffer(MRole.getDefault().addAccessSQL(sql.toString(), "st", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO));	// SQL_RO for Org_ID = 0
+				sql = new StringBuilder(MRole.getDefault().addAccessSQL(sql.toString(), "st", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO));	// SQL_RO for Org_ID = 0
 		}
 		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		//  The Node Loop
@@ -622,8 +622,20 @@ public class MTree extends MTree_Base
 						access = role.getWorkflowAccess(AD_Workflow_ID);
 					else if (X_AD_Menu.ACTION_Task.equals(actionColor))
 						access = role.getTaskAccess(AD_Task_ID);
-					else if (X_AD_Menu.ACTION_Info.equals(actionColor))
+					else if (X_AD_Menu.ACTION_Info.equals(actionColor)) {
 						access = role.getInfoAccess(AD_InfoWindow_ID);
+						
+						// Get Info Window Customization
+						MUserDefInfo userDef = null; 
+						userDef = MUserDefInfo.getBestMatch(getCtx(), AD_InfoWindow_ID);
+						if (userDef != null)
+						{
+							if (userDef.getName() != null)
+								name = userDef.getName();
+							if (userDef.getDescription() != null)
+								description = userDef.getDescription();
+						}
+					}
 				//	log.fine("getNodeDetail - " + name + " - " + actionColor + " - " + access);
 					//
 					if (access != null		//	rw or ro for Role 

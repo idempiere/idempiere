@@ -359,7 +359,7 @@ public class MGoal extends X_PA_Goal
 	public MMeasure getMeasure()
 	{
 		if (getPA_Measure_ID() != 0)
-			return MMeasure.get(getCtx(), getPA_Measure_ID());
+			return MMeasure.get(getPA_Measure_ID());
 		return null;
 	}	//	getMeasure
 	
@@ -372,7 +372,7 @@ public class MGoal extends X_PA_Goal
 	public boolean updateGoal(boolean force)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Force=" + force);
-		MMeasure measure = MMeasure.get(getCtx(), getPA_Measure_ID());
+		MMeasure measure = MMeasure.get(getPA_Measure_ID());
 		
 		boolean isUpdateByInterfal = false;
 		if (getDateLastRun() != null){
@@ -385,7 +385,7 @@ public class MGoal extends X_PA_Goal
 			|| getDateLastRun() == null
 			|| isUpdateByInterfal)
 		{
-			measure.set_TrxName(get_TrxName());
+			measure = new MMeasure(Env.getCtx(), measure, get_TrxName());
 			if (measure.updateGoals())		//	saves
 			{
 				load(get_ID(), get_TrxName());
@@ -464,7 +464,7 @@ public class MGoal extends X_PA_Goal
      */
     public MColorSchema getColorSchema()
     {
-    	return MColorSchema.get(getCtx(), getPA_ColorSchema_ID());
+    	return MColorSchema.getCopy(getCtx(), getPA_ColorSchema_ID(), get_TrxName());
     }
 	
 	/**

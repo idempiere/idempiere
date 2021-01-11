@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
@@ -61,9 +62,9 @@ public class MUserRoles extends X_AD_User_Roles
 	 */
 	public static MUserRoles[] getOfUser (Properties ctx, int AD_User_ID)
 	{
-		final String whereClause = I_AD_User_Roles.COLUMNNAME_AD_User_ID+"=?";	
+		final String whereClause = I_AD_User_Roles.COLUMNNAME_AD_User_ID+"=? AND AD_Client_ID IN (0, ?)";	
 		List<MUserRoles> list = new Query(ctx,I_AD_User_Roles.Table_Name,whereClause,null)
-		.setParameters(AD_User_ID)
+		.setParameters(new Object[]{AD_User_ID, Env.getAD_Client_ID(ctx)})
 		.list();
 		MUserRoles[] retValue = new MUserRoles[list.size ()];
 		list.toArray (retValue);
@@ -112,22 +113,27 @@ public class MUserRoles extends X_AD_User_Roles
 		setAD_User_ID(AD_User_ID);
 		setAD_Role_ID(AD_Role_ID);
 	}	//	MUserRoles
-	
-	/** 
-	 * 	Set User/Contact.
-	 *	User within the system - Internal or Business Partner Contact
-	 *	@param AD_User_ID user 
+
+	/** Set User/Contact.
+        @param AD_User_ID
+        User within the system - Internal or Business Partner Contact
+        Overridden to allow saving System record (zero ID)
 	 */
+	@Override
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		set_ValueNoCheck ("AD_User_ID", Integer.valueOf(AD_User_ID));
-	}	//	setAD_User_ID
-	
+		if (AD_User_ID == 0) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
+		else 
+			super.setAD_User_ID(AD_User_ID);
+	} //setAD_User_ID
+
 	/** 
 	 * 	Set Role.
 	 * 	Responsibility Role
 	 * 	@param AD_Role_ID role 
 	 **/
+	@Override
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
 		set_ValueNoCheck ("AD_Role_ID", Integer.valueOf(AD_Role_ID));

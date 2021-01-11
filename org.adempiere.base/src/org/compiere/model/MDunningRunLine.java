@@ -345,7 +345,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	{
 		// we do not count the fee line as an item, but it sum it up.
 		StringBuilder sql = new StringBuilder("UPDATE C_DunningRunEntry e ")
-			.append("SET Amt=COALESCE((SELECT SUM(ConvertedAmt)+SUM(FeeAmt)+SUM(InterestAmt)")
+			.append("SET Amt=NVL((SELECT SUM(ConvertedAmt)+SUM(FeeAmt)+SUM(InterestAmt)")
 			.append(" FROM C_DunningRunLine l ")
 				.append("WHERE e.C_DunningRunEntry_ID=l.C_DunningRunEntry_ID), 0), ")
 			.append("QTY=(SELECT COUNT(*)")
