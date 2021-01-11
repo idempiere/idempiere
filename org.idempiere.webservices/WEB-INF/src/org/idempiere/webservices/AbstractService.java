@@ -131,13 +131,13 @@ public class AbstractService {
 		if (!okclient)
 			return "Error logging in - client not allowed for this user";
 
-		m_cs.getCtx().setProperty("#AD_Client_ID", "" + loginRequest.getClientID());
-       	Env.setContext(m_cs.getCtx(), "#AD_Client_ID", (String) selectedClient.getID());
+		m_cs.getCtx().setProperty(Env.AD_CLIENT_ID, "" + loginRequest.getClientID());
+       	Env.setContext(m_cs.getCtx(), Env.AD_CLIENT_ID, (String) selectedClient.getID());
     	MUser user = MUser.get (m_cs.getCtx(), loginRequest.getUser());
     	if (user != null) {
-    		Env.setContext(m_cs.getCtx(), "#AD_User_ID", user.getAD_User_ID() );
-    		Env.setContext(m_cs.getCtx(), "#AD_User_Name", user.getName() );
-    		Env.setContext(m_cs.getCtx(), "#SalesRep_ID", user.getAD_User_ID() );
+    		Env.setContext(m_cs.getCtx(), Env.AD_USER_ID, user.getAD_User_ID() );
+    		Env.setContext(m_cs.getCtx(), Env.AD_USER_NAME, user.getName() );
+    		Env.setContext(m_cs.getCtx(), Env.SALESREP_ID, user.getAD_User_ID() );
     		String userAgent = getHttpServletRequest().getHeader("User-Agent");
     		Env.setContext(m_cs.getCtx(), "#UserAgent",   userAgent == null ? "Unknown" : userAgent);
     	}

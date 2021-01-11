@@ -82,9 +82,9 @@ public class MigrateData
 				String DownloadURL = rs.getString(5);
 				//
 				Properties ctx = new Properties (Env.getCtx());
-				Env.setContext(ctx, "#AD_Client_ID", AD_Client_ID);
+				Env.setContext(ctx, Env.AD_CLIENT_ID, AD_Client_ID);
 				Env.setContext(ctx, "AD_Client_ID", AD_Client_ID);
-				Env.setContext(ctx, "#AD_Org_ID", AD_Org_ID);
+				Env.setContext(ctx, Env.AD_ORG_ID, AD_Org_ID);
 				Env.setContext(ctx, "AD_Org_ID", AD_Org_ID);
 				MProductDownload pdl = new MProductDownload(ctx, 0, null);
 				pdl.setM_Product_ID(M_Product_ID);

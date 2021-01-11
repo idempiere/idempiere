@@ -132,14 +132,14 @@ public class ConvertLead extends SvrProcess {
 			if ( p_C_Currency_ID > 0 )
 				op.setC_Currency_ID(p_C_Currency_ID);
 			else
-				op.setC_Currency_ID(Env.getContextAsInt(getCtx(), "$C_Currency_ID"));
+				op.setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 			
 			if (p_SalesRep_ID > 0 )
 				op.setSalesRep_ID(p_SalesRep_ID);
 			else if ( lead.getSalesRep_ID() > 0 ) 
 				op.setSalesRep_ID(lead.getSalesRep_ID());
 			else
-				op.setSalesRep_ID(Env.getContextAsInt(getCtx(), "#SalesRep_ID"));
+				op.setSalesRep_ID(Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
 			
 			op.setC_Campaign_ID(lead.getC_Campaign_ID());
 			

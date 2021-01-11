@@ -153,7 +153,7 @@ public class WRadioGroupEditor extends WEditor implements ContextMenuListener, L
         	lookup.setMandatory(true);
             lookup.setMandatory(isMandatory());
             
-            if ((lookup.getDisplayType() == DisplayType.List && Env.getContextAsInt(Env.getCtx(), "#AD_Role_ID") == 0)
+            if ((lookup.getDisplayType() == DisplayType.List && Env.getContextAsInt(Env.getCtx(), Env.AD_ROLE_ID) == 0)
             		|| lookup.getDisplayType() != DisplayType.List) 
             {
     			zoom= true;

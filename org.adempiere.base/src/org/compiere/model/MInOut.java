@@ -2496,7 +2496,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public int getC_Currency_ID ()
 	{
-		return Env.getContextAsInt(getCtx(),"$C_Currency_ID");
+		return Env.getContextAsInt(getCtx(),Env.C_CURRENCY_ID);
 	}	//	getC_Currency_ID
 
 	/**

@@ -2048,7 +2048,7 @@ public class MPayment extends X_C_Payment
 			DB.getDatabase().forUpdate(bp, 0);
 			//	Update total balance to include this payment
 			BigDecimal payAmt = null;
-			int baseCurrencyId = Env.getContextAsInt(getCtx(), "$C_Currency_ID");
+			int baseCurrencyId = Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID);
 			if (getC_Currency_ID() != baseCurrencyId && isOverrideCurrencyRate()) 
 			{
 				payAmt = getConvertedAmt();

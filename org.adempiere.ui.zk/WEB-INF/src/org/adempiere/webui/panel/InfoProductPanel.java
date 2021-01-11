@@ -757,7 +757,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		int M_PriceList_Version_ID = findPLV (M_PriceList_ID);
 		//	Set Warehouse
 		if (M_Warehouse_ID == 0)
-			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), "#M_Warehouse_ID");
+			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
 		if (M_Warehouse_ID != 0)
 			setWarehouse (M_Warehouse_ID);
 		// 	Set PriceList Version
