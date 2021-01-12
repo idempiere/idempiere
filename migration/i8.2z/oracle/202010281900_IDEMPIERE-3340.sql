@@ -7,7 +7,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Oct 27, 2020, 1:09:53 PM IST
-ALTER TABLE AD_Tree_Favorite_Node ADD IsFavourite VARCHAR2(1 CHAR) DEFAULT 'N' CHECK (IsFavourite IN ('Y','N')) NOT NULL
+ALTER TABLE AD_Tree_Favorite_Node ADD IsFavourite CHAR(1) DEFAULT 'N' CHECK (IsFavourite IN ('Y','N')) NOT NULL
 ;
 
 -- Oct 27, 2020, 1:10:41 PM IST

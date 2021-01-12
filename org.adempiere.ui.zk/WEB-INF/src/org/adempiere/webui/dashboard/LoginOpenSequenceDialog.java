@@ -37,6 +37,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MTreeFavorite;
 import org.compiere.model.MTreeFavoriteNode;
@@ -282,6 +283,7 @@ public class LoginOpenSequenceDialog extends Window
 		noModel.removeAllElements();
 
 		int favTreeID = MTreeFavorite.getFavoriteTreeID(m_AD_User_ID);
+		MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()));
 
 		// get login open seq no nodes
 		Query query = new Query(Env.getCtx(), MTreeFavoriteNode.Table_Name, "AD_Tree_Favorite_ID=? AND AD_Menu_ID>0 AND LoginOpenSeqNo>=0", null);
@@ -309,21 +311,26 @@ public class LoginOpenSequenceDialog extends Window
 			{
 				int key = favNode.getAD_Tree_Favorite_Node_ID();
 				MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(favNode.getAD_Menu_ID(), null);
-				ListElement pp = new ListElement(key, menu.get_Translation(MMenu.COLUMNNAME_Name));
-				if (autoOpenSeqs != null && autoOpenSeqs.size() > 0)
+
+				Boolean access = MTreeFavorite.getAccessForMenuItem(role, menu);
+				if (access != null && access.booleanValue())
 				{
-					if (autoOpenSeqs.contains(key))
+					ListElement pp = new ListElement(key, menu.get_Translation(MMenu.COLUMNNAME_Name));
+					if (autoOpenSeqs != null && autoOpenSeqs.size() > 0)
 					{
-						currSel.put(key, pp);
+						if (autoOpenSeqs.contains(key))
+						{
+							currSel.put(key, pp);
+						}
+						else
+						{
+							noModel.addElement(pp);
+						}
 					}
 					else
 					{
 						noModel.addElement(pp);
 					}
-				}
-				else
-				{
-					noModel.addElement(pp);
 				}
 			}
 

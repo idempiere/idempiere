@@ -109,18 +109,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 				{
 					menuID = rs.getInt(6);
 					MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(menuID, null);
-					if (MMenu.ACTION_Window.equals(menu.getAction()))
-						access = role.getWindowAccess(menu.getAD_Window_ID());
-					else if (MMenu.ACTION_Process.equals(menu.getAction()) || MMenu.ACTION_Report.equals(menu.getAction()))
-						access = role.getProcessAccess(menu.getAD_Process_ID());
-					else if (MMenu.ACTION_Form.equals(menu.getAction()))
-						access = role.getFormAccess(menu.getAD_Form_ID());
-					else if (MMenu.ACTION_WorkFlow.equals(menu.getAction()))
-						access = role.getWorkflowAccess(menu.getAD_Workflow_ID());
-					else if (MMenu.ACTION_Task.equals(menu.getAction()))
-						access = role.getTaskAccess(menu.getAD_Task_ID());
-					else if (MMenu.ACTION_Info.equals(menu.getAction()))
-						access = role.getInfoAccess(menu.getAD_InfoWindow_ID());
+					access = getAccessForMenuItem(role, menu);
 
 					if (access != null)
 					{
@@ -236,5 +225,31 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 			cache_TreeFavID.put(userID, id);
 		return id;
 	} // getFavoriteTreeID
+
+	/**
+	 * get access for the menu from specified role
+	 * 
+	 * @param  role
+	 * @param  menu
+	 * @return
+	 */
+	public static Boolean getAccessForMenuItem(MRole role, I_AD_Menu menu)
+	{
+		Boolean access = null;
+		if (MMenu.ACTION_Window.equals(menu.getAction()))
+			access = role.getWindowAccess(menu.getAD_Window_ID());
+		else if (MMenu.ACTION_Process.equals(menu.getAction()) || MMenu.ACTION_Report.equals(menu.getAction()))
+			access = role.getProcessAccess(menu.getAD_Process_ID());
+		else if (MMenu.ACTION_Form.equals(menu.getAction()))
+			access = role.getFormAccess(menu.getAD_Form_ID());
+		else if (MMenu.ACTION_WorkFlow.equals(menu.getAction()))
+			access = role.getWorkflowAccess(menu.getAD_Workflow_ID());
+		else if (MMenu.ACTION_Task.equals(menu.getAction()))
+			access = role.getTaskAccess(menu.getAD_Task_ID());
+		else if (MMenu.ACTION_Info.equals(menu.getAction()))
+			access = role.getInfoAccess(menu.getAD_InfoWindow_ID());
+
+		return access;
+	} // getAccessForMenuItem
 
 }
