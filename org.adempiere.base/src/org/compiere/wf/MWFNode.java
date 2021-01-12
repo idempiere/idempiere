@@ -242,9 +242,9 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	 */
 	private void loadNext()
 	{
-		m_next = new Query(getCtx(), MWFNodeNext.Table_Name, "AD_WF_NodeNext.AD_WF_Node_ID=?", get_TrxName())
+		m_next = new Query(getCtx(), MWFNodeNext.Table_Name, "AD_WF_NodeNext.AD_WF_Node_ID=? AND AD_WF_NodeNext.AD_Client_ID IN (0, ?)", get_TrxName())
 								.addJoinClause(" JOIN AD_WF_Node ON (AD_WF_Node.AD_WF_Node_ID=AD_WF_NodeNext.AD_WF_Next_ID AND AD_WF_Node.IsActive='Y')")
-								.setParameters(new Object[]{get_ID()})
+								.setParameters(new Object[]{get_ID(), Env.getAD_Client_ID(Env.getCtx())})
 								.setOnlyActiveRecords(true)
 								.setOrderBy(MWFNodeNext.COLUMNNAME_SeqNo)
 								.list();
