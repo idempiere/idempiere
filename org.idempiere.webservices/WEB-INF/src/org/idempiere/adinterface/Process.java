@@ -124,9 +124,9 @@ public class Process {
 					if (DisplayType.isDate(para.getAD_Reference_ID()))
 					{
 						if (para.getDefaultValue().indexOf( "@#Date@")>=0) {
-							//Object t = Env.getContextAsDate( cs.getM_ctx(), "#Date" );
-							//String t = Env.getContext( cs.getM_ctx(), "#Date" );
-							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getCtx(), "#Date") );	
+							//Object t = Env.getContextAsDate( cs.getM_ctx(), Env.DATE );
+							//String t = Env.getContext( cs.getM_ctx(), Env.DATE );
+							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getCtx(), Env.DATE) );	
 							
 							p.setDefaultValue( t ); //cs.dateFormat.format( t ));
 						}
@@ -148,9 +148,9 @@ public class Process {
 					if (DisplayType.isDate(para.getAD_Reference_ID()))
 					{						
 						if (para.getDefaultValue2().indexOf( "@#Date@")>=0) {
-							//Object t = Env.getContextAsDate( cs.getM_ctx(), "#Date" );
-							//String t = Env.getContext( cs.getM_ctx(), "#Date" );
-							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getCtx(), "#Date") );
+							//Object t = Env.getContextAsDate( cs.getM_ctx(), Env.DATE );
+							//String t = Env.getContext( cs.getM_ctx(), Env.DATE );
+							String t= cs.dateFormat.format( Env.getContextAsDate( cs.getCtx(), Env.DATE) );
 							p.setDefaultValue2( t ); //cs.dateFormat.format( t ) );
 						}							
 					}

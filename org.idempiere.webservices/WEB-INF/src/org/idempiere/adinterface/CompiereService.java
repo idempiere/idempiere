@@ -123,7 +123,7 @@ public class CompiereService {
 		CompiereUtil.initWeb();
 
 		ServerContext.setCurrentInstance(new Properties());
-		Env.setContext(getCtx(), "#AD_Language", "en_US" );
+		Env.setContext(getCtx(), Env.LANGUAGE, "en_US" );
 		m_language = Language.getLanguage("en_US");
 
 		dateFormat = DisplayType.getDateFormat(DisplayType.Date, m_language);
@@ -266,7 +266,7 @@ public class CompiereService {
 		else
 			m_userName = Util.isEmpty(user.getLDAPUser()) ? user.getName() : user.getLDAPUser();
 
-		Env.setContext( getCtx(), "#AD_Language", Lang);
+		Env.setContext( getCtx(), Env.LANGUAGE, Lang);
 		m_language = Language.getLanguage(Lang);
 		Env.verifyLanguage( getCtx(), m_language );
 
@@ -281,10 +281,10 @@ public class CompiereService {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat( dateFormatOnlyForCtx ); 
-		Env.setContext( getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
-		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
+		Env.setContext( getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), Env.DATE));
 
-		Env.setContext( getCtx(), "#M_Warehouse_ID", M_Warehouse_ID );
+		Env.setContext( getCtx(), Env.M_WAREHOUSE_ID, M_Warehouse_ID );
 		Env.setContext(getCtx(), Env.LANGUAGE, m_language.getAD_Language());
 		
 		// Create session

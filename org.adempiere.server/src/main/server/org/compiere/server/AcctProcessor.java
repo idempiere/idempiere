@@ -77,23 +77,23 @@ public class AcctProcessor extends AdempiereServer
 		m_summary = new StringBuffer();
 		
 		// Prepar ctx
-		Env.setContext(getCtx(), "#AD_Client_ID", m_client.getAD_Client_ID());
-		Env.setContext(getCtx(), "#AD_Language", m_client.getAD_Language());
-		Env.setContext(getCtx(), "#AD_Org_ID", m_model.getAD_Org_ID());
+		Env.setContext(getCtx(), Env.AD_CLIENT_ID, m_client.getAD_Client_ID());
+		Env.setContext(getCtx(), Env.LANGUAGE, m_client.getAD_Language());
+		Env.setContext(getCtx(), Env.AD_ORG_ID, m_model.getAD_Org_ID());
 		if (m_model.getAD_Org_ID() != 0) {
 			MOrgInfo schedorg = MOrgInfo.get(getCtx(), m_model.getAD_Org_ID(), null);
 			if (schedorg.getM_Warehouse_ID() > 0)
-				Env.setContext(getCtx(), "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
+				Env.setContext(getCtx(), Env.M_WAREHOUSE_ID, schedorg.getM_Warehouse_ID());
 		}
-		Env.setContext(getCtx(), "#AD_User_ID", getAD_User_ID());
-		Env.setContext(getCtx(), "#SalesRep_ID", getAD_User_ID());
+		Env.setContext(getCtx(), Env.AD_USER_ID, getAD_User_ID());
+		Env.setContext(getCtx(), Env.SALESREP_ID, getAD_User_ID());
 		MUser scheduser = MUser.get(getCtx(), getAD_User_ID());
 		MRole[] schedroles = scheduser.getRoles(m_model.getAD_Org_ID());
 		if (schedroles != null && schedroles.length > 0)
-			Env.setContext(getCtx(), "#AD_Role_ID", schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
+			Env.setContext(getCtx(), Env.AD_ROLE_ID, schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
-		Env.setContext(getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		Env.setContext(getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 				
 		//	Get Schemata
 		if (m_model.getC_AcctSchema_ID() == 0)

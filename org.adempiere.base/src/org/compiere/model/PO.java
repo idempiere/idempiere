@@ -1689,7 +1689,7 @@ public abstract class PO
 			String colName = p_info.getColumnName(i);
 			//  Set Standard Values
 			if (colName.endsWith("tedBy"))
-				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, "#AD_User_ID"));
+				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, Env.AD_USER_ID));
 			else if (colName.equals("Created") || colName.equals("Updated"))
 				m_newValues[i] = new Timestamp (System.currentTimeMillis());
 			else if (colName.equals(p_info.getTableName() + "_ID"))    //  KeyColumn
@@ -2574,7 +2574,7 @@ public abstract class PO
 				//	If no changes set UpdatedBy explicitly to ensure commit of lob
 				if (!changes && !updatedBy)
 				{
-					int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+					int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 					set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 					sql.append("UpdatedBy=").append(AD_User_ID);
 					changes = true;
@@ -2753,7 +2753,7 @@ public abstract class PO
 			}
 			if (!updatedBy)	//	UpdatedBy not explicitly set
 			{
-				int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+				int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 				set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 				if (withValues)
 				{
@@ -4977,7 +4977,7 @@ public abstract class PO
 	}
 
 	private void checkValidContext() {
-		if (getCtx().isEmpty() && getCtx().getProperty("#AD_Client_ID") == null)
+		if (getCtx().isEmpty() && getCtx().getProperty(Env.AD_CLIENT_ID) == null)
 			throw new AdempiereException("Context lost");
 	}
 
@@ -5016,9 +5016,9 @@ public abstract class PO
 					+" Env.AD_Client_ID="+envClientID
 					+" PO.AD_Client_ID="+poClientID
 					+" writing="+writing
-					+" Session="+Env.getContext(getCtx(), "#AD_Session_ID"));
+					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
 				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
-						+ Env.getContext(getCtx(), "#AD_Session_ID") + " for table " + get_TableName()
+						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
 						+ " Record_ID=" + get_ID();
 				throw new AdempiereException(message);
 			}

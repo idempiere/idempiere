@@ -607,7 +607,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		//	Default Warehouse
 		if (getM_Warehouse_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#M_Warehouse_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.M_WAREHOUSE_ID);
 			if (ii != 0)
 				setM_Warehouse_ID(ii);
 			else
@@ -637,7 +637,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		//	Default Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#AD_User_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.AD_USER_ID);
 			if (ii != 0)
 				setSalesRep_ID (ii);
 		}

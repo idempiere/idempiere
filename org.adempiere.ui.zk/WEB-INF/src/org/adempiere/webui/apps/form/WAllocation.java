@@ -459,7 +459,7 @@ public class WAllocation extends Allocation
 		
 		//  Date set to Login Date
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		cal.setTime(Env.getContextAsDate(Env.getCtx(), Env.DATE));
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);

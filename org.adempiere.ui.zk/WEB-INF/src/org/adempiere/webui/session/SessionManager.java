@@ -39,10 +39,10 @@ public class SessionManager
     
     public static boolean isUserLoggedIn(Properties ctx)
     {
-        String adUserId = Env.getContext(ctx, "#AD_User_ID");
-        String adRoleId = Env.getContext(ctx, "#AD_Role_ID");
-        String adClientId = Env.getContext(ctx, "#AD_Client_ID");
-        String adOrgId = Env.getContext(ctx, "#AD_Org_ID");
+        String adUserId = Env.getContext(ctx, Env.AD_USER_ID);
+        String adRoleId = Env.getContext(ctx, Env.AD_ROLE_ID);
+        String adClientId = Env.getContext(ctx, Env.AD_CLIENT_ID);
+        String adOrgId = Env.getContext(ctx, Env.AD_ORG_ID);
 
         return (!"".equals(adUserId) && !"".equals(adRoleId)
                 && !"".equals(adClientId) && !"".equals(adOrgId));

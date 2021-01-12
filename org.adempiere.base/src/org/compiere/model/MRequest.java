@@ -817,7 +817,7 @@ public class MRequest extends X_R_Request
 			return "RequestActionEMailNoFrom";
 		
 		//  Check that UI user is Request User
-//		int realSalesRep_ID = Env.getContextAsInt (getCtx(), "#AD_User_ID");
+//		int realSalesRep_ID = Env.getContextAsInt (getCtx(), Env.AD_USER_ID);
 //		if (realSalesRep_ID != getSalesRep_ID())
 //			setSalesRep_ID(realSalesRep_ID);
 
@@ -898,7 +898,7 @@ public class MRequest extends X_R_Request
  * 	private void sendTransferMessage ()  
 	{
 		//	Sender
-		int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+		int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 		if (AD_User_ID == 0)
 			AD_User_ID = getUpdatedBy();
 		//	Old
