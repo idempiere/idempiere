@@ -1021,7 +1021,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (ii != 0)
 				setC_Currency_ID (ii);
 			else
-				setC_Currency_ID(Env.getContextAsInt(getCtx(), "#C_Currency_ID"));
+				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
 		//	Sales Rep
