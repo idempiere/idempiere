@@ -264,7 +264,7 @@ public class ADTreeFavoriteOnDropListener implements EventListener<Event>
 	 */
 	public void insertMenuInTree(int menuID, int parentNodeID, DefaultTreeNode<Object> stn)
 	{
-		MTreeFavoriteNode favNode = MTreeFavoriteNode.create(	Env.getAD_Client_ID(Env.getCtx()), Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID"), mTreeFavID,
+		MTreeFavoriteNode favNode = MTreeFavoriteNode.create(	Env.getAD_Client_ID(Env.getCtx()), Env.getContextAsInt(Env.getCtx(), Env.AD_ORG_ID), mTreeFavID,
 																menuID, parentNodeID, 0, null, false, true, false);
 
 		DPFavourites.addNodeInTree(treeModel, tree, stn, favNode);
