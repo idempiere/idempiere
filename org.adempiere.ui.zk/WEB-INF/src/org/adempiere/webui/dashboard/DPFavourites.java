@@ -270,7 +270,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 	public static void insertMenuInTree(int menuID, int parentNodeID, int treeFavoriteID, Tree tree, FavoriteSimpleTreeModel treeModel,
 										DefaultTreeNode<Object> parentDTN)
 	{
-		MTreeFavoriteNode favNode = MTreeFavoriteNode.create(	Env.getAD_Client_ID(Env.getCtx()), Env.getContextAsInt(Env.getCtx(), "#AD_Org_ID"), treeFavoriteID,
+		MTreeFavoriteNode favNode = MTreeFavoriteNode.create(	Env.getAD_Client_ID(Env.getCtx()), Env.getContextAsInt(Env.getCtx(), Env.AD_ORG_ID), treeFavoriteID,
 																menuID, parentNodeID, 0, null, false, true, false);
 		addNodeInTree(treeModel, tree, parentDTN, favNode);
 	} // insertMenuInTree
