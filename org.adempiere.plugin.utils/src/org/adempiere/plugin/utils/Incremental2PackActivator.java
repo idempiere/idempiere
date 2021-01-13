@@ -122,7 +122,7 @@ public class Incremental2PackActivator extends AbstractActivator {
 			Trx trx = Trx.get(Trx.createTrxName(), true);
 			trx.setDisplayName(getClass().getName()+"_packIn");
 			try {
-				Env.getCtx().put("#AD_Client_ID", 0);
+				Env.getCtx().put(Env.AD_CLIENT_ID, 0);
 				
 				firstImp = new X_AD_Package_Imp(Env.getCtx(), 0, trx.getTrxName());
 				firstImp.setName(getName());
@@ -256,7 +256,7 @@ public class Incremental2PackActivator extends AbstractActivator {
 
 	protected void setupPackInContext() {
 		Properties serverContext = new Properties();
-		serverContext.setProperty("#AD_Client_ID", "0");
+		serverContext.setProperty(Env.AD_CLIENT_ID, "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
 

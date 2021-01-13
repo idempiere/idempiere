@@ -833,7 +833,7 @@ public class MMovement extends X_M_Movement implements DocAction
 	
 	protected MMovement reverse(boolean accrual)
 	{
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}

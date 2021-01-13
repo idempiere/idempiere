@@ -501,7 +501,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected void querySaved() 
 	{
 		//user query
-		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"));
+		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID));
 		fSavedName.removeAllItems();
 		for (MPInstance instance : savedParams)
 		{
@@ -597,7 +597,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		final String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
 		return new Query(Env.getCtx(), MPInstance.Table_Name, where, null)
 				.setOnlyActiveRecords(true).setClient_ID()
-				.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"))
+				.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID))
 				.setOrderBy("Created DESC")
 				.first();
 	}
@@ -1167,13 +1167,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			super();
 			
 			m_ctx = new Properties();
-			Env.setContext(m_ctx, "#AD_Client_ID", ctx.getProperty("#AD_Client_ID"));
-			Env.setContext(m_ctx, "#AD_Org_ID", ctx.getProperty("#AD_Org_ID"));
-			Env.setContext(m_ctx, "#AD_Role_ID", ctx.getProperty("#AD_Role_ID"));
-			Env.setContext(m_ctx, "#M_Warehouse_ID", ctx.getProperty("#M_Warehouse_ID"));
-			Env.setContext(m_ctx, "#AD_Language", ctx.getProperty("#AD_Language"));
-			Env.setContext(m_ctx, "#AD_User_ID", ctx.getProperty("#AD_User_ID"));
-			Env.setContext(m_ctx, "#Date", ctx.getProperty("#Date"));
+			Env.setContext(m_ctx, Env.AD_CLIENT_ID, ctx.getProperty(Env.AD_CLIENT_ID));
+			Env.setContext(m_ctx, Env.AD_ORG_ID, ctx.getProperty(Env.AD_ORG_ID));
+			Env.setContext(m_ctx, Env.AD_ROLE_ID, ctx.getProperty(Env.AD_ROLE_ID));
+			Env.setContext(m_ctx, Env.M_WAREHOUSE_ID, ctx.getProperty(Env.M_WAREHOUSE_ID));
+			Env.setContext(m_ctx, Env.LANGUAGE, ctx.getProperty(Env.LANGUAGE));
+			Env.setContext(m_ctx, Env.AD_USER_ID, ctx.getProperty(Env.AD_USER_ID));
+			Env.setContext(m_ctx, Env.DATE, ctx.getProperty(Env.DATE));
 		}
 		
 		@Override

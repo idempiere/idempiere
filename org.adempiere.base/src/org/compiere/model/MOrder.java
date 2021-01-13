@@ -959,7 +959,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Warehouse
 		if (getM_Warehouse_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#M_Warehouse_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.M_WAREHOUSE_ID);
 			if (ii != 0)
 				setM_Warehouse_ID(ii);
 			else
@@ -1025,13 +1025,13 @@ public class MOrder extends X_C_Order implements DocAction
 			if (ii != 0)
 				setC_Currency_ID (ii);
 			else
-				setC_Currency_ID(Env.getContextAsInt(getCtx(), "#C_Currency_ID"));
+				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
 		//	Default Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#SalesRep_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
 			if (ii != 0)
 				setSalesRep_ID (ii);
 		}
@@ -1043,7 +1043,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#C_PaymentTerm_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
 			if (ii != 0)
 				setC_PaymentTerm_ID(ii);
 			else

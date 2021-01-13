@@ -551,7 +551,7 @@ public class MAsset extends X_A_Asset
 		//
 		// If date is null, use context #Date
 		if(date == null) {
-			date = Env.getContextAsDate(getCtx(), "#Date");
+			date = Env.getContextAsDate(getCtx(), Env.DATE);
 		}
 		
 		//

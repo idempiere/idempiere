@@ -3,7 +3,7 @@
 echo Setup idempiere Server
 
 # Setup idempiere.properties and idempiereEnv.properties
-./idempiere --launcher.ini setup.ini -application org.adempiere.install.silent-application
+./idempiere --launcher.ini setup.ini -application org.adempiere.install.silent-application $@
 
 # Setup Jetty
 if [ -s idempiere.properties ]

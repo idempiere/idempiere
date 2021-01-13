@@ -86,8 +86,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public static MRole getDefault (Properties ctx, boolean reload)
 	{
-		int AD_Role_ID = Env.getContextAsInt(ctx, "#AD_Role_ID");
-		int AD_User_ID = Env.getContextAsInt(ctx, "#AD_User_ID");
+		int AD_Role_ID = Env.getContextAsInt(ctx, Env.AD_ROLE_ID);
+		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 //		if (!Ini.isClient())	//	none for Server
 //			AD_User_ID = 0;
 		MRole defaultRole = getDefaultRole(); 

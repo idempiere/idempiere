@@ -286,7 +286,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("M_PriceList_ID", ii);
 				else
 				{	//	get default PriceList
-					int i = Env.getContextAsInt(ctx, "#M_PriceList_ID");
+					int i = Env.getContextAsInt(ctx, Env.M_PRICELIST_ID);
 					if (i != 0)
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);
@@ -493,7 +493,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("M_PriceList_ID", ii);
 				else
 				{	//	get default PriceList
-					int i = Env.getContextAsInt(ctx, "#M_PriceList_ID");
+					int i = Env.getContextAsInt(ctx, Env.M_PRICELIST_ID);
 					if (i != 0)
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);

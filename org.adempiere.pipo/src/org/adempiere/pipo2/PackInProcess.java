@@ -84,7 +84,7 @@ public class PackInProcess extends SvrProcess {
 			packageDirectory = System.getProperty("java.io.tmpdir");
 		}
 
-		String targetDirName = packageDirectory + File.separator + "packin" + Env.getContext(getCtx(), "#AD_User_ID");
+		String targetDirName = packageDirectory + File.separator + "packin" + Env.getContext(getCtx(), Env.AD_USER_ID);
 		File targetDir = new File(targetDirName);
 
 		if (targetDir.exists()) {
@@ -116,7 +116,7 @@ public class PackInProcess extends SvrProcess {
 		Zipper.unpackFile(zipFilepath, targetDir);
 
 		String dict_file = packageDirectory + File.separator
-				+ "packin" + Env.getContext(getCtx(), "#AD_User_ID") + File.separator + parentDir + File.separator
+				+ "packin" + Env.getContext(getCtx(), Env.AD_USER_ID) + File.separator + parentDir + File.separator
 				+ "dict" + File.separator + "PackOut.xml";
 
 		if (log.isLoggable(Level.INFO)) log.info("dict file->" + dict_file);
@@ -127,7 +127,7 @@ public class PackInProcess extends SvrProcess {
 			m_UpdateDictionary = false;
 
 		m_packageDirectory = packageDirectory + File.separator
-				+ "packin" + Env.getContext(getCtx(), "#AD_User_ID") + File.separator + parentDir + File.separator;
+				+ "packin" + Env.getContext(getCtx(), Env.AD_USER_ID) + File.separator + parentDir + File.separator;
 
 		PackIn packIn = new PackIn();
 		packIn.setPackageDirectory(m_packageDirectory);

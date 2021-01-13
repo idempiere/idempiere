@@ -125,7 +125,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 		if (checkChange(r, ra, "SalesRep_ID"))
 		{
 			//	Sender
-			int AD_User_ID = Env.getContextAsInt(r.getCtx(), "#AD_User_ID");
+			int AD_User_ID = Env.getContextAsInt(r.getCtx(), Env.AD_USER_ID);
 			if (AD_User_ID == 0)
 				AD_User_ID = r.getUpdatedBy();
 			//	Old

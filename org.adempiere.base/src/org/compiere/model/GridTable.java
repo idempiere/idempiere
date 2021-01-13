@@ -1671,7 +1671,7 @@ public class GridTable extends AbstractTableModel
 
 			//	Constants for Created/Updated(By)
 			Timestamp now = new Timestamp(System.currentTimeMillis());
-			int user = Env.getContextAsInt(m_ctx, "#AD_User_ID");
+			int user = Env.getContextAsInt(m_ctx, Env.AD_USER_ID);
 
 			/**
 			 *	for every column

@@ -131,7 +131,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         m_clientKNPairs = clientsKNPairs;
         
         if( m_clientKNPairs.length == 1  &&  !m_show ){
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) m_clientKNPairs[0].getID());
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
         	MUser user = MUser.get (m_ctx, m_userName);
         	m_userpreference=new UserPreference();
         	m_userpreference.loadPreference(user.get_ID());        	
@@ -569,15 +569,15 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     
     private void setUserID() {
     	if (lstClient.getSelectedItem() != null) {
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) lstClient.getSelectedItem().getValue());
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) lstClient.getSelectedItem().getValue());
     	} else {
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) null);
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) null);
     	}
     	MUser user = MUser.get (m_ctx, m_userName);
     	if (user != null) {
-    		Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
-    		Env.setContext(m_ctx, "#AD_User_Name", user.getName() );
-    		Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+    		Env.setContext(m_ctx, Env.AD_USER_ID, user.getAD_User_ID() );
+    		Env.setContext(m_ctx, Env.AD_USER_NAME, user.getName() );
+    		Env.setContext(m_ctx, Env.SALESREP_ID, user.getAD_User_ID() );
     	}
     }
     

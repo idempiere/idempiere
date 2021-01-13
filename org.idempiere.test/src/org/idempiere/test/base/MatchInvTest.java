@@ -536,7 +536,7 @@ public class MatchInvTest extends AbstractTestCase {
 	public void testMatReceiptPostingWithDiffCurrencyPrecision() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
 		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), Env.DATE);
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase JPY " + System.currentTimeMillis());

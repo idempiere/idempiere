@@ -614,12 +614,12 @@ public abstract class SvrProcess implements ProcessCall
 	 */
 	private void unlock ()
 	{
-		boolean noContext = Env.getCtx().isEmpty() && Env.getCtx().getProperty("#AD_Client_ID") == null;
+		boolean noContext = Env.getCtx().isEmpty() && Env.getCtx().getProperty(Env.AD_CLIENT_ID) == null;
 		try 
 		{
 			//save logging info even if context is lost
 			if (noContext)
-				Env.getCtx().put("#AD_Client_ID", m_pi.getAD_Client_ID());
+				Env.getCtx().put(Env.AD_CLIENT_ID, m_pi.getAD_Client_ID());
 
 			//clear interrupt signal so that we can unlock the ad_pinstance record
 			if (Thread.currentThread().isInterrupted())
@@ -646,7 +646,7 @@ public abstract class SvrProcess implements ProcessCall
 		finally
 		{
 			if (noContext)
-				Env.getCtx().remove("#AD_Client_ID");
+				Env.getCtx().remove(Env.AD_CLIENT_ID);
 		}
 	}   //  unlock
 

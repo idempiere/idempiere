@@ -344,7 +344,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	    	for (KeyNamePair clientKNPair : m_clientKNPairs)
 	    	{	    		
 	    		int clientId = clientKNPair.getKey();
-	    		Env.setContext(m_ctx, "#AD_Client_ID", clientId);
+	    		Env.setContext(m_ctx, Env.AD_CLIENT_ID, clientId);
 	    		MUser user = MUser.get(m_ctx, m_userName);
 	    		if (user == null)
 	    		{

@@ -3,7 +3,7 @@
 echo ... Setup iDempiere Server
 
 # Setup idempiere.properties and iDempiereEnv.properties
-./idempiere --launcher.ini setup.ini -application org.adempiere.install.application
+./idempiere --launcher.ini setup.ini -application org.adempiere.install.application $@
 
 echo ... Setup Jetty
 # Setup Jetty

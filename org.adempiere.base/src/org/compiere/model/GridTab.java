@@ -2236,7 +2236,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void loadLocks()
 	{
-		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
+		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - AD_User_ID=" + AD_User_ID);
 		if (!canHaveAttachment())
 			return;
@@ -2301,7 +2301,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void lock (Properties ctx, int Record_ID, boolean lock)
 	{
-		int AD_User_ID = Env.getContextAsInt(ctx, "#AD_User_ID");
+		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("Lock=" + lock + ", AD_User_ID=" + AD_User_ID
 			+ ", AD_Table_ID=" + m_vo.AD_Table_ID + ", Record_ID=" + Record_ID);
 		MPrivateAccess access = MPrivateAccess.get (ctx, AD_User_ID, m_vo.AD_Table_ID, Record_ID);

@@ -190,7 +190,7 @@ public class ScheduleUtil
 			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setTimestamp(1, startDay);
 			pstmt.setTimestamp(2, endDay);
-			pstmt.setInt(3, Env.getContextAsInt(m_ctx, "#C_Country_ID"));
+			pstmt.setInt(3, Env.getContextAsInt(m_ctx, Env.C_COUNTRY_ID));
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
