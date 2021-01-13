@@ -1218,7 +1218,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         WEditor editor = null;
         //false will use hflex which is render 1 pixel too width on firefox
         editor = WebEditorFactory.getEditor(mField, true);
-        if (!editor.isSearchable()) {
+        if (editor == null || !editor.isSearchable()) {
         	return false;
         }
         editor.setMandatory(false);
