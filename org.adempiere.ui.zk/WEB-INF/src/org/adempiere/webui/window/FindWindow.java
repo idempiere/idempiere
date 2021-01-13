@@ -2183,7 +2183,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
     	else if (DisplayType.isLookup(referenceType)
         		|| DisplayType.YesNo == referenceType
-        		|| DisplayType.Button == referenceType)
+        		|| DisplayType.Button == referenceType
+        		|| DisplayType.Account == referenceType
+        		|| DisplayType.Assignment == referenceType
+        		|| DisplayType.Chart == referenceType
+        		|| DisplayType.Image == referenceType
+        		|| DisplayType.Location == referenceType
+        		|| DisplayType.Locator == referenceType
+        		|| DisplayType.PAttribute == referenceType)
         {
         	addOperators(MQuery.OPERATORS_LOOKUP, listOperator);
         }
