@@ -1510,6 +1510,18 @@ public class Doc_MatchInv extends Doc
 						.append(" AND PostingType='A'")
 						.append(" AND Account_ID=?");
 					
+					if (m_matchInv.getReversal_ID() > 0)
+					{
+						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+					}
+					else
+					{
+						if (matchInv.getReversal_ID() > 0)
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+					}
+					
 					if (matchInv.getRef_MatchInv_ID() > 0)
 					{
 						if (invoice.isCreditMemo() && matchInv.getQty().compareTo(BigDecimal.ZERO) < 0)
@@ -1549,6 +1561,18 @@ public class Doc_MatchInv extends Doc
 						.append(" AND PostingType='A'")
 						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 						.append(" AND Description LIKE 'Invoice%'");
+					
+					if (m_matchInv.getReversal_ID() > 0)
+					{
+						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+					}
+					else
+					{
+						if (matchInv.getReversal_ID() > 0)
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+					}
 					
 					if (matchInv.getRef_MatchInv_ID() > 0)
 					{
@@ -1775,6 +1799,18 @@ public class Doc_MatchInv extends Doc
 						.append(" AND PostingType='A'")
 						.append(" AND Account_ID=?");
 					
+					if (m_matchInv.getReversal_ID() > 0)
+					{
+						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+					}
+					else
+					{
+						if (matchInv.getReversal_ID() > 0)
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+					}
+					
 					if (matchInv.getRef_MatchInv_ID() > 0)
 					{
 						if (invoiceLine.getParent().isCreditMemo() && matchInv.getQty().compareTo(BigDecimal.ZERO) < 0)
@@ -1821,6 +1857,18 @@ public class Doc_MatchInv extends Doc
 						.append(" AND PostingType='A'")
 						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 						.append(" AND Description LIKE 'Invoice Line%'");
+					
+					if (m_matchInv.getReversal_ID() > 0)
+					{
+						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+					}
+					else
+					{
+						if (matchInv.getReversal_ID() > 0)
+							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+					}
 					
 					if (matchInv.getRef_MatchInv_ID() > 0)
 					{
@@ -2146,6 +2194,18 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'")
 				.append(" AND Account_ID=?");
 			
+			if (m_matchInv.getReversal_ID() > 0)
+			{
+				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+			}
+			else
+			{
+				if (matchInv.getReversal_ID() > 0)
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+			}
+			
 			// For Match Inv
 			List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 					MMatchInv.Table_ID, matchInv.get_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
@@ -2177,6 +2237,18 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'")
 				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 				.append(" AND Description LIKE 'InOut%'");
+			
+			if (m_matchInv.getReversal_ID() > 0)
+			{
+				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+			}
+			else
+			{
+				if (matchInv.getReversal_ID() > 0)
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+			}
 			
 			// For Match Inv
 			valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
@@ -2347,6 +2419,18 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'")
 				.append(" AND Account_ID=?");
 			
+			if (m_matchInv.getReversal_ID() > 0)
+			{
+				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+			}
+			else
+			{
+				if (matchInv.getReversal_ID() > 0)
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+			}
+			
 			// For Match Inv
 			List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 					MMatchInv.Table_ID, matchInv.get_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
@@ -2376,6 +2460,18 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'")
 				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 				.append(" AND Description LIKE 'InOut Line%'");
+			
+			if (m_matchInv.getReversal_ID() > 0)
+			{
+				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+			}
+			else
+			{
+				if (matchInv.getReversal_ID() > 0)
+					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+			}
 			
 			// For Match Inv
 			valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
