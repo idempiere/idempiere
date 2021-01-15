@@ -102,8 +102,8 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		ZKUpdateUtil.setHflex(vbox, "1");
 		ZKUpdateUtil.setVflex(vbox, "1");
 
-		fFilter.setPlaceholder("Filter");
-		fFilter.addEventListener(Events.ON_BLUR, this);
+		fFilter.setPlaceholder(Msg.getMsg(ctx, "filter.by"));
+		fFilter.addEventListener(Events.ON_CHANGE, this);
 		btnRefresh = ButtonFactory.createNamedButton("Refresh");
 		btnRefresh.addEventListener(Events.ON_CLICK, this);
 
@@ -302,7 +302,7 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 			processPlugin();
 		else if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == btnRefresh)
 			refreshAll();
-		else if (Events.ON_BLUR.equals(event.getName()) && event.getTarget() == fFilter)
+		else if (Events.ON_CHANGE.equals(event.getName()) && event.getTarget() == fFilter)
 			refreshAll();
 	}
 
