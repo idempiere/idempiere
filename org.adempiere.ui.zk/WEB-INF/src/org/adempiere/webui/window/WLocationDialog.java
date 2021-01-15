@@ -60,6 +60,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -277,11 +278,13 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		txtCity.setAutodrop(true);
 		txtCity.setAutocomplete(true);
 		txtCity.addEventListener(Events.ON_CHANGING, this);
+		txtCity.addEventListener(Events.ON_FOCUS, this);
 		//txtCity
 
 		txtPostal = new Textbox();
 		txtPostal.setCols(20);
 		txtPostal.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Postal));
+		txtPostal.addEventListener(Events.ON_CHANGE, this);
 		txtPostalAdd = new Textbox();
 		txtPostalAdd.setCols(20);
 		txtPostalAdd.setMaxlength(MLocation.getFieldLength(MLocation.COLUMNNAME_Postal_Add));
@@ -922,6 +925,26 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			//  refresh
 			initLocation();
 			lstRegion.focus();
+		}
+		else if (txtPostal.equals(event.getTarget()))
+		{
+			if (event.getName().equals(Events.ON_CHANGE)) {
+				if (inCountryAction || inOKAction)
+					return;
+				Env.setContext(Env.getCtx(), m_WindowNo, Env.TAB_INFO, "Postal", txtPostal.getValue());
+				txtCity.fillList();
+				txtCity.focus();
+				txtCity.setCityFromPostal();	
+			}
+		}
+		else if (txtCity.equals(event.getTarget()))
+		{
+			if (event.getName().equals(Events.ON_FOCUS)) {
+				if (!Util.isEmpty(txtPostal.getValue())) {
+					txtCity.refreshData("");
+					txtCity.refresh("");	
+				}
+			}
 		}
 		else if ("onSaveError".equals(event.getName())) {
 			onSaveError = false;

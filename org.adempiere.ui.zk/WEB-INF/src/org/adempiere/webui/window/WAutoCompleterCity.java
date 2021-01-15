@@ -25,6 +25,7 @@ import org.compiere.grid.ed.CityVO;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -96,7 +97,11 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		search = search.toUpperCase();
 		int i = 0;
 		for (CityVO vo : m_cities) {
-			if (vo.CityName.toUpperCase().startsWith(search)) {
+			if (!Util.isEmpty(getPostal()) && vo.Postal.equals(getPostal())) {
+				if (vo.CityName.toUpperCase().startsWith(search))
+					m_citiesShow.add(vo);
+			}
+			else if (vo.CityName.toUpperCase().startsWith(search)) {
 				if (i > 0 && i == m_maxRows+1)
 				{
 					m_citiesShow.add(ITEM_More);
@@ -149,11 +154,10 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		m_cities.clear();
 		m_citiesShow.clear();
 		ArrayList<Object> params = new ArrayList<Object>();
-		final StringBuilder sql = new StringBuilder(
-				"SELECT cy.C_City_ID, cy.Name, cy.C_Region_ID, r.Name"
-				+" FROM C_City cy"
-				+" LEFT OUTER JOIN C_Region r ON (r.C_Region_ID=cy.C_Region_ID)"
-				+" WHERE cy.AD_Client_ID IN (0,?) AND cy.IsActive = 'Y'");
+		final StringBuilder sql = new StringBuilder("SELECT cy.C_City_ID, cy.Name, cy.C_Region_ID, r.Name, cy.Postal")
+				.append(" FROM C_City cy")
+				.append(" LEFT OUTER JOIN C_Region r ON (r.C_Region_ID=cy.C_Region_ID)")
+				.append(" WHERE cy.AD_Client_ID IN (0,?) AND cy.IsActive = 'Y'");
 		params.add(getAD_Client_ID());
 		if (getC_Region_ID() > 0)
 		{
@@ -164,6 +168,10 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		{
 			sql.append(" AND cy.C_Country_ID=?");
 			params.add(getC_Country_ID());
+		}
+		if (!Util.isEmpty(getPostal())) {
+			sql.append(" AND cy.Postal=?");
+			params.add(getPostal());
 		}
 		sql.append(" ORDER BY cy.Name, r.Name");
 		PreparedStatement pstmt = null;
@@ -176,7 +184,7 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 			int i = 0;
 			while(rs.next())
 			{
-				CityVO vo = new CityVO(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getString(4));
+				CityVO vo = new CityVO(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
 				m_cities.add(vo);
 				if (i <= m_maxRows) {
 					m_citiesShow.add(vo);
@@ -219,6 +227,19 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		return Env.getContextAsInt(Env.getCtx(), m_windowNo, Env.TAB_INFO, "C_Region_ID");
 	}
 
+	public String getPostal() {
+		return Env.getContext(Env.getCtx(), m_windowNo, Env.TAB_INFO, "Postal");
+	}
+
+	/** Fill txtCity with first item of the list or display list */
+	public void setCityFromPostal() {
+		if (m_cities.size() == 1) {
+			setCity(m_cities.get(0));
+			this.setValue((m_cities).get(0).CityName);
+		}
+		else if (m_cities.size() > 1)
+			this.open();
+	}
 
 	public void onEvent(Event event) throws Exception 
 	{

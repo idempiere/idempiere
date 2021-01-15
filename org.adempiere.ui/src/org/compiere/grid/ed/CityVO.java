@@ -14,6 +14,8 @@ public class CityVO
 	public final String CityName;
 	public final int C_Region_ID;
 	public final String RegionName;
+	public final String Postal;
+
 	public CityVO(int city_ID, String cityName, int region_ID, String regionName)
 	{
 		super();
@@ -21,6 +23,16 @@ public class CityVO
 		CityName = cityName;
 		C_Region_ID = region_ID;
 		RegionName = regionName;
+		Postal = null;
+	}
+
+	public CityVO(int city_ID, String cityName, int region_ID, String regionName, String postal) {
+		super();
+		C_City_ID = city_ID;
+		CityName = cityName;
+		C_Region_ID = region_ID;
+		RegionName = regionName;
+		Postal = postal;
 	}
 
 	@Override
