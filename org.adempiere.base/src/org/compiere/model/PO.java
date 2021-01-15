@@ -3765,9 +3765,6 @@ public abstract class PO
 			return true;
 
 		String tableName = p_info.getTableName();
-		if (tableName.startsWith("AD") && getAD_Client_ID() == 0)
-			return true;
-
 		//
 		boolean trlColumnChanged = false;
 		for (int i = 0; i < p_info.getColumnCount(); i++)
@@ -3820,12 +3817,14 @@ public abstract class PO
 			}
 		}
 		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());
-		StringBuilder andlang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
-		StringBuilder andnotlang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andClientLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andNotClientLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		String baselang = Language.getBaseAD_Language();
+		StringBuilder andBaseLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(baselang));
+		StringBuilder andNotBaseLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(baselang));
 		int no = -1;
 
 		if (client.isMultiLingualDocument()) {
-			String baselang = Language.getBaseAD_Language();
 			if (client.getAD_Language().equals(baselang)) {
 				// tenant language = base language
 				// set all translations as untranslated
@@ -3837,13 +3836,14 @@ public abstract class PO
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 			} else {
 				// tenant language <> base language
-				// auto update translation for tenant language
+				// for Tenants auto update translation for tenant language
+				// for System update translation for base language (which in fact must always update zero records as there must not be translations for base)
 				StringBuilder sqlexec = new StringBuilder()
 					.append(sqlupdate)
 					.append(sqlcols)
 					.append("IsTranslated='Y'")
 					.append(whereid)
-					.append(andlang);
+					.append(getAD_Client_ID() == 0 ? andBaseLang : andClientLang);
 				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				if (no >= 0) {
@@ -3852,7 +3852,7 @@ public abstract class PO
 						.append(sqlupdate)
 						.append("IsTranslated='N'")
 						.append(whereid)
-						.append(andnotlang);
+						.append(getAD_Client_ID() == 0 ? andNotBaseLang : andNotClientLang);
 					no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 					if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				}
