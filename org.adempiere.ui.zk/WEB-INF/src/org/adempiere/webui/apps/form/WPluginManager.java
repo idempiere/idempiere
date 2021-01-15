@@ -302,8 +302,10 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 			processPlugin();
 		else if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == btnRefresh)
 			refreshAll();
-		else if (Events.ON_CHANGE.equals(event.getName()) && event.getTarget() == fFilter)
+		else if (Events.ON_CHANGE.equals(event.getName()) && event.getTarget() == fFilter) {
+			pluginsTable.setSelectedIndex(-1);
 			refreshAll();
+		}
 	}
 
 }
