@@ -90,6 +90,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -132,7 +133,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3907408033854720147L;
+	private static final long serialVersionUID = 3968142284124286827L;
 
 	private static final String FIND_ROW_EDITOR = "find.row.editor";
 
@@ -773,6 +774,37 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 					m_findFields[i] = postedfield;
 					mField = postedfield;
 				}
+			} else if  (   mField.getVO().displayType == DisplayType.Account
+				        || mField.getVO().displayType == DisplayType.Assignment
+					    || mField.getVO().displayType == DisplayType.Chart
+					    || mField.getVO().displayType == DisplayType.Image
+					    || mField.getVO().displayType == DisplayType.Location
+					    || mField.getVO().displayType == DisplayType.Locator
+					    || mField.getVO().displayType == DisplayType.PAttribute
+				       ) {
+				// Make special fields searchable as Search
+				GridFieldVO vo = mField.getVO();
+				GridFieldVO newvo = vo.clone(m_simpleCtx, vo.WindowNo, vo.TabNo, vo.AD_Window_ID, vo.AD_Tab_ID, vo.tabReadOnly);
+				newvo.IsDisplayed = true;
+				newvo.displayType = DisplayType.Search;
+				switch (mField.getVO().displayType) {
+				case DisplayType.Account:    newvo.AD_Reference_Value_ID = SystemIDs.REFERENCE_ACCOUNT;    break;
+				case DisplayType.Assignment: newvo.AD_Reference_Value_ID = SystemIDs.REFERENCE_ASSIGNMENT; break;
+				case DisplayType.Chart:      newvo.AD_Reference_Value_ID = SystemIDs.REFERENCE_CHART;      break;
+				case DisplayType.Image:      newvo.AD_Reference_Value_ID = SystemIDs.REFERENCE_IMAGE;      break;
+				case DisplayType.Location:   newvo.AD_Reference_Value_ID = SystemIDs.REFERENCE_LOCATION;   break;
+				case DisplayType.Locator:    newvo.AD_Reference_Value_ID = SystemIDs.REFERENCE_LOCATOR;    break;
+				case DisplayType.PAttribute: newvo.AD_Reference_Value_ID = SystemIDs.REFERENCE_PATTRIBUTE; break;
+				}
+				newvo.lookupInfo = MLookupFactory.getLookupInfo (newvo.ctx, newvo.WindowNo, newvo.AD_Column_ID, newvo.displayType,
+						Env.getLanguage(newvo.ctx), newvo.ColumnName, newvo.AD_Reference_Value_ID,
+						newvo.IsParent, null);
+				newvo.lookupInfo.tabNo = TABNO;
+
+				GridField newfield = new GridField(newvo);
+				// replace the original field by the the new Search field
+				m_findFields[i] = newfield;
+				mField = newfield;
 			} else {
 				// clone the field and clean gridtab - IDEMPIERE-1105
 		        GridField findField = (GridField) mField.clone(m_simpleCtx);
@@ -842,6 +874,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for(GridField field:gridFieldList){
         	if (field.isVirtualUIColumn())
         		continue;
+        	if (! hasAccessSpecialFields(field))
+        		continue;
         	if (!addSelectionColumn (field))
         		excludes.add(field);
 		} 
@@ -857,6 +891,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	for(GridField field:moreFieldList){
         		if (field.isVirtualUIColumn())
         			continue;
+            	if (! hasAccessSpecialFields(field))
+            		continue;
             	if (!addSelectionColumn (field, rowg))
             		excludes.add(field);
     		}
@@ -890,7 +926,25 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		/** END DEVCOFFEE **/
     }   //  initFind
 
-    /**
+    private boolean hasAccessSpecialFields(GridField field) {
+    	int windowId = 0;
+		switch (field.getAD_Reference_Value_ID()) {
+		case SystemIDs.REFERENCE_ACCOUNT:    windowId = SystemIDs.WINDOW_ACCOUNTCOMBINATION;   break;
+		case SystemIDs.REFERENCE_ASSIGNMENT: windowId = SystemIDs.WINDOW_RESOURCE;             break;
+		case SystemIDs.REFERENCE_CHART:      windowId = SystemIDs.WINDOW_CHART;                break;
+		case SystemIDs.REFERENCE_IMAGE:      windowId = SystemIDs.WINDOW_IMAGE;                break;
+		case SystemIDs.REFERENCE_LOCATION:   windowId = SystemIDs.WINDOW_LOCATION;             break;
+		case SystemIDs.REFERENCE_LOCATOR:    windowId = SystemIDs.WINDOW_LOCATOR;              break;
+		case SystemIDs.REFERENCE_PATTRIBUTE: windowId = SystemIDs.WINDOW_ATTRIBUTESETINSTANCE; break;
+		}
+		if (windowId > 0) {
+			Boolean access = MRole.getDefault().getWindowAccess(windowId);
+			return access != null;
+		}
+		return true;
+	}
+
+	/**
      *  initialise Advanced tab
     **/
     private void initFindAdvanced()
@@ -1119,7 +1173,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         for (int c = 0; c < m_findFields.length; c++)
         {
             GridField field = m_findFields[c];
-            if (field == null || field.isVirtualUIColumn())
+            if (field == null || field.isVirtualUIColumn()
+            	|| ! hasAccessSpecialFields(field))
             	continue;
 
 			boolean IsLookupOnlySelection = !MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx())).isAccessAdvanced()
@@ -2128,7 +2183,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
     	else if (DisplayType.isLookup(referenceType)
         		|| DisplayType.YesNo == referenceType
-        		|| DisplayType.Button == referenceType)
+        		|| DisplayType.Button == referenceType
+        		|| DisplayType.Account == referenceType
+        		|| DisplayType.Assignment == referenceType
+        		|| DisplayType.Chart == referenceType
+        		|| DisplayType.Image == referenceType
+        		|| DisplayType.Location == referenceType
+        		|| DisplayType.Locator == referenceType
+        		|| DisplayType.PAttribute == referenceType)
         {
         	addOperators(MQuery.OPERATORS_LOOKUP, listOperator);
         }
