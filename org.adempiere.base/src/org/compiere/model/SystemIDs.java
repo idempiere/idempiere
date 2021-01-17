@@ -106,11 +106,13 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_ASSIGNMENT = 33;
 	public final static int REFERENCE_DATATYPE_BINARY = 23;
 	public final static int REFERENCE_DATATYPE_BUTTON = 28;
+	public final static int REFERENCE_DATATYPE_CHART = 53370;
 	public final static int REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_LIST = 200161;
-	public final static int REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_TABLE = 200162;
 	public final static int REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_SEARCH = 200163;
+	public final static int REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_TABLE = 200162;
 	public final static int REFERENCE_DATATYPE_COLOR = 27;
 	public final static int REFERENCE_DATATYPE_COSTPRICE = 37;
+	public final static int REFERENCE_DATATYPE_DASHBOARD_CONTENT = 200122;
 	public final static int REFERENCE_DATATYPE_DATE = 15;
 	public final static int REFERENCE_DATATYPE_DATETIME = 16;
 	public final static int REFERENCE_DATATYPE_FILENAME = 39;
@@ -122,6 +124,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_LOCATION = 21;
 	public final static int REFERENCE_DATATYPE_LOCATOR = 31;
 	public final static int REFERENCE_DATATYPE_MEMO = 34;
+	public final static int REFERENCE_DATATYPE_MULTIPLE_SELECTION_GRID = 200128;
 	public final static int REFERENCE_DATATYPE_NUMBER = 22;
 	public final static int REFERENCE_DATATYPE_PAYMENT = 200012;
 	public final static int REFERENCE_DATATYPE_PRINTNAME = 42;
@@ -130,6 +133,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_RADIOGROUP_LIST= 200152;
 	public final static int REFERENCE_DATATYPE_ROWID = 26;
 	public final static int REFERENCE_DATATYPE_SEARCH = 30;
+	public final static int REFERENCE_DATATYPE_SINGLE_SELECTION_GRID = 200127;
 	public final static int REFERENCE_DATATYPE_STRING = 10;
 	public final static int REFERENCE_DATATYPE_TABLE = 18;
 	public final static int REFERENCE_DATATYPE_TABLEDIR = 19;
@@ -138,22 +142,25 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_TIME = 24;
 	public final static int REFERENCE_DATATYPE_URL = 40;
 	public final static int REFERENCE_DATATYPE_YES_NO = 20;
-	public final static int REFERENCE_DATATYPE_CHART = 53370;
-	public final static int REFERENCE_DATATYPE_DASHBOARD_CONTENT = 200122;
-	public final static int REFERENCE_DATATYPE_SINGLE_SELECTION_GRID = 200127;
-	public final static int REFERENCE_DATATYPE_MULTIPLE_SELECTION_GRID = 200128;
 
+	public final static int REFERENCE_ACCOUNT = 175;
 	public final static int REFERENCE_AD_USER = 110;
+	public final static int REFERENCE_ASSIGNMENT = 200181;
+	public final static int REFERENCE_CHART = 200183;
 	public final static int REFERENCE_DOCUMENTACTION = 135;
 	public final static int REFERENCE_DOCUMENTSTATUS = 131;
-	public final static int REFERENCE_PAYMENTRULE = 195;
-	public final static int REFERENCE_POSTING_TYPE = 125;
-	public final static int REFERENCE_POSTED = 234;
-	public final static int REFERENCE_SQLORDERBY = 53296;
-	public final static int REFERENCE_YESNO = 319;
-	public final static int REFERENCE_WIZARDSTATUS = 200003;
-	public final static int REFERENCE_WFINSTANCE_STATE = 305;
+	public final static int REFERENCE_IMAGE = 200182;
 	public final static int REFERENCE_IMPORT_MODE = 200098;
+	public final static int REFERENCE_LOCATION = 133;
+	public final static int REFERENCE_LOCATOR = 191;
+	public final static int REFERENCE_PATTRIBUTE = 200180;
+	public final static int REFERENCE_PAYMENTRULE = 195;
+	public final static int REFERENCE_POSTED = 234;
+	public final static int REFERENCE_POSTING_TYPE = 125;
+	public final static int REFERENCE_SQLORDERBY = 53296;
+	public final static int REFERENCE_WFINSTANCE_STATE = 305;
+	public final static int REFERENCE_WIZARDSTATUS = 200003;
+	public final static int REFERENCE_YESNO = 319;
 
 	public final static int TABLE_AD_TABLE = 100;
 	public final static int TABLE_AD_WF_PROCESS = 645;
@@ -170,11 +177,17 @@ public class SystemIDs
 	public final static int USER_SYSTEM = 0;
 
 	public final static int WINDOW_ACCOUNTCOMBINATION = 153;
+	public final static int WINDOW_ATTRIBUTESETINSTANCE = 358;
+	public static final int WINDOW_CHART = 53124;
 	public final static int WINDOW_CUSTOMERRETURN = 53097;
+	public final static int WINDOW_IMAGE = 227;
+	public final static int WINDOW_LOCATION = 121;
+	public final static int WINDOW_LOCATOR = 139;
 	public final static int WINDOW_LOT = 257;
 	public final static int WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER = 223;
 	public final static int WINDOW_MY_REQUESTS = 237;
 	public final static int WINDOW_REQUESTS_ALL = 232;
+	public final static int WINDOW_RESOURCE = 236;
 	public final static int WINDOW_RETURNTOVENDOR = 53098;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
