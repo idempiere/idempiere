@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.sql.Timestamp;
 
 import javax.sql.DataSource;
@@ -468,6 +469,13 @@ public interface AdempiereDatabase
 	 */
 	public String getSQLModify (MTable table, MColumn column, boolean setNullOption);
 
-	
+	/**
+	 * 
+	 * @param ex
+	 * @return true if ex is caused by query timeout
+	 */
+	public default boolean isQueryTimeout(SQLException ex) {
+		return ex instanceof SQLTimeoutException;
+	}
 }   //  AdempiereDatabase
 
