@@ -126,14 +126,10 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		// products used in production
 		String sql = "SELECT M_ProductBom_ID, BOMQty" + " FROM M_Product_BOM"
 				+ " WHERE M_Product_ID=" + finishedProduct.getM_Product_ID() + " ORDER BY Line";
+		
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());) {			
 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			pstmt = DB.prepareStatement(sql, get_TrxName());
-
-			rs = pstmt.executeQuery();
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				
 				lineno = lineno + 10;
@@ -297,9 +293,6 @@ public class MProductionPlan extends X_M_ProductionPlan {
 			} // for all bom products
 		} catch (Exception e) {
 			throw new AdempiereException("Failed to create production lines", e);
-		}
-		finally {
-			DB.close(rs, pstmt);
 		}
 
 		return count;

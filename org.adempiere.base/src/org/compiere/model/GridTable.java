@@ -1618,14 +1618,11 @@ public class GridTable extends AbstractTableModel
 		if (m_inserting)
 			select.append(" WHERE 1=2");
 		else	//  FOR UPDATE causes  -  ORA-01002 fetch out of sequence
-			select.append(" WHERE ").append(getWhereClause(rowData));
-		PreparedStatement pstmt = null;
-		ResultSet rs =  null;
-		try
-		{
-			pstmt = DB.prepareStatement (select.toString(), 
-				ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE, null);
-			rs = pstmt.executeQuery();
+			select.append(" WHERE ").append(getWhereClause(rowData));				
+		try (PreparedStatement pstmt = DB.prepareStatement (select.toString(), 
+				ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE, null);)
+		{			
+			ResultSet rs =  pstmt.executeQuery();
 			//	only one row
 			if (!(m_inserting || rs.next()))
 			{
@@ -2071,10 +2068,6 @@ public class GridTable extends AbstractTableModel
 					rs.updateRow();
 			}
 
-			log.fine("Committing ...");
-			DB.commit(true, null);	//	no Trx
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 			//
 			lobSave(whereClause);
 			
@@ -2082,29 +2075,31 @@ public class GridTable extends AbstractTableModel
 			if (log.isLoggable(Level.FINE)) log.fine("Reading ... " + whereClause);
 			StringBuilder refreshSQL = new StringBuilder(m_SQL_Select)
 				.append(" WHERE ").append(whereClause);
-			pstmt = DB.prepareStatement(refreshSQL.toString(), null);
-			rs = pstmt.executeQuery();
-			if (rs.next())
+			try (PreparedStatement pstmt1 = DB.prepareStatement(refreshSQL.toString(), null);)
 			{
-				rowDataDB = readData(rs);
-				//	update buffer
-				setDataAtRow(m_rowChanged, rowDataDB);
-				if (m_virtual)
+				rs = pstmt1.executeQuery();
+				if (rs.next())
 				{
-					MSort sort = m_sort.get(m_rowChanged);
-					int oldId = sort.index;
-					int newId = getKeyID(m_rowChanged);
-					if (newId != oldId)
+					rowDataDB = readData(rs);
+					//	update buffer
+					setDataAtRow(m_rowChanged, rowDataDB);
+					if (m_virtual)
 					{
-						sort.index = newId;
-						Object[] data = m_virtualBuffer.remove(oldId);
-						m_virtualBuffer.put(newId, data);
+						MSort sort = m_sort.get(m_rowChanged);
+						int oldId = sort.index;
+						int newId = getKeyID(m_rowChanged);
+						if (newId != oldId)
+						{
+							sort.index = newId;
+							Object[] data = m_virtualBuffer.remove(oldId);
+							m_virtualBuffer.put(newId, data);
+						}
 					}
+					fireTableRowsUpdated(m_rowChanged, m_rowChanged);
 				}
-				fireTableRowsUpdated(m_rowChanged, m_rowChanged);
+				else
+					log.log(Level.SEVERE, "Inserted row not found");
 			}
-			else
-				log.log(Level.SEVERE, "Inserted row not found");
 			//
 		}
 		catch (Exception e)
@@ -2121,12 +2116,6 @@ public class GridTable extends AbstractTableModel
 				log.log(Level.SEVERE, select.toString(), e);
 			fireDataStatusEEvent(msg, e.getLocalizedMessage(), true);
 			return SAVE_ERROR;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; 
-			pstmt = null;
 		}
 		
 		CacheMgt.get().reset(m_tableName);
