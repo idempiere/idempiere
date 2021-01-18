@@ -136,16 +136,13 @@ public class CashFlow  extends SvrProcess {
 				"cp.C_CashPlan_ID " +
 				"FROM C_CashPlanLine cpl " +
 				"JOIN C_CashPlan cp ON (cp.C_CashPlan_ID=cpl.C_CashPlan_ID) " +
-				"WHERE cp.AD_Client_ID=? AND cp.IsActive='Y' AND cpl.IsActive='Y' AND cpl.DateTrx BETWEEN ? AND ?";
-		PreparedStatement pstmtPlan = null;
-		ResultSet rsPlan = null;
-		try
-		{
-			pstmtPlan = DB.prepareStatement(sqlPlan, get_TrxName());
+				"WHERE cp.AD_Client_ID=? AND cp.IsActive='Y' AND cpl.IsActive='Y' AND cpl.DateTrx BETWEEN ? AND ?";				
+		try (PreparedStatement pstmtPlan = DB.prepareStatement(sqlPlan, get_TrxName());)
+		{			
 			pstmtPlan.setInt(1, getAD_Client_ID());
 			pstmtPlan.setTimestamp(2, p_dateFrom);
 			pstmtPlan.setTimestamp(3, p_dateTo);
-			rsPlan = pstmtPlan.executeQuery();
+			ResultSet rsPlan = pstmtPlan.executeQuery();
 			int noPlan = 0;
 			while (rsPlan.next())
 			{
@@ -185,25 +182,17 @@ public class CashFlow  extends SvrProcess {
 		{
 			log.log(Level.SEVERE, sqlPlan, e);
 		}
-		finally
-		{
-			DB.close(rsPlan, pstmtPlan);
-			rsPlan = null; pstmtPlan = null;
-		}
 		
 		/* commitment records */
 		String sqlOpenOrders = "SELECT o.C_Order_ID, o.IsPayScheduleValid, " +
 				"SUM((ol.QtyOrdered-ol.QtyInvoiced)*ol.PriceActual)/o.TotalLines as Pending " +
 				"FROM C_Order o JOIN C_OrderLine ol ON (o.C_Order_ID=ol.C_Order_ID) " +
 				"WHERE o.AD_Client_ID=? AND o.TotalLines != 0 AND o.DocStatus IN ('CO') AND ol.QtyInvoiced<ol.QtyOrdered " +
-				"GROUP BY o.C_Order_ID, o.IsPayScheduleValid, o.TotalLines";
-		PreparedStatement pstmtOpenOrders = null;
-		ResultSet rsOpenOrders = null;
-		try
-		{
-			pstmtOpenOrders = DB.prepareStatement(sqlOpenOrders, get_TrxName());
+				"GROUP BY o.C_Order_ID, o.IsPayScheduleValid, o.TotalLines";				
+		try (PreparedStatement pstmtOpenOrders = DB.prepareStatement(sqlOpenOrders, get_TrxName());)
+		{			
 			pstmtOpenOrders.setInt(1, getAD_Client_ID());
-			rsOpenOrders = pstmtOpenOrders.executeQuery();
+			ResultSet rsOpenOrders = pstmtOpenOrders.executeQuery();
 			int noOrders = 0;
 			int noOrdIns = 0;
 			int noOrdSchIns = 0;
@@ -310,25 +299,17 @@ public class CashFlow  extends SvrProcess {
 		{
 			log.log(Level.SEVERE, sqlOpenOrders, e);
 		}
-		finally
-		{
-			DB.close(rsOpenOrders, pstmtOpenOrders);
-			rsOpenOrders = null; pstmtOpenOrders = null;
-		}
 		
 		
 		/* actual records */
 		String sqlActual = "SELECT oi.AD_Org_ID, oi.C_Invoice_ID, oi.C_BPartner_ID, oi.IsSOTrx, oi.DueDate, oi.OpenAmt, oi.C_Campaign_ID, oi.C_Project_ID, oi.C_Activity_ID " +
 				"FROM RV_OpenItem oi " +
-				"WHERE oi.AD_Client_ID=? AND oi.DueDate <= ?";
-		PreparedStatement pstmtActual = null;
-		ResultSet rsActual = null;
-		try
-		{
-			pstmtActual = DB.prepareStatement(sqlActual, get_TrxName());
+				"WHERE oi.AD_Client_ID=? AND oi.DueDate <= ?";		
+		try (PreparedStatement pstmtActual = DB.prepareStatement(sqlActual, get_TrxName());)
+		{			
 			pstmtActual.setInt(1, getAD_Client_ID());
 			pstmtActual.setTimestamp(2, p_dateTo);
-			rsActual = pstmtActual.executeQuery();
+			ResultSet rsActual = pstmtActual.executeQuery();
 			int noInv = 0;
 			while (rsActual.next())
 			{
@@ -366,11 +347,6 @@ public class CashFlow  extends SvrProcess {
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sqlActual, e);
-		}
-		finally
-		{
-			DB.close(rsActual, pstmtActual);
-			rsActual = null; pstmtActual = null;
 		}
 		
 		/* subtract from plan lines the related orders */

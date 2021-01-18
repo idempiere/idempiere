@@ -349,15 +349,12 @@ public class CommissionCalc extends SvrProcess
 	 */
 	private void createDetail (String sql, MCommissionAmt comAmt) throws Exception
 	{
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());)
 		{
-			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, m_com.getAD_Client_ID());
 			pstmt.setTimestamp(2, p_StartDate);
 			pstmt.setTimestamp(3, m_EndDate);
-			rs = pstmt.executeQuery();
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				//	CommissionAmount, C_Currency_ID, Amt, Qty,
@@ -387,11 +384,6 @@ public class CommissionCalc extends SvrProcess
 		catch (Exception e)
 		{
 			throw new AdempiereSystemError("System Error: " + e.getLocalizedMessage(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 	}	//	createDetail
 
