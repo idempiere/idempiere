@@ -1422,4 +1422,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return sql.toString();
 	}	//	getSQLModify
 
+	@Override
+	public boolean isQueryTimeout(SQLException ex) {
+		//org.postgresql.util.PSQLException: ERROR: canceling statement due to user request | SQL Code: 0 | SQL State: 57014
+		return "57014".equals(ex.getSQLState());
+	}
+
+	
 }   //  DB_PostgreSQL
