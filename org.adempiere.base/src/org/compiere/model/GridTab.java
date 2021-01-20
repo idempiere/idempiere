@@ -3437,7 +3437,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		// minimum between AD_Tab.MaxQueryRecords and AD_Role.MaxQueryRecords
 		int roleMaxQueryRecords = MRole.getDefault().getMaxQueryRecords();
 		int tabMaxQueryRecords = m_vo.MaxQueryRecords;
-		if (roleMaxQueryRecords > 0 && roleMaxQueryRecords < tabMaxQueryRecords)
+		if (roleMaxQueryRecords > 0 && (roleMaxQueryRecords < tabMaxQueryRecords || tabMaxQueryRecords == 0))
 			tabMaxQueryRecords = roleMaxQueryRecords;
 		return tabMaxQueryRecords;
 	}

@@ -21,6 +21,7 @@ import static org.compiere.model.MSysConfig.ZK_GRID_AFTER_FIND;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_REDO;
 import static org.compiere.model.SystemIDs.PROCESS_AD_CHANGELOG_UNDO;
 
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -660,7 +661,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    	fTabPanel.createUI();
 		    	if (!m_queryInitiating)
 				{
-					initFirstTabpanel();
+		    		try {
+						initFirstTabpanel();
+		    		} catch (Exception e) {
+		        		if (DBException.isTimeout(e)) {
+		        			FDialog.error(curWindowNo, GridTable.LOAD_TIMEOUT_ERROR_MESSAGE);
+		        		}
+		    		}
 				}
 		    }
 
@@ -2994,7 +3001,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (query != null) {
 			m_onlyCurrentRows = false;
 			adTabbox.getSelectedGridTab().setQuery(query);
-			adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+			try {
+				adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+			} catch (Exception e) {
+				if (   e.getCause() != null 
+					&& e.getCause() instanceof SQLException
+					&& DB.getDatabase().isQueryTimeout((SQLException)e.getCause())) {
+					// ignore, is captured somewhere else
+	        		return;
+				} else {
+					throw new DBException(e);
+				}
+			}
 		}
 
 		adTabbox.getSelectedGridTab().dataRefresh(false);
