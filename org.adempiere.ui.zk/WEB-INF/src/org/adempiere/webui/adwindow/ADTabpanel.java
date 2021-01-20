@@ -1172,7 +1172,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	{
     		if (DBException.isTimeout(e)) 
     		{
-    			FDialog.error(windowNo, GridTable.LOAD_TIMEOUT_ERROR_MESSAGE);
+    			throw e;
     		}
     		else
     		{

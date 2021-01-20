@@ -785,21 +785,22 @@ public class GridTable extends AbstractTableModel
 		if (m_buffer != null)
 		{
 			m_buffer.clear();
-			m_buffer = null;
 		}
 		if (m_sort != null)
 		{
 			m_sort.clear();
-			m_sort = null;
 		}
 		if (m_virtualBuffer != null)
 		{
 			m_virtualBuffer.clear();
-			m_virtualBuffer = null;
 		}
 
-		if (finalCall)
+		if (finalCall) {
 			dispose();
+			m_buffer = null;
+			m_sort = null;
+			m_virtualBuffer = null;
+		}
 
 		//  Fields are disposed from MTab
 		log.fine("");
@@ -3698,7 +3699,7 @@ public class GridTable extends AbstractTableModel
 					}
 				}	//	while(rs.next())
 			}
-			catch (SQLException e)
+			catch (Exception e)
 			{
 				log.log(Level.SEVERE, "run", e);
 			}
