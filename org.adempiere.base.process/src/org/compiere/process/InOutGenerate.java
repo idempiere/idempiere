@@ -220,6 +220,13 @@ public class InOutGenerate extends SvrProcess
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
 				statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + order.getDocumentInfo());
 				
+				if (MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
+				{
+					BigDecimal payment = order.getPaymentAmt();
+					if (payment == null || payment.compareTo(order.getGrandTotal()) < 0)
+						continue;					
+				}
+				
 				//	New Header different Shipper, Shipment Location
 				if (!p_ConsolidateDocument 
 					|| (m_shipment != null 
@@ -235,8 +242,8 @@ public class InOutGenerate extends SvrProcess
 				if (p_DatePromised != null)
 					where.append(" AND (TRUNC(DatePromised)<=").append(DB.TO_DATE(p_DatePromised, true))
 						.append(" OR DatePromised IS NULL)");		
-				//	Exclude Auto Delivery if not Force
-				if (!MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()))
+				//	Exclude Auto Delivery if not Force and not After Payment
+				if (!MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()) && !MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
 					where.append(" AND (C_OrderLine.M_Product_ID IS NULL")
 						.append(" OR EXISTS (SELECT * FROM M_Product p ")
 						.append("WHERE C_OrderLine.M_Product_ID=p.M_Product_ID")
@@ -351,11 +358,12 @@ public class InOutGenerate extends SvrProcess
 						//	
 						createLine (order, line, deliver, storages, false);
 					}
-					//	Force
-					else if (MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()))
+					//	Force or After Payment
+					else if (MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()) || MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
 					{
 						BigDecimal deliver = toDeliver;
-						if (log.isLoggable(Level.FINE)) log.fine("Force - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) 
+							log.fine((MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()) ? "Force" : "AfterReceipt") + " - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ "), ToDeliver=" + toDeliver 
 							+ ", Delivering=" + deliver + " - " + line);

@@ -19,7 +19,9 @@ package org.compiere.model;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Hashtable;
 import java.util.List;
@@ -31,6 +33,7 @@ import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
@@ -3000,4 +3003,35 @@ public class MOrder extends X_C_Order implements DocAction
 		return getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID();
 	}
 
+	/**
+	 * 
+	 * @return prepayment amount for order
+	 */
+	public BigDecimal getPaymentAmt()
+	{
+		BigDecimal retValue = null;
+		String sql = "SELECT SUM(currencyConvert(p.PayAmt+p.DiscountAmt+p.WriteOffAmt, "
+				+ "p.C_Currency_ID, o.C_Currency_ID, p.DateTrx, COALESCE(o.C_ConversionType_ID,0), p.AD_Client_ID, p.AD_Org_ID) "
+				+ " * (CASE WHEN p.IsReceipt='Y' THEN 1 ELSE -1 END)) "
+				+ "FROM C_Payment p "
+				+ "INNER JOIN C_Order o ON (p.C_Order_ID=o.C_Order_ID) "
+				+ "WHERE p.C_Order_ID=? AND p.AD_Client_ID=? "
+				+ "AND p.IsActive='Y' AND p.DocStatus IN ('CO','CL') ";
+				
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());)
+		{			
+			pstmt.setInt(1, getC_Order_ID());
+			pstmt.setInt(2, getAD_Client_ID());
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				retValue = rs.getBigDecimal(1);
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
+		}
+		return retValue;
+	}
 }	//	MOrder
