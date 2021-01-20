@@ -522,8 +522,6 @@ public class SalesOrderTest extends AbstractTestCase {
 		payment.setTenderType(MPayment.TENDERTYPE_DirectDeposit);
 		payment.setPayAmt(order1.getGrandTotal());
 		payment.setC_Currency_ID(order1.getC_Currency_ID());
-		System.out.println(order1.getC_BPartner_ID());
-		System.out.println(payment.getC_BPartner_ID());
 		payment.saveEx();
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
 		assertFalse(info.isError());

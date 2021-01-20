@@ -3010,8 +3010,7 @@ public class MOrder extends X_C_Order implements DocAction
 	public BigDecimal getPaymentAmt()
 	{
 		BigDecimal retValue = null;
-		String sql = "SELECT SUM(currencyConvert(p.PayAmt+p.DiscountAmt+p.WriteOffAmt, "
-				+ "p.C_Currency_ID, o.C_Currency_ID, p.DateTrx, COALESCE(o.C_ConversionType_ID,0), p.AD_Client_ID, p.AD_Org_ID) "
+		String sql = "SELECT SUM(currencyconvertpayment(p.c_payment_id, o.c_currency_id, p.PayAmt+p.DiscountAmt+p.WriteOffAmt, null) "
 				+ " * (CASE WHEN p.IsReceipt='Y' THEN 1 ELSE -1 END)) "
 				+ "FROM C_Payment p "
 				+ "INNER JOIN C_Order o ON (p.C_Order_ID=o.C_Order_ID) "
