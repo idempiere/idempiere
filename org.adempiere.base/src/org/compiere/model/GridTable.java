@@ -49,7 +49,6 @@ import java.util.logging.Level;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
@@ -104,7 +103,11 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3190218965990521698L;
+	private static final long serialVersionUID = -1869219003783467319L;
+
+	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 30;
+	
+	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -1087,7 +1090,7 @@ public class GridTable extends AbstractTableModel
 		//	need to wait for data read into buffer
 		int loops = 0;
 		//wait for [timeout] seconds
-		int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, 30, Env.getAD_Client_ID(Env.getCtx()));
+		int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < timeout)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
@@ -1107,7 +1110,9 @@ public class GridTable extends AbstractTableModel
 		}
 		if (row >= m_sort.size()) {
 			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
-			throw new IllegalStateException("Timeout loading row " + (row+1));
+			//adjust row count
+			m_rowCount = m_sort.size();
+			throw new DBException("GridTabLoadTimeoutError");
 		}
 	}
 
@@ -3550,18 +3555,16 @@ public class GridTable extends AbstractTableModel
 			{
 				pstmt = DB.prepareStatement(m_SQL_Count, null);
 				setParameter (pstmt, true);
+				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+				if (timeout > 0)
+					pstmt.setQueryTimeout(timeout);
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					rows = rs.getInt(1);
 			}
 			catch (SQLException e0)
 			{
-				//	Zoom Query may have invalid where clause
-				if (DBException.isInvalidIdentifierError(e0))
-					log.warning("Count - " + e0.getLocalizedMessage() + "\nSQL=" + m_SQL_Count);
-				else
-					throw new AdempiereException(e0);
-				return 0;
+				throw new DBException(e0);
 			}
 			finally
 			{
@@ -3602,6 +3605,9 @@ public class GridTable extends AbstractTableModel
 				if (m_virtual)
 					m_pstmt.setFetchSize(100);
 				setParameter (m_pstmt, false);
+				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+				if (timeout > 0)
+					m_pstmt.setQueryTimeout(timeout);
 				m_rs = m_pstmt.executeQuery();
 			}
 			catch (SQLException e)
@@ -4041,5 +4047,26 @@ public class GridTable extends AbstractTableModel
 	public int getRowChanged()
 	{
 		return m_rowChanged;
+	}
+	
+	/**
+	 * reset to empty
+	 */
+	public void reset() 
+	{
+		if (m_buffer != null)
+			m_buffer.clear();
+		m_changed = false;
+		m_rowChanged = -1;
+		if (m_sort != null)
+			m_sort.clear();
+		if (m_virtualBuffer != null)
+			m_virtualBuffer.clear();
+		m_rowCount = 0;
+		m_rowData = null;
+		m_oldValue = null;
+		m_inserting = false;
+		m_lastSortColumnIndex = -1;
+		m_lastSortedAscending = false;
 	}
 }
