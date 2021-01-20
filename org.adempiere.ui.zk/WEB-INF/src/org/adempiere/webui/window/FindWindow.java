@@ -1220,6 +1220,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
             boolean selected = false;
             listColumn.appendItem("","");
+            ListItem liCol = null;
             for (int i = 0; i < cols.length; i++)
             {
             	ValueNamePair item = cols[i];
@@ -1228,7 +1229,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	{
                 	listColumn.setSelectedItem(li);
             		selected = true;
-            		break;
+            		liCol = li;
             	}
             }
             if(!selected) listColumn.setSelectedIndex(0);
@@ -1242,10 +1243,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	{
             		listOperator.setSelectedItem(li);
             		selected = true;
-            		break;
             	}
             }
             if(!selected) listOperator.setSelectedIndex(0);
+
+            if (liCol != null)
+            	addOperators(liCol, listOperator);
         }
     }   // setValues
 
