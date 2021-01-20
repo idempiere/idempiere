@@ -242,8 +242,8 @@ public class InOutGenerate extends SvrProcess
 				if (p_DatePromised != null)
 					where.append(" AND (TRUNC(DatePromised)<=").append(DB.TO_DATE(p_DatePromised, true))
 						.append(" OR DatePromised IS NULL)");		
-				//	Exclude Auto Delivery if not Force and not After Payment
-				if (!MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()) && !MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
+				//	Exclude Auto Delivery if not Force
+				if (!MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()))
 					where.append(" AND (C_OrderLine.M_Product_ID IS NULL")
 						.append(" OR EXISTS (SELECT * FROM M_Product p ")
 						.append("WHERE C_OrderLine.M_Product_ID=p.M_Product_ID")
@@ -344,7 +344,7 @@ public class InOutGenerate extends SvrProcess
 						createLine (order, line, toDeliver, storages, false);
 					}
 					//	Availability
-					else if (MOrder.DELIVERYRULE_Availability.equals(order.getDeliveryRule())
+					else if ((MOrder.DELIVERYRULE_Availability.equals(order.getDeliveryRule()) || MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
 						&& (onHand.signum() > 0
 							|| toDeliver.signum() < 0))
 					{
@@ -358,12 +358,11 @@ public class InOutGenerate extends SvrProcess
 						//	
 						createLine (order, line, deliver, storages, false);
 					}
-					//	Force or After Payment
-					else if (MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()) || MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
+					//	Force
+					else if (MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()))
 					{
 						BigDecimal deliver = toDeliver;
-						if (log.isLoggable(Level.FINE)) 
-							log.fine((MOrder.DELIVERYRULE_Force.equals(order.getDeliveryRule()) ? "Force" : "AfterReceipt") + " - OnHand=" + onHand 
+						if (log.isLoggable(Level.FINE)) log.fine("Force - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
 							+ "), ToDeliver=" + toDeliver 
 							+ ", Delivering=" + deliver + " - " + line);
