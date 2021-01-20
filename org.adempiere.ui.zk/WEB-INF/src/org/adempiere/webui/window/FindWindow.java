@@ -80,6 +80,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
+import org.compiere.model.GridTable;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -88,6 +89,7 @@ import org.compiere.model.MLookupInfo;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
 import org.compiere.model.SystemIDs;
@@ -2471,20 +2473,31 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         if (log.isLoggable(Level.INFO))
         	Env.setContext(Env.getCtx(), m_targetWindowNo, TABNO, GridTab.CTX_FindSQL, finalSQL);
 
-        //  Execute Qusery
+        //  Execute Query
+        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, 
+        		GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
         m_total = 999999;
         Statement stmt = null;
         ResultSet rs = null;
         try
         {
             stmt = DB.createStatement();
+            if (timeout > 0)
+            	stmt.setQueryTimeout(timeout);
             rs = stmt.executeQuery(finalSQL);
             if (rs.next())
                 m_total = rs.getInt(1);
         }
         catch (SQLException e)
         {
-        	throw new DBException(e);
+        	if (DB.getDatabase().isQueryTimeout(e))
+        	{
+       			throw new DBException(Msg.getMsg(Env.getCtx(), GridTable.LOAD_TIMEOUT_ERROR_MESSAGE));
+        	}
+        	else
+        	{
+        		throw new DBException(e);
+        	}
         }
         finally
         {

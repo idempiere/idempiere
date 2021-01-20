@@ -100,12 +100,14 @@ import org.compiere.util.ValueNamePair;
 public class GridTable extends AbstractTableModel
 	implements Serializable
 {
-	private static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 30;
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3190218965990521698L;
+	private static final long serialVersionUID = -1869219003783467319L;
+
+	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 30;
+	
+	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -4045,5 +4047,26 @@ public class GridTable extends AbstractTableModel
 	public int getRowChanged()
 	{
 		return m_rowChanged;
+	}
+	
+	/**
+	 * reset to empty
+	 */
+	public void reset() 
+	{
+		if (m_buffer != null)
+			m_buffer.clear();
+		m_changed = false;
+		m_rowChanged = -1;
+		if (m_sort != null)
+			m_sort.clear();
+		if (m_virtualBuffer != null)
+			m_virtualBuffer.clear();
+		m_rowCount = 0;
+		m_rowData = null;
+		m_oldValue = null;
+		m_inserting = false;
+		m_lastSortColumnIndex = -1;
+		m_lastSortedAscending = false;
 	}
 }
