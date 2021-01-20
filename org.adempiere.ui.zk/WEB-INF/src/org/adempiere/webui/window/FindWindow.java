@@ -135,7 +135,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3968142284124286827L;
+	private static final long serialVersionUID = -5087378621976257241L;
 
 	private static final String FIND_ROW_EDITOR = "find.row.editor";
 
@@ -190,6 +190,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private static final CLogger log = CLogger.getCLogger(FindWindow.class);
     /** Number of records           */
     private int             m_total;
+    /** Initial slow query  */
+    private boolean         initialSlowQuery = false;
     private PreparedStatement   m_pstmt;
     //
     /** List of WEditors            */
@@ -246,6 +248,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private int rowCount;
 	
 	private static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
+
+	private static final int COUNTING_RECORDS_TIMED_OUT = -255;
 
 	/** START DEVCOFFEE **/
 	private StatusBarPanel statusBar = new StatusBarPanel();
@@ -315,7 +319,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         initFind();
         initFindAdvanced();
 
-        if (m_total < m_minRecords)
+        if (m_total != COUNTING_RECORDS_TIMED_OUT && m_total < m_minRecords)
         {
             return false;
         }
@@ -350,7 +354,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	
     	m_minRecords = minRecords;
     	m_total = getNoOfRecords(null, false);
-    	if (m_total < m_minRecords)
+    	if (m_total != COUNTING_RECORDS_TIMED_OUT && m_total < m_minRecords)
         {
             return false;
         }
@@ -1479,15 +1483,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 {
                     fQueryName.setSelectedIndex(0);
                     cmd_ok_Simple();
-                    if (advancedPanel != null) {
-                    	advancedPanel.getItems().clear();
-                    }
-                    dispose();
                 }
                 else if ("btnOkAdv".equals(btn.getName()))
                 {
                     cmd_ok_Advanced();
-                    dispose();
                 }
                 else if("btnCancel".equals(btn.getName()))
                 {
@@ -1524,12 +1523,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             if (winLookupRecord.equals(event.getTarget()))
             {
                 cmd_ok_Simple();
-                dispose();
             }
             else if (winAdvanced.equals(event.getTarget()))
             {
                 cmd_ok_Advanced();
-                dispose();
             }
             // Check simple panel fields
             for (int i = 0; i < m_sEditors.size(); i++)
@@ -1538,13 +1535,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             	if (editor.getComponent() == event.getTarget())
             	{
                     cmd_ok_Simple();
-                    dispose();
             	}
                 WEditor editorTo = (WEditor)m_sEditorsTo.get(i);
             	if (editorTo != null && editor.getComponent() == event.getTarget())
             	{
                     cmd_ok_Simple();
-                    dispose();
             	}
             }
         }
@@ -2354,8 +2349,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         cmd_saveSimple(false, false);
         
         //  Test for no records
-        if (getNoOfRecords(m_query, true) != 0)
-          dispose();
+        if (getNoOfRecords(m_query, true) != 0) {
+        	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
+        		FDialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        	} else {
+                if (advancedPanel != null) {
+                	advancedPanel.getItems().clear();
+                }
+                dispose();
+        	}
+        }
 
     }   //  cmd_ok_Simple
     
@@ -2428,8 +2431,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addHistoryRestriction(historyCombo.getSelectedItem());
         }
         
-        if (getNoOfRecords(m_query, true) != 0)
-          dispose();
+        if (getNoOfRecords(m_query, true) != 0) {
+        	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
+        		FDialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        	} else {
+                dispose();
+        	}
+        }
     }   //  cmd_ok_Advanced
     
     /**
@@ -2443,13 +2451,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      *  Get the number of records of target tab
      *  @param query where clause for target tab
-     *  @param alertZeroRecords show dialog if there are no records
+     *  @param alertRecords show dialog if there are no records or there are more records than allowed for role/tab
      *  @return number of selected records;
      *          if the results are more then allowed this method will return 0
     **/
-    private int getNoOfRecords (MQuery query, boolean alertZeroRecords)
+    private int getNoOfRecords (MQuery query, boolean alertRecords)
     {
         if (log.isLoggable(Level.CONFIG)) log.config("" + query);
+        if (initialSlowQuery && (query == null || query.getRestrictionCount() == 0))
+        	return COUNTING_RECORDS_TIMED_OUT;
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
         sql.append(m_tableName);
         boolean hasWhere = false;
@@ -2492,7 +2502,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
         	if (DB.getDatabase().isQueryTimeout(e))
         	{
-       			throw new DBException(Msg.getMsg(Env.getCtx(), GridTable.LOAD_TIMEOUT_ERROR_MESSAGE));
+       			m_total = COUNTING_RECORDS_TIMED_OUT; // unknown
+       			if (query == null) {
+       				initialSlowQuery = true;
+       			}
         	}
         	else
         	{
@@ -2506,10 +2519,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	stmt = null;
         }
         //  No Records
-      /*  if (m_total == 0 && alertZeroRecords)
-            FDialog.warn(m_targetWindowNo, this, "FindZeroRecords");*/
+        if (m_total == 0 && alertRecords)
+            FDialog.warn(m_targetWindowNo, this, "FindZeroRecords", null);
         //  More then allowed
-        if (m_gridTab != null && query != null && m_gridTab.isQueryMax(m_total))
+        if (m_gridTab != null && alertRecords && m_total != COUNTING_RECORDS_TIMED_OUT && m_gridTab.isQueryMax(m_total))
         {
             FDialog.error(m_targetWindowNo, this, "FindOverMax",
                 m_total + " > " + m_gridTab.getMaxQueryRecords());
@@ -2700,7 +2713,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      */
     public MQuery getQuery()
     {
-        if (m_gridTab != null && m_gridTab.isQueryMax(getTotalRecords()) && !m_isCancel)
+        if (m_gridTab != null && m_total != COUNTING_RECORDS_TIMED_OUT && m_gridTab.isQueryMax(m_total) && !m_isCancel)
         {
             m_query = MQuery.getNoRecordQuery (m_tableName, false);
             m_total = 0;
@@ -2867,7 +2880,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 */
 	private void setStatusDB (int currentCount)
 	{
-		StringBuilder text = new StringBuilder(" ").append(Msg.getMsg(Env.getCtx(), "Records")).append(" = ").append(m_total).append(" ");
+		StringBuilder text = new StringBuilder(" ").append(Msg.getMsg(Env.getCtx(), "Records")).append(" = ").append(m_total == COUNTING_RECORDS_TIMED_OUT ? "?" : m_total).append(" ");
 		statusBar.setStatusDB(text.toString());
 	}	//	setDtatusDB
 	/** END DEVCOFFEE **/

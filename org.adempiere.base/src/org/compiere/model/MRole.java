@@ -124,7 +124,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public synchronized static MRole get (Properties ctx, int AD_Role_ID, int AD_User_ID, boolean reload)
 	{
-		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
 		String key = AD_Role_ID + "_" + AD_User_ID;
 		MRole role = (MRole)s_roles.get (key, e -> new MRole(ctx, e));
 		if (role == null || reload)
