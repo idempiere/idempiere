@@ -987,6 +987,7 @@ public class Doc_InOut extends Doc
 		return m_deferPosting;
 	}
 	
+	@Override
 	public int getC_Currency_ID()
 	{
 		MInOut io = (MInOut) getPO();
@@ -1001,6 +1002,7 @@ public class Doc_InOut extends Doc
 		return super.getC_Currency_ID();
 	}
 	
+	@Override
 	public int getC_ConversionType_ID()
 	{
 		MInOut io = (MInOut) getPO();
