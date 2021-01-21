@@ -172,6 +172,14 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 			ListitemComparator lic = (ListitemComparator) cmpr;
 			tableModel.sort(lic.getListheader().getColumnIndex(), ascending);
 		} else if (cmpr instanceof SortComparator) {
+			
+			//Check need save before sort. IDEMPIERE-4662
+			if(tableModel.getNewRow() != -1 || tableModel.getRowChanged() != -1)
+			{
+				if(GridTable.SAVE_OK != tableModel.dataSave(true))
+					return;
+			}
+			
 			SortComparator sc = (SortComparator)cmpr;
 			tableModel.sort(sc.getColumnIndex(), ascending);
 		}
