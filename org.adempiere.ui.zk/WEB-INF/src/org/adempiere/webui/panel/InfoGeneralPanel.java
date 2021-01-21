@@ -462,12 +462,14 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		//	Get Display Columns
 
 		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
-		sql = "SELECT DISTINCT c.ColumnName, c.AD_Reference_ID, c.IsKey, f.IsDisplayed, c.AD_Reference_Value_ID, c.ColumnSql, c.AD_Column_ID, f.SeqNo "
+		sql = "SELECT c.ColumnName, c.AD_Reference_ID, c.IsKey, f.IsDisplayed, c.AD_Reference_Value_ID, c.ColumnSql, c.AD_Column_ID "
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID)"
 			+ " INNER JOIN AD_Tab tab ON (t.AD_Window_ID=tab.AD_Window_ID)"
 			+ " INNER JOIN AD_Field f ON (tab.AD_Tab_ID=f.AD_Tab_ID AND f.AD_Column_ID=c.AD_Column_ID) "
 			+ "WHERE t.AD_Table_ID=? "
+			+ " AND tab.IsSortTab='N'"
+			+ " AND tab.Ad_Tab_ID=(SELECT MIN(mt.AD_Tab_ID) FROM AD_tab mt WHERE mt.AD_Window_ID=t.AD_Window_ID AND mt.AD_Table_ID=t.AD_Table_ID AND mt.IsActive='Y')"
 			+ " AND (c.IsKey='Y' OR "
 				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
 			+ "ORDER BY c.IsKey DESC, f.SeqNo";
