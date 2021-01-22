@@ -1282,46 +1282,62 @@ public class AdempiereMonitor extends HttpServlet
 		
 		// initial Wait (default to 10 seconds) to give cluster service time to start first
 		final int initialWaitSeconds = MSysConfig.getIntValue(MSysConfig.MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS, 10);
-		serverMgrFuture = Adempiere.getThreadPoolExecutor().schedule(() -> {
-			int maxSecondsToWait = MSysConfig.getIntValue(MSysConfig.MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS, 180);			
-			int totalWaitSeconds = initialWaitSeconds;
-			//check every 5 seconds (until maxSecondsToWait)
-			int waitSeconds = 5;
-			while (ClusterServerMgr.getClusterService() == null)
-			{
-				try {
-					Thread.sleep(waitSeconds * 1000);
-				} catch (InterruptedException e) {
-					break;
+		serverMgrFuture = Adempiere.getThreadPoolExecutor().schedule(() -> {			
+			try {
+				Properties ctx = new Properties();
+				Env.setContext(ctx, Env.AD_CLIENT_ID, 0);
+				Env.setContext(ctx, Env.AD_USER_ID, 0);
+				ServerContext.setCurrentInstance(ctx);
+				
+				int maxSecondsToWait = MSysConfig.getIntValue(MSysConfig.MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS, 180);			
+				int totalWaitSeconds = initialWaitSeconds;
+				//check every 5 seconds (until maxSecondsToWait)
+				int waitSeconds = 5;
+				while (ClusterServerMgr.getClusterService() == null)
+				{
+					try {
+						Thread.sleep(waitSeconds * 1000);
+					} catch (InterruptedException e) {
+						break;
+					}
+					if (Thread.interrupted())
+						break;
+					totalWaitSeconds += waitSeconds;
+					if (totalWaitSeconds >= maxSecondsToWait) {
+						log.warning("Cluster Service did not start after " + totalWaitSeconds + " seconds");
+						break;
+					}
 				}
-				if (Thread.interrupted())
-					break;
-				totalWaitSeconds += waitSeconds;
-				if (totalWaitSeconds >= maxSecondsToWait) {
-					log.warning("Cluster Service did not start after " + totalWaitSeconds + " seconds");
-					break;
+				
+				//always create the local server manager instance
+				m_serverMgr = AdempiereServerMgr.get();
+				
+				//switch to cluster manager if cluster service is available
+				if (ClusterServerMgr.getClusterService() != null)
+					m_serverMgr = ClusterServerMgr.getInstance();
+			} catch (Throwable e) {
+				if (e.getCause() != null) {
+					log.log(Level.SEVERE, e.getCause().getMessage(), e.getCause());
+				} else {
+					log.log(Level.SEVERE, e.getMessage(), e);
 				}
+			} finally {
+				ServerContext.dispose();
 			}
-			
-			//always create the local server manager instance
-			m_serverMgr = AdempiereServerMgr.get();
-			
-			//switch to cluster manager if cluster service is available
-			if (ClusterServerMgr.getClusterService() != null)
-				m_serverMgr = ClusterServerMgr.getInstance();
 		}, initialWaitSeconds, TimeUnit.SECONDS);
 		
 		m_dirAccessList = getDirAcessList();
 	}	//	init
 	
-	private IServerManager getServerManager()
+	private synchronized IServerManager getServerManager()
 	{
-		if (!serverMgrFuture.isDone() && !serverMgrFuture.isCancelled())
+		if (serverMgrFuture != null && !serverMgrFuture.isDone() && !serverMgrFuture.isCancelled())
 		{
 			try {
 				serverMgrFuture.get();
-			} catch (Exception e) {}
-		}
+			} catch (Exception e) {				
+			}
+		} 
 		return m_serverMgr;
 	}
 	

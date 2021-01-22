@@ -52,9 +52,24 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WAccountEditor.class);
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WAccountEditor(GridField gridField)
 	{
-		super(new Combinationbox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WAccountEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new Combinationbox(), gridField, tableEditor, editorConfiguration);
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass("z-icon-Account");
 		else
@@ -109,7 +124,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		// Try to get C_AcctSchema_ID from global context - teo_sarca BF [ 1830531 ]
 		if (C_AcctSchema_ID <= 0)
 		{
-			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID");
+			C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), Env.C_ACCTSCHEMA_ID);
 		}
 		new WAccountDialog (gridField.getHeader(), m_mAccount, C_AcctSchema_ID, new Callback<Integer>() {
 			

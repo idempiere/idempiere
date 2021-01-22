@@ -37,7 +37,7 @@ public class Actions {
 		synchronized (trackerCache) {
 			action = trackerCache.get(actionId);
 		} 
-		if (action != null)
+		if (action != null && action.getService() != null)
 			return action;
 		
 		action = Service.locator().locate(IAction.class, actionId, null);
@@ -57,7 +57,7 @@ public class Actions {
 		if (aImage != null)
 			return aImage;
 
-		IServiceHolder<IAction> action = Service.locator().locate(IAction.class, actionId, null);
+		IServiceHolder<IAction> action = getAction(actionId);
 		if (action.getService() != null) {
 			String path = ACTION_IMAGES_PATH + actionId + "24.png";
 			InputStream inputStream = action.getService().getClass().getClassLoader().getResourceAsStream(path);

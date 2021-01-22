@@ -16,7 +16,7 @@ package org.adempiere.webui.dashboard;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.session.SessionManager;
@@ -154,7 +154,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	private static synchronized void createTopicSubscriber() {
 		if (topicSubscriber == null) {
 			topicSubscriber = new TopicSubscriber();
-			IMessageService service = Service.locator().locate(IMessageService.class).getService();
+			IMessageService service = Core.getMessageService();
 			if (service != null) {
 				ITopic<Integer> topic = service.getTopic(MRecentItem.ON_RECENT_ITEM_CHANGED_TOPIC);
 				topic.subscribe(topicSubscriber);

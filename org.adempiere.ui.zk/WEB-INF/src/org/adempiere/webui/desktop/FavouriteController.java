@@ -86,7 +86,7 @@ public class FavouriteController {
 	{
 		int AD_Client_ID = MUser.get(Env.getCtx()).getAD_Client_ID();
 		int AD_Org_ID = 0;
-		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
+		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID);
 		StringBuilder sql = new StringBuilder();
 		if (add)
 			sql.append("INSERT INTO AD_TreeBar "

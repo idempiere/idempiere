@@ -155,10 +155,14 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		yesList.setSeltype("multiple");
 		noList.setSeltype("multiple");
 
-		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
+		if (ThemeManager.isUseFontIconForImage()) {
+    		bAdd.setIconSclass("z-icon-Next");
+    		bRemove.setIconSclass("z-icon-Previous");
+    	} else {
+    		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
+    		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
+    	}
 		bAdd.addEventListener(Events.ON_CLICK, actionListener);
-
-		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));
 		bRemove.addEventListener(Events.ON_CLICK, actionListener);
 
 		final EventListener<Event> moveListener = new MoveListener();

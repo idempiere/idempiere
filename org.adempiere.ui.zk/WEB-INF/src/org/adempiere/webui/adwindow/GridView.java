@@ -58,9 +58,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
@@ -529,6 +529,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		Columns columns = new Columns();
 		
 		//frozen not working well on tablet devices yet
+		//frozen is implemented poorly on zk ce, not working with scroll and white-space wrap
+		//unlikely to be fixed since the working 'smooth scrolling frozen' is a zk ee only feature
+		/*
 		if (!ClientInfo.isMobile())
 		{
 			Frozen frozen = new Frozen();
@@ -536,6 +539,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 			frozen.setColumns(2);
 			listbox.appendChild(frozen);
 		}
+		*/
 		
 		org.zkoss.zul.Column selection = new Column();
 		selection.setHeight("2em");
@@ -795,7 +799,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				listModel.setPage(pgNo);
 				onSelectedRowChange(0);
 				gridTab.clearSelection();
-				listbox.invalidate();
+				invalidateGridView();
 			}
 		}
 		else if (event.getTarget() == selectAll)
@@ -827,6 +831,18 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		}
 	}
 
+	private Center findCenter(GridView gridView) {
+		if (gridView == null)
+			return null;
+		Component p = gridView.getParent();
+		while (p != null) {
+			if (p instanceof Center)
+				return (Center)p;
+			p = p.getParent();
+		}
+		return null;
+	}
+	
 	private boolean isAllSelected() {
 		org.zkoss.zul.Rows rows = listbox.getRows();
 		List<Component> childs = rows.getChildren();
@@ -990,7 +1006,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 				}
 			}
 			if (cmp != null)
-				Clients.response(new AuScript(null, "scrollToRow('" + cmp.getUuid() + "');"));
+				Clients.response(new AuScript(null, "idempiere.scrollToRow('" + cmp.getUuid() + "');"));
 
 			if (columnOnClick != null && columnOnClick.trim().length() > 0) {
 				List<?> list = row.getChildren();
@@ -999,7 +1015,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 						Div div = (Div) element;
 						if (columnOnClick.equals(div.getAttribute("columnName"))) {
 							cmp = div.getFirstChild();
-							Clients.response(new AuScript(null, "scrollToRow('" + cmp.getUuid() + "');"));
+							Clients.response(new AuScript(null, "idempiere.scrollToRow('" + cmp.getUuid() + "');"));
 							break;
 						}
 					}
@@ -1200,7 +1216,18 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		refresh(gridTab);
 		scrollToCurrentRow();
-		listbox.invalidate();
+		invalidateGridView();
+	}
+
+	/**
+	 * redraw grid view
+	 */
+	public void invalidateGridView() {
+		Center center = findCenter(this);
+		if (center != null)
+			center.invalidate();
+		else
+			this.invalidate();
 	}
 
 	/**

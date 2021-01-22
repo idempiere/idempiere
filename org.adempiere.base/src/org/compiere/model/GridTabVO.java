@@ -101,9 +101,9 @@ public class GridTabVO implements Evaluatee, Serializable
 	private static boolean loadTabDetails (GridTabVO vo, ResultSet rs)
 	{
 		MRole role = MRole.getDefault(vo.ctx, false);
-		boolean showTrl = "Y".equals(Env.getContext(vo.ctx, "#ShowTrl"));
-		boolean showAcct = "Y".equals(Env.getContext(vo.ctx, "#ShowAcct"));
-		boolean showAdvanced = "Y".equals(Env.getContext(vo.ctx, "#ShowAdvanced"));
+		boolean showTrl = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_TRANSLATION));
+		boolean showAcct = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ACCOUNTING));
+		boolean showAdvanced = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ADVANCED));
 	//	CLogger.get().warning("ShowTrl=" + showTrl + ", showAcct=" + showAcct);
 		try
 		{

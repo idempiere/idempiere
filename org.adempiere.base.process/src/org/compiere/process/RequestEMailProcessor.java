@@ -128,7 +128,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 				p_DefaultPriority = ((String)para[i].getParameter());
 			else if (name.equals("p_DefaultConfidentiality"))
 				p_DefaultConfidentiality = ((String)para[i].getParameter());
-			else if (name.equals("p_nestInbox"))
+			else if (name.equals("p_NestInbox"))
 				p_NestInbox = "Y".equalsIgnoreCase(para[i].getParameter().toString());
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);

@@ -474,7 +474,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		if (isDescription())
 			return true;
 		//
-		int M_Warehouse_ID = Env.getContextAsInt(getCtx(), "#M_Warehouse_ID");
+		int M_Warehouse_ID = Env.getContextAsInt(getCtx(), Env.M_WAREHOUSE_ID);
 		//
 		int C_Tax_ID = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
 			getAD_Org_ID(), M_Warehouse_ID,

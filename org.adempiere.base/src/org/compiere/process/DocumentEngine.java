@@ -74,6 +74,11 @@ import org.osgi.service.event.Event;
 public class DocumentEngine implements DocAction
 {
 	/**
+	 * When client accounting is immediate, set this PO attribute to override the default of immediate posting after complete of document
+	 */
+	public static final String DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE = "Document.PostImmediateAfterComplete";
+
+	/**
 	 * 	Doc Engine (Drafted)
 	 * 	@param po document
 	 */
@@ -343,13 +348,28 @@ public class DocumentEngine implements DocAction
 
 				if (STATUS_Completed.equals(status) && MClient.isClientAccountingImmediate())
 				{
-					m_document.saveEx();
-					postIt();
-
-					if (m_document instanceof PO && docsPostProcess.size() > 0) {
-						for (PO docafter : docsPostProcess) {
-							@SuppressWarnings("unused")
-							String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
+					boolean postNow = true;
+					if (m_document instanceof PO)
+					{
+						Object attribute = ((PO) m_document).get_Attribute(DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE);
+						if (attribute != null && attribute instanceof Boolean)
+						{
+							postNow = (boolean) attribute;
+						}
+					}
+					
+					if (postNow)
+					{
+						m_document.saveEx();
+						postIt();
+	
+						if (m_document instanceof PO && docsPostProcess.size() > 0) {
+							for (PO docafter : docsPostProcess) {								
+								if (docafter.get_ValueAsBoolean("Posted"))
+									continue;
+								@SuppressWarnings("unused")
+								String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
+							}
 						}
 					}
 				}

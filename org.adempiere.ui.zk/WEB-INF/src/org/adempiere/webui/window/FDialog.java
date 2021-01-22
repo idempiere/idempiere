@@ -358,7 +358,6 @@ public class FDialog
     }
     
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo) {
-		@SuppressWarnings("unused")
 		final WEditor weditor;
 
 		switch (editorType) {

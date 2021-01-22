@@ -418,7 +418,9 @@ public class Doc_Invoice extends Doc
 
 			//  Receivables     DR
 			int receivables_ID = getValidCombination_ID(Doc.ACCTTYPE_C_Receivable, as);
-			int receivablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable_Services, as);
+			// Deprecated IDEMPIERE-362
+			// int receivablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable_Services, as);
+			int receivablesServices_ID = receivables_ID;
 			if (m_allLinesItem || !as.isPostServices()
 				|| receivables_ID == receivablesServices_ID)
 			{
@@ -606,7 +608,9 @@ public class Doc_Invoice extends Doc
 
 			//  Liability               CR
 			int payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
-			int payablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability_Services, as);
+			// Deprecated IDEMPIERE-362
+			// int payablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability_Services, as);
+			int payablesServices_ID = payables_ID;
 			if (m_allLinesItem || !as.isPostServices()
 				|| payables_ID == payablesServices_ID)
 			{

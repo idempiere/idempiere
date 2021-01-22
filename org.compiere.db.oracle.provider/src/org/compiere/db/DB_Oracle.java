@@ -33,7 +33,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Random;
@@ -1413,7 +1412,7 @@ public class DB_Oracle implements AdempiereDatabase
 				&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
 		{
 			if (DisplayType.isText(column.getAD_Reference_ID()) 
-					|| column.getAD_Reference_ID() == DisplayType.List
+					|| DisplayType.isList(column.getAD_Reference_ID())
 					|| column.getAD_Reference_ID() == DisplayType.YesNo
 					// Two special columns: Defined as Table but DB Type is String 
 					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
@@ -1486,8 +1485,9 @@ public class DB_Oracle implements AdempiereDatabase
 			&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
 		{
 			if (DisplayType.isText(column.getAD_Reference_ID()) 
-				|| column.getAD_Reference_ID() == DisplayType.List
+				|| DisplayType.isList(column.getAD_Reference_ID())
 				|| column.getAD_Reference_ID() == DisplayType.YesNo
+				|| column.getAD_Reference_ID() == DisplayType.Payment
 				// Two special columns: Defined as Table but DB Type is String 
 				|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
 				|| (column.getAD_Reference_ID() == DisplayType.Button &&
@@ -1532,4 +1532,12 @@ public class DB_Oracle implements AdempiereDatabase
 		//
 		return sql.toString();
 	}	//	getSQLModify
+
+	@Override
+	public boolean isQueryTimeout(SQLException ex) {
+		//java.sql.SQLTimeoutException: ORA-01013: user requested cancel of current operation
+		return "72000".equals(ex.getSQLState()) && ex.getErrorCode() == 1013;
+	}
+	
+	
 }   //  DB_Oracle

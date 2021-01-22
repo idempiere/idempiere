@@ -37,7 +37,7 @@ import org.compiere.util.Util;
  */
 public class DefaultModelFactory implements IModelFactory {
 
-	private static CCache<String,Class<?>> s_classCache = new CCache<String,Class<?>>(null, "PO_Class", 20, false);
+	private static CCache<String,Class<?>> s_classCache = new CCache<String,Class<?>>(null, "PO_Class", 100, 120, false, 2000);
 	private final static CLogger s_log = CLogger.getCLogger(DefaultModelFactory.class);
 
 	/**	Packages for Model Classes	*/

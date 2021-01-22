@@ -16,6 +16,7 @@ package org.adempiere.webui.editor.grid.selection;
 
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.editor.IEditorConfiguration;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -45,22 +46,38 @@ public class WGridTabSingleSelectionEditor extends WEditor implements ContextMen
 
     private Object oldValue;
 
-	private boolean tableEditor = false;
-	
 	private GridTab listViewGridTab = null;
 	
 	private String currentLinkValue = null;
 
 	private boolean readWrite;
 
+	/**
+	 * 
+	 * @param gridField
+	 */
     public WGridTabSingleSelectionEditor(GridField gridField) {
     	this(gridField, false);
     }
 
-    public WGridTabSingleSelectionEditor(GridField gridField, boolean tableEditor)
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     */
+    public WGridTabSingleSelectionEditor(GridField gridField, boolean tableEditor) {
+    	this(gridField, tableEditor, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WGridTabSingleSelectionEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(tableEditor ? new Textbox() : new GridTabSelectionListView(false, gridField.getWindowNo()), gridField);
-        this.tableEditor = tableEditor;
+        super(tableEditor ? new Textbox() : new GridTabSelectionListView(false, gridField.getWindowNo()), gridField, tableEditor, editorConfiguration);
         init();
     }
 

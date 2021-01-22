@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.base.IServiceHolder;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
@@ -447,8 +448,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		messageContainer.setAlign("center");
 		messageContainer.setSclass("adwindow-detailpane-message");
 		messageContainer.setId("messages");
-		
-		toolbar.appendChild(new Space());
+		if (ClientInfo.minWidth(ClientInfo.SMALL_WIDTH))
+			toolbar.appendChild(new Space());
 		toolbar.appendChild(messageContainer);
 		toolbar.setSclass("adwindow-detailpane-toolbar");
 		ZKUpdateUtil.setVflex(toolbar, "0");
@@ -582,7 +583,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     		label.setStyle("cursor: pointer");
     		messageContainer.appendChild(label);
     		label.addEventListener(Events.ON_CLICK, this);
-    	}    	
+    	} else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH)) {
+    		label.addEventListener(Events.ON_CLICK, this);
+    		label.setStyle("cursor: pointer");
+    	}
     	
     	messageContainer.appendChild(new Space());
 	}
@@ -739,6 +743,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			deleteRecord = adtab.getGridTab().isDeleteRecord();
         }
         boolean enableDelete = !changed && deleteRecord && !adtab.getGridTab().isSortTab();
+        boolean enableCustomize = !adtab.getGridTab().isSortTab();
         
         ADWindow adwindow = ADWindow.findADWindow(this);
         if (adwindow == null)
@@ -757,6 +762,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         			btn.setDisabled(false);
         		} else if (BTN_SAVE_ID.equals(btn.getId())) {
         			btn.setDisabled(!adtab.needSave(true, false));
+				} else if (BTN_CUSTOMIZE_ID.equals(btn.getId())) {
+        			btn.setDisabled(!enableCustomize);
 				}
 				else if (BTN_QUICK_FORM_ID.equals(btn.getId())) {
 					btn.setDisabled(!(adtab.isEnableQuickFormButton() && !adtab.getGridTab().isReadOnly()));
@@ -782,11 +789,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		IADTabpanel adtab = getADTabpanel(index);
 		if (adtab == null) return;
 		
-		String processImage = ThemeManager.getThemeResource(PROCESS_IMAGE);
         for(Component c : toolbar.getChildren()) {
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
-        		if (processImage.equals(btn.getImage())) {
+        		if (BTN_PROCESS_ID.equals(btn.getId())) {
         			if (adtab.getGridTab().isSortTab()) {
         				btn.setDisabled(true);
         			} else {

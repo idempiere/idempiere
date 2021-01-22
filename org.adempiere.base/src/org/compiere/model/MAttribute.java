@@ -29,6 +29,8 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -42,7 +44,8 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7869800574413317999L;
+	private static final long serialVersionUID = 8266487405778526776L;
+
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MAttribute.class);
 
@@ -203,8 +206,8 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 
 	/**
 	 * 	Set Attribute Instance
-	 * 	@param value value
 	 * 	@param M_AttributeSetInstance_ID id
+	 * 	@param value value
 	 */
 	public void setMAttributeInstance (int M_AttributeSetInstance_ID, MAttributeValue value)
 	{
@@ -237,8 +240,8 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 
 	/**
 	 * 	Set Attribute Instance
-	 * 	@param value string value
 	 * 	@param M_AttributeSetInstance_ID id
+	 * 	@param value string value
 	 */
 	public void setMAttributeInstance (int M_AttributeSetInstance_ID, String value)
 	{
@@ -253,8 +256,8 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 
 	/**
 	 * 	Set Attribute Instance
-	 * 	@param value number value
 	 * 	@param M_AttributeSetInstance_ID id
+	 * 	@param value number value
 	 */
 	public void setMAttributeInstance (int M_AttributeSetInstance_ID, BigDecimal value)
 	{
@@ -268,22 +271,43 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	}	//	setAttributeInstance
 	
 	/**
-	 * Set Attribute Instance
-	 * 
-	 * @param valueInt                  Integer value
-	 * @param M_AttributeSetInstance_ID id
-	 * @param value
+	 * 	Set Attribute Instance
+	 * 	@param M_AttributeSetInstance_ID id
+	 * 	@param value int
 	 */
-	public void setMAttributeInstance(int M_AttributeSetInstance_ID, int valueInt, String value)
+	public void setMAttributeInstance (int M_AttributeSetInstance_ID, int value)
 	{
 		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
 		if (instance == null)
-			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(), M_AttributeSetInstance_ID, valueInt, get_TrxName());
+			instance = new MAttributeInstance (getCtx(), getM_Attribute_ID(), 
+				M_AttributeSetInstance_ID, value, get_TrxName());
 		else
-			instance.setValueInt(valueInt, value);
+			instance.setValueInt(value);
+		instance.saveEx();
+	}	//	setAttributeInstance
+	
+	/**
+	 * Set Attribute Instance
+	 * 
+	 * @param M_AttributeSetInstance_ID id
+	 * @param value                     KeyNamePair
+	 */
+	public void setMAttributeInstance(int M_AttributeSetInstance_ID, KeyNamePair value)
+	{
+		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
+		if (instance == null)
+			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(), M_AttributeSetInstance_ID, value, get_TrxName());
+		else
+			instance.setValueKeyNamePair(value);
 		instance.saveEx();
 	} // setAttributeInstance
-	
+
+	/**
+	 * Set Attribute Instance
+	 * 
+	 * @param M_AttributeSetInstance_ID id
+	 * @param value                     Timestamp
+	 */
 	public void setMAttributeInstance(int M_AttributeSetInstance_ID, Timestamp value)
 	{
 		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
@@ -308,6 +332,22 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		// not advanced roles cannot add or modify reference types
+		if ((newRecord || MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(getAttributeValueType()))
+				&& ! MRole.getDefault().isAccessAdvanced()) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+			return false;
+		}
+		return true;
+	}
 	
 	/**
 	 * 	AfterSave

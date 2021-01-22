@@ -54,7 +54,22 @@ public class WImageEditor extends WEditor
     /**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WImageEditor.class);
     
-    public WImageEditor(GridField gridField)
+	/**
+	 * 
+	 * @param gridField
+	 */
+	public WImageEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WImageEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
         super(new Image() {
 			private static final long serialVersionUID = 8492629361709791256L;
@@ -70,7 +85,7 @@ public class WImageEditor extends WEditor
 					}
 				}
 			}        	
-        }, gridField);
+        }, gridField, tableEditor, editorConfiguration);
         init();
     }
 

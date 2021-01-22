@@ -103,14 +103,24 @@ ContextMenuListener, IZoomableEditor
 
 	private boolean onselecting = false;
 
-    public WTableDirEditor(GridField gridField)
+	/**
+	 * 
+	 * @param gridField
+	 */
+	public WTableDirEditor(GridField gridField)
+	{
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+    public WTableDirEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        this(gridField.isAutocomplete() ? new EditorAutoComplete() : new EditorCombobox(), gridField);
-    }
-    
-    private WTableDirEditor(Component comp, GridField gridField)
-    {
-        super(comp, gridField);
+        super(gridField.isAutocomplete() ? new EditorAutoComplete() : new EditorCombobox(), gridField, tableEditor, editorConfiguration);
         ((ITableDirEditor)getComponent()).setEditor(this);
         lookup = gridField.getLookup();
         init();
@@ -199,7 +209,7 @@ ContextMenuListener, IZoomableEditor
             lookup.addListDataListener(this);
             lookup.setMandatory(isMandatory());
             
-            if ((lookup.getDisplayType() == DisplayType.List && Env.getContextAsInt(Env.getCtx(), "#AD_Role_ID") == 0)
+            if ((lookup.getDisplayType() == DisplayType.List && Env.getContextAsInt(Env.getCtx(), Env.AD_ROLE_ID) == 0)
             		|| lookup.getDisplayType() != DisplayType.List) 
             {
     			zoom= true;

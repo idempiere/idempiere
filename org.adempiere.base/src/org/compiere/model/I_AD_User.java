@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_User
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_AD_User 
 {
@@ -550,6 +550,19 @@ public interface I_AD_User
 
 	/** Get Support User	  */
 	public boolean isSupportUser();
+
+    /** Column name IsVendorLead */
+    public static final String COLUMNNAME_IsVendorLead = "IsVendorLead";
+
+	/** Set Vendor Lead.
+	  * This contact is a vendor lead
+	  */
+	public void setIsVendorLead (boolean IsVendorLead);
+
+	/** Get Vendor Lead.
+	  * This contact is a vendor lead
+	  */
+	public boolean isVendorLead();
 
     /** Column name LastContact */
     public static final String COLUMNNAME_LastContact = "LastContact";

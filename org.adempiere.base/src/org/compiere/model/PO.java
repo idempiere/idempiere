@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1330388218446118451L;
+	private static final long serialVersionUID = -7231417421289556724L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -208,6 +208,8 @@ public abstract class PO
 			load(rs);		//	will not have virtual columns
 		else
 			load(ID, trxName);
+
+		checkCrossTenant(false);
 	}   //  PO
 
 	/**
@@ -1687,7 +1689,7 @@ public abstract class PO
 			String colName = p_info.getColumnName(i);
 			//  Set Standard Values
 			if (colName.endsWith("tedBy"))
-				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, "#AD_User_ID"));
+				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, Env.AD_USER_ID));
 			else if (colName.equals("Created") || colName.equals("Updated"))
 				m_newValues[i] = new Timestamp (System.currentTimeMillis());
 			else if (colName.equals(p_info.getTableName() + "_ID"))    //  KeyColumn
@@ -1941,6 +1943,8 @@ public abstract class PO
 
 	/**	Cache						*/
 	private static CCache<String,String> trl_cache	= new CCache<String,String>("PO_Trl", 5);
+	/** Cache for foreign keys */
+	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
 	public String get_Translation (String columnName, String AD_Language)
 	{
@@ -2078,6 +2082,7 @@ public abstract class PO
 		checkImmutable();
 		
 		checkValidContext();
+		checkCrossTenant(true);
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
@@ -2569,7 +2574,7 @@ public abstract class PO
 				//	If no changes set UpdatedBy explicitly to ensure commit of lob
 				if (!changes && !updatedBy)
 				{
-					int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+					int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 					set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 					sql.append("UpdatedBy=").append(AD_User_ID);
 					changes = true;
@@ -2748,7 +2753,7 @@ public abstract class PO
 			}
 			if (!updatedBy)	//	UpdatedBy not explicitly set
 			{
-				int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+				int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 				set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 				if (withValues)
 				{
@@ -3265,6 +3270,7 @@ public abstract class PO
 		checkImmutable();
 		
 		checkValidContext();
+		checkCrossTenant(true);
 		CLogger.resetLast();
 		if (is_new())
 			return true;
@@ -3759,9 +3765,6 @@ public abstract class PO
 			return true;
 
 		String tableName = p_info.getTableName();
-		if (tableName.startsWith("AD") && getAD_Client_ID() == 0)
-			return true;
-
 		//
 		boolean trlColumnChanged = false;
 		for (int i = 0; i < p_info.getColumnCount(); i++)
@@ -3814,12 +3817,14 @@ public abstract class PO
 			}
 		}
 		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());
-		StringBuilder andlang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
-		StringBuilder andnotlang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andClientLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andNotClientLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		String baselang = Language.getBaseAD_Language();
+		StringBuilder andBaseLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(baselang));
+		StringBuilder andNotBaseLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(baselang));
 		int no = -1;
 
 		if (client.isMultiLingualDocument()) {
-			String baselang = Language.getBaseAD_Language();
 			if (client.getAD_Language().equals(baselang)) {
 				// tenant language = base language
 				// set all translations as untranslated
@@ -3831,13 +3836,14 @@ public abstract class PO
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 			} else {
 				// tenant language <> base language
-				// auto update translation for tenant language
+				// for Tenants auto update translation for tenant language
+				// for System update translation for base language (which in fact must always update zero records as there must not be translations for base)
 				StringBuilder sqlexec = new StringBuilder()
 					.append(sqlupdate)
 					.append(sqlcols)
 					.append("IsTranslated='Y'")
 					.append(whereid)
-					.append(andlang);
+					.append(getAD_Client_ID() == 0 ? andBaseLang : andClientLang);
 				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				if (no >= 0) {
@@ -3846,7 +3852,7 @@ public abstract class PO
 						.append(sqlupdate)
 						.append("IsTranslated='N'")
 						.append(whereid)
-						.append(andnotlang);
+						.append(getAD_Client_ID() == 0 ? andNotBaseLang : andNotClientLang);
 					no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 					if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				}
@@ -4880,20 +4886,34 @@ public abstract class PO
 	    p_info = initPO(p_ctx);
 	}
 	
-	public void set_Attribute(String columnName, Object value) {
+	/**
+	 * set attribute value
+	 * @param attributeName
+	 * @param value
+	 */
+	public void set_Attribute(String attributeName, Object value) {
 		checkImmutable();
 		
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
-		m_attributes.put(columnName, value);
+		m_attributes.put(attributeName, value);
 	}
 	
-	public Object get_Attribute(String columnName) {
+	/**
+	 * 
+	 * @param attributeName
+	 * @return attribute value
+	 */
+	public Object get_Attribute(String attributeName) {
 		if (m_attributes != null)
-			return m_attributes.get(columnName);
+			return m_attributes.get(attributeName);
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return map of attributes
+	 */
 	public HashMap<String,Object> get_Attributes() {
 		return m_attributes;
 	}
@@ -4957,8 +4977,140 @@ public abstract class PO
 	}
 
 	private void checkValidContext() {
-		if (getCtx().isEmpty() && getCtx().getProperty("#AD_Client_ID") == null)
+		if (getCtx().isEmpty() && getCtx().getProperty(Env.AD_CLIENT_ID) == null)
 			throw new AdempiereException("Context lost");
+	}
+
+	/*
+	 * To force a cross tenant safe read/write the client program must write code like this:
+		try {
+			PO.setCrossTenantSafe();
+			// write here the Query.list or PO.saveEx that is cross tenant safe
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+	 */
+	private static ThreadLocal<Boolean> isSafeCrossTenant = new ThreadLocal<Boolean>() {
+		@Override protected Boolean initialValue() {
+			return Boolean.FALSE;
+		};
+	};
+	public static void setCrossTenantSafe() {
+		isSafeCrossTenant.set(Boolean.TRUE);
+	}
+	public static void clearCrossTenantSafe() {
+		isSafeCrossTenant.set(Boolean.FALSE);
+	}
+
+	private void checkCrossTenant(boolean writing) {
+		if (isSafeCrossTenant.get())
+			return;
+		int envClientID = Env.getAD_Client_ID(getCtx());
+		// processes running from system client can read/write always
+		if (envClientID > 0) {
+			int poClientID = getAD_Client_ID();
+			if (poClientID != envClientID &&
+					(poClientID != 0 || writing)) {
+				log.warning("Table="+get_TableName()
+					+" Record_ID="+get_ID()
+					+" Env.AD_Client_ID="+envClientID
+					+" PO.AD_Client_ID="+poClientID
+					+" writing="+writing
+					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
+				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
+						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
+						+ " Record_ID=" + get_ID();
+				throw new AdempiereException(message);
+			}
+		}
+	}
+
+	/**
+	 * Validate Foreign keys for cross tenant
+	 * to be called programmatically before saving in programs that can receive arbitrary values in IDs
+	 * This is an expensive operation in terms of database, use it wisely
+	 * 
+	 * TODO: there is huge room for performance improvement, for example:
+	 * - caching the valid values found on foreign tables
+	 * - caching the column ID of the foreign column
+	 * - caching the systemAccess
+	 *  
+	 * @return true if all the foreign keys are valid
+	 */
+	public boolean validForeignKeys() {
+		List<ValueNamePair> fks = getForeignColumnIdxs();
+		if (fks == null) {
+			return true;
+		}
+		for (ValueNamePair vnp : fks) {
+			String fkcol = vnp.getID();
+			String fktab = vnp.getName();
+			int index = get_ColumnIndex(fkcol); 
+			if (is_new() || is_ValueChanged(index)) {
+				int fkval = get_ValueAsInt(index);
+				if (fkval > 0) {
+					MTable ft = MTable.get(getCtx(), fktab);
+					boolean systemAccess = false;
+					String accessLevel = ft.getAccessLevel();
+					if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+						|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+						|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+						systemAccess = true;
+					}
+					StringBuilder sql = new StringBuilder("SELECT AD_Client_ID FROM ")
+							.append(fktab)
+							.append(" WHERE ")
+							.append(ft.getKeyColumns()[0])
+							.append("=?");
+					int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), fkval);
+					if (pocid < 0) {
+						log.saveError("Error", "Foreign ID " + fkval + " not found in " + fkcol);
+						return false;
+					}
+					if (pocid == 0 && !systemAccess) {
+						log.saveError("Error", "System ID " + fkval + " cannot be used in " + fkcol);
+						return false;
+					}
+					int curcid = Env.getAD_Client_ID(getCtx());
+					if (pocid > 0 && pocid != curcid) {
+						log.saveError("Error", "Cross tenant ID " + fkval + " not allowed in " + fkcol);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns a list of indexes for the foreign columns, null if none
+	 * @return array of int indexes
+	 */
+	private List<ValueNamePair> getForeignColumnIdxs() {
+		List<ValueNamePair> retValue;
+		if (fks_cache.containsKey(get_Table_ID())) {
+			retValue = fks_cache.get(get_Table_ID());
+			return retValue;
+		}
+		retValue = new ArrayList<ValueNamePair>();
+		int size = get_ColumnCount();
+		for (int i = 0; i < size; i++) {
+			int dt = p_info.getColumnDisplayType(i);
+			if (dt != DisplayType.ID && DisplayType.isID(dt)) {
+				MColumn col = MColumn.get(p_info.getColumn(i).AD_Column_ID);
+				if ("AD_Client_ID".equals(col.getColumnName())) {
+					// ad_client_id is verified with checkValidClient
+					continue;
+				}
+				String refTable = col.getReferenceTableName();
+				retValue.add(new ValueNamePair(col.getColumnName(), refTable));
+			}
+		}
+		if (retValue.size() == 0) {
+			retValue = null;
+		}
+		fks_cache.put(get_Table_ID(), retValue);
+		return retValue;
 	}
 
 }   //  PO

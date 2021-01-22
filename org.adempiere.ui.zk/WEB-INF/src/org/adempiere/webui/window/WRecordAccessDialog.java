@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
@@ -29,7 +30,6 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MRecordAccess;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
@@ -39,7 +39,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Div;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
@@ -66,7 +66,6 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		setTitle(Msg.translate(Env.getCtx(), "RecordAccessDialog"));
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		setBorder("normal");		
-		ZKUpdateUtil.setWidth(this, "600px");
 		setSizable(true);
 		
 		log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
@@ -112,9 +111,9 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	{
 		//	Load Roles
 		String sql = MRole.getDefault().addAccessSQL(
-			"SELECT AD_Role_ID, Name FROM AD_Role ORDER BY 2", 
+			"SELECT AD_Role_ID, Name FROM AD_Role WHERE AD_Client_ID=? ORDER BY 2", 
 			"AD_Role", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		roleField = new Listbox(DB.getKeyNamePairs(sql, false));
+		roleField = new Listbox(DB.getKeyNamePairs(sql, false, Env.getAD_Client_ID(Env.getCtx())));
 		roleField.setMold("select");
 		
 		//	Load Record Access for all roles
@@ -184,47 +183,47 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		
 		Grid grid = GridFactory.newGridLayout();
 		this.appendChild(grid);
-		
+		grid.setHflex("min");
+
 		Rows rows = new Rows();
 		grid.appendChild(rows);
-		
+
 		Row row = new Row();
-		rows.appendChild(row);	
+		rows.appendChild(row);
 		row.appendChild(bUp);
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(bNew);
-		
-		row = new Row();
-		rows.appendChild(row);	
-		row.appendChild(roleLabel);
-		row.appendChild(roleField);
-		row.appendChild(cbActive);
-		row.appendChild(cbExclude);
-		row.appendChild(cbReadOnly);
-		row.appendChild(cbDependent);
-		row.appendChild(bDelete);
-		
-		row = new Row();
-		rows.appendChild(row);	
-		row.appendChild(bDown);
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(new Label());
-		row.appendChild(rowNoLabel);
-		
+		row.appendChild(new Space());
+		row.appendCellChild(bDown);
+		row.getLastCell().setStyle("text-align: right;");
+
 		row = new Row();
 		rows.appendChild(row);
-		Div div = new Div();
-		div.setStyle("text-align: right;");
-		div.appendChild(confirmPanel);
-		row.appendCellChild(div, 7);
-		
+		row.appendChild(roleLabel);
+		row.appendCellChild(roleField, 2);
+		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1)) {
+			roleField.setWidth("220px");
+		}
+
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(cbActive);
+		row.appendChild(cbExclude);
+
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(cbReadOnly);
+		row.appendChild(cbDependent);
+
+		row = new Row();
+		rows.appendChild(row);
+		row.appendChild(bNew);
+		row.appendChild(bDelete);
+		row.appendCellChild(rowNoLabel);
+		row.getLastCell().setStyle("text-align: right;");
+
+		row = new Row();
+		rows.appendChild(row);	
+		row.appendCellChild(confirmPanel, 3);
+
 		bUp.addEventListener(Events.ON_CLICK, this);
 		bDown.addEventListener(Events.ON_CLICK, this);
 		bDelete.addEventListener(Events.ON_CLICK, this);

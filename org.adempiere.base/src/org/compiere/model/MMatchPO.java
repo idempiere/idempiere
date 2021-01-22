@@ -1117,16 +1117,24 @@ public class MMatchPO extends X_M_MatchPO
 				if (validateOrderedQty)
 				{
 					MOrderLine line = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
+					BigDecimal qtyOrdered = line.getQtyOrdered();
 					BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
-					if (invoicedQty != null && invoicedQty.compareTo(line.getQtyOrdered()) > 0)
+					if (    invoicedQty != null
+						&& (   (qtyOrdered.signum() > 0 && invoicedQty.compareTo(qtyOrdered) > 0)
+						    || (qtyOrdered.signum() < 0 && invoicedQty.compareTo(qtyOrdered) < 0)
+						   )
+					   )
 					{
-						throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
+						throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+qtyOrdered+", Line="+line);
 					}
-					
 					BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
-					if (deliveredQty != null && deliveredQty.compareTo(line.getQtyOrdered()) > 0)
+					if (   deliveredQty != null
+						&& (   (qtyOrdered.signum() > 0 && deliveredQty.compareTo(qtyOrdered) > 0)
+						    || (qtyOrdered.signum() < 0 && deliveredQty.compareTo(qtyOrdered) < 0)
+						   )
+					   )
 					{
-						throw new IllegalStateException("Total matched delivered qty > ordered qty. MatchedDeliveredQty="+deliveredQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
+						throw new IllegalStateException("Total matched delivered qty > ordered qty. MatchedDeliveredQty="+deliveredQty+", OrderedQty="+qtyOrdered+", Line="+line);
 					}
 				}
 			}

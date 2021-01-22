@@ -36,8 +36,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.adempiere.base.IServiceHolder;
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.compiere.Adempiere;
 import org.compiere.model.MScheduler;
 import org.compiere.server.IServerManager;
@@ -84,9 +83,7 @@ public class ClusterServerMgr implements IServerManager {
 	 * @return cluster service
 	 */
 	public static IClusterService getClusterService() {
-		IServiceHolder<IClusterService> holder = Service.locator().locate(IClusterService.class);
-		IClusterService service = holder != null ? holder.getService() : null;
-		return service;
+		return Core.getClusterService();
 	}
 	
 	/**

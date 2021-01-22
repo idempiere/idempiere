@@ -56,7 +56,7 @@ public class MSystem extends X_AD_System
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8639311032004561198L;
+	private static final long serialVersionUID = 3090872841676580202L;
 
 	/**
 	 * 	Load System Record
@@ -521,5 +521,21 @@ public class MSystem extends X_AD_System
 		String ca = MSysConfig.getValue(MSysConfig.SWING_LOGIN_ALLOW_REMEMBER_ME, SYSTEM_ALLOW_REMEMBER_PASSWORD);
 		return (ca.equalsIgnoreCase(SYSTEM_ALLOW_REMEMBER_PASSWORD) && !MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false));
 	}
-	
+
+	/**
+	 * Verify if the system manages properties in a more secure way
+	 * for Windows and swing client the properties are managed as always
+	 * for other systems (like Linux) the default is to manage it with more security
+	 * this can be overridden passing the parameter -DIDEMPIERE_SECURE_PROPERTIES=false to the JVM
+	 * @return true if properties needs to be managed more secure
+	 */
+	public static boolean isSecureProps() {
+		if (Env.isWindows() || Ini.isClient())
+			return false;
+		String secureProps = System.getProperty("IDEMPIERE_SECURE_PROPERTIES");
+		if (secureProps != null && secureProps.equals("false"))
+			return false;
+		return true;
+	}
+
 }	//	MSystem

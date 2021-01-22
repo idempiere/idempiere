@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Library
 Bundle-SymbolicName: org.adempiere.report.jasper.library;singleton:=true
-Bundle-Version: 7.1.0.qualifier
+Bundle-Version: 8.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Fragment-Host: net.sf.jasperreports.engine;bundle-version="6.11.0"
 Bundle-ClassPath: .,
@@ -14,7 +15,5 @@ Bundle-ClassPath: .,
  lib/jasperreports-functions.jar,
  lib/olap4j.jar,
  lib/xmpcore.jar
-DynamicImport-Package: *
-Import-Package: org.w3c.dom.events;version="[3.0.0,4.0.0)"
 Automatic-Module-Name: org.adempiere.report.jasper.library
 Bundle-Vendor: iDempiere Community

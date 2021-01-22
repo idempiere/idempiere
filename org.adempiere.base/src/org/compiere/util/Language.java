@@ -141,7 +141,8 @@ public class Language implements Serializable
 				if (dblang != null) {
 					if (!(   language.equals(dblang.getLanguageISO()) 
 						  && country.equals(dblang.getCountryCode())
-						 )
+						 ) && dblang.getLanguageISO() != null
+						   && dblang.getCountryCode() != null
 						) {
 						locale = new Locale(dblang.getLanguageISO(), dblang.getCountryCode());
 					}

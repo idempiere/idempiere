@@ -754,7 +754,7 @@ public class WebUser
 		setPasswordOK (m_loggedIn, password);
 		if (log.isLoggable(Level.FINE)) log.fine("success=" + m_loggedIn);
 		if (m_loggedIn)
-			Env.setContext(m_ctx, "#AD_User_ID", getAD_User_ID());
+			Env.setContext(m_ctx, Env.AD_USER_ID, getAD_User_ID());
 		return m_loggedIn;
 	}	//	isLoggedIn
 

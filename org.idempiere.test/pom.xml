@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>7.1.0-SNAPSHOT</version>
+		<version>8.2.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.idempiere.test</artifactId>
@@ -13,6 +13,7 @@
 	<properties>
 		<idempiere.home>..</idempiere.home>
 		<skipTests>true</skipTests>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 
 	<build>

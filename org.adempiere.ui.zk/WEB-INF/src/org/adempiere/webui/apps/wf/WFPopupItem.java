@@ -5,7 +5,6 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
@@ -160,7 +159,6 @@ public class WFPopupItem extends Menuitem {
 			}
 		});
 		
-		ZKUpdateUtil.setWidth(w, "250px");
 		w.setBorder("normal");
 		w.setPage(this.getPage());
 		w.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -173,7 +171,7 @@ public class WFPopupItem extends Menuitem {
 					m_node.setName(name);
 					m_node.setDescription(textDescription.getText());
 					m_node.saveEx();
-					wfp.reload(m_AD_Workflow_ID, false);
+					wfp.reload(m_AD_Workflow_ID, true);
 				}				
 			}
 		});
