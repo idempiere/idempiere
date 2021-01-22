@@ -858,7 +858,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	{
 		if (m_M_Warehouse_ID == 0)
 		{
-			MLocator loc = MLocator.get(getCtx(), getM_Locator_ID());
+			MLocator loc = MLocator.get(getCtx(), getM_Locator_ID(), get_TrxName());
 			m_M_Warehouse_ID = loc.getM_Warehouse_ID();
 		}
 		return m_M_Warehouse_ID;
@@ -973,13 +973,45 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			params.add(M_AttributeSetInstance_ID);
 		}
 
-		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		BigDecimal qty = DB.getSQLValueBDEx(trxName, sql.toString(), params);
 		if (qty == null)
 			qty = Env.ZERO;
 
 		return qty;
 	}
 
+	/**
+	 * Get Quantity On Hand of Warehouse that's available for shipping
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForShipping(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
+			.append(" LEFT JOIN M_LocatorType lt ON (loc.M_LocatorType_ID=lt.M_LocatorType_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=? AND COALESCE(lt.IsAvailableForShipping,'Y')='Y'");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		// With ASI
+		if (M_AttributeSetInstance_ID != 0) {
+			sql.append(" AND oh.M_AttributeSetInstance_ID=?");
+			params.add(M_AttributeSetInstance_ID);
+		}
+
+		BigDecimal qty = DB.getSQLValueBDEx(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
 	/**
 	 * Get Quantity On Hand of Locator
 	 * @param M_Product_ID
