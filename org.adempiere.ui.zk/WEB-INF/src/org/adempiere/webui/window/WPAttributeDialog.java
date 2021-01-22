@@ -1160,7 +1160,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			if (attributes.isMandatory() && value == null)
 				mandatory += " - " + attributes.getName();
 			if (displayType == DisplayType.Integer)
-				attributes.setMAttributeInstance(m_M_AttributeSetInstance_ID, value == null ? 0 : ((Number) value).intValue(), null);
+				attributes.setMAttributeInstance(m_M_AttributeSetInstance_ID, (int)(value == null ? 0 : ((Number) value).intValue()));
 			else
 				attributes.setMAttributeInstance(m_M_AttributeSetInstance_ID, (BigDecimal) value);
 		}
@@ -1176,16 +1176,16 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			if (attributes.isMandatory() && value == null)
 				mandatory += " - " + attributes.getName();
 
-			String valueLable = null;
+			String valueLabel = null;
 			if (displayType == DisplayType.TableDir
 				|| displayType == DisplayType.Table
 				|| displayType == DisplayType.Search
 				|| displayType == DisplayType.Account)
 			{
-				valueLable = editor.getDisplay();
+				valueLabel = editor.getDisplay();
 			}
 
-			attributes.setMAttributeInstance(m_M_AttributeSetInstance_ID, value == null ? 0 : value.intValue(), valueLable);
+			attributes.setMAttributeInstance(m_M_AttributeSetInstance_ID, new KeyNamePair(value == null ? 0 : value.intValue(), valueLabel));
 		}
 		else
 		{

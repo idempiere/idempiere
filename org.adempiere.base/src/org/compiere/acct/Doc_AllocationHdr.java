@@ -835,7 +835,7 @@ public class Doc_AllocationHdr extends Doc
 		// For Invoice
 		List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 				MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
-		if (valuesInv != null) {
+		if (valuesInv != null && valuesInv.size() >= 4) {
 			if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 			{
 				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
@@ -963,12 +963,14 @@ public class Doc_AllocationHdr extends Doc
 		// For Payment
 		List<Object> valuesPay = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 				MPayment.Table_ID, payment.getC_Payment_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
-		if (valuesPay != null) {
+		if (valuesPay != null && valuesPay.size() >= 4) {
 			paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
 			paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
-			if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
-				paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
-				paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+			if (paymentSource != null && paymentAccounted != null) {
+				if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
+					paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
+					paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+				}
 			}
 		}
 		
@@ -1077,7 +1079,7 @@ public class Doc_AllocationHdr extends Doc
 			// For Invoice
 			List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 					MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
-			if (valuesInv != null) {
+			if (valuesInv != null && valuesInv.size() >= 4) {
 				BigDecimal invoiceSource = null;
 				BigDecimal invoiceAccounted = null;
 				if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
@@ -1236,7 +1238,7 @@ public class Doc_AllocationHdr extends Doc
 				// For Allocation
 				List<Object> valuesAlloc = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 						MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID(), alloc.get_ID(), invoice.getC_Invoice_ID());
-				if (valuesAlloc != null) {
+				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
 					if (totalAmtSourceDr == null)
 						totalAmtSourceDr = Env.ZERO;
@@ -1291,7 +1293,7 @@ public class Doc_AllocationHdr extends Doc
 						MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), 
 						gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID(),
 						alloc.get_ID(), invoice.getC_Invoice_ID());
-				if (valuesAlloc != null) {
+				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
 					if (totalAmtSourceDr == null)
 						totalAmtSourceDr = Env.ZERO;
@@ -1428,15 +1430,17 @@ public class Doc_AllocationHdr extends Doc
 			// For Payment
 			List<Object> valuesPay = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 					MPayment.Table_ID, payment.getC_Payment_ID(), as.getC_AcctSchema_ID(), htPayAcct.get(payment.getC_Payment_ID()).getAccount_ID());
-			if (valuesPay != null) {
+			if (valuesPay != null && valuesPay.size() >= 4) {
 				BigDecimal paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
 				BigDecimal paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
-				if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
-					paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
-					paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+				if (paymentSource != null && paymentAccounted != null) {
+					if (paymentSource.signum() == 0 && paymentAccounted.signum() == 0) {
+						paymentSource = (BigDecimal) valuesPay.get(2); // AmtSourceCr
+						paymentAccounted = (BigDecimal) valuesPay.get(3); // AmtAcctCr
+					}
+					htPaySource.put(payment.getC_Payment_ID(), paymentSource);
+					htPayAccounted.put(payment.getC_Payment_ID(), paymentAccounted);
 				}
-				htPaySource.put(payment.getC_Payment_ID(), paymentSource);
-				htPayAccounted.put(payment.getC_Payment_ID(), paymentAccounted);
 			}
 		}
 		
@@ -1565,7 +1569,7 @@ public class Doc_AllocationHdr extends Doc
 				// For Allocation
 				List<Object> valuesAlloc = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
 						MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), htPayAcct.get(payment.getC_Payment_ID()).getAccount_ID(), alloc.get_ID(), payment.getC_Payment_ID());
-				if (valuesAlloc != null) {
+				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
 					if (totalAmtSourceDr == null)
 						totalAmtSourceDr = Env.ZERO;
@@ -1620,7 +1624,7 @@ public class Doc_AllocationHdr extends Doc
 						MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), 
 						gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID(),
 						alloc.get_ID(), payment.getC_Payment_ID());
-				if (valuesAlloc != null) {
+				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
 					if (totalAmtSourceDr == null)
 						totalAmtSourceDr = Env.ZERO;

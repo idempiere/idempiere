@@ -219,7 +219,7 @@ public class FactReconcile {
 	{
 		log.info("");
 
-		String matchcode = "Manual: " + Env.getContext(Env.getCtx(), "#AD_User_Name") + " " + time;
+		String matchcode = "Manual: " + Env.getContext(Env.getCtx(), Env.AD_USER_NAME) + " " + time;
 		
 		MFactReconciliation rec = new Query(Env.getCtx(), MFactReconciliation.Table_Name, "Fact_Acct_ID = ?", null)
 		.setParameters(new Object[] {factId}).first();

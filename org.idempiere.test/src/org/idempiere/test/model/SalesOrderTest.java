@@ -30,13 +30,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Properties;
 
+import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MPayment;
 import org.compiere.model.MProduct;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -54,6 +57,10 @@ public class SalesOrderTest extends AbstractTestCase {
 	public SalesOrderTest() {
 	}
 
+	private final static int BP_JOE_BLOCK = 118;
+	private static final int PRODUCT_OAK_TREE = 123;
+	private static final int PRODUCT_AZALEA = 128;
+
 	@Test
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-235
@@ -62,7 +69,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		//first test - invalid with completeorder and multiple datepromised
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -74,7 +81,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -82,7 +89,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line2 = new MOrderLine(order);
 		line2.setLine(20);
 		//Oak Tree	
-		line2.setProduct(MProduct.get(Env.getCtx(), 123));
+		line2.setProduct(MProduct.get(Env.getCtx(), PRODUCT_OAK_TREE));
 		line2.setQty(new BigDecimal("1"));
 		line2.setDatePromised(TimeUtil.addDays(today, 1));
 		line2.saveEx();
@@ -97,7 +104,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		//second test - ok with completeorder and 1 datepromised
 		order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -108,7 +115,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -116,7 +123,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line2 = new MOrderLine(order);
 		line2.setLine(20);
 		//Oak Tree	
-		line2.setProduct(MProduct.get(Env.getCtx(), 123));
+		line2.setProduct(MProduct.get(Env.getCtx(), PRODUCT_OAK_TREE));
 		line2.setQty(new BigDecimal("1"));
 		line2.setDatePromised(today);
 		line2.saveEx();
@@ -131,7 +138,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		//test 3 - ok with !completeorder and multiple datepromised
 		order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_Availability);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -142,7 +149,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -150,7 +157,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line2 = new MOrderLine(order);
 		line2.setLine(20);
 		//Oak Tree	
-		line2.setProduct(MProduct.get(Env.getCtx(), 123));
+		line2.setProduct(MProduct.get(Env.getCtx(), PRODUCT_OAK_TREE));
 		line2.setQty(new BigDecimal("1"));
 		line2.setDatePromised(TimeUtil.addDays(today, 1));
 		line2.saveEx();
@@ -167,7 +174,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	public void testQtyReservedForOverAndNegativeShipment() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -180,7 +187,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
@@ -235,7 +242,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	public void testQtyReservedForNegativeOrderAndShipment() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -248,7 +255,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
 		line1.setQty(new BigDecimal("-1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
@@ -279,43 +286,115 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());		
 	}
-	
+
 	@Test
-	public void testPOSOrder() {
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+	public void testOnCreditPOSOrder() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		// Get the OpenBalance of Joe Block
+		MBPartner bpartner = new MBPartner(ctx, BP_JOE_BLOCK, trxName);
+		BigDecimal initialBalance = bpartner.getTotalOpenBalance();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, BP_JOE_BLOCK));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_POS);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
+		order.setPaymentRule(MOrder.PAYMENTRULE_OnCredit); // this is the default, just making it explicit
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		order.setDatePromised(today);
 		order.saveEx();
-		
+
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setProduct(MProduct.get(ctx, PRODUCT_AZALEA));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
-		
+
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		assertFalse(info.isError(), info.getSummary());
-		order.load(getTrxName());		
+		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
-		line1.load(getTrxName());
+		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().intValue());
 		assertEquals(1, line1.getQtyDelivered().intValue());
 		assertEquals(1, line1.getQtyInvoiced().intValue());
-		
+
 		MInOut[] shipments = order.getShipments();
 		assertEquals(1, shipments.length);
 		assertEquals(DocAction.STATUS_Completed, shipments[0].getDocStatus());
-		
+
 		MInvoice[] invoices = order.getInvoices();
 		assertEquals(1, invoices.length);
 		assertEquals(DocAction.STATUS_Completed, invoices[0].getDocStatus());
+
+		bpartner.load(trxName);
+		BigDecimal actualBalance = bpartner.getTotalOpenBalance();
+		// on credit increases the debt
+		assertTrue(actualBalance.compareTo(initialBalance.add(order.getGrandTotal())) == 0);
 	}
+
+	@Test
+	public void testCashPOSOrder() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		// Get the OpenBalance of Joe Block
+		MBPartner bpartner = new MBPartner(ctx, BP_JOE_BLOCK, trxName);
+		BigDecimal initialBalance = bpartner.getTotalOpenBalance();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_POS);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.setPaymentRule(MOrder.PAYMENTRULE_Cash);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, PRODUCT_AZALEA));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(trxName);
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyDelivered().intValue());
+		assertEquals(1, line1.getQtyInvoiced().intValue());
+
+		MInOut[] shipments = order.getShipments();
+		assertEquals(1, shipments.length);
+		assertEquals(DocAction.STATUS_Completed, shipments[0].getDocStatus());
+
+		MInvoice[] invoices = order.getInvoices();
+		assertEquals(1, invoices.length);
+		assertEquals(DocAction.STATUS_Completed, invoices[0].getDocStatus());
+		assertEquals(true, invoices[0].isPaid(), "Invoice is not paid");
+
+		MAllocationHdr[] allocs = MAllocationHdr.getOfInvoice(ctx, invoices[0].getC_Invoice_ID(), trxName);
+		assertEquals(1, allocs.length);
+		assertEquals(DocAction.STATUS_Completed, allocs[0].getDocStatus());
+
+		int paymentId = allocs[0].getLines(false)[0].getC_Payment_ID();
+		MPayment payment = new MPayment(ctx, paymentId, trxName);
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+		assertEquals(true, payment.isAllocated(), "Payment is not allocated");
+
+		bpartner.load(trxName);
+		BigDecimal actualBalance = bpartner.getTotalOpenBalance();
+		// cash creates payment immediately, so debt is not increased
+		assertTrue(actualBalance.compareTo(initialBalance) == 0);
+	}
+
 }

@@ -42,6 +42,7 @@ import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.Timebox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -59,7 +60,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Timebox;
 
 /**
  *	Resource Assignment Dialog

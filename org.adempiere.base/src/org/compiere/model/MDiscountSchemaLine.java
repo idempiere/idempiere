@@ -98,4 +98,17 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements Immut
 		return this;
 	}
 
+  /**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (getC_BPartner_ID() == 0)
+			setIsIgnoreIsCurrentVendor(false);
+
+		return true;
+	}	//	beforeSave
+	
 }	//	MDiscountSchemaLine

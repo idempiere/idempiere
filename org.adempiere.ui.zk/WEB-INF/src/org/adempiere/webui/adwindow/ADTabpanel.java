@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.AdempiereWebUI;
@@ -1161,9 +1162,23 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     public void query (boolean onlyCurrentRows, int onlyCurrentDays, int maxRows)
     {
     	boolean open = gridTab.isOpen();
-        gridTab.query(onlyCurrentRows, onlyCurrentDays, maxRows);
-        if (listPanel.isVisible() && !open)
-        	gridTab.getTableModel().fireTableDataChanged();
+    	try 
+    	{
+	        gridTab.query(onlyCurrentRows, onlyCurrentDays, maxRows);
+	        if (listPanel.isVisible() && !open)
+	        	gridTab.getTableModel().fireTableDataChanged();
+    	}
+    	catch (Exception e)
+    	{
+    		if (DBException.isTimeout(e)) 
+    		{
+    			throw e;
+    		}
+    		else
+    		{
+    			FDialog.error(windowNo, e.getMessage());
+    		}
+    	}
     }
 
     /**
@@ -1336,6 +1351,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			int userId = Env.getAD_User_ID(Env.getCtx());
     			MPreference preference = query.setOnlyActiveRecords(true)
     										  .setApplyAccessFilter(true)
+    										  .setClient_ID()
     										  .setParameters(windowId, adTabId+"|DetailPane.IsOpen", userId)
     										  .first();
     			if (preference == null || preference.getAD_Preference_ID() <= 0) {
@@ -1367,6 +1383,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	if (tabPanel != null) {
     		if (!tabPanel.isActivated()) {
     			tabPanel.activate(true);
+    		} else {
+    			tabPanel.getGridView().invalidateGridView();
     		}
 	    	if (!tabPanel.isGridView()) {
 	    		tabPanel.switchRowPresentation();	
@@ -1568,7 +1586,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	listPanel.dynamicDisplay(col);
         	if (GridTable.DATA_REFRESH_MESSAGE.equals(e.getAD_Message()) || 
         		"Sorted".equals(e.getAD_Message())) {
-        		listPanel.getListbox().invalidate();
+        		listPanel.invalidateGridView();
         	}
         }
     }
@@ -1721,7 +1739,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
 			listPanel.scrollToCurrentRow();
-			listPanel.getListbox().invalidate();
+			listPanel.invalidate();
 		} else {
 			listPanel.deactivate();
 		}
@@ -2033,6 +2051,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			int userId = Env.getAD_User_ID(Env.getCtx());
 			MPreference preference = query.setOnlyActiveRecords(true)
 					.setApplyAccessFilter(true)
+					.setClient_ID()
 					.setParameters(windowId, adTabId+"|"+attribute, userId)
 					.first();
 			if (preference == null || preference.getAD_Preference_ID() <= 0) {

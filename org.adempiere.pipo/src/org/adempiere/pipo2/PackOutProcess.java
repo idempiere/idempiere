@@ -103,7 +103,7 @@ public class PackOutProcess extends SvrProcess
 				packoutDirectory = System.getProperty("java.io.tmpdir");
 				if (!packoutDirectory.endsWith("/") && !packoutDirectory.endsWith("\\"))
 					packoutDirectory+= File.separator;
-				packoutDirectory = packoutDirectory + "packout" + Env.getContext(getCtx(), "#AD_User_ID") + File.separator;
+				packoutDirectory = packoutDirectory + "packout" + Env.getContext(getCtx(), Env.AD_USER_ID) + File.separator;
 
 				//create packout folder if needed
 				File packoutDirectoryFile = new File(packoutDirectory);

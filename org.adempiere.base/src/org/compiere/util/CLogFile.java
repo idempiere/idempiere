@@ -138,16 +138,16 @@ public class CLogFile extends Handler
 			//	Test/Create idempiereHome/log/file
 			if (fileName != null)
 			{
-				fileName += File.separator;
+				String dateFileName = fileName + File.separator;
 				if (isClient)
-					fileName += "client.";
+					dateFileName += "client.";
 				else
-					fileName += "idempiere.";
+					dateFileName += "idempiere.";
 				m_fileNameDate = getFileNameDate(System.currentTimeMillis());
-				fileName	+= m_fileNameDate + "_";
-				for (int i = 0; i < 100; i++)
+				dateFileName	+= m_fileNameDate + "_";
+				for (int i = 0; i < 100; i++) // max 100 files with date
 				{
-					String finalName = fileName + i + ".log";
+					String finalName = dateFileName + i + ".log";
 					File file = new File(finalName);
 					if (!file.exists())
 					{
@@ -156,7 +156,22 @@ public class CLogFile extends Handler
 					}
 				}
 			}
+			if (m_file == null)	{	//	Fallback to date+time filename
+				String timeFileName = fileName + File.separator;
+				if (isClient)
+					timeFileName += "client.";
+				else
+					timeFileName += "idempiere.";
+				String fileNameTime = getFileNameDateTime(System.currentTimeMillis());
+				String finalName = timeFileName + fileNameTime + ".log";
+				File file = new File(finalName);
+				if (!file.exists())
+				{
+					m_file = file;
+				}
+			}
 			if (m_file == null)	{	//	Fallback create temp file
+				// would be very weird to arrive here, but preserving anyways as an extra fallback measure
 				m_fileNameDate = getFileNameDate(System.currentTimeMillis());
 				m_file = File.createTempFile("idempiere"+m_fileNameDate + "_", ".log");
 			}
@@ -180,6 +195,19 @@ public class CLogFile extends Handler
 		Timestamp ts = new Timestamp(time);
 		String s = ts.toString();
 		return s.substring(0, 10);
+	}	//	getFileNameDate
+
+	/**
+	 * 	Get File Name DateTime portion
+	 * 	@param time time in ms
+	 *	@return DateTime String on Seconds
+	 */
+	public static String getFileNameDateTime (long time)
+	{
+		Timestamp ts = new Timestamp(time);
+		String s = ts.toString();
+		s = s.replaceAll("[ :]", "-");
+		return s.substring(0, 19); // seconds
 	}	//	getFileNameDate
 
 	/**

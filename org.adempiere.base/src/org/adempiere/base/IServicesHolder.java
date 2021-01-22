@@ -24,9 +24,15 @@ import java.util.List;
 public interface IServicesHolder<T> {
 	
 	/**
-	 * 
+	 * Get list of service, sorted by service.ranking (from highest to lowest ranking)
 	 * @return list of service instance. null if not available or no matching service found
 	 */
 	public List<T> getServices();
 
+	/**
+	 * Get list of service reference, sorted by service.ranking (from highest to lowest ranking).
+	 * If you want to cache service, cache IServiceReferenceHolder instead of the actual service object
+	 * @return list of {@link IServiceReferenceHolder}
+	 */
+	public List<IServiceReferenceHolder<T>> getServiceReferences();
 }

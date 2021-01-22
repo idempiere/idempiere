@@ -133,13 +133,10 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		int tableId = Env.getContextAsInt(ctx.ctx, DataElementParameters.AD_TABLE_ID);
 		String tableName = MTable.getTableName(ctx.ctx, tableId);
 		List<String> excludes = defaultExcludeList(tableName);
-		boolean checkExcluded = ! sql.toLowerCase().startsWith("select *");
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			sql = MRole.getDefault().addAccessSQL(sql, tableName, true, true);
-			stmt = DB.createStatement();
-			rs = stmt.executeQuery(sql);
+		boolean checkExcluded = ! sql.toLowerCase().startsWith("select *");				
+		try (Statement stmt = DB.createStatement();) {
+			sql = MRole.getDefault().addAccessSQL(sql, tableName, true, true);			
+			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				GenericPO po = new GenericPO(tableName, ctx.ctx, rs, getTrxName(ctx));
 				int AD_Client_ID = po.getAD_Client_ID();
@@ -212,8 +209,6 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 			}
 		} catch (Exception e)	{
 			throw new AdempiereException(e);
-		} finally {
-			DB.close(rs, stmt);
 		}
 	}
 

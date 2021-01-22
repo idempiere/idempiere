@@ -177,6 +177,34 @@ public class ProcessTest extends AbstractTestCase {
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Expected Completed Status for Order");
 		
+		//dummy order for dummy shipment below
+		MOrder order1 = new MOrder(Env.getCtx(), 0, getTrxName());
+		//Joe Block
+		order1.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order1.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order1.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order1.setDocStatus(DocAction.STATUS_Drafted);
+		order1.setDocAction(DocAction.ACTION_Complete);
+		order1.setDateOrdered(today);
+		order1.setDatePromised(today);
+		order1.saveEx();
+		
+		MOrderLine line2 = new MOrderLine(order1);
+		line2.setLine(10);
+		//Azalea Bush
+		line2.setProduct(MProduct.get(Env.getCtx(), 128));
+		line2.setQty(new BigDecimal("1"));
+		line2.setDatePromised(today);
+		line2.saveEx();
+		
+		pi = MWorkflow.runDocumentActionWorkflow(order1, DocAction.ACTION_Complete);
+		if (pi.isError()) {
+			fail("Failed to complete order" + (Util.isEmpty(pi.getSummary()) ? "" : " : "+pi.getSummary()));
+			return;
+		}
+		order1.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order1.getDocStatus(), "Expected Completed Status for Order");
+		
 		int Process_InOutConfirmation = 124;
 		MWorkflow wf = new MWorkflow(Env.getCtx(), Process_InOutConfirmation, null);
 		MWFNode processNode = new MWFNode(wf, "Process_InOut", "Process_InOut");
@@ -199,6 +227,13 @@ public class ProcessTest extends AbstractTestCase {
 		docCompleteNodeNext.saveEx();
 		
 		try {
+			//dummy shipment to make sure next m_inout_id != m_inoutconfirm_id
+			int MM_Shipment=120;
+			MInOut inout1 = new MInOut(order1, MM_Shipment, order1.getDateOrdered());
+			inout1.setDocStatus(DocAction.STATUS_Drafted);
+			inout1.setDocAction(DocAction.STATUS_Completed);
+			inout1.saveEx();
+			
 			int MM_Shipment_With_Pick=148;
 			MInOut inout = new MInOut(order, MM_Shipment_With_Pick, order.getDateOrdered());
 			inout.setDocStatus(DocAction.STATUS_Drafted);
@@ -218,6 +253,8 @@ public class ProcessTest extends AbstractTestCase {
 			
 			MInOutConfirm[] confirmations = inout.getConfirmations(true);
 			assertEquals(1, confirmations.length, "Expected 1 Shipment Confirmation Document");
+			
+			assertTrue(confirmations[0].getM_InOutConfirm_ID() != inout.getM_InOut_ID(), "Test should run with M_InOut_ID != M_InOutConfirm_ID");
 			
 			pi = MWorkflow.runDocumentActionWorkflow(confirmations[0], DocAction.ACTION_Complete);
 			if (pi.isError()) {

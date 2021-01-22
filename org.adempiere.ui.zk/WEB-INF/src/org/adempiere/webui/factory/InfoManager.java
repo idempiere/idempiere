@@ -13,14 +13,18 @@
  *****************************************************************************/
 package org.adempiere.webui.factory;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.InfoPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
+import org.compiere.util.CCache;
+import org.osgi.framework.Constants;
 
 /**
  *
@@ -29,23 +33,74 @@ import org.compiere.model.MLookup;
  */
 public class InfoManager
 {
+	private final static CCache<Long, IServiceReferenceHolder<IInfoFactory>> s_infoFactoryCache = new CCache<Long, IServiceReferenceHolder<IInfoFactory>>(null, "IInfoFactory", 10, false);
+	
+	/**
+	 * 
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param value
+	 * @param multiSelection
+	 * @param whereClause
+	 * @param lookup
+	 * @return {@link InfoPanel}
+	 */
 	public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
             boolean multiSelection, String whereClause, boolean lookup)
     {
-        InfoPanel info = null;
-
-		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
-		for(IInfoFactory factory : factoryList)
+		InfoPanel info = null;
+		
+		List<Long> visitedIds = new ArrayList<Long>();
+		if (!s_infoFactoryCache.isEmpty()) {
+			Long[] keys = s_infoFactoryCache.keySet().toArray(new Long[0]);
+			for (Long key : keys) {
+				IServiceReferenceHolder<IInfoFactory> serviceReference = s_infoFactoryCache.get(key);
+				if (serviceReference != null) {
+					IInfoFactory service = serviceReference.getService();
+					if (service != null) {
+						visitedIds.add(key);
+						info = service.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, 0, lookup);
+						if (info != null)
+							return info;
+					} else {
+						s_infoFactoryCache.remove(key);
+					}
+				}
+			}
+		}
+		        
+		List<IServiceReferenceHolder<IInfoFactory>> serviceReferences = Service.locator().list(IInfoFactory.class).getServiceReferences();
+		for(IServiceReferenceHolder<IInfoFactory> serviceReference : serviceReferences)
 		{
-			info = factory.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, 0, lookup);
-			if (info != null)
-				break;
+			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
+			if (visitedIds.contains(serviceId))
+				continue;
+			IInfoFactory service = serviceReference.getService();
+			if (service != null)
+			{
+				s_infoFactoryCache.put(serviceId, serviceReference);
+				info = service.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, 0, lookup);
+				if (info != null)
+					break;
+			}
 		}
         //
         return info;
     }
 
+	/**
+	 * 
+	 * @param lookup
+	 * @param field
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multiSelection
+	 * @param whereClause
+	 * @return {@link InfoPanel}
+	 */
 	public static InfoPanel create(Lookup lookup, GridField field, String tableName,
 			String keyColumn, String queryValue, boolean multiSelection,
 			String whereClause)
@@ -56,26 +111,86 @@ public class InfoManager
 		{
 			AD_InfoWindow_ID  = ((MLookup)lookup).getAD_InfoWindow_ID();
 		}
-		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
-		for(IInfoFactory factory : factoryList)
+		
+		List<Long> visitedIds = new ArrayList<Long>();
+		if (!s_infoFactoryCache.isEmpty()) {
+			Long[] keys = s_infoFactoryCache.keySet().toArray(new Long[0]);
+			for (Long key : keys) {
+				IServiceReferenceHolder<IInfoFactory> serviceReference = s_infoFactoryCache.get(key);
+				if (serviceReference != null) {
+					IInfoFactory service = serviceReference.getService();
+					if (service != null) {
+						visitedIds.add(key);
+						ip = service.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause, AD_InfoWindow_ID);
+						if (ip != null)
+							return ip;
+					} else {
+						s_infoFactoryCache.remove(key);
+					}
+				}
+			}
+		}
+				
+		List<IServiceReferenceHolder<IInfoFactory>> serviceReferences = Service.locator().list(IInfoFactory.class).getServiceReferences();
+		for(IServiceReferenceHolder<IInfoFactory> serviceReference : serviceReferences)
 		{
-			ip = factory.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause, AD_InfoWindow_ID);
-			if (ip != null)
-				break;
+			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
+			if (visitedIds.contains(serviceId))
+				continue;
+			IInfoFactory service = serviceReference.getService();
+			if (service != null)
+			{
+				s_infoFactoryCache.put(serviceId, serviceReference);
+				ip = service.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause, AD_InfoWindow_ID);
+				if (ip != null)
+					break;
+			}
 		}
 		return ip;
 	}
 	
+	/**
+	 * 
+	 * @param AD_InfoWindow_ID
+	 * @return {@link InfoWindow}
+	 */
 	public static InfoWindow create (int AD_InfoWindow_ID)
     {
         InfoWindow info = null;
 
-		List<IInfoFactory> factoryList = Service.locator().list(IInfoFactory.class).getServices();
-		for(IInfoFactory factory : factoryList)
+        List<Long> visitedIds = new ArrayList<Long>();
+		if (!s_infoFactoryCache.isEmpty()) {
+			Long[] keys = s_infoFactoryCache.keySet().toArray(new Long[0]);
+			for (Long key : keys) {
+				IServiceReferenceHolder<IInfoFactory> serviceReference = s_infoFactoryCache.get(key);
+				if (serviceReference != null) {
+					IInfoFactory service = serviceReference.getService();
+					if (service != null) {
+						visitedIds.add(key);
+						info = service.create(AD_InfoWindow_ID);
+						if (info != null)
+							return info;
+					} else {
+						s_infoFactoryCache.remove(key);
+					}
+				}
+			}
+		}
+		
+		List<IServiceReferenceHolder<IInfoFactory>> serviceReferences = Service.locator().list(IInfoFactory.class).getServiceReferences();
+		for(IServiceReferenceHolder<IInfoFactory> serviceReference : serviceReferences)
 		{
-			info = factory.create(AD_InfoWindow_ID);
-			if (info != null)
-				break;
+			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
+			if (visitedIds.contains(serviceId))
+				continue;
+			IInfoFactory service = serviceReference.getService();
+			if (service != null)
+			{
+				s_infoFactoryCache.put(serviceId, serviceReference);
+				info = service.create(AD_InfoWindow_ID);
+				if (info != null)
+					break;
+			}
 		}
         //
         return info;

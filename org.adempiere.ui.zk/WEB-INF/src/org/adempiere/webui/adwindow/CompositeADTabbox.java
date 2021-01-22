@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -492,8 +493,9 @@ public class CompositeADTabbox extends AbstractADTabbox
     			}
     			hasChanges = true;
     		}
-    		if (hasChanges)
-    			headerTab.getDetailPane().invalidate();
+    		if (hasChanges) {
+    			headerTab.getDetailPane().getParent().invalidate();
+    		}
     	}
 	}
 
@@ -911,14 +913,23 @@ public class CompositeADTabbox extends AbstractADTabbox
 			if (!tabPanel.getGridTab().isSortTab()) {
 				currentRow = tabPanel.getGridTab().getCurrentRow();
 			}
-			tabPanel.query(false, 0, 0);
+			tabPanel.query(false, 0, 0);			
 			if (currentRow >= 0 && currentRow != tabPanel.getGridTab().getCurrentRow() 
 				&& currentRow < tabPanel.getGridTab().getRowCount()) {
 				tabPanel.getGridTab().setCurrentRow(currentRow, false);
-			}
+			}			
 		}
 		if (!tabPanel.isVisible()) {
 			tabPanel.setVisible(true);
+			if (tabPanel.getDesktop() != null) {
+				Executions.schedule(tabPanel.getDesktop(), e -> {
+					invalidateTabPanel(tabPanel);
+				}, new Event("onPostActivateDetail", tabPanel));
+			} else {
+				invalidateTabPanel(tabPanel);
+			}
+		} else {
+			invalidateTabPanel(tabPanel);
 		}
 		boolean wasForm = false;
 		if (!tabPanel.isGridView()) {
@@ -940,7 +951,27 @@ public class CompositeADTabbox extends AbstractADTabbox
 		if (wasForm && tabPanel.getTabLevel() == 0 && headerTab.getTabLevel() != 0) // maintain form on header when zooming to a detail tab
 			tabPanel.switchRowPresentation();
 	}
+
+	private void invalidateTabPanel(IADTabpanel tabPanel) {
+		Center center = findCenter(tabPanel.getGridView());
+		if (center != null)
+			center.invalidate();
+		else
+			tabPanel.invalidate();
+	}
 	
+	private Center findCenter(GridView gridView) {
+		if (gridView == null)
+			return null;
+		Component p = gridView.getParent();
+		while (p != null) {
+			if (p instanceof Center)
+				return (Center)p;
+			p = p.getParent();
+		}
+		return null;
+	}
+
 	private void showLastError() {
 		String msg = CLogger.retrieveErrorString(null);
 		if (msg != null)

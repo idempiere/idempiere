@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.model.MWizardProcess;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -134,7 +133,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		{
 			preInit();
 			jbInit ();
-			LayoutUtils.sendDeferLayoutEvent(mainLayout, 100);
 		}
 		catch (Exception ex)
 		{

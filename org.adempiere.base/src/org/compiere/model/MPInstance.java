@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -402,7 +402,7 @@ public class MPInstance extends X_AD_PInstance
 	}
 	
 	public static void publishChangedEvent(int AD_User_ID) {
-		IMessageService service = Service.locator().locate(IMessageService.class).getService();
+		IMessageService service = Core.getMessageService();
 		if (service != null) {
 			ITopic<Integer> topic = service.getTopic(ON_RUNNING_JOB_CHANGED_TOPIC);
 			topic.publish(AD_User_ID);

@@ -444,7 +444,7 @@ public final class EMail implements Serializable
 								msg = msg.substring(0, index);
 							String cc = "??";
 							if (m_ctx != null)
-								cc = m_ctx.getProperty("#AD_Client_ID");
+								cc = m_ctx.getProperty(Env.AD_CLIENT_ID);
 							msg += " - AD_Client_ID=" + cc;
 						}
 						String className = ex.getClass().getName();

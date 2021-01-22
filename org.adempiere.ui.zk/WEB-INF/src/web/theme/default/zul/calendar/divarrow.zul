@@ -1,0 +1,26 @@
+<div class="tabs arrows ${arg.fontClass}" xmlns:w="client" forward="onMoveDate(${arg.type})"
+	w:unbind_="function(skipper, after){this.$unbind_(skipper, after);jq(this).unbind('mouseover').unbind('mouseout');}">
+	<attribute w:name="bind_"><![CDATA[ 
+		function (desktop, skipper, after) { 
+			this.$bind_(desktop, skipper, after);
+			jq(this).bind('mouseover',function(evt){jq(evt.currentTarget).addClass('arrow-over');})
+					.bind('mouseout',function(evt){jq(evt.currentTarget).removeClass('arrow-over');});
+		} 
+	]]></attribute>
+	<div class="t1"/>
+	<div class="t2">
+		<div class="t3" />
+	</div>
+	<div class="bd">
+		<div class="cm cnt">
+			<div class="text"
+				style="position:relative; width:15px; height:15px;">
+				<div sclass="${arg.type}" />
+			</div>
+		</div>
+	</div>
+	<div class="b2">
+		<div class="b3" />
+	</div>
+	<div class="b1" />
+</div>

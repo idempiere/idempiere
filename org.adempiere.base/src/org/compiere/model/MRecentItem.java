@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
@@ -171,6 +171,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 			if (retValue.getAD_Table_ID() == AD_Table_ID
 					&& retValue.getRecord_ID() == Record_ID
 					&& retValue.getAD_User_ID() == AD_User_ID
+					&& retValue.getAD_Client_ID() == Env.getAD_Client_ID(ctx)
 					&& Env.getAD_Language(ctx).equals(Env.getAD_Language(retValue.getCtx()))
 					)
 			{
@@ -179,7 +180,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 		}
 		//
 		MRecentItem retValue = null;
-		String sql = "SELECT * FROM AD_RecentItem WHERE AD_Table_ID=? AND Record_ID=? AND NVL(AD_User_ID,0)=?";
+		String sql = "SELECT * FROM AD_RecentItem WHERE AD_Table_ID=? AND Record_ID=? AND NVL(AD_User_ID,0)=? AND AD_Client_ID=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -188,6 +189,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 			pstmt.setInt(1, AD_Table_ID);
 			pstmt.setInt(2, Record_ID);
 			pstmt.setInt(3, AD_User_ID);
+			pstmt.setInt(4, Env.getAD_Client_ID(ctx));
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				retValue = new MRecentItem (ctx, rs, null);
@@ -244,7 +246,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	}
 
 	public static void publishChangedEvent(int AD_User_ID) {
-		IMessageService service = Service.locator().locate(IMessageService.class).getService();
+		IMessageService service = Core.getMessageService();
 		if (service != null) {
 			ITopic<Integer> topic = service.getTopic(ON_RECENT_ITEM_CHANGED_TOPIC);
 			topic.publish(AD_User_ID);

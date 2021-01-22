@@ -108,10 +108,21 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	}
 	
 	/**
+	 * 
 	 * @param gridField
 	 */
 	public WLocatorEditor(GridField gridField) {
-		super(new EditorBox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WLocatorEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+		super(new EditorBox(), gridField, tableEditor, editorConfiguration);
 		m_mLocator = (MLocatorLookup)gridField.getLookup();
 		
 		if (ThemeManager.isUseFontIconForImage())

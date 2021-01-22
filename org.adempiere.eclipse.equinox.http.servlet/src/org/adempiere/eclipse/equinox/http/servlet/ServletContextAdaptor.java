@@ -53,7 +53,7 @@ public class ServletContextAdaptor implements ServletContext {
 			return null;
 		try {
 			Method getResourcePathsMethod = httpContext.getClass().getMethod("getResourcePaths", new Class[] {String.class}); //$NON-NLS-1$
-			if (!getResourcePathsMethod.isAccessible())
+			if (!getResourcePathsMethod.canAccess(httpContext))
 				getResourcePathsMethod.setAccessible(true);
 			return (Set<String>) getResourcePathsMethod.invoke(httpContext, new Object[] {name});
 		} catch (Exception e) {

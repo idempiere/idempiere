@@ -29,6 +29,9 @@ public interface IDisplayTypeFactory {
 	public Integer getDefaultPrecision(int displayType);
 	public boolean isText(int displayType);
 	public boolean isDate (int displayType);
+	public default boolean isList (int displayType) {
+		return false;
+	}
 	public boolean isLookup(int displayType);
 	public boolean isLOB (int displayType);
 	public DecimalFormat getNumberFormat(int displayType, Language language, String pattern);

@@ -23,16 +23,16 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -3681187042653339433L;
+	private static final long serialVersionUID = 20201220L;
 
-	/** Standard Constructor */
+    /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
     {
       super (ctx, PA_ReportLine_ID, trxName);
@@ -325,6 +325,35 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		return ii.intValue();
 	}
 
+	/** OverlineStrokeType AD_Reference_ID=200174 */
+	public static final int OVERLINESTROKETYPE_AD_Reference_ID=200174;
+	/** Dotted = DT */
+	public static final String OVERLINESTROKETYPE_Dotted = "DT";
+	/** Dashed = DS */
+	public static final String OVERLINESTROKETYPE_Dashed = "DS";
+	/** Double Dotted = DDT */
+	public static final String OVERLINESTROKETYPE_DoubleDotted = "DDT";
+	/** Double Dashed = DDS */
+	public static final String OVERLINESTROKETYPE_DoubleDashed = "DDS";
+	/** Double Solid = DSD */
+	public static final String OVERLINESTROKETYPE_DoubleSolid = "DSD";
+	/** Solid = SD */
+	public static final String OVERLINESTROKETYPE_Solid = "SD";
+	/** Set Overline Stroke Type.
+		@param OverlineStrokeType Overline Stroke Type	  */
+	public void setOverlineStrokeType (String OverlineStrokeType)
+	{
+
+		set_Value (COLUMNNAME_OverlineStrokeType, OverlineStrokeType);
+	}
+
+	/** Get Overline Stroke Type.
+		@return Overline Stroke Type	  */
+	public String getOverlineStrokeType () 
+	{
+		return (String)get_Value(COLUMNNAME_OverlineStrokeType);
+	}
+
 	/** PAAmountType AD_Reference_ID=53328 */
 	public static final int PAAMOUNTTYPE_AD_Reference_ID=53328;
 	/** Balance (expected sign) = B */
@@ -492,35 +521,6 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** OverlineStrokeType AD_Reference_ID=200174 */
-	public static final int OVERLINESTROKETYPE_AD_Reference_ID=200174;
-	/** Dotted = DT */
-	public static final String OVERLINESTROKETYPE_Dotted = "DT";
-	/** Dashed = DS */
-	public static final String OVERLINESTROKETYPE_Dashed = "DS";
-	/** Double Dotted = DDT */
-	public static final String OVERLINESTROKETYPE_DoubleDotted = "DDT";
-	/** Double Dashed = DDS */
-	public static final String OVERLINESTROKETYPE_DoubleDashed = "DDS";
-	/** Double Solid = DSD */
-	public static final String OVERLINESTROKETYPE_DoubleSolid = "DSD";
-	/** Solid = SD */
-	public static final String OVERLINESTROKETYPE_Solid = "SD";
-	/** Set Overline Stroke Type.
-		@param OverlineStrokeType Overline Stroke Type	  */
-	public void setOverlineStrokeType (String OverlineStrokeType)
-	{
-
-		set_Value (COLUMNNAME_OverlineStrokeType, OverlineStrokeType);
-	}
-
-	/** Get Overline Stroke Type.
-		@return Overline Stroke Type	  */
-	public String getOverlineStrokeType () 
-	{
-		return (String)get_Value(COLUMNNAME_OverlineStrokeType);
 	}
 
 	/** UnderlineStrokeType AD_Reference_ID=200174 */

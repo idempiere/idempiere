@@ -307,9 +307,9 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			detach();
 		else if (e.getTarget().getId().equals("Cancel"))
 		{
-			detach();
 			m_M_AttributeSetInstance_ID = -1;
 			m_M_AttributeSetInstanceName = null;
+			detach();
 		}
 		else if (e.getTarget() == showAll)
 		{

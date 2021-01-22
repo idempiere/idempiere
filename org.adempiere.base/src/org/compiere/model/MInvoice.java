@@ -996,7 +996,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//	Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#M_PriceList_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
 			if (ii != 0)
 			{
 				MPriceList pl = new MPriceList(getCtx(), ii, null);
@@ -1021,13 +1021,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (ii != 0)
 				setC_Currency_ID (ii);
 			else
-				setC_Currency_ID(Env.getContextAsInt(getCtx(), "#C_Currency_ID"));
+				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
 		//	Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#SalesRep_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
 			if (ii != 0)
 				setSalesRep_ID (ii);
 		}
@@ -1041,7 +1041,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		//	Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#C_PaymentTerm_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
 			if (ii != 0)
 				setC_PaymentTerm_ID (ii);
 			else
@@ -2023,7 +2023,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		DB.getDatabase().forUpdate(bp, 0);
 		//	Update total revenue and balance / credit limit (reversed on AllocationLine.processIt)
 		BigDecimal invAmt = null;
-		int baseCurrencyId = Env.getContextAsInt(getCtx(), "$C_Currency_ID");
+		int baseCurrencyId = Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID);
 		if (getC_Currency_ID() != baseCurrencyId && isOverrideCurrencyRate())
 		{
 			invAmt = getGrandTotal(true).multiply(getCurrencyRate());
@@ -2076,7 +2076,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			if (log.isLoggable(Level.FINE)) log.fine("GrandTotal=" + getGrandTotal(true) + "(" + invAmt
 				+ ") Balance=" + bp.getTotalOpenBalance() + " -> " + newBalance);
 		}
-		bp.setTotalOpenBalance(newBalance);
+		// the payment just created already updated the open balance
+		if ( ! (PAYMENTRULE_Cash.equals(getPaymentRule()) && !fromPOS ) )
+		{
+			bp.setTotalOpenBalance(newBalance);
+		}
 		bp.setSOCreditStatus();
 		if (!bp.save(get_TrxName()))
 		{
@@ -2509,7 +2513,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}	//	reverseCorrectIt
 
 	private MInvoice reverse(boolean accrual) {
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getDateAcct();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}

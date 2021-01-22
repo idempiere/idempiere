@@ -22,7 +22,6 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MMenu;
@@ -175,7 +174,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		btnFavItem.setTooltiptext(description);
 		if (ThemeManager.isUseFontIconForImage())
 			btnFavItem.setIconSclass(imageSrc);
-		else if (imageSrc.startsWith(ITheme.THEME_PATH_PREFIX))
+		else if (imageSrc.startsWith(ThemeManager.THEME_PATH_PREFIX))
 			btnFavItem.setImage(imageSrc);
 		else			
 			btnFavItem.setImage(ThemeManager.getThemeResource(imageSrc));

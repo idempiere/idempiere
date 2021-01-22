@@ -31,6 +31,7 @@ import org.zkoss.zk.ui.Executions;
  */
 public class ZkReportViewerProvider implements ReportViewerProvider {
 	
+	@Override
 	public void openViewer(final ReportEngine report) {
 		// IDEMPIERE-2499
 		// detect ui thread by value of Executions.getCurrent(), not office method but work

@@ -17,7 +17,7 @@ package org.adempiere.webui.dashboard;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
@@ -50,11 +50,10 @@ import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Vbox;
 
 public class DPRunningJobs extends DashboardPanel implements EventListener<Event>, EventHandler {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1946438226234068194L;
+	private static final long serialVersionUID = -8515643315156488709L;
 
 	private static final String AD_PINSTANCE_ID_ATTR = "AD_PInstance_ID";
 	
@@ -126,7 +125,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	{
 		if (topicSubscriber == null) {
 			topicSubscriber = new TopicSubscriber();
-			IMessageService service = Service.locator().locate(IMessageService.class).getService();
+			IMessageService service = Core.getMessageService();
 			if (service != null) {
 				ITopic<Integer> topic = service.getTopic(MPInstance.ON_RUNNING_JOB_CHANGED_TOPIC);
 				topic.subscribe(topicSubscriber);
@@ -194,7 +193,10 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			btnJob.setAttribute(AD_PINSTANCE_ID_ATTR, String.valueOf(pi.getAD_PInstance_ID()));
 			bxJobs.appendChild(btnJob);
 			btnJob.setLabel(label);
-			btnJob.setImage(ThemeManager.getThemeResource(getIconFile()));
+			if (ThemeManager.isUseFontIconForImage())
+				btnJob.setIconSclass("z-icon-Window");
+			else
+				btnJob.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 			btnJob.addEventListener(Events.ON_CLICK, this);
 			btnJob.setSclass("menu-href");
 			ZKUpdateUtil.setHflex(btnJob, "1");
@@ -210,11 +212,6 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			.setOrderBy("Updated DESC")
 			.list();
 		return pis;
-	}
-		
-	private String getIconFile() 
-	{
-		return "images/mWindow.png";
 	}
 
 	@Override

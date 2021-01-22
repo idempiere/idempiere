@@ -43,7 +43,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7393845332390162370L;
+	private static final long serialVersionUID = 8581992138870649241L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -184,7 +184,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR = "ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR";
     public static final String ZK_GRID_MOBILE_MAX_COLUMNS = "ZK_GRID_MOBILE_MAX_COLUMNS";
     public static final String ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR = "ZK_GRID_MOBILE_SHOW_CURRENT_ROW_INDICATOR";
+    public static final String ZK_GRID_VIEW_USE_DEFER_RENDERING = "ZK_GRID_VIEW_USE_DEFER_RENDERING";
     public static final String ZK_INFO_NUM_PAGE_PRELOAD = "ZK_INFO_NUM_PAGE_PRELOAD";
+    public static final String ZK_INFO_QUERY_TIME_OUT =  "ZK_INFO_QUERY_TIME_OUT";
     public static final String ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD = "ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD";
     public static final String ZK_LOGIN_ALLOW_REMEMBER_ME = "ZK_LOGIN_ALLOW_REMEMBER_ME";
     public static final String ZK_LOGO_LARGE = "ZK_LOGO_LARGE";
@@ -199,10 +201,12 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_REPORT_ONLY_PRINTFORMAT_LINKEDTO_REPORTVIEW = "ZK_REPORT_ONLY_PRINTFORMAT_LINKEDTO_REPORTVIEW";
     public static final String ZK_REPORT_TABLE_OUTPUT_TYPE = "ZK_REPORT_TABLE_OUTPUT_TYPE";
     public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
+    public static final String ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS = "ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS";
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
     public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME_USE_FONT_ICON_FOR_IMAGE = "ZK_THEME_USE_FONT_ICON_FOR_IMAGE";
     public static final String ZK_THEME = "ZK_THEME";
+    public static final String ZK_TOOLBAR_SHOW_MORE_VERTICAL = "ZK_TOOLBAR_SHOW_MORE_VERTICAL";
     public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 

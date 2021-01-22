@@ -19,8 +19,10 @@ package org.compiere.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Util;
 
@@ -51,15 +53,29 @@ public class Database
     /** Default Port            */
 	public static final int         DB_POSTGRESQL_DEFAULT_PORT = 5432;
 	
+	private static final CCache<String, IServiceReferenceHolder<AdempiereDatabase>> s_databaseReferenceCache = new CCache<>(null, "IDatabase", 2, false);
+	
 	/**
 	 *  Get Database by database Id.
 	 *  @return database
 	 */
 	public static AdempiereDatabase getDatabase (String type)
 	{
+		AdempiereDatabase db = null;
+		IServiceReferenceHolder<AdempiereDatabase> cache = s_databaseReferenceCache.get(type);
+		if (cache != null) {
+			db = cache.getService();
+			if (db != null)
+				return db;
+			s_databaseReferenceCache.remove(type);
+		}
 		ServiceQuery query = new ServiceQuery();
 		query.put("id", type);
-		AdempiereDatabase db = Service.locator().locate(AdempiereDatabase.class, query).getService();
+		IServiceReferenceHolder<AdempiereDatabase> serviceReference = Service.locator().locate(AdempiereDatabase.class, query).getServiceReference();
+		if (serviceReference != null) {
+			db = serviceReference.getService();
+			s_databaseReferenceCache.put(type, serviceReference);
+		}
 		return db;
 	}
 	

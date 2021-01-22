@@ -75,24 +75,64 @@ import org.compiere.process.SvrProcess;
  */
 public final class Env
 {
-	public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "#STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
-
-	public static final String AD_ROLE_ID = "#AD_Role_ID";
-
-	public static final String AD_USER_ID = "#AD_User_ID";
-
-	public static final String AD_ORG_ID = "#AD_Org_ID";
-
+	//Environments Constants
 	public static final String AD_CLIENT_ID = "#AD_Client_ID";
-	
-	public static final String AD_ORG_NAME = "#AD_Org_Name";
-	
-	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";
-	
+	public static final String AD_CLIENT_NAME = "#AD_Client_Name";
+	public static final String AD_ORG_ID = "#AD_Org_ID";		
+	public static final String AD_ORG_NAME = "#AD_Org_Name";	
+	public static final String AD_PRINTCOLOR_ID = "#AD_PrintColor_ID";
+	public static final String AD_PRINTFONT_ID = "#AD_PrintFont_ID";
+	public static final String AD_PRINTPAPER_ID = "#AD_PrintPaper_ID";
+	public static final String AD_PRINTTABLEFORMAT_ID = "#AD_PrintTableFormat_ID";
+	public static final String AD_ROLE_ID = "#AD_Role_ID";
+	public static final String AD_ROLE_NAME = "#AD_Role_Name";
+	public static final String AD_SESSION_ID = "#AD_Session_ID";
+	public static final String AD_USER_ID = "#AD_User_ID";
+	public static final String AD_USER_NAME = "#AD_User_Name";
+	public static final String C_ACCTSCHEMA_ID = "$C_AcctSchema_ID";
+	public static final String C_BANKACCOUNT_ID = "#C_BankAccount_ID";
+	public static final String C_BP_GROUP_ID = "#C_BP_Group_ID";
+	public static final String C_CASHBOOK_ID = "#C_CashBook_ID";
+	public static final String C_CONVERSIONTYPE_ID = "#C_ConversionType_ID";
+	public static final String C_COUNTRY_ID = "#C_Country_ID";
+	public static final String C_CURRENCY_ID = "$C_Currency_ID";
+	public static final String C_DOCTYPETARGET_ID = "#C_DocTypeTarget_ID";
+	public static final String C_DUNNING_ID = "#C_Dunning_ID";
+	public static final String C_PAYMENTTERM_ID = "#C_PaymentTerm_ID";
+	public static final String C_REGION_ID = "#C_Region_ID";
+	public static final String C_TAXCATEGORY_ID = "#C_TaxCategory_ID";
+	public static final String C_TAX_ID = "#C_Tax_ID";
+	public static final String C_UOM_ID = "#C_UOM_ID";
+	public static final String DATE	= "#Date";
+	public static final String DB_TYPE = "#DBType";
+	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
+	public static final String HAS_ALIAS = "$HasAlias";
+	/** Context Language identifier */
+	public static final String LANGUAGE = "#AD_Language";
+	public static final String LANGUAGE_NAME = "#LanguageName";
+	public static final String LOCAL_HTTP_ADDRESS = "#LocalHttpAddr";
+	public static final String LOCALE = "#Locale";
+	public static final String M_PRICELIST_ID = "#M_PriceList_ID";
+	public static final String M_PRODUCT_CATEGORY_ID = "#M_Product_Category_ID";
+	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";	
+	/** Context for POS ID */
+	public static final String POS_ID = "#POS_ID";
+	public static final String R_STATUSCATEGORY_ID = "#R_StatusCategory_ID";
+	public static final String R_STATUS_ID = "#R_Status_ID";
 	public static final String RUNNING_UNIT_TESTING_TEST_CASE = "#RUNNING_UNIT_TESTING_TEST_CASE";
-
+	public static final String SALESREP_ID = "#SalesRep_ID";
+	public static final String SHOW_ACCOUNTING = "#ShowAcct";
+	public static final String SHOW_ADVANCED = "#ShowAdvanced";
+	public static final String SHOW_TRANSLATION = "#ShowTrl";
+	public static final String STANDARD_PRECISION = "#StdPrecision";
+	public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "#STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
+	public static final String SYSTEM_NAME = "#System_Name";
+	public static final String UI_CLIENT = "#UIClient";
+	public static final String USER_LEVEL = "#User_Level";
+	
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
+	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
 	public static int adWindowDummyID =200054; 
@@ -1013,12 +1053,6 @@ public final class Env
 	 *  Language issues
 	 */
 
-	/** Context Language identifier */
-	static public final String      LANGUAGE = "#AD_Language";
-
-	/** Context for POS ID */
-	static public final String		POS_ID = "#POS_ID";
-
 	/**
 	 *  Check Base Language
 	 *  @param ctx context
@@ -1154,8 +1188,7 @@ public final class Env
 		}
 		return language;
 	}
-
-	public static final String LOCALE = "#Locale";
+	
 	/**
 	 * @param ctx
 	 * @return Locale
@@ -1356,9 +1389,9 @@ public final class Env
 				sb.append(name).append("  ");
 			}
 		}
-		sb.append(getContext(ctx, "#AD_User_Name")).append("@")
-			.append(getContext(ctx, "#AD_Client_Name")).append(".")
-			.append(getContext(ctx, "#AD_Org_Name"))
+		sb.append(getContext(ctx, Env.AD_USER_NAME)).append("@")
+			.append(getContext(ctx, Env.AD_CLIENT_NAME)).append(".")
+			.append(getContext(ctx, Env.AD_ORG_NAME))
 			.append(" [").append(CConnection.get().toString()).append("]");
 		return sb.toString();
 	}	//	getHeader

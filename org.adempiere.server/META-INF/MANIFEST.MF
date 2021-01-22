@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Server
 Bundle-SymbolicName: org.adempiere.server;singleton:=true
-Bundle-Version: 7.1.0.qualifier
+Bundle-Version: 8.2.0.qualifier
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.eclipse.equinox.app;bundle-version="0.0.0",
  org.eclipse.jetty.apache-jsp;bundle-version="0.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Web-ContextPath: /
 Bundle-ClassPath: .
@@ -25,7 +26,6 @@ Import-Package: javax.jms;version="1.1.0",
  org.osgi.util.tracker;version="1.5.0",
  org.w3c.dom
 Export-Package: org.adempiere.server,
- org.compiere.ldap,
  org.compiere.server,
  org.idempiere.server.cluster,
  org.idempiere.server.cluster.callable,

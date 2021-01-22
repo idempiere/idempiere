@@ -122,7 +122,7 @@ public class InOutGenerate extends SvrProcess
 			
 			//  juddm - added ability to specify a shipment date from Generate Shipments
 			if (p_DateShipped == null) {
-				m_movementDate = Env.getContextAsDate(getCtx(), "#Date");
+				m_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
 				if (m_movementDate == null)
 					m_movementDate = new Timestamp(System.currentTimeMillis());
 			} else

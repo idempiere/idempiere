@@ -55,9 +55,9 @@ public class MatchPOAutoMatch {
 						String docStatus = mpo.getC_InvoiceLine().getC_Invoice().getDocStatus();
 						if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {
 							creditMemoMatchPOList.add(mpo);
+							continue;
 						}
 					}
-					continue;
 				}
 				notMatchedMatchPOList.add(mpo);
 			}

@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.idempiere.distributed.ICacheService;
 
 /**
@@ -112,7 +112,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		cache = CacheMgt.get().register(this, distributed);
 		m_distributed = distributed;
 		if (distributed) {
-			ICacheService provider = Service.locator().locate(ICacheService.class).getService();
+			ICacheService provider = Core.getCacheService();
 			if (provider != null) {
 				nullList = provider.getSet(name);
 			}

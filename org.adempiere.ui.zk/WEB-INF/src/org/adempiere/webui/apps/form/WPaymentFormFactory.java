@@ -13,11 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
-import java.util.List;
-
-import org.adempiere.base.Service;
+import org.adempiere.webui.Extensions;
 import org.compiere.grid.IPaymentForm;
-import org.compiere.grid.IPaymentFormFactory;
 import org.compiere.model.GridTab;
 
 /**
@@ -27,15 +24,15 @@ import org.compiere.model.GridTab;
  */
 public class WPaymentFormFactory {
 
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 * @param paymentRule
+	 * @return IPaymentForm instance
+	 */
 	public static IPaymentForm create(int windowNo, GridTab mTab, String paymentRule)
 	{
-		IPaymentForm paymentForm = null;
-		List<IPaymentFormFactory> factories = Service.locator().list(IPaymentFormFactory.class).getServices();
-		for (IPaymentFormFactory factory : factories) {
-			paymentForm = factory.create(windowNo, mTab, paymentRule);
-			if (paymentForm != null)
-				break;
-		}
-		return paymentForm;
+		return Extensions.getPaymentForm(windowNo, mTab, paymentRule);
 	}
 }
