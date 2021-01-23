@@ -898,6 +898,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 								break;
 							}					
 						}					
+					} else if (p instanceof Combobox) {
+						if (advancedName.equals(((Combobox) p).getId())) {
+							this.removeChild(p);
+							break;
+						}
 					}
 				}
 
@@ -946,6 +951,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				if (p instanceof ToolBarButton) {
 					if (!customButtons.contains(p) && !p.isVisible())
 						p.setVisible(true);
+				} else if (p instanceof Combobox && !p.isVisible()) {
+					p.setVisible(true);
 				}
 			}
 			
@@ -964,6 +971,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 								break;
 							}					
 						}					
+					}  else if (p instanceof Combobox) {
+						if (restrictName.equals(((Combobox) p).getId())) {
+							p.setVisible(false);
+							break;
+						}
 					}
 				}
 
