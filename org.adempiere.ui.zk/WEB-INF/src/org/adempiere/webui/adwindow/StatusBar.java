@@ -26,9 +26,8 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.process.ProcessInfoLog;
-import org.zkoss.zul.Html;
-import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -39,6 +38,7 @@ import org.zkoss.zk.ui.util.Notification;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 
@@ -238,7 +238,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 	}
     
 	protected void createPopupContent() {
-		Text t = new Text(m_statusText);
+		Html t = new Html(WTextEditorDialog.sanitize(m_statusText));
 		msgPopupCnt.getChildren().clear();
 		msgPopupCnt.appendChild(t);
 	}
