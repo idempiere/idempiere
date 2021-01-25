@@ -282,10 +282,10 @@ public class DocumentEngine implements DocAction
 			throw new IllegalStateException("Status=" + getDocStatus()
 				+ " - Invalid Actions: Process="  + processAction + ", Doc=" + docAction);
 		}
-		if (m_document != null)
-			m_document.get_Logger().info ("**** Action=" + m_action + " (Prc=" + processAction + "/Doc=" + docAction + ") " + m_document);
+		if (m_document != null && m_document.get_Logger().isLoggable(Level.INFO))
+				m_document.get_Logger().info ("**** Action=" + m_action + " (Prc=" + processAction + "/Doc=" + docAction + ") " + m_document);
 		boolean success = processIt (m_action);
-		if (m_document != null)
+		if (m_document != null && m_document.get_Logger().isLoggable(Level.FINE))
 			m_document.get_Logger().fine("**** Action=" + m_action + " - Success=" + success);
 		return success;
 	}	//	process
