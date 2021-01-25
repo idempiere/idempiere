@@ -986,7 +986,11 @@ public class GridTable extends AbstractTableModel
 			{
 				m_sort.get(i).data = null;
 				if (newRow != null && m_sort.get(i) == newRow)
+				{
+					if (m_rowChanged == m_newRow)
+						m_rowChanged = i;
 					m_newRow = i;
+				}
 				
 				if (currentRow != null && m_sort.get(i) == currentRow)
 					m_currentRow = i;
@@ -997,7 +1001,11 @@ public class GridTable extends AbstractTableModel
 			for (int i = 0; i < m_sort.size(); i++)
 			{
 				if (newRow != null && m_sort.get(i) == newRow)
+				{
+					if (m_rowChanged == m_newRow)
+						m_rowChanged = i;
 					m_newRow = i;
+				}
 				
 				if (currentRow != null && m_sort.get(i) == currentRow)
 					m_currentRow = i;
