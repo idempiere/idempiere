@@ -220,6 +220,13 @@ public class InOutGenerate extends SvrProcess
 				MOrder order = new MOrder (getCtx(), rs, get_TrxName());
 				statusUpdate(Msg.getMsg(getCtx(), "Processing") + " " + order.getDocumentInfo());
 				
+				if (MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
+				{
+					BigDecimal payment = order.getPaymentAmt();
+					if (payment == null || payment.compareTo(order.getGrandTotal()) < 0)
+						continue;					
+				}
+				
 				//	New Header different Shipper, Shipment Location
 				if (!p_ConsolidateDocument 
 					|| (m_shipment != null 
@@ -337,7 +344,7 @@ public class InOutGenerate extends SvrProcess
 						createLine (order, line, toDeliver, storages, false);
 					}
 					//	Availability
-					else if (MOrder.DELIVERYRULE_Availability.equals(order.getDeliveryRule())
+					else if ((MOrder.DELIVERYRULE_Availability.equals(order.getDeliveryRule()) || MOrder.DELIVERYRULE_AfterReceipt.equals(order.getDeliveryRule()))
 						&& (onHand.signum() > 0
 							|| toDeliver.signum() < 0))
 					{

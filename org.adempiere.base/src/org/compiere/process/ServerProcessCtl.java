@@ -23,6 +23,7 @@ public class ServerProcessCtl implements Runnable {
 	/** Process Info */
 	ProcessInfo m_pi;
 	private Trx				m_trx;
+	private boolean managedTrxForJavaProcess = true;
 	
 	/**************************************************************************
 	 *  Constructor
@@ -324,7 +325,7 @@ public class ServerProcessCtl implements Runnable {
 		if (m_pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
 			return ProcessUtil.startScriptProcess(Env.getCtx(), m_pi, m_trx);
 		} else {
-			return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx);
+			return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx, managedTrxForJavaProcess);
 		}
 	}   //  startProcess
 
@@ -341,4 +342,21 @@ public class ServerProcessCtl implements Runnable {
 		return ProcessUtil.startDatabaseProcedure(m_pi, ProcedureName, m_trx);
 	}   //  startDBProcess
 	
+	/**
+	 * set whether java process call will commit/rollback trx (default is true)
+	 * @param managedTrx
+	 */
+	public void setManagedTrxForJavaProcess(boolean managedTrx)
+	{
+		this.managedTrxForJavaProcess = managedTrx;
+	}
+	
+	/**
+	 * 
+	 * @return true if java process call will commit/rollback trx
+	 */
+	public boolean isManagedTrxForJavaProcess()
+	{
+		return managedTrxForJavaProcess;
+	}
 }
