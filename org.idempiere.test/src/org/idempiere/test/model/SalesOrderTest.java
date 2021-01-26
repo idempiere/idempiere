@@ -44,6 +44,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPayment;
 import org.compiere.model.MProduct;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
@@ -532,6 +533,90 @@ public class SalesOrderTest extends AbstractTestCase {
 		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order1.getC_Order_ID()}, null);
+		pi = new ProcessInfo ("InOutGen", AD_Process_ID);
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+	
+		//	Add Parameter - Selection=Y
+		ip = new MPInstancePara(instance, 10);
+		ip.setParameter("Selection","Y");
+		ip.saveEx();
+		//Add Document action parameter
+		ip = new MPInstancePara(instance, 20);
+		ip.setParameter("DocAction", "CO");
+		ip.saveEx();
+		//	Add Parameter - M_Warehouse_ID=x
+		ip = new MPInstancePara(instance, 30);
+		ip.setParameter("M_Warehouse_ID", getM_Warehouse_ID());
+		ip.saveEx();
+		
+		processCtl = new ServerProcessCtl(pi, getTrx());
+		processCtl.setManagedTrxForJavaProcess(false);
+		processCtl.run();
+		
+		assertFalse(pi.isError(), pi.getSummary());
+		
+		line1.load(getTrxName());
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyDelivered().intValue());
+		
+		//test3 with AfterReceipt
+		MOrder order2 = MOrder.copyFrom(order, today, order.getC_DocType_ID(), true, false, false, getTrxName());
+		order2.setDeliveryRule(MOrder.DELIVERYRULE_AfterReceipt);
+		order2.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(order2, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order2.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order2.getDocStatus());
+		line1 = order2.getLines()[0];
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue());
+		
+		//create invoice
+		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE, 0);
+		instance.saveEx();
+		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);		
+		pi = new ProcessInfo ("InvoiceGen", AD_Process_ID);
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+
+		//	Add Parameter - Selection=Y
+		ip = new MPInstancePara(instance, 10);
+		ip.setParameter("Selection","Y");
+		ip.saveEx();
+		//Add Document action parameter
+		ip = new MPInstancePara(instance, 20);
+		ip.setParameter("DocAction", "CO");
+		ip.saveEx();
+		
+		processCtl = new ServerProcessCtl(pi, getTrx());
+		processCtl.setManagedTrxForJavaProcess(false);
+		processCtl.run();
+		
+		assertFalse(pi.isError(), pi.getSummary());
+		
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyInvoiced().intValue());
+		
+		//create payment
+		payment = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment.setC_DocType_ID(true);
+		payment.setC_BankAccount_ID(C_BankAccount_ID);
+		payment.setC_BPartner_ID(order2.getC_BPartner_ID());		
+		payment.setC_Invoice_ID(DB.getSQLValueEx(getTrxName(), "SELECT C_Invoice_ID FROM C_Invoice WHERE C_Order_ID=?", order2.getC_Order_ID()));
+		payment.setTenderType(MPayment.TENDERTYPE_DirectDeposit);
+		payment.setPayAmt(order2.getGrandTotal());
+		payment.setC_Currency_ID(order2.getC_Currency_ID());
+		payment.saveEx();
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		payment.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+		
+		//call process with payment
+		instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance.saveEx();
+		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);
 		pi = new ProcessInfo ("InOutGen", AD_Process_ID);
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 	

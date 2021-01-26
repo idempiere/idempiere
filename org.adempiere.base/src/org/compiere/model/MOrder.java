@@ -3005,12 +3005,13 @@ public class MOrder extends X_C_Order implements DocAction
 
 	/**
 	 * 
-	 * @return prepayment amount for order
+	 * @return payment amount for order (prepayment + invoice payment)
 	 */
 	public BigDecimal getPaymentAmt()
 	{
-		BigDecimal retValue = null;
+		BigDecimal orderPaid = null;
 		String sql = "SELECT SUM(currencyconvertpayment(p.c_payment_id, o.c_currency_id, p.PayAmt+p.DiscountAmt+p.WriteOffAmt, null) "
+				+ " - paymentallocated(p.c_payment_id, o.c_currency_id) "
 				+ " * (CASE WHEN p.IsReceipt='Y' THEN 1 ELSE -1 END)) "
 				+ "FROM C_Payment p "
 				+ "INNER JOIN C_Order o ON (p.C_Order_ID=o.C_Order_ID) "
@@ -3024,13 +3025,39 @@ public class MOrder extends X_C_Order implements DocAction
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				retValue = rs.getBigDecimal(1);
+				orderPaid = rs.getBigDecimal(1);
 			}
 		}
 		catch (SQLException e)
 		{
 			throw new DBException(e, sql);
 		}
+		
+		BigDecimal invoicePaid = null;
+		sql = "SELECT SUM(invoicepaid(i.c_invoice_id, o.c_currency_id, 1)) "
+				+ "FROM C_Invoice i "
+				+ "INNER JOIN C_Order o ON (i.C_Order_ID=o.C_Order_ID) "
+				+ "WHERE i.C_Order_ID=? AND i.AD_Client_ID=? "
+				+ "AND i.IsActive='Y' AND i.DocStatus IN ('CO','CL') ";
+				
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());)
+		{			
+			pstmt.setInt(1, getC_Order_ID());
+			pstmt.setInt(2, getAD_Client_ID());
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				invoicePaid = rs.getBigDecimal(1);
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
+		}
+		
+		BigDecimal retValue = orderPaid != null ? orderPaid : BigDecimal.ZERO;
+		if (invoicePaid != null)
+			retValue = retValue.add(invoicePaid);
 		return retValue;
 	}
 }	//	MOrder
