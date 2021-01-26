@@ -302,40 +302,34 @@ public class PoExporter {
 			return;
 		}
 
-		if (MAttachment.COLUMNNAME_BinaryData.equals(columnName)) {
+		if ("BinaryData".equals(columnName)) {
 			MClientInfo ci = MClientInfo.get(po.getAD_Client_ID());
-			if (po instanceof MAttachment) {
-				if (ci.getAD_StorageProvider_ID() > 0) {
-					MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getAD_StorageProvider_ID(), po.get_TrxName());
-					if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
-						MAttachment att = (MAttachment) po;
-						File tmpfile = att.saveAsZip();
-						try {
-							value = Files.readAllBytes(tmpfile.toPath());
-						} catch (IOException e) {
-							throw new AdempiereException(e);
-						}
+			if (po.get_Table_ID() == MAttachment.Table_ID && ci.getAD_StorageProvider_ID() > 0) {
+				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getAD_StorageProvider_ID(), po.get_TrxName());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName());
+					File tmpfile = att.saveAsZip();
+					try {
+						value = Files.readAllBytes(tmpfile.toPath());
+					} catch (IOException e) {
+						throw new AdempiereException(e);
 					}
 				}
-			} else if (po.get_Table_ID() == MImage.Table_ID) {
-				if (ci.getStorageImage_ID() > 0) {
-					MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageImage_ID(), po.get_TrxName());
-					if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
-						MImage image = new MImage(po.getCtx(), po.get_ID(), po.get_TrxName());
-						value = image.getBinaryData();
-					}
+			} else if (po.get_Table_ID() == MImage.Table_ID && ci.getStorageImage_ID() > 0) {
+				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageImage_ID(), po.get_TrxName());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MImage image = new MImage(po.getCtx(), po.get_ID(), po.get_TrxName());
+					value = image.getBinaryData();
 				}
-			} else if (po.get_Table_ID() == MArchive.Table_ID) {
-				if (ci.getStorageArchive_ID() > 0) {
-					MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageArchive_ID(), po.get_TrxName());
-					if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
-						MArchive archive = new MArchive(po.getCtx(), po.get_ID(), po.get_TrxName());
-						File tmpfile = archive.saveAsZip();
-						try {
-							value = Files.readAllBytes(tmpfile.toPath());
-						} catch (IOException e) {
-							throw new AdempiereException(e);
-						}
+			} else if (po.get_Table_ID() == MArchive.Table_ID && ci.getStorageArchive_ID() > 0) {
+				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageArchive_ID(), po.get_TrxName());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MArchive archive = new MArchive(po.getCtx(), po.get_ID(), po.get_TrxName());
+					File tmpfile = archive.saveAsZip();
+					try {
+						value = Files.readAllBytes(tmpfile.toPath());
+					} catch (IOException e) {
+						throw new AdempiereException(e);
 					}
 				}
 			}
