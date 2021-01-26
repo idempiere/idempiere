@@ -18,13 +18,21 @@ package org.compiere.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Target;
+import org.apache.tools.ant.taskdefs.Zip;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -39,7 +47,7 @@ public class MArchive extends X_AD_Archive {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2384941426301490384L;
+	private static final long serialVersionUID = 6934821005476123632L;
 
 	/**
 	 * Get Archives
@@ -294,6 +302,64 @@ public class MArchive extends X_AD_Archive {
 	 */
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;
+	}
+
+	/**
+	 * Save the Archive as zip file, used by Pack Out when storage provider is not DB
+	 * @return File - the temporary file
+	 */
+	public File saveAsZip() {
+		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_" + getRecord_ID();
+
+		File tempfolder = null; 
+		try {
+			Path tempPath = Files.createTempDirectory(name);
+			tempfolder = tempPath.toFile();
+		} catch (IOException e1) {
+			throw new AdempiereException("Unable to create temp folder", e1);
+		}
+
+		File destZipFile = null;
+		try {
+			destZipFile = File.createTempFile("IdempiereArchive", ".zip");
+		} catch (Throwable e) {
+			throw new AdempiereException("Unable to create temp file", e);
+		}
+		destZipFile.delete();
+
+		File destArchiveFile = null;
+		try {
+			destArchiveFile = File.createTempFile("IdempiereArchive", ".pdf", tempfolder);
+		} catch (Throwable e) {
+			throw new AdempiereException("Unable to create temp file", e);
+		}
+		destArchiveFile.delete();
+
+		Path path = destArchiveFile.toPath();
+		try {
+			Files.write(path, getBinaryData());
+		} catch (IOException e1) {
+			throw new AdempiereException(e1);
+		}
+		
+		Zip zipper = new Zip();
+		zipper.setDestFile(destZipFile);
+		zipper.setBasedir(tempfolder);
+		zipper.setUpdate(true);
+		zipper.setCompress(true);
+		zipper.setCaseSensitive(false);
+		zipper.setFilesonly(true);
+		zipper.setTaskName("zip");
+		zipper.setTaskType("zip");
+		zipper.setProject(new Project());
+		zipper.setOwningTarget(new Target());
+		zipper.execute();
+
+		try {
+			FileUtil.deleteDirectory(tempfolder);
+		} catch (IOException e) {}
+		
+		return destZipFile;
 	}
 
 } // MArchive
