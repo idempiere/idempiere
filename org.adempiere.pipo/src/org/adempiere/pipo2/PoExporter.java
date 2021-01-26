@@ -1,12 +1,18 @@
 package org.adempiere.pipo2;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Org;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MClientInfo;
+import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree;
 import org.compiere.model.PO;
@@ -294,6 +300,22 @@ public class PoExporter {
 			return;
 		}
 
+		if (po instanceof MAttachment && MAttachment.COLUMNNAME_BinaryData.equals(columnName)) {
+			MAttachment att = (MAttachment) po;
+			MClientInfo ci = MClientInfo.get(po.getAD_Client_ID());
+			if (ci.getAD_StorageProvider_ID() > 0) {
+				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getAD_StorageProvider_ID(), po.get_TrxName());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					File tmpfile = att.saveAsZip();
+					try {
+						value = Files.readAllBytes(tmpfile.toPath());
+					} catch (IOException e) {
+						throw new AdempiereException(e);
+					}
+				}
+			}
+		}
+		
 		PackOut packOut = ctx.packOut;
 		byte[] data = null;
 		String dataType = null;
