@@ -814,11 +814,12 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "SELECT * FROM AD_User_OrgAccess "
-			+ "WHERE AD_User_ID=? AND IsActive='Y'";
+			+ "WHERE AD_User_ID=? AND IsActive='Y' AND AD_Client_ID = ?";
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_User_ID());
+			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -845,11 +846,12 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "SELECT * FROM AD_Role_OrgAccess "
-			+ "WHERE AD_Role_ID=? AND IsActive='Y'";
+			+ "WHERE AD_Role_ID=? AND IsActive='Y' AND AD_Client_ID = ?";
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_Role_ID());
+			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
