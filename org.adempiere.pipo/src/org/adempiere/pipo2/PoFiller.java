@@ -415,14 +415,11 @@ public class PoFiller{
 				if ("BinaryData".equals(qName) && data instanceof byte[]) {
 					if (po instanceof MArchive) {
 						/* it comes as a zip file with a single PDF file */
-					    ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream((byte[]) data));
 					    byte[] output = null;
-						try {
-							while (zipStream.getNextEntry() != null) {
+					    try (ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream((byte[]) data));) {
+							if (zipStream.getNextEntry() != null) {
 								output = zipStream.readAllBytes();
-								break;
 							}
-							zipStream.close();
 						} catch (Exception e) {
 							throw new AdempiereException(e.getLocalizedMessage(), e);
 						}
