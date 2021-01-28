@@ -132,7 +132,7 @@ public class FavouriteFolderDialog extends Window implements EventListener<Event
 			chkAddAsRoot = new Checkbox();
 			chkAddAsRoot.setClass("fav-chkbox");
 			chkAddAsRoot.setText(Msg.getMsg(Env.getCtx(), "AddAsRoot"));
-			chkAddAsRoot.setTooltiptext("This flag is marked then new folder added as in root.");
+			chkAddAsRoot.setTooltiptext(Msg.getMsg(Env.getCtx(),"Tooltip_AddAsRoot"));
 			row = new Row();
 			row.setParent(rows);
 			row.appendChild(chkAddAsRoot);
@@ -141,7 +141,7 @@ public class FavouriteFolderDialog extends Window implements EventListener<Event
 		chkDefaultExpanded = new Checkbox();
 		chkDefaultExpanded.setClass("fav-chkbox");
 		chkDefaultExpanded.setText(Msg.getMsg(Env.getCtx(), "DefaultExpanded"));
-		chkDefaultExpanded.setTooltiptext("This flag is marked then folder default open with expanded view.");
+		chkDefaultExpanded.setTooltiptext(Msg.getMsg(Env.getCtx(), "Tooltip_DefaultExpanded"));
 		row = new Row();
 		row.setParent(rows);
 		row.appendChild(chkDefaultExpanded);
@@ -149,7 +149,7 @@ public class FavouriteFolderDialog extends Window implements EventListener<Event
 		txtFolder = new Textbox();
 		txtFolder.setClass("fav-folder-textbox");
 		txtFolder.setPlaceholder(Msg.getMsg(Env.getCtx(), "AddFolderFavTree"));
-		txtFolder.setTooltiptext("Specify new folder name");
+		txtFolder.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddFolderFavTree"));
 		txtFolder.addEventListener(Events.ON_OK, this);
 		row = new Row();
 		row.setParent(rows);

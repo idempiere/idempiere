@@ -450,7 +450,10 @@ public class ADTreeFavoriteOnDropListener implements EventListener<Event>
 			if (favNode.getAD_Menu_ID() > 0 && favNode.isFavourite())
 			{
 				FavouriteController controller = FavouriteController.getInstance(Executions.getCurrent().getDesktop().getSession());
-				controller.removeNode(favNode.getAD_Menu_ID());
+				if (!controller.removeNode(favNode.getAD_Menu_ID()))
+				{
+					throw new AdempiereException(Msg.getMsg(favNode.getCtx(), CLogger.retrieveError().getValue()));
+				}
 			}
 			else
 			{

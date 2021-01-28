@@ -34,7 +34,6 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.factory.ButtonFactory;
-import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
 import org.compiere.model.MRole;
@@ -73,10 +72,10 @@ public class LoginOpenSequenceDialog extends Window
 	/** Logger */
 	protected static final CLogger	log					= CLogger.getCLogger(LoginOpenSequenceDialog.class);
 
-	private Button					bAdd				= ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveRight16.png"), null);
-	private Button					bRemove				= ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveLeft16.png"), null);
-	private Button					bUp					= ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveUp16.png"), null);
-	private Button					bDown				= ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveDown16.png"), null);
+	private Button					bAdd				= ButtonFactory.createNamedButton("MoveRight", true, true);
+	private Button					bRemove				= ButtonFactory.createNamedButton("MoveLeft", true, true);
+	private Button					bUp					= ButtonFactory.createNamedButton("MoveUp", true, true);
+	private Button					bDown				= ButtonFactory.createNamedButton("MoveDown", true, true);
 
 	private ConfirmPanel			confirmPanel		= new ConfirmPanel(true, false, true, false, false, false);
 
@@ -110,7 +109,7 @@ public class LoginOpenSequenceDialog extends Window
 		this.setMaximizable(true);
 		this.setSclass("popup-dialog fav-login-open-seq-dialog");
 		this.setStyle("position: relative; margin: none; border: none; padding: none;");
-		ZKUpdateUtil.setWindowWidthX(this, 600);
+		ZKUpdateUtil.setWindowWidthX(this, 650);
 		ZKUpdateUtil.setWindowHeightX(this, 450);
 
 		//
@@ -301,7 +300,13 @@ public class LoginOpenSequenceDialog extends Window
 		query.setOrderBy(MTreeFavoriteNode.COLUMNNAME_LoginOpenSeqNo);
 		query.setOnlyActiveRecords(true);
 		query.setParameters(new Object[] { favTreeID });
-		List<MTreeFavoriteNode> lsFavNode = query.list();
+		List<MTreeFavoriteNode> lsFavNode = null;
+		try {
+			PO.setCrossTenantSafe();
+			lsFavNode = query.list();
+		}finally {
+			PO.clearCrossTenantSafe();
+		}
 
 		try
 		{
@@ -509,8 +514,9 @@ public class LoginOpenSequenceDialog extends Window
 	 */
 	public void saveData()
 	{
-		try {
-			//For service users, needs to persist data in system tenant
+		try
+		{
+			// For service users, needs to persist data in system tenant
 			PO.setCrossTenantSafe();
 			// yesList
 			for (int i = 0; i < yesModel.getSize(); i++)
@@ -518,28 +524,30 @@ public class LoginOpenSequenceDialog extends Window
 				ListElement pp = (ListElement) yesModel.getElementAt(i);
 				if (!pp.isUpdateable())
 					continue;
-	
+
 				// Set seq no
 				MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable.get(MTreeFavoriteNode.Table_ID).getPO(pp.getKey(), null);
 				favNode.setLoginOpenSeqNo(i);
 				favNode.saveEx();
-				
+
 			}
-	
+
 			// noList
 			for (int i = 0; i < noModel.getSize(); i++)
 			{
 				ListElement pp = (ListElement) noModel.getElementAt(i);
 				if (!pp.isUpdateable())
 					continue;
-	
+
 				// remove seq no if exists
 				MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable.get(MTreeFavoriteNode.Table_ID).getPO(pp.getKey(), null);
 				favNode.set_ValueNoCheck(MTreeFavoriteNode.COLUMNNAME_LoginOpenSeqNo, null);
 				favNode.saveEx();
 			}
 
-		} finally {
+		}
+		finally
+		{
 			PO.clearCrossTenantSafe();
 		}
 		//

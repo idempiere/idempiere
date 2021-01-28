@@ -20,18 +20,14 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.desktop.FavouriteController;
-import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
-import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
-import org.compiere.model.MTreeFavoriteNode;
 import org.compiere.model.MTreeNode;
-import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -177,7 +173,6 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 			if (!onDropListners.isEmpty())
 			{
 				ti.getTreerow().addEventListener(Events.ON_CLICK, this);
-				ti.getTreerow().addEventListener(Events.ON_DOUBLE_CLICK, this);
 
 				tr.setDroppable("true");
 				tr.addEventListener(Events.ON_SELECT, this);
@@ -296,65 +291,6 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 				{
 					int menuID = mtn.getMenu_ID();
 					SessionManager.getAppDesktop().onMenuSelected(menuID);
-				}
-			}
-		}
-		else if (Events.ON_DOUBLE_CLICK.equals(eventName))
-		{
-			// Rename the folder
-			if (comp instanceof Treerow)
-			{
-				Treerow treerow = (Treerow) comp;
-				Treeitem treeitem = (Treeitem) treerow.getParent();
-				Object value = treeitem.getValue();
-
-				final DefaultTreeNode<?> dtNode = (DefaultTreeNode<?>) value;
-				final MTreeNode mtn = (MTreeNode) dtNode.getData();
-
-				if (mtn.isSummary())
-				{
-					final FavoriteSimpleTreeModel sftModel = this;
-					final WTextEditorDialog editorDialog = new WTextEditorDialog(	Msg.getMsg(Env.getCtx(), "EditFolderName"),
-																					mtn.getName() == null ? "" : mtn.getName(), true, 100, false, false);
-
-					editorDialog.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-					editorDialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-						@Override
-						public void onEvent(Event event) throws Exception
-						{
-							if (!editorDialog.isCancelled())
-							{
-								mtn.setName(editorDialog.getText());
-
-								MTreeFavoriteNode favNode = (MTreeFavoriteNode) MTable	.get(Env.getCtx(), MTreeFavoriteNode.Table_ID)
-																						.getPO(mtn.getNode_ID(), null);
-								favNode.setName(editorDialog.getText());
-								try {
-									//For service users, needs to persist data in system tenant
-									PO.setCrossTenantSafe();
-									favNode.saveEx();
-								}finally {
-									PO.clearCrossTenantSafe();
-								}
-
-								@SuppressWarnings("unchecked")
-								int path[] = sftModel.getPath((TreeNode<Object>) dtNode);
-								if (path != null && path.length > 0)
-								{
-									DefaultTreeNode<Object> parentNode = getRoot();
-									int index = path.length - 1;
-									for (int i = 0; i < index; i++)
-									{
-										parentNode = (DefaultTreeNode<Object>) getChild(parentNode, path[i]);
-									}
-
-									fireEvent(TreeDataEvent.CONTENTS_CHANGED, getPath(parentNode), path[index], path[index]);
-								}
-							}
-						} // onEvent
-					});
-
-					SessionManager.getAppDesktop().showWindow(editorDialog);
 				}
 			}
 		}

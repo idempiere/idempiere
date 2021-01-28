@@ -87,7 +87,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		btnExpand.setChecked(false);
 		btnExpand.setClass("fav-button-Expand");
 		btnExpand.addEventListener(Events.ON_CLICK, this);
-		btnExpand.setTooltiptext("Expand/Collapse Tree");
+		btnExpand.setTooltiptext(Msg.getMsg(Env.getCtx(), "Tooltip_ExpandCollapseTree"));
 		if (ThemeManager.isUseFontIconForImage())
 			btnExpand.setIconSclass("z-icon-Expanding");
 		else

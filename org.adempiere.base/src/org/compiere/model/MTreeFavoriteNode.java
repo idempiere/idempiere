@@ -31,7 +31,7 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 	 */
 	private static final long	serialVersionUID		= -1085269880909860587L;
 
-	public static final String	SQL_CHECK_MENU_EXISTS	= "SELECT COUNT(AD_Menu_ID) > 0 FROM AD_Tree_Favorite_Node WHERE AD_Tree_Favorite_ID=? AND Parent_ID=? AND AD_Menu_ID=?";
+	public static final String	SQL_CHECK_MENU_EXISTS	= "SELECT CASE WHEN COUNT(AD_Menu_ID) > 0 THEN 'Y' ELSE 'N' END FROM AD_Tree_Favorite_Node WHERE AD_Tree_Favorite_ID=? AND NVL(Parent_ID, 0)=? AND AD_Menu_ID=?";
 
 	/**
 	 * @param ctx
@@ -63,7 +63,7 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 	 */
 	public static boolean isMenuExists(int menuID, int nodeID, int treeFavID)
 	{
-		return DB.getSQLValueBooleanEx(null, SQL_CHECK_MENU_EXISTS, treeFavID, nodeID, menuID);
+		return "Y".equalsIgnoreCase(DB.getSQLValueStringEx(null, SQL_CHECK_MENU_EXISTS, treeFavID, nodeID, menuID));
 	} // isMenuExists
 
 	/**

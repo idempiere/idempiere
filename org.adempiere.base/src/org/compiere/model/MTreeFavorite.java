@@ -42,7 +42,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 																			+ " ORDER BY COALESCE(Parent_ID, -1), SeqNo, Name ";
 
 	/** Cache for AD_Tree_Favorite_ID */
-	private static CCache<Integer, Integer>	cache_TreeFavID				= new CCache<Integer, Integer>("AD_Tree_Favorite", 30);
+	private static CCache<Integer, Integer>	cache_TreeFavID				= new CCache<Integer, Integer>("AD_Tree_Favorite_ID", 30);
 
 	private ArrayList<MTreeNode>			m_buffer					= new ArrayList<MTreeNode>();
 	private MTreeNode						root						= null;

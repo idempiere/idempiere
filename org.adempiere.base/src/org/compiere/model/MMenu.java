@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Menu Model
@@ -37,33 +38,66 @@ import org.compiere.util.Env;
  *  @author red1 - FR: [ 2214883 ] Remove SQL code and Replace for Query
  *  @version $Id: MMenu.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
  */
-public class MMenu extends X_AD_Menu
+public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6671861281736697100L;
+	private static final long serialVersionUID = 5999216946208895291L;
 
-	/** Cache for MMenu */
-	private static CCache<Integer, MMenu>	cache_menu			= new CCache<Integer, MMenu>(MMenu.Table_Name, "CacheMenu", 50);
+	/** Cache */
+	private static ImmutableIntPOCache<Integer, MMenu>	s_cache				= new ImmutableIntPOCache<Integer, MMenu>(Table_Name, 50);
 
 	/**
-	 * Get Menu object
+	 * Get Menu method from cache
 	 * 
-	 * @param  AD_Menu_ID
-	 * @return            {@link MMenu}
+	 * @param AD_Menu_ID menu id
 	 */
 	public static MMenu get(int AD_Menu_ID)
 	{
-		if (cache_menu.containsKey(AD_Menu_ID))
-			return cache_menu.get(AD_Menu_ID);
+		return get(Env.getCtx(), AD_Menu_ID);
+	}
 
-		MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(AD_Menu_ID, null);
-		cache_menu.put(AD_Menu_ID, menu);
+	/**
+	 * Get Menu method from cache
+	 * 
+	 * @param ctx
+	 * @param AD_Menu_ID menu id
+	 */
+	public static MMenu get(Properties ctx, int AD_Menu_ID)
+	{
+		if (s_cache.containsKey(AD_Menu_ID))
+			return s_cache.get(ctx, AD_Menu_ID, e -> new MMenu(Env.getCtx(), e));
 
-		return menu;
-	} // get
+		MMenu menu = new MMenu(Env.getCtx(), AD_Menu_ID, (String)null);
+		if (menu.get_ID() == AD_Menu_ID)
+		{
+			s_cache.put(AD_Menu_ID, menu, e -> new MMenu(Env.getCtx(), e));
+			return menu;
+		}
+		return null;
+	}
+
+	/**
+	 * @param ctx
+	 * @param copy
+	 */
+	public MMenu(Properties ctx, MMenu copy)
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MMenu(Properties ctx, MMenu copy, String trxName)
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 
 	/**
 	 * Get menues with where clause
@@ -216,6 +250,15 @@ public class MMenu extends X_AD_Menu
 			DB.close(rs, pstmt);
 		}
 		return retValue;
+	}
+
+	@Override
+	public PO markImmutable() {
+		if(is_Immutable())
+			return this;
+		
+		makeImmutable();
+		return this;
 	}
 	
 }	//	MMenu
