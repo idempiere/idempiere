@@ -40,12 +40,9 @@
       var me = this;
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
     	  if (me.trace)
-    		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown);
+    		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
     	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound") {
-	          if (typeof console == "object") {
-	        	  console.error(textStatus);
-	              console.error(errorThrown);
-	          }
+	          console.error("error: " + textStatus + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
 	          me.failures += 1;
     	  }
       };
@@ -69,7 +66,7 @@
       };
     },
     _schedule: function() {
-      if (this.failures < 20) {
+      if (this.failures < 5) {
     	this._req = null;
         setTimeout(this.proxy(this._send), this.delay);
       } else {
