@@ -31,21 +31,28 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.IModelFactory;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.X_Test;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
+import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.model.MappedModelFactory;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.TestActivator;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.osgi.framework.BundleContext;
 
 /**
  * @author hengsin
  *
  */
+@TestMethodOrder(OrderAnnotation.class)
 public class MappedModelFactoryTest extends AbstractTestCase {
 
 	/**
@@ -55,19 +62,32 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 	}
 
 	@Test
-	public void testModelFactory() {
+	@Order(1)
+	public void testDefaultMappedModelFactory() {
+		IMappedModelFactory mappedFactory = Core.getMappedModelFactory();
+		mappedFactory.addMapping(MyTest.Table_Name, () -> MyTest.class, (id, trxName) -> new MyTest(Env.getCtx(), id, trxName), 
+				(rs, trxName) -> new MyTest(Env.getCtx(), rs, trxName));		
+		PO po = MTable.get(MyTest.Table_ID).getPO(0, getTrxName());
+		assertTrue(po instanceof MyTest, "PO not instanceof MyTest. PO.className="+po.getClass().getName());
+	}
+	
+	@Test
+	@Order(2)
+	public void testCustomMappedModelFactory() {
 		BundleContext bc = TestActivator.context;
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
-		properties.put("service.ranking", Integer.valueOf(1));
-		bc.registerService(IModelFactory.class, new MyFactory(), properties);		
-		PO po = MTable.get(MyTest.Table_ID).getPO(0, getTrxName());
-		assertTrue(po instanceof MyTest, "PO not instanceof MyTest");
+		properties.put("service.ranking", Integer.valueOf(2));
+		bc.registerService(IModelFactory.class, new MyFactory(), properties);	
+		CacheMgt.get().reset();
+		PO po = MTable.get(MyTest2.Table_ID).getPO(0, getTrxName());
+		assertTrue(po instanceof MyTest2, "PO not instanceof MyTest2. PO.className="+po.getClass().getName());
 	}
 	
 	private final static class MyFactory extends MappedModelFactory {
 		
 		public MyFactory() {
-			add(MyTest.Table_Name, () -> MyTest.class, (id, trxName) -> new MyTest(Env.getCtx(), id, trxName), (rs, trxName) -> new MyTest(Env.getCtx(), rs, trxName));
+			addMapping(MyTest2.Table_Name, () -> MyTest2.class, (id, trxName) -> new MyTest2(Env.getCtx(), id, trxName), 
+					(rs, trxName) -> new MyTest2(Env.getCtx(), rs, trxName));
 		}
 		
 	}
@@ -84,6 +104,22 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 		}
 
 		public MyTest(Properties ctx, ResultSet rs, String trxName) {
+			super(ctx, rs, trxName);
+		}				
+	}	
+	
+	private final static class MyTest2 extends X_Test {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2010413233032792416L;
+
+		public MyTest2(Properties ctx, int Test_ID, String trxName) {
+			super(ctx, Test_ID, trxName);
+		}
+
+		public MyTest2(Properties ctx, ResultSet rs, String trxName) {
 			super(ctx, rs, trxName);
 		}				
 	}	
