@@ -1,16 +1,20 @@
 package org.adempiere.pipo2;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MColumn;
+import org.compiere.model.MImage;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
@@ -408,7 +412,30 @@ public class PoFiller{
 						throw new AdempiereException(e.getLocalizedMessage(), e);
 					}
 				}
-				po.set_ValueNoCheck(qName, data);
+				if ("BinaryData".equals(qName) && data instanceof byte[]) {
+					if (po instanceof MArchive) {
+						/* it comes as a zip file with a single PDF file */
+					    byte[] output = null;
+					    try (ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream((byte[]) data));) {
+							if (zipStream.getNextEntry() != null) {
+								output = zipStream.readAllBytes();
+							}
+						} catch (Exception e) {
+							throw new AdempiereException(e.getLocalizedMessage(), e);
+						}
+						if (output != null) {
+						    ((MArchive) po).setBinaryData((byte[]) output);
+						} else {
+							throw new AdempiereException("Zip file for Archive could not be decompressed");
+						}
+					} else if (po instanceof MImage) {
+						((MImage) po).setBinaryData((byte[]) data);
+					} else {
+						po.set_ValueNoCheck(qName, data);
+					}
+				} else {
+					po.set_ValueNoCheck(qName, data);
+				}
 			}
 		}
 	}
