@@ -50,10 +50,10 @@ import org.osgi.service.event.Event;
  */
 public class MPInstance extends X_AD_PInstance
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 558778359873793799L;
+	private static final long serialVersionUID = -2452949050528682911L;
 
 	public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
@@ -229,13 +229,14 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param P_Number number
 	 *	@param P_Msg msg
 	 */
-	public void addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg)
+	public MPInstanceLog addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg)
 	{
 		MPInstanceLog logEntry = new MPInstanceLog (getAD_PInstance_ID(), m_log.size()+1,
 			P_Date, P_ID, P_Number, P_Msg);
 		m_log.add(logEntry);
 		//	save it to DB ?
 	//	log.saveEx();
+		return logEntry;
 	}	//	addLog
 
 	
