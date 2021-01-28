@@ -1261,9 +1261,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					}
 					if (attachment != null)
 						attachment.saveEx();
-					MPInstanceLog il = instance.addLog(null, 0, null, Msg.parseTranslation(m_ctx, "@Created@ @AD_Note_ID@ " + note.getAD_Note_ID()));
-					il.setAD_Table_ID(MNote.Table_ID);
-					il.setRecord_ID(note.getAD_Note_ID());
+					MPInstanceLog il = instance.addLog(null, 0, null, Msg.parseTranslation(m_ctx, "@Created@ @AD_Note_ID@ " + note.getAD_Note_ID()),
+							MNote.Table_ID, note.getAD_Note_ID());
 					il.saveEx();
 				}
 			} catch (Exception e) {
