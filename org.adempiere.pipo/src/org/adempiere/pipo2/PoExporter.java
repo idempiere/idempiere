@@ -1,12 +1,20 @@
 package org.adempiere.pipo2;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Org;
+import org.compiere.model.MArchive;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MClientInfo;
+import org.compiere.model.MImage;
+import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree;
 import org.compiere.model.PO;
@@ -294,6 +302,39 @@ public class PoExporter {
 			return;
 		}
 
+		if ("BinaryData".equals(columnName)) {
+			MClientInfo ci = MClientInfo.get(po.getAD_Client_ID());
+			if (po.get_Table_ID() == MAttachment.Table_ID && ci.getAD_StorageProvider_ID() > 0) {
+				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getAD_StorageProvider_ID(), po.get_TrxName());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName());
+					File tmpfile = att.saveAsZip();
+					try {
+						value = Files.readAllBytes(tmpfile.toPath());
+					} catch (IOException e) {
+						throw new AdempiereException(e);
+					}
+				}
+			} else if (po.get_Table_ID() == MImage.Table_ID && ci.getStorageImage_ID() > 0) {
+				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageImage_ID(), po.get_TrxName());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MImage image = new MImage(po.getCtx(), po.get_ID(), po.get_TrxName());
+					value = image.getBinaryData();
+				}
+			} else if (po.get_Table_ID() == MArchive.Table_ID && ci.getStorageArchive_ID() > 0) {
+				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageArchive_ID(), po.get_TrxName());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MArchive archive = new MArchive(po.getCtx(), po.get_ID(), po.get_TrxName());
+					File tmpfile = archive.saveAsZip();
+					try {
+						value = Files.readAllBytes(tmpfile.toPath());
+					} catch (IOException e) {
+						throw new AdempiereException(e);
+					}
+				}
+			}
+		}
+		
 		PackOut packOut = ctx.packOut;
 		byte[] data = null;
 		String dataType = null;
