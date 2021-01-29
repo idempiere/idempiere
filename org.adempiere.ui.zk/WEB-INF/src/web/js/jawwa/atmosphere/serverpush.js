@@ -43,7 +43,12 @@
     		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
     	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound") {
 	          console.error("error: " + textStatus + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
-	          me.failures += 1;
+	          //stop immediately if server is not reachable
+	          if (jqxhr.status == 404 || jqxhr.status == 0) {
+	          	me.failures = 3;
+	          } else {
+	          	me.failures += 1;
+	          }
     	  }
       };
       this.ajaxOptions.success = function(data) {
@@ -66,7 +71,7 @@
       };
     },
     _schedule: function() {
-      if (this.failures < 5) {
+      if (this.failures < 3) {
     	this._req = null;
         setTimeout(this.proxy(this._send), this.delay);
       } else {
