@@ -66,6 +66,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MNote;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstanceLog;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
@@ -1260,6 +1261,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					}
 					if (attachment != null)
 						attachment.saveEx();
+					MPInstanceLog il = instance.addLog(null, 0, null, Msg.parseTranslation(m_ctx, "@Created@ @AD_Note_ID@ " + note.getAD_Note_ID()),
+							MNote.Table_ID, note.getAD_Note_ID());
+					il.saveEx();
 				}
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage());				
