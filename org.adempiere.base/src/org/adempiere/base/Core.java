@@ -55,6 +55,7 @@ import org.idempiere.distributed.IMessageService;
 import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
+import org.idempiere.model.IMappedModelFactory;
 
 /**
  * This is a facade class for the Service Locator.
@@ -923,5 +924,25 @@ public class Core {
 		}
 		return ids;
 	}
-		
+
+	private static IServiceReferenceHolder<IMappedModelFactory> s_mappedModelFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedModelFactory}
+	 */
+	public static IMappedModelFactory getMappedModelFactory(){
+		IMappedModelFactory modelFactoryService = null;
+		if (s_mappedModelFactoryReference != null) {
+			modelFactoryService = s_mappedModelFactoryReference.getService();
+			if (modelFactoryService != null)
+				return modelFactoryService;
+		}
+		IServiceReferenceHolder<IMappedModelFactory> serviceReference = Service.locator().locate(IMappedModelFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			modelFactoryService = serviceReference.getService();
+			s_mappedModelFactoryReference = serviceReference;
+		}
+		return modelFactoryService;
+	}
 }
