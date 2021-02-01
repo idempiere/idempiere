@@ -45,6 +45,7 @@ import org.compiere.model.MTree_Base;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserPreference;
 import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 
 
@@ -1310,10 +1311,16 @@ public class Login
 				.append("         AND c.IsActive='Y') AND ")
 				.append(" AD_User.IsActive='Y'");
 		
-		List<MUser> users = new Query(m_ctx, MUser.Table_Name, where.toString(), null)
-			.setParameters(app_user)
-			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
-			.list();
+		List<MUser> users = null;
+		try {
+			PO.setCrossTenantSafe();
+			users = new Query(m_ctx, MUser.Table_Name, where.toString(), null)
+					.setParameters(app_user)
+					.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+					.list();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 		
 		if (users.size() == 0) {
 			log.saveError("UserPwdError", app_user, false);
