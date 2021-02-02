@@ -945,4 +945,25 @@ public class Core {
 		}
 		return modelFactoryService;
 	}
+	
+	private static IServiceReferenceHolder<IMappedColumnCalloutFactory> s_mappedColumnCalloutFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedColumnCalloutFactory}
+	 */
+	public static IMappedColumnCalloutFactory getMappedColumnCalloutFactory() {
+		IMappedColumnCalloutFactory factoryService = null;
+		if (s_mappedColumnCalloutFactoryReference != null) {
+			factoryService = s_mappedColumnCalloutFactoryReference.getService();
+			if (factoryService != null)
+				return factoryService;
+		}
+		IServiceReferenceHolder<IMappedColumnCalloutFactory> serviceReference = Service.locator().locate(IMappedColumnCalloutFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			factoryService = serviceReference.getService();
+			s_mappedColumnCalloutFactoryReference = serviceReference;
+		}
+		return factoryService;
+	}
 }
