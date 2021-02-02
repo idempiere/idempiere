@@ -56,6 +56,7 @@ import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
+import org.idempiere.process.IMappedProcessFactory;
 
 /**
  * This is a facade class for the Service Locator.
@@ -944,5 +945,26 @@ public class Core {
 			s_mappedModelFactoryReference = serviceReference;
 		}
 		return modelFactoryService;
+	}
+	
+	private static IServiceReferenceHolder<IMappedProcessFactory> s_mappedProcessFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedProcessFactory}
+	 */
+	public static IMappedProcessFactory getMappedProcessFactory(){
+		IMappedProcessFactory processFactoryService = null;
+		if (s_mappedProcessFactoryReference != null) {
+			processFactoryService = s_mappedProcessFactoryReference.getService();
+			if (processFactoryService != null)
+				return processFactoryService;
+		}
+		IServiceReferenceHolder<IMappedProcessFactory> serviceReference = Service.locator().locate(IMappedProcessFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			processFactoryService = serviceReference.getService();
+			s_mappedProcessFactoryReference = serviceReference;
+		}
+		return processFactoryService;
 	}
 }
