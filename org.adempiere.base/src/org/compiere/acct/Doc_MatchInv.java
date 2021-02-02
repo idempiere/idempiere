@@ -510,7 +510,11 @@ public class Doc_MatchInv extends Doc
 		return false;
 	}
 
-	// Elaine 2008/6/20	
+	/**
+	 * Create cost detail for match invoice
+	 * @param as accounting schema
+	 * @return error message or null
+	 */
 	private String createMatchInvCostDetail(MAcctSchema as)
 	{
 		if (m_invoiceLine != null && m_invoiceLine.get_ID() > 0 
@@ -630,6 +634,11 @@ public class Doc_MatchInv extends Doc
 		return "";
 	}
 	
+	/**
+	 * Create Facts for material shipment
+	 * @param as accounting schema
+	 * @return Fact
+	 */
 	private ArrayList<Fact> createMatShipmentFacts(MAcctSchema as) {
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		// invoice gain/loss accounting fact line list
@@ -877,6 +886,11 @@ public class Doc_MatchInv extends Doc
 		return facts;
 	}
 	
+	/**
+	 * Create Facts for credit memo
+	 * @param as accounting schema
+	 * @return Fact
+	 */
 	public ArrayList<Fact> createCreditMemoFacts(MAcctSchema as) {
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		// invoice gain/loss accounting fact line list
@@ -1195,6 +1209,18 @@ public class Doc_MatchInv extends Doc
 		factLine.setQty(getQty());
 	}
 	
+	/**
+	 * Create Gain/Loss for invoice
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @param invoice
+	 * @param matchInvSource
+	 * @param matchInvAccounted
+	 * @param invGainLossFactLines gain/loss fact lines for invoice
+	 * @param htFactLineInv C_Invoice_ID and the fact lines
+	 * @return error message or null
+	 */
 	private String createInvoiceGainLoss(MAcctSchema as, Fact fact, MAccount acct, 
 			MInvoice invoice, BigDecimal matchInvSource, BigDecimal matchInvAccounted, 
 			ArrayList<FactLine> invGainLossFactLines, HashMap<Integer, ArrayList<FactLine>> htFactLineInv)
@@ -1273,6 +1299,13 @@ public class Doc_MatchInv extends Doc
 		return null;
 	}	//	createInvoiceGainLoss
 	
+	/**
+	 * Create Gain/Loss and Rounding Correction for reverse invoice 
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @return error message or null
+	 */
 	private String createReversalInvoiceGainLossRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct)
 	{
 		if (m_matchInv.getReversal_ID() == 0)
@@ -1302,6 +1335,17 @@ public class Doc_MatchInv extends Doc
 		return null;
 	}
 	
+	/**
+	 * Create Rounding Correction for invoice
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @param invGainLossFactLines gain/loss fact lines for invoice
+	 * @param invList invoice list
+	 * @param invLineList invoice line list
+	 * @param htFactLineInv C_Invoice_ID and the fact lines
+	 * @return error message or null
+	 */
 	private String createInvoiceRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
 			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, ArrayList<MInvoiceLine> invLineList,
 			HashMap<Integer, ArrayList<FactLine>> htFactLineInv) 
@@ -1711,6 +1755,19 @@ public class Doc_MatchInv extends Doc
 		return null;
 	}
 	
+	/**
+	 * Create Rounding Correction for invoice line
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @param invGainLossFactLines gain/loss fact lines for invoice
+	 * @param invList invoice list
+	 * @param invLineList invoice line list
+	 * @param htFactLineInv C_Invoice_ID and the fact lines
+	 * @param invRoundingLines rounding correction fact lines for invoice
+	 * @param htRoundingLineInv C_Invoice_ID and the correction fact lines
+	 * @return error message or null
+	 */
 	private boolean createInvoiceLineRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
 			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, ArrayList<MInvoiceLine> invLineList,
 			HashMap<Integer, ArrayList<FactLine>> htFactLineInv, ArrayList<FactLine> invRoundingLines, HashMap<Integer, ArrayList<FactLine>> htRoundingLineInv) 
@@ -1967,6 +2024,18 @@ public class Doc_MatchInv extends Doc
 		return isLineFullyMatched;
 	}
 	
+	/**
+	 * Create Gain/Loss for receipt
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @param receipt
+	 * @param matchInvSource
+	 * @param matchInvAccounted
+	 * @param mrGainLossFactLines gain/loss fact lines for receipt
+	 * @param mrFactLines fact lines for receipt
+	 * @return error message or null
+	 */
 	private String createReceiptGainLoss(MAcctSchema as, Fact fact, MAccount acct, 
 			MInOut receipt, BigDecimal matchInvSource, BigDecimal matchInvAccounted,
 			ArrayList<FactLine> mrGainLossFactLines, ArrayList<FactLine> mrFactLines)
@@ -2037,6 +2106,13 @@ public class Doc_MatchInv extends Doc
 		return null;
 	}	//	createReceiptGainLoss
 	
+	/**
+	 * Create Gain/Loss and Rounding Correction for reverse receipt
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @return error message or null
+	 */
 	private String createReversalReceiptGainLossRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct)
 	{
 		if (m_matchInv.getReversal_ID() == 0)
@@ -2066,6 +2142,15 @@ public class Doc_MatchInv extends Doc
 		return null;
 	}
 	
+	/**
+	 * Create Rounding Correction for receipt
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @param mrGainLossFactLines gain/loss fact lines for receipt
+	 * @param mrFactLines fact lines for receipt
+	 * @return error message or null
+	 */
 	private String createReceiptRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
 			ArrayList<FactLine> mrGainLossFactLines, ArrayList<FactLine> mrFactLines) 
 	{
@@ -2357,6 +2442,16 @@ public class Doc_MatchInv extends Doc
 		return null;
 	}
 	
+	/**
+	 * Create Rounding Correction for receipt line
+	 * @param as accounting schema
+	 * @param fact
+	 * @param acct
+	 * @param mrGainLossFactLines gain/loss fact lines for receipt
+	 * @param mrFactLines fact lines for receipt
+	 * @param mrRoundingLines rounding correction fact lines for receipt
+	 * @return error message or null
+	 */
 	private boolean createReceiptLineRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
 			ArrayList<FactLine> mrGainLossFactLines, ArrayList<FactLine> mrFactLines, ArrayList<FactLine> mrRoundingLines) 
 	{
