@@ -191,6 +191,7 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 	@Override
 	public void setReadWrite(boolean readWrite) {
 		getComponent().setReadonly(!readWrite);
+		getComponent().setButtonVisible(readWrite);
 	}
 
 	@Override

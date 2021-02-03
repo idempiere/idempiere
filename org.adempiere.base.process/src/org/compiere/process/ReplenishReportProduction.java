@@ -835,7 +835,7 @@ public class ReplenishReportProduction extends SvrProcess
 				production.setM_Locator_ID(wh.getDefaultLocator().get_ID());
 				production.setM_Product_ID(replenish.getM_Product_ID());
 				production.setProductionQty(qty);
-				production.setMovementDate(Env.getContextAsDate(getCtx(), "#Date"));
+				production.setMovementDate(Env.getContextAsDate(getCtx(), Env.DATE));
 				production.saveEx();
 
 				production.createLines(false);

@@ -988,7 +988,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	}	//	reverseCorrectIt
 
 	protected MInventory reverse(boolean accrual) {
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}

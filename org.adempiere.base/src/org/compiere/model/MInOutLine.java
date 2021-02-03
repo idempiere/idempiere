@@ -557,7 +557,7 @@ public class MInOutLine extends X_M_InOutLine
 		}
 		//	UOM
 		if (getC_UOM_ID() == 0)
-			setC_UOM_ID (Env.getContextAsInt(getCtx(), "#C_UOM_ID"));
+			setC_UOM_ID (Env.getContextAsInt(getCtx(), Env.C_UOM_ID));
 		if (getC_UOM_ID() == 0)
 		{
 			int C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());

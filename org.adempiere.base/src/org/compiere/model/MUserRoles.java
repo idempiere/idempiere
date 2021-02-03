@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
@@ -61,9 +62,9 @@ public class MUserRoles extends X_AD_User_Roles
 	 */
 	public static MUserRoles[] getOfUser (Properties ctx, int AD_User_ID)
 	{
-		final String whereClause = I_AD_User_Roles.COLUMNNAME_AD_User_ID+"=?";	
+		final String whereClause = I_AD_User_Roles.COLUMNNAME_AD_User_ID+"=? AND AD_Client_ID IN (0, ?)";	
 		List<MUserRoles> list = new Query(ctx,I_AD_User_Roles.Table_Name,whereClause,null)
-		.setParameters(AD_User_ID)
+		.setParameters(new Object[]{AD_User_ID, Env.getAD_Client_ID(ctx)})
 		.list();
 		MUserRoles[] retValue = new MUserRoles[list.size ()];
 		list.toArray (retValue);

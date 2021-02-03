@@ -346,7 +346,7 @@ public class CalloutPayment extends CalloutEngine
 				}
 				else if (baseCurrencyRate.signum() == 0)
 				{
-					int baseCurrencyId = Env.getContextAsInt(ctx, "$C_Currency_ID");
+					int baseCurrencyId = Env.getContextAsInt(ctx, Env.C_CURRENCY_ID);
 					Timestamp dateAcct = (Timestamp) mTab.getValue(I_C_Payment.COLUMNNAME_DateAcct);
 					baseCurrencyRate = MConversionRate.getRate(C_Currency_ID, baseCurrencyId, dateAcct, C_ConversionType_ID, AD_Client_ID, AD_Org_ID);
 					if (baseCurrencyRate == null) 
@@ -592,7 +592,7 @@ public class CalloutPayment extends CalloutEngine
 			Boolean override = (Boolean)(colName.equals(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate) ? value : mTab.getValue(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate));
 			if (override == null)
 				override = Boolean.FALSE;
-			int baseCurrencyId = Env.getContextAsInt(ctx, "$C_Currency_ID");
+			int baseCurrencyId = Env.getContextAsInt(ctx, Env.C_CURRENCY_ID);
 			if (baseCurrencyId == C_Currency_ID) {
 				mTab.setValue(I_C_Payment.COLUMNNAME_IsOverrideCurrencyRate, false);
 				mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, null);

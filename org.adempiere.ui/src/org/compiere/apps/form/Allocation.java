@@ -78,7 +78,7 @@ public class Allocation
 
 	public void dynInit() throws Exception
 	{
-		m_C_Currency_ID = Env.getContextAsInt(Env.getCtx(), "$C_Currency_ID");   //  default
+		m_C_Currency_ID = Env.getContextAsInt(Env.getCtx(), Env.C_CURRENCY_ID);   //  default
 		//
 		if (log.isLoggable(Level.INFO)) log.info("Currency=" + m_C_Currency_ID);
 		
@@ -656,7 +656,7 @@ public class Allocation
 		
 		//	Create Allocation
 		MAllocationHdr alloc = new MAllocationHdr (Env.getCtx(), true,	//	manual
-			DateTrx, C_Currency_ID, Env.getContext(Env.getCtx(), "#AD_User_Name"), trxName);
+			DateTrx, C_Currency_ID, Env.getContext(Env.getCtx(), Env.AD_USER_NAME), trxName);
 		alloc.setAD_Org_ID(AD_Org_ID);
 		alloc.setC_DocType_ID(m_C_DocType_ID);
 		alloc.setDescription(alloc.getDescriptionForManualAllocation(m_C_BPartner_ID, trxName));

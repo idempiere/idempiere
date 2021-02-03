@@ -126,7 +126,7 @@ public class InvoiceGenerate extends SvrProcess
 
 		//	Login Date
 		if (p_DateInvoiced == null)
-			p_DateInvoiced = Env.getContextAsDate(getCtx(), "#Date");
+			p_DateInvoiced = Env.getContextAsDate(getCtx(), Env.DATE);
 		if (p_DateInvoiced == null)
 			p_DateInvoiced = new Timestamp(System.currentTimeMillis());
 

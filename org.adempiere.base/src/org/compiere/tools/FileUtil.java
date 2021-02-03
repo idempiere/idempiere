@@ -432,7 +432,7 @@ public class FileUtil
 		String dt = sdf.format(cal.getTime());
 		String cleanName = subject.replaceAll("[ &/]", "");
 		String localFile = System.getProperty("java.io.tmpdir")
-				+ System.getProperty("file.separator") + cleanName + "_" + dt + "_" + Env.getContext(Env.getCtx(), "#AD_Session_ID")
+				+ System.getProperty("file.separator") + cleanName + "_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID)
 				+ extension;
 		return localFile;
 	}

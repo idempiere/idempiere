@@ -190,11 +190,23 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	 */
 	public static MLocator get (Properties ctx, int M_Locator_ID)
 	{
+		return get(ctx, M_Locator_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Locator from Cache (immutable)
+	 *  @param ctx context
+	 *	@param M_Locator_ID id
+	 *  @param trxName
+	 *	@return MLocator
+	 */
+	public static MLocator get (Properties ctx, int M_Locator_ID, String trxName)
+	{
 		Integer key = Integer.valueOf(M_Locator_ID);
 		MLocator retValue = s_cache.get (ctx, key, e -> new MLocator(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MLocator (ctx, M_Locator_ID, (String)null);
+		retValue = new MLocator (ctx, M_Locator_ID, trxName);
 		if (retValue.get_ID () == M_Locator_ID)
 		{
 			s_cache.put (key, retValue, e -> new MLocator(Env.getCtx(), e));

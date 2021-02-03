@@ -199,9 +199,18 @@ public class DBException extends AdempiereException
      * @param e
      */
     public static boolean isTimeout(Exception e) {
-    	if (DB.isPostgreSQL())
-    		return isSQLState(e, "57014");
-    	return isErrorCode(e, 1013);
+    	SQLException se = null;
+    	if (e instanceof SQLException) {
+    		se = (SQLException) e;
+    	} else if (e.getCause() != null && e.getCause() instanceof SQLException) {
+    		se = (SQLException) e.getCause();
+    	}
+    	
+    	if (se != null) {
+    		return DB.getDatabase().isQueryTimeout(se);
+    	} else {
+    		return false;
+    	}
     }
     
     /**

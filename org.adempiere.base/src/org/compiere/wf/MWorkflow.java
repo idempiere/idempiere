@@ -995,9 +995,9 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		
 		
 		/**
-		Env.setContext(Env.getCtx(), "#AD_Client_ID ", "11");
-		Env.setContext(Env.getCtx(), "#AD_Org_ID ", "11");
-		Env.setContext(Env.getCtx(), "#AD_User_ID ", "100");
+		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, "11");
+		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, "11");
+		Env.setContext(Env.getCtx(), Env.AD_USER_ID, "100");
 		//
 		int AD_Workflow_ID = 115;			//	Requisition WF
 		int M_Requsition_ID = 100;

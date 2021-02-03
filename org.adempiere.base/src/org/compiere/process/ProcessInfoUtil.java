@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.compiere.model.MPInstanceLog;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -165,37 +166,10 @@ public class ProcessInfoUtil
 		}
 		for (int i = 0; i < logs.length; i++)
 		{
-			StringBuilder sql = new StringBuilder ("INSERT INTO AD_PInstance_Log "
-				+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID,Record_ID)"
-				+ " VALUES (");
-			sql.append(pi.getAD_PInstance_ID()).append(",")
-				.append(logs[i].getLog_ID()).append(",");
-			if (logs[i].getP_Date() == null)
-				sql.append("NULL,");
-			else
-				sql.append(DB.TO_DATE(logs[i].getP_Date(), false)).append(",");
-			if (logs[i].getP_ID() == 0)
-				sql.append("NULL,");
-			else
-				sql.append(logs[i].getP_ID()).append(",");
-			if (logs[i].getP_Number() == null)
-				sql.append("NULL,");
-			else
-				sql.append(logs[i].getP_Number()).append(",");
-			if (logs[i].getP_Msg() == null)
-				sql.append("NULL,");
-			else
-				sql.append(DB.TO_STRING(logs[i].getP_Msg(),2000)).append(",");
-			if (logs[i].getAD_Table_ID() == 0)
-				sql.append("NULL,");
-			else
-				sql.append(logs[i].getAD_Table_ID()).append(",");
-			if (logs[i].getRecord_ID() == 0)
-				sql.append("NULL)");
-			else
-				sql.append(logs[i].getRecord_ID()).append(")");
-//
-			DB.executeUpdate(sql.toString(), null);
+			MPInstanceLog il = new MPInstanceLog(pi.getAD_PInstance_ID(), logs[i].getLog_ID(), logs[i].getP_Date(),
+					logs[i].getP_ID(), logs[i].getP_Number(), logs[i].getP_Msg(),
+					logs[i].getAD_Table_ID(), logs[i].getRecord_ID());
+			il.save();
 		}
 		pi.setLogList(null);	//	otherwise log entries are twice
 	}   //  saveLogToDB

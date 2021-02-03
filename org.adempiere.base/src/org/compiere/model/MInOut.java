@@ -2226,7 +2226,7 @@ public class MInOut extends X_M_InOut implements DocAction
 
 	protected MInOut reverse(boolean accrual) {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getDateAcct();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
@@ -2496,7 +2496,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	public int getC_Currency_ID ()
 	{
-		return Env.getContextAsInt(getCtx(),"$C_Currency_ID");
+		return Env.getContextAsInt(getCtx(),Env.C_CURRENCY_ID);
 	}	//	getC_Currency_ID
 
 	/**

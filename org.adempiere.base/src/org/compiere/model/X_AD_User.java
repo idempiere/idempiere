@@ -31,7 +31,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20201231L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -63,6 +63,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			setIsShipTo (false);
 // N
 			setIsSupportUser (false);
+// N
+			setIsVendorLead (false);
 // N
 			setName (null);
 			setNotificationType (null);
@@ -881,6 +883,30 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public boolean isSupportUser () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsSupportUser);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Vendor Lead.
+		@param IsVendorLead 
+		This contact is a vendor lead
+	  */
+	public void setIsVendorLead (boolean IsVendorLead)
+	{
+		set_Value (COLUMNNAME_IsVendorLead, Boolean.valueOf(IsVendorLead));
+	}
+
+	/** Get Vendor Lead.
+		@return This contact is a vendor lead
+	  */
+	public boolean isVendorLead () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsVendorLead);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

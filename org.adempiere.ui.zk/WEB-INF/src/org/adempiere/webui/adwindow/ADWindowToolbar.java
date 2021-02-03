@@ -91,7 +91,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8494819673584541046L;
+	private static final long serialVersionUID = -5151981978053022864L;
 
 	public static final String BTNPREFIX = "Btn";
 	
@@ -870,6 +870,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 						}					
 					}					
 				}
+				else if (p instanceof Combobox) {
+					if (restrictName.equals(((Combobox) p).getId())) {
+						this.removeChild(p);
+						break;
+					}
+				}
 			}
 
 		}	// All restrictions
@@ -892,6 +898,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 								break;
 							}					
 						}					
+					} else if (p instanceof Combobox) {
+						if (advancedName.equals(((Combobox) p).getId())) {
+							this.removeChild(p);
+							break;
+						}
 					}
 				}
 
@@ -940,6 +951,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				if (p instanceof ToolBarButton) {
 					if (!customButtons.contains(p) && !p.isVisible())
 						p.setVisible(true);
+				} else if (p instanceof Combobox && !p.isVisible()) {
+					p.setVisible(true);
 				}
 			}
 			
@@ -958,6 +971,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 								break;
 							}					
 						}					
+					}  else if (p instanceof Combobox) {
+						if (restrictName.equals(((Combobox) p).getId())) {
+							p.setVisible(false);
+							break;
+						}
 					}
 				}
 

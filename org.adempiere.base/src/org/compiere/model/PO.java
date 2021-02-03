@@ -1689,7 +1689,7 @@ public abstract class PO
 			String colName = p_info.getColumnName(i);
 			//  Set Standard Values
 			if (colName.endsWith("tedBy"))
-				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, "#AD_User_ID"));
+				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, Env.AD_USER_ID));
 			else if (colName.equals("Created") || colName.equals("Updated"))
 				m_newValues[i] = new Timestamp (System.currentTimeMillis());
 			else if (colName.equals(p_info.getTableName() + "_ID"))    //  KeyColumn
@@ -2574,7 +2574,7 @@ public abstract class PO
 				//	If no changes set UpdatedBy explicitly to ensure commit of lob
 				if (!changes && !updatedBy)
 				{
-					int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+					int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 					set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 					sql.append("UpdatedBy=").append(AD_User_ID);
 					changes = true;
@@ -2753,7 +2753,7 @@ public abstract class PO
 			}
 			if (!updatedBy)	//	UpdatedBy not explicitly set
 			{
-				int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+				int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 				set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 				if (withValues)
 				{
@@ -3765,9 +3765,6 @@ public abstract class PO
 			return true;
 
 		String tableName = p_info.getTableName();
-		if (tableName.startsWith("AD") && getAD_Client_ID() == 0)
-			return true;
-
 		//
 		boolean trlColumnChanged = false;
 		for (int i = 0; i < p_info.getColumnCount(); i++)
@@ -3820,12 +3817,14 @@ public abstract class PO
 			}
 		}
 		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());
-		StringBuilder andlang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
-		StringBuilder andnotlang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andClientLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andNotClientLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		String baselang = Language.getBaseAD_Language();
+		StringBuilder andBaseLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(baselang));
+		StringBuilder andNotBaseLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(baselang));
 		int no = -1;
 
 		if (client.isMultiLingualDocument()) {
-			String baselang = Language.getBaseAD_Language();
 			if (client.getAD_Language().equals(baselang)) {
 				// tenant language = base language
 				// set all translations as untranslated
@@ -3837,13 +3836,14 @@ public abstract class PO
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 			} else {
 				// tenant language <> base language
-				// auto update translation for tenant language
+				// for Tenants auto update translation for tenant language
+				// for System update translation for base language (which in fact must always update zero records as there must not be translations for base)
 				StringBuilder sqlexec = new StringBuilder()
 					.append(sqlupdate)
 					.append(sqlcols)
 					.append("IsTranslated='Y'")
 					.append(whereid)
-					.append(andlang);
+					.append(getAD_Client_ID() == 0 ? andBaseLang : andClientLang);
 				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				if (no >= 0) {
@@ -3852,7 +3852,7 @@ public abstract class PO
 						.append(sqlupdate)
 						.append("IsTranslated='N'")
 						.append(whereid)
-						.append(andnotlang);
+						.append(getAD_Client_ID() == 0 ? andNotBaseLang : andNotClientLang);
 					no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 					if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				}
@@ -4977,7 +4977,7 @@ public abstract class PO
 	}
 
 	private void checkValidContext() {
-		if (getCtx().isEmpty() && getCtx().getProperty("#AD_Client_ID") == null)
+		if (getCtx().isEmpty() && getCtx().getProperty(Env.AD_CLIENT_ID) == null)
 			throw new AdempiereException("Context lost");
 	}
 
@@ -5016,9 +5016,9 @@ public abstract class PO
 					+" Env.AD_Client_ID="+envClientID
 					+" PO.AD_Client_ID="+poClientID
 					+" writing="+writing
-					+" Session="+Env.getContext(getCtx(), "#AD_Session_ID"));
+					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
 				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
-						+ Env.getContext(getCtx(), "#AD_Session_ID") + " for table " + get_TableName()
+						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
 						+ " Record_ID=" + get_ID();
 				throw new AdempiereException(message);
 			}
