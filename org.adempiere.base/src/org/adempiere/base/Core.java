@@ -56,6 +56,7 @@ import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
+import org.osgi.framework.ServiceReference;
 
 /**
  * This is a facade class for the Service Locator.
@@ -104,6 +105,7 @@ public class Core {
 	}
 	
 	private static final CCache<String, List<IServiceReferenceHolder<IColumnCalloutFactory>>> s_columnCalloutFactoryCache = new CCache<>(null, "List<IColumnCalloutFactory>", 100, false);
+	private static final CCache<String, List<ServiceReference<IColumnCalloutFactory>>> s_columnCalloutFactoryNegativeCache = new CCache<>(null, "List<IColumnCalloutFactory> Negative", 100, false);
 
 	/**
 	 *
@@ -115,49 +117,61 @@ public class Core {
 		List<IColumnCallout> list = new ArrayList<IColumnCallout>();
 		
 		String cacheKey = tableName + "." + columnName;
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> cache = s_columnCalloutFactoryCache.get(cacheKey);
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> cache = s_columnCalloutFactoryCache.get(cacheKey);		
+		List<ServiceReference<IColumnCalloutFactory>> negativeCache = s_columnCalloutFactoryNegativeCache.get(cacheKey);
+		List<ServiceReference<IColumnCalloutFactory>> negativeServiceReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
+		if (negativeCache != null) {
+			negativeServiceReferences.addAll(negativeCache);
+		}
+		List<ServiceReference<IColumnCalloutFactory>> cacheReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> positiveReferenceHolders = new ArrayList<>();
 		if (cache != null) {
-			boolean staleReference = false;
-			for (IServiceReferenceHolder<IColumnCalloutFactory> factory : cache) {
-				IColumnCalloutFactory service = factory.getService();
+			for (IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : cache) {
+				cacheReferences.add(referenceHolder.getServiceReference());
+				IColumnCalloutFactory service = referenceHolder.getService();
 				if (service != null) {
 					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
 					if (callouts != null && callouts.length > 0) {
 						for(IColumnCallout callout : callouts) {
 							list.add(callout);
 						}
-					} else {						
-						staleReference = true;
-						break;
+						positiveReferenceHolders.add(referenceHolder);
+					} else {
+						negativeServiceReferences.add(referenceHolder.getServiceReference());
 					}
-				} else {
-					staleReference = true;
-					break;
 				}
 			}
-			if (!staleReference)
-				return list;
-			else
-				s_columnCalloutFactoryCache.remove(cacheKey);
 		}
 		
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> factories = Service.locator().list(IColumnCalloutFactory.class).getServiceReferences();
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> found = new ArrayList<>();
-		if (factories != null) {
-			for(IServiceReferenceHolder<IColumnCalloutFactory> factory : factories) {
-				IColumnCalloutFactory service = factory.getService();
+		int positiveAdded = 0;		
+		int negativeAdded = 0;
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> referenceHolders = Service.locator().list(IColumnCalloutFactory.class).getServiceReferences();		
+		if (referenceHolders != null) {
+			for(IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : referenceHolders) {
+				if (cacheReferences.contains(referenceHolder.getServiceReference()) || negativeServiceReferences.contains(referenceHolder.getServiceReference()))
+					continue;
+				IColumnCalloutFactory service = referenceHolder.getService();
 				if (service != null) {
 					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
 					if (callouts != null && callouts.length > 0) {
 						for(IColumnCallout callout : callouts) {
 							list.add(callout);						
 						}
-						found.add(factory);
+						positiveReferenceHolders.add(referenceHolder);
+						positiveAdded++;
+					} else {
+						negativeServiceReferences.add(referenceHolder.getServiceReference());
+						negativeAdded++;
 					}
 				}
-			}
-			s_columnCalloutFactoryCache.put(cacheKey, found);
+			}			
 		}
+		
+		if (cache == null || cache.size() != positiveReferenceHolders.size() || positiveAdded > 0)
+			s_columnCalloutFactoryCache.put(cacheKey, positiveReferenceHolders);
+		if (negativeCache == null || negativeCache.size() != negativeServiceReferences.size() || negativeAdded > 0)
+			s_columnCalloutFactoryNegativeCache.put(cacheKey, negativeServiceReferences);
+		
 		return list;
 	}
 

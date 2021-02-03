@@ -37,7 +37,6 @@ import org.adempiere.base.MappedColumnCalloutFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MTest;
-import org.compiere.util.CacheMgt;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.TestActivator;
 import org.junit.jupiter.api.Order;
@@ -77,7 +76,6 @@ public class MappedColumnCalloutFactoryTest extends AbstractTestCase {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("service.ranking", Integer.valueOf(1));
 		bc.registerService(IColumnCalloutFactory.class, new MyFactory(), properties);
-		CacheMgt.get().reset();
 		var list = Core.findCallout(MTest.Table_Name, MTest.COLUMNNAME_T_Amount);
 		var optional = list.stream().filter(e -> e instanceof MyTestAmountCallout2).findFirst();
 		assertTrue(optional.isPresent(), "Can't find MyTestAmountCallout2 column callout for " + MTest.Table_Name + "." + MTest.COLUMNNAME_T_Amount);
