@@ -257,6 +257,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 
 		if (Events.ON_DROP.equals(eventName)	|| Events.ON_RIGHT_CLICK.equals(eventName)
 			|| (Events.ON_CLICK.equals(eventName)	&& comp instanceof Toolbarbutton
+				&& ((Toolbarbutton) event.getTarget()).getAttribute(FavoriteSimpleTreeModel.MOBILE_TOOLBAR_CTX_MENU) != null
 				&& (boolean) ((Toolbarbutton) event.getTarget()).getAttribute(FavoriteSimpleTreeModel.MOBILE_TOOLBAR_CTX_MENU)))
 		{
 			for (EventListener<Event> listener : onDropListners)
