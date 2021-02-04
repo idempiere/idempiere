@@ -72,10 +72,10 @@ public class LoginOpenSequenceDialog extends Window
 	/** Logger */
 	protected static final CLogger	log					= CLogger.getCLogger(LoginOpenSequenceDialog.class);
 
-	private Button					bAdd				= ButtonFactory.createNamedButton("MoveRight", true, true);
-	private Button					bRemove				= ButtonFactory.createNamedButton("MoveLeft", true, true);
-	private Button					bUp					= ButtonFactory.createNamedButton("MoveUp", true, true);
-	private Button					bDown				= ButtonFactory.createNamedButton("MoveDown", true, true);
+	private Button					bAdd				= ButtonFactory.createNamedButton("Next", false, true);
+	private Button					bRemove				= ButtonFactory.createNamedButton("Previous", false, true);
+	private Button					bUp					= ButtonFactory.createNamedButton("Parent", false, true);
+	private Button					bDown				= ButtonFactory.createNamedButton("Detail", false, true);
 
 	private ConfirmPanel			confirmPanel		= new ConfirmPanel(true, false, true, false, false, false);
 
