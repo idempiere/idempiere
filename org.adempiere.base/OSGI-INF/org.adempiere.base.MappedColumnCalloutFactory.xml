@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.adempiere.base.MappedColumnCalloutFactory">
+   <property name="service.ranking" type="Integer" value="1"/>
+   <service>
+      <provide interface="org.adempiere.base.IColumnCalloutFactory"/>
+      <provide interface="org.adempiere.base.IMappedColumnCalloutFactory"/>
+   </service>
+   <implementation class="org.adempiere.base.MappedColumnCalloutFactory"/>
+</scr:component>
