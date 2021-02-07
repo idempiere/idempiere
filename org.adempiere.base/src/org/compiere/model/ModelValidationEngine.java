@@ -407,7 +407,7 @@ public class ModelValidationEngine
 
 		//now process osgi event handlers
 		Event event = EventManager.newEvent(ModelValidator.tableEventTopics[changeType],
-				new EventProperty(EventManager.EVENT_DATA, po), new EventProperty("tableName", po.get_TableName()));
+				new EventProperty(EventManager.EVENT_DATA, po), new EventProperty(EventManager.TABLE_NAME_PROPERTY, po.get_TableName()));
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
@@ -574,7 +574,7 @@ public class ModelValidationEngine
 
 		//now process osgi event handlers
 		Event event = EventManager.newEvent(ModelValidator.documentEventTopics[docTiming],
-				new EventProperty(EventManager.EVENT_DATA, po), new EventProperty("tableName", po.get_TableName()));
+				new EventProperty(EventManager.EVENT_DATA, po), new EventProperty(EventManager.TABLE_NAME_PROPERTY, po.get_TableName()));
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
@@ -724,7 +724,7 @@ public class ModelValidationEngine
 		//process osgi event handlers
 		FactsEventData eventData = new FactsEventData(schema, facts, po);
 		Event event = EventManager.newEvent(IEventTopics.ACCT_FACTS_VALIDATE,
-				new EventProperty(EventManager.EVENT_DATA, eventData), new EventProperty("tableName", po.get_TableName()));
+				new EventProperty(EventManager.EVENT_DATA, eventData), new EventProperty(EventManager.TABLE_NAME_PROPERTY, po.get_TableName()));
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
@@ -802,7 +802,8 @@ public class ModelValidationEngine
 			topic = IEventTopics.IMPORT_BEFORE_IMPORT;
 		else if (timing == ImportValidator.TIMING_BEFORE_VALIDATE)
 			topic = IEventTopics.IMPORT_BEFORE_VALIDATE;
-		Event event = EventManager.newEvent(topic, new EventProperty(EventManager.EVENT_DATA, eventData), new EventProperty("importTableName", process.getImportTableName()));
+		Event event = EventManager.newEvent(topic, new EventProperty(EventManager.EVENT_DATA, eventData), 
+				new EventProperty(EventManager.IMPORT_TABLE_NAME_PROPERTY, process.getImportTableName()));
 		EventManager.getInstance().sendEvent(event);
 	}
 
