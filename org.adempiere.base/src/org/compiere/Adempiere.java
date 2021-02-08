@@ -83,6 +83,8 @@ public final class Adempiere
 	/** 48*15 Product Image.   	*/
 	static private final String	s_file48x15		= "images/iDempiere.png";
 	static private final String	s_file48x15HR	= "images/iDempiereHR.png";
+	/** Header Logo				*/
+	static private final String	s_fileHeaderLogo= "images/header-logo.png";
 	/** Support Email           */
 	static private String		s_supportEmail	= "";
 
@@ -99,6 +101,7 @@ public final class Adempiere
 	static private Image 		s_imageLogo;
 	static private ImageIcon 	s_imageIcon32;
 	static private ImageIcon 	s_imageIconLogo;
+	static private Image		s_headerLogo;
 
 	static private final String ONLINE_HELP_URL = "http://wiki.idempiere.org";
 
@@ -392,6 +395,20 @@ public final class Adempiere
 		}
 		return s_image48x15;
 	}   //  getImageLogoSmall
+
+	/**
+	 * Get Header logo
+	 * @return Image
+	 */
+	public static Image getHeaderLogo() {
+		if (s_headerLogo == null) {
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			URL url = Core.getResourceFinder().getResource(s_fileHeaderLogo);
+			if (url != null)
+				s_headerLogo = tk.getImage(url);
+		}
+		return s_headerLogo;
+	}
 
 	/**
 	 *  Get Logo Image.
