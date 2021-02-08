@@ -1002,4 +1002,26 @@ public class Core {
 		}
 		return factoryService;
 	}
+	
+	private static IServiceReferenceHolder<IMappedDocumentFactory> s_mappedDocumentFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedDocumentFactory}
+	 */
+	public static IMappedDocumentFactory getMappedDocumentFactory() {
+		IMappedDocumentFactory factoryService = null;
+		if (s_mappedDocumentFactoryReference != null) {
+			factoryService = s_mappedDocumentFactoryReference.getService();
+			if (factoryService != null)
+				return factoryService;
+		}
+		
+		IServiceReferenceHolder<IMappedDocumentFactory> serviceReference = Service.locator().locate(IMappedDocumentFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			factoryService = serviceReference.getService();
+			s_mappedDocumentFactoryReference = serviceReference;
+		}
+		return factoryService;
+	}
 }
