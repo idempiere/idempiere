@@ -101,8 +101,8 @@ public class ImportBankStatement extends SvrProcess
 
 		//	Set Client, Org, IsActive, Created/Updated
 		sql = new StringBuilder ("UPDATE I_BankStatement ")
-			  .append("SET AD_Client_ID = COALESCE (AD_Client_ID,").append (p_AD_Client_ID).append ("),")
-			  .append(" AD_Org_ID = COALESCE (AD_Org_ID,").append (p_AD_Org_ID).append ("),");
+			  .append("SET AD_Client_ID = CASE WHEN COALESCE(AD_Client_ID,0) = 0 THEN ").append (p_AD_Client_ID).append (" ELSE AD_Client_ID END,")
+			  .append(" AD_Org_ID = CASE WHEN COALESCE(AD_Org_ID,0) = 0 THEN ").append (p_AD_Org_ID).append (" ELSE AD_Org_ID END,");
 		sql.append(" IsActive = COALESCE (IsActive, 'Y'),")
 			  .append(" Created = COALESCE (Created, getDate()),")
 			  .append(" CreatedBy = COALESCE (CreatedBy, 0),")
