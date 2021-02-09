@@ -51,7 +51,8 @@ Export-Package: bsh,
  org.idempiere.cache,
  org.idempiere.distributed,
  org.idempiere.fa.service.api,
- org.idempiere.model
+ org.idempiere.model,
+ org.idempiere.process
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: com.google.zxing,

@@ -44,7 +44,7 @@
     	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound") {
 	          console.error("error: " + textStatus + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
 	          //stop immediately if server is not reachable
-	          if (jqxhr.status == 404 || jqxhr.status == 0) {
+	          if (jqxhr.status == 404) {
 	          	me.failures = 3;
 	          } else {
 	          	me.failures += 1;
