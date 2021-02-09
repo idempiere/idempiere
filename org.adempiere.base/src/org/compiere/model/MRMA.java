@@ -179,6 +179,13 @@ public class MRMA extends X_M_RMA implements DocAction
 
        if (invId <= 0)
        {
+		   /* there is no invoice connected to this order, perhaps invoice for more than one order */
+    	   /* if there is more than one invoice for this shipment take the last one, assuming if relevant information (address) was changed, the latest are actual */
+           String sqlStmt = "SELECT max (C_Invoice_ID) FROM C_Invoiceline WHERE C_Orderline_ID in (select c_orderline_id from c_orderline where C_Order_ID=?)";
+           invId = DB.getSQLValueEx(null, sqlStmt, shipment.getC_Order_ID());    	   
+       }
+       if (invId <= 0)
+       {
            return null;
        }
 
