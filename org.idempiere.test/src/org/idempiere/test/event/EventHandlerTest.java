@@ -107,13 +107,15 @@ public class EventHandlerTest extends AbstractTestCase {
 		bpartner.setC_BP_Group_ID(103);
 		bpartner.saveEx();
 		
-		assertTrue(MyBPBeforeNewDelegate.class.getName().equals(bpartner.getDescription()), "MyBPBeforeNewDelegate not called");
+		String test = Env.getContext(Env.getCtx(), MyBPBeforeNewDelegate.class.getName());
+		assertTrue(bpartner.getName().equals(test), "MyBPBeforeNewDelegate not called");
 		
 		//test2 - MyComponent.MyBpBeforeChangeDelegate using osgi component mechanism
 		bpartner.setDescription("");
 		bpartner.saveEx();
 		
-		assertTrue(MyComponent.MyBpBeforeChangeDelegate.class.getName().equals(bpartner.getDescription()), "MyComponent.MyBpBeforeChangeDelegate not called");
+		test = Env.getContext(Env.getCtx(), MyComponent.MyBpBeforeChangeDelegate.class.getName());
+		assertTrue(bpartner.toString().equals(test), "MyComponent.MyBpBeforeChangeDelegate not called");
 	}
 	
 	@Test
@@ -152,6 +154,9 @@ public class EventHandlerTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
 		Core.getEventManager().unregister(handler);
+		
+		String test = Env.getContext(Env.getCtx(), MyOrderBeforeCompleteDelegate.class.getName());
+		assertEquals(order.toString(), test, "MyOrderBeforeCompleteDelegate not called");
 	}
 	
 	@Test
@@ -171,7 +176,7 @@ public class EventHandlerTest extends AbstractTestCase {
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		order.setDateOrdered(today);
 		order.setDatePromised(today);
-		order.setDescription("testDocumentEventHandlerException");
+		order.setDescription(MyOrderBeforeCompleteDelegate.class.getName());
 		order.saveEx();
 		
 		MOrderLine line1 = new MOrderLine(order);
@@ -188,7 +193,7 @@ public class EventHandlerTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus(), "DocStatus Expected=Invalid. DocStatus Actual="+order.getDocStatus());
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());
-		assertTrue(info.getSummary() != null && info.getSummary().contains("Description not null"), "Error message not as expected=" + info.getSummary());
+		assertTrue(info.getSummary() != null && info.getSummary().contains("Test Runtime Exception"), "Error message not as expected=" + info.getSummary());
 	}
 	
 	@Test
@@ -318,8 +323,7 @@ public class EventHandlerTest extends AbstractTestCase {
 
 		@BeforeNew
 		public void beforeNew() {
-			MBPartner bp = getModel();
-			bp.setDescription(getClass().getName());
+			Env.setContext(Env.getCtx(), getClass().getName(), getModel().getName());
 		}
 	}
 	
@@ -331,11 +335,10 @@ public class EventHandlerTest extends AbstractTestCase {
 
 		@BeforeComplete
 		public void beforeComplete() {
-			if (getModel().getDescription() == null) {
-				getModel().setDescription(getClass().getName());
-				getModel().saveEx();
+			if (getClass().getName().equals(getModel().getDescription())) {
+				throw new RuntimeException("Test Runtime Exception");
 			} else {
-				throw new RuntimeException("Description not null");
+				Env.setContext(Env.getCtx(), getClass().getName(), getModel().toString());
 			}
 		}
 	}

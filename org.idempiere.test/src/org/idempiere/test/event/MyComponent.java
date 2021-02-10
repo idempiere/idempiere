@@ -29,6 +29,7 @@ import org.adempiere.base.event.annotations.ModelEventDelegate;
 import org.adempiere.base.event.annotations.ModelEventHandler;
 import org.adempiere.base.event.annotations.po.BeforeChange;
 import org.compiere.model.MBPartner;
+import org.compiere.util.Env;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
@@ -76,7 +77,7 @@ public class MyComponent {
 
 		@BeforeChange
 		public void beforeChange() {
-			getModel().setDescription(this.getClass().getName());
+			Env.setContext(Env.getCtx(), getClass().getName(), getModel().toString());
 		}
 	}
 }
