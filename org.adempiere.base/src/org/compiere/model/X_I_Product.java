@@ -33,7 +33,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210209L;
 
     /** Standard Constructor */
     public X_I_Product (Properties ctx, int I_Product_ID, String trxName)
@@ -212,6 +212,23 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Customs Tariff Number.
+		@param CustomsTariffNumber 
+		Customs Tariff Number, usually the HS-Code
+	  */
+	public void setCustomsTariffNumber (String CustomsTariffNumber)
+	{
+		set_Value (COLUMNNAME_CustomsTariffNumber, CustomsTariffNumber);
+	}
+
+	/** Get Customs Tariff Number.
+		@return Customs Tariff Number, usually the HS-Code
+	  */
+	public String getCustomsTariffNumber () 
+	{
+		return (String)get_Value(COLUMNNAME_CustomsTariffNumber);
+	}
+
 	/** Set Promised Delivery Time.
 		@param DeliveryTime_Promised 
 		Promised days between order and delivery
@@ -322,6 +339,34 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	public String getDocumentNote () 
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNote);
+	}
+
+	/** Set Group1.
+		@param Group1 Group1	  */
+	public void setGroup1 (String Group1)
+	{
+		set_Value (COLUMNNAME_Group1, Group1);
+	}
+
+	/** Get Group1.
+		@return Group1	  */
+	public String getGroup1 () 
+	{
+		return (String)get_Value(COLUMNNAME_Group1);
+	}
+
+	/** Set Group2.
+		@param Group2 Group2	  */
+	public void setGroup2 (String Group2)
+	{
+		set_Value (COLUMNNAME_Group2, Group2);
+	}
+
+	/** Get Group2.
+		@return Group2	  */
+	public String getGroup2 () 
+	{
+		return (String)get_Value(COLUMNNAME_Group2);
 	}
 
 	/** Set Comment/Help.

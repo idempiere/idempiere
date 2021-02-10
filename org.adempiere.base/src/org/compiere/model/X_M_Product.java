@@ -33,7 +33,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210209L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -254,6 +254,23 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Customs Tariff Number.
+		@param CustomsTariffNumber 
+		Customs Tariff Number, usually the HS-Code
+	  */
+	public void setCustomsTariffNumber (String CustomsTariffNumber)
+	{
+		set_Value (COLUMNNAME_CustomsTariffNumber, CustomsTariffNumber);
+	}
+
+	/** Get Customs Tariff Number.
+		@return Customs Tariff Number, usually the HS-Code
+	  */
+	public String getCustomsTariffNumber () 
+	{
+		return (String)get_Value(COLUMNNAME_CustomsTariffNumber);
 	}
 
 	/** Set Description.
