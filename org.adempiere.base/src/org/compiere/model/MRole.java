@@ -273,6 +273,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	
 	/**************************************************************************
 	 * 	Standard Constructor
+	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
+	 *         in such case is necessary to use one of the get methods setting the userID
 	 *	@param ctx context
 	 *	@param AD_Role_ID id
 	 *	@param trxName transaction
@@ -303,6 +305,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Load Constructor
+	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
+	 *         in such case is necessary to use one of the get methods setting the userID
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -809,7 +813,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	private void loadOrgAccessUser(ArrayList<OrgAccess> list)
 	{
 		if (getAD_User_ID() == -1) {
-			log.severe("Trying to load Org Access from User but user has not been set");
+			log.info("Trying to load Org Access from User but user has not been set");
 		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -2868,7 +2872,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		final int AD_User_ID = getAD_User_ID();
 		if (AD_User_ID < 0)
 		{
-			log.severe("Trying to load Child Roles but user has not been set");
+			log.info("Trying to load Child Roles but user has not been set");
 			//throw new IllegalStateException("AD_User_ID is not set");
 			return ;
 		}
@@ -2904,7 +2908,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		final int AD_User_ID = getAD_User_ID();
 		if (AD_User_ID < 0)
 		{
-			log.severe("Trying to load Substituted Roles but user has not been set");
+			log.info("Trying to load Substituted Roles but user has not been set");
 			//throw new IllegalStateException("AD_User_ID is not set");
 			return;
 		}
