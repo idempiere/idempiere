@@ -687,7 +687,7 @@ public class CacheTest extends AbstractTestCase {
 			if (ci instanceof CCache<?, ?>) {				
 				@SuppressWarnings("rawtypes")
 				CCache ccache = (CCache) ci;
-				if (ccache.getTableName() == null && ccache.getName().equals(name)) {
+				if (ccache.getName().equals(name)) {
 					if (key != null) {
 						if (ccache.containsKey(key)) {
 							return ccache;
