@@ -1254,7 +1254,7 @@ public class DocumentEngine implements DocAction
 		DocActionEventData eventData = new DocActionEventData(docStatus, processing, orderType, isSOTrx, AD_Table_ID, docActionsArray, optionsArray, indexObj, po);
 		Event event = EventManager.newEvent(IEventTopics.DOCACTION,
 				new EventProperty(EventManager.EVENT_DATA, eventData),
-				new EventProperty("tableName", po.get_TableName()));
+				new EventProperty(EventManager.TABLE_NAME_PROPERTY, po.get_TableName()));
 		EventManager.getInstance().sendEvent(event);
 		index = indexObj.get();
 		for (int i = 0; i < optionsArray.size(); i++)

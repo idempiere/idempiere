@@ -29,6 +29,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
+import org.adempiere.base.event.IEventManager;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -1023,5 +1024,27 @@ public class Core {
 			s_mappedDocumentFactoryReference = serviceReference;
 		}
 		return factoryService;
+	}
+	
+	private static IServiceReferenceHolder<IEventManager> s_eventManagerReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IEventManager}
+	 */
+	public static IEventManager getEventManager() {
+		IEventManager eventManager = null;
+		if (s_eventManagerReference != null) {
+			eventManager = s_eventManagerReference.getService();
+			if (eventManager != null)
+				return eventManager;
+		}
+		IServiceReferenceHolder<IEventManager> serviceReference = Service.locator().locate(IEventManager.class).getServiceReference();
+		if (serviceReference != null) {
+			eventManager = serviceReference.getService();
+			s_eventManagerReference = serviceReference;
+		}
+		
+		return eventManager;
 	}
 }
