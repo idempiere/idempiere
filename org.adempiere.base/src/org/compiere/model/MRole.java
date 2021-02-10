@@ -273,6 +273,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	
 	/**************************************************************************
 	 * 	Standard Constructor
+	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
+	 *         in such case is necessary to use one of the get methods setting the userID
 	 *	@param ctx context
 	 *	@param AD_Role_ID id
 	 *	@param trxName transaction
@@ -303,6 +305,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Load Constructor
+	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
+	 *         in such case is necessary to use one of the get methods setting the userID
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
