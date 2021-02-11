@@ -44,6 +44,7 @@ import org.osgi.service.component.annotations.Component;
 public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 
 	private final ConcurrentHashMap<String, Supplier<Class<?>>> classMap = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, BiFunction<String, String, ? extends PO>> recordUUMap = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, BiFunction<Integer, String, ? extends PO>> recordIdMap = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, BiFunction<ResultSet, String, ? extends PO>> resultSetMap = new ConcurrentHashMap<>();
 	
@@ -72,11 +73,19 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 	}
 
 	@Override
+	public PO getPO(String tableName, String uuID, String trxName)
+	{
+		var function = recordUUMap.get(tableName);
+		return function != null ? function.apply(uuID, trxName) : null;
+	}
+
+	@Override
 	public void addMapping(String tableName, Supplier<Class<?>> classSupplier, BiFunction<Integer, String, ? extends PO> recordIdFunction, 
-			BiFunction<ResultSet, String, ? extends PO> resultSetFunction) {
+			BiFunction<ResultSet, String, ? extends PO> resultSetFunction, BiFunction<String, String, ? extends PO> recordUUFunction) {
 		classMap.put(tableName, classSupplier);
 		recordIdMap.put(tableName, recordIdFunction);
 		resultSetMap.put(tableName, resultSetFunction);
+		recordUUMap.put(tableName, recordUUFunction);
 	}
 	
 	@Override
@@ -84,5 +93,7 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 		classMap.remove(tableName);
 		recordIdMap.remove(tableName);
 		resultSetMap.remove(tableName);
+		recordUUMap.remove(tableName);
 	}
+
 }

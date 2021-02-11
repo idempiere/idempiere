@@ -207,6 +207,15 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 			//	Load Constructor End
 
+			//	Load Constructor
+			 .append(NL)
+			 .append("    /** Load Constructor */").append(NL)
+			 .append("    public ").append(className).append(" (Properties ctx, String uuID, String trxName)").append(NL)
+			 .append("    {").append(NL)
+			 .append("      super (ctx, uuID, trxName);").append(NL)
+			 .append("    }").append(NL)
+			//	Load Constructor End
+
 			// TableName
 //			 .append(NL)
 //			 .append("    /** TableName=").append(tableName).append(" */").append(NL)

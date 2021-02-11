@@ -172,6 +172,19 @@ public abstract class PO
 	}	//	PO
 
 	/**
+	 * Create & Load existing Persistent Object.
+	 * 
+	 * @param ctx     context
+	 * @param uuID    optional - load from uuID reference
+	 *                if null, a new record is created.
+	 * @param trxName transaction name
+	 */
+	public PO (Properties ctx, String uuID, String trxName)
+	{
+		this (ctx, 0, trxName, null, uuID);
+	} // PO
+
+	/**
 	 *  Create & Load existing Persistent Object.
 	 *  <pre>
 	 *  You load
@@ -191,6 +204,20 @@ public abstract class PO
 	 */
 	public PO (Properties ctx, int ID, String trxName, ResultSet rs)
 	{
+		this(ctx, ID, trxName, rs, null);
+	}
+
+	/**
+	 * Create & Load existing Persistent Object.
+	 * 
+	 * @param ctx     context
+	 * @param ID      the ID if 0, the record defaults are applied - ignored if re exists
+	 * @param trxName transaction name
+	 * @param rs      optional - load from current result set position (no navigation, not closed)
+	 * @param uuID    optional - load from uuID
+	 */
+	public PO(Properties ctx, int ID, String trxName, ResultSet rs, String uuID)
+	{
 		p_ctx = ctx != null ? ctx : Env.getCtx();
 		m_trxName = trxName;
 
@@ -206,6 +233,8 @@ public abstract class PO
 
 		if (rs != null)
 			load(rs);		//	will not have virtual columns
+		else if (!Util.isEmpty(uuID, true))
+			load(uuID, trxName);
 		else
 			load(ID, trxName);
 
@@ -290,6 +319,10 @@ public abstract class PO
 	
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
+	
+	private String m_uuid = null;
+	/** UU flag **/
+	private boolean m_isUUID = false;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -1343,6 +1376,35 @@ public abstract class PO
 		}
 	}	//	load
 
+	/**
+	 * Load record with UUID
+	 * 
+	 * @param uuID    UUID
+	 * @param trxName transaction name
+	 */
+	public void loadByUU(String uuID, String trxName)
+	{
+		// reset new values
+		m_newValues = new Object[get_ColumnCount()];
+		m_isUUID = true;
+		m_uuid = uuID;
+		checkImmutable();
+
+		if (log.isLoggable(Level.FINEST))
+			log.finest("uuID=" + uuID);
+		if (!Util.isEmpty(m_uuid, true))
+		{
+			setKeyInfo();
+			load(trxName);
+		}
+		else
+		{
+			loadDefaults();
+			m_createNew = true;
+			setKeyInfo();
+			loadComplete(true);
+		}
+	} // loadByUU
 
 	/**
 	 *  (re)Load record with m_ID[*]
@@ -1378,17 +1440,24 @@ public abstract class PO
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), m_trxName);	//	local trx only
-			for (int i = 0; i < m_IDs.length; i++)
+			if(m_isUUID)
 			{
-				Object oo = m_IDs[i];
-				if (oo instanceof Integer)
-					pstmt.setInt(i+1, ((Integer)m_IDs[i]).intValue());
-				else if (oo instanceof Boolean)
-					pstmt.setString(i+1, ((Boolean) m_IDs[i] ? "Y" : "N"));
-				else if (oo instanceof Timestamp)
-					pstmt.setTimestamp(i+1, (Timestamp)m_IDs[i]);
-				else
-					pstmt.setString(i+1, m_IDs[i].toString());
+				pstmt.setString(1, m_uuid);
+			}
+			else
+			{
+				for (int i = 0; i < m_IDs.length; i++)
+				{
+					Object oo = m_IDs[i];
+					if (oo instanceof Integer)
+						pstmt.setInt(i+1, ((Integer)m_IDs[i]).intValue());
+					else if (oo instanceof Boolean)
+						pstmt.setString(i+1, ((Boolean) m_IDs[i] ? "Y" : "N"));
+					else if (oo instanceof Timestamp)
+						pstmt.setTimestamp(i+1, (Timestamp)m_IDs[i]);
+					else
+						pstmt.setString(i+1, m_IDs[i].toString());
+				}
 			}
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1568,6 +1637,17 @@ public abstract class PO
 		loadComplete(success);
 		return success;
 	}	//	load
+
+	/**
+	 * Load record with UUID
+	 * @param uuID - UUID
+	 * @param trxName - Transaction name
+	 */
+	protected void load(String uuID, String trxName)
+	{
+		load(0, trxName);
+		loadByUU(uuID, trxName);
+	} // load
 
 	protected void checkImmutable() {
 		if (is_Immutable())
@@ -3173,6 +3253,18 @@ public abstract class PO
 	public String get_WhereClause (boolean withValues)
 	{
 		StringBuilder sb = new StringBuilder();
+		
+		if (m_isUUID) {
+			sb.append(getUUIDColumnName()).append("=");
+			if (withValues) {
+				sb.append(m_uuid);
+			} else {
+				sb.append("?");
+			}
+
+			return sb.toString();
+		}
+
 		for (int i = 0; i < m_IDs.length; i++)
 		{
 			if (i != 0)

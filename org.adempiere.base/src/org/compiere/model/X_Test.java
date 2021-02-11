@@ -52,6 +52,12 @@ public class X_Test extends PO implements I_Test, I_Persistent
       super (ctx, rs, trxName);
     }
 
+    /** Load Constructor */
+    public X_Test (Properties ctx, String uuID, String trxName)
+    {
+      super (ctx, uuID, trxName);
+    }
+
     /** AccessLevel
       * @return 4 - System 
       */

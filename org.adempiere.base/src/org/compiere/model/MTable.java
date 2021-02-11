@@ -602,6 +602,58 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getPO
 
 	/**
+	 * Get PO Class Instance
+	 * 
+	 * @param  uuID    UUID
+	 * @param  trxName transaction
+	 * @return         PO for Record or null
+	 */
+	public PO getPOByUU(String uuID, String trxName)
+	{
+		String tableName = getTableName();
+
+		PO po = null;
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
+		if (cache != null)
+		{
+			IModelFactory service = cache.getService();
+			if (service != null)
+			{
+				po = service.getPO(tableName, uuID, trxName);
+				if (po != null)
+					return po;
+			}
+			s_modelFactoryCache.remove(tableName);
+		}
+
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
+		if (factoryList != null)
+		{
+			for (IServiceReferenceHolder<IModelFactory> factory : factoryList)
+			{
+				IModelFactory service = factory.getService();
+				if (service != null)
+				{
+					po = service.getPO(tableName, uuID, trxName);
+					if (po != null)
+					{
+						s_modelFactoryCache.put(tableName, factory);
+						break;
+					}
+				}
+			}
+		}
+
+		if (po == null)
+		{
+			// TODO have to check working.
+			po = new GenericPO(tableName, getCtx(), 0, trxName);
+		}
+
+		return po;
+	} // getPOByUUID
+
+	/**
 	 * 	Get PO Class Instance
 	 *	@param whereClause where clause
 	 *	@param trxName transaction

@@ -65,8 +65,10 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 	@Order(1)
 	public void testDefaultMappedModelFactory() {
 		IMappedModelFactory mappedFactory = Core.getMappedModelFactory();
-		mappedFactory.addMapping(MyTest.Table_Name, () -> MyTest.class, (id, trxName) -> new MyTest(Env.getCtx(), id, trxName), 
-				(rs, trxName) -> new MyTest(Env.getCtx(), rs, trxName));		
+		mappedFactory.addMapping(MyTest.Table_Name, () -> MyTest.class, 
+		                         (id, trxName) -> new MyTest(Env.getCtx(), id, trxName), 
+		                         (rs, trxName) -> new MyTest(Env.getCtx(), rs, trxName), 
+		                         (uuID, trxName) -> new MyTest(Env.getCtx(), uuID, trxName));
 		PO po = MTable.get(MyTest.Table_ID).getPO(0, getTrxName());
 		assertTrue(po instanceof MyTest, "PO not instanceof MyTest. PO.className="+po.getClass().getName());
 	}
@@ -86,10 +88,13 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 	private final static class MyFactory extends MappedModelFactory {
 		
 		public MyFactory() {
-			addMapping(MyTest2.Table_Name, () -> MyTest2.class, (id, trxName) -> new MyTest2(Env.getCtx(), id, trxName), 
-					(rs, trxName) -> new MyTest2(Env.getCtx(), rs, trxName));
+			addMapping(MyTest2.Table_Name, 
+			           () -> MyTest2.class, 
+			           (id, trxName) -> new MyTest2(Env.getCtx(), id, trxName), 
+			           (rs, trxName) -> new MyTest2(Env.getCtx(), rs, trxName), 
+			           (uuID, trxName) -> new MyTest2(Env.getCtx(), uuID, trxName));
 		}
-		
+
 	}
 	
 	private final static class MyTest extends X_Test {
@@ -105,8 +110,12 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 
 		public MyTest(Properties ctx, ResultSet rs, String trxName) {
 			super(ctx, rs, trxName);
-		}				
-	}	
+		}
+
+		public MyTest(Properties ctx, String uuID, String trxName) {
+			super(ctx, uuID, trxName);
+		}
+	}
 	
 	private final static class MyTest2 extends X_Test {
 
@@ -121,6 +130,10 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 
 		public MyTest2(Properties ctx, ResultSet rs, String trxName) {
 			super(ctx, rs, trxName);
-		}				
-	}	
+		}
+
+		public MyTest2(Properties ctx, String uuID, String trxName) {
+			super(ctx, uuID, trxName);
+		}
+	}
 }
