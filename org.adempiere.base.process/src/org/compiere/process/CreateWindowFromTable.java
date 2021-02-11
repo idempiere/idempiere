@@ -211,7 +211,7 @@ public class CreateWindowFromTable extends SvrProcess
 				throw new AdempiereException(processInfo.getSummary());
 			}
 
-			if (p_isCreateMenu) {
+			if (p_isCreateMenu && p_isNewWindow) {
 				MMenu menu = new MMenu(getCtx(), 0, get_TrxName());
 				menu.setName(window.getName());
 				menu.setEntityType(entityType);
