@@ -122,11 +122,8 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 		int AD_IndexColumn_ID = Env.getContextAsInt(ctx.ctx, MIndexColumn.COLUMNNAME_AD_IndexColumn_ID);
 		MIndexColumn m_IndexColumn = new MIndexColumn(ctx.ctx, AD_IndexColumn_ID, getTrxName(ctx));
 
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_IndexColumn.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				return;
-			}
-		}
+		if (!isPackOutElement(ctx, m_IndexColumn))
+			return;
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
