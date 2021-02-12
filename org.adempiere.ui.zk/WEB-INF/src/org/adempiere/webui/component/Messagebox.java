@@ -29,6 +29,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -38,6 +39,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Vbox;
@@ -55,6 +57,8 @@ public class Messagebox extends Window implements EventListener<Event>
 	 * 
 	 */
 	private static final long serialVersionUID = 8928526331932742124L;
+	
+	private static final CLogger log = CLogger.getCLogger(Messagebox.class);
 
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 230pt; max-width: 450pt;";	
 	private static final String SMALLER_MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 180pt; ";
@@ -107,7 +111,7 @@ public class Messagebox extends Window implements EventListener<Event>
 	public static final String QUESTION = "~./zul/img/msgbox/question-btn.png";
 
 	/** A symbol consisting of an exclamation point in a triangle with a yellow background. */
-	public static final String EXCLAMATION  = "~./zul/img/msgbox/warning-btn.png";
+	public static final String EXCLAMATION = "~./zul/img/msgbox/warning-btn.png";
 
 	/** A symbol of a lowercase letter i in a circle. */
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
@@ -353,6 +357,14 @@ public class Messagebox extends Window implements EventListener<Event>
 		Messagebox msg = new Messagebox();
 		return msg.show(message, title, buttons, icon, editor, callback, modal);
 	}
+	
+    @Listen("onCancel = #form")
+    public void onCancel() throws Exception
+    {
+    	returnValue = CANCEL;
+    	close();
+    }
+
 
 	public void onEvent(Event event) throws Exception
 	{
@@ -387,15 +399,19 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = IGNORE;
 		}
-
+		close();
+	}
+	
+	private void close() {
+		SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
 		try {
 			this.detach();
 		} catch (NullPointerException npe) {
 			if (! (SessionManager.getSessionApplication() == null)) // IDEMPIERE-1937 - ignore when session was closed
 				throw npe;
-		}
+		}		
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onPageDetached(Page page) {
