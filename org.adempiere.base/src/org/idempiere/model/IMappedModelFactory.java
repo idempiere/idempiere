@@ -46,8 +46,7 @@ public interface IMappedModelFactory {
 	 */
 	void addMapping(String tableName, Supplier<Class<?>> classSupplier,
 			BiFunction<Integer, String, ? extends PO> recordIdFunction,
-			BiFunction<ResultSet, String, ? extends PO> resultSetFunction,
-			BiFunction<String, String, ? extends PO> recordUUFunction);
+			BiFunction<ResultSet, String, ? extends PO> resultSetFunction);
 
 	/**
 	 * remove table name to class mapping
