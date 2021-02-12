@@ -73,13 +73,6 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 	}
 
 	@Override
-	public PO getPO(String tableName, String uuID, String trxName)
-	{
-		var function = recordUUMap.get(tableName);
-		return function != null ? function.apply(uuID, trxName) : null;
-	}
-
-	@Override
 	public void addMapping(String tableName, Supplier<Class<?>> classSupplier, BiFunction<Integer, String, ? extends PO> recordIdFunction, 
 			BiFunction<ResultSet, String, ? extends PO> resultSetFunction, BiFunction<String, String, ? extends PO> recordUUFunction) {
 		classMap.put(tableName, classSupplier);

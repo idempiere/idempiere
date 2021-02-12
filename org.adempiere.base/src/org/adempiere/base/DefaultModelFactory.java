@@ -323,13 +323,4 @@ public class DefaultModelFactory implements IModelFactory {
 		return null;
 	}
 
-	@Override
-	public PO getPO(String tableName, String uuID, String trxName)
-	{
-		PO po = getPO(tableName, 0, trxName);
-		if (po != null)
-			po.loadByUU(uuID, trxName);
-		return po;
-	}
-
 }

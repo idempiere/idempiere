@@ -319,10 +319,9 @@ public abstract class PO
 	
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
-	
+
+	/** Record UUID **/
 	private String m_uuid = null;
-	/** UU flag **/
-	private boolean m_isUUID = false;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -1382,11 +1381,10 @@ public abstract class PO
 	 * @param uuID    UUID
 	 * @param trxName transaction name
 	 */
-	public void loadByUU(String uuID, String trxName)
+	protected void loadByUU(String uuID, String trxName)
 	{
 		// reset new values
 		m_newValues = new Object[get_ColumnCount()];
-		m_isUUID = true;
 		m_uuid = uuID;
 		checkImmutable();
 
@@ -1394,15 +1392,7 @@ public abstract class PO
 			log.finest("uuID=" + uuID);
 		if (!Util.isEmpty(m_uuid, true))
 		{
-			setKeyInfo();
 			load(trxName);
-		}
-		else
-		{
-			loadDefaults();
-			m_createNew = true;
-			setKeyInfo();
-			loadComplete(true);
 		}
 	} // loadByUU
 
@@ -1440,7 +1430,7 @@ public abstract class PO
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), m_trxName);	//	local trx only
-			if(m_isUUID)
+			if (!Util.isEmpty(m_uuid, true))
 			{
 				pstmt.setString(1, m_uuid);
 			}
@@ -3253,14 +3243,14 @@ public abstract class PO
 	public String get_WhereClause (boolean withValues)
 	{
 		StringBuilder sb = new StringBuilder();
-		
-		if (m_isUUID) {
+
+		if (!Util.isEmpty(m_uuid, true))
+		{
 			sb.append(getUUIDColumnName()).append("=");
-			if (withValues) {
+			if (withValues)
 				sb.append(m_uuid);
-			} else {
+			else
 				sb.append("?");
-			}
 
 			return sb.toString();
 		}

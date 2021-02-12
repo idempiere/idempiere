@@ -47,13 +47,4 @@ public interface IModelFactory {
 	 */
 	public PO getPO (String tableName, ResultSet rs, String trxName);
 
-	/**
-	 * Get PO Class Instance
-	 * 
-	 * @param tableName
-	 * @param uuID      record
-	 * @param trxName   transaction
-	 * @return PO for Record or null
-	 */
-	public PO getPO(String tableName, String uuID, String trxName);
 }
