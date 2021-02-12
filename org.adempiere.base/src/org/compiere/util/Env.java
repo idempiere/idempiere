@@ -1743,7 +1743,10 @@ public final class Env
 						} else {
 							if (colToken != null && colToken.isSecure()) {
 								v = "********";
-							}
+							} else if (colToken != null && colToken.getAD_Reference_ID() == DisplayType.YesNo && v instanceof Boolean) {
+								v = ((Boolean)v).booleanValue() ? "Y" : "N";
+							} 
+							
 							outStr.append(v.toString());
 						}
 					}
