@@ -46,5 +46,4 @@ public interface IModelFactory {
 	 *	@return PO for Record or null
 	 */
 	public PO getPO (String tableName, ResultSet rs, String trxName);
-
 }

@@ -320,9 +320,6 @@ public abstract class PO
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
 
-	/** Record UUID **/
-	private String m_uuid = null;
-
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
 	/** Access Level _C_ 010	2	Client info			*/
@@ -1385,14 +1382,15 @@ public abstract class PO
 	{
 		// reset new values
 		m_newValues = new Object[get_ColumnCount()];
-		m_uuid = uuID;
 		checkImmutable();
 
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
-		if (!Util.isEmpty(m_uuid, true))
+		if (!Util.isEmpty(uuID, true))
 		{
-			load(trxName);
+			load(uuID,trxName);
+		}else {
+			load(0,trxName);
 		}
 	} // loadByUU
 
@@ -1401,7 +1399,17 @@ public abstract class PO
 	 *  @param trxName transaction
 	 *  @return true if loaded
 	 */
-	public boolean load (String trxName)
+	public boolean load (String trxName) {
+		return load(null, trxName);
+	}
+	
+	/**
+	 *  (re)Load record with m_ID[*]
+	 *  @param uuID RecrodUU
+	 *  @param trxName transaction
+	 *  @return true if loaded
+	 */
+	public boolean load (String uuID,String trxName)
 	{
 		m_trxName = trxName;
 		boolean success = true;
@@ -1420,19 +1428,19 @@ public abstract class PO
 		}
 		sql.append(" FROM ").append(p_info.getTableName())
 			.append(" WHERE ")
-			.append(get_WhereClause(false));
+			.append(get_WhereClause(false,uuID));
 
 		//
 	//	int index = -1;
-		if (log.isLoggable(Level.FINEST)) log.finest(get_WhereClause(true));
+		if (log.isLoggable(Level.FINEST)) log.finest(get_WhereClause(true,uuID));
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), m_trxName);	//	local trx only
-			if (!Util.isEmpty(m_uuid, true))
+			if (!Util.isEmpty(uuID, true))
 			{
-				pstmt.setString(1, m_uuid);
+				pstmt.setString(1, uuID);
 			}
 			else
 			{
@@ -1456,7 +1464,7 @@ public abstract class PO
 			}
 			else
 			{
-				log.log(Level.SEVERE, "NO Data found for " + get_WhereClause(true), new Exception());
+				log.log(Level.SEVERE, "NO Data found for " + get_WhereClause(true,uuID), new Exception());
 				m_IDs = new Object[] {I_ZERO};
 				success = false;
 			//	throw new DBException("NO Data found for " + get_WhereClause(true));
@@ -1470,7 +1478,7 @@ public abstract class PO
 			String msg = "";
 			if (m_trxName != null)
 				msg = "[" + m_trxName + "] - ";
-			msg += get_WhereClause(true)
+			msg += get_WhereClause(true,uuID)
 			//	+ ", Index=" + index
 			//	+ ", Column=" + get_ColumnName(index)
 			//	+ ", " + p_info.toString(index)
@@ -1627,17 +1635,6 @@ public abstract class PO
 		loadComplete(success);
 		return success;
 	}	//	load
-
-	/**
-	 * Load record with UUID
-	 * @param uuID - UUID
-	 * @param trxName - Transaction name
-	 */
-	protected void load(String uuID, String trxName)
-	{
-		load(0, trxName);
-		loadByUU(uuID, trxName);
-	} // load
 
 	protected void checkImmutable() {
 		if (is_Immutable())
@@ -3234,21 +3231,31 @@ public abstract class PO
 	{
 		
 	}
-
+	
 	/**
 	 * 	Create Single/Multi Key Where Clause
 	 * 	@param withValues if true uses actual values otherwise ?
 	 * 	@return where clause
 	 */
-	public String get_WhereClause (boolean withValues)
+	public String get_WhereClause (boolean withValues) {
+		return get_WhereClause(withValues,null);
+	}
+
+	/**
+	 * 	Create Single/Multi Key Where Clause
+	 * 	@param withValues if true uses actual values otherwise ?
+	 *  @param uuID RecordUU
+	 * 	@return where clause
+	 */
+	public String get_WhereClause (boolean withValues, String uuID)
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if (!Util.isEmpty(m_uuid, true))
+		if (!Util.isEmpty(uuID, true))
 		{
 			sb.append(getUUIDColumnName()).append("=");
 			if (withValues)
-				sb.append(m_uuid);
+				sb.append(uuID);
 			else
 				sb.append("?");
 

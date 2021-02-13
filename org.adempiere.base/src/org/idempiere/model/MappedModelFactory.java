@@ -85,5 +85,4 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 		recordIdMap.remove(tableName);
 		resultSetMap.remove(tableName);
 	}
-
 }

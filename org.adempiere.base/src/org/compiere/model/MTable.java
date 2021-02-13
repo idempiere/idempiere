@@ -611,8 +611,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	public PO getPOByUU (String uuID, String trxName)
 	{
 		PO po = getPO(0, trxName);
-		if (po != null)
-			po.loadByUU(uuID, trxName);
+		po.loadByUU(uuID, trxName);
 
 		return po;
 	} // getPOByUU
