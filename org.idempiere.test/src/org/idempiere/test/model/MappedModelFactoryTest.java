@@ -67,8 +67,7 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 		IMappedModelFactory mappedFactory = Core.getMappedModelFactory();
 		mappedFactory.addMapping(MyTest.Table_Name, () -> MyTest.class, 
 		                         (id, trxName) -> new MyTest(Env.getCtx(), id, trxName), 
-		                         (rs, trxName) -> new MyTest(Env.getCtx(), rs, trxName), 
-		                         (uuID, trxName) -> new MyTest(Env.getCtx(), uuID, trxName));
+		                         (rs, trxName) -> new MyTest(Env.getCtx(), rs, trxName));
 		PO po = MTable.get(MyTest.Table_ID).getPO(0, getTrxName());
 		assertTrue(po instanceof MyTest, "PO not instanceof MyTest. PO.className="+po.getClass().getName());
 	}
@@ -91,8 +90,7 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 			addMapping(MyTest2.Table_Name, 
 			           () -> MyTest2.class, 
 			           (id, trxName) -> new MyTest2(Env.getCtx(), id, trxName), 
-			           (rs, trxName) -> new MyTest2(Env.getCtx(), rs, trxName), 
-			           (uuID, trxName) -> new MyTest2(Env.getCtx(), uuID, trxName));
+			           (rs, trxName) -> new MyTest2(Env.getCtx(), rs, trxName));
 		}
 
 	}
