@@ -22,7 +22,7 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.idempiere.test.model;
+package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,6 +60,7 @@ public class MappedProcessFactoryTest extends AbstractTestCase {
 	@Test
 	@Order(1)
 	public void testDefaultMappedProcessFactory() {
+		//simulate call at plugin activator start method
 		IMappedProcessFactory mappedFactory = Core.getMappedProcessFactory();
 		mappedFactory.addMapping(MyTest.class.getName(), () -> new MyTest());		
 		
@@ -71,6 +72,7 @@ public class MappedProcessFactoryTest extends AbstractTestCase {
 	@Test
 	@Order(2)
 	public void testCustomMappedModelFactory() {
+		//simulate osgi component
 		BundleContext bc = TestActivator.context;
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("service.ranking", Integer.valueOf(2));

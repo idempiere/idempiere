@@ -22,31 +22,44 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.idempiere.process;
+package org.adempiere.base;
 
-import org.adempiere.base.IProcessFactory;
-import org.adempiere.base.MappedByNameFactory;
-import org.compiere.process.ProcessCall;
-import org.osgi.service.component.annotations.Component;
+import java.util.function.Supplier;
 
 /**
+ * Generic base interface for factory service that provide name/classname to instance mapping service 
  * @author hengsin
  *
+ * @param <T>
  */
-@Component(name = "org.idempiere.process.MappedProcessFactory", 
-	immediate = true, 
-	service = {IProcessFactory.class, IMappedProcessFactory.class}, 
-	property = {"service.ranking:Integer=1"})
-public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> implements IProcessFactory, IMappedProcessFactory {
+public interface IMappedByNameFactory<T> {
+	/**
+	 * add name to class mapping
+	 * @param name
+	 * @param supplier
+	 */
+	public void addMapping(String name, Supplier<T> supplier);
 
 	/**
-	 * default constructor
+	 * remove name to class mapping
+	 * @param name
 	 */
-	public MappedProcessFactory() {
-	}
-
-	@Override
-	public ProcessCall newProcessInstance(String className) {
-		return newInstance(className);				
+	public void removeMapping(String name);
+	
+	/**
+	 * 
+	 * @param name
+	 * @return {@link Supplier}
+	 */
+	public Supplier<T> getSupplier(String name);
+	
+	/**
+	 * 
+	 * @param name
+	 * @return new instance of T (if there are register supplier for name)
+	 */
+	public default T newInstance(String name) {
+		var supplier = getSupplier(name);
+		return supplier != null ? supplier.get() : null;
 	}
 }

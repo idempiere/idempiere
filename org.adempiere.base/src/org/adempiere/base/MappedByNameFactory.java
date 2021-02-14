@@ -22,31 +22,39 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.idempiere.process;
+package org.adempiere.base;
 
-import org.adempiere.base.IProcessFactory;
-import org.adempiere.base.MappedByNameFactory;
-import org.compiere.process.ProcessCall;
-import org.osgi.service.component.annotations.Component;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
+ * Provide simple name/class name mapping through register lambda supplier object
  * @author hengsin
  *
+ * @param <T>
  */
-@Component(name = "org.idempiere.process.MappedProcessFactory", 
-	immediate = true, 
-	service = {IProcessFactory.class, IMappedProcessFactory.class}, 
-	property = {"service.ranking:Integer=1"})
-public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> implements IProcessFactory, IMappedProcessFactory {
+public class MappedByNameFactory<T> implements IMappedByNameFactory<T> {
 
+	private final ConcurrentHashMap<String, Supplier<T>> supplierMap = new ConcurrentHashMap<>();
+	
 	/**
 	 * default constructor
 	 */
-	public MappedProcessFactory() {
+	public MappedByNameFactory() {
 	}
 
 	@Override
-	public ProcessCall newProcessInstance(String className) {
-		return newInstance(className);				
+	public void addMapping(String name, Supplier<T> Supplier) {
+		supplierMap.put(name, Supplier);
+	}
+
+	@Override
+	public void removeMapping(String name) {
+		supplierMap.remove(name);
+	}
+
+	@Override
+	public Supplier<T> getSupplier(String name) {
+		return supplierMap.get(name);
 	}
 }
