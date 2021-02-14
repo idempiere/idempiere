@@ -546,7 +546,7 @@ public class GridTabVO implements Evaluatee, Serializable
 	public  boolean     onlyCurrentRows = true;
 	/**	Only Current Days - derived	*/
 	public int			onlyCurrentDays = 0;
-
+	/** Tab type uses by IADTabpanel service to identify implementors*/
 	public String AD_TabType = null;
 
 	/** Fields contain MFieldVO entities    */

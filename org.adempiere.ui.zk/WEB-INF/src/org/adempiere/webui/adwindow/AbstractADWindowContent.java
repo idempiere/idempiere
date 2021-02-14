@@ -647,12 +647,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 			else
 			{
-				logger.log(Level.SEVERE, "No implementaton for tab type " + type + " Found");
+				logger.log(Level.SEVERE, "No implementaton for tab type " + type + " Found", new Exception("No implementaton for tab type " + type + " Found"));
 			}
 		}
 		else if (gTab.isSortTab())
 		{
-			ADSortTab sortTab = new ADSortTab(curWindowNo, gTab);
+			ADSortTab sortTab = new ADSortTab();
+			sortTab.init(this, gTab);
 			adTabbox.addTab(gTab, sortTab);
 			sortTab.registerAPanel(this);
 			if (tabIndex == 0) {
@@ -677,7 +678,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		adTabPanal.addEventListener(ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT, this);
 		gTab.addDataStatusListener(this);
-		adTabPanal.init(this, curWindowNo, gTab, gridWindow);
+		adTabPanal.init(this, gTab);
 		adTabbox.addTab(gTab, adTabPanal);
 		if (tabIndex == 0)
 		{
@@ -1131,9 +1132,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     public void onToggle()
     {
     	adTabbox.getSelectedTabpanel().switchRowPresentation();
-    	//Deepak-Enabling customize button IDEMPIERE-364
-        if(!(adTabbox.getSelectedTabpanel() instanceof ADSortTab))
-        	toolbar.enableCustomize(adTabbox.getSelectedTabpanel().isGridView());
+    	toolbar.enableCustomize(adTabbox.getSelectedTabpanel().isEnableCustomizeButton());
     	focusToActivePanel();
     }
 
@@ -1282,7 +1281,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	{
     		IADTabpanel adtab = (IADTabpanel) event.getTarget();
     		if (adtab == adTabbox.getSelectedTabpanel()) {
-    			toolbar.enableProcessButton(adtab.getToolbarButtons().size() > 0 && !adTabbox.getSelectedGridTab().isNew());
+    			toolbar.enableProcessButton(adtab.isEnableProcessButton());
     			toolbar.dynamicDisplay();
     		}
     	}
@@ -1476,16 +1475,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		toolbar.enableQuickForm(adTabbox.getSelectedTabpanel().isEnableQuickFormButton() && !adTabbox.getSelectedGridTab().isReadOnly());
 
-        boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
-        //Deepak-Enabling customize button IDEMPIERE-364
-        if(adTabbox.getSelectedTabpanel() instanceof ADSortTab){//consistent with dataStatusChanged
-        	toolbar.enableProcessButton (false);
-        	toolbar.enableCustomize(false);
-        }else{
-        	IADTabpanel adtab = adTabbox.getSelectedTabpanel();
-            toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
-            toolbar.enableCustomize(adtab.isGridView());
-        }
+		boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
+        
+		IADTabpanel adtab = adTabbox.getSelectedTabpanel();
+        toolbar.enableProcessButton(adtab != null && adtab.isEnableProcessButton());
+        toolbar.enableCustomize(adtab.isEnableCustomizeButton());
         
 		toolbar.setPressed("Find",adTabbox.getSelectedGridTab().isQueryActive() || 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
@@ -1892,15 +1886,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         
         toolbar.enableTabNavigation(breadCrumb.hasParentLink(), adTabbox.getSelectedDetailADTabpanel() != null);
         
-        //Deepak-Enabling customize button IDEMPIERE-364
-        if(adTabbox.getSelectedTabpanel() instanceof ADSortTab){//consistent with updateToolbar
-        	toolbar.enableProcessButton (false);
-        	toolbar.enableCustomize(false);
-        }else{
-        	IADTabpanel adtab = adTabbox.getSelectedTabpanel();
-            toolbar.enableProcessButton(!isNewRow && adtab != null && adtab.getToolbarButtons().size() > 0);
-            toolbar.enableCustomize(adtab.isGridView());
-        }
+        IADTabpanel adtab = adTabbox.getSelectedTabpanel();
+        toolbar.enableProcessButton(adtab != null && adtab.isEnableProcessButton());
+        toolbar.enableCustomize(adtab.isEnableCustomizeButton());
+
     }
 
     /**

@@ -24,7 +24,7 @@ ALTER TABLE AD_Tab ADD AD_TabType VARCHAR2(40 CHAR) DEFAULT NULL
 ;
 
 -- Jan 22, 2016 11:52:41 AM IST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (204121,'Tab Type','Defines Tab Type',106,212616,'Y',40,350,'N','N','N','N',0,0,'Y',TO_DATE('2016-01-22 11:52:40','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-01-22 11:52:40','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','644e396b-717a-4f99-a0d3-4007862a59c2','Y',330,2)
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (204121,'Tab Type','Defines Tab Type',106,212616,'Y',40,400,'N','N','N','N',0,0,'Y',TO_DATE('2016-01-22 11:52:40','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2016-01-22 11:52:40','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','644e396b-717a-4f99-a0d3-4007862a59c2','Y',330,2)
 ;
 
 -- Dec 11, 2020, 4:10:34 PM IST

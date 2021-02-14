@@ -16,6 +16,7 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.adwindow.ADSortTab;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.IADTabpanel;
+import org.compiere.model.MTab;
 
 /**
  * @author Logilite Technologies
@@ -26,11 +27,11 @@ public class DefaultTabPanelFactory implements IADTabPanelFactory
 	@Override
 	public IADTabpanel getInstance(String type)
 	{
-		if (type.equalsIgnoreCase("SORT"))
+		if (type.equalsIgnoreCase(MTab.AD_TABTYPE_OrderTab))
 		{
 			return new ADSortTab();
 		}
-		else if (type.equalsIgnoreCase("FORM"))
+		else if (type.equalsIgnoreCase(MTab.AD_TABTYPE_DataGrid))
 		{
 			return new ADTabpanel();
 		}

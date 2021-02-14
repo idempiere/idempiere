@@ -15,7 +15,6 @@ package org.adempiere.webui.adwindow;
 import java.util.List;
 
 import org.compiere.model.GridTab;
-import org.compiere.model.GridWindow;
 import org.compiere.util.Evaluatee;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Button;
@@ -36,7 +35,7 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 * @param gridTab
 	 * @param gridWindow
 	 */
-	public void init(AbstractADWindowContent winPanel, int windowNo, GridTab gridTab, GridWindow gridWindow);
+	public void init(AbstractADWindowContent winPanel, GridTab gridTab);
 
 	/**
 	 * @return display logic

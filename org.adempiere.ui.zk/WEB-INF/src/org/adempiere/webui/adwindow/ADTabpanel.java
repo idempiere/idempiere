@@ -169,7 +169,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
     private GridTab           gridTab;
 
-    @SuppressWarnings("unused")
 	private GridWindow        gridWindow;
 
     private AbstractADWindowContent      windowPanel;
@@ -373,15 +372,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      *
      * @param winPanel
-     * @param windowNo
      * @param gridTab
-     * @param gridWindow
      */
-    public void init(AbstractADWindowContent winPanel, int windowNo, GridTab gridTab,
-            GridWindow gridWindow)
+    public void init(AbstractADWindowContent winPanel, GridTab gridTab)
     {
-        this.windowNo = windowNo;
-        this.gridWindow = gridWindow;
+        this.gridWindow = gridTab.getGridWindow();
+        this.windowNo = gridWindow.getWindowNo();
         this.gridTab = gridTab;
         // callout dialog ask for input - devCoffee #3390
         gridTab.setCalloutUI(new CalloutDialog(Executions.getCurrent().getDesktop(), windowNo));
@@ -2133,6 +2129,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	@Override
 	public boolean isEnableProcessButton()
 	{
-		return getToolbarButtons().size() > 0 && !gridTab.isNew();
+		boolean isNewRow = gridTab.getRowCount() == 0 || gridTab.isNew();
+		return getToolbarButtons().size() > 0 && !isNewRow;
 	}
 }

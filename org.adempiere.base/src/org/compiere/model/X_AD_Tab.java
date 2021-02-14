@@ -30,7 +30,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210214L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -279,6 +279,20 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set AD_Tab_UU.
+		@param AD_Tab_UU AD_Tab_UU	  */
+	public void setAD_Tab_UU (String AD_Tab_UU)
+	{
+		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
+	}
+
+	/** Get AD_Tab_UU.
+		@return AD_Tab_UU	  */
+	public String getAD_Tab_UU () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
+	}
+
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
@@ -307,18 +321,28 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set AD_Tab_UU.
-		@param AD_Tab_UU AD_Tab_UU	  */
-	public void setAD_Tab_UU (String AD_Tab_UU)
+	/** AD_TabType AD_Reference_ID=200117 */
+	public static final int AD_TABTYPE_AD_Reference_ID=200117;
+	/** Data Grid = FORM */
+	public static final String AD_TABTYPE_DataGrid = "FORM";
+	/** Order Tab = SORT */
+	public static final String AD_TABTYPE_OrderTab = "SORT";
+	/** Set Tab Type.
+		@param AD_TabType 
+		Defines Tab Type
+	  */
+	public void setAD_TabType (String AD_TabType)
 	{
-		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
+
+		set_Value (COLUMNNAME_AD_TabType, AD_TabType);
 	}
 
-	/** Get AD_Tab_UU.
-		@return AD_Tab_UU	  */
-	public String getAD_Tab_UU () 
+	/** Get Tab Type.
+		@return Defines Tab Type
+	  */
+	public String getAD_TabType () 
 	{
-		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
+		return (String)get_Value(COLUMNNAME_AD_TabType);
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
