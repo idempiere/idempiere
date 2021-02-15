@@ -164,6 +164,19 @@ public interface I_M_Product
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
+    /** Column name CustomsTariffNumber */
+    public static final String COLUMNNAME_CustomsTariffNumber = "CustomsTariffNumber";
+
+	/** Set Customs Tariff Number.
+	  * Customs Tariff Number, usually the HS-Code
+	  */
+	public void setCustomsTariffNumber (String CustomsTariffNumber);
+
+	/** Get Customs Tariff Number.
+	  * Customs Tariff Number, usually the HS-Code
+	  */
+	public String getCustomsTariffNumber();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 

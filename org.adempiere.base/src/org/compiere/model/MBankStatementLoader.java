@@ -257,7 +257,6 @@ import org.compiere.util.Util;
 		imp.setEftTrxID(m_loader.getTrxID());
 		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine Statement Line Date=" + m_loader.getStatementLineDate());
 		imp.setStatementLineDate(m_loader.getStatementLineDate());
-		imp.setStatementLineDate(m_loader.getStatementLineDate());
 		imp.setEftStatementLineDate(m_loader.getStatementLineDate());
 		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine Valuta Date=" + m_loader.getValutaDate());
 		imp.setValutaDate(m_loader.getValutaDate());

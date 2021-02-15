@@ -29,6 +29,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
+import org.adempiere.base.event.IEventManager;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -55,6 +56,9 @@ import org.idempiere.distributed.IMessageService;
 import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
+import org.idempiere.model.IMappedModelFactory;
+import org.idempiere.process.IMappedProcessFactory;
+import org.osgi.framework.ServiceReference;
 
 /**
  * This is a facade class for the Service Locator.
@@ -103,6 +107,7 @@ public class Core {
 	}
 	
 	private static final CCache<String, List<IServiceReferenceHolder<IColumnCalloutFactory>>> s_columnCalloutFactoryCache = new CCache<>(null, "List<IColumnCalloutFactory>", 100, false);
+	private static final CCache<String, List<ServiceReference<IColumnCalloutFactory>>> s_columnCalloutFactoryNegativeCache = new CCache<>(null, "List<IColumnCalloutFactory> Negative", 100, false);
 
 	/**
 	 *
@@ -114,49 +119,61 @@ public class Core {
 		List<IColumnCallout> list = new ArrayList<IColumnCallout>();
 		
 		String cacheKey = tableName + "." + columnName;
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> cache = s_columnCalloutFactoryCache.get(cacheKey);
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> cache = s_columnCalloutFactoryCache.get(cacheKey);		
+		List<ServiceReference<IColumnCalloutFactory>> negativeCache = s_columnCalloutFactoryNegativeCache.get(cacheKey);
+		List<ServiceReference<IColumnCalloutFactory>> negativeServiceReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
+		if (negativeCache != null) {
+			negativeServiceReferences.addAll(negativeCache);
+		}
+		List<ServiceReference<IColumnCalloutFactory>> cacheReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> positiveReferenceHolders = new ArrayList<>();
 		if (cache != null) {
-			boolean staleReference = false;
-			for (IServiceReferenceHolder<IColumnCalloutFactory> factory : cache) {
-				IColumnCalloutFactory service = factory.getService();
+			for (IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : cache) {
+				cacheReferences.add(referenceHolder.getServiceReference());
+				IColumnCalloutFactory service = referenceHolder.getService();
 				if (service != null) {
 					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
 					if (callouts != null && callouts.length > 0) {
 						for(IColumnCallout callout : callouts) {
 							list.add(callout);
 						}
-					} else {						
-						staleReference = true;
-						break;
+						positiveReferenceHolders.add(referenceHolder);
+					} else {
+						negativeServiceReferences.add(referenceHolder.getServiceReference());
 					}
-				} else {
-					staleReference = true;
-					break;
 				}
 			}
-			if (!staleReference)
-				return list;
-			else
-				s_columnCalloutFactoryCache.remove(cacheKey);
 		}
 		
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> factories = Service.locator().list(IColumnCalloutFactory.class).getServiceReferences();
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> found = new ArrayList<>();
-		if (factories != null) {
-			for(IServiceReferenceHolder<IColumnCalloutFactory> factory : factories) {
-				IColumnCalloutFactory service = factory.getService();
+		int positiveAdded = 0;		
+		int negativeAdded = 0;
+		List<IServiceReferenceHolder<IColumnCalloutFactory>> referenceHolders = Service.locator().list(IColumnCalloutFactory.class).getServiceReferences();		
+		if (referenceHolders != null) {
+			for(IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : referenceHolders) {
+				if (cacheReferences.contains(referenceHolder.getServiceReference()) || negativeServiceReferences.contains(referenceHolder.getServiceReference()))
+					continue;
+				IColumnCalloutFactory service = referenceHolder.getService();
 				if (service != null) {
 					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
 					if (callouts != null && callouts.length > 0) {
 						for(IColumnCallout callout : callouts) {
 							list.add(callout);						
 						}
-						found.add(factory);
+						positiveReferenceHolders.add(referenceHolder);
+						positiveAdded++;
+					} else {
+						negativeServiceReferences.add(referenceHolder.getServiceReference());
+						negativeAdded++;
 					}
 				}
-			}
-			s_columnCalloutFactoryCache.put(cacheKey, found);
+			}			
 		}
+		
+		if (cache == null || cache.size() != positiveReferenceHolders.size() || positiveAdded > 0)
+			s_columnCalloutFactoryCache.put(cacheKey, positiveReferenceHolders);
+		if (negativeCache == null || negativeCache.size() != negativeServiceReferences.size() || negativeAdded > 0)
+			s_columnCalloutFactoryNegativeCache.put(cacheKey, negativeServiceReferences);
+		
 		return list;
 	}
 
@@ -923,5 +940,111 @@ public class Core {
 		}
 		return ids;
 	}
+
+	private static IServiceReferenceHolder<IMappedModelFactory> s_mappedModelFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedModelFactory}
+	 */
+	public static IMappedModelFactory getMappedModelFactory(){
+		IMappedModelFactory modelFactoryService = null;
+		if (s_mappedModelFactoryReference != null) {
+			modelFactoryService = s_mappedModelFactoryReference.getService();
+			if (modelFactoryService != null)
+				return modelFactoryService;
+		}
+		IServiceReferenceHolder<IMappedModelFactory> serviceReference = Service.locator().locate(IMappedModelFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			modelFactoryService = serviceReference.getService();
+			s_mappedModelFactoryReference = serviceReference;
+		}
+		return modelFactoryService;
+	}
+	
+	private static IServiceReferenceHolder<IMappedProcessFactory> s_mappedProcessFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedProcessFactory}
+	 */
+	public static IMappedProcessFactory getMappedProcessFactory(){
+		IMappedProcessFactory processFactoryService = null;
+		if (s_mappedProcessFactoryReference != null) {
+			processFactoryService = s_mappedProcessFactoryReference.getService();
+			if (processFactoryService != null)
+				return processFactoryService;
+		}
+		IServiceReferenceHolder<IMappedProcessFactory> serviceReference = Service.locator().locate(IMappedProcessFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			processFactoryService = serviceReference.getService();
+			s_mappedProcessFactoryReference = serviceReference;
+		}
+		return processFactoryService;
+	}
+	
+	private static IServiceReferenceHolder<IMappedColumnCalloutFactory> s_mappedColumnCalloutFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedColumnCalloutFactory}
+	 */
+	public static IMappedColumnCalloutFactory getMappedColumnCalloutFactory() {
+		IMappedColumnCalloutFactory factoryService = null;
+		if (s_mappedColumnCalloutFactoryReference != null) {
+			factoryService = s_mappedColumnCalloutFactoryReference.getService();
+			if (factoryService != null)
+				return factoryService;
+		}
+		IServiceReferenceHolder<IMappedColumnCalloutFactory> serviceReference = Service.locator().locate(IMappedColumnCalloutFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			factoryService = serviceReference.getService();
+			s_mappedColumnCalloutFactoryReference = serviceReference;
+		}
+		return factoryService;
+	}
+	
+	private static IServiceReferenceHolder<IMappedDocumentFactory> s_mappedDocumentFactoryReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IMappedDocumentFactory}
+	 */
+	public static IMappedDocumentFactory getMappedDocumentFactory() {
+		IMappedDocumentFactory factoryService = null;
+		if (s_mappedDocumentFactoryReference != null) {
+			factoryService = s_mappedDocumentFactoryReference.getService();
+			if (factoryService != null)
+				return factoryService;
+		}
 		
+		IServiceReferenceHolder<IMappedDocumentFactory> serviceReference = Service.locator().locate(IMappedDocumentFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			factoryService = serviceReference.getService();
+			s_mappedDocumentFactoryReference = serviceReference;
+		}
+		return factoryService;
+	}
+	
+	private static IServiceReferenceHolder<IEventManager> s_eventManagerReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IEventManager}
+	 */
+	public static IEventManager getEventManager() {
+		IEventManager eventManager = null;
+		if (s_eventManagerReference != null) {
+			eventManager = s_eventManagerReference.getService();
+			if (eventManager != null)
+				return eventManager;
+		}
+		IServiceReferenceHolder<IEventManager> serviceReference = Service.locator().locate(IEventManager.class).getServiceReference();
+		if (serviceReference != null) {
+			eventManager = serviceReference.getService();
+			s_eventManagerReference = serviceReference;
+		}
+		
+		return eventManager;
+	}
 }

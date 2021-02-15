@@ -27,6 +27,8 @@ import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MMenu;
+import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -302,6 +304,12 @@ public class MenuSearchController implements EventListener<Event>{
 			Clients.showBusy(selected, null);
 			Events.echoEvent(ON_LOAD_MORE, layout, null);
 		} else {
+			if (newRecord) {
+				Treeitem ti = (Treeitem)item.getData();
+				MMenu menu = MMenu.get(Integer.parseInt(ti.getValue()));
+				if (MToolBarButtonRestrict.isNewButtonRestricted(menu.getAD_Window_ID()))
+					newRecord = false;
+			}
 			selectTreeitem(item.getData(), newRecord);
 			selected.setAttribute(ONSELECT_TIMESTAMP, System.currentTimeMillis());
 		}

@@ -39,6 +39,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.TrxEventListener;
 import org.osgi.service.event.Event;
 
 /**
@@ -176,16 +177,40 @@ public abstract class SvrProcess implements ProcessCall
 					m_trx.close();
 					m_trx = null;
 					m_pi.setTransactionName(null);
+					
+					unlock();
+					
+					// outside transaction processing [ teo_sarca, 1646891 ]
+					postProcess(!m_pi.isError());
+
+					@SuppressWarnings("unused")
+					Event eventPP = sendProcessEvent(IEventTopics.POST_PROCESS);
+
 				}
-			
-				unlock();
+				else
+				{
+					m_trx.addTrxEventListener(new TrxEventListener() {
+					
+						@Override
+						public void afterRollback(Trx trx, boolean success) {							
+						}
+						
+						@Override
+						public void afterCommit(Trx trx, boolean success) {
+						}
+						
+						@Override
+						public void afterClose(Trx trx) {
+							unlock();
+							
+							// outside transaction processing [ teo_sarca, 1646891 ]
+							postProcess(!m_pi.isError());
+							@SuppressWarnings("unused")
+							Event eventPP = sendProcessEvent(IEventTopics.POST_PROCESS);
+						}
+					});
+				}
 				
-				// outside transaction processing [ teo_sarca, 1646891 ]
-				postProcess(!m_pi.isError());
-
-				@SuppressWarnings("unused")
-				Event eventPP = sendProcessEvent(IEventTopics.POST_PROCESS);
-
 				Thread.currentThread().setContextClassLoader(contextLoader);
 			}
 		} finally {
@@ -245,8 +270,23 @@ public abstract class SvrProcess implements ProcessCall
 		if(msg != null && msg.startsWith("@Error@"))
 			success = false;
 
-		if (success)
-			flushBufferLog();
+		if (success) {
+			m_trx.addTrxEventListener(new TrxEventListener() {				
+				@Override
+				public void afterRollback(Trx trx, boolean success) {
+				}
+				
+				@Override
+				public void afterCommit(Trx trx, boolean success) {
+					if (success)
+						flushBufferLog();
+				}
+				
+				@Override
+				public void afterClose(Trx trx) {
+				}
+			});
+		}
 
 		//	Parse Variables
 		msg = Msg.parseTranslation(m_ctx, msg);
@@ -258,9 +298,9 @@ public abstract class SvrProcess implements ProcessCall
 	private Event sendProcessEvent(String topic) {
 		Event event = EventManager.newEvent(topic,
 				new EventProperty(EventManager.EVENT_DATA, m_pi),
-				new EventProperty("processUUID", m_pi.getAD_Process_UU()),
-				new EventProperty("className", m_pi.getClassName()),
-				new EventProperty("processClassName", this.getClass().getName()));
+				new EventProperty(EventManager.PROCESS_UID_PROPERTY, m_pi.getAD_Process_UU()),
+				new EventProperty(EventManager.CLASS_NAME_PROPERTY, m_pi.getClassName()),
+				new EventProperty(EventManager.PROCESS_CLASS_NAME_PROPERTY, this.getClass().getName()));
 		EventManager.getInstance().sendEvent(event);
 		return event;
 	}

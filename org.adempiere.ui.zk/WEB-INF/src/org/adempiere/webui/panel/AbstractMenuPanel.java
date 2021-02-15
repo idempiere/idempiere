@@ -30,6 +30,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
 import org.compiere.model.MQuery;
+import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.DB;
@@ -264,6 +265,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		if (comp instanceof Treeitem)
 		{
 			Treeitem selectedItem = (Treeitem) comp;
+			if (newRecord) {
+				MMenu menu = MMenu.get(Integer.parseInt(selectedItem.getValue()));
+				if (MToolBarButtonRestrict.isNewButtonRestricted(menu.getAD_Window_ID()))
+					newRecord = false;
+			}
 			if(selectedItem.getValue() != null)
 			{
 				if (newRecord)
@@ -279,6 +285,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 		if (comp instanceof Treerow) 
 		{
 			Treeitem selectedItem = (Treeitem) comp.getParent();
+			if (newRecord) {
+				MMenu menu = MMenu.get(Integer.parseInt(selectedItem.getValue()));
+				if (MToolBarButtonRestrict.isNewButtonRestricted(menu.getAD_Window_ID()))
+					newRecord = false;
+			}
 		    if(selectedItem.getValue() != null)
 		    {
 		    	if (newRecord)

@@ -162,6 +162,19 @@ public interface I_I_Product
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
+    /** Column name CustomsTariffNumber */
+    public static final String COLUMNNAME_CustomsTariffNumber = "CustomsTariffNumber";
+
+	/** Set Customs Tariff Number.
+	  * Customs Tariff Number, usually the HS-Code
+	  */
+	public void setCustomsTariffNumber (String CustomsTariffNumber);
+
+	/** Get Customs Tariff Number.
+	  * Customs Tariff Number, usually the HS-Code
+	  */
+	public String getCustomsTariffNumber();
+
     /** Column name DeliveryTime_Promised */
     public static final String COLUMNNAME_DeliveryTime_Promised = "DeliveryTime_Promised";
 
@@ -239,6 +252,24 @@ public interface I_I_Product
 	  * Additional information for a Document
 	  */
 	public String getDocumentNote();
+
+    /** Column name Group1 */
+    public static final String COLUMNNAME_Group1 = "Group1";
+
+	/** Set Group1	  */
+	public void setGroup1 (String Group1);
+
+	/** Get Group1	  */
+	public String getGroup1();
+
+    /** Column name Group2 */
+    public static final String COLUMNNAME_Group2 = "Group2";
+
+	/** Set Group2	  */
+	public void setGroup2 (String Group2);
+
+	/** Get Group2	  */
+	public String getGroup2();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";

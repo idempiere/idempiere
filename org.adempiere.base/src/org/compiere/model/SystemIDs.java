@@ -199,5 +199,7 @@ public class SystemIDs
 	
 	public final static int SCHEDULE_10_MINUTES = 200002;
 	public final static int SCHEDULE_15_MINUTES = 200003;
-	
+
+	public final static int	TOOLBAR_BTN_ID_WINDOW_NEW = 200031;
+
 }

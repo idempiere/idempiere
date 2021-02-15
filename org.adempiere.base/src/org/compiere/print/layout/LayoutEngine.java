@@ -948,7 +948,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (ci.getLogoReport_ID() > 0) {
 			element = new ImageElement(ci.getLogoReport_ID(), false);
 		} else {
-			element = new ImageElement(org.compiere.Adempiere.getImageLogoSmall(true));	//	48x15
+			element = new ImageElement(org.compiere.Adempiere.getHeaderLogo());
 		}
 	//	element = new ImageElement(org.compiere.Adempiere.getImageLogo());	//	100x30
 		element.layout(48, 15, false, MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft);
