@@ -39,7 +39,7 @@ public interface IMappedColumnCalloutFactory {
 	 * @param columnName case insensitive column name or * to match all column
 	 * @param supplier supplier for {@link IColumnCallout} instance
 	 */
-	void addMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
+	public void addMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
 
 	/**
 	 * remove mapping for callout
@@ -47,6 +47,6 @@ public interface IMappedColumnCalloutFactory {
 	 * @param columnName case insensitive column name or * to match all column
 	 * @param supplier supplier for {@link IColumnCallout} instance
 	 */
-	void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
+	public void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
 
 }
