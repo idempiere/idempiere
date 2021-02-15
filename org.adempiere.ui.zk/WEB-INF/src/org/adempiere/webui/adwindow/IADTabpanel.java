@@ -220,5 +220,8 @@ public interface IADTabpanel extends Component, Evaluatee {
 	/**
 	 * @return process Button Enabled/Disabled
 	 */
-	public boolean isEnableProcessButton();
+	default public boolean isEnableProcessButton() {
+		boolean isNewRow = getGridTab().getRowCount() == 0 || getGridTab().isNew();
+		return getToolbarButtons().size() > 0 && !isNewRow;
+	}
 }

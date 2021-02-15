@@ -2126,10 +2126,4 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		return isGridView();
 	}
 
-	@Override
-	public boolean isEnableProcessButton()
-	{
-		boolean isNewRow = gridTab.getRowCount() == 0 || gridTab.isNew();
-		return getToolbarButtons().size() > 0 && !isNewRow;
-	}
 }
