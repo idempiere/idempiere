@@ -172,19 +172,6 @@ public abstract class PO
 	}	//	PO
 
 	/**
-	 * Create & Load existing Persistent Object.
-	 * 
-	 * @param ctx     context
-	 * @param uuID    optional - load from uuID reference
-	 *                if null, a new record is created.
-	 * @param trxName transaction name
-	 */
-	public PO (Properties ctx, String uuID, String trxName)
-	{
-		this (ctx, 0, trxName, null, uuID);
-	} // PO
-
-	/**
 	 *  Create & Load existing Persistent Object.
 	 *  <pre>
 	 *  You load
