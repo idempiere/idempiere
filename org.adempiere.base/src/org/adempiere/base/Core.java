@@ -21,7 +21,6 @@
 package org.adempiere.base;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -58,7 +57,6 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.process.IMappedProcessFactory;
-import org.osgi.framework.ServiceReference;
 
 /**
  * This is a facade class for the Service Locator.
@@ -106,9 +104,6 @@ public class Core {
 		};
 	}
 	
-	private static final CCache<String, List<IServiceReferenceHolder<IColumnCalloutFactory>>> s_columnCalloutFactoryCache = new CCache<>(null, "List<IColumnCalloutFactory>", 100, false);
-	private static final CCache<String, List<ServiceReference<IColumnCalloutFactory>>> s_columnCalloutFactoryNegativeCache = new CCache<>(null, "List<IColumnCalloutFactory> Negative", 100, false);
-
 	/**
 	 *
 	 * @param tableName
@@ -116,70 +111,9 @@ public class Core {
 	 * @return list of callout register for tableName.columnName
 	 */
 	public static List<IColumnCallout> findCallout(String tableName, String columnName) {
-		List<IColumnCallout> list = new ArrayList<IColumnCallout>();
-		
-		String cacheKey = tableName + "." + columnName;
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> cache = s_columnCalloutFactoryCache.get(cacheKey);		
-		List<ServiceReference<IColumnCalloutFactory>> negativeCache = s_columnCalloutFactoryNegativeCache.get(cacheKey);
-		List<ServiceReference<IColumnCalloutFactory>> negativeServiceReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
-		if (negativeCache != null) {
-			negativeServiceReferences.addAll(negativeCache);
-		}
-		List<ServiceReference<IColumnCalloutFactory>> cacheReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> positiveReferenceHolders = new ArrayList<>();
-		if (cache != null) {
-			for (IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : cache) {
-				cacheReferences.add(referenceHolder.getServiceReference());
-				IColumnCalloutFactory service = referenceHolder.getService();
-				if (service != null) {
-					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
-					if (callouts != null && callouts.length > 0) {
-						for(IColumnCallout callout : callouts) {
-							list.add(callout);
-						}
-						positiveReferenceHolders.add(referenceHolder);
-					} else {
-						negativeServiceReferences.add(referenceHolder.getServiceReference());
-					}
-				}
-			}
-		}
-		
-		int positiveAdded = 0;		
-		int negativeAdded = 0;
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> referenceHolders = Service.locator().list(IColumnCalloutFactory.class).getServiceReferences();		
-		if (referenceHolders != null) {
-			for(IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : referenceHolders) {
-				if (cacheReferences.contains(referenceHolder.getServiceReference()) || negativeServiceReferences.contains(referenceHolder.getServiceReference()))
-					continue;
-				IColumnCalloutFactory service = referenceHolder.getService();
-				if (service != null) {
-					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
-					if (callouts != null && callouts.length > 0) {
-						for(IColumnCallout callout : callouts) {
-							list.add(callout);						
-						}
-						positiveReferenceHolders.add(referenceHolder);
-						positiveAdded++;
-					} else {
-						negativeServiceReferences.add(referenceHolder.getServiceReference());
-						negativeAdded++;
-					}
-				}
-			}			
-		}
-		
-		if (cache == null || cache.size() != positiveReferenceHolders.size() || positiveAdded > 0)
-			s_columnCalloutFactoryCache.put(cacheKey, positiveReferenceHolders);
-		if (negativeCache == null || negativeCache.size() != negativeServiceReferences.size() || negativeAdded > 0)
-			s_columnCalloutFactoryNegativeCache.put(cacheKey, negativeServiceReferences);
-		
-		return list;
+		return ColumnCalloutManager.findCallout(tableName, columnName);
 	}
 
-	private static final CCache<String, IServiceReferenceHolder<ICalloutFactory>> s_calloutFactoryCache = new CCache<>(null, "ICalloutFactory", 100, false);
-	
-	// IDEMPIERE-2732
 	/**
 	 *
 	 * @param className
@@ -187,32 +121,7 @@ public class Core {
 	 * @return callout for className
 	 */
 	public static Callout getCallout(String className, String methodName) {
-		String cacheKey = className + "::" + methodName;
-		IServiceReferenceHolder<ICalloutFactory> cache = s_calloutFactoryCache.get(cacheKey);
-		if (cache != null) {
-			ICalloutFactory service = cache.getService();
-			if (service != null) {
-				Callout callout = service.getCallout(className, methodName);
-				if (callout != null) {
-					return callout;
-				}
-			}
-			s_calloutFactoryCache.remove(cacheKey);
-		}
-		List<IServiceReferenceHolder<ICalloutFactory>> factories = Service.locator().list(ICalloutFactory.class).getServiceReferences();
-		if (factories != null) {
-			for(IServiceReferenceHolder<ICalloutFactory> factory : factories) {
-				ICalloutFactory service = factory.getService();
-				if (service != null) {
-					Callout callout = service.getCallout(className, methodName);
-					if (callout != null) {
-						s_calloutFactoryCache.put(cacheKey, factory);
-						return callout;
-					}
-				}
-			}
-		}
-		return null;
+		return ColumnCalloutManager.getCallout(className, methodName);
 	}
 
 	private static final CCache<String, IServiceReferenceHolder<IProcessFactory>> s_processFactoryCache = new CCache<>(null, "IProcessFactory", 100, false);
@@ -983,25 +892,12 @@ public class Core {
 		return processFactoryService;
 	}
 	
-	private static IServiceReferenceHolder<IMappedColumnCalloutFactory> s_mappedColumnCalloutFactoryReference = null;
-	
 	/**
 	 * 
 	 * @return {@link IMappedColumnCalloutFactory}
 	 */
 	public static IMappedColumnCalloutFactory getMappedColumnCalloutFactory() {
-		IMappedColumnCalloutFactory factoryService = null;
-		if (s_mappedColumnCalloutFactoryReference != null) {
-			factoryService = s_mappedColumnCalloutFactoryReference.getService();
-			if (factoryService != null)
-				return factoryService;
-		}
-		IServiceReferenceHolder<IMappedColumnCalloutFactory> serviceReference = Service.locator().locate(IMappedColumnCalloutFactory.class).getServiceReference();
-		if (serviceReference != null) {
-			factoryService = serviceReference.getService();
-			s_mappedColumnCalloutFactoryReference = serviceReference;
-		}
-		return factoryService;
+		return ColumnCalloutManager.getMappedColumnCalloutFactory();		
 	}
 	
 	private static IServiceReferenceHolder<IMappedDocumentFactory> s_mappedDocumentFactoryReference = null;
