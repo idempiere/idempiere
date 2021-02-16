@@ -24,8 +24,7 @@
  **********************************************************************/
 package org.idempiere.process;
 
-import java.util.function.Supplier;
-
+import org.adempiere.base.IMappedByNameFactory;
 import org.compiere.process.ProcessCall;
 
 /**
@@ -33,19 +32,5 @@ import org.compiere.process.ProcessCall;
  * @author hengsin
  *
  */
-public interface IMappedProcessFactory {
-
-	/**
-	 * add name to class mapping
-	 * @param name
-	 * @param processSupplier
-	 */
-	void addMapping(String name, Supplier<ProcessCall> processSupplier);
-
-	/**
-	 * remove name to class mapping
-	 * @param name
-	 */
-	void removeMapping(String name);
-
+public interface IMappedProcessFactory extends IMappedByNameFactory<ProcessCall> {
 }
