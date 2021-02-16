@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MRefTable;
+import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
 import org.compiere.model.Query;
@@ -71,6 +73,55 @@ public class DatabaseTableRename extends SvrProcess {
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@AlreadyExists@: @TableName@ = " + p_NewTableName)));
 		}
 
+		String regex = "(?i)\\b" + table.getTableName() + "\\.";
+		String fullregex = ".*" + regex + ".*";
+
+		// Rename table in where or orderby clauses in tabs
+		List<MTab> tabs = new Query(getCtx(), MTab.Table_Name, "AD_Table_ID=? AND (WhereClause IS NOT NULL OR OrderByClause IS NOT NULL)", get_TrxName())
+				.setParameters(p_AD_Table_ID)
+				.list();
+		for (MTab tab : tabs) {
+			boolean changed = false;
+			String whereClause = tab.getWhereClause();
+			if (whereClause != null && whereClause.matches(fullregex)) {
+				whereClause = whereClause.replaceAll(regex, p_NewTableName + ".");
+				tab.setWhereClause(whereClause);
+				changed = true;
+			}
+			String orderByClause = tab.getOrderByClause();
+			if (orderByClause != null && orderByClause.matches(fullregex)) {
+				orderByClause = orderByClause.replaceAll(regex, p_NewTableName + ".");
+				tab.setOrderByClause(orderByClause);
+				changed = true;
+			}
+			if (changed) {
+				tab.saveEx();
+			}
+		}
+
+		// Rename table in where or orderby clauses in reftable
+		List<MRefTable> refts = new Query(getCtx(), MRefTable.Table_Name, "AD_Table_ID=? AND (WhereClause IS NOT NULL OR OrderByClause IS NOT NULL)", get_TrxName())
+				.setParameters(p_AD_Table_ID)
+				.list();
+		for (MRefTable reft : refts) {
+			boolean changed = false;
+			String whereClause = reft.getWhereClause();
+			if (whereClause != null && whereClause.matches(fullregex)) {
+				whereClause = whereClause.replaceAll(regex, p_NewTableName + ".");
+				reft.setWhereClause(whereClause);
+				changed = true;
+			}
+			String orderByClause = reft.getOrderByClause();
+			if (orderByClause != null && orderByClause.matches(fullregex)) {
+				orderByClause = orderByClause.replaceAll(regex, p_NewTableName + ".");
+				reft.setOrderByClause(orderByClause);
+				changed = true;
+			}
+			if (changed) {
+				reft.saveEx();
+			}
+		}
+		
 		String colPrefix = table.getTableName().toLowerCase();
 		List<M_Element> elements = new Query(getCtx(), M_Element.Table_Name, "LOWER(ColumnName) IN (?, ?)", get_TrxName())
 				.setParameters(colPrefix+"_id", colPrefix+"_uu")
