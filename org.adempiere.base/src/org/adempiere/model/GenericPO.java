@@ -82,16 +82,6 @@ public class GenericPO extends PO {
 	}
 
 	/**
-	 * @param tableName
-	 * @param ctx
-	 * @param uuID 
-	 * @param trxName
-	 */
-	public GenericPO(String tableName, Properties ctx, String uuID, String trxName) {
-		super(new PropertiesWrapper(ctx, tableName), 0, trxName, null, uuID);
-	}
-
-	/**
 	 * We must not use variable initializer here since the 2 variable below will be initialize inside
 	 * the initPO method called by the parent constructor.  
 	 */

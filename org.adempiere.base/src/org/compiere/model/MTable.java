@@ -606,7 +606,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 * 
 	 * @param  uuID    UUID
 	 * @param  trxName transaction
-	 * @return         PO for Record or null
+	 * @return         PO for Record
 	 */
 	public PO getPOByUU (String uuID, String trxName)
 	{

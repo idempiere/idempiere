@@ -191,20 +191,6 @@ public abstract class PO
 	 */
 	public PO (Properties ctx, int ID, String trxName, ResultSet rs)
 	{
-		this(ctx, ID, trxName, rs, null);
-	}
-
-	/**
-	 * Create & Load existing Persistent Object.
-	 * 
-	 * @param ctx     context
-	 * @param ID      the ID if 0, the record defaults are applied - ignored if re exists
-	 * @param trxName transaction name
-	 * @param rs      optional - load from current result set position (no navigation, not closed)
-	 * @param uuID    optional - load from uuID
-	 */
-	public PO(Properties ctx, int ID, String trxName, ResultSet rs, String uuID)
-	{
 		p_ctx = ctx != null ? ctx : Env.getCtx();
 		m_trxName = trxName;
 
@@ -220,8 +206,6 @@ public abstract class PO
 
 		if (rs != null)
 			load(rs);		//	will not have virtual columns
-		else if (!Util.isEmpty(uuID, true))
-			load(uuID, trxName);
 		else
 			load(ID, trxName);
 
@@ -1365,7 +1349,7 @@ public abstract class PO
 	 * @param uuID    UUID
 	 * @param trxName transaction name
 	 */
-	protected void loadByUU(String uuID, String trxName)
+	public void loadByUU(String uuID, String trxName)
 	{
 		// reset new values
 		m_newValues = new Object[get_ColumnCount()];
@@ -1377,7 +1361,7 @@ public abstract class PO
 		{
 			load(uuID,trxName);
 		}else {
-			load(0,trxName);
+			throw new IllegalArgumentException("Invalid null UU - Must pass valid UU");
 		}
 	} // loadByUU
 
@@ -1396,7 +1380,7 @@ public abstract class PO
 	 *  @param trxName transaction
 	 *  @return true if loaded
 	 */
-	public boolean load (String uuID,String trxName)
+	protected boolean load (String uuID,String trxName)
 	{
 		m_trxName = trxName;
 		boolean success = true;
