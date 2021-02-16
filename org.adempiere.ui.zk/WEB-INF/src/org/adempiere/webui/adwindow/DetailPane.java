@@ -752,6 +752,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         List<String> windowRestrictList = adwindow.getWindowToolbarRestrictList();
         
         for(Component c : toolbar.getChildren()) {
+			// TODO: This implementation is fragile against changes on the structure of the toolbar
+			//       Would be better to remove the button in the addADTabpanel method, same place where the isActive is evaluated
         	if (c instanceof ToolBarButton) {
         		ToolBarButton btn = (ToolBarButton) c;
         		if (BTN_NEW_ID.equals(btn.getId())) {

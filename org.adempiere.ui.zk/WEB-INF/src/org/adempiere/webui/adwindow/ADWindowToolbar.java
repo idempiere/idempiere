@@ -903,6 +903,23 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 							this.removeChild(p);
 							break;
 						}
+					} else if (p instanceof Popup) {
+						// TODO: This implementation is fragile against changes on the structure of the toolbar
+						//       Would be better to remove the button in the init method, same place where the isActive is evaluated
+						// Evaluate buttons in the Show More area
+						// Structure of the More area: Grid > Rows > Row > Cell > ToolBarButton
+						if (p.getFirstChild() instanceof Grid && p.getFirstChild().getFirstChild() instanceof Rows) {
+							Grid grid = (Grid) p.getFirstChild();
+							Rows rows = (Rows) grid.getFirstChild();
+							for (Component r : rows.getChildren()) {
+								if (r instanceof Row && r.getFirstChild() instanceof Cell && r.getFirstChild().getFirstChild() instanceof ToolBarButton) {
+									ToolBarButton tb = (ToolBarButton) r.getFirstChild().getFirstChild();
+									if (advancedName.equals(tb.getName()) ) {
+										r.removeChild(r.getFirstChild());
+									}
+								}
+							}
+						}
 					}
 				}
 
