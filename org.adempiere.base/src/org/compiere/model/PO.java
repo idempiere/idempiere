@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7231417421289556724L;
+	private static final long serialVersionUID = -6130455457377290526L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -1357,12 +1357,12 @@ public abstract class PO
 
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
-		if (!Util.isEmpty(uuID, true))
+		if (Util.isEmpty(uuID, true))
 		{
-			load(uuID,trxName);
-		}else {
-			throw new IllegalArgumentException("Invalid null UU - Must pass valid UU");
+			throw new IllegalArgumentException("Invalid null or blank UU - Must pass valid UU");
 		}
+			
+		load(uuID,trxName);
 	} // loadByUU
 
 	/**
@@ -1375,7 +1375,7 @@ public abstract class PO
 	}
 	
 	/**
-	 *  (re)Load record with m_ID[*]
+	 *  (re)Load record with uuID
 	 *  @param uuID RecrodUU
 	 *  @param trxName transaction
 	 *  @return true if loaded

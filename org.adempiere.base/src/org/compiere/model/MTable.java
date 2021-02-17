@@ -67,7 +67,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4037560922339534982L;
+	private static final long serialVersionUID = 2951110137945905890L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
