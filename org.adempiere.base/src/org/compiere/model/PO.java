@@ -3226,7 +3226,7 @@ public abstract class PO
 		{
 			sb.append(getUUIDColumnName()).append("=");
 			if (withValues)
-				sb.append(uuID);
+				sb.append(DB.TO_STRING(uuID));
 			else
 				sb.append("?");
 
