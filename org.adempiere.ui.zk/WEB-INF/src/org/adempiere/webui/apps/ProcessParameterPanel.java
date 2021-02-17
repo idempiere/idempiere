@@ -361,6 +361,7 @@ public class ProcessParameterPanel extends Panel implements
 			editor2.getComponent().addEventListener(Events.ON_FOCUS, this);
 			// New Field value to be updated to editor
 			mField2.addPropertyChangeListener(editor2);
+			editor2.addValueChangeListener(this);
 			editor2.dynamicDisplay();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "49%");
 			setEditorPlaceHolder(editor2, mField2.getPlaceholder2());
