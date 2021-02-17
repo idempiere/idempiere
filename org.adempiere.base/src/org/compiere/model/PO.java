@@ -1351,16 +1351,17 @@ public abstract class PO
 	 */
 	public void loadByUU(String uuID, String trxName)
 	{
+		if (Util.isEmpty(uuID, true))
+		{
+			throw new IllegalArgumentException("Invalid null or blank UU - Must pass valid UU");
+		}
+		
 		// reset new values
 		m_newValues = new Object[get_ColumnCount()];
 		checkImmutable();
 
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
-		if (Util.isEmpty(uuID, true))
-		{
-			throw new IllegalArgumentException("Invalid null or blank UU - Must pass valid UU");
-		}
 			
 		load(uuID,trxName);
 	} // loadByUU
