@@ -63,7 +63,6 @@ import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.CustomGridDataLoader;
@@ -1295,13 +1294,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		if (isDetailPane()) {
 			Component parent = this.getParent();
 			while (parent != null) {
-				if (parent instanceof Tabpanel) {
-					Component firstChild = parent.getFirstChild();
-					if ( gridFooter.getParent() != firstChild ) { 
-						firstChild.appendChild(gridFooter);
-						ZKUpdateUtil.setHflex(gridFooter, "0");
-						gridFooter.setSclass("adwindow-detailpane-adtab-grid-south");												
-					}
+				if (parent instanceof DetailPane.Tabpanel) {
+					((DetailPane.Tabpanel) parent).setPagingControl(gridFooter);
 					break;
 				}
 				parent = parent.getParent();
