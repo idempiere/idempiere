@@ -29,7 +29,10 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MRefTable;
+import org.compiere.model.MSequence;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
@@ -61,9 +64,10 @@ public class DatabaseTableRename extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		MTable table = new MTable(getCtx(), p_AD_Table_ID, get_TrxName());
+		String oldTableName = table.getTableName();
 		log.info(table.toString());
 		if (   Util.isEmpty(p_NewTableName, true)
-			|| p_NewTableName.toLowerCase().equals(table.getTableName().toLowerCase())) {
+			|| p_NewTableName.toLowerCase().equals(oldTableName.toLowerCase())) {
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@NotValid@: @NewTableName@")));
 		}
 		int cnt = DB.getSQLValueEx(get_TrxName(),
@@ -73,10 +77,10 @@ public class DatabaseTableRename extends SvrProcess {
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@AlreadyExists@: @TableName@ = " + p_NewTableName)));
 		}
 
-		String regex = "(?i)\\b" + table.getTableName() + "\\.";
+		String regex = "(?i)\\b" + oldTableName + "\\.";
 		String fullregex = ".*" + regex + ".*";
 
-		// Rename table in where or orderby clauses in tabs
+		// Rename table in WhereClause and OrderByClause in AD_Tab
 		List<MTab> tabs = new Query(getCtx(), MTab.Table_Name, "AD_Table_ID=? AND (WhereClause IS NOT NULL OR OrderByClause IS NOT NULL)", get_TrxName())
 				.setParameters(p_AD_Table_ID)
 				.list();
@@ -96,10 +100,11 @@ public class DatabaseTableRename extends SvrProcess {
 			}
 			if (changed) {
 				tab.saveEx();
+				addLog(0, null, null, "@Updated@ @AD_Tab_ID@ " + tab.getName(), MTab.Table_ID, tab.getAD_Tab_ID());
 			}
 		}
 
-		// Rename table in where or orderby clauses in reftable
+		// Rename table in WhereClause and OrderByClause in AD_Ref_Table
 		List<MRefTable> refts = new Query(getCtx(), MRefTable.Table_Name, "AD_Table_ID=? AND (WhereClause IS NOT NULL OR OrderByClause IS NOT NULL)", get_TrxName())
 				.setParameters(p_AD_Table_ID)
 				.list();
@@ -119,10 +124,37 @@ public class DatabaseTableRename extends SvrProcess {
 			}
 			if (changed) {
 				reft.saveEx();
+				addLog(0, null, null, "@Updated@ @AD_Ref_Table_ID@ " + reft.getAD_Reference().getName(), MRefTable.Table_ID, reft.getAD_Reference_ID());
 			}
 		}
 		
-		String colPrefix = table.getTableName().toLowerCase();
+		// Rename table in sequences
+		String whereSeq = "(Name=? AND Description=? AND IsTableID='Y') OR (Name=? AND Description=? AND IsTableID='N')";
+		List<MSequence> seqs = new Query(getCtx(), MSequence.Table_Name, whereSeq, get_TrxName())
+				.setParameters(
+						oldTableName,
+						"Table "+oldTableName,
+						"DocumentNo_"+oldTableName,
+						"DocumentNo/Value for Table "+oldTableName
+				)
+				.list();
+		for (MSequence seq : seqs) {
+			if (seq.isTableID()) {
+				seq.setName(p_NewTableName);
+				seq.setDescription("Table "+p_NewTableName);
+			} else {
+				seq.setName("DocumentNo_"+p_NewTableName);
+				seq.setDescription("DocumentNo/Value for Table "+p_NewTableName);
+			}
+			seq.saveEx();
+			if (seq.getAD_Client_ID() == 0) {
+				addLog(0, null, null, "@Updated@ @AD_Sequence_ID@ " + seq.getName(), MSequence.Table_ID, seq.getAD_Sequence_ID());
+			} else {
+				addLog(0, null, null, "@Updated@ @AD_Sequence_ID@ " + seq.getName() + ", @AD_Client_ID@ " + MClient.get(seq.getAD_Client_ID()).getName());
+			}
+		}
+		
+		String colPrefix = oldTableName.toLowerCase();
 		List<M_Element> elements = new Query(getCtx(), M_Element.Table_Name, "LOWER(ColumnName) IN (?, ?)", get_TrxName())
 				.setParameters(colPrefix+"_id", colPrefix+"_uu")
 				.setOrderBy("AD_Element_ID")
@@ -138,7 +170,7 @@ public class DatabaseTableRename extends SvrProcess {
 			element.saveEx();
 		}
 		
-		String sql = "ALTER TABLE " + table.getTableName() + " RENAME TO " + p_NewTableName;
+		String sql = "ALTER TABLE " + oldTableName + " RENAME TO " + p_NewTableName;
 		int rvalue = DB.executeUpdateEx(sql, get_TrxName());
 		addLog(rvalue + " - " + sql);
 
