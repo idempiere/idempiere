@@ -195,4 +195,12 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 * @return Quick Form Button Enabled/Disabled
 	 */
 	public abstract boolean isEnableQuickFormButton();
+	
+	/**
+	 * Get is detail pane visible
+	 * @return boolean
+	 */
+	public default boolean isDetailVisible() {
+		return false;
+	}
 }
