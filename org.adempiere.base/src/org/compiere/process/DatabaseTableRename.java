@@ -30,7 +30,6 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
-import org.compiere.model.MColumn;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTab;
@@ -124,7 +123,7 @@ public class DatabaseTableRename extends SvrProcess {
 			}
 			if (changed) {
 				reft.saveEx();
-				addLog(0, null, null, "@Updated@ @AD_Ref_Table_ID@ " + reft.getAD_Reference().getName(), MRefTable.Table_ID, reft.getAD_Reference_ID());
+				addLog(0, null, null, "@Updated@ @AD_Reference_ID@ " + reft.getAD_Reference().getName(), MRefTable.Table_ID, reft.getAD_Reference_ID());
 			}
 		}
 		
