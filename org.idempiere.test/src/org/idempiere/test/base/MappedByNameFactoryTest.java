@@ -73,6 +73,7 @@ import org.compiere.model.X_C_AddressValidationCfg;
 import org.compiere.model.X_C_TaxProviderCfg;
 import org.compiere.model.X_I_BankStatement;
 import org.compiere.model.X_T_Replenish;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.GenericPaymentExport;
 import org.compiere.util.PaymentExport;
@@ -145,7 +146,7 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		
 		var validator = Core.getModelValidator(MyModelValidator.class.getName());
 		assertNotNull(validator);
-		assertTrue(validator instanceof MyModelValidator);
+		assertTrue(validator instanceof MyModelValidator, "validator not instanceof MyModelValidator. validator="+validator.getClass().getName());
 	}
 	
 	private final static class MyPaymentProcessor extends PaymentProcessor {
@@ -180,13 +181,15 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		properties.put("service.ranking", Integer.valueOf(1));
 		ServiceRegistration<IPaymentProcessorFactory> registration = bc.registerService(IPaymentProcessorFactory.class, new MyPaymentProcessFactory(), properties);
 		
+		CacheMgt.get().reset(Core.IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME);
+		
 		PaymentInterface mp = null;
 		MBankAccountProcessor mbap;
 		Query query = new Query(Env.getCtx(), MBankAccountProcessor.Table_Name, MTable.getUUIDColumnName(MBankAccountProcessor.Table_Name)+"=?", null);
 		mbap = query.setParameters("f4a64026-bf68-4c8c-b238-8cdf006aae04").first();
 		var pp = Core.getPaymentProcessor(mbap, mp);
 		assertNotNull(pp);
-		assertTrue(pp instanceof MyPaymentProcessor);
+		assertTrue(pp instanceof MyPaymentProcessor, "pp not instanceof MyPaymentProcessor. pp="+pp.getClass().getName());
 		
 		registration.unregister();
 	}
@@ -352,7 +355,7 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		bc.registerService(IBankStatementLoaderFactory.class, new MyBankStatementLoaderFactory(), properties);
 		var loader = Core.getBankStatementLoader(MyBankStatementLoader.class.getName());
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyBankStatementLoader);
+		assertTrue(loader instanceof MyBankStatementLoader, "loader not instanceof MyBankStatementLoader. loader="+loader.getClass().getName());
 	}
 	
 	private static final class MyBankStatementMatcher implements BankStatementMatcherInterface {
@@ -387,7 +390,7 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		bc.registerService(IBankStatementMatcherFactory.class, new MyBankStatementMatcherFactory(), properties);
 		var loader = Core.getBankStatementMatcher(MyBankStatementMatcher.class.getName());
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyBankStatementMatcher);
+		assertTrue(loader instanceof MyBankStatementMatcher, "loader not instanceof MyBankStatementMatcher. loader="+loader.getClass().getName());
 	}
 	
 	private final static class MyShipmentProcessor extends MFreightShipmentProcessor {		
@@ -411,11 +414,14 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("service.ranking", Integer.valueOf(1));
 		ServiceRegistration<IShipmentProcessorFactory> sr = bc.registerService(IShipmentProcessorFactory.class, new MyShipmentProcessorFactory(), properties);
+		
+		CacheMgt.get().reset(Core.ISHIPMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME);
+		
 		MShipper shipper = new MShipper(Env.getCtx(), 100, getTrxName());
 		MShipperFacade sf = new MShipperFacade(shipper);
 		var loader = Core.getShipmentProcessor(sf);
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyShipmentProcessor);
+		assertTrue(loader instanceof MyShipmentProcessor, "loader not instanceof MyShipmentProcessor. loader="+loader.getClass().getName());
 		sr.unregister();
 	}
 	
@@ -458,7 +464,7 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		adv.setName("testAddressVallidation");
 		var loader = Core.getAddressValidation(adv);
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyAddressValidation);
+		assertTrue(loader instanceof MyAddressValidation, "loader not instanceof MyAddressValidation. loader="+loader.getClass().getName());
 		sr.unregister();
 	}
 	
@@ -493,7 +499,7 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		tp.saveEx();
 		var loader = Core.getTaxProvider(tp);
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyTaxProvider);
+		assertTrue(loader instanceof MyTaxProvider, "loader not instanceof MyTaxProvider. loader="+loader.getClass().getName());
 		sr.unregister();
 	}
 	
@@ -524,7 +530,7 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		bc.registerService(IReplenishFactory.class, new MyReplenishInterfaceFactory(), properties);
 		var loader = Core.getReplenish(MyReplenishInterface.class.getName());
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyReplenishInterface);		
+		assertTrue(loader instanceof MyReplenishInterface, "loader not instanceof MyReplenishInterface. loader="+loader.getClass().getName());		
 	}
 	
 	private final static class MyPaymentExport extends GenericPaymentExport {
@@ -550,7 +556,7 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		bc.registerService(IPaymentExporterFactory.class, new MyPaymentExportFactory(), properties);
 		var loader = Core.getPaymentExporter(MyPaymentExport.class.getName());
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyPaymentExport);				
+		assertTrue(loader instanceof MyPaymentExport, "loader not instanceof MyPaymentExport loader="+loader.getClass().getName());				
 	}
 	
 	private final static class MyDepreciationMethod implements IDepreciationMethod {
@@ -592,6 +598,6 @@ public class MappedByNameFactoryTest extends AbstractTestCase {
 		dto.depreciationType = "MyDepreciationMethod";
 		var loader = Core.getDepreciationMethod(dto);
 		assertNotNull(loader);
-		assertTrue(loader instanceof MyDepreciationMethod);						
+		assertTrue(loader instanceof MyDepreciationMethod, "loader not instanceof MyDepreciationMethod. loader="+loader.getClass().getName());						
 	}
 }

@@ -67,9 +67,35 @@ import org.idempiere.process.IMappedProcessFactory;
  */
 public class Core {
 
+	public static final String SCRIPT_ENGINE_FACTORY_CACHE_TABLE_NAME = "_ScriptEngineFactory_Cache";
+
+	public static final String IPROCESS_FACTORY_CACHE_TABLE_NAME = "_IProcessFactory_Cache";
+
+	public static final String IRESOURCE_FINDER_CACHE_TABLE_NAME = "_IResourceFinder_Cache";
+
+	public static final String IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME = "_IDepreciationMethodFactory_Cache";
+
+	public static final String IPAYMENT_EXPORTER_FACTORY_CACHE_TABLE_NAME = "_IPaymentExporterFactory_Cache";
+
+	public static final String IREPLENISH_FACTORY_CACHE_TABLE_NAME = "_IReplenishFactory_Cache";
+
+	public static final String ITAX_PROVIDER_FACTORY_CACHE_TABLE_NAME = "_ITaxProviderFactory_Cache";
+
+	public static final String IADDRESS_VALIDATION_FACTORY_CACHE_TABLE_NAME = "_IAddressValidationFactory_Cache";
+
+	public static final String IBANK_STATEMENT_MATCHER_FACTORY_CACHE_TABLE_NAME = "_IBankStatementMatcherFactory_Cache";
+
+	public static final String IBANK_STATEMENT_LOADER_FACTORY_CACHE_TABLE_NAME = "_IBankStatementLoaderFactory_Cache";
+
+	public static final String IMODEL_VALIDATOR_FACTORY_CACHE_TABLE_NAME = "_IModelValidatorFactory_Cache";
+
+	public static final String ISHIPMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IShipmentProcessorFactory_Cache";
+
+	public static final String IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IPaymentProcessorFactory_Cache";
+
 	private final static CLogger s_log = CLogger.getCLogger(Core.class);
 
-	private static final CCache<String, IServiceReferenceHolder<IResourceFinder>> s_resourceFinderCache = new CCache<>(null, "IResourceFinder", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IResourceFinder>> s_resourceFinderCache = new CCache<>(IRESOURCE_FINDER_CACHE_TABLE_NAME, "IResourceFinder", 100, false);
 	
 	/**
 	 * @return list of active resource finder
@@ -124,7 +150,7 @@ public class Core {
 		return ColumnCalloutManager.getCallout(className, methodName);
 	}
 
-	private static final CCache<String, IServiceReferenceHolder<IProcessFactory>> s_processFactoryCache = new CCache<>(null, "IProcessFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IProcessFactory>> s_processFactoryCache = new CCache<>(IPROCESS_FACTORY_CACHE_TABLE_NAME, "IProcessFactory", 100, false);
 	
 	/**
 	 *
@@ -193,7 +219,7 @@ public class Core {
 		return factories;
 	}
 
-	private static final CCache<String, IServiceReferenceHolder<IModelValidatorFactory>> s_modelValidatorFactoryCache = new CCache<>(null, "IModelValidatorFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IModelValidatorFactory>> s_modelValidatorFactoryCache = new CCache<>(IMODEL_VALIDATOR_FACTORY_CACHE_TABLE_NAME, "IModelValidatorFactory", 100, false);
 	
 	/**
 	 *
@@ -249,7 +275,7 @@ public class Core {
 		return keystoreService;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(null, "IPaymentProcessorFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IPaymentProcessorFactory", 100, false);
 	
 	/**
 	 *  Get payment processor instance
@@ -308,7 +334,7 @@ public class Core {
 		return myProcessor;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IBankStatementLoaderFactory>> s_bankStatementLoaderFactoryCache = new CCache<>(null, "IBankStatementLoaderFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IBankStatementLoaderFactory>> s_bankStatementLoaderFactoryCache = new CCache<>(IBANK_STATEMENT_LOADER_FACTORY_CACHE_TABLE_NAME, "IBankStatementLoaderFactory", 100, false);
 	
 	/**
 	 * get BankStatementLoader instance
@@ -359,7 +385,7 @@ public class Core {
 		return myBankStatementLoader;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IBankStatementMatcherFactory>> s_bankStatementMatcherFactoryCache = new CCache<>(null, "IBankStatementMatcherFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IBankStatementMatcherFactory>> s_bankStatementMatcherFactoryCache = new CCache<>(IBANK_STATEMENT_MATCHER_FACTORY_CACHE_TABLE_NAME, "IBankStatementMatcherFactory", 100, false);
 	
 	/**
 	 * get BankStatementMatcher instance
@@ -410,7 +436,7 @@ public class Core {
 		return myBankStatementMatcher;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IShipmentProcessorFactory>> s_shipmentProcessorFactoryCache = new CCache<>(null, "IShipmentProcessorFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IShipmentProcessorFactory>> s_shipmentProcessorFactoryCache = new CCache<>(ISHIPMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IShipmentProcessorFactory", 100, false);
 	
 	/**
 	 * 
@@ -456,7 +482,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IAddressValidationFactory>> s_addressValidationFactoryCache = new CCache<>(null, "IAddressValidationFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IAddressValidationFactory>> s_addressValidationFactoryCache = new CCache<>(IADDRESS_VALIDATION_FACTORY_CACHE_TABLE_NAME, "IAddressValidationFactory", 100, false);
 	
 	/**
 	 * Get address validation instance
@@ -500,7 +526,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<ITaxProviderFactory>> s_taxProviderFactoryCache = new CCache<>(null, "ITaxProviderFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<ITaxProviderFactory>> s_taxProviderFactoryCache = new CCache<>(ITAX_PROVIDER_FACTORY_CACHE_TABLE_NAME, "ITaxProviderFactory", 100, false);
 	
 	/**
 	 * Get tax provider instance
@@ -557,7 +583,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IReplenishFactory>> s_replenishFactoryCache = new CCache<>(null, "IReplenishFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IReplenishFactory>> s_replenishFactoryCache = new CCache<>(IREPLENISH_FACTORY_CACHE_TABLE_NAME, "IReplenishFactory", 100, false);
 	
 	/**
 	 * get Custom Replenish instance
@@ -608,7 +634,7 @@ public class Core {
 		return myReplenishInstance;
 	}
 	
-	private final static CCache<String, IServiceReferenceHolder<ScriptEngineFactory>> s_scriptEngineFactoryCache = new CCache<>(null, "ScriptEngineFactory", 100, false);
+	private final static CCache<String, IServiceReferenceHolder<ScriptEngineFactory>> s_scriptEngineFactoryCache = new CCache<>(SCRIPT_ENGINE_FACTORY_CACHE_TABLE_NAME, "ScriptEngineFactory", 100, false);
 	
 	/** Get script engine 
 	 * 
@@ -647,7 +673,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IPaymentExporterFactory>> s_paymentExporterFactory = new CCache<>(null, "IPaymentExporterFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IPaymentExporterFactory>> s_paymentExporterFactory = new CCache<>(IPAYMENT_EXPORTER_FACTORY_CACHE_TABLE_NAME, "IPaymentExporterFactory", 100, false);
 	
 	/**
 	 * get PaymentExporter instance
@@ -730,7 +756,7 @@ public class Core {
 		return null;
 	}
 	
-	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(null, "IDepreciationMethodFactory", 100, false);
+	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME, "IDepreciationMethodFactory", 100, false);
 	
 	/**
 	 * lookup implement {@link IDepreciationMethod}
