@@ -2101,4 +2101,26 @@ public final class Env
 		getCtx().put(LANGUAGE, Language.getBaseAD_Language());
 	}   //  static
 
+
+	public static void setPredefinedVariables(Properties ctx, int windowNo, String predefinedVariables) {
+		if (predefinedVariables != null) {
+			String[] lines = predefinedVariables.split("\n");
+			for (String line : lines) {
+				int idxEq = line.indexOf("=");
+				if (idxEq > 0) {
+					String var = line.substring(0, idxEq).trim();
+					if (var.length() > 0) {
+						String value = line.substring(idxEq+1).trim();
+						if (   (value.startsWith("\"") && value.endsWith("\""))
+							|| (value.startsWith("'")  && value.endsWith("'") )
+							) {
+							value = value.substring(1, value.length()-1);
+						}
+						Env.setContext(ctx, windowNo, var, value);
+					}
+				}
+			}
+		}
+	}
+
 }   //  Env

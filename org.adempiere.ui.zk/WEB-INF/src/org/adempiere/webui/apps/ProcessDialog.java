@@ -116,6 +116,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	private long prevKeyEventTime = 0;
 	private KeyEvent prevKeyEvent;
 
+	public ProcessDialog (int AD_Process_ID, boolean isSOTrx)
+	{
+		this(AD_Process_ID, isSOTrx, null);
+	}
+	
 	/**
 	 * Dialog to start a process/report
 	 * @param ctx
@@ -124,16 +129,18 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	 * @param aProcess
 	 * @param WindowNo
 	 * @param AD_Process_ID
+	 * @param predefinedContextVariables 
 	 * @param tableId
 	 * @param recordId
 	 * @param autoStart
 	 */
-	public ProcessDialog (int AD_Process_ID, boolean isSOTrx)
+	public ProcessDialog (int AD_Process_ID, boolean isSOTrx, String predefinedContextVariables)
 	{
 		log.info("Process=" + AD_Process_ID );
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
+		Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefinedContextVariables);
 		try
 		{
 			init(Env.getCtx(), m_WindowNo, AD_Process_ID, null, false, false);
