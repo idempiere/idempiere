@@ -869,7 +869,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		return true;
 	}
 
-	public void updateToolbarAccess(int xAD_Window_ID) {
+	public void updateToolbarAccess() {
 		if (ToolBarMenuRestictionLoaded)
 			return;
 		
