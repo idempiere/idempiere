@@ -54,7 +54,6 @@ import org.zkoss.zul.Tabpanels;
 public abstract class TabbedDesktop extends AbstractDesktop {
 
 	protected WindowContainer windowContainer;
-	private String predefinedContextVariables;
 
 	public TabbedDesktop() {
 		super();
@@ -68,7 +67,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @return ProcessDialog
      */
 	public ProcessDialog openProcessDialog(int processId, boolean soTrx) {
-		ProcessDialog pd = new ProcessDialog (processId, soTrx, predefinedContextVariables);
+		ProcessDialog pd = new ProcessDialog (processId, soTrx, getPredefinedContextVariables());
 
 		if (pd.isValid()) {
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
@@ -89,7 +88,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      */
 	public ADForm openForm(int formId) {
 		ADForm form = ADForm.openForm(formId);
-		Env.setPredefinedVariables(Env.getCtx(), form.getWindowNo(), predefinedContextVariables);
+		Env.setPredefinedVariables(Env.getCtx(), form.getWindowNo(), getPredefinedContextVariables());
 
 		if (Window.Mode.EMBEDDED == form.getWindowMode()) {
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
@@ -116,7 +115,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		InfoPanel infoPanel = InfoManager.create(infoId);
 		
 		if (infoPanel != null) {
-			Env.setPredefinedVariables(Env.getCtx(), infoPanel.getWindowNo(), predefinedContextVariables);
+			Env.setPredefinedVariables(Env.getCtx(), infoPanel.getWindowNo(), getPredefinedContextVariables());
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
 			infoPanel.setParent(tabPanel);
 			String title = infoPanel.getTitle();
@@ -170,7 +169,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 
 		tab.setClosable(false);		
 		final OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
-		Env.setPredefinedVariables(Env.getCtx(), windowNo, predefinedContextVariables);
+		Env.setPredefinedVariables(Env.getCtx(), windowNo, getPredefinedContextVariables());
 		preOpenNewTab();
 		runnable.run();
 	}
@@ -402,8 +401,4 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		windowContainer.setTabTitle(title, windowNo);		
 	}
 
-	@Override
-	public void setPredefinedContextVariables(String predefinedVariables) {
-		this.predefinedContextVariables = predefinedVariables;
-	}
 }

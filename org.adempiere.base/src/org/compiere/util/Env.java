@@ -2090,6 +2090,8 @@ public final class Env
 
 	/**	New Line 		 */
 	public static final String	NL = System.getProperty("line.separator");
+	/* Prefix for predefined context variables coming from menu or window definition */
+	private static final String PREFIX_PREDEFINED_VARIABLE = "+";
 
 
 	/**
@@ -2116,7 +2118,7 @@ public final class Env
 							) {
 							value = value.substring(1, value.length()-1);
 						}
-						Env.setContext(ctx, windowNo, var, value);
+						Env.setContext(ctx, windowNo, PREFIX_PREDEFINED_VARIABLE + var, value);
 					}
 				}
 			}

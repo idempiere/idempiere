@@ -43,6 +43,8 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 
 	private transient ClientInfo clientInfo;
 
+	private String predefinedContextVariables;
+
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(AbstractDesktop.class);
 
@@ -62,6 +64,9 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     public void onMenuSelected(int menuId)
     {
         MMenu menu = new MMenu(Env.getCtx(), menuId, null);
+
+      try
+      {
         setPredefinedContextVariables(menu.getPredefinedContextVariables());
 
         if(menu.getAction().equals(MMenu.ACTION_Window))
@@ -93,6 +98,11 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
         {
             throw new ApplicationException("Menu Action not yet implemented: " + menu.getAction());
         }
+      }
+      finally
+      {
+        setPredefinedContextVariables(null);
+      }
     }
     
     /**
@@ -318,5 +328,14 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     		return null;
     	}
     }
+
+	@Override
+	public void setPredefinedContextVariables(String predefinedVariables) {
+		this.predefinedContextVariables = predefinedVariables;
+	}
+
+	public String getPredefinedContextVariables() {
+		return this.predefinedContextVariables;
+	}
 
 }
