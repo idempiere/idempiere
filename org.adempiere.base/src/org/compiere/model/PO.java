@@ -110,7 +110,7 @@ public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6130455457377290526L;
 
@@ -243,10 +243,10 @@ public abstract class PO
 		this.m_KeyColumns = copy.m_KeyColumns != null ? Arrays.copyOf(copy.m_KeyColumns, copy.m_KeyColumns.length) : null;
 		this.m_lobInfo = copy.m_lobInfo != null ? copy.m_lobInfo.stream().map(PO_LOB::new).collect(Collectors.toCollection(ArrayList::new)) : null;
 		this.m_newValues = copy.m_newValues != null ? Arrays.copyOf(copy.m_newValues, copy.m_newValues.length) : null;
-		this.m_oldValues = copy.m_oldValues != null ? Arrays.copyOf(copy.m_oldValues, copy.m_oldValues.length) : null;		
+		this.m_oldValues = copy.m_oldValues != null ? Arrays.copyOf(copy.m_oldValues, copy.m_oldValues.length) : null;
 		this.s_acctColumns = copy.s_acctColumns != null ? copy.s_acctColumns.stream().collect(Collectors.toCollection(ArrayList::new)) : null;
 	}
-	
+
 	/**	Logger							*/
 	protected transient CLogger	log = CLogger.getCLogger (getClass());
 	/** Static Logger					*/
@@ -287,7 +287,7 @@ public abstract class PO
 
 	/** Trifon - Indicates that this record is created by replication functionality.*/
 	private boolean m_isReplication = false;
-	
+
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
 
@@ -348,7 +348,7 @@ public abstract class PO
 				return ((PO)cmp).get_ID() == get_ID();
 		return super.equals(cmp);
 	}	//	equals
-	
+
 	public int hashCode()
 	{
 	  assert false : "hashCode not designed";
@@ -722,7 +722,7 @@ public abstract class PO
 	{
 		return set_Value(ColumnName, value, true);
 	}
-	
+
 	/**************************************************************************
 	 *  Set Value
 	 *  @param ColumnName column name
@@ -733,7 +733,7 @@ public abstract class PO
 	protected final boolean set_Value (String ColumnName, Object value, boolean checkWritable)
 	{
 		checkImmutable();
-		
+
 		if (value instanceof String && ColumnName.equals("WhereClause")
 			&& value.toString().toUpperCase().indexOf("=NULL") != -1)
 			log.warning("Invalid Null Value - " + ColumnName + "=" + value);
@@ -781,7 +781,7 @@ public abstract class PO
 	{
 		return set_Value(index, value, true);
 	}
-	
+
 	/**
 	 *  Set Value if updateable and correct class.
 	 *  (and to NULL if not mandatory)
@@ -793,7 +793,7 @@ public abstract class PO
 	protected final boolean set_Value (int index, Object value, boolean checkWritable)
 	{
 		checkImmutable();
-		
+
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.log(Level.WARNING, "Index invalid - " + index);
@@ -813,7 +813,7 @@ public abstract class PO
 				m_setErrorsFilled = true;
 				return false;
 			}
-	
+
 			//
 			// globalqss -- Bug 1618469 - is throwing not updateable even on new records
 			// if (!p_info.isColumnUpdateable(index))
@@ -950,7 +950,7 @@ public abstract class PO
 	*/
 	public void setProcessedOn(String ColumnName, Object value, Object oldValue) {
 		checkImmutable();
-		
+
 		if ("Processed".equals(ColumnName)
 				&& value instanceof Boolean
 				&& ((Boolean)value).booleanValue() == true
@@ -1070,7 +1070,7 @@ public abstract class PO
 	public final boolean set_CustomColumnReturningBoolean (String columnName, Object value)
 	{
 		checkImmutable();
-		
+
 		// [ 1845793 ] PO.set_CustomColumn not updating correctly m_newValues
 		// this is for columns not in PO - verify and call proper method if exists
 		int poIndex = get_ColumnIndex(columnName);
@@ -1105,7 +1105,7 @@ public abstract class PO
 	private void set_Keys (String ColumnName, Object value)
 	{
 		checkImmutable();
-		
+
 		//	Update if KeyColumn
 		for (int i = 0; i < m_IDs.length; i++)
 		{
@@ -1325,7 +1325,7 @@ public abstract class PO
 	protected void load (int ID, String trxName)
 	{
 		checkImmutable();
-		
+
 		if (log.isLoggable(Level.FINEST)) log.finest("ID=" + ID);
 		if (ID > 0)
 		{
@@ -1345,7 +1345,7 @@ public abstract class PO
 
 	/**
 	 * Load record with UUID
-	 * 
+	 *
 	 * @param uuID    UUID
 	 * @param trxName transaction name
 	 */
@@ -1355,14 +1355,14 @@ public abstract class PO
 		{
 			throw new IllegalArgumentException("Invalid null or blank UU - Must pass valid UU");
 		}
-		
+
 		// reset new values
 		m_newValues = new Object[get_ColumnCount()];
 		checkImmutable();
 
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
-			
+
 		load(uuID,trxName);
 	} // loadByUU
 
@@ -1374,7 +1374,7 @@ public abstract class PO
 	public boolean load (String trxName) {
 		return load(null, trxName);
 	}
-	
+
 	/**
 	 *  (re)Load record with uuID
 	 *  @param uuID RecrodUU
@@ -1553,7 +1553,7 @@ public abstract class PO
 	protected boolean load (HashMap<String,String> hmIn)
 	{
 		checkImmutable();
-		
+
 		int size = get_ColumnCount();
 		boolean success = true;
 		int index = 0;
@@ -2061,7 +2061,7 @@ public abstract class PO
 	{
 		return get_Translation(columnName, true);
 	}
-	
+
 	/**
 	 * Get Translation of column
 	 * @param columnName
@@ -2072,7 +2072,7 @@ public abstract class PO
 	{
 		return get_Translation(columnName, AD_Language, reload, true);
 	}
-	
+
 	/**
 	 * Get Translation of column
 	 * @param columnName
@@ -2119,7 +2119,7 @@ public abstract class PO
 	public boolean save()
 	{
 		checkImmutable();
-		
+
 		checkValidContext();
 		checkCrossTenant(true);
 		CLogger.resetLast();
@@ -2460,7 +2460,7 @@ public abstract class PO
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
 		} else if (get_ID() > 0 && success)
 			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
-		
+
 		return success;
 	}	//	saveFinish
 
@@ -2548,7 +2548,7 @@ public abstract class PO
 	protected boolean saveUpdate()
 	{
 		boolean ok = doUpdate(isLogSQLScript());
-		
+
 		return saveFinish (false, ok);
 	}   //  saveUpdate
 
@@ -2566,7 +2566,7 @@ public abstract class PO
 	private boolean doUpdate(boolean withValues) {
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
-				
+
 		String where = get_WhereClause(true);
 		//
 		boolean changes = false;
@@ -2673,14 +2673,14 @@ public abstract class PO
 						sql.append(encrypt(i,DB.TO_STRING(value.toString())));
 					}
 				}
-			} 
+			}
 			else
 			{
 				if (value instanceof Timestamp && dt == DisplayType.Date)
 					sql.append("trunc(cast(? as date))");
 				else
 					sql.append("?");
-				
+
 				if (value == Null.NULL)
 				{
 					params.add(null);
@@ -2707,7 +2707,7 @@ public abstract class PO
 				else
 				{
 					params.add(value);
-				}					
+				}
 			}
 
 			//	Change Log	- Only
@@ -2717,6 +2717,8 @@ public abstract class PO
 				&& !p_info.isEncrypted(i)		//	not encrypted
 				&& !p_info.isVirtualColumn(i)	//	no virtual column
 				&& !"Password".equals(columnName)
+				&& !"RequestUserPW".equals(columnName)
+				&& !"EMailUserPW".equals(columnName)
 				)
 			{
 				Object oldV = m_oldValues[i];
@@ -2758,7 +2760,7 @@ public abstract class PO
 					if (value == null || value.toString().length() == 0)
 					{
 						params.add(null);
-					} 
+					}
 					else
 					{
 						params.add(encrypt(index,value));
@@ -2955,7 +2957,7 @@ public abstract class PO
 
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
-		
+
 		//	SQL
 		StringBuilder sqlInsert = new StringBuilder("INSERT INTO ");
 		sqlInsert.append(p_info.getTableName()).append(" (");
@@ -2991,8 +2993,8 @@ public abstract class PO
 			//
 			//  Based on class of definition, not class of value
 			Class<?> c = p_info.getColumnClass(i);
-			if (withValues) 
-			{				
+			if (withValues)
+			{
 				try
 				{
 					if (c == Object.class) //  may have need to deal with null values differently
@@ -3041,12 +3043,12 @@ public abstract class PO
 				}
 			}
 			else
-			{				
+			{
 				if (value instanceof Timestamp && dt == DisplayType.Date)
 					sqlValues.append("trunc(cast(? as date))");
 				else
 					sqlValues.append("?");
-							
+
 				if (DisplayType.isLOB(dt))
 				{
 					if (p_info.isColumnMandatory(i))
@@ -3099,6 +3101,8 @@ public abstract class PO
 				&& !p_info.isEncrypted(i)		//	not encrypted
 				&& !p_info.isVirtualColumn(i)	//	no virtual column
 				&& !"Password".equals(p_info.getColumnName(i))
+				&& !"RequestUserPW".equals(p_info.getColumnName(i))
+				&& !"EMailUserPW".equals(p_info.getColumnName(i))
 				&& (insertLog.equalsIgnoreCase("Y")
 						|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(i).IsKey))
 				)
@@ -3154,7 +3158,7 @@ public abstract class PO
 		sqlInsert.append(sqlValues)
 			.append(")");
 		//
-		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
+		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName)
 							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
 		boolean ok = no == 1;
 		if (ok)
@@ -3201,9 +3205,9 @@ public abstract class PO
 	 */
 	protected void saveNew_afterSetID()
 	{
-		
+
 	}
-	
+
 	/**
 	 * 	Create Single/Multi Key Where Clause
 	 * 	@param withValues if true uses actual values otherwise ?
@@ -3329,7 +3333,7 @@ public abstract class PO
 	public boolean delete (boolean force)
 	{
 		checkImmutable();
-		
+
 		checkValidContext();
 		checkCrossTenant(true);
 		CLogger.resetLast();
@@ -3392,17 +3396,17 @@ public abstract class PO
 					log.severe("Transaction closed or never opened ("+m_trxName+") => starting now --> " + toString());
 				}
 			}
-			
+
 			try
 			{
 				// If not a localTrx we need to set a savepoint for rollback
 				if (localTrx == null)
 					savepoint = trx.setSavepoint(null);
-				
+
 				if (!beforeDelete())
 				{
 					log.warning("beforeDelete failed");
-					if (localTrx != null) 
+					if (localTrx != null)
 					{
 						localTrx.rollback();
 					}
@@ -3421,7 +3425,7 @@ public abstract class PO
 				log.log(Level.WARNING, "beforeDelete", e);
 				String msg = DBException.getDefaultDBExceptionMessage(e);
 				log.saveError(msg != null ? msg : "Error", e, false);
-				if (localTrx != null) 
+				if (localTrx != null)
 				{
 					localTrx.rollback();
 				}
@@ -3439,7 +3443,7 @@ public abstract class PO
 			if (errorMsg != null)
 			{
 				log.saveError("CannotDelete", errorMsg);
-				if (localTrx != null) 
+				if (localTrx != null)
 				{
 					localTrx.rollback();
 				}
@@ -3459,7 +3463,7 @@ public abstract class PO
 			if (errorMsg != null)
 			{
 				log.saveError("Error", errorMsg);
-				if (localTrx != null) 
+				if (localTrx != null)
 				{
 					localTrx.rollback();
 				}
@@ -3473,7 +3477,7 @@ public abstract class PO
 				return false;
 			}
 
-			try 
+			try
 			{
 				//
 				deleteTranslations(localTrxName);
@@ -3487,7 +3491,7 @@ public abstract class PO
 				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
 				}
-		
+
 				//	The Delete Statement
 				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
 					.append(p_info.getTableName())
@@ -3506,14 +3510,14 @@ public abstract class PO
 				log.saveError(msg != null ? msg : e.getLocalizedMessage(), e);
 				success = false;
 			}
-	
+
 			//	Save ID
 			m_idOld = get_ID();
 			//
 			if (!success)
 			{
 				log.warning("Not deleted");
-				if (localTrx != null) 
+				if (localTrx != null)
 				{
 					localTrx.rollback();
 				}
@@ -3547,6 +3551,8 @@ public abstract class PO
 									&& !p_info.isEncrypted(i)		//	not encrypted
 									&& !p_info.isVirtualColumn(i)	//	no virtual column
 									&& !"Password".equals(p_info.getColumnName(i))
+									&& !"RequestUserPW".equals(p_info.getColumnName(i))
+									&& !"EMailUserPW".equals(p_info.getColumnName(i))
 									)
 								{
 									// change log on delete
@@ -3559,7 +3565,7 @@ public abstract class PO
 								}
 							}	//   for all fields
 						}
-	
+
 						//	Housekeeping
 						m_IDs[0] = I_ZERO;
 						if (m_trxName == null)
@@ -3574,7 +3580,7 @@ public abstract class PO
 					log.warning("Not deleted");
 				}
 			}
-	
+
 			try
 			{
 				success = afterDelete (success);
@@ -3587,7 +3593,7 @@ public abstract class PO
 				success = false;
 			//	throw new DBException(e);
 			}
-	
+
 			// Call ModelValidators TYPE_AFTER_DELETE - teo_sarca [ 1675490 ]
 			if (success) {
 				errorMsg = ModelValidationEngine.get().fireModelChange(this, ModelValidator.TYPE_AFTER_DELETE);
@@ -3599,7 +3605,7 @@ public abstract class PO
 
 			if (!success)
 			{
-				if (localTrx != null) 
+				if (localTrx != null)
 				{
 					localTrx.rollback();
 				}
@@ -3635,7 +3641,7 @@ public abstract class PO
 				//osgi event handler
 				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this);
 				EventManager.getInstance().postEvent(event);
-	
+
 				m_idOld = 0;
 				int size = p_info.getColumnCount();
 				m_oldValues = new Object[size];
@@ -3918,7 +3924,7 @@ public abstract class PO
 					if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				}
 			}
-			
+
 		} else {
 			// auto update all translations
 			StringBuilder sqlexec = new StringBuilder()
@@ -4132,7 +4138,7 @@ public abstract class PO
 	}	//	insert_Tree
 
 	/**
-	 * 	Update parent key and seqno based on value if the tree is driven by value 
+	 * 	Update parent key and seqno based on value if the tree is driven by value
 	 * 	@param treeType MTree TREETYPE_*
 	 *	@return true if inserted
 	 */
@@ -4249,7 +4255,7 @@ public abstract class PO
 		int id = get_ID();
 		if (id == 0)
 			id = get_IDOld();
-		
+
 		// IDEMPIERE-2453
 		StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
@@ -4260,7 +4266,7 @@ public abstract class PO
 		int cnt = DB.getSQLValueEx( get_TrxName(), countSql.toString(), id, treeType);
 		if (cnt > 0)
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoParentDelete", new Object[] {cnt}));
-		
+
 		StringBuilder sb = new StringBuilder ("DELETE FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
 			.append(" n WHERE Node_ID=").append(id)
@@ -4813,7 +4819,7 @@ public abstract class PO
 	 *      @param doc Document
 	 */
 	public void setDoc(Doc doc) {
-		m_doc = doc;		
+		m_doc = doc;
 	}
 
 	public void setReplication(boolean isFromReplication)
@@ -4883,7 +4889,7 @@ public abstract class PO
 	}
 
 	/**
-	 * 
+	 *
 	 * @param tableName
 	 * @return uuid column name
 	 */
@@ -4895,7 +4901,7 @@ public abstract class PO
 		}
 		return columnName;
 	}
-	
+
 	@Override
 	@Deprecated
 	protected Object clone() throws CloneNotSupportedException {
@@ -4946,7 +4952,7 @@ public abstract class PO
 	    p_ctx = Env.getCtx();
 	    p_info = initPO(p_ctx);
 	}
-	
+
 	/**
 	 * set attribute value
 	 * @param attributeName
@@ -4954,14 +4960,14 @@ public abstract class PO
 	 */
 	public void set_Attribute(String attributeName, Object value) {
 		checkImmutable();
-		
+
 		if (m_attributes == null)
 			m_attributes = new HashMap<String, Object>();
 		m_attributes.put(attributeName, value);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param attributeName
 	 * @return attribute value
 	 */
@@ -4970,9 +4976,9 @@ public abstract class PO
 			return m_attributes.get(attributeName);
 		return null;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return map of attributes
 	 */
 	public HashMap<String,Object> get_Attributes() {
@@ -4983,21 +4989,21 @@ public abstract class PO
 	 * Turn on immutable check
 	 */
 	protected void makeImmutable() {
-		if (is_Immutable()) 
+		if (is_Immutable())
 			return;
-		
+
 		m_isImmutable = true;
 		m_trxName = null;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return true if PO is immutable, false otherwise
 	 */
 	public boolean is_Immutable() {
 		return m_isImmutable;
 	}
-	
+
 	private void validateUniqueIndex()
 	{
 		ValueNamePair ppE = CLogger.retrieveError();
@@ -5028,7 +5034,7 @@ public abstract class PO
 						break;
 					}
 				}
-				
+
 				if (!found)
 					log.saveError(msg, info);
 			}
@@ -5078,7 +5084,7 @@ public abstract class PO
 					+" PO.AD_Client_ID="+poClientID
 					+" writing="+writing
 					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
-				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
+				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session "
 						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
 						+ " Record_ID=" + get_ID();
 				throw new AdempiereException(message);
@@ -5090,12 +5096,12 @@ public abstract class PO
 	 * Validate Foreign keys for cross tenant
 	 * to be called programmatically before saving in programs that can receive arbitrary values in IDs
 	 * This is an expensive operation in terms of database, use it wisely
-	 * 
+	 *
 	 * TODO: there is huge room for performance improvement, for example:
 	 * - caching the valid values found on foreign tables
 	 * - caching the column ID of the foreign column
 	 * - caching the systemAccess
-	 *  
+	 *
 	 * @return true if all the foreign keys are valid
 	 */
 	public boolean validForeignKeys() {
@@ -5106,7 +5112,7 @@ public abstract class PO
 		for (ValueNamePair vnp : fks) {
 			String fkcol = vnp.getID();
 			String fktab = vnp.getName();
-			int index = get_ColumnIndex(fkcol); 
+			int index = get_ColumnIndex(fkcol);
 			if (is_new() || is_ValueChanged(index)) {
 				int fkval = get_ValueAsInt(index);
 				if (fkval > 0) {
