@@ -52,10 +52,10 @@ import org.zkoss.zul.Hbox;
  *  @author     Jorg Janke
  *  @version    $Id: PAttributeInstance.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
  */
-public class WPAttributeInstance extends Window implements EventListener<Event> 
+public class WPAttributeInstance extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4052029122256207113L;
 
@@ -88,11 +88,11 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			});
 		}
 		this.setSclass("pattribute-instance-dialog");
-		
+
 		init (M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
 		AEnv.showCenterScreen(this);
 	}	//	PAttributeInstance
-	
+
 	/**
 	 * 	Initialization
 	 *	@param M_Warehouse_ID wh
@@ -102,7 +102,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	 */
 	private void init (int M_Warehouse_ID, int M_Locator_ID, int M_Product_ID, int C_BPartner_ID)
 	{
-		log.info("M_Warehouse_ID=" + M_Warehouse_ID 
+		log.info("M_Warehouse_ID=" + M_Warehouse_ID
 			+ ", M_Locator_ID=" + M_Locator_ID
 			+ ", M_Product_ID=" + M_Product_ID);
 		m_M_Warehouse_ID = M_Warehouse_ID;
@@ -117,7 +117,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		{
 			log.log(Level.SEVERE, "", e);
 		}
-	}	// init	
+	}	// init
 
 	private Borderlayout mainLayout = new Borderlayout();
 	private Panel northPanel = new Panel();
@@ -143,27 +143,27 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	private void init() throws Exception
 	{
 		showAll.setLabel(Msg.getMsg(Env.getCtx(), "ShowAll"));
-		
+
 		this.appendChild(mainLayout);
-		
+
 		//	North
 		Hbox box = new Hbox();
 		box.setParent(northPanel);
 		box.setPack("end");
 		box.appendChild(showAll);
 		showAll.addEventListener(Events.ON_CHECK, this);
-		
+
 		North north = new North();
 		north.setParent(mainLayout);
 		north.appendChild(northPanel);
-		
+
 		//	Center
 		Center center = new Center();
 		center.setParent(mainLayout);
 		ZKUpdateUtil.setHflex(m_table, "true");
 		ZKUpdateUtil.setVflex(m_table, "true");
 		center.appendChild(m_table);
-		
+
 		//	South
 		South south = new South();
 		south.setParent(mainLayout);
@@ -172,17 +172,18 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	}	//	jbInit
 
 	/**	Table Column Layout Info			*/
-	private static ColumnInfo[] s_layout = new ColumnInfo[] 
+	private static ColumnInfo[] s_layout = new ColumnInfo[]
 	{
 		new ColumnInfo(" ", "s.M_AttributeSetInstance_ID", IDColumn.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "Description"), "asi.Description", String.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "Lot"), "asi.Lot", String.class),
-		new ColumnInfo(Msg.translate(Env.getCtx(), "SerNo"), "asi.SerNo", String.class), 
+		new ColumnInfo(Msg.translate(Env.getCtx(), "SerNo"), "asi.SerNo", String.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "GuaranteeDate"), "asi.GuaranteeDate", Timestamp.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "M_Locator_ID"), "l.Value", KeyNamePair.class, "s.M_Locator_ID"),
-		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "s.QtyOnHand", Double.class),
-		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "s.QtyReserved", Double.class),
-		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOrdered"), "s.QtyOrdered", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "SUM(s.QtyOnHand - s.QtyReserved)", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "SUM(s.QtyOnHand)", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "SUM(s.QtyReserved)", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOrdered"), "SUM(s.QtyOrdered)", Double.class),
 		//	See RV_Storage
 		new ColumnInfo(Msg.translate(Env.getCtx(), "GoodForDays"), "(daysbetween(asi.GuaranteeDate, getDate()))-p.GuaranteeDaysMin", Integer.class, true, true, null),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "ShelfLifeDays"), "daysbetween(asi.GuaranteeDate, getDate())", Integer.class),
@@ -194,8 +195,8 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		+ " INNER JOIN M_Product p ON (s.M_Product_ID=p.M_Product_ID)"
 		+ " LEFT OUTER JOIN M_AttributeSetInstance asi ON (s.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID)";
 	/** Where Clause						*/
-	private static String s_sqlWhere = "s.M_Product_ID=? AND l.M_Warehouse_ID=?"; 
-	private static String s_sqlWhereWithoutWarehouse = " s.M_Product_ID=?"; 
+	private static String s_sqlWhere = "s.M_Product_ID=? AND l.M_Warehouse_ID=?";
+	private static String s_sqlWhereWithoutWarehouse = " s.M_Product_ID=?";
 
 	private String	m_sqlNonZero = " AND (s.QtyOnHand<>0 OR s.QtyReserved<>0 OR s.QtyOrdered<>0)";
 	private String	m_sqlMinLife = "";
@@ -253,9 +254,9 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			}
 		}	//	BPartner != 0
 
-		m_sql = m_table.prepareTable (s_layout, s_sqlFrom, 
+		m_sql = m_table.prepareTable (s_layout, s_sqlFrom,
 					m_M_Warehouse_ID == 0 ? s_sqlWhereWithoutWarehouse : s_sqlWhere, false, "s")
-				+ " ORDER BY asi.GuaranteeDate, s.QtyOnHand";	//	oldest, smallest first
+				+ " GROUP BY s.M_AttributeSetInstance_ID,asi.Description,asi.Lot,asi.SerNo,asi.GuaranteeDate,l.Value,s.M_Locator_ID,p.GuaranteeDaysMin,p.GuaranteeDays ORDER BY asi.GuaranteeDate, SUM(s.QtyOnHand)";	//	oldest, smallest first
 		//
 		m_table.addEventListener(Events.ON_SELECT, this);
 		//
@@ -268,10 +269,10 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	private void refresh()
 	{
 		String sql = m_sql;
-		int pos = m_sql.lastIndexOf(" ORDER BY ");
+		int pos = m_sql.lastIndexOf(" GROUP BY ");
 		if (!showAll.isChecked())
 		{
-			sql = m_sql.substring(0, pos) 
+			sql = m_sql.substring(0, pos)
 				+ m_sqlNonZero;
 			if (m_sqlMinLife.length() > 0)
 				sql += m_sqlMinLife;
@@ -301,7 +302,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		enableButtons();
 	}	//	refresh
 
-	public void onEvent(Event e) throws Exception 
+	public void onEvent(Event e) throws Exception
 	{
 		if (e.getTarget().getId().equals("Ok"))
 			detach();
@@ -320,7 +321,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			enableButtons();
 		}
 	}	//	actionPerformed
- 
+
 	/**
 	 * 	Enable/Set Buttons and set ID
 	 */
@@ -348,7 +349,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			}
 		}
 		confirmPanel.getButton("Ok").setEnabled(enabled);
-		if (log.isLoggable(Level.FINE)) log.fine("M_AttributeSetInstance_ID=" + m_M_AttributeSetInstance_ID 
+		if (log.isLoggable(Level.FINE)) log.fine("M_AttributeSetInstance_ID=" + m_M_AttributeSetInstance_ID
 			+ " - " + m_M_AttributeSetInstanceName
 			+ "; M_Locator_ID=" + m_M_Locator_ID);
 	}	//	enableButtons
