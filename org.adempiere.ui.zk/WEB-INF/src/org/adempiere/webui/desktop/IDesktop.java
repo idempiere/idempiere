@@ -215,7 +215,4 @@ public interface IDesktop extends UIPart {
 	public void setTabTitle(String title, int windowNo);
 	
 	public void renderHomeTab();
-
-	default void setPredefinedContextVariables(String predefinedVariables) {
-	}
 }
