@@ -292,10 +292,10 @@ public final class EMail implements Serializable
 			    props.put("mail.smtp.auth.login.disable","true");
 			    props.put("mail.smtp.auth.plain.disable","true");
 			    props.put("mail.debug.auth", "true");
-				session = Session.getInstance(props);
-			} else {
-				session = Session.getInstance(props, m_auth);
+				authAccount.refresh();
+				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.getAccessToken());
 			}
+			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());
 		}
 		catch (SecurityException se)
@@ -377,20 +377,11 @@ public final class EMail implements Serializable
 			setContent();
 			m_msg.saveChanges();
 			t = session.getTransport("smtp");
-			if (isOAuth2) {
-				authAccount.refresh();
-				t.connect(m_smtpHost, m_smtpPort, m_auth.getPasswordAuthentication().getUserName(), authAccount.getAccessToken());
-			} else {
-				t.connect();
-			}
+			t.connect(m_smtpHost, m_smtpPort, m_auth.getPasswordAuthentication().getUserName(), m_auth.getPasswordAuthentication().getPassword());
 			ClassLoader tcl = Thread.currentThread().getContextClassLoader();
 			try {
 				Thread.currentThread().setContextClassLoader(javax.mail.Session.class.getClassLoader());
-				if (isOAuth2) {
-					t.sendMessage(m_msg, m_msg.getAllRecipients());
-				} else {
-					Transport.send(m_msg);
-				}
+				t.sendMessage(m_msg, m_msg.getAllRecipients());
 			} finally {
 				Thread.currentThread().setContextClassLoader(tcl);
 			}

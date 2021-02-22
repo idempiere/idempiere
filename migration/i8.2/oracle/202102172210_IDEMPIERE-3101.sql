@@ -975,7 +975,7 @@ There are two reasons for de-activating and not deleting records:
 ;
 
 -- Feb 17, 2021, 10:09:16 PM CET
-INSERT INTO AD_Form (AD_Form_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Classname,AccessLevel,EntityType,IsBetaFunctionality,AD_Form_UU) VALUES (200016,0,0,'Y',TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization Mail Account','org.adempiere.webui.apps.form.AddAuthorizationMailForm','7','D','N','0f52aecd-dc50-4ca6-b4db-4287d1c8c9e5')
+INSERT INTO AD_Form (AD_Form_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Classname,AccessLevel,EntityType,IsBetaFunctionality,AD_Form_UU) VALUES (200016,0,0,'Y',TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization Mail Account','org.adempiere.webui.apps.form.AddAuthorizationForm','7','D','N','0f52aecd-dc50-4ca6-b4db-4287d1c8c9e5')
 ;
 
 -- Feb 17, 2021, 10:09:17 PM CET

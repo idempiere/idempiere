@@ -40,6 +40,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MAuthorizationCredential;
+import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
@@ -54,7 +55,7 @@ import org.zkoss.zul.Timer;
  * @author hengsin
  *
  */
-public class AddAuthorizationMailForm extends ADForm {
+public class AddAuthorizationForm extends ADForm {
 	/**
 	 * 
 	 */
@@ -67,10 +68,13 @@ public class AddAuthorizationMailForm extends ADForm {
 
 	private Timer timer;
 
+	/* Scope, passed as parameter from menu, defaults to EMail if not received */
+	private String parameter_scope;
+
 	/**
 	 * 
 	 */
-	public AddAuthorizationMailForm() {
+	public AddAuthorizationForm() {
 	}
 
 	/* (non-Javadoc)
@@ -178,7 +182,7 @@ public class AddAuthorizationMailForm extends ADForm {
 		 .append("      }\n")
 		 .append("   }\n")								 
 		 .append("   else {\n")
-		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n")
+		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n") // TODO: translate
 		 .append("      this.stop();\n")
 		 .append("   }\n")
 		 .append("} catch(err){}\n");
@@ -241,14 +245,14 @@ public class AddAuthorizationMailForm extends ADForm {
 			FDialog.info(m_WindowNo, this, msg);
 			return;
 		}
-		FDialog.error(m_WindowNo, "Request Fail or Aborted by User");
+		FDialog.error(m_WindowNo, "Request Fail or Aborted by User"); // TODO: translate
 	}
 
 	/**
 	 * Populate the credential combobox
 	 */
 	private void populateCredential() {
-		credentialList = MAuthorizationCredential.getCredentialsOfScope(MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_EMail);
+		credentialList = MAuthorizationCredential.getCredentialsOfScope(parameter_scope);
 		for(MAuthorizationCredential credential : credentialList) {
 			credentialCombo.appendItem(credential.getName());
 		}
@@ -268,7 +272,7 @@ public class AddAuthorizationMailForm extends ADForm {
 	 */
 	private void buildClientListener(int index) {
 		MAuthorizationCredential credential = credentialList.get(index);
-		String url = credential.getAuthorizationRedirectURL_Full(AEnv.getApplicationUrl(), MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_EMail);
+		String url = credential.getAuthorizationRedirectURL_Full(AEnv.getApplicationUrl(), parameter_scope);
 
 		StringBuilder authScript = new StringBuilder("var x = window.outerWidth / 2 + window.screenX - (800 / 2);\n" + 
 			    "var y = window.outerHeight / 2 + window.screenY - (600 / 2);\n" + 
@@ -299,6 +303,10 @@ public class AddAuthorizationMailForm extends ADForm {
 	@Override
 	public void doHighlighted() {
 		super.doHighlighted();
+		parameter_scope = Env.getContext(Env.getCtx(), getWindowNo(), "+SCOPE");
+		if (Util.isEmpty(parameter_scope)) {
+			parameter_scope = MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_EMail;
+		}
 		populateCredential();
 	}
 
