@@ -920,7 +920,7 @@ public class ProcessInfo implements Serializable
 				.setOnlyActiveRecords(true)
 				.first();
 
-		return lastServerSession.getCreated();
+		return lastServerSession != null ? lastServerSession.getCreated() : null;
 	}
 
 	private IProcessUI processUI;
