@@ -30,7 +30,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210219L;
 
     /** Standard Constructor */
     public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName)
@@ -478,4 +478,21 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Predefined Context Variables.
+		@param PredefinedContextVariables 
+		Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public void setPredefinedContextVariables (String PredefinedContextVariables)
+	{
+		set_Value (COLUMNNAME_PredefinedContextVariables, PredefinedContextVariables);
+	}
+
+	/** Get Predefined Context Variables.
+		@return Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public String getPredefinedContextVariables () 
+	{
+		return (String)get_Value(COLUMNNAME_PredefinedContextVariables);
+	}
 }

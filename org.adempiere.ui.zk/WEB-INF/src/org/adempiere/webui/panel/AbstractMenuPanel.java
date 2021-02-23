@@ -24,6 +24,8 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.MenuSearchController;
+import org.adempiere.webui.desktop.AbstractDesktop;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -302,6 +304,9 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
         {
 			int menuId = Integer.parseInt((String)selectedItem.getValue());
 			MMenu menu = new MMenu(Env.getCtx(), menuId, null);
+			IDesktop desktop = SessionManager.getAppDesktop();
+			if (desktop instanceof AbstractDesktop)
+				((AbstractDesktop)desktop).setPredefinedContextVariables(menu.getPredefinedContextVariables());
 			
     		MQuery query = new MQuery("");
     		query.addRestriction("1=2");
