@@ -2104,6 +2104,17 @@ public final class Env
 	}   //  static
 
 
+	/**
+	 * Add in context predefined variables with prefix +, coming from menu or window definition
+	 * Predefined variables must come separated by new lines in one of the formats:
+	 *   VAR=VALUE
+	 *   VAR="VALUE"
+	 *   VAR='VALUE'
+	 *  The + prefix is not required, is added here to the defined variables
+	 * @param ctx
+	 * @param windowNo
+	 * @param predefinedVariables
+	 */
 	public static void setPredefinedVariables(Properties ctx, int windowNo, String predefinedVariables) {
 		if (predefinedVariables != null) {
 			String[] lines = predefinedVariables.split("\n");

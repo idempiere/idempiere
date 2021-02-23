@@ -329,7 +329,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     	}
     }
 
-	protected void setPredefinedContextVariables(String predefinedVariables) {
+	public void setPredefinedContextVariables(String predefinedVariables) {
 		this.predefinedContextVariables = predefinedVariables;
 	}
 

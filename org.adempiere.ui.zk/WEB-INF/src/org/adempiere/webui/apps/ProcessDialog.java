@@ -116,6 +116,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	private long prevKeyEventTime = 0;
 	private KeyEvent prevKeyEvent;
 
+	/**
+	 * Dialog to start a process/report
+	 * @param AD_Process_ID
+	 * @param isSOTrx
+	 */
 	public ProcessDialog (int AD_Process_ID, boolean isSOTrx)
 	{
 		this(AD_Process_ID, isSOTrx, null);
@@ -123,16 +128,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	
 	/**
 	 * Dialog to start a process/report
-	 * @param ctx
-	 * @param parent
-	 * @param title
-	 * @param aProcess
-	 * @param WindowNo
 	 * @param AD_Process_ID
-	 * @param predefinedContextVariables 
-	 * @param tableId
-	 * @param recordId
-	 * @param autoStart
+	 * @param isSOTrx
+	 * @param predefinedContextVariables
 	 */
 	public ProcessDialog (int AD_Process_ID, boolean isSOTrx, String predefinedContextVariables)
 	{
