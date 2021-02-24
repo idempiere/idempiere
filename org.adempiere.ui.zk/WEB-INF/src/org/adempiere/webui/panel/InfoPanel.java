@@ -127,7 +127,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7893447773574337316L;
+	private static final long serialVersionUID = 5502211337030815819L;
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
 	protected List<Button> btProcessList = new ArrayList<Button>();
@@ -2510,7 +2510,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		}
 	}
 
-    private void onDoubleClick()
+    protected void onDoubleClick()
 	{
 		if (isLookup())
 		{
