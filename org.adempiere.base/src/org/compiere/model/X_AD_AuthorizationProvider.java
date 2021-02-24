@@ -30,7 +30,7 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210217L;
+	private static final long serialVersionUID = 20210224L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationProvider (Properties ctx, int AD_AuthorizationProvider_ID, String trxName)
@@ -106,10 +106,12 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationProvider_UU);
 	}
 
+	/** AD_AuthorizationType AD_Reference_ID=200184 */
+	public static final int AD_AUTHORIZATIONTYPE_AD_Reference_ID=200184;
 	/** OAuth2 = OAuth2 */
 	public static final String AD_AUTHORIZATIONTYPE_OAuth2 = "OAuth2";
-	/** SAML = SAML */
-	public static final String AD_AUTHORIZATIONTYPE_SAML = "SAML";
+	/** SAML (not implemented yet) = SAML */
+	public static final String AD_AUTHORIZATIONTYPE_SAMLNotImplementedYet = "SAML";
 	/** Set Authorization Type.
 		@param AD_AuthorizationType Authorization Type	  */
 	public void setAD_AuthorizationType (String AD_AuthorizationType)

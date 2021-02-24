@@ -38,6 +38,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -145,11 +146,10 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		account.saveEx();
 		account.syncOthers();
 
-		// TODO: translate
 		if (newAccount)
-			msg = "Application now has access to your Google Account " + account.getEMail() + ".";
+			msg = Msg.getMsg(getCtx(), "Authorization_Access_OK", new Object[] {account.getEMail()});
 		else
-			msg = "Access to your Google Account " + account.getEMail() + " have previously been granted to Application.";
+			msg = Msg.getMsg(getCtx(), "Authorization_Access_Previous", new Object[] {account.getEMail()});
 		return msg;
 	}
 
@@ -211,10 +211,23 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	 * @return
 	 */
 	public static List<MAuthorizationCredential> getCredentialsOfScope(String scope) {
-		String where = "EXISTS (SELECT 1 FROM AD_AuthorizationScopeProv asp WHERE asp.AD_AuthorizationProvider_ID=AD_AuthorizationCredential.AD_AuthorizationProvider_ID AND AD_AuthorizationScope=? AND IsActive='Y')";
+		int clientId = Env.getAD_Client_ID(Env.getCtx());
+		final String where =
+				  "AD_AuthorizationCredential.AD_Client_ID IN (0,?) AND "
+				+ "AD_AuthorizationCredential.IsActive='Y' AND "
+				+ "AD_AuthorizationCredential.AD_AuthorizationScopeList LIKE '%'||?||'%' AND "
+				+ "EXISTS ( "
+				+ "  SELECT 1 "
+				+ "  FROM AD_AuthorizationScopeProv asp "
+				+ "    JOIN AD_AuthorizationProvider ap ON (asp.AD_AuthorizationProvider_ID=ap.AD_AuthorizationProvider_ID  "
+				+ "      AND ap.IsActive='Y'  "
+				+ "      AND ap.AD_Client_ID IN (0,?)) "
+				+ "  WHERE asp.AD_AuthorizationProvider_ID=AD_AuthorizationCredential.AD_AuthorizationProvider_ID "
+				+ "    AND asp.AD_AuthorizationScope=? "
+				+ "    AND asp.IsActive='Y' "
+				+ "    AND asp.AD_Client_ID IN (0,?))";
 		List<MAuthorizationCredential> credentialList = new Query(Env.getCtx(), MAuthorizationCredential.Table_Name, where, null)
-				.setOnlyActiveRecords(true)
-				.setParameters(scope)
+				.setParameters(clientId, scope, clientId, scope, clientId)
 				.list();
 		return credentialList;
 	}

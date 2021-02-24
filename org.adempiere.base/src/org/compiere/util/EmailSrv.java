@@ -172,8 +172,7 @@ public class EmailSrv {
 		if (isOAuth2) {
 			props.put("mail."+protocol+".ssl.enable", "true");
 			props.put("mail."+protocol+".auth.mechanisms", "XOAUTH2");
-			authAccount.refresh();
-			imapPass = authAccount.getAccessToken();
+			imapPass = authAccount.refreshAndGetAccessToken();
 		}
 		mailSession = Session.getInstance(props);
 		mailSession.setDebug(CLogMgt.isLevelFinest());

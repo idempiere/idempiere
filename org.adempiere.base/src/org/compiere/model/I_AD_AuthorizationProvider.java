@@ -30,8 +30,8 @@ public interface I_AD_AuthorizationProvider
     /** TableName=AD_AuthorizationProvider */
     public static final String Table_Name = "AD_AuthorizationProvider";
 
-    /** AD_Table_ID=1000001 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200269 */
+    public static final int Table_ID = 200269;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 

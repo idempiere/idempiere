@@ -47,7 +47,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1857286033575224828L;
+	private static final long serialVersionUID = -6808970904951033494L;
 
 	/**
 	 * Create empty Authorization Account
@@ -149,6 +149,17 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 				.setOrderBy("AD_Client_ID DESC, Updated DESC")
 				.first();
 		return account;
+	}
+
+	/**
+	 * Get an authorization token - refresh it if expired
+	 * @return AuthorizationToken
+	 * @throws GeneralSecurityException
+	 * @throws IOException
+	 */
+	public String refreshAndGetAccessToken() throws GeneralSecurityException, IOException {
+		refresh();
+		return getAccessToken();
 	}
 
 } // MAuthorizationAccount

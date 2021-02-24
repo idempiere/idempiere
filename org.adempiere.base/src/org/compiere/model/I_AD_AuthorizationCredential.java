@@ -30,8 +30,8 @@ public interface I_AD_AuthorizationCredential
     /** TableName=AD_AuthorizationCredential */
     public static final String Table_Name = "AD_AuthorizationCredential";
 
-    /** AD_Table_ID=1000003 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200271 */
+    public static final int Table_ID = 200271;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -69,6 +69,15 @@ public interface I_AD_AuthorizationCredential
 	public int getAD_AuthorizationProvider_ID();
 
 	public org.compiere.model.I_AD_AuthorizationProvider getAD_AuthorizationProvider() throws RuntimeException;
+
+    /** Column name AD_AuthorizationScopeList */
+    public static final String COLUMNNAME_AD_AuthorizationScopeList = "AD_AuthorizationScopeList";
+
+	/** Set Scope List	  */
+	public void setAD_AuthorizationScopeList (String AD_AuthorizationScopeList);
+
+	/** Get Scope List	  */
+	public String getAD_AuthorizationScopeList();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

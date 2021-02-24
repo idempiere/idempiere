@@ -292,8 +292,7 @@ public final class EMail implements Serializable
 			    props.put("mail.smtp.auth.login.disable","true");
 			    props.put("mail.smtp.auth.plain.disable","true");
 			    props.put("mail.debug.auth", "true");
-				authAccount.refresh();
-				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.getAccessToken());
+				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.refreshAndGetAccessToken());
 			}
 			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());

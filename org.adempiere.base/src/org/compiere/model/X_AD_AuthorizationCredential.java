@@ -30,7 +30,7 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210217L;
+	private static final long serialVersionUID = 20210224L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationCredential (Properties ctx, int AD_AuthorizationCredential_ID, String trxName)
@@ -129,6 +129,33 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** AD_AuthorizationScopeList AD_Reference_ID=200185 */
+	public static final int AD_AUTHORIZATIONSCOPELIST_AD_Reference_ID=200185;
+	/** Calendar = Calendar */
+	public static final String AD_AUTHORIZATIONSCOPELIST_Calendar = "Calendar";
+	/** EMail = EMail */
+	public static final String AD_AUTHORIZATIONSCOPELIST_EMail = "EMail";
+	/** Document = Document */
+	public static final String AD_AUTHORIZATIONSCOPELIST_Document = "Document";
+	/** Profile = Profile */
+	public static final String AD_AUTHORIZATIONSCOPELIST_Profile = "Profile";
+	/** Storage = Storage */
+	public static final String AD_AUTHORIZATIONSCOPELIST_Storage = "Storage";
+	/** Set Scope List.
+		@param AD_AuthorizationScopeList Scope List	  */
+	public void setAD_AuthorizationScopeList (String AD_AuthorizationScopeList)
+	{
+
+		set_Value (COLUMNNAME_AD_AuthorizationScopeList, AD_AuthorizationScopeList);
+	}
+
+	/** Get Scope List.
+		@return Scope List	  */
+	public String getAD_AuthorizationScopeList () 
+	{
+		return (String)get_Value(COLUMNNAME_AD_AuthorizationScopeList);
 	}
 
 	/** Set Authorization client-id.

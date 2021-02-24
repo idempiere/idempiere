@@ -38,9 +38,10 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.window.FDialog;
-import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MAuthorizationCredential;
+import org.compiere.model.MAuthorizationScopeProv;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
@@ -59,17 +60,21 @@ public class AddAuthorizationForm extends ADForm {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8872474736618627740L;
+	private static final long serialVersionUID = -5304830871153756395L;
 
+	private Combobox scopeCombo;
 	private Combobox credentialCombo;
 	private ConfirmPanel confirmPanel;
+	private List<String> scopeList;
 	private List<MAuthorizationCredential> credentialList;
 	private Textbox tokenBox;
 
 	private Timer timer;
 
-	/* Scope, passed as parameter from menu, defaults to EMail if not received */
+	/* Scope, optionally received as parameter from menu */
 	private String parameter_scope;
+	/* Scope selected */
+	private String selected_scope;
 
 	/**
 	 * 
@@ -106,7 +111,7 @@ public class AddAuthorizationForm extends ADForm {
 		Row row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
 		row = rows.newRow();
-		Label label = new Label("Grant EMail access to this application from your account"); // TODO: translate
+		Label label = new Label(Msg.getMsg(Env.getCtx(), "Authorization_Grant_Access"));
 		label.setStyle("font-weight: 600");
 		row.appendCellChild(new Space());
 		row.appendCellChild(label, 2);
@@ -115,15 +120,26 @@ public class AddAuthorizationForm extends ADForm {
 		row.appendCellChild(new Separator(), 4);
 		row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
+
 		row = rows.newRow();
 		row.appendCellChild(new Space());
-		label = new Label("Authorization Credential"); // TODO: translate, use element
+		label = new Label(Msg.getElement(Env.getCtx(), MAuthorizationScopeProv.COLUMNNAME_AD_AuthorizationScope));
+		row.appendCellChild(label.rightAlign());
+		scopeCombo = new Combobox();
+		scopeCombo.setHflex("1");
+		scopeCombo.addEventListener(Events.ON_SELECT, evt -> onScopeComboSelectionChanged());
+		row.appendCellChild(scopeCombo);
+
+		row = rows.newRow();
+		row.appendCellChild(new Space());
+		label = new Label(Msg.getElement(Env.getCtx(), MAuthorizationCredential.COLUMNNAME_AD_AuthorizationCredential_ID));
 		row.appendCellChild(label.rightAlign());
 		credentialCombo = new Combobox();
 		credentialCombo.setHflex("1");
 		credentialCombo.addEventListener(Events.ON_SELECT, evt -> onCredentialComboSelectionChanged());
 		row.appendCellChild(credentialCombo);
 		row.appendCellChild(new Space());
+
 		row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
 		row = rows.newRow();
@@ -162,7 +178,7 @@ public class AddAuthorizationForm extends ADForm {
 		 .append("  var t = zk.Widget.$('#").append(tokenBox.getUuid()).append("');\n")
 		 .append("  var authWindow = this.windowRef;console.log(this);\n")
 		 .append("  if (authWindow && authWindow.closed) {\n")
-		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n") // TODO: translate
+		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n")
 		 .append("      this.stop();\n")
 		 .append("      return;\n")
 		 .append("  }\n")
@@ -182,7 +198,7 @@ public class AddAuthorizationForm extends ADForm {
 		 .append("      }\n")
 		 .append("   }\n")								 
 		 .append("   else {\n")
-		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n") // TODO: translate
+		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n")
 		 .append("      this.stop();\n")
 		 .append("   }\n")
 		 .append("} catch(err){}\n");
@@ -197,6 +213,12 @@ public class AddAuthorizationForm extends ADForm {
 		return Mode.HIGHLIGHTED;
 	}
 	
+	private void onScopeComboSelectionChanged() {
+		int index = scopeCombo.getSelectedIndex();
+		selected_scope = scopeList.get(index);
+		populateCredential();
+	}
+
 	private void onCredentialComboSelectionChanged() {
 		int index = credentialCombo.getSelectedIndex();
 		try {
@@ -245,23 +267,45 @@ public class AddAuthorizationForm extends ADForm {
 			FDialog.info(m_WindowNo, this, msg);
 			return;
 		}
-		FDialog.error(m_WindowNo, "Request Fail or Aborted by User"); // TODO: translate
+		FDialog.error(m_WindowNo, "Authorization_Fail");
+	}
+
+	/**
+	 * Populate the scope combobox
+	 */
+	private void populateScope() {
+		scopeList = MAuthorizationScopeProv.getConfiguredScopes(parameter_scope);
+		for (String scope : scopeList) {
+			scopeCombo.appendItem(scope);
+		}
+		credentialCombo.removeAllItems();
+		if (!scopeList.isEmpty()) {
+			if (scopeList.size() == 1) {
+				scopeCombo.setSelectedIndex(0);
+				onScopeComboSelectionChanged();
+				scopeCombo.setEnabled(false);
+			} else {
+				scopeCombo.setEnabled(true);
+			}
+		}
 	}
 
 	/**
 	 * Populate the credential combobox
 	 */
 	private void populateCredential() {
-		credentialList = MAuthorizationCredential.getCredentialsOfScope(parameter_scope);
+		credentialList = MAuthorizationCredential.getCredentialsOfScope(selected_scope);
+		credentialCombo.removeAllItems();
 		for(MAuthorizationCredential credential : credentialList) {
 			credentialCombo.appendItem(credential.getName());
 		}
 		if (!credentialList.isEmpty()) {
-			credentialCombo.setSelectedIndex(0);
-			try {
-				buildClientListener(0);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+			if (credentialList.size() == 1) {
+				credentialCombo.setSelectedIndex(0);
+				onCredentialComboSelectionChanged(); 
+				credentialCombo.setEnabled(false);
+			} else {
+				credentialCombo.setEnabled(true);
 			}
 		}
 	}
@@ -272,7 +316,7 @@ public class AddAuthorizationForm extends ADForm {
 	 */
 	private void buildClientListener(int index) {
 		MAuthorizationCredential credential = credentialList.get(index);
-		String url = credential.getAuthorizationRedirectURL_Full(AEnv.getApplicationUrl(), parameter_scope);
+		String url = credential.getAuthorizationRedirectURL_Full(AEnv.getApplicationUrl(), selected_scope);
 
 		StringBuilder authScript = new StringBuilder("var x = window.outerWidth / 2 + window.screenX - (800 / 2);\n" + 
 			    "var y = window.outerHeight / 2 + window.screenY - (600 / 2);\n" + 
@@ -304,10 +348,7 @@ public class AddAuthorizationForm extends ADForm {
 	public void doHighlighted() {
 		super.doHighlighted();
 		parameter_scope = Env.getContext(Env.getCtx(), getWindowNo(), "+SCOPE");
-		if (Util.isEmpty(parameter_scope)) {
-			parameter_scope = MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_EMail;
-		}
-		populateCredential();
+		populateScope();
 	}
 
 }

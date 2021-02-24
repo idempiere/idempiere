@@ -30,8 +30,8 @@ public interface I_AD_AuthorizationScopeProv
     /** TableName=AD_AuthorizationScopeProv */
     public static final String Table_Name = "AD_AuthorizationScopeProv";
 
-    /** AD_Table_ID=1000002 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200270 */
+    public static final int Table_ID = 200270;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 

@@ -32,7 +32,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210217L;
+	private static final long serialVersionUID = 20210224L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
@@ -163,12 +163,14 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 		return ii.intValue();
 	}
 
+	/** AD_AuthorizationScope AD_Reference_ID=200185 */
+	public static final int AD_AUTHORIZATIONSCOPE_AD_Reference_ID=200185;
 	/** Calendar = Calendar */
 	public static final String AD_AUTHORIZATIONSCOPE_Calendar = "Calendar";
-	/** Document = Document */
-	public static final String AD_AUTHORIZATIONSCOPE_Document = "Document";
 	/** EMail = EMail */
 	public static final String AD_AUTHORIZATIONSCOPE_EMail = "EMail";
+	/** Document = Document */
+	public static final String AD_AUTHORIZATIONSCOPE_Document = "Document";
 	/** Profile = Profile */
 	public static final String AD_AUTHORIZATIONSCOPE_Profile = "Profile";
 	/** Storage = Storage */
