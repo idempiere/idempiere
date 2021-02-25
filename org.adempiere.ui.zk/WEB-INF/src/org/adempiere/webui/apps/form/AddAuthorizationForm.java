@@ -264,7 +264,7 @@ public class AddAuthorizationForm extends ADForm {
 
 			this.detach();
 			
-			FDialog.info(m_WindowNo, this, msg);
+			FDialog.info(m_WindowNo, this, null, msg);
 			return;
 		}
 		FDialog.error(m_WindowNo, "Authorization_Fail");

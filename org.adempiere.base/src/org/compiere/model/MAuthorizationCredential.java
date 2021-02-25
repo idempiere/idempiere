@@ -40,10 +40,10 @@ import org.apache.http.message.BasicNameValuePair;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
+import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
+import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.auth.openidconnect.IdToken;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -92,17 +92,26 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	 */
 	public String processToken(String code, String appUrl) throws IOException, GeneralSecurityException {
 		String msg = null;
-		String clientSecret = getAuthorizationClientSecret();
 		String clientId = getAuthorizationClientId();
+		String clientSecret = getAuthorizationClientSecret();
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
-		GoogleAuthorizationCodeTokenRequest request = new GoogleAuthorizationCodeTokenRequest(new NetHttpTransport(), 
-				GsonFactory.getDefaultInstance(), clientId, clientSecret, code, getAuthorizationRedirectURL_Parsed(appUrl));
-		request.setGrantType("authorization_code");
-		GoogleTokenResponse tokenResponse = request.execute();
-		GoogleIdToken idToken = tokenResponse.parseIdToken();
-		GoogleIdToken.Payload payload = idToken.getPayload();
-		String email = payload.getEmail();
-		
+		MAuthorizationProvider ap = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
+		AuthorizationCodeTokenRequest request = new AuthorizationCodeTokenRequest(new NetHttpTransport(), 
+				GsonFactory.getDefaultInstance(),
+				new GenericUrl(ap.getTokenEndpoint()), code);
+		request.setRedirectUri(getAuthorizationRedirectURL_Parsed(appUrl));
+		request.setClientAuthentication(new ClientParametersAuthentication(clientId, clientSecret));
+		TokenResponse tokenResponse = request.execute();
+		Object id_token = tokenResponse.get("id_token");
+		String email = null;
+		if (id_token != null && id_token instanceof String) {
+			IdToken idtoken = IdToken.parse(tokenResponse.getFactory(), (String) tokenResponse.get("id_token"));
+			email = (String) idtoken.getPayload().get("email");
+		}
+		if (email == null) {
+			throw new AdempiereException("Could not get the email from the response");
+		}
+
 		boolean newAccount = false;
 		MAuthorizationAccount account = null;
 		Query query = new Query(Env.getCtx(), MAuthorizationAccount.Table_Name, "AD_Client_ID=? AND AD_User_ID=? AND EMail=? AND AD_AuthorizationCredential_ID=?", get_TrxName());
@@ -125,7 +134,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		
 		if (tokenResponse.getRefreshToken() == null && account.getRefreshToken() == null) {
 			//revoke access and ask for retry
-			HttpRequestFactory factory = GoogleNetHttpTransport.newTrustedTransport().createRequestFactory();
+			HttpRequestFactory factory = new NetHttpTransport().createRequestFactory();
 			MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
 			String revokeEndPoint = provider.getRevokeEndpoint();
 			GenericUrl url = new GenericUrl(revokeEndPoint + "?token="+account.getAccessToken());

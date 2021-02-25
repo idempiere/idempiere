@@ -35,9 +35,11 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.SecureEngine;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
+import com.google.api.client.auth.oauth2.RefreshTokenRequest;
+import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 
 /**
@@ -124,11 +126,17 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 		long expire = ts.getTime() + (seconds * 1000);
 		if (System.currentTimeMillis() >= expire) {
 			ts = new Timestamp(System.currentTimeMillis());
-			I_AD_AuthorizationCredential credential = getAD_AuthorizationCredential();
-			GoogleRefreshTokenRequest request = new GoogleRefreshTokenRequest(GoogleNetHttpTransport.newTrustedTransport(), 
-					GsonFactory.getDefaultInstance(), getRefreshToken(), credential.getAuthorizationClientId(), 
-					credential.getAuthorizationClientSecret());
-			GoogleTokenResponse response = request.execute();
+			MAuthorizationCredential credential = new MAuthorizationCredential(getCtx(), getAD_AuthorizationCredential_ID(), get_TrxName());
+			MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), credential.getAD_AuthorizationProvider_ID(), get_TrxName());
+			GenericUrl url = new GenericUrl(provider.getTokenEndpoint());
+			RefreshTokenRequest request = new RefreshTokenRequest(new NetHttpTransport(), 
+					GsonFactory.getDefaultInstance(),
+					url,
+					getRefreshToken());
+			String clientId = credential.getAuthorizationClientId();
+			String clientSecret = credential.getAuthorizationClientSecret();
+			request.setClientAuthentication(new ClientParametersAuthentication(clientId, clientSecret));
+			TokenResponse response = request.execute();
 			setAccessToken(response.getAccessToken());
 			setAccessTokenTimestamp(ts);
 			setExpireInSeconds(new BigDecimal(response.getExpiresInSeconds()));

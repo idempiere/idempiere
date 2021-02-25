@@ -44,11 +44,6 @@
 									<version>4.3.1</version>
 								</artifactItem>
 								<artifactItem>
-									<groupId>com.google.api-client</groupId>
-									<artifactId>google-api-client</artifactId>
-									<version>1.31.2</version>
-								</artifactItem>
-								<artifactItem>
 									<groupId>com.google.http-client</groupId>
 									<artifactId>google-http-client-gson</artifactId>
 									<version>1.38.1</version>
