@@ -134,13 +134,15 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		
 		if (tokenResponse.getRefreshToken() == null && account.getRefreshToken() == null) {
 			//revoke access and ask for retry
-			HttpRequestFactory factory = new NetHttpTransport().createRequestFactory();
 			MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
 			String revokeEndPoint = provider.getRevokeEndpoint();
-			GenericUrl url = new GenericUrl(revokeEndPoint + "?token="+account.getAccessToken());
-			HttpRequest revokeRequest = factory.buildGetRequest(url);
-			revokeRequest.execute();
-			throw new AdempiereException("Request Failed. Please try again");
+			if (revokeEndPoint != null) {
+				HttpRequestFactory factory = new NetHttpTransport().createRequestFactory();
+				GenericUrl url = new GenericUrl(revokeEndPoint + "?token="+account.getAccessToken());
+				HttpRequest revokeRequest = factory.buildGetRequest(url);
+				revokeRequest.execute();
+			}
+			throw new AdempiereException("No refresh token.  Request Failed. Please try again");
 		}
 		
 		account.setAccessToken(tokenResponse.getAccessToken());
@@ -192,9 +194,10 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		List<NameValuePair> nameValuePairs = new ArrayList<>();
 		nameValuePairs.add(new BasicNameValuePair("scope", scopeUrl));
 		nameValuePairs.add(new BasicNameValuePair("redirect_uri", getAuthorizationRedirectURL_Parsed(appUrl)));
-		nameValuePairs.add(new BasicNameValuePair("access_type", "offline"));
+		nameValuePairs.add(new BasicNameValuePair("access_type", "offline")); // required by google
 		nameValuePairs.add(new BasicNameValuePair("response_type", "code"));
 		nameValuePairs.add(new BasicNameValuePair("client_id", getAuthorizationClientId()));
+		// TODO: include state
 		url.append(URLEncodedUtils.format(nameValuePairs, "UTF-8"));
 		return url.toString();
 	}

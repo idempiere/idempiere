@@ -137,6 +137,12 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 			String clientSecret = credential.getAuthorizationClientSecret();
 			request.setClientAuthentication(new ClientParametersAuthentication(clientId, clientSecret));
 			TokenResponse response = request.execute();
+			if (response.getRefreshToken() != null) {
+				// OAuth2 Spec -> The authorization server MAY issue a new refresh token, in which case
+				//   the client MUST discard the old refresh token and replace it with the
+				//   new refresh token
+				setRefreshToken(response.getRefreshToken());
+			}
 			setAccessToken(response.getAccessToken());
 			setAccessTokenTimestamp(ts);
 			setExpireInSeconds(new BigDecimal(response.getExpiresInSeconds()));

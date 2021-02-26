@@ -1098,7 +1098,7 @@ INSERT INTO t_alter_column values('ad_authorizationcredential','AD_Authorization
 ;
 
 -- Feb 24, 2021, 9:10:42 PM CET
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Grant access to this application from your account',0,0,'Y',TO_TIMESTAMP('2021-02-24 21:10:42','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-24 21:10:42','YYYY-MM-DD HH24:MI:SS'),100,200660,'Authorization_Grant_Acces','D','d6f7d416-3344-413e-9c01-f32bf077f114')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Grant access to this application from your account',0,0,'Y',TO_TIMESTAMP('2021-02-24 21:10:42','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-24 21:10:42','YYYY-MM-DD HH24:MI:SS'),100,200660,'Authorization_Grant_Access','D','d6f7d416-3344-413e-9c01-f32bf077f114')
 ;
 
 -- Feb 24, 2021, 9:12:20 PM CET
@@ -1111,6 +1111,142 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 
 -- Feb 24, 2021, 9:14:59 PM CET
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Access to your account {0} have been previously granted to this application',0,0,'Y',TO_TIMESTAMP('2021-02-24 21:14:59','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-24 21:14:59','YYYY-MM-DD HH24:MI:SS'),100,200663,'Authorization_Access_Previous','D','007f49dc-603f-4fa5-a91f-21203e675465')
+;
+
+-- Feb 26, 2021, 9:42:27 PM CET
+UPDATE AD_Column SET FieldLength=4000,Updated=TO_TIMESTAMP('2021-02-26 21:42:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214402
+;
+
+-- Feb 26, 2021, 9:42:29 PM CET
+INSERT INTO t_alter_column values('ad_authorizationaccount','AccessToken','VARCHAR(4000)',null,'NULL')
+;
+
+-- Feb 26, 2021, 9:42:38 PM CET
+UPDATE AD_Column SET FieldLength=4000,Updated=TO_TIMESTAMP('2021-02-26 21:42:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214403
+;
+
+-- Feb 26, 2021, 9:42:39 PM CET
+INSERT INTO t_alter_column values('ad_authorizationaccount','RefreshToken','VARCHAR(4000)',null,'NULL')
+;
+
+-- Feb 26, 2021, 9:43:14 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2021-02-26 21:43:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214360
+;
+
+-- Feb 26, 2021, 9:43:15 PM CET
+INSERT INTO t_alter_column values('ad_authorizationprovider','AuthorizationEndpoint','VARCHAR(2000)',null,null)
+;
+
+-- Feb 26, 2021, 9:43:15 PM CET
+INSERT INTO t_alter_column values('ad_authorizationprovider','AuthorizationEndpoint',null,'NOT NULL',null)
+;
+
+-- Feb 26, 2021, 9:43:23 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2021-02-26 21:43:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214361
+;
+
+-- Feb 26, 2021, 9:43:24 PM CET
+INSERT INTO t_alter_column values('ad_authorizationprovider','TokenEndpoint','VARCHAR(2000)',null,null)
+;
+
+-- Feb 26, 2021, 9:43:24 PM CET
+INSERT INTO t_alter_column values('ad_authorizationprovider','TokenEndpoint',null,'NOT NULL',null)
+;
+
+-- Feb 26, 2021, 9:43:47 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2021-02-26 21:43:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214375
+;
+
+-- Feb 26, 2021, 9:43:49 PM CET
+INSERT INTO t_alter_column values('ad_authorizationscopeprov','ScopeURL','VARCHAR(2000)',null,null)
+;
+
+-- Feb 26, 2021, 9:43:49 PM CET
+INSERT INTO t_alter_column values('ad_authorizationscopeprov','ScopeURL',null,'NOT NULL',null)
+;
+
+-- Feb 26, 2021, 9:44:00 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2021-02-26 21:44:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214374
+;
+
+-- Feb 26, 2021, 9:44:01 PM CET
+INSERT INTO t_alter_column values('ad_authorizationscopeprov','AD_AuthorizationScope','VARCHAR(10)',null,null)
+;
+
+-- Feb 26, 2021, 9:44:01 PM CET
+INSERT INTO t_alter_column values('ad_authorizationscopeprov','AD_AuthorizationScope',null,'NOT NULL',null)
+;
+
+-- Feb 26, 2021, 9:44:22 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2021-02-26 21:44:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214387
+;
+
+-- Feb 26, 2021, 9:44:24 PM CET
+INSERT INTO t_alter_column values('ad_authorizationcredential','AuthorizationClientId','VARCHAR(2000)',null,null)
+;
+
+-- Feb 26, 2021, 9:44:24 PM CET
+INSERT INTO t_alter_column values('ad_authorizationcredential','AuthorizationClientId',null,'NOT NULL',null)
+;
+
+-- Feb 26, 2021, 9:44:28 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2021-02-26 21:44:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214388
+;
+
+-- Feb 26, 2021, 9:44:30 PM CET
+INSERT INTO t_alter_column values('ad_authorizationcredential','AuthorizationClientSecret','VARCHAR(2000)',null,null)
+;
+
+-- Feb 26, 2021, 9:44:30 PM CET
+INSERT INTO t_alter_column values('ad_authorizationcredential','AuthorizationClientSecret',null,'NOT NULL',null)
+;
+
+-- Feb 26, 2021, 9:44:38 PM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2021-02-26 21:44:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214389
+;
+
+-- Feb 26, 2021, 9:44:39 PM CET
+INSERT INTO t_alter_column values('ad_authorizationcredential','AuthorizationRedirectURL','VARCHAR(2000)',null,null)
+;
+
+-- Feb 26, 2021, 9:44:39 PM CET
+INSERT INTO t_alter_column values('ad_authorizationcredential','AuthorizationRedirectURL',null,'NOT NULL',null)
+;
+
+-- Feb 26, 2021, 9:45:03 PM CET
+UPDATE AD_Column SET IsSecure='Y',Updated=TO_TIMESTAMP('2021-02-26 21:45:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214387
+;
+
+-- Feb 26, 2021, 9:45:11 PM CET
+UPDATE AD_Column SET IsSecure='Y',Updated=TO_TIMESTAMP('2021-02-26 21:45:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214388
+;
+
+-- Feb 26, 2021, 9:45:29 PM CET
+UPDATE AD_Field SET IsEncrypted='Y', ObscureType=NULL, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2021-02-26 21:45:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206576
+;
+
+-- Feb 26, 2021, 9:46:06 PM CET
+UPDATE AD_Column SET IsSecure='Y',Updated=TO_TIMESTAMP('2021-02-26 21:46:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214402
+;
+
+-- Feb 26, 2021, 9:46:15 PM CET
+UPDATE AD_Field SET IsEncrypted='Y', ObscureType=NULL, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2021-02-26 21:46:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206587
+;
+
+-- Feb 26, 2021, 9:46:27 PM CET
+UPDATE AD_Column SET IsSecure='Y',Updated=TO_TIMESTAMP('2021-02-26 21:46:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214403
+;
+
+-- Feb 26, 2021, 9:46:38 PM CET
+UPDATE AD_Field SET IsEncrypted='Y', ObscureType=NULL, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2021-02-26 21:46:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206588
+;
+
+-- Feb 26, 2021, 10:40:43 PM CET
+INSERT INTO AD_AuthorizationProvider (AD_AuthorizationProvider_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,AD_AuthorizationProvider_UU,Name,Updated,UpdatedBy,AuthorizationEndpoint,TokenEndpoint,AD_AuthorizationType) VALUES (200001,0,0,TO_TIMESTAMP('2021-02-26 22:40:42','YYYY-MM-DD HH24:MI:SS'),100,'Y','7d5d231e-121a-4ef5-912f-fefb7960fb5b','Microsoft',TO_TIMESTAMP('2021-02-26 22:40:42','YYYY-MM-DD HH24:MI:SS'),100,'https://login.microsoftonline.com/common/oauth2/v2.0/authorize','https://login.microsoftonline.com/common/oauth2/v2.0/token','OAuth2')
+;
+
+-- Feb 26, 2021, 10:40:56 PM CET
+INSERT INTO AD_AuthorizationScopeProv (AD_AuthorizationScopeProv_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,AD_AuthorizationScopeProv_UU,Updated,UpdatedBy,AD_AuthorizationProvider_ID,AD_AuthorizationScope,ScopeURL) VALUES (200002,0,0,TO_TIMESTAMP('2021-02-26 22:40:56','YYYY-MM-DD HH24:MI:SS'),100,'Y','34a26d19-85f3-44af-9df6-57883161b076',TO_TIMESTAMP('2021-02-26 22:40:56','YYYY-MM-DD HH24:MI:SS'),100,200001,'EMail','https://outlook.office.com/mail.read https://outlook.office.com/mail.send https://outlook.office.com/SMTP.Send https://outlook.office.com/IMAP.AccessAsUser.All email openid offline_access')
 ;
 
 SELECT register_migration_script('202102241858_IDEMPIERE-3101.sql') FROM dual
