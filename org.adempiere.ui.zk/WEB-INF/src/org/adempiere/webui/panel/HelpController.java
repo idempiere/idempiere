@@ -35,6 +35,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTab;
 import org.compiere.model.MTask;
+import org.compiere.model.MUserDefInfo;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.Env;
@@ -427,17 +428,29 @@ public class HelpController
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Info))
         	{
         		MInfoWindow info = new MInfoWindow(Env.getCtx(), recordId, null);
-        		if (!Env.isBaseLanguage(Env.getCtx(), I_AD_InfoWindow.Table_Name)) {
+        		// Load User Def
+    			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
+
+    			if (!Env.isBaseLanguage(Env.getCtx(), I_AD_InfoWindow.Table_Name)) {
 					nameMsg = info.get_Translation("Name",false);
-					if (info != null && nameMsg != null
+	    			if(userDef != null && !Util.isEmpty(userDef.getName())) {
+	    				nameMsg = userDef.getName();
+	    			} 
+					if (nameMsg != null
 							&& nameMsg.length() != 0) 
 						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 
 					descMsg = info.get_Translation("Description",false);
+	    			if(userDef != null && !Util.isEmpty(userDef.getDescription())) {
+	    				descMsg = userDef.getDescription();
+	    			} 
 					if (descMsg != null && descMsg.length() != 0)
 						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 
 					helpMsg = info.get_Translation("Help",false);
+	    			if(userDef != null && !Util.isEmpty(userDef.getHelp())) {
+	    				helpMsg = userDef.getHelp();
+	    			} 
 					if (helpMsg != null && helpMsg.length() != 0)
 						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
@@ -448,17 +461,29 @@ public class HelpController
 					}
 				}
         		
-        		if (info != null && info.getName() != null
-						&& info.getName().length() != 0)
-					baseContent.append("<p><strong>" + info.getName() + "</strong></p>\n");
+    			String name = info.getName();
+    			if(userDef != null && !Util.isEmpty(userDef.getName())) {
+    				name = userDef.getName();
+    			} 
+        		if ( name != null
+						&& name.length() != 0)
+					baseContent.append("<p><strong>" + name + "</strong></p>\n");
 
-				if (info.getDescription() != null
-						&& info.getDescription().length() != 0)
-					baseContent.append("<p><em>" + info.getDescription() + "</em></p>\n");
+    			String description = info.getDescription();
+    			if(userDef != null && !Util.isEmpty(userDef.getDescription())) {
+    				description = userDef.getDescription();
+    			} 
+				if (description != null
+						&& description.length() != 0)
+					baseContent.append("<p><em>" + description + "</em></p>\n");
 
-				if (info.getHelp() != null
-						&& info.getHelp().length() != 0)
-					baseContent.append("<p>" + info.getHelp() + "</p>\n");
+    			String help = info.getHelp();
+    			if(userDef != null && !Util.isEmpty(userDef.getHelp())) {
+    				help = userDef.getHelp();
+    			} 
+				if (help != null
+						&& help.length() != 0)
+					baseContent.append("<p>" + help + "</p>\n");
 				
 				if (baseContent.length() > 0)
 				{

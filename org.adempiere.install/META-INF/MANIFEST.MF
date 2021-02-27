@@ -2,14 +2,21 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Setup
 Bundle-SymbolicName: org.adempiere.install;singleton:=true
-Bundle-Version: 7.1.0.qualifier
+Bundle-Version: 8.2.0.qualifier
 Export-Package: org.adempiere.install,
  org.compiere.install
-Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.eclipse.jetty.util
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: javax.mail;version="1.5",
  javax.mail.internet;version="1.5",
  org.apache.tools.ant,
+ org.bouncycastle.asn1.x500;version="1.66.0",
+ org.bouncycastle.cert;version="1.66.0",
+ org.bouncycastle.cert.jcajce;version="1.66.0",
+ org.bouncycastle.operator;version="1.66.0",
+ org.bouncycastle.operator.jcajce;version="1.66.0",
  org.eclipse.ant.core,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.equinox.app,

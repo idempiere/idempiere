@@ -48,7 +48,7 @@ public class WorkflowValidate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		MWorkflow wf = MWorkflow.get (getCtx(), p_AD_Worlflow_ID);
+		MWorkflow wf = new MWorkflow(getCtx(), p_AD_Worlflow_ID, get_TrxName());
 		if (log.isLoggable(Level.INFO)) log.info("WF=" + wf);
 		
 		String msg = wf.validate();

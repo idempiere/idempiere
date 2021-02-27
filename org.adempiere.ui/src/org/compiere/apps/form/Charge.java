@@ -110,7 +110,7 @@ public class Charge
      */
     public void findChargeElementID()
     {
-    	m_C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID");
+    	m_C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), Env.C_ACCTSCHEMA_ID);
         //  get Element
         String sql = "SELECT C_Element_ID "
             + "FROM C_AcctSchema_Element "

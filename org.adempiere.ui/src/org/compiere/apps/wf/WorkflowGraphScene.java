@@ -77,7 +77,7 @@ public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 	protected Widget attachNodeWidget(Integer node) {
 		WFNodeWidget widget = (WFNodeWidget) findWidget(node);
 		if (widget == null) {
-			widget = new WFNodeWidget(this, MWFNode.get(Env.getCtx(), node));
+			widget = new WFNodeWidget(this, MWFNode.getCopy(Env.getCtx(), node, null));
 			widget.getActions ().addAction (selectAction);
 			mainLayer.addChild (widget);
 		}

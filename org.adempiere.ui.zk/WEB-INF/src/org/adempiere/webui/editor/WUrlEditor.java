@@ -33,9 +33,24 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE, Events.ON_OK};
 	private String oldValue;
 
+	/**
+	 * 
+	 * @param gridField
+	 */
 	public WUrlEditor(GridField gridField)
 	{
-		super(new Urlbox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WUrlEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
+	{
+		super(new Urlbox(), gridField, tableEditor, editorConfiguration);
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass("z-icon-Online");
 		else

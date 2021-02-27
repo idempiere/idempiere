@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_M_Product 
 {
@@ -163,6 +163,19 @@ public interface I_M_Product
 	public int getC_UOM_ID();
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
+
+    /** Column name CustomsTariffNumber */
+    public static final String COLUMNNAME_CustomsTariffNumber = "CustomsTariffNumber";
+
+	/** Set Customs Tariff Number.
+	  * Customs Tariff Number, usually the HS-Code
+	  */
+	public void setCustomsTariffNumber (String CustomsTariffNumber);
+
+	/** Get Customs Tariff Number.
+	  * Customs Tariff Number, usually the HS-Code
+	  */
+	public String getCustomsTariffNumber();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

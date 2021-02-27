@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200922L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
@@ -245,6 +245,51 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** IsAllowAdvancedLookup AD_Reference_ID=319 */
+	public static final int ISALLOWADVANCEDLOOKUP_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISALLOWADVANCEDLOOKUP_Yes = "Y";
+	/** No = N */
+	public static final String ISALLOWADVANCEDLOOKUP_No = "N";
+	/** Set Allow Advanced Lookup.
+		@param IsAllowAdvancedLookup Allow Advanced Lookup	  */
+	public void setIsAllowAdvancedLookup (String IsAllowAdvancedLookup)
+	{
+
+		set_Value (COLUMNNAME_IsAllowAdvancedLookup, IsAllowAdvancedLookup);
+	}
+
+	/** Get Allow Advanced Lookup.
+		@return Allow Advanced Lookup	  */
+	public String getIsAllowAdvancedLookup () 
+	{
+		return (String)get_Value(COLUMNNAME_IsAllowAdvancedLookup);
+	}
+
+	/** IsLookupOnlySelection AD_Reference_ID=319 */
+	public static final int ISLOOKUPONLYSELECTION_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISLOOKUPONLYSELECTION_Yes = "Y";
+	/** No = N */
+	public static final String ISLOOKUPONLYSELECTION_No = "N";
+	/** Set Lookup Only Selection Columns.
+		@param IsLookupOnlySelection 
+		When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public void setIsLookupOnlySelection (String IsLookupOnlySelection)
+	{
+
+		set_Value (COLUMNNAME_IsLookupOnlySelection, IsLookupOnlySelection);
+	}
+
+	/** Get Lookup Only Selection Columns.
+		@return When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public String getIsLookupOnlySelection () 
+	{
+		return (String)get_Value(COLUMNNAME_IsLookupOnlySelection);
 	}
 
 	/** Set Multi Row Only.

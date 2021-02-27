@@ -25,14 +25,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200413L;
+	private static final long serialVersionUID = 20201220L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -348,6 +348,34 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public int getAD_Val_Rule_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
+			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());	}
+
+	/** Set Dynamic Validation (Lookup).
+		@param AD_Val_Rule_Lookup_ID 
+		Override Dynamic Validation Rule for Lookup Window
+	  */
+	public void setAD_Val_Rule_Lookup_ID (int AD_Val_Rule_Lookup_ID)
+	{
+		if (AD_Val_Rule_Lookup_ID < 1) 
+			set_Value (COLUMNNAME_AD_Val_Rule_Lookup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Val_Rule_Lookup_ID, Integer.valueOf(AD_Val_Rule_Lookup_ID));
+	}
+
+	/** Get Dynamic Validation (Lookup).
+		@return Override Dynamic Validation Rule for Lookup Window
+	  */
+	public int getAD_Val_Rule_Lookup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_Lookup_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -855,6 +883,30 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** IsSelectionColumn AD_Reference_ID=319 */
+	public static final int ISSELECTIONCOLUMN_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISSELECTIONCOLUMN_Yes = "Y";
+	/** No = N */
+	public static final String ISSELECTIONCOLUMN_No = "N";
+	/** Set Selection Column.
+		@param IsSelectionColumn 
+		Is this column used for finding rows in windows
+	  */
+	public void setIsSelectionColumn (String IsSelectionColumn)
+	{
+
+		set_Value (COLUMNNAME_IsSelectionColumn, IsSelectionColumn);
+	}
+
+	/** Get Selection Column.
+		@return Is this column used for finding rows in windows
+	  */
+	public String getIsSelectionColumn () 
+	{
+		return (String)get_Value(COLUMNNAME_IsSelectionColumn);
 	}
 
 	/** IsToolbarButton AD_Reference_ID=200099 */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_AD_Table 
 {
@@ -160,6 +160,15 @@ public interface I_AD_Table
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name CreateWindowFromTable */
+    public static final String COLUMNNAME_CreateWindowFromTable = "CreateWindowFromTable";
+
+	/** Set Create Window From Table	  */
+	public void setCreateWindowFromTable (String CreateWindowFromTable);
+
+	/** Get Create Window From Table	  */
+	public String getCreateWindowFromTable();
 
     /** Column name DatabaseViewDrop */
     public static final String COLUMNNAME_DatabaseViewDrop = "DatabaseViewDrop";

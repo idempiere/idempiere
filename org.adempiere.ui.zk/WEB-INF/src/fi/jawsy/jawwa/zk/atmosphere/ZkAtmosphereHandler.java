@@ -44,6 +44,7 @@ import org.zkoss.zk.ui.sys.WebAppCtrl;
 public class ZkAtmosphereHandler implements AtmosphereHandler {
 
 	private static final String SESSION_NOT_FOUND = "SessionNotFound";
+	private static final String DESKTOP_NOT_FOUND = "DesktopNotFound";
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
     @Override
@@ -58,14 +59,14 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
         		if (log.isDebugEnabled())
         			log.debug("Could not find desktop: " + dtid);
         	}
-            return new Either<String, Desktop>("Could not find desktop", desktop);
+            return new Either<String, Desktop>(DESKTOP_NOT_FOUND, desktop);
         }
         return new Either<String, Desktop>("Webapp does not implement WebAppCtrl", null);
     }
 
     private Either<String, String> getDesktopId(HttpServletRequest request) {
     	String dtid = request.getParameter("dtid");
-    	return new Either<String, String>(dtid, "Could not find desktop id");
+    	return new Either<String, String>(dtid, DESKTOP_NOT_FOUND);
     }
 
     private Either<String, AtmosphereServerPush> getServerPush(AtmosphereResource resource) {

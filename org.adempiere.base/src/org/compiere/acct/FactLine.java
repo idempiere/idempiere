@@ -1178,7 +1178,7 @@ public final class FactLine extends X_Fact_Acct
 				BigDecimal cr = fact.getAmtAcctCr();
 				// setAmtAcctDr (cr.multiply(multiplier));
 				// setAmtAcctCr (dr.multiply(multiplier));
-				setAmtAcct(fact.getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
+				setAmtAcct(getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
 				//  
 				//  Bayu Sistematika - Source Amounts
 				//  Fixing source amounts

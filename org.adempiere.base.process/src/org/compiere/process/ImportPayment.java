@@ -412,13 +412,11 @@ public class ImportPayment extends SvrProcess
 			.append(" ORDER BY C_BankAccount_ID, CheckNo, DateTrx, R_AuthCode");
 			
 		MBankAccount account = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		
 		int noInsert = 0;
-		try
+		try (PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());)
 		{
-			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
-			rs = pstmt.executeQuery();
+			ResultSet rs = pstmt.executeQuery();
 				
 			while (rs.next())
 			{ 
@@ -519,12 +517,6 @@ public class ImportPayment extends SvrProcess
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
 		}
 		
 		//	Set Error to indicator to not imported

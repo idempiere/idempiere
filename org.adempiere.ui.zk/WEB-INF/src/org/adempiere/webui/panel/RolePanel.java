@@ -85,7 +85,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4486118071892173802L;
+	private static final long serialVersionUID = -4763398859555693370L;
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -131,7 +131,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         m_clientKNPairs = clientsKNPairs;
         
         if( m_clientKNPairs.length == 1  &&  !m_show ){
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) m_clientKNPairs[0].getID());
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
         	MUser user = MUser.get (m_ctx, m_userName);
         	m_userpreference=new UserPreference();
         	m_userpreference.loadPreference(user.get_ID());        	
@@ -411,7 +411,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_ROLE );
 			}
-            KeyNamePair clientKNPair = new KeyNamePair(Integer.valueOf((String)lstItemClient.getValue()), lstItemClient.getLabel());
+			int clientId = Integer.valueOf((String)lstItemClient.getValue());
+            KeyNamePair clientKNPair = new KeyNamePair(clientId, lstItemClient.getLabel());
             KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair, LoginPanel.ROLE_TYPES_WEBUI);
             if (roleKNPairs != null && roleKNPairs.length > 0)
             {
@@ -431,9 +432,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 }
             }
             //
-
-            //force reload of default role
-            MRole.getDefault(m_ctx, true);
 
     		// If we have only one role, we can make readonly the combobox
     		if (lstRole.getItemCount() == 1)
@@ -571,15 +569,15 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     
     private void setUserID() {
     	if (lstClient.getSelectedItem() != null) {
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) lstClient.getSelectedItem().getValue());
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) lstClient.getSelectedItem().getValue());
     	} else {
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) null);
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) null);
     	}
     	MUser user = MUser.get (m_ctx, m_userName);
     	if (user != null) {
-    		Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
-    		Env.setContext(m_ctx, "#AD_User_Name", user.getName() );
-    		Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+    		Env.setContext(m_ctx, Env.AD_USER_ID, user.getAD_User_ID() );
+    		Env.setContext(m_ctx, Env.AD_USER_NAME, user.getName() );
+    		Env.setContext(m_ctx, Env.SALESREP_ID, user.getAD_User_ID() );
     	}
     }
     
@@ -687,6 +685,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         userPreference.setProperty(UserPreference.P_ORG, (String) lstItemOrg.getValue());
         userPreference.setProperty(UserPreference.P_WAREHOUSE, lstItemWarehouse != null ? (String) lstItemWarehouse.getValue() : "0");
         userPreference.savePreference();
+
+        //force reload of default role
+        MRole.getDefault(m_ctx, true);
+
         //
     }
 

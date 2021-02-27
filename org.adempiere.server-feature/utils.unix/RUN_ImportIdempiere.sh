@@ -29,3 +29,8 @@ read -r _
 # Parameter: <systemAccount> <AdempiereID> <AdempierePwd>
 # globalqss - cruiz - 2007-10-09 - added fourth parameter for postgres(ignored in oracle)
 "$ADEMPIERE_DB_PATH"/ImportIdempiere.sh "$SYSUSER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
+
+./RUN_SyncDB.sh
+
+cd ..
+./sign-database-build-alt.sh

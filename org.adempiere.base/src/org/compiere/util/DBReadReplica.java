@@ -168,6 +168,8 @@ public class DBReadReplica {
 					m_pass = value;
 				}
 			}
+			if (m_pass == null && MSystem.isSecureProps())
+				m_pass = Ini.getVar("ADEMPIERE_DB_PASSWORD");
 		} catch (Exception e) {
 			log.log(Level.SEVERE, attributes + " - " + e.toString (), e);
 		}

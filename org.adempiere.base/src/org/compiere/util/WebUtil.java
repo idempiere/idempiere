@@ -450,7 +450,7 @@ public final class WebUtil
 		{
 			Cookie cookie = new Cookie (WebEnv.COOKIE_INFO, propertiesEncode(cookieProperties));
 			cookie.setComment("(c) iDempiere, Inc - Jorg Janke");
-			cookie.setSecure(false);
+			cookie.setSecure(true);
 			cookie.setPath("/");
 			if (cookieProperties.size() == 0)
 				cookie.setMaxAge(0);            //  delete cookie
@@ -941,6 +941,7 @@ public final class WebUtil
 		cookie.setComment("adempiere Web User");
 		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge(1);      //  second
+		cookie.setSecure(true);
 		response.addCookie(cookie);
 	}	//	deleteCookieWebUser
 	
@@ -970,6 +971,7 @@ public final class WebUtil
 		cookie.setComment("adempiere Web User");
 		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge(2592000);      //  30 days in seconds   60*60*24*30
+		cookie.setSecure(true);
 		response.addCookie(cookie);
 	  } catch (UnsupportedEncodingException e) {
 		e.printStackTrace();

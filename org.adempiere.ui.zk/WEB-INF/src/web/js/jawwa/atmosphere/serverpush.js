@@ -40,13 +40,15 @@
       var me = this;
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
     	  if (me.trace)
-    		  console.log("error: " + textStatus + " dtid: " + me.desktop.id);
-    	  if (textStatus != "timeout" && textStatus != "abort") {
-	          if (typeof console == "object") {
-	        	  console.error(textStatus);
-	              console.error(errorThrown);
+    		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
+    	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound") {
+	          console.error("error: " + textStatus + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
+	          //stop immediately if server is not reachable
+	          if (jqxhr.status == 404) {
+	          	me.failures = 3;
+	          } else {
+	          	me.failures += 1;
 	          }
-	          me.failures += 1;
     	  }
       };
       this.ajaxOptions.success = function(data) {
@@ -56,21 +58,25 @@
           me.failures = 0;
       };
       this.ajaxOptions.complete = function() {
-    	  if (me.trace)
+    	  if (me.trace) {
     		  console.log("complete"+ " dtid: " + me.desktop.id);
-    	  if (me._req && me._req.statusText == "SessionNotFound" && me._req.status == 400) {
-    		  ;//stop sent request:IDEMPIERE-4237
+    		  if (me._req)
+    		  	console.log(me._req.status + " " + me._req.statusText);
+    	  }
+    	  if (me._req && (me._req.statusText == "SessionNotFound" || me._req.statusText == "DesktopNotFound") && me._req.status == 400) {
+    		  ;
     	  } else {
     		  me._schedule();
     	  }
       };
     },
     _schedule: function() {
-      if (this.failures < 20) {
+      if (this.failures < 3) {
     	this._req = null;
         setTimeout(this.proxy(this._send), this.delay);
       } else {
         this.stop();
+        jawwa.atmosphere.serverNotAvailable();
       }
     },
     _send: function() {
@@ -101,4 +107,18 @@
       }
     }
   });
+  jawwa.atmosphere.serverNotAvailable = function() {
+    	zk.confirmClose = false;    	
+    	adempiere.get("zkTimeoutText", function(ok, val) {
+			if (ok && !!val)
+			{
+				zk.errorDismiss();
+				alert(val);
+			}
+			window.location.href="index.zul";
+		});
+   };
+   jawwa.atmosphere.sessionTimeout = function() {
+   		jawwa.atmosphere.serverNotAvailable();
+   };
 })();

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_AD_UserDef_Tab 
 {
@@ -188,6 +188,28 @@ public interface I_AD_UserDef_Tab
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAllowAdvancedLookup */
+    public static final String COLUMNNAME_IsAllowAdvancedLookup = "IsAllowAdvancedLookup";
+
+	/** Set Allow Advanced Lookup	  */
+	public void setIsAllowAdvancedLookup (String IsAllowAdvancedLookup);
+
+	/** Get Allow Advanced Lookup	  */
+	public String getIsAllowAdvancedLookup();
+
+    /** Column name IsLookupOnlySelection */
+    public static final String COLUMNNAME_IsLookupOnlySelection = "IsLookupOnlySelection";
+
+	/** Set Lookup Only Selection Columns.
+	  * When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public void setIsLookupOnlySelection (String IsLookupOnlySelection);
+
+	/** Get Lookup Only Selection Columns.
+	  * When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public String getIsLookupOnlySelection();
 
     /** Column name IsMultiRowOnly */
     public static final String COLUMNNAME_IsMultiRowOnly = "IsMultiRowOnly";

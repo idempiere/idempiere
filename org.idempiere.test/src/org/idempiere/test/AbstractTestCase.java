@@ -100,8 +100,8 @@ public abstract class AbstractTestCase {
 		Env.setContext(Env.getCtx(), Env.AD_USER_ID, loginDetails.getUserId());
 		Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, loginDetails.getRoleId());
 		Env.setContext(Env.getCtx(), Env.M_WAREHOUSE_ID, loginDetails.getWarehouseId());
-		Env.setContext(Env.getCtx(), "#LanguageName", loginDetails.getLoginLanguage().getName());
-		Env.setContext(Env.getCtx(), "#Date", loginDetails.getLoginDate());
+		Env.setContext(Env.getCtx(), Env.LANGUAGE_NAME, loginDetails.getLoginLanguage().getName());
+		Env.setContext(Env.getCtx(), Env.DATE, loginDetails.getLoginDate());
 		
 		Env.verifyLanguage(Env.getCtx(), getLanguage());
     	Env.setContext(Env.getCtx(), Env.LANGUAGE, getLanguage().getAD_Language());
@@ -110,9 +110,9 @@ public abstract class AbstractTestCase {
 		
 		if (loginDetails.getRoleId() > 0) {
 			if (MRole.getDefault(Env.getCtx(), false).isShowAcct())
-				Env.setContext(Env.getCtx(), "#ShowAcct", "Y");
+				Env.setContext(Env.getCtx(), Env.SHOW_ACCOUNTING, "Y");
 			else
-				Env.setContext(Env.getCtx(), "#ShowAcct", "N");
+				Env.setContext(Env.getCtx(), Env.SHOW_ACCOUNTING, "N");
 		}
 		
 		/** Define AcctSchema , Currency, HasAlias **/

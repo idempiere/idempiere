@@ -186,7 +186,7 @@ public class CalloutTimeExpense extends CalloutEngine
 		//	get values
 		BigDecimal ExpenseAmt = (BigDecimal)mTab.getValue("ExpenseAmt");
 		Integer C_Currency_From_ID = (Integer)mTab.getValue("C_Currency_ID");
-		int C_Currency_To_ID = Env.getContextAsInt(ctx, "$C_Currency_ID");
+		int C_Currency_To_ID = Env.getContextAsInt(ctx, Env.C_CURRENCY_ID);
 		Timestamp DateExpense = Env.getContextAsDate(ctx, WindowNo, "DateExpense");
 		//
 		if (log.isLoggable(Level.FINE)) log.fine("Amt=" + ExpenseAmt + ", C_Currency_ID=" + C_Currency_From_ID);

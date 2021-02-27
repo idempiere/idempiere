@@ -272,6 +272,7 @@ public class CalloutInOut extends CalloutEngine
 			+ "p.SO_Description,p.IsDiscountPrinted,"
 			+ "p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
 			+ "(select max(l.C_BPartner_Location_ID) from C_BPartner_Location l where p.C_BPartner_ID=l.C_BPartner_ID AND l.IsActive='Y') as C_BPartner_Location_ID,"
+			+ "(select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y' AND IsShipTo='Y') as ShipTo_User_ID,"
 			+ "(select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y') as AD_User_ID "
 			+ "FROM C_BPartner p "
 			+ "WHERE p.C_BPartner_ID=?";		//	1
@@ -299,8 +300,11 @@ public class CalloutInOut extends CalloutEngine
 					ii = Integer.valueOf(rs.getInt("AD_User_ID"));
 					if (rs.wasNull())
 						mTab.setValue("AD_User_ID", null);
-					else
-						mTab.setValue("AD_User_ID", ii);
+					else {
+						int ShipTo_User_ID = rs.getInt("ShipTo_User_ID");
+						Integer userID = ShipTo_User_ID > 0 ? Integer.valueOf(ShipTo_User_ID) : ii;
+						mTab.setValue("AD_User_ID", userID);
+					}
 				}
 
 				//Bugs item #1679818: checking for SOTrx only

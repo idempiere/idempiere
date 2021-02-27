@@ -24,15 +24,6 @@ then
    cp jettyhome/etc/jetty-ssl.xml jetty-ssl.xml.sav
 fi
 
-if [ -f jetty-selector.xml.sav ];
-then
-   rm -f jetty-selector.xml.sav
-fi
-if [ -f jettyhome/etc/jetty-selector.xml ]
-then
-   cp jettyhome/etc/jetty-selector.xml jetty-selector.xml.sav
-fi
-
 "$DESTINATION"/update-prd.sh "$1" org.adempiere.server.product
 
 cp idempiere.ini.sav idempiere.ini
@@ -47,10 +38,4 @@ if [ -f jetty-ssl.xml.sav ]
 then
    cp jetty-ssl.xml.sav jettyhome/etc/jetty-ssl.xml
    rm -f jetty-ssl.xml.sav
-fi
-
-if [ -f jetty-selector.xml.sav ]
-then
-   cp jetty-selector.xml.sav jettyhome/etc/jetty-selector.xml
-   rm -f jetty-selector.xml.sav
 fi

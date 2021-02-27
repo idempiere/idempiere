@@ -279,7 +279,9 @@ public class DataEngine
 			.append(" INNER JOIN AD_Column c ON (pfi.AD_Column_ID=c.AD_Column_ID)")
 			.append(" LEFT OUTER JOIN AD_ReportView_Col rvc ON (pf.AD_ReportView_ID=rvc.AD_ReportView_ID AND c.AD_Column_ID=rvc.AD_Column_ID) ")
 			.append("WHERE pf.AD_PrintFormat_ID=?")					//	#1
-			.append(" AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0) ")
+			.append(" AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0 ")
+			.append(" OR EXISTS(select 1 from AD_PrintFormatItem x where x.AD_PrintFormat_ID=pf.AD_PrintFormat_ID and x.DisplayLogic is not null and ")
+			.append("(x.DisplayLogic Like '%@'||c.ColumnName||'@%' OR x.DisplayLogic Like '%@'||c.ColumnName||':%@%' OR x.DisplayLogic Like '%@'||c.ColumnName||'.%@%'))) ")
 			.append(" AND pfi.PrintFormatType IN ('"
 				+ MPrintFormatItem.PRINTFORMATTYPE_Field
 				+ "','"
@@ -385,11 +387,6 @@ public class DataEngine
 					groupByColumns.add(tableName+"."+ColumnName);
 					pdc = new PrintDataColumn(AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, KEY, isPageBreak);	//	KeyColumn
 				}
-				// not printed Sort Columns
-				else if (!IsPrinted)
-				{
-					;
-				}
 				//	-- Parent, TableDir (and unqualified Search) --
 				else if ( /* (IsParent && DisplayType.isLookup(AD_Reference_ID)) || <-- IDEMPIERE-71 Carlos Ruiz - globalqss */ 
 						AD_Reference_ID == DisplayType.TableDir
@@ -456,7 +453,7 @@ public class DataEngine
 				}
 
 				//	-- List or Button with ReferenceValue --
-				else if (AD_Reference_ID == DisplayType.List 
+				else if (DisplayType.isList(AD_Reference_ID) 
 					|| (AD_Reference_ID == DisplayType.Button && AD_Reference_Value_ID != 0))
 				{
 					if (ColumnSQL.length() > 0)
@@ -627,9 +624,6 @@ public class DataEngine
 				}
 
 				//
-				if (pdc == null || (!IsPrinted && !IsKey))
-					continue;
-
 				pdc.setFormatPattern(formatPattern);
 				columns.add(pdc);
 			}	//	for all Fields in Tab

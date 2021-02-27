@@ -105,7 +105,7 @@ public class ValidateReadonlyComponent implements AuService {
 			// for combobox each change have both event onchange and onselect
 			if (editing){
 				comp.invalidate();
-				String user = Env.getContext(Env.getCtx(), "#AD_User_Name") + "[" + Env.getContext(Env.getCtx(), "#AD_User_ID") + "]";
+				String user = Env.getContext(Env.getCtx(), Env.AD_USER_NAME) + "[" + Env.getContext(Env.getCtx(), Env.AD_USER_ID) + "]";
 				log.log(Level.WARNING, String.format("Detected UI interaction with a read-only element: %1$s on event %2$s from user %3$s",
 						comp.getClass(), cmd, user));
 				return true;

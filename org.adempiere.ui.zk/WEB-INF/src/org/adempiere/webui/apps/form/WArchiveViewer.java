@@ -62,6 +62,7 @@ import org.compiere.apps.form.Archive;
 import org.compiere.model.MArchive;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -122,7 +123,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				try {
 					dynInit();
 					jbInit();
-					if (ClientInfo.isMobile()) {
+					if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
 						if (media != null && iframe.getSrc() == null) {
 							String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
 							String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
@@ -227,7 +228,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private void reportViewer(String name, byte[] data)
 	{	
 		media = new AMedia(name + ".pdf", "pdf", "application/pdf", data);
-		if (ClientInfo.isMobile())
+		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())))
 		{
 			mediaVersion ++;
 			if (form.getDesktop() == null)

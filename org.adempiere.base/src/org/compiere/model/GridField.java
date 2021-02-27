@@ -35,8 +35,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-import org.adempiere.base.ILookupFactory;
-import org.adempiere.base.Service;
+import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
@@ -83,7 +82,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -632698704437797186L;
+	private static final long serialVersionUID = -632698704437797176L;
 
 	/**
 	 *  Field Constructor.
@@ -195,15 +194,8 @@ public class GridField
 	}   //  m_lookup
 
 	private void loadLookupFromFactory() {
-		//http://jira.idempiere.com/browse/IDEMPIERE-694
-		//see DefaultLookupFactory.java for the other default Lookups
-		List<ILookupFactory> factoryList = Service.locator().list(ILookupFactory.class).getServices();
-		for(ILookupFactory factory : factoryList)
-		{
-			m_lookup = factory.getLookup(m_vo);
-			if (m_lookup != null)
-				break;
-		}
+		//http://jira.idempiere.com/browse/IDEMPIERE-694		
+		m_lookup = LookupFactoryHelper.getLookup(m_vo);
 	}
 
 	/***
@@ -263,14 +255,8 @@ public class GridField
 	//		retValue = false;
 		else {
 			//http://jira.idempiere.com/browse/IDEMPIERE-694
-			//see DefaultLookupFactory.java for the other default Lookups
-			List<ILookupFactory> factoryList = Service.locator().list(ILookupFactory.class).getServices();
-			for(ILookupFactory factory : factoryList)
-			{
-				retValue = factory.isLookup(m_vo);
-				if (retValue == true)
-					break;
-			}
+			if (LookupFactoryHelper.isLookup(m_vo))
+				retValue = true;
 		}
 		return retValue;
 	}   //  isLookup
@@ -1257,23 +1243,34 @@ public class GridField
 	    	}
 	    	value = Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, tabOnly, true);
 	    }
-		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")
-			&& getGridTab() != null) {
-			String refValue = "";
+		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")) {
 			int id = 0;
 			try {
 				id = Integer.parseInt(value);
 			} catch (Exception e){}
 			if (id > 0) {
-				MColumn column = MColumn.get(ctx, getGridTab().getTableName(), variableName);
-				if (column != null) {
-					String foreignTable = column.getReferenceTableName();
-					refValue = DB.getSQLValueString(null,
-							"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-							+ foreignTable + "_ID = ?", id);
+				String refValue = "";
+				if (getGridTab() != null) {
+					MColumn column = MColumn.get(ctx, getGridTab().getTableName(), variableName);
+					if (column != null) {
+						String foreignTable = column.getReferenceTableName();
+						refValue = DB.getSQLValueString(null,
+								"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
+										+ foreignTable + "_ID = ?", id);
+					}
+					return refValue;
+				} else {
+					// no GridTab - maybe coming from process parameter, try tableName from columnName
+					String foreignTable = variableName.substring(0, variableName.length()-3);
+					MTable table = MTable.get(ctx, foreignTable);
+					if (table != null) {
+						refValue = DB.getSQLValueString(null,
+								"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
+										+ foreignTable + "_ID = ?", id);
+						return refValue;
+					}
 				}
 			}
-			return refValue;
 		}
 		return value;
 	}	//	get_ValueAsString
@@ -2579,6 +2576,7 @@ public class GridField
 			field.m_vo = field.m_vo.clone(ctx, field.m_vo.WindowNo, field.m_vo.TabNo, 
 					field.m_vo.AD_Window_ID, field.m_vo.AD_Tab_ID, field.m_vo.tabReadOnly);
 			field.m_vo.lookupInfo = null;
+			field.m_lookup = null;
 			field.m_propertyChangeListeners = new PropertyChangeSupport(this);
 			return field;
 		} catch (CloneNotSupportedException e) {

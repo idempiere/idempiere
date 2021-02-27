@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
+import org.adempiere.base.event.annotations.BaseEventHandler;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
@@ -25,6 +26,11 @@ public interface IEventManager {
 
 	public static final String EVENT_DATA = "event.data";
 	public static final String EVENT_ERROR_MESSAGES = "event.errorMessages";
+	public static final String IMPORT_TABLE_NAME_PROPERTY = "importTableName";
+	public static final String TABLE_NAME_PROPERTY = "tableName";
+	public static final String PROCESS_UID_PROPERTY = "processUUID";
+	public static final String CLASS_NAME_PROPERTY = "className";
+	public static final String PROCESS_CLASS_NAME_PROPERTY = "processClassName";
 
 	/**
 	 * Initiate asynchronous delivery of an event. This method returns to the
@@ -94,5 +100,14 @@ public interface IEventManager {
 	 * @return true if unregistration is done, false otherwise
 	 */
 	public abstract boolean unregister(EventHandler eventHandler);
+	
+	/**
+	 * 
+	 * @param eventHandler
+	 * @return
+	 */
+	public default boolean register(BaseEventHandler eventHandler) {
+		return register(eventHandler.getTopics(), eventHandler.getFilter(), eventHandler);
+	}
 
 }

@@ -1,4 +1,11 @@
 #!/bin/sh
+
+## before running this command you must move and rename the folder as:
+# mkdir -p ../../../idempiere.gtk.linux.x86_64
+# mv ../../../linux/gtk/x86_64  ../../../idempiere.gtk.linux.x86_64/idempiere-server
+# cd ../../../idempiere.gtk.linux.x86_64/idempiere-server/utils/unix
+# bash createDEBpackage.sh
+
 TMP=/tmp
 cd "$(dirname "$0")"/../../.. || exit
 IDEMPIERE_HOME=$(pwd)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Client
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 public interface I_AD_Client 
 {
@@ -229,19 +229,6 @@ public interface I_AD_Client
 	  * Use SSL/TLS for SMTP
 	  */
 	public boolean isSecureSMTP();
-
-    /** Column name IsServerEMail */
-    public static final String COLUMNNAME_IsServerEMail = "IsServerEMail";
-
-	/** Set Server EMail.
-	  * Send EMail from Server
-	  */
-	public void setIsServerEMail (boolean IsServerEMail);
-
-	/** Get Server EMail.
-	  * Send EMail from Server
-	  */
-	public boolean isServerEMail();
 
     /** Column name IsSmtpAuthorization */
     public static final String COLUMNNAME_IsSmtpAuthorization = "IsSmtpAuthorization";

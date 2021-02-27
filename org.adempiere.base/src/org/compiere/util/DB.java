@@ -33,7 +33,6 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -219,7 +218,11 @@ public final class DB
 		String mailUser = env.getProperty("ADEMPIERE_MAIL_USER");
 		if (mailUser == null || mailUser.length() == 0)
 			return;
-		String mailPassword = env.getProperty("ADEMPIERE_MAIL_PASSWORD");
+		String mailPassword;
+		if (!env.containsKey("ADEMPIERE_MAIL_PASSWORD") && MSystem.isSecureProps())
+			mailPassword = Ini.getVar("ADEMPIERE_MAIL_PASSWORD");
+		else
+			mailPassword = env.getProperty("ADEMPIERE_MAIL_PASSWORD");
 	//	if (mailPassword == null || mailPassword.length() == 0)
 	//		return;
 		//
@@ -240,13 +243,11 @@ public final class DB
 		no = DB.executeUpdate(sql.toString(), null);
 		if (log.isLoggable(Level.FINE)) log.fine("User #"+no);
 		//
-		try
+		try (FileOutputStream out = new FileOutputStream(envFile))
 		{
 			env.setProperty("ADEMPIERE_MAIL_UPDATED", "Y");
-			FileOutputStream out = new FileOutputStream(envFile);
 			env.store(out, "");
 			out.flush();
-			out.close();
 		}
 		catch (Exception e)
 		{
@@ -2095,15 +2096,6 @@ public final class DB
         } catch (SQLException e) {
             ;
         }
-    	if (readReplicaStatements.contains(st)) {
-			try {
-				DBReadReplica.closeReadReplicaStatement(st);
-			} catch (Exception e) {
-				;
-			} finally {
-				readReplicaStatements.remove(st);
-			}
-    	}
     }
 
     /**
@@ -2514,9 +2506,6 @@ public final class DB
     	return rowsArray;
 	}
 
-	/**	Read Replica Statements List	*/
-	private static final List<PreparedStatement> readReplicaStatements = Collections.synchronizedList(new ArrayList<PreparedStatement>());
-
 	/**
 	 *	Prepare Read Replica Statement
 	 *  @param sql sql statement
@@ -2548,9 +2537,8 @@ public final class DB
 			&& resultSetType == ResultSet.TYPE_FORWARD_ONLY
 			&& resultSetConcurrency == ResultSet.CONCUR_READ_ONLY) {
 			// this is a candidate for a read replica connection (read-only, forward-only, no-trx), try to obtain one, otherwise fallback to normal
-			PreparedStatement stmt = DBReadReplica.prepareNormalReadReplicaStatement(sql, resultSetType, resultSetConcurrency, trxName);
+			CPreparedStatement stmt = ProxyFactory.newReadReplicaPreparedStatement(resultSetType, resultSetConcurrency, sql);
 			if (stmt != null) {
-				readReplicaStatements.add(stmt);
 				return stmt;
 			}
 		}

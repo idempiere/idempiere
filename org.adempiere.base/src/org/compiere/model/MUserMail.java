@@ -67,7 +67,6 @@ public class MUserMail extends X_AD_UserMail
 	public MUserMail (MMailText parent, int AD_User_ID, EMail mail)
 	{
 		this (parent.getCtx(), 0, parent.get_TrxName());
-		setClientOrg(parent);
 		setAD_User_ID(AD_User_ID);
 		setR_MailText_ID(parent.getR_MailText_ID());
 		setSenderAndRecipient(mail);

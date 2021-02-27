@@ -155,30 +155,30 @@ public abstract class AdempiereServer implements Runnable
 	{
 		Properties context = new Properties();
 		MClient schedclient = MClient.get(getCtx(), p_model.getAD_Client_ID());
-		Env.setContext(context, "#AD_Client_ID", schedclient.getAD_Client_ID());
-		Env.setContext(context, "#AD_Language", schedclient.getAD_Language());
+		Env.setContext(context, Env.AD_CLIENT_ID, schedclient.getAD_Client_ID());
+		Env.setContext(context, Env.LANGUAGE, schedclient.getAD_Language());
 		if (p_model instanceof PO) {
 			PO po = (PO) p_model;
 			if (po.get_ColumnIndex("AD_Org_ID") >= 0) {
-				Env.setContext(context, "#AD_Org_ID", po.get_ValueAsInt("AD_Org_ID"));
+				Env.setContext(context, Env.AD_ORG_ID, po.get_ValueAsInt("AD_Org_ID"));
 				MOrgInfo schedorg = new Query(context, MOrgInfo.Table_Name, "AD_Org_ID=?", null)
 						.setParameters(po.get_ValueAsInt("AD_Org_ID")).first();
 				if (schedorg != null && schedorg.getM_Warehouse_ID() > 0)
-					Env.setContext(context, "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
+					Env.setContext(context, Env.M_WAREHOUSE_ID, schedorg.getM_Warehouse_ID());
 			}
 			int AD_User_ID = getAD_User_ID(po);
 			if (AD_User_ID > 0) {
-				Env.setContext(context, "#AD_User_ID", AD_User_ID);
-				Env.setContext(context, "#SalesRep_ID", AD_User_ID);
+				Env.setContext(context, Env.AD_USER_ID, AD_User_ID);
+				Env.setContext(context, Env.SALESREP_ID, AD_User_ID);
 				MUser scheduser = new MUser(context, AD_User_ID, null);
 				MRole[] schedroles = scheduser.getRoles(po.get_ValueAsInt("AD_Org_ID"));
 				if (schedroles != null && schedroles.length > 0)
-					Env.setContext(context, "#AD_Role_ID", schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID				
+					Env.setContext(context, Env.AD_ROLE_ID, schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID				
 			}
 		}
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
-		Env.setContext(context, "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		Env.setContext(context, Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 		
 		Properties prevContext = ServerContext.getCurrentInstance();
 		try {
@@ -240,13 +240,13 @@ public abstract class AdempiereServer implements Runnable
 		}
 
 		Properties context = new Properties();
-		Env.setContext(context, "#AD_Client_ID", p_model.getAD_Client_ID());
+		Env.setContext(context, Env.AD_CLIENT_ID, p_model.getAD_Client_ID());
 		if (p_model instanceof PO) {
 			PO po = (PO) p_model;
 			if (po.get_ColumnIndex("AD_Org_ID") >= 0)
-				Env.setContext(context, "#AD_Org_ID", po.get_ValueAsInt("AD_Org_ID"));
+				Env.setContext(context, Env.AD_ORG_ID, po.get_ValueAsInt("AD_Org_ID"));
 			if (po.get_ColumnIndex("AD_User_ID") >= 0)
-				Env.setContext(context, "#AD_User_ID", po.get_ValueAsInt("AD_User_ID"));
+				Env.setContext(context, Env.AD_USER_ID, po.get_ValueAsInt("AD_User_ID"));
 		}
 		
 		try {

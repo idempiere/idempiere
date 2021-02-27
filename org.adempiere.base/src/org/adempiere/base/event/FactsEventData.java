@@ -24,7 +24,7 @@ import org.compiere.model.PO;
  * @author hengsin
  *
  */
-public class FactsEventData {
+public class FactsEventData implements POEventData {
 	private MAcctSchema acctSchema;
 	private List<Fact> facts;
 	private PO po;

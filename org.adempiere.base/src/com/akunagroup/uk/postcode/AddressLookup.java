@@ -335,8 +335,8 @@ public class AddressLookup implements AddressLookupInterface {
 	private Document fetchResult(URL cgiUrl) {
 		try {
 			// Get document builder.
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			// Get the connection.
 			URLConnection URLconnection = cgiUrl.openConnection();
