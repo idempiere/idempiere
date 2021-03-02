@@ -6,7 +6,7 @@
 		
 		Instructions:
 		Add next parameter to the VM arguments of the server launcher
-		-Dorg.zkoss.zk.config.path=file://${workspace_loc}/org.adempiere.ui.zk/WEB-INF/zk-selenium.xml
+		-Dorg.zkoss.zk.config.path=file://${project_loc:org.adempiere.ui.zk}/WEB-INF/zk-selenium.xml
 	-->
 
 <zk>
