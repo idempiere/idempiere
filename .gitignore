@@ -1,4 +1,5 @@
 **/target/
+**/bin/
 **/lib/*.jar
 **/seed/*.jar
 /org.adempiere.ui.zk/labelapplet.jar
@@ -28,3 +29,6 @@ External Plug-in Libraries
 /.sonarlint/
 **/org.sonarlint.eclipse.core.prefs
 /runtime-*.app/
+**/.classpath
+org.idempiere.maven.to.p2/org.idempiere.webservice.client/.settings/
+**/org.eclipse.jdt.core.prefs
