@@ -1,4 +1,5 @@
 **/target/
+**/bin/
 **/lib/*.jar
 **/seed/*.jar
 /org.adempiere.ui.zk/labelapplet.jar
