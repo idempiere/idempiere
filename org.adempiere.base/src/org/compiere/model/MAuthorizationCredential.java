@@ -54,11 +54,10 @@ import com.google.api.client.json.gson.GsonFactory;
  * Authorization Credential
  */
 public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8807239748093615430L;
+	private static final long serialVersionUID = 1469616595459196518L;
 
 	/**
 	 * Create empty Authorization Credential
@@ -85,12 +84,11 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	/**
 	 * Create or Update an Account based on the token received
 	 * @param code
-	 * @param appUrl
-	 * @return
+	 * @return String message indicating success
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	public String processToken(String code, String appUrl) throws IOException, GeneralSecurityException {
+	public String processToken(String code) throws IOException, GeneralSecurityException {
 		String msg = null;
 		String clientId = getAuthorizationClientId();
 		String clientSecret = getAuthorizationClientSecret();
@@ -99,7 +97,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		AuthorizationCodeTokenRequest request = new AuthorizationCodeTokenRequest(new NetHttpTransport(), 
 				GsonFactory.getDefaultInstance(),
 				new GenericUrl(ap.getTokenEndpoint()), code);
-		request.setRedirectUri(getAuthorizationRedirectURL_Parsed(appUrl));
+		request.setRedirectUri(getAuthorizationRedirectURL());
 		request.setClientAuthentication(new ClientParametersAuthentication(clientId, clientSecret));
 		TokenResponse tokenResponse = request.execute();
 		Object id_token = tokenResponse.get("id_token");
@@ -165,26 +163,12 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	}
 
 	/**
-	 * get the AuthorizationRedirectURL replacing the @SERVER@ placeholder with the appUrl received
-	 * @param appUrl
-	 * @return
-	 */
-	public String getAuthorizationRedirectURL_Parsed(String appUrl) {
-		String url = getAuthorizationRedirectURL();
-		if (url.contains("@SERVER@")) {
-			String serverUrl = appUrl.replaceAll("/webui/index.zul", "");
-			url = url.replaceAll("@SERVER@", serverUrl);
-		}
-		return url;
-	}
-
-	/**
-	 * Get a complete Authorization Endpoint URL with all the parameters required
-	 * @param appUrl
+	 * Get a complete Authorization end point URL with all the parameters required
 	 * @param scope
+	 * @param state 
 	 * @return
 	 */
-	public String getAuthorizationRedirectURL_Full(String appUrl, String scope) {
+	public String getFullAuthorizationEndpoint(String scope, String state) {
 		String scopeUrl = findScopeUrl(scope);
 		if (scopeUrl == null)
 			throw new AdempiereException("Could not find scope " + scope + " for provider " + getAD_AuthorizationProvider_ID());
@@ -193,11 +177,11 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		StringBuilder url = new StringBuilder(authEndPoint).append("?");
 		List<NameValuePair> nameValuePairs = new ArrayList<>();
 		nameValuePairs.add(new BasicNameValuePair("scope", scopeUrl));
-		nameValuePairs.add(new BasicNameValuePair("redirect_uri", getAuthorizationRedirectURL_Parsed(appUrl)));
+		nameValuePairs.add(new BasicNameValuePair("redirect_uri", getAuthorizationRedirectURL()));
 		nameValuePairs.add(new BasicNameValuePair("access_type", "offline")); // required by google
 		nameValuePairs.add(new BasicNameValuePair("response_type", "code"));
 		nameValuePairs.add(new BasicNameValuePair("client_id", getAuthorizationClientId()));
-		// TODO: include state
+		nameValuePairs.add(new BasicNameValuePair("state", state));
 		url.append(URLEncodedUtils.format(nameValuePairs, "UTF-8"));
 		return url.toString();
 	}
@@ -216,32 +200,6 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		if (scpr != null)
 			scopeUrl = scpr.getScopeURL();
 		return scopeUrl;
-	}
-
-	/**
-	 * Get credentials for a scope type
-	 * @return
-	 */
-	public static List<MAuthorizationCredential> getCredentialsOfScope(String scope) {
-		int clientId = Env.getAD_Client_ID(Env.getCtx());
-		final String where =
-				  "AD_AuthorizationCredential.AD_Client_ID IN (0,?) AND "
-				+ "AD_AuthorizationCredential.IsActive='Y' AND "
-				+ "AD_AuthorizationCredential.AD_AuthorizationScopeList LIKE '%'||?||'%' AND "
-				+ "EXISTS ( "
-				+ "  SELECT 1 "
-				+ "  FROM AD_AuthorizationScopeProv asp "
-				+ "    JOIN AD_AuthorizationProvider ap ON (asp.AD_AuthorizationProvider_ID=ap.AD_AuthorizationProvider_ID  "
-				+ "      AND ap.IsActive='Y'  "
-				+ "      AND ap.AD_Client_ID IN (0,?)) "
-				+ "  WHERE asp.AD_AuthorizationProvider_ID=AD_AuthorizationCredential.AD_AuthorizationProvider_ID "
-				+ "    AND asp.AD_AuthorizationScope=? "
-				+ "    AND asp.IsActive='Y' "
-				+ "    AND asp.AD_Client_ID IN (0,?))";
-		List<MAuthorizationCredential> credentialList = new Query(Env.getCtx(), MAuthorizationCredential.Table_Name, where, null)
-				.setParameters(clientId, scope, clientId, scope, clientId)
-				.list();
-		return credentialList;
 	}
 
 } // MAuthorizationCredential

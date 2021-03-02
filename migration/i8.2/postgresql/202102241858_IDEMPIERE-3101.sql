@@ -971,10 +971,6 @@ There are two reasons for de-activating and not deleting records:
 (2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200287,214397,'Y',1,140,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2021-02-17 22:09:15','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-17 22:09:15','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','fec92423-3e9d-4c77-bdf7-992c710fa0bc','Y',110,6,1,1,'N','N','N','N')
 ;
 
--- Feb 17, 2021, 10:09:16 PM CET
-INSERT INTO AD_Form (AD_Form_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Classname,AccessLevel,EntityType,IsBetaFunctionality,AD_Form_UU) VALUES (200016,0,0,'Y',TO_TIMESTAMP('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization Mail Account','org.adempiere.webui.apps.form.AddAuthorizationForm','7','D','N','0f52aecd-dc50-4ca6-b4db-4287d1c8c9e5')
-;
-
 -- Feb 17, 2021, 10:09:17 PM CET
 INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200179,'Authorization Provider','W',200112,0,0,'Y',TO_TIMESTAMP('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','D','Y','2f018e36-c19b-4572-91f2-0441e33c00d8')
 ;
@@ -989,14 +985,6 @@ INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Window_ID,AD_Client_ID,AD_Org_I
 
 -- Feb 17, 2021, 10:09:17 PM CET
 INSERT INTO AD_TREENODEMM(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, Parent_ID, SeqNo, AD_Tree_ID, Node_ID)VALUES(0, 0, 0, 0, 200178,2, 10, 200180)
-;
-
--- Feb 17, 2021, 10:09:17 PM CET
-INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,AD_Form_ID,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200181,'Add Authorization Mail Account','X',0,0,'Y',TO_TIMESTAMP('2021-02-17 22:09:17','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-17 22:09:17','YYYY-MM-DD HH24:MI:SS'),100,'N','Y',200016,'N','D','Y','02085b90-d8fb-4ce4-876a-acbf4b55f72c')
-;
-
--- Feb 17, 2021, 10:09:17 PM CET
-INSERT INTO AD_TREENODEMM(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, Parent_ID, SeqNo, AD_Tree_ID, Node_ID)VALUES(0, 0, 0, 0, 200178,3, 10, 200181)
 ;
 
 -- Feb 17, 2021, 10:09:17 PM CET
@@ -1025,10 +1013,6 @@ INSERT INTO AD_AuthorizationScopeProv (AD_AuthorizationScopeProv_ID,AD_Client_ID
 
 -- Feb 17, 2021, 10:09:37 PM CET
 INSERT INTO AD_AuthorizationScopeProv (AD_AuthorizationScopeProv_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,AD_AuthorizationScopeProv_UU,Updated,UpdatedBy,AD_AuthorizationProvider_ID,AD_AuthorizationScope,ScopeURL) VALUES (200001,0,0,TO_TIMESTAMP('2021-02-17 22:09:37','YYYY-MM-DD HH24:MI:SS'),100,'Y','6ad22e9b-d78f-4964-8021-25870606d8c1',TO_TIMESTAMP('2021-02-17 22:09:37','YYYY-MM-DD HH24:MI:SS'),100,200000,'EMail','https://mail.google.com/ email')
-;
-
--- Feb 24, 2021, 6:56:56 PM CET
-UPDATE AD_Menu SET PredefinedContextVariables='SCOPE=EMail',Updated=TO_TIMESTAMP('2021-02-24 18:56:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=200181
 ;
 
 -- Feb 24, 2021, 7:23:08 PM CET
@@ -1247,6 +1231,270 @@ INSERT INTO AD_AuthorizationProvider (AD_AuthorizationProvider_ID,AD_Client_ID,A
 
 -- Feb 26, 2021, 10:40:56 PM CET
 INSERT INTO AD_AuthorizationScopeProv (AD_AuthorizationScopeProv_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,AD_AuthorizationScopeProv_UU,Updated,UpdatedBy,AD_AuthorizationProvider_ID,AD_AuthorizationScope,ScopeURL) VALUES (200002,0,0,TO_TIMESTAMP('2021-02-26 22:40:56','YYYY-MM-DD HH24:MI:SS'),100,'Y','34a26d19-85f3-44af-9df6-57883161b076',TO_TIMESTAMP('2021-02-26 22:40:56','YYYY-MM-DD HH24:MI:SS'),100,200001,'EMail','https://outlook.office.com/mail.read https://outlook.office.com/mail.send https://outlook.office.com/SMTP.Send https://outlook.office.com/IMAP.AccessAsUser.All email openid offline_access')
+;
+
+-- Mar 2, 2021, 8:44:54 PM CET
+INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution) VALUES (200128,0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization','N','AddAuthorizationProcess','N','org.idempiere.process.AddAuthorizationProcess','7','D',7,7,'N','Y','N','c6ba87ce-aa65-4895-b156-5385dfcc6164','P')
+;
+
+-- Mar 2, 2021, 8:44:54 PM CET
+INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200145,'AD_AuthorizationScope Configured','S','AD_Ref_List.Value IN (
+SELECT DISTINCT asp.AD_AuthorizationScope
+FROM AD_AuthorizationScopeProv asp
+WHERE asp.IsActive=''Y''
+  AND (''0''=''@+SCOPE:0@'' OR asp.AD_AuthorizationScope=''@+SCOPE:0@'')
+  AND asp.AD_Client_ID IN (0,@#AD_Client_ID@)
+  AND EXISTS (SELECT 1
+    FROM AD_AuthorizationCredential ac
+    JOIN AD_AuthorizationProvider ap ON (ac.AD_AuthorizationProvider_ID=ap.AD_AuthorizationProvider_ID
+      AND ap.IsActive=''Y''
+      AND ap.AD_Client_ID IN (0,@#AD_Client_ID@))
+    WHERE ac.AD_AuthorizationProvider_ID=asp.AD_AuthorizationProvider_ID 
+      AND ac.IsActive=''Y''
+      AND ac.AD_AuthorizationScopeList LIKE ''%''||asp.AD_AuthorizationScope||''%''
+      AND ac.AD_Client_ID IN (0,@#AD_Client_ID@))
+)',0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:54','YYYY-MM-DD HH24:MI:SS'),100,'D','3972733f-ee00-4e30-9aab-5d09b0d849d3')
+;
+
+-- Mar 2, 2021, 8:44:55 PM CET
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,AD_Reference_Value_ID,IsRange,AD_Val_Rule_ID,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,ReadOnlyLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200335,0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:54','YYYY-MM-DD HH24:MI:SS'),100,'Authorization Scope',200128,10,17,200185,'N',200145,10,'Y','@+SCOPE@','AD_AuthorizationScope','Y','D',203460,'@+SCOPE@!''''','f2c44e06-a98b-476c-b6aa-5035e19f6cdb','N','N')
+;
+
+-- Mar 2, 2021, 8:44:55 PM CET
+INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200146,'AD_AuthorizationCredential of Scope','S','AD_AuthorizationCredential.AD_Client_ID IN (0,@#AD_Client_ID@) AND 
+AD_AuthorizationCredential.IsActive=''Y'' AND 
+AD_AuthorizationCredential.AD_AuthorizationScopeList LIKE ''%''||''@AD_AuthorizationScope@''||''%'' AND 
+EXISTS ( 
+  SELECT 1 
+  FROM AD_AuthorizationScopeProv asp 
+    JOIN AD_AuthorizationProvider ap ON (asp.AD_AuthorizationProvider_ID=ap.AD_AuthorizationProvider_ID  
+      AND ap.IsActive=''Y''  
+      AND ap.AD_Client_ID IN (0,@#AD_Client_ID@)) 
+  WHERE asp.AD_AuthorizationProvider_ID=AD_AuthorizationCredential.AD_AuthorizationProvider_ID 
+    AND asp.AD_AuthorizationScope=''@AD_AuthorizationScope@'' 
+    AND asp.IsActive=''Y'' 
+    AND asp.AD_Client_ID IN (0,@#AD_Client_ID@))',0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,'D','2be5a622-adb4-485d-a06a-168e3627135a')
+;
+
+-- Mar 2, 2021, 8:44:55 PM CET
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,AD_Val_Rule_ID,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200336,0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,'Authorization Credential',200128,20,19,'N',200146,22,'Y','AD_AuthorizationCredential_ID','Y','D',203462,'0f2496c7-10d4-4f0c-aae1-6e25bc2b4ff7','N','N')
+;
+
+-- Mar 2, 2021, 8:44:56 PM CET
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203477,0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,'Auth_OpenBrowser','Open Browser','Open Browser','D','03b05026-1620-4429-a28a-49a06fa8612a')
+;
+
+-- Mar 2, 2021, 8:44:56 PM CET
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200337,0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,'Open Browser',200128,30,20,'N',1,'Y','@+OPEN_BROWSER:Y@','Auth_OpenBrowser','Y','D',203477,'@+OPEN_BROWSER@=''''','6f136023-be77-4762-aed3-0107c473379e','N','N')
+;
+
+-- Mar 2, 2021, 8:44:57 PM CET
+INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,AD_Process_ID,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU,PredefinedContextVariables) VALUES (200182,'Add Authorization Mail Acount','P',0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,'N',200128,'Y','N','D','Y','53d88c72-2e33-41b2-94b2-03f16bf07982','SCOPE=EMail
+OPEN_BROWSER=Y')
+;
+
+-- Mar 2, 2021, 8:44:57 PM CET
+INSERT INTO AD_TREENODEMM(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, Parent_ID, SeqNo, AD_Tree_ID, Node_ID)VALUES(0, 0, 0, 0, 200178,3, 10, 200182)
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=0, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=161
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=1, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=367
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=2, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=456
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=3, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=501
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=4, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=326
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=5, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=566
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=6, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=392
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=7, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=113
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=8, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200178
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=9, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=220
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=10, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=351
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=11, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=289
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=12, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=302
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=13, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200168
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=14, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200169
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=15, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=303
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=16, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200047
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=17, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200048
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=18, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=321
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=19, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=461
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=20, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53193
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=21, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200161
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=22, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53322
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=23, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=383
+;
+
+-- Mar 2, 2021, 8:47:20 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=24, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200177
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=0, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=161
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=1, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=367
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=2, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=456
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=3, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=501
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=4, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=326
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=5, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=566
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=6, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=392
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=7, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200178
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=8, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=113
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=9, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=220
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=10, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=351
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=11, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=289
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=12, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=302
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=13, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200168
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=14, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200169
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=15, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=303
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=16, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200047
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=17, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200048
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=18, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=321
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=19, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=461
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=20, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53193
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=21, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200161
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=22, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=53322
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=23, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=383
+;
+
+-- Mar 2, 2021, 8:47:29 PM CET
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=24, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=200177
 ;
 
 SELECT register_migration_script('202102241858_IDEMPIERE-3101.sql') FROM dual

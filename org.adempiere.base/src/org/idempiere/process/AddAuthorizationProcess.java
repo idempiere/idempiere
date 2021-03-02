@@ -1,0 +1,88 @@
+/**********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Sponsor:                                                            *
+ * - FH                                                                *
+ * Contributors:                                                       *
+ * - Carlos Ruiz                                                       *
+ **********************************************************************/
+package org.idempiere.process;
+
+import java.util.logging.Level;
+
+import org.compiere.model.MAuthorizationCredential;
+import org.compiere.model.MPInstance;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
+
+/**
+ *	IDEMPIERE-3101
+ * 	@author Carlos Ruiz - globalqss
+ */
+public class AddAuthorizationProcess extends SvrProcess {
+	/* Authorization Scope */
+	private String p_AD_AuthorizationScope = null;
+	/* Authorization Credential */
+	private int p_AD_AuthorizationCredential_ID = 0;
+	/* Open Browser */
+	private Boolean p_Auth_OpenBrowser = null;
+
+	/**
+	 *  Prepare - e.g., get Parameters.
+	 */
+	@Override
+	protected void prepare() {
+		for (ProcessInfoParameter para : getParameter()) {
+			String name = para.getParameterName();
+			switch (name) {
+			case "AD_AuthorizationScope": p_AD_AuthorizationScope = para.getParameterAsString(); break;
+			case "AD_AuthorizationCredential_ID": p_AD_AuthorizationCredential_ID = para.getParameterAsInt(); break;
+			case "Auth_OpenBrowser": p_Auth_OpenBrowser = para.getParameterAsBoolean(); break;
+			default:
+				if (log.isLoggable(Level.INFO))
+					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				break;
+			}
+		}
+	}
+
+	/**
+	 *  Perform process.
+	 *  @return Message
+	 *  @throws Exception
+	 */
+	protected String doIt() throws Exception {
+		if (log.isLoggable(Level.INFO))
+			log.info("AD_AuthorizationScope" + p_AD_AuthorizationScope
+					+ ", AD_AuthorizationCredential_ID=" + p_AD_AuthorizationCredential_ID
+					+ ", Auth_OpenBrowser=" + p_Auth_OpenBrowser);
+		MPInstance pinstance = new MPInstance(getCtx(), getAD_PInstance_ID(), get_TrxName());
+		MAuthorizationCredential credential = new MAuthorizationCredential(getCtx(), p_AD_AuthorizationCredential_ID, get_TrxName());
+		String url = credential.getFullAuthorizationEndpoint(p_AD_AuthorizationScope, pinstance.getAD_PInstance_UU());
+		addLog(url);
+		if (p_Auth_OpenBrowser) {
+			// TODO: invoke a form that opens a browser
+		}
+
+		return "@OK@";
+	}
+
+}	//	AddAuthorizationProcess
