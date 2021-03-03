@@ -974,6 +974,10 @@ There are two reasons for de-activating and not deleting records:
 (2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200287,214397,'Y',1,140,'N','N','N','N',0,0,'Y',TO_DATE('2021-02-17 22:09:15','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-02-17 22:09:15','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','fec92423-3e9d-4c77-bdf7-992c710fa0bc','Y',110,6,1,1,'N','N','N','N')
 ;
 
+-- Feb 17, 2021, 10:09:16 PM CET
+INSERT INTO AD_Form (AD_Form_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Classname,AccessLevel,EntityType,IsBetaFunctionality,AD_Form_UU) VALUES (200016,0,0,'Y',TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization Mail Account','org.adempiere.webui.apps.form.AddAuthorizationForm','7','D','N','0f52aecd-dc50-4ca6-b4db-4287d1c8c9e5')
+;
+
 -- Feb 17, 2021, 10:09:17 PM CET
 INSERT INTO AD_Menu (AD_Menu_ID,Name,Action,AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200179,'Authorization Provider','W',200112,0,0,'Y',TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-02-17 22:09:16','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','D','Y','2f018e36-c19b-4572-91f2-0441e33c00d8')
 ;
@@ -1237,7 +1241,7 @@ INSERT INTO AD_AuthorizationScopeProv (AD_AuthorizationScopeProv_ID,AD_Client_ID
 ;
 
 -- Mar 2, 2021, 8:44:54 PM CET
-INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution) VALUES (200128,0,0,'Y',TO_DATE('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization','N','AddAuthorizationProcess','N','org.idempiere.process.AddAuthorizationProcess','7','D',7,7,'N','Y','N','c6ba87ce-aa65-4895-b156-5385dfcc6164','P')
+INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution) VALUES (200128,0,0,'Y',TO_DATE('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization Mail Acount','N','AddAuthorizationProcess','N','org.compiere.process.AddAuthorizationProcess','7','D',7,7,'N','Y','N','c6ba87ce-aa65-4895-b156-5385dfcc6164','P')
 ;
 
 -- Mar 2, 2021, 8:44:54 PM CET

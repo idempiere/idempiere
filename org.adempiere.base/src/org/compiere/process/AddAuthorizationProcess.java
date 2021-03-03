@@ -1,4 +1,4 @@
-/**********************************************************************
+/***********************************************************************
  * This file is part of iDempiere ERP Open Source                      *
  * http://www.idempiere.org                                            *
  *                                                                     *
@@ -24,26 +24,28 @@
  * Contributors:                                                       *
  * - Carlos Ruiz                                                       *
  **********************************************************************/
-package org.idempiere.process;
+package org.compiere.process;
 
 import java.util.logging.Level;
 
 import org.compiere.model.MAuthorizationCredential;
 import org.compiere.model.MPInstance;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
 
 /**
  *	IDEMPIERE-3101
  * 	@author Carlos Ruiz - globalqss
  */
 public class AddAuthorizationProcess extends SvrProcess {
+
 	/* Authorization Scope */
-	private String p_AD_AuthorizationScope = null;
+	protected String p_AD_AuthorizationScope = null;
 	/* Authorization Credential */
-	private int p_AD_AuthorizationCredential_ID = 0;
+	protected int p_AD_AuthorizationCredential_ID = 0;
 	/* Open Browser */
-	private Boolean p_Auth_OpenBrowser = null;
+	protected Boolean p_Auth_OpenBrowser = null;
+
+	/* Auth URL */
+	protected String f_authURL = null;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -76,13 +78,13 @@ public class AddAuthorizationProcess extends SvrProcess {
 					+ ", Auth_OpenBrowser=" + p_Auth_OpenBrowser);
 		MPInstance pinstance = new MPInstance(getCtx(), getAD_PInstance_ID(), get_TrxName());
 		MAuthorizationCredential credential = new MAuthorizationCredential(getCtx(), p_AD_AuthorizationCredential_ID, get_TrxName());
-		String url = credential.getFullAuthorizationEndpoint(p_AD_AuthorizationScope, pinstance.getAD_PInstance_UU());
-		addLog(url);
-		if (p_Auth_OpenBrowser) {
-			// TODO: invoke a form that opens a browser
+		f_authURL = credential.getFullAuthorizationEndpoint(p_AD_AuthorizationScope, pinstance.getAD_PInstance_UU());
+		if (! p_Auth_OpenBrowser) {
+			addLog(f_authURL);
+			return "Please copy this URL and open it into your browser to authorize your account";
 		}
 
-		return "@OK@";
+		return "Please proceed to authorize your account in the popup window.";
 	}
 
 }	//	AddAuthorizationProcess
