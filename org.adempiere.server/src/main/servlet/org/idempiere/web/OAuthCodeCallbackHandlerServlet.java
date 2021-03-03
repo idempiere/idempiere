@@ -2,11 +2,13 @@ package org.idempiere.web;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.util.ServerContext;
 import org.compiere.model.MAuthorizationCredential;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
@@ -85,12 +87,16 @@ public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 		}
 
 		if (errmsg == null) {
-			Env.getCtx().setProperty(Env.AD_CLIENT_ID, String.valueOf(pinstance.getAD_Client_ID())); // To avoid Context Lost exception
-			Env.getCtx().setProperty(Env.AD_USER_ID, String.valueOf(pinstance.getCreatedBy())); // To set as CreatedBy of the account
+			Properties localctx = new Properties();
+			localctx.setProperty(Env.AD_CLIENT_ID, String.valueOf(pinstance.getAD_Client_ID())); // To avoid Context Lost exception
+			localctx.setProperty(Env.AD_USER_ID, String.valueOf(pinstance.getCreatedBy())); // To set as CreatedBy of the account
 			try {
+				ServerContext.setCurrentInstance(localctx);
 				msg = credential.processToken(code[0]);
 			} catch (IOException | GeneralSecurityException e) {
 				errmsg = e.getLocalizedMessage();
+			} finally {
+				ServerContext.dispose();
 			}
 		}
 
