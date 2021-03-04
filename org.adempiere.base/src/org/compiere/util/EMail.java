@@ -266,8 +266,12 @@ public final class EMail implements Serializable
 			props.put("mail.debug", "true");
 		//
 
-		MAuthorizationAccount authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
-		boolean isOAuth2 = (authAccount != null);
+		MAuthorizationAccount authAccount = null;
+		boolean isOAuth2 = false;
+		if (m_auth != null) {
+			authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
+			isOAuth2 = (authAccount != null);
+		}
 
 		Session session = null;
 		try
@@ -286,7 +290,7 @@ public final class EMail implements Serializable
 			{
 				props.put("mail.smtp.starttls.enable", "true");
 			}
-			if (isOAuth2) {
+			if (isOAuth2 && m_auth != null) {
 				props.put("mail.smtp.auth.mechanisms", "XOAUTH2");
 			    props.put("mail.smtp.starttls.required", "true");
 			    props.put("mail.smtp.auth.login.disable","true");
@@ -376,7 +380,11 @@ public final class EMail implements Serializable
 			setContent();
 			m_msg.saveChanges();
 			t = session.getTransport("smtp");
-			t.connect(m_smtpHost, m_smtpPort, m_auth.getPasswordAuthentication().getUserName(), m_auth.getPasswordAuthentication().getPassword());
+			if (m_auth != null) {
+				t.connect(m_smtpHost, m_smtpPort, m_auth.getPasswordAuthentication().getUserName(), m_auth.getPasswordAuthentication().getPassword());
+			} else {
+				t.connect();
+			}
 			ClassLoader tcl = Thread.currentThread().getContextClassLoader();
 			try {
 				Thread.currentThread().setContextClassLoader(javax.mail.Session.class.getClassLoader());
