@@ -53,16 +53,22 @@ public class AddAuthorizationForm extends ADForm {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6584722624231384676L;
+	private static final long serialVersionUID = 4252195624552662726L;
 
+	/* A label to show the messages to user */
+	private Label msgLabel;
+
+	/* A box to receive the message from the popup window */
 	private Textbox msgBox;
 
+	/* The confirm panel to close the window */
 	private ConfirmPanel confirmPanel;
 
+	/* Timer to monitor the popup */
 	private Timer timer;
 
 	/**
-	 * 
+	 *
 	 */
 	public AddAuthorizationForm() {
 	}
@@ -105,26 +111,22 @@ public class AddAuthorizationForm extends ADForm {
 		row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
 
+		msgLabel = new Label(Msg.getMsg(Env.getCtx(), "Authorization_Message"));
+		msgLabel.setMultiline(true);
+
+		row = rows.newRow();
+		row.appendCellChild(msgLabel, 4);
+		row.getLastCell().setRowspan(3);
+		msgLabel.setHflex("1");
+		msgLabel.setHeight("60px");
+
 		msgBox = new Textbox();
-		msgBox.setMultiline(true);
-		msgBox.addEventListener(Events.ON_CHANGE, evt -> onTokenBoxChanged());
+		msgBox.addEventListener(Events.ON_CHANGE, evt -> onMsgBoxChanged());
 		msgBox.setVisible(false);
 
 		row = rows.newRow();
-		row.appendCellChild(msgBox, 4);
-		row.getLastCell().setRowspan(3);
-		msgBox.setHflex("1");
-		msgBox.setHeight("60px");
-		row = rows.newRow();
-		row.appendCellChild(new Separator(), 4);
-		row = rows.newRow();
-		row.appendCellChild(new Separator(), 4);
-		row = rows.newRow();
-		row.appendCellChild(new Separator(), 4);
-		row = rows.newRow();
-		row.appendCellChild(new Separator(), 4);
-		row = rows.newRow();
-		row.appendCellChild(new Separator(), 4);
+		row.appendCellChild(msgBox);
+
 		row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
 
@@ -134,11 +136,11 @@ public class AddAuthorizationForm extends ADForm {
 		row.appendCellChild(confirmPanel, 3);
 		confirmPanel.addActionListener(Events.ON_CLICK, evt -> onConfirmPanelAction(evt));
 
-		timer = new Timer();		
+		timer = new Timer();
 		timer.setRepeats(true);
-		timer.setDelay(100);		
+		timer.setDelay(100);
 		timer.setRunning(false);
-		appendChild(timer);		
+		appendChild(timer);
 
 		setHeight("250px");
 		setWidth("350px");
@@ -154,10 +156,12 @@ public class AddAuthorizationForm extends ADForm {
 		return Mode.HIGHLIGHTED;
 	}
 
-	private void onTokenBoxChanged()  {
+	/**
+	 * React when the message box is filled
+	 */
+	private void onMsgBoxChanged()  {
 		Clients.clearBusy();
-		msgBox.setVisible(true);
-		msgBox.setReadonly(true);
+		msgLabel.setText(msgBox.getText());
 		confirmPanel.getButton(ConfirmPanel.A_OK).setEnabled(false);
 		confirmPanel.getButton(ConfirmPanel.A_OK).setVisible(false);
 	}
@@ -176,51 +180,55 @@ public class AddAuthorizationForm extends ADForm {
 	}
 
 	/**
-	 * Build listener script
-	 * @param authURL 
-	 * @param redirectURL 
+	 * Build popup and listener script
+	 * @param authURL
 	 */
-	public void buildClientListener(String authURL) {
-		confirmPanel.getButton(ConfirmPanel.A_OK).setEnabled(false);
-		Clients.showBusy(null);
-		StringBuilder authScript = new StringBuilder("var x = window.outerWidth / 2 + window.screenX - (800 / 2);\n" + 
-				"var y = window.outerHeight / 2 + window.screenY - (600 / 2);\n" + 
-				"var authWindow = window.open('" + authURL + "','_blank','width=800, height=600, top='+y+', left='+x);\n");		
-		authScript.append("var timer = zk.Widget.$('#").append(timer.getUuid()).append("');/*console.log(timer);*/\n");
-		authScript.append("timer.windowRef = authWindow; timer.play();");		
-		confirmPanel.getButton(ConfirmPanel.A_OK).setWidgetListener("onBind", authScript.toString());
+	public void buildClientPopupAndListener(String authURL) {
+		StringBuilder authScript = new StringBuilder()
+				.append("var x = window.outerWidth / 2 + window.screenX - (800 / 2);\n")
+				.append("var y = window.outerHeight / 2 + window.screenY - (600 / 2);\n")
+				.append("var authWindow = window.open('").append(authURL).append("','_blank','width=800, height=600, top='+y+', left='+x);\n")
+				.append("var timer = zk.Widget.$('#").append(timer.getUuid()).append("');\n")
+				.append("timer.windowRef = authWindow; timer.play();");
+		// Note: the listener can be set to onBind instead of onClick to open the popup without user intervention,
+		//       but in this case the browser popup restrictions apply.
+		//       As most browser block popups by default I prefer to go the safest route using onClick
+		confirmPanel.getButton(ConfirmPanel.A_OK).setWidgetListener("onClick", authScript.toString());
 
-		StringBuilder timerScript = new StringBuilder();
-		timerScript.append("try {\n")
-		 .append("  var t = zk.Widget.$('#").append(msgBox.getUuid()).append("');\n")
-		 .append("  var authWindow = this.windowRef;console.log(this);\n")
-		 .append("  if (authWindow && authWindow.closed) {\n")
-		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n")
-		 .append("      this.stop();\n")
-		 .append("      return;\n")
-		 .append("  }\n")
-		 .append("  if (authWindow && authWindow.location) {\n")
-		 .append("      if (authWindow.location.href.indexOf('/callback.jsp') >= 0) {\n")
-		 .append("           this.stop();\n")
-		 .append("           var url = new URL(authWindow.location.href);\n")
-		 .append("           var error=url.searchParams.get('error');\n")
-		 .append("           var msg=url.searchParams.get('msg');\n")
-		 .append("           if (error) {\n" )
-		 .append("                var msg = 'error='+error;\n")
-		 .append("                t.setValue(msg, false); t.fireOnChange(); ")
-		 .append("           } else if (msg) {\n")
-		 .append("                t.setValue(msg, false); t.fireOnChange(); ")
-		 .append("           }\n")
-		 .append("           authWindow.close();\n")
-		 .append("      }\n")
-		 .append("   }\n")								 
-		 .append("   else {\n")
-		 .append("      t.setValue('error=Request Fail or Aborted by User'); t.fireOnChange(); \n")
-		 .append("      this.stop();\n")
-		 .append("   }\n")
-		 .append("} catch(err){}\n");
+		String msgError = Msg.getMsg(Env.getCtx(), "Error");
+		String msgFailure = Msg.getMsg(Env.getCtx(), "OAuthPopup_Failure");
+		StringBuilder timerScript = new StringBuilder()
+				.append("function sleep (time) {return new Promise((resolve) => setTimeout(resolve, time));}\n")
+				.append("try {\n")
+				.append("  var t = zk.Widget.$('#").append(msgBox.getUuid()).append("');\n")
+				.append("  var authWindow = this.windowRef;\n")
+				.append("  if (authWindow && authWindow.closed) {\n")
+				.append("    t.setValue('").append(msgError).append(msgFailure).append("'); t.fireOnChange(); \n")
+				.append("    this.stop();\n")
+				.append("    return;\n")
+				.append("  }\n")
+				.append("  if (authWindow && authWindow.location) {\n")
+				.append("    if (authWindow.location.href.indexOf('/callback.jsp') >= 0) {\n")
+				.append("      this.stop();\n")
+				.append("      var url = new URL(authWindow.location.href);\n")
+				.append("      var error = url.searchParams.get('error');\n")
+				.append("      var msg = url.searchParams.get('msg');\n")
+				.append("      if (error) {\n" )
+				.append("        var msg = '").append(msgError).append("'+error;\n")
+				.append("        t.setValue(msg, false); t.fireOnChange();\n")
+				.append("      } else if (msg) {\n")
+				.append("        t.setValue(msg, false); t.fireOnChange();\n")
+				.append("      }\n")
+				.append("      sleep(1500).then(() => {\n")
+				.append("        authWindow.close();\n")
+				.append("      });\n")
+				.append("    }\n")
+				.append("  } else {\n")
+				.append("    t.setValue('").append(msgError).append(msgFailure).append("'); t.fireOnChange(); \n")
+				.append("    this.stop();\n")
+				.append("  }\n")
+				.append("} catch(err){}\n");
 		timer.setWidgetListener("onTimer", timerScript.toString());
-
 	}
 
 }

@@ -9,12 +9,14 @@
         const urlParams = new URLSearchParams(queryString);
         const msg = urlParams.get('msg');
         const error = urlParams.get('error');
+        const errmsg = urlParams.get('errmsg');
+        const closemsg = urlParams.get('closemsg');
         if (error != null) {
-            document.write("<h3>There was an error:<br></h3><h4><p style=\"color:red\">" + error + "</p></h4>");
+            document.write("<h3>" + errmsg + "<br></h3><h4><p style=\"color:red\">" + error + "</p></h4>");
         } else {
             document.write("<h3>" + msg + "</h3>");
         }
-        document.write("<br>This window can be closed safely now.");
+        document.write("<br>" + closemsg);
     </script>
 </body>
 </html>

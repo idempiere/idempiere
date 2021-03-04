@@ -41,6 +41,9 @@ import org.zkoss.zk.ui.Desktop;
  */
 public class AddAuthorizationProcess extends org.compiere.process.AddAuthorizationProcess implements IServerPushCallback {
 
+	/**
+	 * Post process to register the server push callback
+	 */
 	@Override
 	protected void postProcess(boolean success) {
 		if (success) {
@@ -50,12 +53,15 @@ public class AddAuthorizationProcess extends org.compiere.process.AddAuthorizati
 		}
 	}
 
+	/**
+	 * Open the authorization form when updating the UI on server push callback
+	 */
 	@Override
 	public void updateUI() {
-		if (p_Auth_OpenBrowser) {
+		if (p_Auth_OpenPopup) {
 			ADForm form = SessionManager.getAppDesktop().openForm(SystemIDs.FORM_ADD_AUTHORIZATION);
 			if (form instanceof AddAuthorizationForm) {
-				((AddAuthorizationForm)form).buildClientListener(f_authURL);
+				((AddAuthorizationForm)form).buildClientPopupAndListener(f_authURL);
 			}
 		}
 	}

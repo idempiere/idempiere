@@ -61,7 +61,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 
 	/**
 	 * Create empty Authorization Credential
-	 * 
+	 *
 	 * @param ctx              context
 	 * @param AD_AuthorizationCredential_ID ID
 	 * @param trxName          transaction
@@ -72,7 +72,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 
 	/**
 	 * Create Authorization Credential from current row in ResultSet
-	 * 
+	 *
 	 * @param ctx     context
 	 * @param rs      ResultSet
 	 * @param trxName transaction
@@ -88,84 +88,93 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	public String processToken(String code) throws IOException, GeneralSecurityException {
+	public String processToken(String code) {
 		String msg = null;
-		String clientId = getAuthorizationClientId();
-		String clientSecret = getAuthorizationClientSecret();
-		Timestamp ts = new Timestamp(System.currentTimeMillis());
-		MAuthorizationProvider ap = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
-		AuthorizationCodeTokenRequest request = new AuthorizationCodeTokenRequest(new NetHttpTransport(), 
-				GsonFactory.getDefaultInstance(),
-				new GenericUrl(ap.getTokenEndpoint()), code);
-		request.setRedirectUri(getAuthorizationRedirectURL());
-		request.setClientAuthentication(new ClientParametersAuthentication(clientId, clientSecret));
-		TokenResponse tokenResponse = request.execute();
-		Object id_token = tokenResponse.get("id_token");
-		String email = null;
-		if (id_token != null && id_token instanceof String) {
-			IdToken idtoken = IdToken.parse(tokenResponse.getFactory(), (String) tokenResponse.get("id_token"));
-			email = (String) idtoken.getPayload().get("email");
-		}
-		if (email == null) {
-			throw new AdempiereException("Could not get the email from the response");
+		try {
+			String clientId = getAuthorizationClientId();
+			String clientSecret = getAuthorizationClientSecret();
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			MAuthorizationProvider ap = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
+			AuthorizationCodeTokenRequest request = new AuthorizationCodeTokenRequest(new NetHttpTransport(),
+					GsonFactory.getDefaultInstance(),
+					new GenericUrl(ap.getTokenEndpoint()), code);
+			request.setRedirectUri(getAuthorizationRedirectURL());
+			request.setClientAuthentication(new ClientParametersAuthentication(clientId, clientSecret));
+			TokenResponse tokenResponse = request.execute();
+			Object id_token = tokenResponse.get("id_token");
+			String email = null;
+			if (id_token != null && id_token instanceof String) {
+				IdToken idtoken = IdToken.parse(tokenResponse.getFactory(), (String) tokenResponse.get("id_token"));
+				email = (String) idtoken.getPayload().get("email");
+			}
+			if (email == null) {
+				msg = Msg.parseTranslation(getCtx(), "@Error@ @OAuthProcessToken_CouldNotGetEMail@");
+				return msg;
+			}
+
+			boolean newAccount = false;
+			MAuthorizationAccount account = null;
+			Query query = new Query(Env.getCtx(), MAuthorizationAccount.Table_Name, "AD_Client_ID=? AND AD_User_ID=? AND EMail=? AND AD_AuthorizationCredential_ID=?", get_TrxName());
+			query.setParameters(Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), email, getAD_AuthorizationCredential_ID());
+			account = query.first();
+			if (account == null) {
+				account = new MAuthorizationAccount(Env.getCtx(), 0, get_TrxName());
+				account.setEMail(email);
+				account.setAD_AuthorizationCredential_ID(getAD_AuthorizationCredential_ID());
+				account.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+				newAccount = true;
+			}
+
+			account.setAccessToken(tokenResponse.getAccessToken());
+			account.setAccessTokenTimestamp(ts);
+			account.setExpireInSeconds(BigDecimal.valueOf(tokenResponse.getExpiresInSeconds()));
+			account.setAD_AuthorizationScope(MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_EMail);
+			account.setIsAuthorized(true);
+			account.setIsActive(true);
+
+			if (tokenResponse.getRefreshToken() == null && account.getRefreshToken() == null) {
+				String refreshToken = account.findRefreshToken();
+				if (refreshToken != null) {
+					account.setRefreshToken(refreshToken);
+				}
+			}
+
+			if (tokenResponse.getRefreshToken() == null && account.getRefreshToken() == null) {
+				//revoke access and ask for retry
+				MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
+				String revokeEndPoint = provider.getRevokeEndpoint();
+				if (revokeEndPoint != null) {
+					HttpRequestFactory factory = new NetHttpTransport().createRequestFactory();
+					GenericUrl url = new GenericUrl(revokeEndPoint + "?token="+account.getAccessToken());
+					HttpRequest revokeRequest = factory.buildGetRequest(url);
+					revokeRequest.execute();
+				}
+				msg = Msg.parseTranslation(getCtx(), "@Error@ @OAuthProcessToken_NoRefreshToken@");
+				return msg;
+			}
+
+			if (tokenResponse.getRefreshToken() != null) {
+				account.setRefreshToken(tokenResponse.getRefreshToken());
+			}
+			account.saveEx();
+			account.syncOthers();
+			if (newAccount)
+				msg = Msg.getMsg(getCtx(), "Authorization_Access_OK", new Object[] {account.getEMail()});
+			else
+				msg = Msg.getMsg(getCtx(), "Authorization_Access_Previous", new Object[] {account.getEMail()});
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			msg = Msg.getMsg(getCtx(), "Error") + ex.getLocalizedMessage();
+			return msg;
 		}
 
-		boolean newAccount = false;
-		MAuthorizationAccount account = null;
-		Query query = new Query(Env.getCtx(), MAuthorizationAccount.Table_Name, "AD_Client_ID=? AND AD_User_ID=? AND EMail=? AND AD_AuthorizationCredential_ID=?", get_TrxName());
-		query.setParameters(Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), email, getAD_AuthorizationCredential_ID());
-		account = query.first();
-		if (account == null) {
-			account = new MAuthorizationAccount(Env.getCtx(), 0, get_TrxName());
-			account.setEMail(email);
-			account.setAD_AuthorizationCredential_ID(getAD_AuthorizationCredential_ID());
-			account.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
-			newAccount = true;
-		}
-		
-		if (tokenResponse.getRefreshToken() == null && account.getRefreshToken() == null) {
-			String refreshToken = account.findRefreshToken();
-			if (refreshToken != null) {
-				account.setRefreshToken(refreshToken);
-			}
-		}
-		
-		if (tokenResponse.getRefreshToken() == null && account.getRefreshToken() == null) {
-			//revoke access and ask for retry
-			MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
-			String revokeEndPoint = provider.getRevokeEndpoint();
-			if (revokeEndPoint != null) {
-				HttpRequestFactory factory = new NetHttpTransport().createRequestFactory();
-				GenericUrl url = new GenericUrl(revokeEndPoint + "?token="+account.getAccessToken());
-				HttpRequest revokeRequest = factory.buildGetRequest(url);
-				revokeRequest.execute();
-			}
-			throw new AdempiereException("No refresh token.  Request Failed. Please try again");
-		}
-		
-		account.setAccessToken(tokenResponse.getAccessToken());
-		account.setAccessTokenTimestamp(ts);
-		account.setExpireInSeconds(BigDecimal.valueOf(tokenResponse.getExpiresInSeconds()));
-		account.setAD_AuthorizationScope(MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_EMail);
-		account.setIsAuthorized(true);
-		account.setIsActive(true);
-		if (tokenResponse.getRefreshToken() != null) {				
-			account.setRefreshToken(tokenResponse.getRefreshToken());																
-		}
-		account.saveEx();
-		account.syncOthers();
-
-		if (newAccount)
-			msg = Msg.getMsg(getCtx(), "Authorization_Access_OK", new Object[] {account.getEMail()});
-		else
-			msg = Msg.getMsg(getCtx(), "Authorization_Access_Previous", new Object[] {account.getEMail()});
 		return msg;
 	}
 
 	/**
 	 * Get a complete Authorization end point URL with all the parameters required
 	 * @param scope
-	 * @param state 
+	 * @param state
 	 * @return
 	 */
 	public String getFullAuthorizationEndpoint(String scope, String state) {

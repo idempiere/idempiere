@@ -1288,16 +1288,16 @@ INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,
 ;
 
 -- Mar 2, 2021, 8:44:56 PM CET
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203477,0,0,'Y',TO_DATE('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,'Auth_OpenBrowser','Open Browser','Open Browser','D','03b05026-1620-4429-a28a-49a06fa8612a')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203477,0,0,'Y',TO_DATE('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-02 20:44:55','YYYY-MM-DD HH24:MI:SS'),100,'Auth_OpenPopup','Open Authorization in Popup Window','Open Authorization in Popup Window','D','03b05026-1620-4429-a28a-49a06fa8612a')
 ;
 
 -- Mar 2, 2021, 8:44:56 PM CET
-INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200337,0,0,'Y',TO_DATE('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,'Open Browser',200128,30,20,'N',1,'Y','@+OPEN_BROWSER:Y@','Auth_OpenBrowser','Y','D',203477,'@+OPEN_BROWSER@=''''','6f136023-be77-4762-aed3-0107c473379e','N','N')
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200337,0,0,'Y',TO_DATE('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,'Open Authorization in Popup Window',200128,30,20,'N',1,'Y','@+OPEN_POPUP:Y@','Auth_OpenPopup','Y','D',203477,'@+OPEN_POPUP@=''''','6f136023-be77-4762-aed3-0107c473379e','N','N')
 ;
 
 -- Mar 2, 2021, 8:44:57 PM CET
 INSERT INTO AD_Menu (AD_Menu_ID,Name,Action,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,AD_Process_ID,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU,PredefinedContextVariables) VALUES (200182,'Add Authorization Mail Acount','P',0,0,'Y',TO_DATE('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,'N',200128,'Y','N','D','Y','53d88c72-2e33-41b2-94b2-03f16bf07982','SCOPE=EMail
-OPEN_BROWSER=Y')
+OPEN_POPUP=Y')
 ;
 
 -- Mar 2, 2021, 8:44:57 PM CET
@@ -1502,6 +1502,67 @@ UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=23, Updated=getDate() WHERE AD_Tre
 
 -- Mar 2, 2021, 8:47:29 PM CET
 UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=24, Updated=getDate() WHERE AD_Tree_ID=10 AND Node_ID=200177
+;
+
+-- Mar 4, 2021, 10:35:05 AM CET
+UPDATE AD_Process_Para SET DisplayLogic=NULL,Updated=TO_DATE('2021-03-04 10:35:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200337
+;
+
+-- IDEMPIERE-3101 implement OAuth2 for mail (gmail, outlook and other mail system)
+-- Mar 4, 2021, 10:37:16 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Please copy this URL and open it into your browser to authorize your account',0,0,'Y',TO_DATE('2021-03-04 10:37:16','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 10:37:16','YYYY-MM-DD HH24:MI:SS'),100,200664,'Add_Auth_Copy_Link','D','15c81291-1926-4d7f-a69f-15ec9e94e057')
+;
+
+-- Mar 4, 2021, 10:37:47 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Please proceed to authorize your account in the popup window.',0,0,'Y',TO_DATE('2021-03-04 10:37:46','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 10:37:46','YYYY-MM-DD HH24:MI:SS'),100,200665,'Add_Auth_In_Popup','D','1fc69689-5c66-4ea2-ac09-3a3f064bad16')
+;
+
+-- Mar 4, 2021, 10:47:28 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The "{0}" URL parameter is missing',0,0,'Y',TO_DATE('2021-03-04 10:47:28','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 10:47:28','YYYY-MM-DD HH24:MI:SS'),100,200666,'OAuthCallback_MissingParameter','D','4741bb6c-eb25-4504-89c9-a3b8e74b875c')
+;
+
+-- Mar 4, 2021, 10:50:29 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The "state" URL parameter is not valid',0,0,'Y',TO_DATE('2021-03-04 10:50:29','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 10:50:29','YYYY-MM-DD HH24:MI:SS'),100,200667,'OAuthCallback_InvalidState','D','39cc3d01-fe8d-437e-a90c-68383dd9296e')
+;
+
+-- Mar 4, 2021, 10:51:46 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','The "state" URL parameter is not valid, parameter not found',0,0,'Y',TO_DATE('2021-03-04 10:51:46','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 10:51:46','YYYY-MM-DD HH24:MI:SS'),100,200668,'OAuthCallback_NotFoundState','D','b8dbabc5-2942-4207-808b-5195e1fc91d6')
+;
+
+-- Mar 4, 2021, 10:55:51 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Could not get the email from the response',0,0,'Y',TO_DATE('2021-03-04 10:55:51','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 10:55:51','YYYY-MM-DD HH24:MI:SS'),100,200669,'OAuthProcessToken_CouldNotGetEMail','D','494ad2ec-b18f-4479-9ce0-fd62227853ea')
+;
+
+-- Mar 4, 2021, 10:56:06 AM CET
+UPDATE AD_Message SET MsgType='E',Updated=TO_DATE('2021-03-04 10:56:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200667
+;
+
+-- Mar 4, 2021, 10:56:09 AM CET
+UPDATE AD_Message SET MsgType='E',Updated=TO_DATE('2021-03-04 10:56:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200666
+;
+
+-- Mar 4, 2021, 10:56:11 AM CET
+UPDATE AD_Message SET MsgType='E',Updated=TO_DATE('2021-03-04 10:56:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200668
+;
+
+-- Mar 4, 2021, 10:56:40 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','No refresh token.  Request Failed. Please try again',0,0,'Y',TO_DATE('2021-03-04 10:56:40','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 10:56:40','YYYY-MM-DD HH24:MI:SS'),100,200670,'OAuthProcessToken_NoRefreshToken','D','f4ed653b-6021-4ab3-a0bd-db3971f872f6')
+;
+
+-- Mar 4, 2021, 11:17:35 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Request failed or it was aborted by user.',0,0,'Y',TO_DATE('2021-03-04 11:17:35','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 11:17:35','YYYY-MM-DD HH24:MI:SS'),100,200671,'OAuthPopup_Failure','D','0b34a772-fa43-4a84-a7bc-34bb5f3b78f1')
+;
+
+-- Mar 4, 2021, 11:40:09 AM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','This window can be closed now.',0,0,'Y',TO_DATE('2021-03-04 11:40:08','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 11:40:08','YYYY-MM-DD HH24:MI:SS'),100,200672,'OAuthPopup_Close','D','22b37095-6afc-458a-b2b5-86eb808fef87')
+;
+
+-- Mar 4, 2021, 1:10:14 PM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Click the OK button to open the authorization popup window.',0,0,'Y',TO_DATE('2021-03-04 13:10:14','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 13:10:14','YYYY-MM-DD HH24:MI:SS'),100,200673,'Authorization_Message','D','a0ace366-678c-47d9-b048-737af5511fd9')
+;
+
+-- Mar 4, 2021, 4:01:13 PM CET
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,Help,AD_Process_ID,SeqNo,AD_Reference_ID,AD_Reference_Value_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200338,0,0,'Y',TO_DATE('2021-03-04 16:01:12','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-03-04 16:01:12','YYYY-MM-DD HH24:MI:SS'),100,'Language','Language for this entity','The Language identifies the language to use for display and formatting',200128,40,18,327,'N',6,'N','@#AD_Language@','AD_Language','Y','D',109,'1=2','9042a009-41dd-466c-9ed7-9a352d3eb362','N','N')
 ;
 
 SELECT register_migration_script('202102241858_IDEMPIERE-3101.sql') FROM dual

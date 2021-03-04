@@ -38,7 +38,7 @@ public class MAuthorizationProvider extends X_AD_AuthorizationProvider {
 
 	/**
 	 * Create empty Authorization Provider
-	 * 
+	 *
 	 * @param ctx              context
 	 * @param AD_AuthorizationProvider_ID ID
 	 * @param trxName          transaction
@@ -49,7 +49,7 @@ public class MAuthorizationProvider extends X_AD_AuthorizationProvider {
 
 	/**
 	 * Create Authorization Provider from current row in ResultSet
-	 * 
+	 *
 	 * @param ctx     context
 	 * @param rs      ResultSet
 	 * @param trxName transaction

@@ -42,7 +42,7 @@ public class AddAuthorizationProcess extends SvrProcess {
 	/* Authorization Credential */
 	protected int p_AD_AuthorizationCredential_ID = 0;
 	/* Open Browser */
-	protected Boolean p_Auth_OpenBrowser = null;
+	protected Boolean p_Auth_OpenPopup = Boolean.FALSE;
 
 	/* Auth URL */
 	protected String f_authURL = null;
@@ -57,7 +57,8 @@ public class AddAuthorizationProcess extends SvrProcess {
 			switch (name) {
 			case "AD_AuthorizationScope": p_AD_AuthorizationScope = para.getParameterAsString(); break;
 			case "AD_AuthorizationCredential_ID": p_AD_AuthorizationCredential_ID = para.getParameterAsInt(); break;
-			case "Auth_OpenBrowser": p_Auth_OpenBrowser = para.getParameterAsBoolean(); break;
+			case "Auth_OpenPopup": p_Auth_OpenPopup = para.getParameterAsBoolean(); break;
+			case "AD_Language": break;  // ignored, is just to save it in AD_Process_Para
 			default:
 				if (log.isLoggable(Level.INFO))
 					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
@@ -75,16 +76,16 @@ public class AddAuthorizationProcess extends SvrProcess {
 		if (log.isLoggable(Level.INFO))
 			log.info("AD_AuthorizationScope" + p_AD_AuthorizationScope
 					+ ", AD_AuthorizationCredential_ID=" + p_AD_AuthorizationCredential_ID
-					+ ", Auth_OpenBrowser=" + p_Auth_OpenBrowser);
+					+ ", Auth_OpenBrowser=" + p_Auth_OpenPopup);
 		MPInstance pinstance = new MPInstance(getCtx(), getAD_PInstance_ID(), get_TrxName());
 		MAuthorizationCredential credential = new MAuthorizationCredential(getCtx(), p_AD_AuthorizationCredential_ID, get_TrxName());
 		f_authURL = credential.getFullAuthorizationEndpoint(p_AD_AuthorizationScope, pinstance.getAD_PInstance_UU());
-		if (! p_Auth_OpenBrowser) {
+		if (! p_Auth_OpenPopup || processUI == null) {
 			addLog(f_authURL);
-			return "Please copy this URL and open it into your browser to authorize your account";
+			return "@Add_Auth_Copy_Link@";
 		}
 
-		return "Please proceed to authorize your account in the popup window.";
+		return "@Add_Auth_In_Popup@";
 	}
 
 }	//	AddAuthorizationProcess

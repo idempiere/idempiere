@@ -28,7 +28,7 @@
 package org.idempiere.web;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.net.URLEncoder;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServlet;
@@ -42,6 +42,7 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 	/**
@@ -76,7 +77,7 @@ public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 			code = req.getParameterValues(CODE_URL_PARAM_NAME);
 			// Checking conditions on the "code" URL parameter
 			if (code == null || code.length == 0) {
-				errmsg = "The \"code\" URL parameter is missing";
+				errmsg = Msg.getMsg(Env.getCtx(), "OAuthCallback_MissingParameter", new Object[] {CODE_URL_PARAM_NAME});
 			}
 		}
 
@@ -86,52 +87,54 @@ public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 			state = req.getParameterValues(STATE_URL_PARAM_NAME);
 			// Checking conditions on the "state" URL parameter
 			if (state == null || state.length == 0) {
-				errmsg = "The \"state\" URL parameter is missing";
+				errmsg = Msg.getMsg(Env.getCtx(), "OAuthCallback_MissingParameter", new Object[] {STATE_URL_PARAM_NAME});
 			}
 		}
 
-		MPInstance pinstance = null;
-		if (errmsg == null) {
-			MTable pinstanceTable = MTable.get(MPInstance.Table_ID);
-			String uuidcol = PO.getUUIDColumnName(MPInstance.Table_Name);
-			pinstance = (MPInstance) pinstanceTable.getPO(uuidcol+"=?", new Object[] {state[0]}, null);
-			if (pinstance == null) {
-				errmsg = "Invalid \"state\" URL parameter";
-			}
-		}
-
-		MAuthorizationCredential credential = null;
-		if (errmsg == null) {
-			for (MPInstancePara param : pinstance.getParameters()) {
-				if (MAuthorizationCredential.COLUMNNAME_AD_AuthorizationCredential_ID.equals(param.getParameterName())) {
-					credential = new MAuthorizationCredential(Env.getCtx(), param.getP_Number().intValue(), null);
-					break;
+		try {
+			Properties localctx = new Properties();
+			ServerContext.setCurrentInstance(localctx);
+			MPInstance pinstance = null;
+			if (errmsg == null) {
+				MTable pinstanceTable = MTable.get(MPInstance.Table_ID);
+				String uuidcol = PO.getUUIDColumnName(MPInstance.Table_Name);
+				pinstance = (MPInstance) pinstanceTable.getPO(uuidcol+"=?", new Object[] {state[0]}, null);
+				if (pinstance == null) {
+					errmsg = Msg.getMsg(Env.getCtx(), "OAuthCallback_InvalidState");
 				}
 			}
-			if (credential == null || credential.get_ID() <= 0) {
-				errmsg = "Invalid \"state\" URL parameter, not found";
-			}
-		}
 
-		if (errmsg == null) {
-			Properties localctx = new Properties();
-			localctx.setProperty(Env.AD_CLIENT_ID, String.valueOf(pinstance.getAD_Client_ID())); // To avoid Context Lost exception
-			localctx.setProperty(Env.AD_USER_ID, String.valueOf(pinstance.getCreatedBy())); // To set as CreatedBy of the account
-			try {
-				ServerContext.setCurrentInstance(localctx);
-				msg = credential.processToken(code[0]);
-			} catch (IOException | GeneralSecurityException e) {
-				errmsg = e.getLocalizedMessage();
-			} finally {
-				ServerContext.dispose();
+			Env.getCtx().setProperty(Env.AD_CLIENT_ID, String.valueOf(pinstance.getAD_Client_ID())); // To avoid Context Lost exception
+			Env.getCtx().setProperty(Env.AD_USER_ID, String.valueOf(pinstance.getCreatedBy())); // To set as CreatedBy of the account
+			MAuthorizationCredential credential = null;
+			if (errmsg == null) {
+				for (MPInstancePara param : pinstance.getParameters()) {
+					if (MAuthorizationCredential.COLUMNNAME_AD_AuthorizationCredential_ID.equals(param.getParameterName()))
+						credential = new MAuthorizationCredential(Env.getCtx(), param.getP_Number().intValue(), null);
+					else if ("AD_Language".equals(param.getParameterName()))
+						Env.getCtx().setProperty("#AD_Language", param.getP_String());
+				}
+				if (credential == null || credential.get_ID() <= 0) {
+					errmsg = Msg.getMsg(Env.getCtx(), "OAuthCallback_NotFoundState");
+				}
 			}
+
+			if (errmsg == null) {
+				msg = credential.processToken(code[0]);
+			}
+
+		} finally {
+			ServerContext.dispose();
 		}
 
 		String url = null;
+		String msgClose = URLEncoder.encode(Msg.getMsg(Env.getCtx(), "OAuthPopup_Close"), "UTF-8");
+		msg = URLEncoder.encode(msg, "UTF-8");
 		if (errmsg == null) {
-			url = resp.encodeRedirectURL("callback.jsp?msg=" + msg);
+			url = resp.encodeRedirectURL("callback.jsp?msg=" + msg + "&closemsg=" + msgClose);
 		} else {
-			url = resp.encodeRedirectURL("callback.jsp?error=" + errmsg);
+			String msgError = Msg.getMsg(Env.getCtx(), "Error");
+			url = resp.encodeRedirectURL("callback.jsp?error=" + errmsg + "&errmsg=" + msgError + "&closemsg=" + msgClose);
 		}
 
 		resp.sendRedirect(url);

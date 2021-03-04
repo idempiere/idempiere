@@ -38,7 +38,7 @@ public class MAuthorizationScopeProv extends X_AD_AuthorizationScopeProv {
 
 	/**
 	 * Create empty Authorization ScopeProvider
-	 * 
+	 *
 	 * @param ctx              context
 	 * @param AD_AuthorizationScopeProv_ID ID
 	 * @param trxName          transaction
@@ -49,7 +49,7 @@ public class MAuthorizationScopeProv extends X_AD_AuthorizationScopeProv {
 
 	/**
 	 * Create Authorization ScopeProvider from current row in ResultSet
-	 * 
+	 *
 	 * @param ctx     context
 	 * @param rs      ResultSet
 	 * @param trxName transaction

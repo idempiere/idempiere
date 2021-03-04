@@ -53,7 +53,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 
 	/**
 	 * Create empty Authorization Account
-	 * 
+	 *
 	 * @param ctx              context
 	 * @param AD_AuthorizationAccount_ID ID
 	 * @param trxName          transaction
@@ -64,7 +64,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 
 	/**
 	 * Create Authorization Account from current row in ResultSet
-	 * 
+	 *
 	 * @param ctx     context
 	 * @param rs      ResultSet
 	 * @param trxName transaction
@@ -105,13 +105,13 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 		String accessToken = getAccessToken();
 		accessToken = SecureEngine.encrypt(accessToken, getAD_Client_ID());
 		DB.executeUpdateEx(script.toString(), new Object[] {
-				accessToken, 
-				getAccessTokenTimestamp(), 
+				accessToken,
+				getAccessTokenTimestamp(),
 				getExpireInSeconds(),
 				getAD_AuthorizationAccount_ID(),
-				getEMail(), 
+				getEMail(),
 				getAD_AuthorizationCredential_ID()
-		},
+				},
 				get_TrxName());
 	}
 
@@ -129,7 +129,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 			MAuthorizationCredential credential = new MAuthorizationCredential(getCtx(), getAD_AuthorizationCredential_ID(), get_TrxName());
 			MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), credential.getAD_AuthorizationProvider_ID(), get_TrxName());
 			GenericUrl url = new GenericUrl(provider.getTokenEndpoint());
-			RefreshTokenRequest request = new RefreshTokenRequest(new NetHttpTransport(), 
+			RefreshTokenRequest request = new RefreshTokenRequest(new NetHttpTransport(),
 					GsonFactory.getDefaultInstance(),
 					url,
 					getRefreshToken());
