@@ -1562,6 +1562,26 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,Help,AD_Process_ID,SeqNo,AD_Reference_ID,AD_Reference_Value_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200338,0,0,'Y',TO_TIMESTAMP('2021-03-04 16:01:12','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-04 16:01:12','YYYY-MM-DD HH24:MI:SS'),100,'Language','Language for this entity','The Language identifies the language to use for display and formatting',200128,40,18,327,'N',6,'N','@#AD_Language@','AD_Language','Y','D',109,'1=2','9042a009-41dd-466c-9ed7-9a352d3eb362','N','N')
 ;
 
+-- Mar 4, 2021, 4:26:51 PM CET
+UPDATE AD_Column SET IsAllowLogging='N',Updated=TO_TIMESTAMP('2021-03-04 16:26:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214402
+;
+
+-- Mar 4, 2021, 4:27:04 PM CET
+UPDATE AD_Column SET IsAllowLogging='N', IsAllowCopy='N',Updated=TO_TIMESTAMP('2021-03-04 16:27:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214403
+;
+
+-- Mar 4, 2021, 4:27:08 PM CET
+UPDATE AD_Column SET IsAllowCopy='N',Updated=TO_TIMESTAMP('2021-03-04 16:27:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214402
+;
+
+-- Mar 4, 2021, 4:27:35 PM CET
+UPDATE AD_Column SET IsAllowLogging='N', IsAllowCopy='N',Updated=TO_TIMESTAMP('2021-03-04 16:27:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214388
+;
+
+-- Mar 4, 2021, 4:27:40 PM CET
+UPDATE AD_Column SET IsAllowCopy='N',Updated=TO_TIMESTAMP('2021-03-04 16:27:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214387
+;
+
 SELECT register_migration_script('202102241858_IDEMPIERE-3101.sql') FROM dual
 ;
 
