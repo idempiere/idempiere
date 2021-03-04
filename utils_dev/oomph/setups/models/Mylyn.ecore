@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mylyn" nsURI="http://www.eclipse.org/oomph/setup/mylyn/1.0"
+    nsPrefix="mylyn">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Mylyn.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.mylyn.p2"/>
+    <details key="repository" value="${oomph.update.url}"/>
+    <details key="installableUnits" value="org.eclipse.oomph.setup.mylyn.feature.group"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.mylyn.updates.p2"/>
+    <details key="repository" value="http://download.eclipse.org/mylyn/releases/latest"/>
+    <details key="releaseTrainAlternate" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.setup.mylyn.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="MylynQueriesTask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+      <details key="installableUnits" value="org.eclipse.mylyn.tasks.core org.eclipse.mylyn.tasks.ui"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="connectorKind" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="bugzilla"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repositoryURL" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/Redirect"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="userID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="password" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="queries" upperBound="-1"
+        eType="#//Query" containment="true" eOpposite="#//Query/task">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="query"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MylynBuildsTask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+      <details key="installableUnits" value="org.eclipse.mylyn.tasks.core org.eclipse.mylyn.tasks.ui"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="connectorKind" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="org.eclipse.mylyn.hudson"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="serverURL" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/Redirect"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="userID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="password" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="buildPlans" upperBound="-1"
+        eType="#//BuildPlan" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="buildPlan"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BuildPlan" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Query" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="task" eType="#//MylynQueriesTask"
+        eOpposite="#//MylynQueriesTask/queries"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="summary" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uRL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="url"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/Redirect"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//QueryAttribute" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QueryAttribute" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>

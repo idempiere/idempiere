@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="workbench" nsURI="http://www.eclipse.org/oomph/setup/workbench/1.0"
+    nsPrefix="workbench">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Workbench.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.workbench.p2"/>
+    <details key="repository" value="${oomph.update.url}"/>
+    <details key="installableUnits" value="org.eclipse.oomph.setup.workbench.feature.group"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.setup.workbench.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="FileAssociationsTask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mappings" lowerBound="1"
+        upperBound="-1" eType="#//FileMapping" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="mapping"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FileMapping" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filePattern" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultEditorID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="editors" upperBound="-1"
+        eType="#//FileEditor" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="editor"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FileEditor" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="id"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="KeyBindingTask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scheme" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contexts" lowerBound="1"
+        upperBound="-1" eType="#//KeyBindingContext" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="context"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="platform" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="locale" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keys" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="command" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="commandParameters" upperBound="-1"
+        eType="#//CommandParameter" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="commandParameter"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="KeyBindingContext" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="org.eclipse.ui.contexts.window">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="id"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CommandParameter" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="id"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>
