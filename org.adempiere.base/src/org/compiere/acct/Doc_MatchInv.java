@@ -1315,14 +1315,15 @@ public class Doc_MatchInv extends Doc
 		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		
 		StringBuilder whereClause = new StringBuilder()
-				.append("Record_ID=?")
+				.append("AD_Table_ID=?")
+				.append(" AND Record_ID=?")
 				.append(" AND C_AcctSchema_ID=?")
 				.append(" AND PostingType='A'")
 				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=? OR Account_ID=?)")
 				.append(" AND Description LIKE 'Invoice%'");
 		
 		List<MFactAcct> list = new Query(getCtx(), MFactAcct.Table_Name, whereClause.toString(), getTrxName())
-				.setParameters(m_matchInv.getReversal_ID(), as.getC_AcctSchema_ID(), 
+				.setParameters(MMatchInv.Table_ID, m_matchInv.getReversal_ID(), as.getC_AcctSchema_ID(), 
 						acct.getAccount_ID(), gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID())
 				.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
 				.list();
@@ -2122,14 +2123,15 @@ public class Doc_MatchInv extends Doc
 		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		
 		StringBuilder whereClause = new StringBuilder()
-				.append("Record_ID=?")
+				.append("AD_Table_ID=?")
+				.append(" AND Record_ID=?")
 				.append(" AND C_AcctSchema_ID=?")
 				.append(" AND PostingType='A'")
 				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=? OR Account_ID=?)")
 				.append(" AND Description LIKE 'InOut%'");
 		
 		List<MFactAcct> list = new Query(getCtx(), MFactAcct.Table_Name, whereClause.toString(), getTrxName())
-				.setParameters(m_matchInv.getReversal_ID(), as.getC_AcctSchema_ID(), 
+				.setParameters(MMatchInv.Table_ID, m_matchInv.getReversal_ID(), as.getC_AcctSchema_ID(), 
 						acct.getAccount_ID(), gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID())
 				.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
 				.list();
