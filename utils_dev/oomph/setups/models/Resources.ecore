@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="resources" nsURI="http://www.eclipse.org/oomph/resources/1.0"
+    nsPrefix="resources">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Resources.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.resources.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="SourceLocator" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eOperations name="matches" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="project" eType="ecore:EDataType http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore#//Project"/>
+    </eOperations>
+    <eOperations name="loadProject" eType="ecore:EDataType http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore#//Project">
+      <eParameters name="defaultProjectFactories" upperBound="-1" eType="#//ProjectFactory"/>
+      <eParameters name="backendContainer" eType="#//BackendContainer"/>
+      <eParameters name="monitor" eType="#//ProgressMonitor"/>
+    </eOperations>
+    <eOperations name="handleProjects">
+      <eParameters name="defaultProjectFactories" upperBound="-1" eType="#//ProjectFactory"/>
+      <eParameters name="projectHandler" eType="#//ProjectHandler"/>
+      <eParameters name="status" eType="#//MultiStatus"/>
+      <eParameters name="monitor" eType="#//ProgressMonitor"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rootFolder" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="excludedPaths" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="excludedPath"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="projectFactories" upperBound="-1"
+        eType="#//ProjectFactory" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="projectFactory"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="predicates" upperBound="-1"
+        eType="ecore:EClass http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore#//Predicate"
+        containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="predicate"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="locateNestedProjects" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProjectFactory" abstract="true" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eOperations name="createProject" eType="ecore:EDataType http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore#//Project">
+      <eParameters name="rootContainer" eType="#//BackendContainer"/>
+      <eParameters name="backendContainer" eType="#//BackendContainer"/>
+      <eParameters name="monitor" eType="#//ProgressMonitor"/>
+    </eOperations>
+    <eOperations name="isExcludedPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="rootContainer" eType="#//BackendContainer"/>
+      <eParameters name="backendContainer" eType="#//BackendContainer"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="excludedPaths" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="excludedPath"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="XMLProjectFactory" abstract="true" eSuperTypes="#//ProjectFactory"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EclipseProjectFactory" eSuperTypes="#//XMLProjectFactory"/>
+  <eClassifiers xsi:type="ecore:EClass" name="MavenProjectFactory" eSuperTypes="#//XMLProjectFactory"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="ProjectHandler" instanceClassName="org.eclipse.oomph.resources.ProjectHandler"
+      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="BackendContainer" instanceClassName="org.eclipse.oomph.resources.backend.BackendContainer"
+      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="MultiStatus" instanceClassName="org.eclipse.core.runtime.MultiStatus"
+      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="ProgressMonitor" instanceClassName="org.eclipse.core.runtime.IProgressMonitor"
+      serializable="false"/>
+</ecore:EPackage>

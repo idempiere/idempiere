@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="jdt" nsURI="http://www.eclipse.org/oomph/setup/jdt/1.0" nsPrefix="jdt">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.jdt.p2"/>
+    <details key="repository" value="${oomph.update.url}"/>
+    <details key="installableUnits" value="org.eclipse.oomph.setup.jdt.feature.group"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.setup.jdt.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="JRETask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.2}"/>
+        <details key="label" value="JRE 1.2 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.3}"/>
+        <details key="label" value="JRE 1.3 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.4}"/>
+        <details key="label" value="JRE 1.4 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.5}"/>
+        <details key="label" value="JRE 1.5 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.6}"/>
+        <details key="label" value="JRE 1.6 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.7}"/>
+        <details key="label" value="JRE 1.7 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.8}"/>
+        <details key="label" value="JRE 1.8 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.1"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.1 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.1."/>
+      <details key="version" value="JRE-1.1"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.3}"/>
+        <details key="label" value="JRE 1.3 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.4}"/>
+        <details key="label" value="JRE 1.4 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.5}"/>
+        <details key="label" value="JRE 1.5 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.6}"/>
+        <details key="label" value="JRE 1.6 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.7}"/>
+        <details key="label" value="JRE 1.7 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.8}"/>
+        <details key="label" value="JRE 1.8 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.2"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.2 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.2."/>
+      <details key="version" value="J2SE-1.2"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.4}"/>
+        <details key="label" value="JRE 1.4 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.5}"/>
+        <details key="label" value="JRE 1.5 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.6}"/>
+        <details key="label" value="JRE 1.6 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.7}"/>
+        <details key="label" value="JRE 1.7 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.8}"/>
+        <details key="label" value="JRE 1.8 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.3"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.3 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.3."/>
+      <details key="version" value="J2SE-1.3"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.5}"/>
+        <details key="label" value="JRE 1.5 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.6}"/>
+        <details key="label" value="JRE 1.6 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.7}"/>
+        <details key="label" value="JRE 1.7 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.8}"/>
+        <details key="label" value="JRE 1.8 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.4"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.4 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.4."/>
+      <details key="version" value="J2SE-1.4"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.6}"/>
+        <details key="label" value="JRE 1.6 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.7}"/>
+        <details key="label" value="JRE 1.7 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.8}"/>
+        <details key="label" value="JRE 1.8 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.5"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.5 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.5."/>
+      <details key="version" value="J2SE-1.5"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.7}"/>
+        <details key="label" value="JRE 1.7 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.8}"/>
+        <details key="label" value="JRE 1.8 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.6"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.6 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.6."/>
+      <details key="version" value="JavaSE-1.6"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-1.8}"/>
+        <details key="label" value="JRE 1.8 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.7"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.7 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.7."/>
+      <details key="version" value="JavaSE-1.7"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-9}"/>
+        <details key="label" value="JRE 9 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-1.8"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 1.8 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 1.8."/>
+      <details key="version" value="JavaSE-1.8"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-10}"/>
+        <details key="label" value="JRE 10 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-9"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 9 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 9."/>
+      <details key="version" value="JavaSE-9"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-11}"/>
+        <details key="label" value="JRE 11 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-10"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 10 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 10."/>
+      <details key="version" value="JavaSE-10"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-12}"/>
+        <details key="label" value="JRE 12 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-11"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 11 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 11."/>
+      <details key="version" value="JavaSE-11"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-13}"/>
+        <details key="label" value="JRE 13 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-12"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 12 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 12."/>
+      <details key="version" value="JavaSE-12"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-14}"/>
+        <details key="label" value="JRE 14 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-13"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 13 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 13."/>
+      <details key="version" value="JavaSE-13"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-15}"/>
+        <details key="label" value="JRE 15 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-14"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 14 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 14."/>
+      <details key="version" value="JavaSE-14"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-16}"/>
+        <details key="label" value="JRE 16 Location"/>
+      </eAnnotations>
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-15"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 15 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 15."/>
+      <details key="version" value="JavaSE-15"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <eAnnotations source="Choice">
+        <details key="value" value="${jre.location-17}"/>
+        <details key="label" value="JRE 17 Location"/>
+      </eAnnotations>
+      <details key="name" value="jre.location-16"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 16 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 15."/>
+      <details key="version" value="JavaSE-16"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+      <details key="name" value="jre.location-17"/>
+      <details key="type" value="JRE"/>
+      <details key="label" value="JRE 17 Location"/>
+      <details key="description" value="The location of a JDK or JRE compatible with Java 17."/>
+      <details key="version" value="JavaSE-17"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMInstallType" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="vmInstallType"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="executionEnvironmentDefault"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMArguments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="vmArguments"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="jRELibraries" upperBound="-1"
+        eType="#//JRELibrary" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A list of JRE Library JARs for which external annotations are being supplied."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="jreLibrary"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JRELibrary">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="libraryPath" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The path, relative to the JRE location, of the JRE library JAR."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="externalAnnotationsPath"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The absolute workspace path to a folder or ZIP file containing external nullability annotations for classes in the JRE library JAR."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

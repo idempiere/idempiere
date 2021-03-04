@@ -4,5 +4,5 @@
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="/usr/bin/mvn"/>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--batch-mode verify"/>
-    <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc}"/>
+    <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${project_loc:org.adempiere.base}/.."/>
 </launchConfiguration>

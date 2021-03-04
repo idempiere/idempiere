@@ -32,7 +32,6 @@ import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.FToolbar;
-import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
@@ -68,7 +67,6 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -871,7 +869,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		return true;
 	}
 
-	public void updateToolbarAccess(int xAD_Window_ID) {
+	public void updateToolbarAccess() {
 		if (ToolBarMenuRestictionLoaded)
 			return;
 		
@@ -914,7 +912,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		if (gridTab != null) {
 			int AD_Tab_ID = gridTab.getAD_Tab_ID();
 			List<String> restrictionList = adwindow.getTabToolbarRestrictList(AD_Tab_ID);
-		
+			
 			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof ToolBarButton) {
 					if (!customButtons.contains(p) && !p.isVisible())
@@ -932,14 +930,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 							p.setVisible(false);
 							break;
 						}
-					} else if (p instanceof Menupopup) {
-						for (Component p1 = p.getFirstChild(); p1 != null; p1 = p1.getNextSibling()) {
-							if ( p1 instanceof Menuitem && restrictName.equals((((Menuitem)p1).getValue())) ) {
-								p.removeChild(p1);
-								break;
-							}					
-						}					
-					}  else if (p instanceof Combobox) {
+					} else if (p instanceof Combobox) {
 						if (restrictName.equals(((Combobox) p).getId())) {
 							p.setVisible(false);
 							break;
@@ -947,6 +938,22 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 					}
 				}
 
+			}
+			
+			if (overflows != null) {
+				//Set visible all overflow buttons with the same condition as above
+				overflows.stream()
+				.filter(button -> !customButtons.contains(button) && !button.isVisible())
+				.forEach(button -> button.setVisible(true));
+				
+				for (String restrictName : restrictionList) {
+					for (ToolBarButton p : overflows) {
+						if (restrictName.equals(p.getName())) {
+							p.setVisible(false);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
