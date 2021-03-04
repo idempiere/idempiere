@@ -119,6 +119,7 @@ public class CreateWindowFromTable extends SvrProcess
 				throw new AdempiereException(Msg.getMsg(getCtx(), "NewWindowNoValid"));
 			
 			MWindow window;
+			int tabSeqNo = 0;
 			if (p_isNewWindow) {
 				if (MWindow.WINDOWTYPE_Transaction.equals(p_WindowType) && 
 						table.getColumnIndex("Processed") <= 0)
@@ -137,6 +138,8 @@ public class CreateWindowFromTable extends SvrProcess
 				window.saveEx();
 				addLog(window.getAD_Window_ID(), null, null, "@AD_Window_ID@: " + window.getName(),
 						window.get_Table_ID(), window.getAD_Window_ID());
+				p_TabLevel = 0;
+				tabSeqNo = 10;
 			} else {
 				//If no new window but a detail tab
 				if (p_TabLevel > 0) {
@@ -152,21 +155,27 @@ public class CreateWindowFromTable extends SvrProcess
 						throw new AdempiereException(Msg.getMsg(getCtx(), "NoParentLink"));
 				}
 				window = new MWindow(getCtx(), p_AD_Window_ID, get_TrxName());
-				
-				if (p_TabLevel > 1) {
-					int maxTabLevel = 0;
-					for (MTab tab : window.getTabs(false, get_TrxName())) {
-						if (tab.getTabLevel() > maxTabLevel) {
-							maxTabLevel = tab.getTabLevel();
-						}
+
+				int maxTabLevel = -1;
+				int maxTabSeqNo = 0;
+				for (MTab tab : window.getTabs(true, get_TrxName())) {
+					if (tab.getTabLevel() > maxTabLevel) {
+						maxTabLevel = tab.getTabLevel();
 					}
-					
-					if (maxTabLevel+1 < p_TabLevel)
-						throw new AdempiereException(Msg.getMsg(getCtx(), "MaxTabLevel", new Object[] {maxTabLevel+1}));
+					if (tab.getSeqNo() > maxTabSeqNo) {
+						maxTabSeqNo = tab.getSeqNo();
+					}
 				}
+
+				tabSeqNo = maxTabSeqNo + 10;
+
+				if (   (maxTabLevel == 0 && p_TabLevel == 0)
+					|| p_TabLevel > maxTabLevel+1)
+					throw new AdempiereException(Msg.getMsg(getCtx(), "MaxTabLevel", new Object[] {maxTabLevel+1}));
 			}
 
 			MTab tab = new MTab(window);
+			tab.setSeqNo(tabSeqNo);
 			tab.setName(table.getName());
 			tab.setAD_Table_ID(p_AD_Table_ID);
 			tab.setTabLevel(p_TabLevel);
@@ -202,7 +211,7 @@ public class CreateWindowFromTable extends SvrProcess
 				throw new AdempiereException(processInfo.getSummary());
 			}
 
-			if (p_isCreateMenu) {
+			if (p_isCreateMenu && p_isNewWindow) {
 				MMenu menu = new MMenu(getCtx(), 0, get_TrxName());
 				menu.setName(window.getName());
 				menu.setEntityType(entityType);

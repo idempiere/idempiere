@@ -307,6 +307,9 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		setDescriptionURL(impP.getDescriptionURL());
 		setVolume(impP.getVolume());
 		setWeight(impP.getWeight());
+		setCustomsTariffNumber(impP.getCustomsTariffNumber());
+		setGroup1(impP.getGroup1());
+		setGroup2(impP.getGroup2());
 	}	//	MProduct
 	
 	/**

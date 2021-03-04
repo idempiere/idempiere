@@ -50,10 +50,10 @@ import org.osgi.service.event.Event;
  */
 public class MPInstance extends X_AD_PInstance
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 558778359873793799L;
+	private static final long serialVersionUID = 3756494717528301224L;
 
 	public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
@@ -229,16 +229,30 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param P_Number number
 	 *	@param P_Msg msg
 	 */
-	public void addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg)
+	public MPInstanceLog addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg)
+	{
+		return addLog(P_Date, P_ID, P_Number, P_Msg, 0, 0);
+	}	//	addLog
+
+	/**
+	 * @param P_Date date
+	 * @param P_ID id
+	 * @param P_Number number
+	 * @param P_Msg msg
+	 * @param AD_Table_ID tableID
+	 * @param Record_ID recordID
+	 * @return
+	 */
+	public MPInstanceLog addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID)
 	{
 		MPInstanceLog logEntry = new MPInstanceLog (getAD_PInstance_ID(), m_log.size()+1,
-			P_Date, P_ID, P_Number, P_Msg);
+			P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID);
 		m_log.add(logEntry);
 		//	save it to DB ?
 	//	log.saveEx();
+		return logEntry;
 	}	//	addLog
 
-	
 	/**
 	 * 	Set AD_Process_ID.
 	 * 	Check Role if process can be performed

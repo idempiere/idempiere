@@ -32,7 +32,6 @@ import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.FToolbar;
-import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
@@ -68,7 +67,6 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -91,7 +89,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8494819673584541046L;
+	private static final long serialVersionUID = -5151981978053022864L;
 
 	public static final String BTNPREFIX = "Btn";
 	
@@ -152,6 +150,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private Map<Integer, ToolBarButton> ctrlKeyMap = new HashMap<Integer, ToolBarButton>();
 
     private List<ToolbarCustomButton> toolbarCustomButtons = new ArrayList<ToolbarCustomButton>();
+    
+    private List<String> restrictionList;
+    private List<String> advancedList;
 
 	// Elaine 2008/12/04
 	/** Show Personal Lock								*/
@@ -289,7 +290,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	overflows = new ArrayList<ToolBarButton>();
         MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("W", null);
         for (MToolBarButton button : officialButtons) {
-        	if (! button.isActive()) {
+        	if (!button.isActive() || !hasAccess(BTNPREFIX+button.getComponentName())) {
         		buttons.remove(button.getComponentName());
         	} else {
         		if (button.isCustomization()) {
@@ -476,6 +477,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         {
             if(event.getTarget() instanceof ToolBarButton)
             {
+            	if (!event.getTarget().isVisible())
+            		return;
             	if (!event.getTarget().getId().contentEquals(BTNPREFIX+"ShowMore"))
             		doOnClick(event);
             	else
@@ -846,57 +849,31 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	private boolean ToolBarMenuRestictionLoaded = false;
+	
+	private boolean hasAccess(String buttonName) {
+		ADWindow adwindow = ADWindow.get(windowNo);
+		if (restrictionList == null)
+			restrictionList = adwindow.getWindowToolbarRestrictList();
+		
+		if (restrictionList.contains(buttonName))
+			return false;
+		
+		if (!MRole.getDefault().isAccessAdvanced()) {
+			if (advancedList == null)
+				advancedList = adwindow.getWindowAdvancedButtonList();
+			
+			if (advancedList.contains(buttonName))
+				return false;
+		}// All advanced btn
+		
+		return true;
+	}
 
-	public void updateToolbarAccess(int xAD_Window_ID) {
+	public void updateToolbarAccess() {
 		if (ToolBarMenuRestictionLoaded)
 			return;
 		
 		ADWindow adwindow = ADWindow.findADWindow(this);
-		List<String> restrictionList = adwindow.getWindowToolbarRestrictList();
-
-		for (String restrictName : restrictionList)
-		{
-			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
-				if (p instanceof ToolBarButton) {
-					if ( restrictName.equals(((ToolBarButton)p).getName()) ) {
-						this.removeChild(p);
-						break;
-					}
-				} else if (p instanceof Menupopup) {
-					for (Component p1 = p.getFirstChild(); p1 != null; p1 = p1.getNextSibling()) {
-						if ( p1 instanceof Menuitem && restrictName.equals((((Menuitem)p1).getValue())) ) {
-							p.removeChild(p1);
-							break;
-						}					
-					}					
-				}
-			}
-
-		}	// All restrictions
-		
-		if (!MRole.getDefault().isAccessAdvanced())
-		{
-			List<String> advancedList = adwindow.getWindowAdvancedButtonList();
-			for (String advancedName : advancedList)
-			{
-				for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
-					if (p instanceof ToolBarButton) {
-						if ( advancedName.equals(((ToolBarButton)p).getName()) ) {
-							this.removeChild(p);
-							break;
-						}
-					} else if (p instanceof Menupopup) {
-						for (Component p1 = p.getFirstChild(); p1 != null; p1 = p1.getNextSibling()) {
-							if ( p1 instanceof Menuitem && advancedName.equals((((Menuitem)p1).getValue())) ) {
-								p.removeChild(p1);
-								break;
-							}					
-						}					
-					}
-				}
-
-			}	// All advanced btn
-		}
 
 		dynamicDisplay();
 		// If no workflow set for the table => disable btnWorkflow
@@ -935,11 +912,13 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		if (gridTab != null) {
 			int AD_Tab_ID = gridTab.getAD_Tab_ID();
 			List<String> restrictionList = adwindow.getTabToolbarRestrictList(AD_Tab_ID);
-		
+			
 			for (Component p = this.getFirstChild(); p != null; p = p.getNextSibling()) {
 				if (p instanceof ToolBarButton) {
 					if (!customButtons.contains(p) && !p.isVisible())
 						p.setVisible(true);
+				} else if (p instanceof Combobox && !p.isVisible()) {
+					p.setVisible(true);
 				}
 			}
 			
@@ -951,16 +930,30 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 							p.setVisible(false);
 							break;
 						}
-					} else if (p instanceof Menupopup) {
-						for (Component p1 = p.getFirstChild(); p1 != null; p1 = p1.getNextSibling()) {
-							if ( p1 instanceof Menuitem && restrictName.equals((((Menuitem)p1).getValue())) ) {
-								p.removeChild(p1);
-								break;
-							}					
-						}					
+					} else if (p instanceof Combobox) {
+						if (restrictName.equals(((Combobox) p).getId())) {
+							p.setVisible(false);
+							break;
+						}
 					}
 				}
 
+			}
+			
+			if (overflows != null) {
+				//Set visible all overflow buttons with the same condition as above
+				overflows.stream()
+				.filter(button -> !customButtons.contains(button) && !button.isVisible())
+				.forEach(button -> button.setVisible(true));
+				
+				for (String restrictName : restrictionList) {
+					for (ToolBarButton p : overflows) {
+						if (restrictName.equals(p.getName())) {
+							p.setVisible(false);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1178,7 +1171,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 	
     public void setPressed(String buttonName, boolean pressed) {
-    	getButton(buttonName).setPressed(pressed);
+    	if (getButton(buttonName) != null)
+    		getButton(buttonName).setPressed(pressed);
     }
 
 	/**

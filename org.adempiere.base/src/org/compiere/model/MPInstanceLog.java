@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *  Process Instance Log Model.
@@ -33,7 +34,7 @@ import org.compiere.util.DB;
 public class MPInstanceLog
 {
 	/**
-	 * 	Full Constructor
+	 * 	Constructor without Table/Record
 	 *	@param AD_PInstance_ID instance
 	 *	@param Log_ID log sequence
 	 *	@param P_Date date
@@ -44,12 +45,31 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 	  int P_ID, BigDecimal P_Number, String P_Msg)
 	{
+		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, 0, 0);
+	}	//	MPInstance_Log
+
+	/**
+	 * Full Constructor
+	 * @param AD_PInstance_ID
+	 * @param Log_ID
+	 * @param P_Date
+	 * @param P_ID
+	 * @param P_Number
+	 * @param P_Msg
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 */
+	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
+			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID)
+	{
 		setAD_PInstance_ID(AD_PInstance_ID);
 		setLog_ID(Log_ID);
 		setP_Date(P_Date);
 		setP_ID(P_ID);
 		setP_Number(P_Number);
 		setP_Msg(P_Msg);
+		setAD_Table_ID(AD_Table_ID);
+		setRecord_ID(Record_ID);
 	}	//	MPInstance_Log
 
 	/**
@@ -74,6 +94,8 @@ public class MPInstanceLog
 	private int m_P_ID;
 	private BigDecimal m_P_Number;
 	private String m_P_Msg;
+	private int m_AD_Table_ID;
+	private int m_Record_ID;
 
 
 	/**
@@ -97,53 +119,52 @@ public class MPInstanceLog
 	}	//	toString
 
 
+	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
+			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID)"
+			+ " VALUES (?,?,?,?,?,?,?,?)";
+
 	/**
 	 *	Save to Database
 	 * 	@return true if saved
 	 */
 	public boolean save ()
 	{
-		StringBuilder sql = new StringBuilder("INSERT INTO AD_PInstance_Log "
-			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg)"
-			+ " VALUES (");
-		sql.append(m_AD_PInstance_ID).append(",")
-		  .append(m_Log_ID).append(",");
-		if (m_P_Date == null)
-		{
-			sql.append("NULL,");
-		}
-		else
-		{
-			sql.append(DB.TO_DATE(m_P_Date, false)).append(",");
-		}
-		if (m_P_ID == 0)
-		{
-			sql.append("NULL,");
-		}
-		else
-		{
-			sql.append(m_P_ID).append(",");
-		}
-		if (m_P_Number == null)
-		{
-			sql.append("NULL,");
-		}
-		else
-		{
-			sql.append(m_P_Number).append(",");
-		}
-		if (m_P_Msg == null)
-		{
-			sql.append("NULL)");
-		}
-		else
-		{
-			sql.append(DB.TO_STRING(m_P_Msg, 2000)).append(")");
-			//
-		}
-		int no = DB.executeUpdate(sql.toString(), null);	//	outside of trx
+		int no = DB.executeUpdate(insertSql, getInsertParams(), false, null);	//	outside of trx
 		return no == 1;
 	} 	//	save
+
+	/**
+	 *	Save to Database throwing Exception
+	 */
+	public void saveEx ()
+	{
+		DB.executeUpdateEx(insertSql, getInsertParams(), null);	//	outside of trx
+	} 	//	saveEx
+
+	private Object[] getInsertParams() {
+		MColumn colMsg = MColumn.get(Env.getCtx(), I_AD_PInstance_Log.Table_Name, I_AD_PInstance_Log.COLUMNNAME_P_Msg);
+		int maxMsgLength = colMsg.getFieldLength();
+		Object[] params = new Object[8];
+		params[0] = m_AD_PInstance_ID;
+		params[1] = m_Log_ID;
+		if (m_P_Date != null)
+			params[2] = m_P_Date;
+		if (m_P_ID != 0)
+			params[3] = m_P_ID;
+		if (m_P_Number != null)
+			params[4] = m_P_Number;
+		if (m_P_Msg != null) {
+			if (m_P_Msg.length() > maxMsgLength)
+				params[5] = m_P_Msg.substring(0,  maxMsgLength);
+			else
+				params[5] = m_P_Msg;
+		}
+		if (m_AD_Table_ID != 0)
+			params[6] = m_AD_Table_ID;
+		if (m_Record_ID != 0)
+			params[7] = m_Record_ID;
+		return params;
+	}
 
 	/**
 	 * 	Get AD_PInstance_ID
@@ -251,6 +272,24 @@ public class MPInstanceLog
 	public void setP_Msg (String P_Msg)
 	{
 		m_P_Msg = P_Msg;
+	}
+
+	/**
+	 * Set Table ID
+	 * @param tableId
+	 */
+	public void setAD_Table_ID(int tableId)
+	{
+		m_AD_Table_ID = tableId;
+	}
+
+	/**
+	 * Set Record ID
+	 * @param recordId
+	 */
+	public void setRecord_ID(int recordId)
+	{
+		m_Record_ID = recordId;
 	}
 
 } //	MPInstance_Log

@@ -53,6 +53,7 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.CPaper;
@@ -69,6 +70,7 @@ import org.compiere.print.util.SerializableMatrix;
 import org.compiere.print.util.SerializableMatrixImpl;
 import org.compiere.report.MReportLine;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -946,7 +948,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (ci.getLogoReport_ID() > 0) {
 			element = new ImageElement(ci.getLogoReport_ID(), false);
 		} else {
-			element = new ImageElement(org.compiere.Adempiere.getImageLogoSmall(true));	//	48x15
+			element = new ImageElement(org.compiere.Adempiere.getHeaderLogo());
 		}
 	//	element = new ImageElement(org.compiere.Adempiere.getImageLogo());	//	100x30
 		element.layout(48, 15, false, MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft);
@@ -1649,8 +1651,17 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					additionalLines.put(Integer.valueOf(col), Integer.valueOf(item.getBelowColumn()-1));
 					if (!item.isSuppressNull())
 					{
+						if (item.is_Immutable())
+							item = new MPrintFormatItem(item);
 						item.setIsSuppressNull(true);	//	display size will be set to 0 in TableElement
-						item.saveEx();
+						try {
+							//this can be tenant or system print format
+							PO.setCrossTenantSafe();
+							item.saveEx();
+						} finally {
+							PO.clearCrossTenantSafe();
+						}
+						CacheMgt.get().reset(MPrintFormat.Table_Name, format.get_ID());
 					}
 				}
 				columnHeader[col] = new ValueNamePair(item.getColumnName(),

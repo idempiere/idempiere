@@ -386,7 +386,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableFind(true);
         adTabbox.evaluate(null);
 
-        toolbar.updateToolbarAccess(adWindowId);
+        toolbar.updateToolbarAccess();
         updateToolbar();
         if (query == null && toolbar.initDefaultQuery()) {
         	doOnQueryChange();
@@ -1932,11 +1932,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		IADTabpanel detailTab = adTabbox.getSelectedDetailADTabpanel();
 		try {
 			adTabbox.getSelectedGridTab().dataRefreshAll(fireEvent, true);			
-		} catch (Exception e) {
+		} catch (Exception e) {			
 			if (DBException.isTimeout(e)) {
 				FDialog.error(getWindowNo(), "GridTabLoadTimeoutError");
 			} else {
 				FDialog.error(getWindowNo(), "Error", e.getMessage());
+				logger.log(Level.SEVERE, e.getMessage(), e);
 			}
 			adTabbox.getSelectedGridTab().reset();
 			return;

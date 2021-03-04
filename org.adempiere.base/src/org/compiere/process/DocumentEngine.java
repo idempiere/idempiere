@@ -282,10 +282,10 @@ public class DocumentEngine implements DocAction
 			throw new IllegalStateException("Status=" + getDocStatus()
 				+ " - Invalid Actions: Process="  + processAction + ", Doc=" + docAction);
 		}
-		if (m_document != null)
-			m_document.get_Logger().info ("**** Action=" + m_action + " (Prc=" + processAction + "/Doc=" + docAction + ") " + m_document);
+		if (m_document != null && m_document.get_Logger().isLoggable(Level.INFO))
+				m_document.get_Logger().info ("**** Action=" + m_action + " (Prc=" + processAction + "/Doc=" + docAction + ") " + m_document);
 		boolean success = processIt (m_action);
-		if (m_document != null)
+		if (m_document != null && m_document.get_Logger().isLoggable(Level.FINE))
 			m_document.get_Logger().fine("**** Action=" + m_action + " - Success=" + success);
 		return success;
 	}	//	process
@@ -1006,7 +1006,6 @@ public class DocumentEngine implements DocAction
 				|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 			{
 				options[index++] = DocumentEngine.ACTION_Prepare;
-				options[index++] = DocumentEngine.ACTION_Close;
 				//	Draft Sales Order Quote/Proposal - Process
 				if ("Y".equals(isSOTrx)
 					&& ("OB".equals(orderType) || "ON".equals(orderType)))
@@ -1255,7 +1254,7 @@ public class DocumentEngine implements DocAction
 		DocActionEventData eventData = new DocActionEventData(docStatus, processing, orderType, isSOTrx, AD_Table_ID, docActionsArray, optionsArray, indexObj, po);
 		Event event = EventManager.newEvent(IEventTopics.DOCACTION,
 				new EventProperty(EventManager.EVENT_DATA, eventData),
-				new EventProperty("tableName", po.get_TableName()));
+				new EventProperty(EventManager.TABLE_NAME_PROPERTY, po.get_TableName()));
 		EventManager.getInstance().sendEvent(event);
 		index = indexObj.get();
 		for (int i = 0; i < optionsArray.size(); i++)
