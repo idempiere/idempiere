@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="workingsets" nsURI="http://www.eclipse.org/oomph/setup/workingsets/1.0"
+    nsPrefix="setup.workingsets">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.workingsets.p2"/>
+    <details key="repository" value="${oomph.update.url}"/>
+    <details key="installableUnits" value="org.eclipse.oomph.setup.workingsets.feature.group"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.setup.workingsets.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="WorkingSetTask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+      <details key="text" value="Working Sets"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="workingSets" upperBound="-1"
+        eType="ecore:EClass http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/WorkingSets.ecore#//WorkingSet"
+        containment="true" eKeys="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/WorkingSets.ecore#//WorkingSet/name">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="workingSet"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
