@@ -24,9 +24,7 @@
  **********************************************************************/
 package org.compiere.model;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.GeneralSecurityException;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -57,7 +55,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1469616595459196518L;
+	private static final long serialVersionUID = -2433704480923324032L;
 
 	/**
 	 * Create empty Authorization Credential
@@ -84,11 +82,10 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	/**
 	 * Create or Update an Account based on the token received
 	 * @param code
+	 * @param pinstance 
 	 * @return String message indicating success
-	 * @throws IOException
-	 * @throws GeneralSecurityException
 	 */
-	public String processToken(String code) {
+	public String processToken(String code, MPInstance pinstance) {
 		String msg = null;
 		try {
 			String clientId = getAuthorizationClientId();
@@ -157,6 +154,11 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 				account.setRefreshToken(tokenResponse.getRefreshToken());
 			}
 			account.saveEx();
+			if (pinstance != null) {
+				String logmsg = Msg.parseTranslation(getCtx(), (newAccount ? "@Created@" : "@Updated@") + " @AD_AuthorizationAccount_ID@ for ") + account.getEMail();
+				MPInstanceLog pilog = pinstance.addLog(null, 0, null, logmsg, MAuthorizationAccount.Table_ID, account.getAD_AuthorizationAccount_ID());
+				pilog.saveEx();
+			}
 			account.syncOthers();
 			if (newAccount)
 				msg = Msg.getMsg(getCtx(), "Authorization_Access_OK", new Object[] {account.getEMail()});

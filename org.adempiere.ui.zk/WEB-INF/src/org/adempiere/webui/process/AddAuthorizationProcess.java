@@ -61,7 +61,7 @@ public class AddAuthorizationProcess extends org.compiere.process.AddAuthorizati
 		if (p_Auth_OpenPopup) {
 			ADForm form = SessionManager.getAppDesktop().openForm(SystemIDs.FORM_ADD_AUTHORIZATION);
 			if (form instanceof AddAuthorizationForm) {
-				((AddAuthorizationForm)form).buildClientPopupAndListener(f_authURL);
+				((AddAuthorizationForm)form).buildClientPopupAndListener(f_authURL, getAD_PInstance_ID());
 			}
 		}
 	}

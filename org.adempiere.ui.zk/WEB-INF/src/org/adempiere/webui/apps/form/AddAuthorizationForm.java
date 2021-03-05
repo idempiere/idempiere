@@ -35,6 +35,10 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.panel.ADForm;
+import org.compiere.model.MAuthorizationAccount;
+import org.compiere.model.MPInstancePara;
+import org.compiere.model.Query;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -53,7 +57,10 @@ public class AddAuthorizationForm extends ADForm {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4252195624552662726L;
+	private static final long serialVersionUID = -293618692686586645L;
+
+	/* A label to show the title of the form */
+	private Label labelTitle;
 
 	/* A label to show the messages to user */
 	private Label msgLabel;
@@ -66,6 +73,10 @@ public class AddAuthorizationForm extends ADForm {
 
 	/* Timer to monitor the popup */
 	private Timer timer;
+
+	/* The process instance opening this form */
+	private int pInstanceId;
+
 
 	/**
 	 *
@@ -105,9 +116,9 @@ public class AddAuthorizationForm extends ADForm {
 		Row row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
 		row = rows.newRow();
-		Label label = new Label(Msg.getMsg(Env.getCtx(), "Authorization_Grant_Access"));
-		label.setStyle("font-weight: 600");
-		row.appendCellChild(label, 4);
+		labelTitle = new Label(Msg.getMsg(Env.getCtx(), "Authorization_Grant_Access"));
+		labelTitle.setStyle("font-weight: 600");
+		row.appendCellChild(labelTitle, 4);
 		row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
 
@@ -116,9 +127,9 @@ public class AddAuthorizationForm extends ADForm {
 
 		row = rows.newRow();
 		row.appendCellChild(msgLabel, 4);
-		row.getLastCell().setRowspan(3);
+		row.getLastCell().setRowspan(7);
 		msgLabel.setHflex("1");
-		msgLabel.setHeight("60px");
+		msgLabel.setHeight("150px");
 
 		msgBox = new Textbox();
 		msgBox.addEventListener(Events.ON_CHANGE, evt -> onMsgBoxChanged());
@@ -127,6 +138,14 @@ public class AddAuthorizationForm extends ADForm {
 		row = rows.newRow();
 		row.appendCellChild(msgBox);
 
+		row = rows.newRow();
+		row.appendCellChild(new Separator(), 4);
+		row = rows.newRow();
+		row.appendCellChild(new Separator(), 4);
+		row = rows.newRow();
+		row.appendCellChild(new Separator(), 4);
+		row = rows.newRow();
+		row.appendCellChild(new Separator(), 4);
 		row = rows.newRow();
 		row.appendCellChild(new Separator(), 4);
 
@@ -142,7 +161,7 @@ public class AddAuthorizationForm extends ADForm {
 		timer.setRunning(false);
 		appendChild(timer);
 
-		setHeight("250px");
+		setHeight("300px");
 		setWidth("350px");
 		setVflex("min");
 
@@ -161,7 +180,34 @@ public class AddAuthorizationForm extends ADForm {
 	 */
 	private void onMsgBoxChanged()  {
 		Clients.clearBusy();
-		msgLabel.setText(msgBox.getText());
+
+		/* Obtain info from the process instance saved on the callback servlet */
+		final String wherepip = "AD_PInstance_ID=? AND ParameterName=?";
+		MPInstancePara pip = new Query(Env.getCtx(), MPInstancePara.Table_Name, wherepip, null)
+				.setParameters(pInstanceId, "Auth_CallbackAnswer")
+				.first();
+		final String wherepil = "AD_PInstance_ID=? AND AD_Table_ID=?";
+		X_AD_PInstance_Log pil = new Query(Env.getCtx(), X_AD_PInstance_Log.Table_Name, wherepil, null)
+				.setParameters(pInstanceId, MAuthorizationAccount.Table_ID)
+				.first();
+
+		StringBuilder msg = new StringBuilder();
+		if (   (pip != null && pip.getP_String() != null)
+			|| (pil != null && pil.getP_Msg() != null)) {
+			// the callback ran and wrote info, the message can be because the user closed the window, ignore it
+		} else {
+			if (msgBox.getText().startsWith("! "))
+				msg.append(msgBox.getText().substring(2));
+			else
+				msg.append(msgBox.getText());
+		}
+		if (pip != null && pip.getP_String() != null)
+			msg.append("\n\n").append(pip.getP_String());
+		if (pil != null && pil.getP_Msg() != null)
+			msg.append("\n\n").append(pil.getP_Msg());
+		msgLabel.setText(msg.toString());
+
+		labelTitle.setVisible(false);
 		confirmPanel.getButton(ConfirmPanel.A_OK).setEnabled(false);
 		confirmPanel.getButton(ConfirmPanel.A_OK).setVisible(false);
 	}
@@ -182,8 +228,11 @@ public class AddAuthorizationForm extends ADForm {
 	/**
 	 * Build popup and listener script
 	 * @param authURL
+	 * @param pInstanceId 
 	 */
-	public void buildClientPopupAndListener(String authURL) {
+	public void buildClientPopupAndListener(String authURL, int pInstanceId) {
+		this.pInstanceId = pInstanceId;
+		
 		StringBuilder authScript = new StringBuilder()
 				.append("var x = window.outerWidth / 2 + window.screenX - (800 / 2);\n")
 				.append("var y = window.outerHeight / 2 + window.screenY - (600 / 2);\n")
@@ -203,7 +252,7 @@ public class AddAuthorizationForm extends ADForm {
 				.append("  var t = zk.Widget.$('#").append(msgBox.getUuid()).append("');\n")
 				.append("  var authWindow = this.windowRef;\n")
 				.append("  if (authWindow && authWindow.closed) {\n")
-				.append("    t.setValue('").append(msgError).append(msgFailure).append("'); t.fireOnChange(); \n")
+				.append("    t.setValue('! ").append(msgError).append(msgFailure).append("'); t.fireOnChange(); \n") // prefix "! " - see onMsgBoxChanged
 				.append("    this.stop();\n")
 				.append("    return;\n")
 				.append("  }\n")
@@ -224,7 +273,7 @@ public class AddAuthorizationForm extends ADForm {
 				.append("      });\n")
 				.append("    }\n")
 				.append("  } else {\n")
-				.append("    t.setValue('").append(msgError).append(msgFailure).append("'); t.fireOnChange(); \n")
+				.append("    t.setValue('! ").append(msgError).append(msgFailure).append("'); t.fireOnChange(); \n") // prefix "! " - see onMsgBoxChanged
 				.append("    this.stop();\n")
 				.append("  }\n")
 				.append("} catch(err){}\n");

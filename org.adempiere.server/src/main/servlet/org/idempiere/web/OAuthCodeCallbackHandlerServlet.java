@@ -62,7 +62,7 @@ public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 		String errmsg = null;
-		String msg = null;
+		String msg = "";
 
 		// Getting the "error" URL parameter
 		String[] error = req.getParameterValues(ERROR_URL_PARAM_NAME);
@@ -91,6 +91,7 @@ public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 			}
 		}
 
+		String msgClose = "";
 		try {
 			Properties localctx = new Properties();
 			ServerContext.setCurrentInstance(localctx);
@@ -107,33 +108,46 @@ public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 			Env.getCtx().setProperty(Env.AD_CLIENT_ID, String.valueOf(pinstance.getAD_Client_ID())); // To avoid Context Lost exception
 			Env.getCtx().setProperty(Env.AD_USER_ID, String.valueOf(pinstance.getCreatedBy())); // To set as CreatedBy of the account
 			MAuthorizationCredential credential = null;
+			MPInstancePara paramAnswer = null;
 			if (errmsg == null) {
 				for (MPInstancePara param : pinstance.getParameters()) {
 					if (MAuthorizationCredential.COLUMNNAME_AD_AuthorizationCredential_ID.equals(param.getParameterName()))
 						credential = new MAuthorizationCredential(Env.getCtx(), param.getP_Number().intValue(), null);
 					else if ("AD_Language".equals(param.getParameterName()))
 						Env.getCtx().setProperty("#AD_Language", param.getP_String());
+					else if ("Auth_CallbackAnswer".equals(param.getParameterName()))
+						paramAnswer = param;
 				}
 				if (credential == null || credential.get_ID() <= 0) {
 					errmsg = Msg.getMsg(Env.getCtx(), "OAuthCallback_NotFoundState");
 				}
+				if (paramAnswer == null) {
+					paramAnswer = pinstance.createParameter(50, "Auth_CallbackAnswer", null);
+				} else {
+					if (paramAnswer.getP_String() != null) {
+						errmsg = Msg.getMsg(Env.getCtx(), "OAuthCallback_AlreadyUsedLink");
+					}
+				}
 			}
 
 			if (errmsg == null) {
-				msg = credential.processToken(code[0]);
+				msg = credential.processToken(code[0], pinstance);
+				paramAnswer.setP_String(msg);
+				paramAnswer.saveEx();
 			}
 
+			msgClose = URLEncoder.encode(Msg.getMsg(Env.getCtx(), "OAuthPopup_Close"), "UTF-8");
 		} finally {
 			ServerContext.dispose();
 		}
 
 		String url = null;
-		String msgClose = URLEncoder.encode(Msg.getMsg(Env.getCtx(), "OAuthPopup_Close"), "UTF-8");
 		msg = URLEncoder.encode(msg, "UTF-8");
 		if (errmsg == null) {
 			url = resp.encodeRedirectURL("callback.jsp?msg=" + msg + "&closemsg=" + msgClose);
 		} else {
-			String msgError = Msg.getMsg(Env.getCtx(), "Error");
+			String msgError = URLEncoder.encode(Msg.getMsg(Env.getCtx(), "Error"), "UTF-8");
+			errmsg = URLEncoder.encode(errmsg, "UTF-8");
 			url = resp.encodeRedirectURL("callback.jsp?error=" + errmsg + "&errmsg=" + msgError + "&closemsg=" + msgClose);
 		}
 

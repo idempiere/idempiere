@@ -59,6 +59,7 @@ public class AddAuthorizationProcess extends SvrProcess {
 			case "AD_AuthorizationCredential_ID": p_AD_AuthorizationCredential_ID = para.getParameterAsInt(); break;
 			case "Auth_OpenPopup": p_Auth_OpenPopup = para.getParameterAsBoolean(); break;
 			case "AD_Language": break;  // ignored, is just to save it in AD_Process_Para
+			case "Auth_CallbackAnswer": break;  // ignored, is just to save it in AD_Process_Para
 			default:
 				if (log.isLoggable(Level.INFO))
 					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
