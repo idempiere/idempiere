@@ -12,37 +12,23 @@
     xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
     xmlns:setup.p2="http://www.eclipse.org/oomph/setup/p2/1.0"
     xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/launching/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Launching.ecore http://www.eclipse.org/oomph/setup/maven/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Maven.ecore http://www.eclipse.org/oomph/setup/pde/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/PDE.ecore http://www.eclipse.org/oomph/setup/projects/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Projects.ecore"
-    name="idempiere.2021.03.04"
-    label="iDempiere 2021-03-04">
-  <setup:VariableTask
-      name="github.remoteURIs"
-      label="Github repository">
-    <choice
-        value="git@github.com:@{remoteURI}.git"
-        label="Git (read-write)"/>
-    <choice
-        value="https://${github.user.id|username}@github.com/@{remoteURI}.git"
-        label="HTTPS (read-write)"/>
-    <choice
-        value="https://github.com/@{remoteURI}.git"
-        label="HTTPS (read-only, anonymous)"/>
-    <description>Choose from the available Github URIs</description>
-  </setup:VariableTask>
+    name="idempiere.2021.03.05"
+    label="iDempiere Master">
   <setupTask
       xsi:type="setup:VariableTask"
       name="github.repository"
       label="Github repository"
-      defaultValue="idempiere/idempiere"/>
+      value="idempiere/idempiere"/>
   <setupTask
       xsi:type="setup:VariableTask"
       name="git.clone.branch"
       label="Git clone branch"
-      defaultValue="master"/>
+      value="master"/>
   <setupTask
       xsi:type="setup:VariableTask"
       name="idempiere.target.platform"
       label="Target Platform"
-      defaultValue="idempiere-201101"/>
+      value="idempiere-201101"/>
   <setupTask
       xsi:type="jdt:JRETask"
       version="JavaSE-11"
