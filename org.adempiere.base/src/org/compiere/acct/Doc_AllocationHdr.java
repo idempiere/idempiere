@@ -510,6 +510,9 @@ public class Doc_AllocationHdr extends Doc
 					fact.remove(factline);
 			}
 		}
+		
+		if (getC_Currency_ID() != as.getC_Currency_ID())
+			balanceAccounting(as, fact);
 
 		//	reset line info
 		setC_BPartner_ID(0);
@@ -1717,6 +1720,37 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Balance Accounting
+	 * @param as accounting schema
+	 * @param fact
+	 * @return
+	 */
+	private FactLine balanceAccounting(MAcctSchema as, Fact fact)
+	{
+		FactLine line = null;
+		if (!fact.isAcctBalanced())
+		{
+			MAccount gain = MAccount.get(as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
+			MAccount loss = MAccount.get(as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
+
+			BigDecimal totalAmtAcctDr = Env.ZERO;
+			BigDecimal totalAmtAcctCr = Env.ZERO;
+			for (FactLine factLine : fact.getLines())
+			{
+				totalAmtAcctDr = totalAmtAcctDr.add(factLine.getAmtAcctDr());
+				totalAmtAcctCr = totalAmtAcctCr.add(factLine.getAmtAcctCr());
+			}
+			
+			BigDecimal acctDifference = totalAmtAcctDr.subtract(totalAmtAcctCr);
+			if (as.isCurrencyBalancing() && acctDifference.abs().compareTo(TOLERANCE) < 0)
+				line = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference.negate());
+			else
+				line = fact.createLine(null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
+		}
+		return line;
 	}
 }   //  Doc_Allocation
 
