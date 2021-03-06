@@ -105,11 +105,11 @@ public class OAuthCodeCallbackHandlerServlet extends HttpServlet {
 				}
 			}
 
-			Env.getCtx().setProperty(Env.AD_CLIENT_ID, String.valueOf(pinstance.getAD_Client_ID())); // To avoid Context Lost exception
-			Env.getCtx().setProperty(Env.AD_USER_ID, String.valueOf(pinstance.getCreatedBy())); // To set as CreatedBy of the account
 			MAuthorizationCredential credential = null;
 			MPInstancePara paramAnswer = null;
 			if (errmsg == null) {
+				Env.getCtx().setProperty(Env.AD_CLIENT_ID, String.valueOf(pinstance.getAD_Client_ID())); // To avoid Context Lost exception
+				Env.getCtx().setProperty(Env.AD_USER_ID, String.valueOf(pinstance.getCreatedBy())); // To set as CreatedBy of the account
 				for (MPInstancePara param : pinstance.getParameters()) {
 					if (MAuthorizationCredential.COLUMNNAME_AD_AuthorizationCredential_ID.equals(param.getParameterName()))
 						credential = new MAuthorizationCredential(Env.getCtx(), param.getP_Number().intValue(), null);
