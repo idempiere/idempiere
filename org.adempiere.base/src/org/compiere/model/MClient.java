@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import javax.mail.internet.InternetAddress;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
@@ -555,8 +556,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 		}
 		catch (Exception ex)
 		{
-			log.severe(getName() + " - " + ex.getLocalizedMessage());
-			return ex.getLocalizedMessage();
+			throw new AdempiereException(ex);
 		}
 	}	//	testEMail
 
