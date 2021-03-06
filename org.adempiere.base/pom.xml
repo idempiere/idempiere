@@ -43,6 +43,46 @@
 									<artifactId>avalon-framework-api</artifactId>
 									<version>4.3.1</version>
 								</artifactItem>
+								<artifactItem>
+									<groupId>com.google.http-client</groupId>
+									<artifactId>google-http-client-gson</artifactId>
+									<version>1.38.1</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.google.http-client</groupId>
+									<artifactId>google-http-client</artifactId>
+									<version>1.38.1</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.google.oauth-client</groupId>
+									<artifactId>google-oauth-client</artifactId>
+									<version>1.31.4</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.grpc</groupId>
+									<artifactId>grpc-context</artifactId>
+									<version>1.35.0</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.opencensus</groupId>
+									<artifactId>opencensus-contrib-http-util</artifactId>
+									<version>0.28.3</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.opencensus</groupId>
+									<artifactId>opencensus-api</artifactId>
+									<version>0.28.3</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.apache.httpcomponents</groupId>
+									<artifactId>httpclient</artifactId>
+									<version>4.5.13</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.apache.httpcomponents</groupId>
+									<artifactId>httpcore</artifactId>
+									<version>4.4.14</version>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>

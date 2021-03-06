@@ -33,6 +33,8 @@
         <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+        <setEntry value="com.google.gson@default:default"/>
+        <setEntry value="com.google.guava@default:default"/>
         <setEntry value="com.google.zxing.core@default:default"/>
         <setEntry value="com.itextpdf@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
