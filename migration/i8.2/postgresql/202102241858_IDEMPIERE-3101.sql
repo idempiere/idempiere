@@ -1238,7 +1238,7 @@ INSERT INTO AD_AuthorizationScopeProv (AD_AuthorizationScopeProv_ID,AD_Client_ID
 ;
 
 -- Mar 2, 2021, 8:44:54 PM CET
-INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution) VALUES (200128,0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization Mail Acount','N','AddAuthorizationProcess','N','org.compiere.process.AddAuthorizationProcess','7','D',7,7,'N','Y','N','c6ba87ce-aa65-4895-b156-5385dfcc6164','P')
+INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,ShowHelp,CopyFromProcess,AD_Process_UU,AllowMultipleExecution) VALUES (200128,0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:53','YYYY-MM-DD HH24:MI:SS'),100,'Add Authorization Mail Account','N','AddAuthorizationProcess','N','org.compiere.process.AddAuthorizationProcess','7','D',7,7,'N','Y','N','c6ba87ce-aa65-4895-b156-5385dfcc6164','P')
 ;
 
 -- Mar 2, 2021, 8:44:54 PM CET
@@ -1293,7 +1293,7 @@ INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,
 ;
 
 -- Mar 2, 2021, 8:44:57 PM CET
-INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,AD_Process_ID,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU,PredefinedContextVariables) VALUES (200182,'Add Authorization Mail Acount','P',0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,'N',200128,'Y','N','D','Y','53d88c72-2e33-41b2-94b2-03f16bf07982','SCOPE=EMail
+INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,AD_Process_ID,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU,PredefinedContextVariables) VALUES (200182,'Add Authorization Mail Account','P',0,0,'Y',TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-03-02 20:44:56','YYYY-MM-DD HH24:MI:SS'),100,'N',200128,'Y','N','D','Y','53d88c72-2e33-41b2-94b2-03f16bf07982','SCOPE=EMail
 OPEN_POPUP=Y')
 ;
 
