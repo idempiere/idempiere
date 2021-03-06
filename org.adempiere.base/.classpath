@@ -11,5 +11,13 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-validator.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cron4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/avalon-framework-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/google-http-client.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/google-http-client-gson.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/google-oauth-client.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/grpc-context.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/httpclient.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/httpcore.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/opencensus-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/opencensus-contrib-http-util.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
