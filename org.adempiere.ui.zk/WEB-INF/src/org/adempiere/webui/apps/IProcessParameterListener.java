@@ -25,7 +25,7 @@ public interface IProcessParameterListener {
 	/**
 	 * on value change of parameter field editor
 	 * @param parameterPanel
-	 * @param columnName
+	 * @param columnName - for range parameter the To columnname is suffixed with _2
 	 * @param editor
 	 */
 	public void onChange(ProcessParameterPanel parameterPanel, String columnName, WEditor editor);
