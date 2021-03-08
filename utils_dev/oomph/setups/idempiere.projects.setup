@@ -24,6 +24,46 @@
       <value>https://www.idempiere.org/</value>
     </detail>
   </annotation>
+  <setupTask
+        xsi:type="setup:VariableTask"
+        name="github.remoteURIs"
+        label="Github repository">
+      <choice
+          value="git@github.com:@{remoteURI}.git"
+          label="Git (read-write)"/>
+      <choice
+          value="https://${github.user.id|username}@github.com/@{remoteURI}.git"
+          label="HTTPS (read-write)">
+        <annotation
+            source="http://www.eclipse.org/oomph/setup/MatchChoice"/>
+      </choice>
+      <choice
+          value="https://github.com/@{remoteURI}.git"
+          label="HTTPS (read-only, anonymous)"/>
+      <description>Choose from the available Github URIs</description>
+  </setupTask>
+  <setupTask
+      xsi:type="setup:WorkspaceTask"
+      id="workspace"/>
+  <setupTask
+      xsi:type="setup:ResourceCreationTask"
+      targetURL="configuration:/.settings/org.eclipse.ui.ide.prefs">
+    <content>
+      MAX_RECENT_WORKSPACES=5
+      RECENT_WORKSPACES=${workspace.location|property}
+      RECENT_WORKSPACES_PROTOCOL=3
+      SHOW_WORKSPACE_SELECTION_DIALOG=true
+      eclipse.preferences.version=1
+    </content>
+  </setupTask>
+  <setupTask
+      xsi:type="setup:TextModifyTask"
+      url="configuration:/config.ini">
+    <modification
+        pattern="osgi\.instance\.area\.default=(@user\.home/workspace)">
+      <substitution>${workspace.location|path}</substitution>
+    </modification>
+  </setupTask>
   <project href="idempiere.setup#/"/>
   <description>iDempiere Projects at Github</description>
 </setup:ProjectCatalog>
