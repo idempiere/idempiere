@@ -63,6 +63,7 @@ SET IsSecure='Y' WHERE IsSecure='N' AND AD_Column_ID IN (
 -- disallow logging for secure content
 UPDATE AD_Column SET IsAllowLogging='N' WHERE IsAllowLogging='Y' AND IsSecure='Y'
 ;
+
 SELECT register_migration_script('202103081357_IDEMPIERE-4714.sql') FROM dual
 ;
 
