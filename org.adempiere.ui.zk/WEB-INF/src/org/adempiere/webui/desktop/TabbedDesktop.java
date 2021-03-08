@@ -28,8 +28,10 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IHelpContext;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.WTask;
@@ -76,6 +78,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			pd.setTitle(null);
 			preOpenNewTab();
 			windowContainer.addWindow(tabPanel, title, true, null);
+			ProcessDialogOnCloseHandler handler = new ProcessDialogOnCloseHandler();
+        	tabPanel.setOnCloseHandler(handler);
 			Events.postEvent(ProcessDialog.ON_INITIAL_FOCUS_EVENT, pd, null);
 		}
 		return pd;
@@ -398,6 +402,23 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 
 	public void setTabTitle(String title, int windowNo) {
 		windowContainer.setTabTitle(title, windowNo);		
+	}
+
+	class ProcessDialogOnCloseHandler implements ITabOnCloseHandler, Callback<Boolean> {
+		@Override
+		public void onClose(Tabpanel tabPanel) {
+			Component component = tabPanel.getFirstChild();
+			Object att = component != null ? component.getAttribute(TabbedDesktop.WINDOWNO_ATTRIBUTE) : null;
+			if (att != null && att instanceof Integer)
+				SessionManager.getAppDesktop().unregisterWindow((Integer) att);
+			Tab tab = tabPanel.getLinkedTab();
+			if (tab != null)
+				tab.close();
+		}
+
+		@Override
+		public void onCallback(Boolean result) {
+		}
 	}
 
 }
