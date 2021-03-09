@@ -55,7 +55,7 @@
 		<module>org.idempiere.javadoc</module>
 		<module>org.idempiere.test-feature</module>
 		<module>org.idempiere.test</module>
-		<module>${idempiere.target}</module>
+		<module>org.idempiere.p2.targetplatform</module>
 	</modules>
 
 </project>

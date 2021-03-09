@@ -309,6 +309,19 @@ public interface I_AD_Menu
 	  */
 	public String getName();
 
+    /** Column name PredefinedContextVariables */
+    public static final String COLUMNNAME_PredefinedContextVariables = "PredefinedContextVariables";
+
+	/** Set Predefined Context Variables.
+	  * Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public void setPredefinedContextVariables (String PredefinedContextVariables);
+
+	/** Get Predefined Context Variables.
+	  * Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public String getPredefinedContextVariables();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

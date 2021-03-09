@@ -1384,7 +1384,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     			tabPanel.getGridView().invalidateGridView();
     		}
 	    	if (!tabPanel.isGridView()) {
-	    		tabPanel.switchRowPresentation();	
+	    		if (detailPane.getSelectedPanel().isToggleToFormView()) {
+	    			detailPane.getSelectedPanel().afterToggle();
+	    		} else {
+	    			tabPanel.switchRowPresentation();
+	    		}
 	    	}	    		    	
     	}
     }
@@ -1929,6 +1933,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	 * 
 	 * @return true if the detailpane is visible
 	 */
+	@Override
 	public boolean isDetailVisible() {
 		if (formContainer.getSouth() == null || !formContainer.getSouth().isVisible()
 			|| !formContainer.getSouth().isOpen()) {

@@ -88,7 +88,7 @@ import org.osgi.service.event.Event;
 public class EventHandlerTest extends AbstractTestCase {
 
 	private final static int BP_JOE_BLOCK = 118;
-	private static final int PRODUCT_AZALEA = 128;
+	private static final int PRODUCT_PLANTING_SERVICE = 126;
 	
 	public EventHandlerTest() {
 	}
@@ -141,7 +141,7 @@ public class EventHandlerTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
@@ -182,7 +182,7 @@ public class EventHandlerTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
@@ -258,13 +258,13 @@ public class EventHandlerTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -281,7 +281,7 @@ public class EventHandlerTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 						
@@ -290,7 +290,7 @@ public class EventHandlerTest extends AbstractTestCase {
 		
 		if (!shipment.isPosted()) {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), MInOut.Table_ID, shipment.get_ID(), false, getTrxName());
-			assertTrue(error == null);
+			assertTrue(error == null, error);
 		}
 		
 		assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyFactValidateDelegate.class.getName())), 
