@@ -30,7 +30,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210214L;
+	private static final long serialVersionUID = 20210309L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -323,10 +323,10 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 
 	/** AD_TabType AD_Reference_ID=200117 */
 	public static final int AD_TABTYPE_AD_Reference_ID=200117;
-	/** Data Grid = FORM */
-	public static final String AD_TABTYPE_DataGrid = "FORM";
-	/** Order Tab = SORT */
-	public static final String AD_TABTYPE_OrderTab = "SORT";
+	/** Form = FORM */
+	public static final String AD_TABTYPE_Form = "FORM";
+	/** Sort = SORT */
+	public static final String AD_TABTYPE_Sort = "SORT";
 	/** Set Tab Type.
 		@param AD_TabType 
 		Defines Tab Type

@@ -62,19 +62,19 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 */
 	private static final long serialVersionUID = 6251897492168864784L;
 
-	private static final String BTN_PROCESS_ID = "BtnProcess";
+	public static final String BTN_PROCESS_ID = "BtnProcess";
 
-	private static final String BTN_DELETE_ID = "BtnDelete";
+	public static final String BTN_DELETE_ID = "BtnDelete";
 
-	private static final String BTN_EDIT_ID = "BtnEdit";
+	public static final String BTN_EDIT_ID = "BtnEdit";
 
-	private static final String BTN_NEW_ID = "BtnNew";
+	public static final String BTN_NEW_ID = "BtnNew";
 	
-	private static final String BTN_SAVE_ID = "BtnSave";
+	public static final String BTN_SAVE_ID = "BtnSave";
 	
-	private static final String BTN_QUICK_FORM_ID = "BtnQuickForm";
+	public static final String BTN_QUICK_FORM_ID = "BtnQuickForm";
 
-	private static final String BTN_CUSTOMIZE_ID = "BtnCustomize";
+	public static final String BTN_CUSTOMIZE_ID = "BtnCustomize";
 	
 	private static final String TABBOX_ONSELECT_ATTRIBUTE = "detailpane.tabbox.onselect";
 
@@ -776,8 +776,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         		} else {
         			btn.setVisible(true);
         		}
-        	}        	
-        }               
+        	}
+        }
+
+		// update from customized implementation
+		adtab.updateDetailToolbar(toolbar);
 	}
 	
 	private void updateProcessToolbar() {

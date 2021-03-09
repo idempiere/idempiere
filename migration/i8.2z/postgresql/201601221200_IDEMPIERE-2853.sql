@@ -8,11 +8,11 @@ INSERT INTO AD_Reference (AD_Reference_ID,Name,Description,ValidationType,AD_Cli
 ;
 
 -- Jan 22, 2016 11:51:22 AM IST
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200347,'Data Grid',200117,'FORM',0,0,'Y',TO_TIMESTAMP('2016-01-22 11:51:21','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2016-01-22 11:51:21','YYYY-MM-DD HH24:MI:SS'),100,'D','590c7ccd-4400-4208-aca4-d86e508e0f4d')
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200347,'Form',200117,'FORM',0,0,'Y',TO_TIMESTAMP('2016-01-22 11:51:21','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2016-01-22 11:51:21','YYYY-MM-DD HH24:MI:SS'),100,'D','590c7ccd-4400-4208-aca4-d86e508e0f4d')
 ;
 
 -- Jan 22, 2016 11:51:36 AM IST
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200348,'Order Tab',200117,'SORT',0,0,'Y',TO_TIMESTAMP('2016-01-22 11:51:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2016-01-22 11:51:36','YYYY-MM-DD HH24:MI:SS'),100,'D','47729861-5eed-4209-8228-7858e0ae7c13')
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200348,'Sort',200117,'SORT',0,0,'Y',TO_TIMESTAMP('2016-01-22 11:51:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2016-01-22 11:51:36','YYYY-MM-DD HH24:MI:SS'),100,'D','47729861-5eed-4209-8228-7858e0ae7c13')
 ;
 
 -- Jan 22, 2016 11:52:05 AM IST

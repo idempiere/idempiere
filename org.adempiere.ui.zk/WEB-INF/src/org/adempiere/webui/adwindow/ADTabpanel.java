@@ -114,6 +114,7 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Style;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vlayout;
@@ -2124,6 +2125,18 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public boolean isEnableCustomizeButton()
 	{
 		return isGridView();
+	}
+
+	@Override
+	public void updateToolbar(ADWindowToolbar toolbar)
+	{
+
+	}
+
+	@Override
+	public void updateDetailToolbar(Toolbar toolbar)
+	{
+
 	}
 
 }

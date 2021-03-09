@@ -27,11 +27,11 @@ public class DefaultTabPanelFactory implements IADTabPanelFactory
 	@Override
 	public IADTabpanel getInstance(String type)
 	{
-		if (type.equalsIgnoreCase(MTab.AD_TABTYPE_OrderTab))
+		if (type.equalsIgnoreCase(MTab.AD_TABTYPE_Sort))
 		{
 			return new ADSortTab();
 		}
-		else if (type.equalsIgnoreCase(MTab.AD_TABTYPE_DataGrid))
+		else if (type.equalsIgnoreCase(MTab.AD_TABTYPE_Form))
 		{
 			return new ADTabpanel();
 		}

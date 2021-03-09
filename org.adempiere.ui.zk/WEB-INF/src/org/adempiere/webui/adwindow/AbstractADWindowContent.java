@@ -1486,6 +1486,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		
 		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow() != null ? getCurrentFindWindow().getAD_UserQuery_ID() : 0);
 
+		// update from customized implementation
+		adtab.updateToolbar(toolbar);
 	}
 
 	/**

@@ -56,6 +56,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.event.ListDataEvent;
 
 /**
@@ -1077,6 +1078,18 @@ public class ADSortTab extends Panel implements IADTabpanel
 	public boolean isEnableProcessButton()
 	{
 		return false;
+	}
+
+	@Override
+	public void updateToolbar(ADWindowToolbar toolbar)
+	{
+
+	}
+
+	@Override
+	public void updateDetailToolbar(Toolbar toolbar)
+	{
+
 	}
 
 }	//ADSortTab

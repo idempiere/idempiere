@@ -18,6 +18,7 @@ import org.compiere.model.GridTab;
 import org.compiere.util.Evaluatee;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Toolbar;
 
 /**
  * Interface for UI component that edit/display record using ad_tab definitions
@@ -224,4 +225,19 @@ public interface IADTabpanel extends Component, Evaluatee {
 		boolean isNewRow = getGridTab().getRowCount() == 0 || getGridTab().isNew();
 		return getToolbarButtons().size() > 0 && !isNewRow;
 	}
+
+	/**
+	 * Enabled/Disabled tab toolbar button
+	 * 
+	 * @param toolbar - {@link ADWindowToolbar}
+	 */
+	public void updateToolbar(ADWindowToolbar toolbar);
+
+	/**
+	 * Enabled/Disabled detail panel toolbar button
+	 * 
+	 * @param toolbar - {@link Toolbar}
+	 */
+	public void updateDetailToolbar(Toolbar toolbar);
+
 }
