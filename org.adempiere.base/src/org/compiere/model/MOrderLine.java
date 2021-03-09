@@ -127,17 +127,6 @@ public class MOrderLine extends X_C_OrderLine
 		super (ctx, C_OrderLine_ID, trxName);
 		if (C_OrderLine_ID == 0)
 		{
-		//	setC_Order_ID (0);
-		//	setLine (0);
-		//	setM_Warehouse_ID (0);	// @M_Warehouse_ID@
-		//	setC_BPartner_ID(0);
-		//	setC_BPartner_Location_ID (0);	// @C_BPartner_Location_ID@
-		//	setC_Currency_ID (0);	// @C_Currency_ID@
-		//	setDateOrdered (new Timestamp(System.currentTimeMillis()));	// @DateOrdered@
-			//
-		//	setC_Tax_ID (0);
-		//	setC_UOM_ID (0);
-			//
 			setFreightAmt (Env.ZERO);
 			setLineNetAmt (Env.ZERO);
 			//
@@ -858,48 +847,6 @@ public class MOrderLine extends X_C_OrderLine
 			setQtyEntered(getQtyEntered());
 		if (newRecord || is_ValueChanged("QtyOrdered"))
 			setQtyOrdered(getQtyOrdered());
-		
-		/* IDEMPIERE-4095 - it is a valid use case to reserve a serialized item on sales (same as reserving non existing inventory)
-		//	Qty on instance ASI for SO
-		if (m_IsSOTrx 
-			&& getM_AttributeSetInstance_ID() != 0
-			&& (newRecord || is_ValueChanged("M_Product_ID")
-				|| is_ValueChanged("M_AttributeSetInstance_ID")
-				|| is_ValueChanged("M_Warehouse_ID")))
-		{
-			MProduct product = getProduct();
-			if (product.isStocked())
-			{
-				int M_AttributeSet_ID = product.getM_AttributeSet_ID();
-				boolean isInstance = M_AttributeSet_ID != 0;
-				if (isInstance)
-				{
-					MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
-					isInstance = mas.isInstanceAttribute();
-				}
-				//	Max
-				if (isInstance)
-				{
-					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 
-						getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), 
-						null, true, false, 0, get_TrxName());
-					BigDecimal qty = Env.ZERO;
-					for (int i = 0; i < storages.length; i++)
-					{
-						if (storages[i].getM_AttributeSetInstance_ID() == getM_AttributeSetInstance_ID())
-							qty = qty.add(storages[i].getQtyOnHand());
-					}
-					
-					if (getQtyOrdered().compareTo(qty) > 0)
-					{
-						log.warning("Qty - Stock=" + qty + ", Ordered=" + getQtyOrdered());
-						log.saveError("QtyInsufficient", "=" + qty); 
-						return false;
-					}
-				}
-			}	//	stocked
-		}	//	SO instance
-		-- commented out because of IDEMPIERE-4095 */
 		
 		//	FreightAmt Not used
 		if (Env.ZERO.compareTo(getFreightAmt()) != 0)
