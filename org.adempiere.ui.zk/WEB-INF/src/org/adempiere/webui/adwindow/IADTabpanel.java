@@ -215,7 +215,9 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public default boolean isDetailVisible() {
 		return false;
 	}
-	 * @return List of toolbar buttons
+	
+	/**
+	  *  @return List of toolbar buttons
 	 */
 	public List<Button> getToolbarButtons();
 
