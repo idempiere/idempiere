@@ -108,11 +108,6 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		super(ctx, C_OrderPaySchedule_ID, trxName);
 		if (C_OrderPaySchedule_ID == 0)
 		{
-		//	setC_Order_ID (0);
-		//	setDiscountAmt (Env.ZERO);
-		//	setDiscountDate (new Timestamp(System.currentTimeMillis()));
-		//	setDueAmt (Env.ZERO);
-		//	setDueDate (new Timestamp(System.currentTimeMillis()));
 			setIsValid (false);
 		}
 	}	//	MOrderPaySchedule
