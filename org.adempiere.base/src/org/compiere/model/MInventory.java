@@ -95,8 +95,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		super (ctx, M_Inventory_ID, trxName);
 		if (M_Inventory_ID == 0)
 		{
-		//	setName (null);
-		//  setM_Warehouse_ID (0);		//	FK
 			setMovementDate (new Timestamp(System.currentTimeMillis()));
 			setDocAction (DOCACTION_Complete);	// CO
 			setDocStatus (DOCSTATUS_Drafted);	// DR
@@ -271,10 +269,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -412,7 +407,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		}
 
 		//	TODO: Add up Amounts
-	//	setApprovalAmt();
 		
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
@@ -611,7 +605,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}	
 					}
 	
-					//sLine.getM_AttributeSetInstance_ID() != 0
 					// Fallback
 					if (mtrx == null)
 					{
