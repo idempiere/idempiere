@@ -44,6 +44,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EmailSrv;
 import org.compiere.util.EmailSrv.EmailContent;
 import org.compiere.util.EmailSrv.ProcessEmailHandle;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
 /**
@@ -432,6 +433,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		}
 		
 		req.saveEx(trxName);
+		addLog(req.getR_Request_ID(), null, null, Msg.parseTranslation(getCtx(), "@Added@ @R_Request_ID@ ") + req.getDocumentNo(), MRequest.Table_ID, req.getR_Request_ID());
 		
 		if (log.isLoggable(Level.INFO)) log.info("created request " + req.getR_Request_ID() + " from msg -> " + emailContent.subject);
 		
@@ -458,6 +460,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		StringBuilder msgreq = new StringBuilder("FROM: ").append(emailContent.fromAddress.get(0)).append("\n").append(emailContent.getTextContent());
 		requp.setResult(msgreq.toString());
 		requp.saveEx(trxName);
+		addLog(requp.getR_Request_ID(), null, null, Msg.parseTranslation(getCtx(), "@Updated@ @R_Request_ID@ ") + requp.getDocumentNo(), MRequest.Table_ID, requp.getR_Request_ID());
 	}
 
 	@Override

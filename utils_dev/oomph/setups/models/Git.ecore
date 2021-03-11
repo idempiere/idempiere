@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="git" nsURI="http://www.eclipse.org/oomph/setup/git/1.0" nsPrefix="git">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.git.p2"/>
+    <details key="repository" value="${oomph.update.url}"/>
+    <details key="installableUnits" value="org.eclipse.oomph.setup.git.feature.group"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.egit.p2"/>
+    <details key="repository" value="http://download.eclipse.org/egit/updates"/>
+    <details key="installableUnits" value="org.eclipse.egit.feature.group"/>
+    <details key="releaseTrainAlternate" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.setup.git.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="GitCloneTask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/EcoreXXX">
+      <details key="constraints" value="IDRequired LocationOptional"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="">
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/Variable">
+        <eAnnotations source="Choice">
+          <details key="value" value="${installation.location/git/}${@id.locationQualifier|trim}${@id.remoteURI|gitRepository}"/>
+          <details key="label" value="Located in a folder named 'git/&lt;repo>' within the installation folder"/>
+        </eAnnotations>
+        <eAnnotations source="Choice">
+          <details key="value" value="${workspace.location/.git/}${@id.locationQualifier|trim}${@id.remoteURI|gitRepository}"/>
+          <details key="label" value="Located in a folder named '.git/&lt;repo>' within the workspace folder"/>
+        </eAnnotations>
+        <eAnnotations source="Choice">
+          <details key="value" value="${git.container.root/}${@id.locationQualifier|trim}${@id.remoteURI|gitRepository}"/>
+          <details key="label" value="Located in a folder named '&lt;repo>' within the root Git-container folder "/>
+        </eAnnotations>
+        <eAnnotations source="Choice">
+          <details key="value" value="${git.container.root/}${@id.locationQualifier|trim}${@id.remoteURI|gitRepository}-${@id.checkoutBranch}"/>
+          <details key="label" value="Located in a folder named '&lt;repo>-&lt;branch>' within the root Git-container folder "/>
+        </eAnnotations>
+        <eAnnotations source="Choice">
+          <details key="value" value="${git.container.root/}${@id.locationQualifier|trim}${@id.remoteURI|gitRepository/}${@id.checkoutBranch}"/>
+          <details key="label" value="Located in a folder named '&lt;repo>/&lt;branch>' within the root Git-container folder "/>
+        </eAnnotations>
+        <eAnnotations source="Choice">
+          <details key="value" value="${@id.location}"/>
+          <details key="label" value="Located in the specified absolute folder location"/>
+        </eAnnotations>
+        <details key="filter" value="canonical"/>
+        <details key="type" value="STRING"/>
+        <details key="label" value="Git clone location rule"/>
+        <details key="description" value="The rule for the absolute folder location where the Git clone is located"/>
+        <details key="explicitType" value="FOLDER"/>
+        <details key="explicitLabel" value="${@id.description} Git clone location"/>
+        <details key="explicitDescription" value="The absolute folder location where the ${@id.description} Git clone is located"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/RuleVariable">
+        <details key="name" value="git.container.root"/>
+        <details key="type" value="FOLDER"/>
+        <details key="label" value="Root Git-container folder"/>
+        <details key="defaultValue" value="${user.home/git}"/>
+        <details key="description" value="The root Git-container folder where all the Git clones are located"/>
+        <details key="storageURI" value="scope://"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="locationQualifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="remoteName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="origin"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="remoteURI" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/RemoteResource"/>
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/Redirect"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pushURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/Redirect"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="checkoutBranch" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="${scope.project.stream.name}"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="recursive" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="configSections" upperBound="-1"
+        eType="#//ConfigSection" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="restrictToCheckoutBranch"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConfigSection" eSuperTypes="#//ConfigSubsection">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subsections" upperBound="-1"
+        eType="#//ConfigSubsection" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConfigSubsection">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//ConfigProperty" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConfigProperty">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>

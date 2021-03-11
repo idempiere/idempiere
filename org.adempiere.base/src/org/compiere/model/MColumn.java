@@ -507,6 +507,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
+		// IDEMPIERE-4714
+		if (isSecure() && isAllowLogging()) {
+			setIsAllowLogging(false);
+		}
+
 		// IDEMPIERE-1615 Multiple key columns lead to data corruption or data loss
 		if ((is_ValueChanged(COLUMNNAME_IsKey) || is_ValueChanged(COLUMNNAME_IsActive)) && isKey() && isActive()) {
 			int cnt = DB.getSQLValueEx(get_TrxName(),

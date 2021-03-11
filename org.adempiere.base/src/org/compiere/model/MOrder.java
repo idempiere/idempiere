@@ -1465,8 +1465,6 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		
 		m_justPrepared = true;
-	//	if (!DOCACTION_Complete.equals(getDocAction()))		don't set for just prepare 
-	//		setDocAction(DOCACTION_Complete);
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
 	
@@ -1636,28 +1634,6 @@ public class MOrder extends X_C_Order implements DocAction
 				if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 				//	New Lines
 				int lineNo = line.getLine ();
-				//find default BOM with valid dates and to this product
-				/*/MPPProductBOM bom = MPPProductBOM.get(product, getAD_Org_ID(),getDatePromised(), get_TrxName());
-				if(bom != null)
-				{	
-					MPPProductBOMLine[] bomlines = bom.getLines(getDatePromised());
-					for (int j = 0; j < bomlines.length; j++)
-					{
-						MPPProductBOMLine bomline = bomlines[j];
-						MOrderLine newLine = new MOrderLine (this);
-						newLine.setLine (++lineNo);
-						newLine.setM_Product_ID (bomline.getM_Product_ID ());
-						newLine.setC_UOM_ID (bomline.getC_UOM_ID ());
-						newLine.setQty (line.getQtyOrdered ().multiply (
-							bomline.getQtyBOM()));
-						if (bomline.getDescription () != null)
-							newLine.setDescription (bomline.getDescription ());
-						//
-						newLine.setPrice ();
-						newLine.saveEx(get_TrxName());
-					}
-				}	*/
-
 				for (MProductBOM bom : MProductBOM.getBOMLines(product))
 				{
 					MOrderLine newLine = new MOrderLine(this);
@@ -2179,7 +2155,6 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		if (log.isLoggable(Level.INFO)) log.info("For " + dt);
 		MInOut shipment = new MInOut (this, dt.getC_DocTypeShipment_ID(), movementDate);
-	//	shipment.setDateAcct(getDateAcct());
 		if (!shipment.save(get_TrxName()))
 		{
 			m_processMsg = "Could not create Shipment";
@@ -2385,8 +2360,6 @@ public class MOrder extends X_C_Order implements DocAction
 		//
 		counter.setAD_Org_ID(counterAD_Org_ID);
 		counter.setM_Warehouse_ID(counterOrgInfo.getM_Warehouse_ID());
-		//
-//		counter.setBPartner(counterBP); // was set on copyFrom
 		counter.setDatePromised(getDatePromised());		// default is date ordered 
 		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
@@ -2864,109 +2837,6 @@ public class MOrder extends X_C_Order implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
-	/**
-	 * Finds all order lines that contains not yet delivered physical items of a specific product.
-	 * 
-	 * @param conn			An open connection.
-	 * @param productId		The product id being allocated
-	 * @return  Order lines to allocate products to.
-	 * @throws SQLException
-	 */
-	/*  commenting out wrong unused function - column qtyallocated does not exist
-	public static List<MOrderLine> getOrderLinesToAllocate(Connection conn, int productId, String trxName) throws SQLException {
-		final String OrderLinesToAllocate = "select C_OrderLine.* from C_OrderLine " + 
-				   "JOIN C_Order ON C_OrderLine.C_Order_ID=C_Order.C_Order_ID " + 
-				   "JOIN M_Product ON C_OrderLine.M_Product_ID=M_Product.M_Product_ID " + 
-				   "where C_Order.IsSOTrx='Y' AND C_Order.DocStatus='CO' AND QtyAllocated<(QtyOrdered-QtyDelivered) " + 
-				   "AND M_Product.M_Product_ID=? " + 
-				   "order by PriorityRule, C_OrderLine.Created ";
-		List<MOrderLine> result = new Vector<MOrderLine>();
-		Properties ctx = Env.getCtx();
-		MOrderLine line;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(OrderLinesToAllocate);
-			ps.setInt(1, productId);
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				line = new MOrderLine(ctx, rs, trxName);
-				result.add(line);
-			}
-		} catch (SQLException e) {
-			throw e;
-		} finally {
-			DB.close(rs, ps);
-			rs = null; ps = null;
-		}
-		return(result);
-	}
-	*/
-	
-	/**
-	 * Finds all products that can be allocated. A product can be allocated if there are more items 
-	 * on hand than what is already allocated. To be allocated the item must also be in demand
-	 * (reserved < allocated)
-	 * 
-	 * @param 	conn
-	 * @return
-	 * @throws 	SQLException
-	 */
-	/*  commenting out wrong unused function - column qtyallocated does not exist
-	public static List<StockInfo> getProductsToAllocate(Connection conn, int WarehouseID) throws SQLException {
-		
-		List<StockInfo> result = new Vector<StockInfo>();
-		StockInfo si;
-		String query1 = "select M_Product_ID, sum(qtyonhand), sum(qtyreserved), sum(m_Product_Stock_v.qtyallocated) " +
-						"from M_Product_Stock_v " + 
-						"WHERE M_Warehouse_ID=? AND M_Product_ID in " +
-						"(select DISTINCT C_OrderLine.M_Product_ID FROM C_OrderLine " +
-					   "JOIN C_Order ON C_OrderLine.C_Order_ID=C_Order.C_Order_ID " + 
-					   "JOIN M_Product ON C_OrderLine.M_Product_ID=M_Product.M_Product_ID " +
-					   "JOIN M_Product_Stock_v ON C_OrderLine.M_Product_ID=M_Product_Stock_v.M_Product_ID " +
-					   "WHERE " +
-					   "C_Order.IsSOTrx='Y' AND C_Order.DocStatus='CO' AND C_OrderLine.M_Warehouse_ID=? AND " + 
-					   "(QtyOrdered-QtyDelivered)>0 AND (QtyOrdered-QtyDelivered)>C_OrderLine.QtyAllocated)" + 
-					   "group by M_Product_ID " + 
-					   "order by M_Product_ID";
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(query1);
-			ps.setInt(1, WarehouseID);
-			ps.setInt(2, WarehouseID);
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				si = new StockInfo();
-				si.productId = rs.getInt(1);
-				si.qtyOnHand = rs.getBigDecimal(2);
-				si.qtyReserved = rs.getBigDecimal(3);
-				si.qtyAvailable = si.qtyOnHand.subtract(si.qtyReserved);
-				si.qtyAllocated = rs.getBigDecimal(4);
-				result.add(si);
-			}
-		} catch (SQLException e) {
-			throw e;
-		} finally {
-			DB.close(rs, ps);
-			rs = null; ps = null;
-		}
-		return(result);
-	}
-	
-	public static class StockInfo {
-		
-		public int			productId;
-		public BigDecimal	qtyOnHand;
-		public BigDecimal	qtyAvailable;
-		public BigDecimal	qtyReserved;
-		public BigDecimal	qtyAllocated;
-		
-		public StockInfo() {}
-		
-	}
-	*/
-	
 	/**
 	 * Set process message
 	 * @param processMsg
