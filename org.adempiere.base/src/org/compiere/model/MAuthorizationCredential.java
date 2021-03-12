@@ -88,6 +88,24 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	public String processToken(String code, MPInstance pinstance) {
 		String msg = null;
 		try {
+			if (pinstance == null) {
+				// this is not expected, just added here for safety
+				msg = "Process instance is required";
+				return msg;
+			}
+			// get the scope parameter
+			MPInstancePara paramScope = null;
+			for (MPInstancePara param : pinstance.getParameters()) {
+				if ("AD_AuthorizationScope".equals(param.getParameterName())) {
+					paramScope = param;
+					break;
+				}
+			}
+			if (paramScope == null) {
+				// this is not expected, just added here for safety
+				msg = "Process instance parameter for Scope not found";
+				return msg;
+			}
 			String clientId = getAuthorizationClientId();
 			String clientSecret = getAuthorizationClientSecret();
 			Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -111,21 +129,21 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 
 			boolean newAccount = false;
 			MAuthorizationAccount account = null;
-			Query query = new Query(Env.getCtx(), MAuthorizationAccount.Table_Name, "AD_Client_ID=? AND AD_User_ID=? AND EMail=? AND AD_AuthorizationCredential_ID=?", get_TrxName());
-			query.setParameters(Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), email, getAD_AuthorizationCredential_ID());
+			Query query = new Query(Env.getCtx(), MAuthorizationAccount.Table_Name, "AD_Client_ID=? AND AD_User_ID=? AND EMail=? AND AD_AuthorizationCredential_ID=? AND AD_AuthorizationScope=?", get_TrxName());
+			query.setParameters(Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), email, getAD_AuthorizationCredential_ID(), paramScope.getP_String());
 			account = query.first();
 			if (account == null) {
 				account = new MAuthorizationAccount(Env.getCtx(), 0, get_TrxName());
 				account.setEMail(email);
 				account.setAD_AuthorizationCredential_ID(getAD_AuthorizationCredential_ID());
 				account.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+				account.setAD_AuthorizationScope(paramScope.getP_String());
 				newAccount = true;
 			}
 
 			account.setAccessToken(tokenResponse.getAccessToken());
 			account.setAccessTokenTimestamp(ts);
 			account.setExpireInSeconds(BigDecimal.valueOf(tokenResponse.getExpiresInSeconds()));
-			account.setAD_AuthorizationScope(MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_EMail);
 			account.setIsAuthorized(true);
 			account.setIsActive(true);
 
@@ -154,11 +172,9 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 				account.setRefreshToken(tokenResponse.getRefreshToken());
 			}
 			account.saveEx();
-			if (pinstance != null) {
-				String logmsg = Msg.parseTranslation(getCtx(), (newAccount ? "@Created@" : "@Updated@") + " @AD_AuthorizationAccount_ID@ for ") + account.getEMail();
-				MPInstanceLog pilog = pinstance.addLog(null, 0, null, logmsg, MAuthorizationAccount.Table_ID, account.getAD_AuthorizationAccount_ID());
-				pilog.saveEx();
-			}
+			String logmsg = Msg.parseTranslation(getCtx(), (newAccount ? "@Created@" : "@Updated@") + " @AD_AuthorizationAccount_ID@ for ") + account.getEMail();
+			MPInstanceLog pilog = pinstance.addLog(null, 0, null, logmsg, MAuthorizationAccount.Table_ID, account.getAD_AuthorizationAccount_ID());
+			pilog.saveEx();
 			account.syncOthers();
 			if (newAccount)
 				msg = Msg.getMsg(getCtx(), "Authorization_Access_OK", new Object[] {account.getEMail()});
