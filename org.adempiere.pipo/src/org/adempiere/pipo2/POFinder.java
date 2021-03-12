@@ -86,7 +86,14 @@ public class POFinder {
     			uuid = uuid.trim();
     			String targetUUID = Env.getAD_Client_ID(ctx.ctx) > 0 ? getTargetUUID(ctx.ctx, tableName, uuid, ctx.trx.getTrxName()) : uuid; 
     			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
-    			po = query.setParameters(targetUUID).firstOnly();
+    			/* Is possible to read here from source tenant to create in a new tenant, so safe to allow reading
+    			 * writing in wrong tenant is controlled later */
+    			try {
+    				PO.setCrossTenantSafe();
+    	   			po = query.setParameters(targetUUID).firstOnly();
+    	   		} finally {
+    	   			PO.clearCrossTenantSafe();
+    	   		}
     			if (po != null && po.getAD_Client_ID() > 0) {
     				if (po.getAD_Client_ID() > 0 && po.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
     					targetUUID = UUID.randomUUID().toString();
