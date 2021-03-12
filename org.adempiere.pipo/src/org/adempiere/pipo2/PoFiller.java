@@ -214,7 +214,14 @@ public class PoFiller{
 				}
 				if (id > 0 && refTableName != null) {
 					if (foreignTable != null) {
-						PO subPo = foreignTable.getPO(id, po.get_TrxName());
+						/* Allow to read here from another tenant, cross tenant control is implemented later in a safe way */
+						PO subPo = null;
+		    			try {
+		    				PO.setCrossTenantSafe();
+		    				subPo = foreignTable.getPO(id, po.get_TrxName());
+		    			} finally {
+		    				PO.clearCrossTenantSafe();
+		    			}
 						if (subPo != null && subPo.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
 							String accessLevel = foreignTable.getAccessLevel();
 							if ((MTable.ACCESSLEVEL_All.equals(accessLevel)
