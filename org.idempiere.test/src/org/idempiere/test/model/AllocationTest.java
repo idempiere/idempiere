@@ -412,9 +412,11 @@ public class AllocationTest extends AbstractTestCase {
 				for (int id : ids) {
 					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
-						if (fa.getAmtAcctDr().signum() != 0)
+						if (fa.getAmtAcctDr().signum() > 0)
 							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
-						else if (fa.getAmtAcctCr().signum() != 0)
+						else if (fa.getAmtAcctDr().signum() < 0)
+							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctCr.negate()) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctCr.negate().toPlainString());						
+						else if (fa.getAmtAcctCr().signum() > 0)
 							assertTrue(fa.getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());													
 					}
 					else if (acctLoss.getAccount_ID() == fa.getAccount_ID())
@@ -514,9 +516,11 @@ public class AllocationTest extends AbstractTestCase {
 				for (int id : ids) {
 					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
-						if (fa.getAmtAcctDr().signum() != 0)
+						if (fa.getAmtAcctDr().signum() > 0)
 							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
-						else if (fa.getAmtAcctCr().signum() != 0)
+						else if (fa.getAmtAcctDr().signum() < 0)
+							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctCr.negate()) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctCr.negate().toPlainString());						
+						else if (fa.getAmtAcctCr().signum() > 0)
 							assertTrue(fa.getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());													
 					}
 					else if (acctLoss.getAccount_ID() == fa.getAccount_ID())
