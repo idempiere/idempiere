@@ -92,10 +92,6 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		return DB.executeUpdate(sql, M_InOutLine_ID, trxName);
 	}	//	deleteInOutLineMA
 		
-	
-//	/**	Logger	*/
-//	private static CLogger	s_log	= CLogger.getCLogger (MInOutLineMA.class);
-	
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -104,7 +104,6 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		super (ctx, M_InOutConfirm_ID, trxName);
 		if (M_InOutConfirm_ID == 0)
 		{
-		//	setConfirmType (null);
 			setDocAction (DOCACTION_Complete);	// CO
 			setDocStatus (DOCSTATUS_Drafted);	// DR
 			setIsApproved (false);
@@ -237,10 +236,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
 			return null;
-	//	return re.getPDF(file);
 	}	//	createPDF
 
 	/**
@@ -313,17 +309,6 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
-		/**
-		MDocType dt = MDocType.get(getCtx(), getC_DocTypeTarget_ID());
-
-		//	Std Period open?
-		if (!MPeriod.isOpen(getCtx(), getDateAcct(), dt.getDocBaseType()))
-		{
-			m_processMsg = "@PeriodClosed@";
-			return DocAction.STATUS_Invalid;
-		}
-		**/
-		
 		MInOutLineConfirm[] lines = getLines(true);
 		if (lines.length == 0)
 		{
@@ -453,11 +438,6 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		if (m_inventory != null)
 			m_processMsg += " @M_Inventory_ID@=" + m_inventory.getDocumentNo();
 
-		
-		//	Try to complete Shipment
-	//	if (inout.processIt(DocAction.ACTION_Complete))
-	//		m_processMsg = "@M_InOut_ID@ " + inout.getDocumentNo() + ": @Completed@";
-		
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
@@ -549,7 +529,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 		//	Create Dispute Confirmation
 		if (!split.processIt(DocAction.ACTION_Prepare))
 			throw new AdempiereException(split.getProcessMsg());
-	//	split.createConfirmation();
+
 		split.saveEx();
 		MInOutConfirm[] splitConfirms = split.getConfirmations(true);
 		if (splitConfirms.length > 0)
@@ -859,8 +839,6 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	 */
 	public int getC_Currency_ID()
 	{
-	//	MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID());
-	//	return pl.getC_Currency_ID();
 		return 0;
 	}	//	getC_Currency_ID
 	
