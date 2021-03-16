@@ -686,9 +686,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         userPreference.setProperty(UserPreference.P_WAREHOUSE, lstItemWarehouse != null ? (String) lstItemWarehouse.getValue() : "0");
         userPreference.savePreference();
 
-        //force reload of default role
-        MRole.getDefault(m_ctx, true);
-
+        //force reload of default role when more than 1 client
+        if (lstClient.getChildren().size() > 1)
+        	MRole.getDefault(m_ctx, true);
         //
     }
 
