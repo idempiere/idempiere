@@ -525,14 +525,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//save context for re-login
 		Properties properties = new Properties();
 		Env.setContext(properties, Env.AD_CLIENT_ID, Env.getAD_Client_ID(Env.getCtx()));
-		Env.setContext(properties, Env.AD_CLIENT_NAME, Env.getContext(Env.getCtx(), Env.AD_CLIENT_NAME));
+		Env.setContext(properties, "#AD_Client_Name", Env.getContext(Env.getCtx(), "#AD_Client_Name"));
 		Env.setContext(properties, Env.AD_ORG_ID, Env.getAD_Org_ID(Env.getCtx()));
 		Env.setContext(properties, Env.AD_USER_ID, user.getAD_User_ID());
-		Env.setContext(properties, Env.SALESREP_ID, user.getAD_User_ID());
-		Env.setContext(properties, Env.AD_USER_NAME, Env.getContext(Env.getCtx(), Env.AD_USER_NAME));
+		Env.setContext(properties, "#SalesRep_ID", user.getAD_User_ID());
+		Env.setContext(properties, "#AD_User_Name", Env.getContext(Env.getCtx(), "#AD_User_Name"));
 		Env.setContext(properties, Env.AD_ROLE_ID, Env.getAD_Role_ID(Env.getCtx()));
-		Env.setContext(properties, Env.AD_ROLE_NAME, Env.getContext(Env.getCtx(), Env.AD_ROLE_NAME));
-		Env.setContext(properties, Env.USER_LEVEL, Env.getContext(Env.getCtx(), Env.USER_LEVEL));
+		Env.setContext(properties, "#AD_Role_Name", Env.getContext(Env.getCtx(), "#AD_Role_Name"));
+		Env.setContext(properties, "#User_Level", Env.getContext(Env.getCtx(), "#User_Level"));
 		Env.setContext(properties, Env.AD_ORG_NAME, Env.getContext(Env.getCtx(), Env.AD_ORG_NAME));
 		Env.setContext(properties, Env.M_WAREHOUSE_ID, Env.getContext(Env.getCtx(), Env.M_WAREHOUSE_ID));
 		Env.setContext(properties, UserPreference.LANGUAGE_NAME, Env.getContext(Env.getCtx(), UserPreference.LANGUAGE_NAME));

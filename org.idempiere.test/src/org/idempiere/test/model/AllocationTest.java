@@ -470,7 +470,7 @@ public class AllocationTest extends AbstractTestCase {
 			completeDocument(payment2);
 			postDocument(payment2);
 			
-			MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, date2, euro.getC_Currency_ID(), Env.getContext(Env.getCtx(), Env.AD_USER_NAME), getTrxName());
+			MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, date2, euro.getC_Currency_ID(), Env.getContext(Env.getCtx(), "#AD_User_Name"), getTrxName());
 			alloc.setAD_Org_ID(payment2.getAD_Org_ID());
 			int doctypeAlloc = MDocType.getDocType("CMA");
 			alloc.setC_DocType_ID(doctypeAlloc);
