@@ -309,7 +309,7 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 		String p_NewEMailUser = txtNewEMailUser.getValue();
 		String p_NewEMailUserPW = txtNewEMailUserPW.getValue();
 				
-		MUser user = new MUser(Env.getCtx(), p_AD_User_ID, (String)null);		
+		MUser user = MUser.getCopy(Env.getCtx(), p_AD_User_ID, null);		
 		if (log.isLoggable(Level.FINE)) log.fine("User=" + user);
 				
 		//	Do we need a password ?
