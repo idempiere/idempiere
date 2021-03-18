@@ -47,10 +47,6 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 		super (ctx, M_InOutLineConfirm_ID, trxName);
 		if (M_InOutLineConfirm_ID == 0)
 		{
-		//	setM_InOutConfirm_ID (0);
-		//	setM_InOutLine_ID (0);
-		//	setTargetQty (Env.ZERO);
-		//	setConfirmedQty (Env.ZERO);
 			setDifferenceQty(Env.ZERO);
 			setScrappedQty(Env.ZERO);
 			setProcessed (false);

@@ -388,15 +388,9 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		setC_Currency_ID(batch.getC_Currency_ID());
 		setC_ConversionType_ID(batch.getC_ConversionType_ID());
 		//
-	//	setPaymentRule(order.getPaymentRule());
-	//	setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
-	//	setPOReference("");
 		setDescription(batch.getDescription());
-	//	setDateOrdered(order.getDateOrdered());
-		//
 		setAD_OrgTrx_ID(line.getAD_OrgTrx_ID());
 		setC_Project_ID(line.getC_Project_ID());
-	//	setC_Campaign_ID(line.getC_Campaign_ID());
 		setC_Activity_ID(line.getC_Activity_ID());
 		setUser1_ID(line.getUser1_ID());
 		setUser2_ID(line.getUser2_ID());
@@ -1267,8 +1261,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-	//	log.fine("getAllocatedAmt - " + retValue);
-		//	? ROUND(NVL(v_AllocatedAmt,0), 2);
+
 		return retValue;
 	}	//	getAllocatedAmt
 
@@ -1549,13 +1542,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
-		//	No Cash Book // deprecated with IDEMPIERE-170 Complete Cash as Payment functionality 
-//		if (PAYMENTRULE_Cash.equals(getPaymentRule())
-//			&& MCashBook.get(getCtx(), getAD_Org_ID(), getC_Currency_ID()) == null)
-//		{
-//			m_processMsg = "@NoCashBook@";
-//			return DocAction.STATUS_Invalid;
-//		}
 
 		//	Convert/Check DocType
 		if (getC_DocType_ID() != getC_DocTypeTarget_ID() )
@@ -1660,28 +1646,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 				//	New Lines
 				int lineNo = line.getLine ();
-
-				//find default BOM with valid dates and to this product
-				/*MPPProductBOM bom = MPPProductBOM.get(product, getAD_Org_ID(),getDateInvoiced(), get_TrxName());
-				if(bom != null)
-				{
-					MPPProductBOMLine[] bomlines = bom.getLines(getDateInvoiced());
-					for (int j = 0; j < bomlines.length; j++)
-					{
-						MPPProductBOMLine bomline = bomlines[j];
-						MInvoiceLine newLine = new MInvoiceLine (this);
-						newLine.setLine (++lineNo);
-						newLine.setM_Product_ID (bomline.getM_Product_ID ());
-						newLine.setC_UOM_ID (bomline.getC_UOM_ID ());
-						newLine.setQty (line.getQtyInvoiced().multiply(
-								bomline.getQtyBOM ()));		//	Invoiced/Entered
-						if (bomline.getDescription () != null)
-							newLine.setDescription (bomline.getDescription ());
-						//
-						newLine.setPrice ();
-						newLine.saveEx (get_TrxName());
-					}
-				}*/
 
 				for (MProductBOM bom : MProductBOM.getBOMLines(product))
 				{
@@ -2314,7 +2278,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			return null;
 
 		MBPartner counterBP = new MBPartner (getCtx(), counterC_BPartner_ID, null);
-//		MOrgInfo counterOrgInfo = MOrgInfo.get(getCtx(), counterAD_Org_ID);
+
 		if (log.isLoggable(Level.INFO)) log.info("Counter BP=" + counterBP.getName());
 
 		//	Document Type
@@ -2340,9 +2304,6 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			C_DocTypeTarget_ID, !isSOTrx(), true, get_TrxName(), true);
 		//
 		counter.setAD_Org_ID(counterAD_Org_ID);
-	//	counter.setM_Warehouse_ID(counterOrgInfo.getM_Warehouse_ID());
-		//
-//		counter.setBPartner(counterBP);// was set on copyFrom
 		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
 		counter.saveEx(get_TrxName());

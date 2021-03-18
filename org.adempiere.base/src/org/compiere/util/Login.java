@@ -840,7 +840,7 @@ public class Login
 		Ini.setProperty(Ini.P_PRINTER, printerName);
 		
 		//	Load Role Info
-		MRole.getDefault(m_ctx, true);	
+		MRole.getDefault(m_ctx, false);	
 
 		//	Other
 		loadUserPreferences();
