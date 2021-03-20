@@ -2403,7 +2403,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	//	log.fine("fini - " + e.toString());
 	}	//	fireDataStatusChanged
 
-	private void updateDataStatusEventProperties(DataStatusEvent e) {
+	/**
+	 * update {@link DataStatusEvent} properties from gridTab
+	 * @param e
+	 */
+	public void updateDataStatusEventProperties(DataStatusEvent e) {
 		e.Created = (Timestamp)getValue("Created");
 		e.CreatedBy = (Integer)getValue("CreatedBy");
 		e.Updated = (Timestamp)getValue("Updated");

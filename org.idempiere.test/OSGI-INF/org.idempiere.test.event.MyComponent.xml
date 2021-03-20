@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" immediate="true" name="org.idempiere.test.event.MyComponent">
+   <reference bind="bindService" cardinality="1..1" field="eventManager" interface="org.adempiere.base.event.IEventManager" name="eventManager" unbind="unbindService"/>
+   <implementation class="org.idempiere.test.event.MyComponent"/>
+</scr:component>

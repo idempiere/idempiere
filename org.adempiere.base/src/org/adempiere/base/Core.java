@@ -21,7 +21,6 @@
 package org.adempiere.base;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -29,6 +28,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
+import org.adempiere.base.event.IEventManager;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -57,7 +57,6 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.process.IMappedProcessFactory;
-import org.osgi.framework.ServiceReference;
 
 /**
  * This is a facade class for the Service Locator.
@@ -68,9 +67,35 @@ import org.osgi.framework.ServiceReference;
  */
 public class Core {
 
+	public static final String SCRIPT_ENGINE_FACTORY_CACHE_TABLE_NAME = "_ScriptEngineFactory_Cache";
+
+	public static final String IPROCESS_FACTORY_CACHE_TABLE_NAME = "_IProcessFactory_Cache";
+
+	public static final String IRESOURCE_FINDER_CACHE_TABLE_NAME = "_IResourceFinder_Cache";
+
+	public static final String IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME = "_IDepreciationMethodFactory_Cache";
+
+	public static final String IPAYMENT_EXPORTER_FACTORY_CACHE_TABLE_NAME = "_IPaymentExporterFactory_Cache";
+
+	public static final String IREPLENISH_FACTORY_CACHE_TABLE_NAME = "_IReplenishFactory_Cache";
+
+	public static final String ITAX_PROVIDER_FACTORY_CACHE_TABLE_NAME = "_ITaxProviderFactory_Cache";
+
+	public static final String IADDRESS_VALIDATION_FACTORY_CACHE_TABLE_NAME = "_IAddressValidationFactory_Cache";
+
+	public static final String IBANK_STATEMENT_MATCHER_FACTORY_CACHE_TABLE_NAME = "_IBankStatementMatcherFactory_Cache";
+
+	public static final String IBANK_STATEMENT_LOADER_FACTORY_CACHE_TABLE_NAME = "_IBankStatementLoaderFactory_Cache";
+
+	public static final String IMODEL_VALIDATOR_FACTORY_CACHE_TABLE_NAME = "_IModelValidatorFactory_Cache";
+
+	public static final String ISHIPMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IShipmentProcessorFactory_Cache";
+
+	public static final String IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IPaymentProcessorFactory_Cache";
+
 	private final static CLogger s_log = CLogger.getCLogger(Core.class);
 
-	private static final CCache<String, IServiceReferenceHolder<IResourceFinder>> s_resourceFinderCache = new CCache<>(null, "IResourceFinder", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IResourceFinder>> s_resourceFinderCache = new CCache<>(IRESOURCE_FINDER_CACHE_TABLE_NAME, "IResourceFinder", 100, false);
 	
 	/**
 	 * @return list of active resource finder
@@ -105,9 +130,6 @@ public class Core {
 		};
 	}
 	
-	private static final CCache<String, List<IServiceReferenceHolder<IColumnCalloutFactory>>> s_columnCalloutFactoryCache = new CCache<>(null, "List<IColumnCalloutFactory>", 100, false);
-	private static final CCache<String, List<ServiceReference<IColumnCalloutFactory>>> s_columnCalloutFactoryNegativeCache = new CCache<>(null, "List<IColumnCalloutFactory> Negative", 100, false);
-
 	/**
 	 *
 	 * @param tableName
@@ -115,70 +137,9 @@ public class Core {
 	 * @return list of callout register for tableName.columnName
 	 */
 	public static List<IColumnCallout> findCallout(String tableName, String columnName) {
-		List<IColumnCallout> list = new ArrayList<IColumnCallout>();
-		
-		String cacheKey = tableName + "." + columnName;
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> cache = s_columnCalloutFactoryCache.get(cacheKey);		
-		List<ServiceReference<IColumnCalloutFactory>> negativeCache = s_columnCalloutFactoryNegativeCache.get(cacheKey);
-		List<ServiceReference<IColumnCalloutFactory>> negativeServiceReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
-		if (negativeCache != null) {
-			negativeServiceReferences.addAll(negativeCache);
-		}
-		List<ServiceReference<IColumnCalloutFactory>> cacheReferences = new ArrayList<ServiceReference<IColumnCalloutFactory>>();
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> positiveReferenceHolders = new ArrayList<>();
-		if (cache != null) {
-			for (IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : cache) {
-				cacheReferences.add(referenceHolder.getServiceReference());
-				IColumnCalloutFactory service = referenceHolder.getService();
-				if (service != null) {
-					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
-					if (callouts != null && callouts.length > 0) {
-						for(IColumnCallout callout : callouts) {
-							list.add(callout);
-						}
-						positiveReferenceHolders.add(referenceHolder);
-					} else {
-						negativeServiceReferences.add(referenceHolder.getServiceReference());
-					}
-				}
-			}
-		}
-		
-		int positiveAdded = 0;		
-		int negativeAdded = 0;
-		List<IServiceReferenceHolder<IColumnCalloutFactory>> referenceHolders = Service.locator().list(IColumnCalloutFactory.class).getServiceReferences();		
-		if (referenceHolders != null) {
-			for(IServiceReferenceHolder<IColumnCalloutFactory> referenceHolder : referenceHolders) {
-				if (cacheReferences.contains(referenceHolder.getServiceReference()) || negativeServiceReferences.contains(referenceHolder.getServiceReference()))
-					continue;
-				IColumnCalloutFactory service = referenceHolder.getService();
-				if (service != null) {
-					IColumnCallout[] callouts = service.getColumnCallouts(tableName, columnName);
-					if (callouts != null && callouts.length > 0) {
-						for(IColumnCallout callout : callouts) {
-							list.add(callout);						
-						}
-						positiveReferenceHolders.add(referenceHolder);
-						positiveAdded++;
-					} else {
-						negativeServiceReferences.add(referenceHolder.getServiceReference());
-						negativeAdded++;
-					}
-				}
-			}			
-		}
-		
-		if (cache == null || cache.size() != positiveReferenceHolders.size() || positiveAdded > 0)
-			s_columnCalloutFactoryCache.put(cacheKey, positiveReferenceHolders);
-		if (negativeCache == null || negativeCache.size() != negativeServiceReferences.size() || negativeAdded > 0)
-			s_columnCalloutFactoryNegativeCache.put(cacheKey, negativeServiceReferences);
-		
-		return list;
+		return ColumnCalloutManager.findCallout(tableName, columnName);
 	}
 
-	private static final CCache<String, IServiceReferenceHolder<ICalloutFactory>> s_calloutFactoryCache = new CCache<>(null, "ICalloutFactory", 100, false);
-	
-	// IDEMPIERE-2732
 	/**
 	 *
 	 * @param className
@@ -186,35 +147,10 @@ public class Core {
 	 * @return callout for className
 	 */
 	public static Callout getCallout(String className, String methodName) {
-		String cacheKey = className + "::" + methodName;
-		IServiceReferenceHolder<ICalloutFactory> cache = s_calloutFactoryCache.get(cacheKey);
-		if (cache != null) {
-			ICalloutFactory service = cache.getService();
-			if (service != null) {
-				Callout callout = service.getCallout(className, methodName);
-				if (callout != null) {
-					return callout;
-				}
-			}
-			s_calloutFactoryCache.remove(cacheKey);
-		}
-		List<IServiceReferenceHolder<ICalloutFactory>> factories = Service.locator().list(ICalloutFactory.class).getServiceReferences();
-		if (factories != null) {
-			for(IServiceReferenceHolder<ICalloutFactory> factory : factories) {
-				ICalloutFactory service = factory.getService();
-				if (service != null) {
-					Callout callout = service.getCallout(className, methodName);
-					if (callout != null) {
-						s_calloutFactoryCache.put(cacheKey, factory);
-						return callout;
-					}
-				}
-			}
-		}
-		return null;
+		return ColumnCalloutManager.getCallout(className, methodName);
 	}
 
-	private static final CCache<String, IServiceReferenceHolder<IProcessFactory>> s_processFactoryCache = new CCache<>(null, "IProcessFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IProcessFactory>> s_processFactoryCache = new CCache<>(IPROCESS_FACTORY_CACHE_TABLE_NAME, "IProcessFactory", 100, false);
 	
 	/**
 	 *
@@ -283,7 +219,7 @@ public class Core {
 		return factories;
 	}
 
-	private static final CCache<String, IServiceReferenceHolder<IModelValidatorFactory>> s_modelValidatorFactoryCache = new CCache<>(null, "IModelValidatorFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IModelValidatorFactory>> s_modelValidatorFactoryCache = new CCache<>(IMODEL_VALIDATOR_FACTORY_CACHE_TABLE_NAME, "IModelValidatorFactory", 100, false);
 	
 	/**
 	 *
@@ -339,7 +275,7 @@ public class Core {
 		return keystoreService;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(null, "IPaymentProcessorFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IPaymentProcessorFactory", 100, false);
 	
 	/**
 	 *  Get payment processor instance
@@ -398,7 +334,7 @@ public class Core {
 		return myProcessor;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IBankStatementLoaderFactory>> s_bankStatementLoaderFactoryCache = new CCache<>(null, "IBankStatementLoaderFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IBankStatementLoaderFactory>> s_bankStatementLoaderFactoryCache = new CCache<>(IBANK_STATEMENT_LOADER_FACTORY_CACHE_TABLE_NAME, "IBankStatementLoaderFactory", 100, false);
 	
 	/**
 	 * get BankStatementLoader instance
@@ -449,7 +385,7 @@ public class Core {
 		return myBankStatementLoader;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IBankStatementMatcherFactory>> s_bankStatementMatcherFactoryCache = new CCache<>(null, "IBankStatementMatcherFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IBankStatementMatcherFactory>> s_bankStatementMatcherFactoryCache = new CCache<>(IBANK_STATEMENT_MATCHER_FACTORY_CACHE_TABLE_NAME, "IBankStatementMatcherFactory", 100, false);
 	
 	/**
 	 * get BankStatementMatcher instance
@@ -500,7 +436,7 @@ public class Core {
 		return myBankStatementMatcher;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IShipmentProcessorFactory>> s_shipmentProcessorFactoryCache = new CCache<>(null, "IShipmentProcessorFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IShipmentProcessorFactory>> s_shipmentProcessorFactoryCache = new CCache<>(ISHIPMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IShipmentProcessorFactory", 100, false);
 	
 	/**
 	 * 
@@ -546,7 +482,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IAddressValidationFactory>> s_addressValidationFactoryCache = new CCache<>(null, "IAddressValidationFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IAddressValidationFactory>> s_addressValidationFactoryCache = new CCache<>(IADDRESS_VALIDATION_FACTORY_CACHE_TABLE_NAME, "IAddressValidationFactory", 100, false);
 	
 	/**
 	 * Get address validation instance
@@ -590,7 +526,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<ITaxProviderFactory>> s_taxProviderFactoryCache = new CCache<>(null, "ITaxProviderFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<ITaxProviderFactory>> s_taxProviderFactoryCache = new CCache<>(ITAX_PROVIDER_FACTORY_CACHE_TABLE_NAME, "ITaxProviderFactory", 100, false);
 	
 	/**
 	 * Get tax provider instance
@@ -647,7 +583,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IReplenishFactory>> s_replenishFactoryCache = new CCache<>(null, "IReplenishFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IReplenishFactory>> s_replenishFactoryCache = new CCache<>(IREPLENISH_FACTORY_CACHE_TABLE_NAME, "IReplenishFactory", 100, false);
 	
 	/**
 	 * get Custom Replenish instance
@@ -698,7 +634,7 @@ public class Core {
 		return myReplenishInstance;
 	}
 	
-	private final static CCache<String, IServiceReferenceHolder<ScriptEngineFactory>> s_scriptEngineFactoryCache = new CCache<>(null, "ScriptEngineFactory", 100, false);
+	private final static CCache<String, IServiceReferenceHolder<ScriptEngineFactory>> s_scriptEngineFactoryCache = new CCache<>(SCRIPT_ENGINE_FACTORY_CACHE_TABLE_NAME, "ScriptEngineFactory", 100, false);
 	
 	/** Get script engine 
 	 * 
@@ -737,7 +673,7 @@ public class Core {
 		return null;
 	}
 	
-	private static final CCache<String, IServiceReferenceHolder<IPaymentExporterFactory>> s_paymentExporterFactory = new CCache<>(null, "IPaymentExporterFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IPaymentExporterFactory>> s_paymentExporterFactory = new CCache<>(IPAYMENT_EXPORTER_FACTORY_CACHE_TABLE_NAME, "IPaymentExporterFactory", 100, false);
 	
 	/**
 	 * get PaymentExporter instance
@@ -820,7 +756,7 @@ public class Core {
 		return null;
 	}
 	
-	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(null, "IDepreciationMethodFactory", 100, false);
+	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME, "IDepreciationMethodFactory", 100, false);
 	
 	/**
 	 * lookup implement {@link IDepreciationMethod}
@@ -982,25 +918,12 @@ public class Core {
 		return processFactoryService;
 	}
 	
-	private static IServiceReferenceHolder<IMappedColumnCalloutFactory> s_mappedColumnCalloutFactoryReference = null;
-	
 	/**
 	 * 
 	 * @return {@link IMappedColumnCalloutFactory}
 	 */
 	public static IMappedColumnCalloutFactory getMappedColumnCalloutFactory() {
-		IMappedColumnCalloutFactory factoryService = null;
-		if (s_mappedColumnCalloutFactoryReference != null) {
-			factoryService = s_mappedColumnCalloutFactoryReference.getService();
-			if (factoryService != null)
-				return factoryService;
-		}
-		IServiceReferenceHolder<IMappedColumnCalloutFactory> serviceReference = Service.locator().locate(IMappedColumnCalloutFactory.class).getServiceReference();
-		if (serviceReference != null) {
-			factoryService = serviceReference.getService();
-			s_mappedColumnCalloutFactoryReference = serviceReference;
-		}
-		return factoryService;
+		return ColumnCalloutManager.getMappedColumnCalloutFactory();		
 	}
 	
 	private static IServiceReferenceHolder<IMappedDocumentFactory> s_mappedDocumentFactoryReference = null;
@@ -1023,5 +946,27 @@ public class Core {
 			s_mappedDocumentFactoryReference = serviceReference;
 		}
 		return factoryService;
+	}
+	
+	private static IServiceReferenceHolder<IEventManager> s_eventManagerReference = null;
+	
+	/**
+	 * 
+	 * @return {@link IEventManager}
+	 */
+	public static IEventManager getEventManager() {
+		IEventManager eventManager = null;
+		if (s_eventManagerReference != null) {
+			eventManager = s_eventManagerReference.getService();
+			if (eventManager != null)
+				return eventManager;
+		}
+		IServiceReferenceHolder<IEventManager> serviceReference = Service.locator().locate(IEventManager.class).getServiceReference();
+		if (serviceReference != null) {
+			eventManager = serviceReference.getService();
+			s_eventManagerReference = serviceReference;
+		}
+		
+		return eventManager;
 	}
 }

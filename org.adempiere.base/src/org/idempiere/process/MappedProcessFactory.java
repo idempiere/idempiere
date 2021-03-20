@@ -24,10 +24,8 @@
  **********************************************************************/
 package org.idempiere.process;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
-
 import org.adempiere.base.IProcessFactory;
+import org.adempiere.base.MappedByNameFactory;
 import org.compiere.process.ProcessCall;
 import org.osgi.service.component.annotations.Component;
 
@@ -39,10 +37,8 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true, 
 	service = {IProcessFactory.class, IMappedProcessFactory.class}, 
 	property = {"service.ranking:Integer=1"})
-public class MappedProcessFactory implements IProcessFactory, IMappedProcessFactory {
+public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> implements IProcessFactory, IMappedProcessFactory {
 
-	private final ConcurrentHashMap<String, Supplier<ProcessCall>> processMap = new ConcurrentHashMap<>();
-	
 	/**
 	 * default constructor
 	 */
@@ -51,17 +47,6 @@ public class MappedProcessFactory implements IProcessFactory, IMappedProcessFact
 
 	@Override
 	public ProcessCall newProcessInstance(String className) {
-		var supplier = processMap.get(className);
-		return supplier != null ? supplier.get() : null;
-	}
-
-	@Override
-	public void addMapping(String name, Supplier<ProcessCall> processSupplier) {
-		processMap.put(name, processSupplier);
-	}
-	
-	@Override
-	public void removeMapping(String name) {
-		processMap.remove(name);
+		return newInstance(className);				
 	}
 }

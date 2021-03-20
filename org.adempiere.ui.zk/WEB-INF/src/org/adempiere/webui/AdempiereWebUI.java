@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.util.ServerContext;
+import org.adempiere.util.ServerContextURLHandler;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.DrillCommand;
 import org.adempiere.webui.component.TokenCommand;
@@ -524,9 +525,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//save context for re-login
 		Properties properties = new Properties();
 		Env.setContext(properties, Env.AD_CLIENT_ID, Env.getAD_Client_ID(Env.getCtx()));
+		Env.setContext(properties, Env.AD_CLIENT_NAME, Env.getContext(Env.getCtx(), Env.AD_CLIENT_NAME));
 		Env.setContext(properties, Env.AD_ORG_ID, Env.getAD_Org_ID(Env.getCtx()));
 		Env.setContext(properties, Env.AD_USER_ID, user.getAD_User_ID());
+		Env.setContext(properties, Env.SALESREP_ID, user.getAD_User_ID());
+		Env.setContext(properties, Env.AD_USER_NAME, Env.getContext(Env.getCtx(), Env.AD_USER_NAME));
 		Env.setContext(properties, Env.AD_ROLE_ID, Env.getAD_Role_ID(Env.getCtx()));
+		Env.setContext(properties, Env.AD_ROLE_NAME, Env.getContext(Env.getCtx(), Env.AD_ROLE_NAME));
+		Env.setContext(properties, Env.USER_LEVEL, Env.getContext(Env.getCtx(), Env.USER_LEVEL));
 		Env.setContext(properties, Env.AD_ORG_NAME, Env.getContext(Env.getCtx(), Env.AD_ORG_NAME));
 		Env.setContext(properties, Env.M_WAREHOUSE_ID, Env.getContext(Env.getCtx(), Env.M_WAREHOUSE_ID));
 		Env.setContext(properties, UserPreference.LANGUAGE_NAME, Env.getContext(Env.getCtx(), UserPreference.LANGUAGE_NAME));
@@ -544,7 +550,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
 		HttpServletRequest httpRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();		
 		Env.setContext(properties, SessionContextListener.SERVLET_SESSION_ID, httpRequest.getSession().getId());
-		
+		if (Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER) != null)
+			properties.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER));
+
 		//stop key listener
 		if (keyListener != null) {
 			keyListener.detach();

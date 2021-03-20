@@ -94,14 +94,9 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 		AttributesImpl atts = new AttributesImpl();
 
 		MViewComponent m_ViewComponent = new MViewComponent(ctx.ctx, AD_ViewComponent_ID, null);
-		
-		boolean createElement = true;
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_ViewComponent.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
-		
+
+		boolean createElement = isPackOutElement(ctx, m_ViewComponent);
+
 		if (createElement) {
 			verifyPackOutRequirement(m_ViewComponent);
 			addTypeName(atts, "table");

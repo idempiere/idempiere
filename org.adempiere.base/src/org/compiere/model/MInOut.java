@@ -157,8 +157,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				line.saveEx(trxName);
 				//	Delivered everything ?
 				qty = qty.subtract(lineQty);
-			//	storage[ll].changeQtyOnHand(lineQty, !order.isSOTrx());	// Credit Memo not considered
-			//	storage[ll].saveEx(get_TrxName());
+
 				if (qty.signum() == 0)
 					break;
 			}
@@ -312,15 +311,9 @@ public class MInOut extends X_M_InOut implements DocAction
 		super (ctx, M_InOut_ID, trxName);
 		if (M_InOut_ID == 0)
 		{
-		//	setDocumentNo (null);
-		//	setC_BPartner_ID (0);
-		//	setC_BPartner_Location_ID (0);
-		//	setM_Warehouse_ID (0);
-		//	setC_DocType_ID (0);
 			setIsSOTrx (false);
 			setMovementDate (new Timestamp (System.currentTimeMillis ()));
 			setDateAcct (getMovementDate());
-		//	setMovementType (MOVEMENTTYPE_CustomerShipment);
 			setDeliveryRule (DELIVERYRULE_Availability);
 			setDeliveryViaRule (DELIVERYVIARULE_Pickup);
 			setFreightCostRule (FREIGHTCOSTRULE_FreightIncluded);
@@ -376,8 +369,6 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 		setC_DocType_ID (C_DocTypeShipment_ID);
 
-		// patch suggested by Armen
-		// setMovementType (order.isSOTrx() ? MOVEMENTTYPE_CustomerShipment : MOVEMENTTYPE_VendorReceipts);
 		String movementTypeShipment = null;
 		MDocType dtShipment = new MDocType(order.getCtx(), C_DocTypeShipment_ID, order.get_TrxName()); 
 		if (dtShipment.getDocBaseType().equals(MDocType.DOCBASETYPE_MaterialDelivery)) 
@@ -735,7 +726,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			}
 			if (!counter)
 				line.setM_AttributeSetInstance_ID(0);
-		//	line.setS_ResourceAssignment_ID(0);
+
 			line.setRef_InOutLine_ID(0);
 			line.setIsInvoiced(false);
 			//
@@ -1435,7 +1426,7 @@ public class MInOut extends X_M_InOut implements DocAction
 						}
 						
 					}
-					//	sLine.getM_AttributeSetInstance_ID() != 0
+
 					if (mtrx == null)
 					{
 						Timestamp dateMPolicy= null;
@@ -2455,7 +2446,6 @@ public class MInOut extends X_M_InOut implements DocAction
 		sb.append(getDocumentNo());
 		//	: Total Lines = 123.00 (#1)
 		sb.append(":")
-		//	.append(Msg.translate(getCtx(),"TotalLines")).append("=").append(getTotalLines())
 			.append(" (#").append(getLines(false).length).append(")");
 		//	 - Description
 		if (getDescription() != null && getDescription().length() > 0)

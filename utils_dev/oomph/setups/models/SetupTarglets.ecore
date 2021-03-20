@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="targlets" nsURI="http://www.eclipse.org/oomph/setup/targlets/1.0"
+    nsPrefix="setup.targlets">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupTarglets.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
+    <details key="variableName" value="setup.targlets.p2"/>
+    <details key="repository" value="${oomph.update.url}"/>
+    <details key="installableUnits" value="org.eclipse.oomph.targlets.feature.group org.eclipse.oomph.setup.targlets.feature.group"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.setup.targlets.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="TargletTask" eSuperTypes="http://www.eclipse.org/oomph/setup/1.0#//SetupTask">
+    <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
+      <details key="triggers" value="STARTUP MANUAL"/>
+      <contents xsi:type="ecore:EReference" name="targlets" upperBound="-1" eType="ecore:EClass http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Targlets.ecore#//Targlet"
+          containment="true"/>
+      <contents xsi:type="ecore:EAttribute" name="targletURIs" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+      <details key="text" value="Targlets"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targlets" upperBound="-1"
+        eType="ecore:EClass http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Targlets.ecore#//Targlet"
+        containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="targlet"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targletURIs" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="targletURI"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/Redirect"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operatingSystem" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="windowingSystem" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="architecture" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="locale" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="programArguments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMArguments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="vmArguments"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="implicitDependencies" upperBound="-1"
+        eType="#//ImplicitDependency" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="implicitDependency"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="Modular Target"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activateTarget" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ImplicitDependency">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="id"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/oomph/p2/1.0#//Version"
+        defaultValueLiteral="0.0.0"/>
+  </eClassifiers>
+</ecore:EPackage>

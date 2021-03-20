@@ -43,6 +43,14 @@
       		<param-value>false</param-value>
     	</init-param>
   	</servlet>
+	<servlet>
+		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
+		<servlet-class>org.idempiere.web.OAuthCodeCallbackHandlerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
+		<url-pattern>/oauth2/callback</url-pattern>
+	</servlet-mapping>
 	<!-- <servlet-mapping>
 		<servlet-name>StatusInfo</servlet-name>
 		<url-pattern>/statusInfo</url-pattern>

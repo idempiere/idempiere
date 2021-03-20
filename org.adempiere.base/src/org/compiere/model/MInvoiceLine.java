@@ -318,7 +318,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			// use product UOM if the shipment hasn't the same uom than the order
 			setC_UOM_ID(getProduct().getC_UOM_ID());
 		setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
-	//	setS_ResourceAssignment_ID(sLine.getS_ResourceAssignment_ID());
+
 		if(getM_Product_ID() == 0)
 		    setC_Charge_ID(sLine.getC_Charge_ID());
 		//
@@ -388,10 +388,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 */
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID == 0)		//	 0 is valid ID
-			set_Value("M_AttributeSetInstance_ID", Integer.valueOf(0));
-		else
-			super.setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
+		super.setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
 	}	//	setM_AttributeSetInstance_ID
 
 

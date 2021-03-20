@@ -54,6 +54,7 @@ import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeUtility;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MAuthorizationAccount;
 
 /**
  * provide function for sent, receive email in imap protocol
@@ -164,11 +165,17 @@ public class EmailSrv {
 		}
 		props.put("mail.store.protocol", protocol);
 		props.put("mail.host", imapHost);
-		props.put("mail.imap.port", imapPort);
-		
-		EMailAuthenticator auth = new EMailAuthenticator(imapUser, imapPass);
-		mailSession = Session.getInstance(props, auth);
-		mailSession.setDebug(CLogMgt.isLevelAll());
+		props.put("mail."+protocol+".port", imapPort);
+
+		MAuthorizationAccount authAccount = MAuthorizationAccount.getEMailAccount(imapUser);
+		boolean isOAuth2 = (authAccount != null);
+		if (isOAuth2) {
+			props.put("mail."+protocol+".ssl.enable", "true");
+			props.put("mail."+protocol+".auth.mechanisms", "XOAUTH2");
+			imapPass = authAccount.refreshAndGetAccessToken();
+		}
+		mailSession = Session.getInstance(props);
+		mailSession.setDebug(CLogMgt.isLevelFinest());
 		
 		return mailSession;
 	}	//	getSession
@@ -179,7 +186,7 @@ public class EmailSrv {
 			return mailStore;
 		
 		mailStore = getMailSession().getStore();
-		mailStore.connect();
+		mailStore.connect(imapHost, imapUser, imapPass);
 		return mailStore;
 	}	//	getStore
 	

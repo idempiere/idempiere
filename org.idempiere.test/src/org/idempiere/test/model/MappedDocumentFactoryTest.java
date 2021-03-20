@@ -36,6 +36,7 @@ import org.compiere.acct.Doc_InOut;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MInOut;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,9 @@ public class MappedDocumentFactoryTest extends AbstractTestCase {
 	public void testDefaultMappedDocumentFactory() {
 		IMappedDocumentFactory factory = Core.getMappedDocumentFactory();
 		factory.addMapping(null, MInOut.Table_Name, (p) -> new MyDocInOut(p.as, p.rs, p.trxName));
+		
+		//need to reset cache if you are replacing doc classes from core
+		CacheMgt.get().reset(DocManager.IDOC_FACTORY_CACHE_TABLE_NAME);
 		
 		int C_AcctSchema_ID = MClientInfo.get().getC_AcctSchema1_ID();
 		MAcctSchema as = new MAcctSchema(Env.getCtx(), C_AcctSchema_ID, getTrxName());

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -134,8 +135,7 @@ public class ProcessParameterPanel extends Panel implements
 
 	//
 	private ArrayList<WEditor> m_wEditors = new ArrayList<WEditor>();
-	private ArrayList<WEditor> m_wEditors2 = new ArrayList<WEditor>(); // for
-																		// ranges
+	private ArrayList<WEditor> m_wEditors2 = new ArrayList<WEditor>(); // for ranges
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
@@ -361,6 +361,7 @@ public class ProcessParameterPanel extends Panel implements
 			editor2.getComponent().addEventListener(Events.ON_FOCUS, this);
 			// New Field value to be updated to editor
 			mField2.addPropertyChangeListener(editor2);
+			editor2.addValueChangeListener(this);
 			editor2.dynamicDisplay();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor2.getComponent(), "49%");
 			setEditorPlaceHolder(editor2, mField2.getPlaceholder2());
@@ -531,7 +532,10 @@ public class ProcessParameterPanel extends Panel implements
 					if (editor.getValue() != null) {
 	            		ValueChangeEvent changeEvent = new ValueChangeEvent(editor, editor.getColumnName(), null, editor.getValue());
 	            		valueChange(changeEvent);
-	            		// Note that the second editor2 in ranges has no event verification
+					}
+					if (editor2 != null && editor2.getValue() != null) {
+					    ValueChangeEvent changeEvent = new ValueChangeEvent(editor2, editor2.getColumnName(), null, editor2.getValue());
+					    valueChange(changeEvent);
 					}
 
 					log.fine(para.toString());
@@ -726,15 +730,21 @@ public class ProcessParameterPanel extends Panel implements
 	 */
 
 	public void valueChange(ValueChangeEvent evt) {
+		String propName = evt.getPropertyName();
 		if (evt.getSource() instanceof WEditor) {
-			GridField changedField = ((WEditor) evt.getSource()).getGridField();
+			WEditor editor = (WEditor) evt.getSource();
+			if (m_wEditors2.contains(editor)) {
+				// is a _To editor for ranges
+				propName += "_2";  // same as web services
+			}
+			GridField changedField = editor.getGridField();
 			if (changedField != null) {
 				processDependencies (changedField);
 				// future processCallout (changedField);
 			}
 			Events.postEvent("onPostEditorValueChange", this, evt.getSource());
 		}
-		processNewValue(evt.getNewValue(), evt.getPropertyName());
+		processNewValue(evt.getNewValue(), propName);
 	}
 	
 	@Override
@@ -769,9 +779,14 @@ public class ProcessParameterPanel extends Panel implements
 	private void onPostEditorValueChange(WEditor editor) {
 		if (m_processInfo.getAD_Process_ID() > 0) {
 			String className = MProcess.get(Env.getCtx(), m_processInfo.getAD_Process_ID()).getClassname();
-			List<IProcessParameterListener> listeners = Extensions.getProcessParameterListeners(className, editor.getColumnName());
+			String colName = editor.getColumnName();
+			if (m_wEditors2.contains(editor)) {
+				// is a _To editor for ranges
+				colName += "_2";  // same as web services
+			}
+			List<IProcessParameterListener> listeners = Extensions.getProcessParameterListeners(className, colName);
 			for(IProcessParameterListener listener : listeners) {
-				listener.onChange(this, editor.getColumnName(), editor);
+				listener.onChange(this, colName, editor);
 			}
 		}
 	}
@@ -846,8 +861,7 @@ public class ProcessParameterPanel extends Panel implements
 						m_wEditors2.get(i).setVisible(true);
 					}
 				}
-				boolean rw = mField.isEditablePara(true); // r/w - check if
-															// field is Editable
+				boolean rw = mField.isEditablePara(true); // r/w - check if field is Editable
 				editor.setReadWrite(rw);
 				editor.dynamicDisplay();
 				if (mField.getVO().isRange) {
@@ -863,6 +877,14 @@ public class ProcessParameterPanel extends Panel implements
 			}
 			editor.setMandatory(mField.isMandatory(true));
         	editor.updateStyle();
+			if (mField.getVO().isRange) {
+				m_wEditors2.get(i).setMandatory(mField.isMandatory(true));
+				m_wEditors2.get(i).updateStyle();
+				// Add mandatory style on label when Parameter To is still blank
+				if (editor.isMandatory() && editor.getLabel() != null && m_wEditors2.get(i).isNullOrEmpty()) {
+					LayoutUtils.addSclass("idempiere-mandatory-label", editor.getLabel());
+				}
+			}
 		}
 		if (getParent() != null) {
 			getParent().invalidate();

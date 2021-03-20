@@ -45,6 +45,7 @@ import org.compiere.model.MLanguage;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -397,41 +398,30 @@ public class Translation implements IApplication
 		return retValue;
 	}	//	getTrlColumns
 
-	
-	/**************************************************************************
-	 * 	Validate Language.
+	/**
+	 * Validate Language.
 	 *  - Check if AD_Language record exists
 	 *  - Check Trl table records
 	 * 	@param AD_Language language
 	 * 	@return "" if validated - or error message
 	 */
-	public String validateLanguage (String AD_Language)
+	public String validateLanguage(String p_AD_Language) {
+		return validateLanguage(p_AD_Language, null);
+	}
+
+	/**************************************************************************
+	 * 	Validate Language.
+	 *  - Check if AD_Language record exists
+	 *  - Check Trl table records
+	 * 	@param AD_Language language
+	 *  @param get_TrxName transaction
+	 * 	@return "" if validated - or error message
+	 */
+	public String validateLanguage (String AD_Language, String trxName)
 	{
-		String sql = "SELECT * "
-			+ "FROM AD_Language "
-			+ "WHERE AD_Language=?";
-		MLanguage language = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, AD_Language);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				language = new MLanguage (m_ctx, rs, null);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return e.toString();
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
+		MLanguage language = new Query(m_ctx, MLanguage.Table_Name, "AD_Language=?", trxName)
+				.setParameters(AD_Language)
+				.first();
 
 		//	No AD_Language Record
 		if (language == null)
