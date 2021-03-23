@@ -92,8 +92,6 @@ public class MLandedCost extends X_C_LandedCost
 		super (ctx, C_LandedCost_ID, trxName);
 		if (C_LandedCost_ID == 0)
 		{
-		//	setC_InvoiceLine_ID (0);
-		//	setM_CostElement_ID (0);
 			setLandedCostDistribution (LANDEDCOSTDISTRIBUTION_Quantity);	// Q
 		}
 	}	//	MLandedCost

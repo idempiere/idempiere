@@ -53,17 +53,12 @@ public class MJournalLine extends X_GL_JournalLine
 		super (ctx, GL_JournalLine_ID, trxName);
 		if (GL_JournalLine_ID == 0)
 		{
-		//	setGL_JournalLine_ID (0);		//	PK
-		//	setGL_Journal_ID (0);			//	Parent
-		//	setC_Currency_ID (0);
-		//	setC_ValidCombination_ID (0);
 			setLine (0);
 			setAmtAcctCr (Env.ZERO);
 			setAmtAcctDr (Env.ZERO);
 			setAmtSourceCr (Env.ZERO);
 			setAmtSourceDr (Env.ZERO);
 			setCurrencyRate (Env.ONE);
-		//	setC_ConversionType_ID (0);
 			setDateAcct (new Timestamp(System.currentTimeMillis()));
 			setIsGenerated (true);
 		}
