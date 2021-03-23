@@ -843,7 +843,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		boolean parentComplete = getParent().isComplete();
 		boolean isReversal = getParent().isReversal();
 		if (newRecord && parentComplete) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_InvoiceLine"));
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Invoice_ID"));
 			return false;
 		}
 		// Re-set invoice header (need to update m_IsSOTrx flag) - phib [ 1686773 ]

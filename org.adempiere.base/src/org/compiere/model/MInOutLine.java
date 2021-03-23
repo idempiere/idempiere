@@ -506,7 +506,7 @@ public class MInOutLine extends X_M_InOutLine
 	{
 		log.fine("");
 		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOutLine"));
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
 		}
 		if (getParent().pendingConfirmations()) {

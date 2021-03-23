@@ -516,7 +516,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "DD_OrderLine"));
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "DD_Order_ID"));
 			return false;
 		}
 		//	Get Defaults from Parent

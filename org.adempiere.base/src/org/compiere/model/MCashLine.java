@@ -303,7 +303,7 @@ public class MCashLine extends X_C_CashLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_CashLine"));
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Cash_ID"));
 			return false;
 		}
 		//	Cannot change generated Invoices

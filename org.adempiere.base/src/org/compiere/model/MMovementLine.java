@@ -168,7 +168,7 @@ public class MMovementLine extends X_M_MovementLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_MovementLine"));
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Movement_ID"));
 			return false;
 		}
 		if (getParent().pendingConfirmations()) {

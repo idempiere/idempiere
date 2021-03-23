@@ -51,7 +51,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -399427235334348654L;
+	private static final long serialVersionUID = -3617284116557414217L;
 
 	/**
 	 * 	Create Confirmation or return existing one
@@ -770,5 +770,17 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		return 0;
 	}	//	getC_Currency_ID
 
-	
+	/**
+	 * 	Document Status is Complete, Closed, Reversed or Voided
+	 *	@return true if CO, CL, RE or VO
+	 */
+	public boolean isComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds)
+			|| DOCSTATUS_Voided.equals(ds);
+	}	//	isComplete
+
 }	//	MMovementConfirm

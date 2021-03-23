@@ -26,7 +26,7 @@ public class MProduction extends X_M_Production implements DocAction {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4650232602150964606L;
+	private static final long serialVersionUID = 6714776372370644208L;
 
 	/**
 	 * 
@@ -907,4 +907,18 @@ public class MProduction extends X_M_Production implements DocAction {
 		}
 		return true;
 	}
+
+	/**
+	 * 	Document Status is Complete, Closed, Reversed or Voided
+	 *	@return true if CO, CL, RE or VO
+	 */
+	public boolean isStatusComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds)
+			|| DOCSTATUS_Voided.equals(ds);
+	}	//	isComplete
+
 }

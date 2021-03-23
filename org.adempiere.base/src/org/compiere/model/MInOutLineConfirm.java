@@ -182,6 +182,11 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MInOutConfirm parent = new MInOutConfirm(getCtx(), getM_InOutConfirm_ID(), get_TrxName());
+		if (newRecord && parent.isComplete()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOutConfirm_ID"));
+			return false;
+		}
 		//	Calculate Difference = Target - Confirmed - Scrapped
 		BigDecimal difference = getTargetQty();
 		difference = difference.subtract(getConfirmedQty());

@@ -191,7 +191,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "S_TimeExpenseLine"));
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "S_TimeExpense_ID"));
 			return false;
 		}
 		//	Calculate Converted Amount

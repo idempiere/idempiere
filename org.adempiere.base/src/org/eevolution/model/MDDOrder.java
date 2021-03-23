@@ -1268,15 +1268,16 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	}
 
 	/**
-	 * 	Document Status is Complete or Closed
-	 *	@return true if CO, CL or RE
+	 * 	Document Status is Complete, Closed, Reversed or Voided
+	 *	@return true if CO, CL, RE or VO
 	 */
 	public boolean isComplete()
 	{
 		String ds = getDocStatus();
-		return DOCSTATUS_Completed.equals(ds) 
+		return DOCSTATUS_Completed.equals(ds)
 			|| DOCSTATUS_Closed.equals(ds)
-			|| DOCSTATUS_Reversed.equals(ds);
+			|| DOCSTATUS_Reversed.equals(ds)
+			|| DOCSTATUS_Voided.equals(ds);
 	}	//	isComplete
 
 }	//	MDDOrder

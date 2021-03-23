@@ -269,7 +269,7 @@ public class MRMALine extends X_M_RMALine
     {
 		if (newRecord && getParent().isComplete()) 
 		{
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_RMA"));
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_RMA_ID"));
 			return false;
 		}
         if (getM_InOutLine_ID() == 0 && getC_Charge_ID() == 0 && getM_Product_ID() == 0)
