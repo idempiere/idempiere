@@ -93,8 +93,9 @@ public final class ImpFormatRow
 	private String				m_constantValue = "";
 	private boolean				m_constantIsString = true;
 	//
-	private Callout				m_callout = null;
-	private String				m_method = null;
+	private Callout[]			m_callout = null;
+	private String[]			m_method = null;
+	private String				importprefix = "";
 	//
 	private SimpleDateFormat	m_dformat = null;
 	private int					m_maxLength = 0;
@@ -266,9 +267,10 @@ public final class ImpFormatRow
 	 *  @param divideBy100 divide number by 100
 	 *  @param constantValue constant value
 	 *  @param callout Java callout
+	 *  @param importprefix Prefix to be added if value is not null or empty
 	 */
 	public void setFormatInfo (String dataFormat, String decimalPoint, boolean divideBy100,
-		String constantValue, String callout)
+		String constantValue, String callout, String importprefix)
 	{
 		if (dataFormat == null)
 			m_dataFormat = "";
@@ -304,25 +306,36 @@ public final class ImpFormatRow
 		//	callout
 		if (callout != null)
 		{
-			int methodStart = callout.lastIndexOf('.');
-			try
-			{
-				if (methodStart != -1)      //  no class
+			String[] callouts = callout.split(";");
+			m_callout = new Callout[callouts.length];
+			m_method = new String[callouts.length];
+			for (int i = 0; i < callouts.length; i++) {
+				int methodStart = callouts[i].trim().lastIndexOf('.');
+				try
 				{
-					Class<?> cClass = Class.forName(callout.substring(0,methodStart));
-					m_callout = (Callout)cClass.getDeclaredConstructor().newInstance();
-					m_method = callout.substring(methodStart+1);
+					if (methodStart != -1)      //  no class
+					{
+						Class<?> cClass = Class.forName(callouts[i].trim().substring(0,methodStart));
+						m_callout[i] = (Callout)cClass.getDeclaredConstructor().newInstance();
+						m_method[i] = callouts[i].trim().substring(methodStart+1);
+					}
+				}
+				catch (Exception e)
+				{
+					log.log(Level.SEVERE, "MTab.setFormatInfo - " + e.toString());
+				}
+				if (m_callout.length == 0 || m_method == null || m_method.length == 0)
+				{
+					log.log(Level.SEVERE, "MTab.setFormatInfo - Invalid Callout " + callout);
+					m_callout = null;
 				}
 			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "MTab.setFormatInfo - " + e.toString());
-			}
-			if (m_callout == null || m_method == null || m_method.length() == 0)
-			{
-				log.log(Level.SEVERE, "MTab.setFormatInfo - Invalid Callout " + callout);
-				m_callout = null;
-			}
+		}
+		//import prefix
+		if (importprefix != null) {
+			this.importprefix = importprefix;
+		} else {
+			this.importprefix = "";
 		}
 	}   //  setFormatInfo
 
@@ -398,11 +411,12 @@ public final class ImpFormatRow
 		else
 			retValue = parseString (info);
 		//
-		if (m_callout != null)
+		if (m_callout != null && m_callout.length > 0)
 		{
 			try
 			{
-				retValue = m_callout.convert (m_method, retValue);
+				for (int i = 0; i < m_callout.length; i++)
+					retValue = m_callout[i].convert (m_method[i], retValue);
 			}
 			catch (Exception e)
 			{
@@ -411,8 +425,8 @@ public final class ImpFormatRow
 		}
 		//
 		if (retValue == null)
-			retValue = "";
-		return retValue.trim();
+			retValue = "";		
+		return (retValue.trim().length() > 0 ? importprefix : "") + retValue.trim();
 	}	//	parse
 
 	
