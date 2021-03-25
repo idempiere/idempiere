@@ -43,6 +43,7 @@ import org.compiere.util.Trx;
  *	Create Menu - Window/tab & field from a table 
  *	
  *  @author Diego Ruiz - BX Service GmbH
+ *  @contributor Andreas Sumerauer IDEMPIERE-4745
  */
 public class CreateWindowFromTable extends SvrProcess
 {
@@ -182,9 +183,9 @@ public class CreateWindowFromTable extends SvrProcess
 			tab.setIsSingleRow(true); //Default
 			
 			//Set order by
-			if (table.getColumnIndex("Value") > 0)
+			if (table.getColumnIndex("Value") > 0 && !table.getColumn("Value").isVirtualColumn())
 				tab.setOrderByClause(table.getTableName() + ".Value");
-			else if (table.getColumnIndex("Name") > 0)
+			else if (table.getColumnIndex("Name") > 0 && !table.getColumn("Name").isVirtualColumn())
 				tab.setOrderByClause(table.getTableName() + ".Name");
 			else 
 				tab.setOrderByClause(table.getTableName() + ".Created DESC");
