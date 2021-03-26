@@ -67,7 +67,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2951110137945905890L;
+	private static final long serialVersionUID = 1072622097616195229L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -411,6 +411,16 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}   //  getColumnIndex
 
 	/**
+	 *  Column exists?
+	 *  @param ColumnName column name
+	 *  @return boolean - true indicating that the column exists in the table
+	 */
+	public synchronized boolean columnExists (String ColumnName)
+	{
+		return getColumnIndex(ColumnName) >= 0;
+	}   //  columnExists
+
+	/**
 	 *  Get Column Index
 	 *  @param AD_Column_ID column
 	 *  @return index of column with ColumnName or -1 if not found
@@ -425,7 +435,17 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		
 		return -1;
 	}   //  getColumnIndex
-	
+
+	/**
+	 *  Column exists?
+	 *  @param AD_Column_ID column
+	 *  @return boolean - true indicating that the column exists in the table
+	 */
+	public synchronized boolean columnExists (int AD_Column_ID)
+	{
+		return getColumnIndex(AD_Column_ID) >= 0;
+	}   //  columnExists
+
 	/**
 	 * 	Table has a single Key
 	 *	@return true if table has single key column
