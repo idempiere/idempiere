@@ -67,7 +67,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3491370407383520400L;
+	private static final long serialVersionUID = -7981455044208282721L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -411,11 +411,21 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 *  @param ColumnName column name
 	 *  @return boolean - true indicating that the column exists in the table and is not virtual
 	 */
-	public synchronized boolean columnExistsNonVirtual (String ColumnName)
+	public synchronized boolean columnExistsInDB (String ColumnName)
 	{
 		MColumn column = getColumn(ColumnName);
 		return column != null && ! column.isVirtualColumn();
-	}   //  columnExists
+	}   //  columnExistsInDB
+
+	/**
+	 *  Column exists?
+	 *  @param ColumnName column name
+	 *  @return boolean - true indicating that the column exists in dictionary
+	 */
+	public synchronized boolean columnExistsInDictionary (String ColumnName)
+	{
+		return getColumnIndex(ColumnName) >= 0;
+	}   //  columnExistsInDictionary
 
 	/**
 	 *  Get Column Index

@@ -406,12 +406,12 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		
 		String tableName = getSourceTableName(true);
 		MTable table = MTable.get(getCtx(), tableName);
-		if (! table.columnExistsNonVirtual("IsSummary")) {
+		if (! table.columnExistsInDB("IsSummary")) {
 			// IsSummary is mandatory column to have a tree
 			log.saveError("Error", "IsSummary column required for tree tables"); 
 			return false;
 		}
-		if (! table.columnExistsNonVirtual("Value")) {
+		if (! table.columnExistsInDB("Value")) {
 			if (isTreeDrivenByValue()) {
 				// Value is mandatory column to have a tree driven by Value
 				setIsTreeDrivenByValue(false);
