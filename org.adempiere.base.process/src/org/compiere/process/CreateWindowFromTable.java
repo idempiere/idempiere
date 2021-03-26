@@ -122,8 +122,7 @@ public class CreateWindowFromTable extends SvrProcess
 			MWindow window;
 			int tabSeqNo = 0;
 			if (p_isNewWindow) {
-				if (MWindow.WINDOWTYPE_Transaction.equals(p_WindowType) && 
-						! table.columnExists("Processed"))
+				if (MWindow.WINDOWTYPE_Transaction.equals(p_WindowType) && ! table.columnExistsNonVirtual("Processed"))
 					throw new AdempiereException(Msg.getMsg(getCtx(), "TrxWindowMandatoryProcessed"));
 				
 				int i = DB.getSQLValue(get_TrxName(), "SELECT 1 FROM AD_Window WHERE AD_Window.name = ?", table.getName());
@@ -183,9 +182,9 @@ public class CreateWindowFromTable extends SvrProcess
 			tab.setIsSingleRow(true); //Default
 			
 			//Set order by
-			if (table.columnExists("Value") && !table.getColumn("Value").isVirtualColumn())
+			if (table.columnExistsNonVirtual("Value"))
 				tab.setOrderByClause(table.getTableName() + ".Value");
-			else if (table.columnExists("Name") && !table.getColumn("Name").isVirtualColumn())
+			else if (table.columnExistsNonVirtual("Name"))
 				tab.setOrderByClause(table.getTableName() + ".Name");
 			else 
 				tab.setOrderByClause(table.getTableName() + ".Created DESC");

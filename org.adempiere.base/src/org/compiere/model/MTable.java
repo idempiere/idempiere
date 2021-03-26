@@ -67,7 +67,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1072622097616195229L;
+	private static final long serialVersionUID = 3491370407383520400L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -384,14 +384,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	{
 		if (columnName == null || columnName.length() == 0)
 			return null;
-		getColumns(false);
-		//
-		for (int i = 0; i < m_columns.length; i++)
-		{
-			if (columnName.equalsIgnoreCase(m_columns[i].getColumnName()))
-				return m_columns[i];
-		}
-		return null;
+		int idx = getColumnIndex(columnName);
+		if (idx < 0)
+			return null;
+		return m_columns[idx];
 	}	//	getColumn
 
 	/**
@@ -411,13 +407,14 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}   //  getColumnIndex
 
 	/**
-	 *  Column exists?
+	 *  Column exists and is not virtual?
 	 *  @param ColumnName column name
-	 *  @return boolean - true indicating that the column exists in the table
+	 *  @return boolean - true indicating that the column exists in the table and is not virtual
 	 */
-	public synchronized boolean columnExists (String ColumnName)
+	public synchronized boolean columnExistsNonVirtual (String ColumnName)
 	{
-		return getColumnIndex(ColumnName) >= 0;
+		MColumn column = getColumn(ColumnName);
+		return column != null && ! column.isVirtualColumn();
 	}   //  columnExists
 
 	/**
@@ -435,16 +432,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		
 		return -1;
 	}   //  getColumnIndex
-
-	/**
-	 *  Column exists?
-	 *  @param AD_Column_ID column
-	 *  @return boolean - true indicating that the column exists in the table
-	 */
-	public synchronized boolean columnExists (int AD_Column_ID)
-	{
-		return getColumnIndex(AD_Column_ID) >= 0;
-	}   //  columnExists
 
 	/**
 	 * 	Table has a single Key
