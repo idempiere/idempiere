@@ -630,8 +630,6 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 				retStr.append(", ").append(getAddress5());
 			//	City, Region, Postal
 			retStr.append(", ").append(parseCRP (getCountry()));
-			//	Add Country would come here
-			// retStr.append(", ").append(getCountry());
 		}
 		return retStr.toString();
 	}	//	toString
@@ -672,7 +670,6 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 				retStr.append("\n").append(getAddress5());
 			//	City, Region, Postal
 			retStr.append("\n").append(parseCRP (getCountry()));
-			//	Add Country would come here
 		}
 		return retStr.toString();
 	}	//	toStringCR

@@ -329,7 +329,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 					onNew();
 			}
 		});
-		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")) + "    Shift+Alt+N");
+		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SaveCreate")) + "    Shift+Alt+N");
 		buttons.put(BTN_NEW_ID.substring(3, BTN_NEW_ID.length()), button);
 		
 		button = new ToolBarButton();
@@ -838,12 +838,12 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         {
             insertRecord = adtab.getGridTab().isInsertRecord();
         }
-        boolean enableNew = !changed && insertRecord && !adtab.getGridTab().isSortTab();
+        boolean enableNew = insertRecord && !adtab.getGridTab().isSortTab();
 		if (deleteRecord)
         {
 			deleteRecord = adtab.getGridTab().isDeleteRecord();
         }
-        boolean enableDelete = !changed && deleteRecord && !adtab.getGridTab().isSortTab();
+        boolean enableDelete = !changed && deleteRecord && !adtab.getGridTab().isSortTab() && !adtab.getGridTab().isProcessed();
         boolean enableCustomize = !adtab.getGridTab().isSortTab() && adtab.isGridView();
         
         ADWindow adwindow = ADWindow.findADWindow(this);

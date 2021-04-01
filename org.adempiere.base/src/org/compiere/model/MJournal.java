@@ -69,21 +69,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 		super (ctx, GL_Journal_ID, trxName);
 		if (GL_Journal_ID == 0)
 		{
-		//	setGL_Journal_ID (0);		//	PK
-		//	setC_AcctSchema_ID (0);
-		//	setC_Currency_ID (0);
-		//	setC_DocType_ID (0);
-		//	setC_Period_ID (0);
-			//
 			setCurrencyRate (Env.ONE);
-		//	setC_ConversionType_ID(0);
-		//	setDateAcct (new Timestamp(System.currentTimeMillis()));
 			setDateDoc (new Timestamp(System.currentTimeMillis()));
-		//	setDescription (null);
 			setDocAction (DOCACTION_Complete);
 			setDocStatus (DOCSTATUS_Drafted);
-		//	setDocumentNo (null);
-		//	setGL_Category_ID (0);
 			setPostingType (POSTINGTYPE_Actual);
 			setTotalCr (Env.ZERO);
 			setTotalDr (Env.ZERO);
@@ -145,10 +134,6 @@ public class MJournal extends X_GL_Journal implements DocAction
 		setC_Currency_ID(original.getC_Currency_ID());
 		setC_ConversionType_ID(original.getC_ConversionType_ID());
 		setCurrencyRate(original.getCurrencyRate());
-		
-	//	setDateDoc(original.getDateDoc());
-	//	setDateAcct(original.getDateAcct());
-	//	setC_Period_ID(original.getC_Period_ID());
 	}	//	MJournal
 	
 	
@@ -1011,10 +996,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
