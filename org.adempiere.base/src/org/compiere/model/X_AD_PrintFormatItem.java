@@ -30,7 +30,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210220L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -1303,6 +1303,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String PRINTFORMATTYPE_Rectangle = "R";
 	/** Line = L */
 	public static final String PRINTFORMATTYPE_Line = "L";
+	/** Script = S */
+	public static final String PRINTFORMATTYPE_Script = "S";
 	/** Set Format Type.
 		@param PrintFormatType 
 		Print Format Type
@@ -1373,6 +1375,23 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Script.
+		@param Script 
+		Dynamic Java Language Script to calculate result
+	  */
+	public void setScript (String Script)
+	{
+		set_Value (COLUMNNAME_Script, Script);
+	}
+
+	/** Get Script.
+		@return Dynamic Java Language Script to calculate result
+	  */
+	public String getScript () 
+	{
+		return (String)get_Value(COLUMNNAME_Script);
 	}
 
 	/** Set Sequence.

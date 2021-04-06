@@ -1145,6 +1145,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						element.setMaxWidth(maxWidth);
 					}
 				}
+				/** START DEVCOFFEE: colunas tipo script no formato de impressao **/
+				else if (item.getPrintFormatType().equals("S"))
+				{
+					element = createStringElement (item.getName(),
+							item.getAD_PrintColor_ID (), item.getAD_PrintFont_ID (),
+							maxWidth, item.getMaxHeight (), item.isHeightOneLine (), alignment, true);
+				}
 				else	//	(item.isTypeText())		//**	Text
 				{
 					String printName = item.getPrintName (m_format.getLanguage ());
@@ -1246,6 +1253,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		newLine();
 		PrintElement element = null;
 		//
+		// COF #10540 - evitar erro ao gerar PDF por inconsistencia na configuraçao
+		if (item.getAD_PrintFormatChild_ID() <= 0)
+		{
+			log.log(Level.SEVERE, "Formato incluso não configurado. AD_PrintFormat_ID = " + item.getAD_PrintFormat_ID() + ", AD_PrintFormatItem_ID=" + item.getAD_PrintFormatItem_ID());
+			return element;
+		}
+
 		MPrintFormat format = MPrintFormat.get (getCtx(), item.getAD_PrintFormatChild_ID(), false);
 		format.setLanguage(m_format.getLanguage());
 		if (m_format.isTranslationView())
@@ -1800,11 +1814,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					{
 						columnElement = item.getPrintName(format.getLanguage());	
 					}
-					else if (item.isTypeField())
+					else if (item.isTypeField() || item.getPrintFormatType().equals("S"))
 					{
 						Object obj = null;
 						if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
 							obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
+						/** START DEVCOFFEE: colunas tipo script no formato de impressao **/
+						if (item.getPrintFormatType().equals("S"))
+						{
+							obj = printData.getNode(item.getName());
+						}
 						if (obj == null)
 							;
 						else if (obj instanceof PrintDataElement)

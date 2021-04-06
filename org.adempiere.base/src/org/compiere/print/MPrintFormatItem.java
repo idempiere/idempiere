@@ -246,6 +246,14 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		}
 	}	//	loadTranslations
 
+	/**
+	 * 	Type Script
+	 *	@return true if script
+	 */
+	public boolean isTypeScript()
+	{
+		return getPrintFormatType().equals(PRINTFORMATTYPE_Script);
+	}
 
 	/**
 	 * 	Type Field
