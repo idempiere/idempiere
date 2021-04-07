@@ -285,7 +285,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	{
 		if (getGL_JournalBatch_ID() > 0) {
 			MJournalBatch parent = new MJournalBatch(getCtx(), getGL_JournalBatch_ID(), get_TrxName());
-			if (newRecord && parent.isComplete()) {
+			if (newRecord && parent.isProcessed()) {
 				log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_JournalBatch_ID"));
 				return false;
 			}
@@ -1035,16 +1035,15 @@ public class MJournal extends X_GL_Journal implements DocAction
 	}	//	getApprovalAmt
 
 	/**
-	 * 	Document Status is Complete, Closed, Reversed or Voided
-	 *	@return true if CO, CL, RE or VO
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
 	 */
 	public boolean isComplete()
 	{
 		String ds = getDocStatus();
-		return DOCSTATUS_Completed.equals(ds)
+		return DOCSTATUS_Completed.equals(ds) 
 			|| DOCSTATUS_Closed.equals(ds)
-			|| DOCSTATUS_Reversed.equals(ds)
-			|| DOCSTATUS_Voided.equals(ds);
+			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
 	/**

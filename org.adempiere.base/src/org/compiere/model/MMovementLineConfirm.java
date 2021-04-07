@@ -150,7 +150,7 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MMovementConfirm parent = new MMovementConfirm(getCtx(), getM_MovementConfirm_ID(), get_TrxName());
-		if (newRecord && parent.isComplete()) {
+		if (newRecord && parent.isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_MovementConfirm_ID"));
 			return false;
 		}

@@ -243,7 +243,7 @@ public class MMovementLineMA extends X_M_MovementLineMA
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MMovementLine parentline = new MMovementLine(getCtx(), getM_MovementLine_ID(), get_TrxName());
-		if (newRecord && parentline.getParent().isComplete()) {
+		if (newRecord && parentline.getParent().isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Movement_ID"));
 			return false;
 		}

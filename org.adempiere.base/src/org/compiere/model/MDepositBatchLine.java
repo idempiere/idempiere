@@ -124,7 +124,7 @@ import org.compiere.util.Msg;
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MDepositBatch parent = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
-		if (newRecord && parent.isComplete()) {
+		if (newRecord && parent.isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_DepositBatch_ID"));
 			return false;
 		}

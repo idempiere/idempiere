@@ -256,7 +256,7 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MInOutLine parentline = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
-		if (newRecord && parentline.getParent().isComplete()) {
+		if (newRecord && parentline.getParent().isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
 		}

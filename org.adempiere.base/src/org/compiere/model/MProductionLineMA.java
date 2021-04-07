@@ -107,7 +107,7 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 			MProductionPlan plan = new MProductionPlan(getCtx(), parentLine.getM_ProductionPlan_ID(), get_TrxName());
 			prodParent = new MProduction(getCtx(), plan.getM_Production_ID(), get_TrxName());
 		}
-		if (newRecord && prodParent.isStatusComplete()) {
+		if (newRecord && prodParent.isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
 			return false;
 		}

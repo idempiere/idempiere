@@ -663,7 +663,7 @@ public class MPayment extends X_C_Payment
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (isComplete() && 
+		if (isProcessed() && 
 			! is_ValueChanged(COLUMNNAME_Processed) &&
             (   is_ValueChanged(COLUMNNAME_C_BankAccount_ID)
              || is_ValueChanged(COLUMNNAME_C_BPartner_ID)
@@ -859,16 +859,15 @@ public class MPayment extends X_C_Payment
 	}	//	beforeSave
 
 	/**
-	 * 	Document Status is Complete, Closed, Reversed or Voided
-	 *	@return true if CO, CL, RE or VO
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
 	 */
 	public boolean isComplete()
 	{
 		String ds = getDocStatus();
 		return DOCSTATUS_Completed.equals(ds)
 			|| DOCSTATUS_Closed.equals(ds)
-			|| DOCSTATUS_Reversed.equals(ds)
-			|| DOCSTATUS_Voided.equals(ds);
+			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
 	/**

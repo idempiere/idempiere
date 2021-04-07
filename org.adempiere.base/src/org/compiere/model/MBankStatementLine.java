@@ -162,7 +162,7 @@ import org.compiere.util.Msg;
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
+		if (newRecord && getParent().isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_BankStatement_ID"));
 			return false;
 		}

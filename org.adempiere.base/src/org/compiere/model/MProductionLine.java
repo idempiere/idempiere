@@ -355,7 +355,7 @@ public class MProductionLine extends X_M_ProductionLine {
 
 		if (getM_Production_ID() > 0) 
 		{
-			if (newRecord && productionParent.isStatusComplete()) {
+			if (newRecord && productionParent.isProcessed()) {
 				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
 				return false;
 			}
@@ -368,7 +368,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		{
 			I_M_ProductionPlan plan = getM_ProductionPlan();
 			MProduction prod = new MProduction(getCtx(), plan.getM_Production_ID(), get_TrxName());
-			if (newRecord && prod.isStatusComplete()) {
+			if (newRecord && prod.isProcessed()) {
 				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
 				return false;
 			}

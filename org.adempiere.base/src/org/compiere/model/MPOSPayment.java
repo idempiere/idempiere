@@ -76,7 +76,7 @@ public class MPOSPayment extends X_C_POSPayment
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MOrder parent = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
-		if (newRecord && parent.isComplete()) {
+		if (newRecord && parent.isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Order_ID"));
 			return false;
 		}

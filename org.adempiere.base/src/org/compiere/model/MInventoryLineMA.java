@@ -238,7 +238,7 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MInventoryLine parentline = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
-		if (newRecord && parentline.getParent().isComplete()) {
+		if (newRecord && parentline.getParent().isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Inventory_ID"));
 			return false;
 		}

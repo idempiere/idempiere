@@ -840,7 +840,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("New=" + newRecord);
-		boolean parentComplete = getParent().isComplete();
+		boolean parentComplete = getParent().isProcessed();
 		boolean isReversal = getParent().isReversal();
 		if (newRecord && parentComplete) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Invoice_ID"));

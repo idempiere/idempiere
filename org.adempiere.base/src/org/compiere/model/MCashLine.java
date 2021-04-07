@@ -302,7 +302,7 @@ public class MCashLine extends X_C_CashLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
+		if (newRecord && getParent().isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Cash_ID"));
 			return false;
 		}

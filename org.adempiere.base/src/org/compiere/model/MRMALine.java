@@ -267,7 +267,7 @@ public class MRMALine extends X_M_RMALine
     @Override
     protected boolean beforeSave(boolean newRecord)
     {
-		if (newRecord && getParent().isComplete()) 
+		if (newRecord && getParent().isProcessed()) 
 		{
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_RMA_ID"));
 			return false;

@@ -308,7 +308,7 @@ public class MProductionPlan extends X_M_ProductionPlan {
 	protected boolean beforeSave(boolean newRecord) 
 	{
 		MProduction parent = new MProduction(getCtx(), getM_Production_ID(), get_TrxName());
-		if (newRecord && parent.isStatusComplete()) {
+		if (newRecord && parent.isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
 			return false;
 		}
