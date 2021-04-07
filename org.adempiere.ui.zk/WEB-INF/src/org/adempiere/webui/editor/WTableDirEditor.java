@@ -241,7 +241,7 @@ ContextMenuListener, IZoomableEditor
         	if (lookup != null && (lookup.getDisplayType() == DisplayType.TableDir || lookup.getDisplayType() == DisplayType.Table))	// only for Table & TableDir
         	{
     			MTable table = MTable.get(Env.getCtx(), tableName);
-    			isShortListAvailable = (table.getColumnIndex("IsShortList") >= 0);
+    			isShortListAvailable = table.columnExistsInDB("IsShortList");
         		if (isShortListAvailable)
         		{
         			onlyShortListItems=true;
