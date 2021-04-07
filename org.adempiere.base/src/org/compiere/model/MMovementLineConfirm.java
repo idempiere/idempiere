@@ -47,8 +47,6 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 		super (ctx, M_MovementLineConfirm_ID, trxName);
 		if (M_MovementLineConfirm_ID == 0)
 		{
-		//	setM_MovementConfirm_ID (0);	Parent
-		//	setM_MovementLine_ID (0);
 			setConfirmedQty (Env.ZERO);
 			setDifferenceQty (Env.ZERO);
 			setScrappedQty (Env.ZERO);

@@ -151,12 +151,7 @@ public class MMatchInv extends X_M_MatchInv
 		super (ctx, M_MatchInv_ID, trxName);
 		if (M_MatchInv_ID == 0)
 		{
-		//	setDateTrx (new Timestamp(System.currentTimeMillis()));
-		//	setC_InvoiceLine_ID (0);
-		//	setM_InOutLine_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);
-		//	setQty (Env.ZERO);
 			setPosted (false);
 			setProcessed (false);
 			setProcessing (false);
