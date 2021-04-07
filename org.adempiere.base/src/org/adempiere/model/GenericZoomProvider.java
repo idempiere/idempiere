@@ -165,7 +165,7 @@ public class GenericZoomProvider implements IZoomProvider {
 		
 		final MQuery query = new MQuery();
 		MTable table = MTable.get(ctx, targetTableName);
-		if (table.getColumnIndex("AD_Client_ID") < 0) // table doesn't have AD_Client_ID
+		if (! table.columnExistsInDB("AD_Client_ID")) // table doesn't have AD_Client_ID
 			return null;
 
 		int tabIDLoop = AD_Tab_ID;
