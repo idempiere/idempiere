@@ -918,6 +918,6 @@ public class MProduction extends X_M_Production implements DocAction {
 		return DOCSTATUS_Completed.equals(ds)
 			|| DOCSTATUS_Closed.equals(ds)
 			|| DOCSTATUS_Reversed.equals(ds);
-	}	//	isComplete
+	}	//	isStatusComplete
 
 }

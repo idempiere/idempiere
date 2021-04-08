@@ -1276,8 +1276,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		String ds = getDocStatus();
 		return DOCSTATUS_Completed.equals(ds)
 			|| DOCSTATUS_Closed.equals(ds)
-			|| DOCSTATUS_Reversed.equals(ds)
-			|| DOCSTATUS_Voided.equals(ds);
+			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
 }	//	MDDOrder
