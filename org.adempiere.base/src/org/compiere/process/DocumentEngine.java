@@ -369,6 +369,11 @@ public class DocumentEngine implements DocAction
 									continue;
 								@SuppressWarnings("unused")
 								String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
+								if (!Util.isEmpty(ignoreError, true)) {
+									log.warning("Error posting " + docafter + ". Error="+ignoreError);
+								} else {
+									docafter.load(docafter.get_TrxName());
+								}
 							}
 						}
 					}
