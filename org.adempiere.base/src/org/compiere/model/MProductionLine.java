@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 
@@ -354,6 +355,10 @@ public class MProductionLine extends X_M_ProductionLine {
 
 		if (getM_Production_ID() > 0) 
 		{
+			if (newRecord && productionParent.isProcessed()) {
+				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+				return false;
+			}
 			if ( productionParent.getM_Product_ID() == getM_Product_ID() && productionParent.getProductionQty().signum() == getMovementQty().signum())
 				setIsEndProduct(true);
 			else 
@@ -362,6 +367,11 @@ public class MProductionLine extends X_M_ProductionLine {
 		else 
 		{
 			I_M_ProductionPlan plan = getM_ProductionPlan();
+			MProduction prod = new MProduction(getCtx(), plan.getM_Production_ID(), get_TrxName());
+			if (newRecord && prod.isProcessed()) {
+				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+				return false;
+			}
 			if (plan.getM_Product_ID() == getM_Product_ID() && plan.getProductionQty().signum() == getMovementQty().signum())
 				setIsEndProduct(true);
 			else 
