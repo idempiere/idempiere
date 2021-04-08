@@ -786,8 +786,8 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_OrderLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Order_ID"));
 			return false;
 		}
 		//	Get Defaults from Parent

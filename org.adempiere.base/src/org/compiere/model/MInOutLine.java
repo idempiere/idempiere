@@ -510,8 +510,8 @@ public class MInOutLine extends X_M_InOutLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		log.fine("");
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOutLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
 		}
 		if (getParent().pendingConfirmations()) {

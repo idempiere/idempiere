@@ -298,6 +298,13 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		if (getGL_JournalBatch_ID() > 0) {
+			MJournalBatch parent = new MJournalBatch(getCtx(), getGL_JournalBatch_ID(), get_TrxName());
+			if (newRecord && parent.isProcessed()) {
+				log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_JournalBatch_ID"));
+				return false;
+			}
+		}
 		//	Imported Journals may not have date
 		if (getDateDoc() == null)
 		{

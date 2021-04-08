@@ -293,8 +293,8 @@ public class MInventoryLine extends X_M_InventoryLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InventoryLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Inventory_ID"));
 			return false;
 		}
 

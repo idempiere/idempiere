@@ -2050,12 +2050,12 @@ public class MOrder extends X_C_Order implements DocAction
 		MInvoice lastInvoice = invoices[0];
 		BigDecimal grandTotal = lastInvoice.getGrandTotal();
 		
-		List<X_C_POSPayment> pps = new Query(this.getCtx(), X_C_POSPayment.Table_Name, "C_Order_ID=?", this.get_TrxName())
+		List<MPOSPayment> pps = new Query(this.getCtx(), MPOSPayment.Table_Name, "C_Order_ID=?", this.get_TrxName())
 			.setParameters(this.getC_Order_ID())
 			.setOnlyActiveRecords(true)
 			.list();
 		BigDecimal totalPOSPayments = Env.ZERO; 
-		for (X_C_POSPayment pp : pps) {
+		for (MPOSPayment pp : pps) {
 			totalPOSPayments = totalPOSPayments.add(pp.getPayAmt());
 		}
 		if (totalPOSPayments.compareTo(grandTotal) != 0)
@@ -2084,7 +2084,7 @@ public class MOrder extends X_C_Order implements DocAction
 
 		// Create a payment for each non-guarantee record
 		// associate the payment id and mark the record as processed
-		for (X_C_POSPayment pp : pps) {
+		for (MPOSPayment pp : pps) {
 			X_C_POSTenderType  tt = new X_C_POSTenderType (getCtx(),pp.getC_POSTenderType_ID(), get_TrxName());
 			if (tt.isGuarantee())
 				continue;

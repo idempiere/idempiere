@@ -290,8 +290,8 @@ public class MJournalLine extends X_GL_JournalLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_JournalLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_Journal_ID"));
 			return false;
 		}
 
