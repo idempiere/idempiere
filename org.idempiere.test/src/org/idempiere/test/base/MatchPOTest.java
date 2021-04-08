@@ -282,6 +282,7 @@ public class MatchPOTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		invoice.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		invoice.getDocsPostProcess().clear();
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Accrual);
 		assertFalse(info.isError(), info.getSummary());
