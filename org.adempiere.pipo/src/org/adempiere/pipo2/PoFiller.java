@@ -186,11 +186,11 @@ public class PoFiller{
 				}
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
-				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
+				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName, po.get_TrxName());
 				MTable foreignTable = null;
 				String refTableName = col.getReferenceTableName();
 				if (refTableName != null) {
-					foreignTable = MTable.get(Env.getCtx(), refTableName);
+					foreignTable = MTable.get(Env.getCtx(), refTableName, po.get_TrxName());
 				} else {
 					if ("Record_ID".equalsIgnoreCase(columnName)) {
 						// special case - get the foreign table using AD_Table_ID
@@ -207,7 +207,7 @@ public class PoFiller{
 							}
 						}
 						if (tableID > 0) {
-							foreignTable = MTable.get(Env.getCtx(), tableID);
+							foreignTable = MTable.get(Env.getCtx(), tableID, po.get_TrxName());
 							refTableName = foreignTable.getTableName();
 						}
 					}

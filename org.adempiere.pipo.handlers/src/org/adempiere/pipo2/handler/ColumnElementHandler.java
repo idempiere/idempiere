@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PIPOContext;
@@ -182,9 +183,14 @@ public class ColumnElementHandler extends AbstractElementHandler {
 	}
 
 	private void deferFK(Element element, MColumn mColumn) {
-		String foreignTable = mColumn.getReferenceTableName();
-		if (foreignTable != null && ! "AD_Ref_List".equals(foreignTable))
+		try {
+			String foreignTable = mColumn.getReferenceTableName();
+			if (foreignTable != null && ! "AD_Ref_List".equals(foreignTable))
+				element.deferFKColumnID = mColumn.getAD_Column_ID();
+		} catch (AdempiereException e) {
+			// AdempiereException thrown in mColumn.getReferenceTableName() when the table is not created yet
 			element.deferFKColumnID = mColumn.getAD_Column_ID();
+		}
 	}
 
 	private void syncColumn(PIPOContext ctx, MColumn mColumn, String action,
