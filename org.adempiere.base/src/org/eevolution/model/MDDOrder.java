@@ -1274,7 +1274,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	public boolean isComplete()
 	{
 		String ds = getDocStatus();
-		return DOCSTATUS_Completed.equals(ds)
+		return DOCSTATUS_Completed.equals(ds) 
 			|| DOCSTATUS_Closed.equals(ds)
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
