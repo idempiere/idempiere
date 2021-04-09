@@ -523,10 +523,10 @@ public class PackInHandler extends DefaultHandler {
 
     	int AD_Client_ID=Env.getAD_Client_ID(Env.getCtx());
     	
-    	List<MRole> roles = new Query(m_ctx.ctx, MRole.Table_Name, "IsManual='N' AND AD_Client_ID in (?,0)", m_ctx.trx.getTrxName())
+    	List<MRole> roles = new Query(m_ctx.ctx, MRole.Table_Name, "IsManual='N' AND (?=0 OR AD_Client_ID=?)", m_ctx.trx.getTrxName())
 			.setOnlyActiveRecords(true)
 			.setOrderBy("AD_Client_ID, Name")
-			.setParameters(AD_Client_ID)
+			.setParameters(AD_Client_ID, AD_Client_ID)
 			.list();
     	for (MRole role : roles) {
         	role.updateAccessRecords(false);
