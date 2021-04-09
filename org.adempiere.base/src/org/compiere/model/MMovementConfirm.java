@@ -96,7 +96,6 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		super (ctx, M_MovementConfirm_ID, trxName);
 		if (M_MovementConfirm_ID == 0)
 		{
-		//	setM_Movement_ID (0);
 			setDocAction (DOCACTION_Complete);
 			setDocStatus (DOCSTATUS_Drafted);
 			setIsApproved (false);	// N
@@ -244,10 +243,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -765,8 +761,6 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public int getC_Currency_ID()
 	{
-	//	MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID());
-	//	return pl.getC_Currency_ID();
 		return 0;
 	}	//	getC_Currency_ID
 

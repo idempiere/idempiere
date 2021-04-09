@@ -121,9 +121,6 @@ public class ModelValidationEngine
 				continue;
 			loadValidatorClasses(clients[i], classNames);
 		}
-		//logging to db will try to init ModelValidationEngine again!
-		//log.config(toString());
-		// System.out.println(toString());
 	}	//	ModelValidatorEngine
 
 	private void loadValidatorClasses(MClient client, String classNames)
@@ -180,8 +177,6 @@ public class ModelValidationEngine
 
 	/**	Logger					*/
 	private static CLogger log = CLogger.getCLogger(ModelValidationEngine.class);
-//	/** Change Support			*/
-//	private VetoableChangeSupport m_changeSupport = new VetoableChangeSupport(this);
 
 	/**	Validators						*/
 	private ArrayList<ModelValidator>	m_validators = new ArrayList<ModelValidator>();

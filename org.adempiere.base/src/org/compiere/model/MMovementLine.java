@@ -52,11 +52,6 @@ public class MMovementLine extends X_M_MovementLine
 		super (ctx, M_MovementLine_ID, trxName);
 		if (M_MovementLine_ID == 0)
 		{
-		//	setM_LocatorTo_ID (0);	// @M_LocatorTo_ID@
-		//	setM_Locator_ID (0);	// @M_Locator_ID@
-		//	setM_MovementLine_ID (0);			
-		//	setLine (0);	
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);	//	ID
 			setMovementQty (Env.ZERO);	// 1
 			setTargetQty (Env.ZERO);	// 0
@@ -261,7 +256,7 @@ public class MMovementLine extends X_M_MovementLine
 	{ 
 		setDD_OrderLine_ID(oLine.getDD_OrderLine_ID()); 
 		setLine(oLine.getLine()); 
-		//setC_UOM_ID(oLine.getC_UOM_ID()); 
+
 		MProduct product = oLine.getProduct(); 
 		if (product == null) 
 		{ 
