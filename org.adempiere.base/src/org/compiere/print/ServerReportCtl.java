@@ -289,9 +289,7 @@ public class ServerReportCtl {
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
 			re = new ReportEngine(ctx, format, query, info, pi.isSummary(), pi.getTransactionName());
-			if (pi.getSerializableObject() != null && pi.getSerializableObject() instanceof MPrintFormat) {
-				re.setPrintFormat((MPrintFormat)pi.getSerializableObject());
-			}
+			re.setPrintFormat((MPrintFormat) o);
 			if (pi.isPrintPreview() && pi.isBatch())
 			{
 				if ("HTML".equals(pi.getReportType())) 
