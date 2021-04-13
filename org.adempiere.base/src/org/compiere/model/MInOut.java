@@ -1131,7 +1131,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 
 		//	Credit Check
-		if (isSOTrx() && !isReversal())
+		if (isSOTrx() && !isReversal() && !isCustomerReturn())
 		{
 			I_C_Order order = getC_Order();
 			if (order != null && MDocType.DOCSUBTYPESO_PrepayOrder.equals(order.getC_DocType().getDocSubTypeSO())
@@ -1229,6 +1229,17 @@ public class MInOut extends X_M_InOut implements DocAction
 			setDocAction(DOCACTION_Complete);
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
+
+	/**
+	 * Check if Document is Customer Return.
+	 * @return True if Document is Customer Return
+	 */
+	private boolean isCustomerReturn() {
+		MDocType doctype = MDocType.get(getC_DocType_ID());
+		if(isSOTrx() && doctype.getDocBaseType().equals("MMR") && doctype.isSOTrx())
+			return true;
+		return false;
+	}
 
 	/**
 	 * 	Approve Document
