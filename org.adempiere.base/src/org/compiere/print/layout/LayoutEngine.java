@@ -1145,7 +1145,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						element.setMaxWidth(maxWidth);
 					}
 				}
-				/** START DEVCOFFEE: colunas tipo script no formato de impressao **/
+				/** START DEVCOFFEE: Script print format type **/
 				else if (item.getPrintFormatType().equals("S"))
 				{
 					element = createStringElement (item.getName(),
@@ -1253,10 +1253,10 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		newLine();
 		PrintElement element = null;
 		//
-		// COF #10540 - evitar erro ao gerar PDF por inconsistencia na configuraçao
+		// COF #10540 - avoid error when generating PDF due to inconsistency in the configuration
 		if (item.getAD_PrintFormatChild_ID() <= 0)
 		{
-			log.log(Level.SEVERE, "Formato incluso não configurado. AD_PrintFormat_ID = " + item.getAD_PrintFormat_ID() + ", AD_PrintFormatItem_ID=" + item.getAD_PrintFormatItem_ID());
+			log.log(Level.SEVERE, "Included format not configured. AD_PrintFormat_ID = " + item.getAD_PrintFormat_ID() + ", AD_PrintFormatItem_ID=" + item.getAD_PrintFormatItem_ID());
 			return element;
 		}
 
@@ -1819,7 +1819,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						Object obj = null;
 						if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
 							obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
-						/** START DEVCOFFEE: colunas tipo script no formato de impressao **/
+						/** START DEVCOFFEE: Script print format type **/
 						if (item.getPrintFormatType().equals("S"))
 						{
 							obj = printData.getNode(item.getName());
