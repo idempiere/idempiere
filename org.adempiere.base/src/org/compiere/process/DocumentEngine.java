@@ -970,7 +970,7 @@ public class DocumentEngine implements DocAction
 			|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 		{
 			options[index++] = DocumentEngine.ACTION_Complete;
-		//	options[index++] = DocumentEngine.ACTION_Prepare;
+			options[index++] = DocumentEngine.ACTION_Prepare;
 			options[index++] = DocumentEngine.ACTION_Void;
 		}
 		//	In Process                  ..  IP
