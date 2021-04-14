@@ -407,9 +407,9 @@ public class DataEngine
 					//	=> (..) AS AName, Table.ID,
 					if (script != null && !script.isEmpty())
 					{
-						if (script.startsWith("SQL="))
+						if (script.startsWith("@SQL="))
 						{
-							script = "(" + script.replace("SQL=", "") + ")";
+							script = "(" + script.replace("@SQL=", "") + ")";
 						}
 						else
 							script = "'@SCRIPT" + script + "'";
@@ -1321,9 +1321,9 @@ public class DataEngine
 				token = token.substring(0, f);
 			}
 
-			if (token.startsWith("ACUMULA")) {
+			if (token.startsWith("ACCUMULATE/")) {
 
-				token = token.replace("ACUMULA", "");
+				token = token.replace("ACCUMULATE/", "");
 
 				BigDecimal value = (BigDecimal) ((PrintDataElement)pd.getNode(token)).getValue();
 
@@ -1337,9 +1337,9 @@ public class DataEngine
 
 				outStr.append(value);
 			}
-			else if (token.startsWith("COL"))
+			else if (token.startsWith("COL/"))
 			{
-				token = token.replace("COL", "");
+				token = token.replace("COL/", "");
 				BigDecimal value = (BigDecimal) ((PrintDataElement)pd.getNode(token)).getValue();
 				outStr.append(value);
 			}
