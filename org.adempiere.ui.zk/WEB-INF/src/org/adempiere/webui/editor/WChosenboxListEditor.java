@@ -30,6 +30,7 @@ import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
@@ -591,7 +592,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		private WChosenboxListEditor editor;
 		
 		protected CCacheListener(String tableName, WChosenboxListEditor editor) {
-			super(tableName, tableName, 0, true);
+			super(tableName, tableName+"|CCacheListener", 0, MSysConfig.getBooleanValue(MSysConfig.CCACHELISTENER_DISTRIBUTED, false));
 			this.editor = editor;
 		}
 

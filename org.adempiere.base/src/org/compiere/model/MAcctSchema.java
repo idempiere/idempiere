@@ -181,9 +181,9 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}   //  getClientAcctSchema
 
 	/** Cache of Client AcctSchema Arrays		**/
-	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 120, true);	//  3 clients
+	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 120, false);	//  3 clients
 	/**	Cache of AcctSchemas 					**/
-	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 120, true);	//  3 accounting schemas
+	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 120);	//  3 accounting schemas
 	
 	
 	/**************************************************************************

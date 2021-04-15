@@ -85,7 +85,7 @@ public class Scheduler extends AdempiereServer
 
 	protected int AD_Scheduler_ID;
 
-	private static ImmutableIntPOCache<Integer,MScheduler> s_cache = new ImmutableIntPOCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60, true);
+	private static ImmutableIntPOCache<Integer,MScheduler> s_cache = new ImmutableIntPOCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60);
 
 	/**
 	 * 	Work
