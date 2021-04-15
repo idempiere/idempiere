@@ -43,7 +43,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -364121843724651081L;
+	private static final long serialVersionUID = 8581992138870649241L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -77,7 +77,6 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String BPARTNER_QUICK_ENTRY_OPTIONAL_LOCATION_TABLES = "BPARTNER_QUICK_ENTRY_OPTIONAL_LOCATION_TABLES";
     public static final String CALENDAR_ALTERNATE_TIMEZONE = "CALENDAR_ALTERNATE_TIMEZONE";
     public static final String CASH_AS_PAYMENT = "CASH_AS_PAYMENT";
-	public static final String CCACHELISTENER_DISTRIBUTED = "CCACHELISTENER_DISTRIBUTED";
     public static final String CHANGE_PASSWORD_MUST_DIFFER = "CHANGE_PASSWORD_MUST_DIFFER";
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
