@@ -73,7 +73,7 @@ public class EmailSrv {
 	protected String imapUser;
 	protected String imapPass;
 	protected int imapPort = 143;
-	protected boolean isGmail = false;
+	protected boolean isSSL = false;
 	
 	protected Session mailSession;
 	protected Store mailStore;
@@ -82,8 +82,10 @@ public class EmailSrv {
 		this.imapHost = imapHost;
 		this.imapUser = imapUser;
 		this.imapPass = imapPass;
-		isGmail = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
-		if (isGmail && imapPort != 993){
+		isSSL = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
+		if(!isSSL && imapPort == 993)
+			isSSL = true;	// Port is 993 set to SSL IMAPS
+		if (isSSL && imapPort != 993){
 			log.warning("because imap is gmail server, force port to 993");
 			imapPort = 993;
 		}
@@ -160,7 +162,7 @@ public class EmailSrv {
 		//	Session
 		Properties props = System.getProperties();
 		String protocol = "imap";
-		if (isGmail){
+		if (isSSL){
 			protocol = "imaps";
 		}
 		props.put("mail.store.protocol", protocol);
