@@ -457,6 +457,13 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 			AD_Tree_Org_ID, AD_Tree_BPartner_ID, AD_Tree_Project_ID,
 			AD_Tree_SalesRegion_ID, AD_Tree_Product_ID,
 			AD_Tree_Campaign_ID, AD_Tree_Activity_ID, get_TrxName());
+		int defaultStorageProvider = MStorageProvider.getDefaultStorageProviderID();
+		if (defaultStorageProvider > 0)
+		{
+			clientInfo.setAD_StorageProvider_ID(defaultStorageProvider);
+			clientInfo.setStorageImage_ID(defaultStorageProvider);
+			clientInfo.setStorageArchive_ID(defaultStorageProvider);
+		}
 		success = clientInfo.save();
 		return success;
 	}	//	createTrees
