@@ -125,14 +125,14 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	 }
 
 	 /**
-	 * 	Get the Locator with the combination or create new one
+	 * 	Get the Locator with the combination or create new one (when user has permission)
 	 *	@param ctx Context
 	 *	@param M_Warehouse_ID warehouse
 	 *	@param Value value
 	 *	@param X x
 	 *	@param Y y
 	 *	@param Z z
-	 * 	@return locator
+	 * 	@return locator (or null when no insert permission on MLocator)
 	 */
 	 public static MLocator get (Properties ctx, int M_Warehouse_ID, String Value,
 		 String X, String Y, String Z, int M_LocatorType_ID)
@@ -163,11 +163,13 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 		//
 		if (retValue == null)
 		{
-			MWarehouse wh = MWarehouse.get (ctx, M_Warehouse_ID);
-			retValue = new MLocator (wh, Value);
-			retValue.setXYZ(X, Y, Z);
-			retValue.setM_LocatorType_ID(M_LocatorType_ID);
-			retValue.saveEx();
+			if (MRole.getDefault().isTableAccess(MLocator.Table_ID, false)) {
+				MWarehouse wh = MWarehouse.get (ctx, M_Warehouse_ID);
+				retValue = new MLocator (wh, Value);
+				retValue.setXYZ(X, Y, Z);
+				retValue.setM_LocatorType_ID(M_LocatorType_ID);
+				retValue.saveEx();
+			}
 		}
 		return retValue;
 	}	//	get
