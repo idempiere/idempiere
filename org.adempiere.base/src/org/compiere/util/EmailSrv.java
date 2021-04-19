@@ -78,22 +78,33 @@ public class EmailSrv {
 	protected Session mailSession;
 	protected Store mailStore;
 	
-	public EmailSrv (String imapHost, String  imapUser, String  imapPass, int imapPort){
+	public EmailSrv (String imapHost, String  imapUser, String  imapPass, int imapPort, Boolean isSSL){
 		this.imapHost = imapHost;
 		this.imapUser = imapUser;
 		this.imapPass = imapPass;
-		isSSL = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
-		if(!isSSL && imapPort == 993)
-			isSSL = true;	// Port is 993 set to SSL IMAPS
-		if (isSSL && imapPort != 993){
-			log.warning("because imap is gmail server, force port to 993");
-			imapPort = 993;
+		if(isSSL != null) {
+			this.isSSL = isSSL;
+		} else {
+			this.isSSL = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
+			if(!this.isSSL && imapPort == 993)
+				this.isSSL = true;	// Port is 993 set to SSL IMAPS
+			if (this.isSSL && imapPort != 993){
+				log.warning("because imap is gmail server, force port to 993");
+				imapPort = 993;
+			}
 		}
+
 		this.imapPort = imapPort;
 	}
 	
+	/**
+	 * @deprecated working only with gmail host.
+	 * @param imapHost
+	 * @param imapUser
+	 * @param imapPass
+	 */
 	public EmailSrv (String imapHost, String  imapUser, String  imapPass){
-		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143);
+		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? true : false);
 	}
 	
 	public static void logMailPartInfo (Part msg, CLogger log) throws MessagingException{
