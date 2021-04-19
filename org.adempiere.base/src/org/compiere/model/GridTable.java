@@ -2159,7 +2159,7 @@ public class GridTable extends AbstractTableModel
 			return SAVE_ERROR;
 		}
 		
-		CacheMgt.get().reset(m_tableName);
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(m_tableName));
 		
 		//	everything ok
 		m_rowData = null;
