@@ -1146,7 +1146,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					}
 				}
 				/** START DEVCOFFEE: Script print format type **/
-				else if (item.getPrintFormatType().equals("S"))
+				else if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
 				{
 					element = createStringElement (item.getName(),
 							item.getAD_PrintColor_ID (), item.getAD_PrintFont_ID (),
@@ -1814,13 +1814,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					{
 						columnElement = item.getPrintName(format.getLanguage());	
 					}
-					else if (item.isTypeField() || item.getPrintFormatType().equals("S"))
+					else if (item.isTypeField() || item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
 					{
 						Object obj = null;
 						if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
 							obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
 						/** START DEVCOFFEE: Script print format type **/
-						if (item.getPrintFormatType().equals("S"))
+						if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
 						{
 							obj = printData.getNode(item.getName());
 						}

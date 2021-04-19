@@ -15,7 +15,7 @@ public class CalloutPrintFormatType implements IColumnCallout {
 
 		String printFormatType = (String)value;
 
-		if(printFormatType == null || printFormatType.isEmpty() || !printFormatType.equals(X_AD_PrintFormatItem.PRINTFORMATTYPE_Script))
+		if(!X_AD_PrintFormatItem.PRINTFORMATTYPE_Script.equals(printFormatType))
 			return null;
 
 		int AD_PrintFormat_ID = (Integer) mTab.getValue("AD_PrintFormat_ID");
