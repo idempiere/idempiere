@@ -1434,10 +1434,27 @@ public class MInOut extends X_M_InOut implements DocAction
 								sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
 								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
 								sLine.getM_Locator_ID(), get_TrxName());
+						BigDecimal pendingQty = sLine.getMovementQty();
 						for (MStorageOnHand storage : storages) {
-							if (storage.getQtyOnHand().compareTo(sLine.getMovementQty()) >= 0) {
+							if (pendingQty.signum() == 0)
+								break;
+							if (storage.getQtyOnHand().compareTo(pendingQty) >= 0) {
 								dateMPolicy = storage.getDateMaterialPolicy();
 								break;
+							} else if (storage.getQtyOnHand().signum() > 0) {
+								BigDecimal onHand = storage.getQtyOnHand();
+								// this locator has less qty than required, ship all qtyonhand and iterate to next locator
+								if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+										sLine.getM_Locator_ID(),
+										sLine.getM_Product_ID(),
+										sLine.getM_AttributeSetInstance_ID(),
+										onHand.negate(),storage.getDateMaterialPolicy(),get_TrxName()))
+								{
+									String lastError = CLogger.retrieveErrorString("");
+									m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
+									return DocAction.STATUS_Invalid;
+								}
+								pendingQty = pendingQty.subtract(onHand);
 							}
 						}
 	
@@ -1448,11 +1465,12 @@ public class MInOut extends X_M_InOut implements DocAction
 							dateMPolicy = getMovementDate();
 						
 						//	Fallback: Update Storage - see also VMatch.createMatchRecord
-						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+						if (pendingQty.signum() != 0 &&
+							!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							sLine.getM_Locator_ID(),
 							sLine.getM_Product_ID(),
 							sLine.getM_AttributeSetInstance_ID(),
-							Qty,dateMPolicy,get_TrxName()))
+							pendingQty.negate(),dateMPolicy,get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
