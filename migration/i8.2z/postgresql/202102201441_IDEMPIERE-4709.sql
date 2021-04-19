@@ -10,22 +10,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ALTER TABLE AD_PrintFormatItem ADD COLUMN Script VARCHAR(2000) DEFAULT NULL 
 ;
 
--- Feb 20, 2021, 1:47:32 PM BRT
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan,NumLines) VALUES (206597,'Script','Dynamic Java Language Script to calculate result','Use Java language constructs to define the result of the calculation',428,214413,'Y',2000,10,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2021-02-20 13:47:32','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-20 13:47:32','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','a969e724-453a-4c2a-ad37-628168e6425d','Y',10,5,3)
-;
-
--- Feb 20, 2021, 1:49:00 PM BRT
-UPDATE AD_Field SET DisplayLogic='@PrintFormatType@=''S''', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2021-02-20 13:49:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206597
-;
-
--- Feb 20, 2021, 1:51:25 PM BRT
-DELETE FROM AD_Field_Trl WHERE AD_Field_ID=206597
-;
-
--- Feb 20, 2021, 1:51:25 PM BRT
-DELETE FROM AD_Field WHERE AD_Field_ID=206597
-;
-
 -- Feb 20, 2021, 1:51:41 PM BRT
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan,NumLines) VALUES (206598,'Script','Dynamic Java Language Script to calculate result','Use Java language constructs to define the result of the calculation',426,214413,'Y',2000,570,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2021-02-20 13:51:41','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-02-20 13:51:41','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','c0a3c732-4ea1-4597-8a6f-c26cac7715e6','Y',570,5,3)
 ;
