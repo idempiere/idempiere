@@ -949,7 +949,7 @@ ContextMenuListener, IZoomableEditor
 		private WTableDirEditor editor;
 		
 		protected CCacheListener(String tableName, WTableDirEditor editor) {
-			super(tableName, tableName+"|CCacheListener", 0, 0, true);
+			super(tableName, tableName+"|CCacheListener", 0, 0, false);
 			this.editor = editor;
 		}
 
