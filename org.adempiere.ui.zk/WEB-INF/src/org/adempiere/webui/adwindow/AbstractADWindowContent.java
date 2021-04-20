@@ -184,8 +184,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     protected String             title;
 
-    private boolean 			 boolChanges = false;
-
 	private int m_onlyCurrentDays = 0;
 
 	private Component parent;
@@ -1122,7 +1120,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
     public void onExit(Callback<Boolean> callback)
     {
-    	if (!boolChanges)
+    	if (adTabbox.getDirtyADTabpanel() == null)
     	{
     		callback.onCallback(Boolean.TRUE);
     	}
@@ -1711,9 +1709,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         boolean deleteRecord = !readOnly;
         if (!detailTab)
         {
-	        //  update Change
-	        boolChanges = changed;
-
 	        if (insertRecord)
 	        {
 	            insertRecord = tabPanel.getGridTab().isInsertRecord();
@@ -3663,7 +3658,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
 	public boolean isPendingChanges() {
-		return boolChanges;
+		return adTabbox.getDirtyADTabpanel() != null;
 	}
 
 	public void setADWindow(ADWindow adwindow) {
