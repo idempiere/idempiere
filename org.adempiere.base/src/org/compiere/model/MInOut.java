@@ -1430,47 +1430,59 @@ public class MInOut extends X_M_InOut implements DocAction
 					if (mtrx == null)
 					{
 						Timestamp dateMPolicy= null;
-						MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0,
-								sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
-								MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-								sLine.getM_Locator_ID(), get_TrxName());
-						BigDecimal pendingQty = sLine.getMovementQty();
-						for (MStorageOnHand storage : storages) {
-							if (pendingQty.signum() == 0)
-								break;
-							if (storage.getQtyOnHand().compareTo(pendingQty) >= 0) {
-								dateMPolicy = storage.getDateMaterialPolicy();
-								break;
-							} else if (storage.getQtyOnHand().signum() > 0) {
-								BigDecimal onHand = storage.getQtyOnHand();
-								// this locator has less qty than required, ship all qtyonhand and iterate to next locator
-								if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
-										sLine.getM_Locator_ID(),
-										sLine.getM_Product_ID(),
-										sLine.getM_AttributeSetInstance_ID(),
-										onHand.negate(),storage.getDateMaterialPolicy(),get_TrxName()))
-								{
-									String lastError = CLogger.retrieveErrorString("");
-									m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
-									return DocAction.STATUS_Invalid;
+						BigDecimal pendingQty = Qty;
+						if (pendingQty.signum() < 0) {  // taking from inventory
+							MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+									sLine.getM_Product_ID(), sLine.getM_AttributeSetInstance_ID(), null,
+									MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+									sLine.getM_Locator_ID(), get_TrxName());
+							for (MStorageOnHand storage : storages) {
+								if (pendingQty.signum() == 0)
+									break;
+								if (storage.getQtyOnHand().compareTo(pendingQty.negate()) >= 0) {
+									dateMPolicy = storage.getDateMaterialPolicy();
+									break;
+								} else if (storage.getQtyOnHand().signum() > 0) {
+									BigDecimal onHand = storage.getQtyOnHand();
+									// this locator has less qty than required, ship all qtyonhand and iterate to next locator
+									if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+											sLine.getM_Locator_ID(),
+											sLine.getM_Product_ID(),
+											sLine.getM_AttributeSetInstance_ID(),
+											onHand.negate(),storage.getDateMaterialPolicy(),get_TrxName()))
+									{
+										String lastError = CLogger.retrieveErrorString("");
+										m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
+										return DocAction.STATUS_Invalid;
+									}
+									pendingQty = pendingQty.add(onHand);
 								}
-								pendingQty = pendingQty.subtract(onHand);
 							}
+
+							if (dateMPolicy == null && storages.length > 0)
+								dateMPolicy = storages[0].getDateMaterialPolicy();
 						}
 	
-						if (dateMPolicy == null && storages.length > 0)
-							dateMPolicy = storages[0].getDateMaterialPolicy();
-	
-						if(dateMPolicy==null)
+						if (dateMPolicy == null && product.getM_AttributeSet_ID() > 0) {
+							MAttributeSet as = MAttributeSet.get(getCtx(), product.getM_AttributeSet_ID());
+							if (as.isUseGuaranteeDateForMPolicy()) {
+								MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), sLine.getM_AttributeSetInstance_ID(), get_TrxName());
+								if (asi != null && asi.getGuaranteeDate() != null) {
+									dateMPolicy = asi.getGuaranteeDate();
+								}
+							}
+						}
+
+						if (dateMPolicy == null)
 							dateMPolicy = getMovementDate();
-						
+
 						//	Fallback: Update Storage - see also VMatch.createMatchRecord
 						if (pendingQty.signum() != 0 &&
 							!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 							sLine.getM_Locator_ID(),
 							sLine.getM_Product_ID(),
 							sLine.getM_AttributeSetInstance_ID(),
-							pendingQty.negate(),dateMPolicy,get_TrxName()))
+							pendingQty,dateMPolicy,get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
