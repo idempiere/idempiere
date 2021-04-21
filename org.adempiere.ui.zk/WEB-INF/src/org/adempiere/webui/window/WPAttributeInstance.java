@@ -179,6 +179,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		new ColumnInfo(Msg.translate(Env.getCtx(), "Lot"), "asi.Lot", String.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "SerNo"), "asi.SerNo", String.class), 
 		new ColumnInfo(Msg.translate(Env.getCtx(), "GuaranteeDate"), "asi.GuaranteeDate", Timestamp.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "DateMaterialPolicy"), "s.DateMaterialPolicy", Timestamp.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "M_Locator_ID"), "l.Value", KeyNamePair.class, "s.M_Locator_ID"),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "s.QtyOnHand", Double.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "s.QtyReserved", Double.class),
@@ -255,7 +256,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 
 		m_sql = m_table.prepareTable (s_layout, s_sqlFrom, 
 					m_M_Warehouse_ID == 0 ? s_sqlWhereWithoutWarehouse : s_sqlWhere, false, "s")
-				+ " ORDER BY asi.GuaranteeDate, s.QtyOnHand";	//	oldest, smallest first
+				+ " ORDER BY s.DateMaterialPolicy, s.QtyOnHand";	//	oldest, smallest first
 		//
 		m_table.addEventListener(Events.ON_SELECT, this);
 		//
