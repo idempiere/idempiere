@@ -93,7 +93,6 @@ public class MLandedCostAllocation extends X_C_LandedCostAllocation
 		super (ctx, C_LandedCostAllocation_ID, trxName);
 		if (C_LandedCostAllocation_ID == 0)
 		{
-		//	setM_CostElement_ID(0);
 			setAmt (Env.ZERO);
 			setQty (Env.ZERO);
 			setBase (Env.ZERO);

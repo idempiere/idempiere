@@ -186,11 +186,11 @@ public class PoFiller{
 				}
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
-				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
+				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName, po.get_TrxName());
 				MTable foreignTable = null;
 				String refTableName = col.getReferenceTableName();
 				if (refTableName != null) {
-					foreignTable = MTable.get(Env.getCtx(), refTableName);
+					foreignTable = MTable.get(Env.getCtx(), refTableName, po.get_TrxName());
 				} else {
 					if ("Record_ID".equalsIgnoreCase(columnName)) {
 						// special case - get the foreign table using AD_Table_ID
@@ -207,14 +207,21 @@ public class PoFiller{
 							}
 						}
 						if (tableID > 0) {
-							foreignTable = MTable.get(Env.getCtx(), tableID);
+							foreignTable = MTable.get(Env.getCtx(), tableID, po.get_TrxName());
 							refTableName = foreignTable.getTableName();
 						}
 					}
 				}
 				if (id > 0 && refTableName != null) {
 					if (foreignTable != null) {
-						PO subPo = foreignTable.getPO(id, po.get_TrxName());
+						/* Allow to read here from another tenant, cross tenant control is implemented later in a safe way */
+						PO subPo = null;
+		    			try {
+		    				PO.setCrossTenantSafe();
+		    				subPo = foreignTable.getPO(id, po.get_TrxName());
+		    			} finally {
+		    				PO.clearCrossTenantSafe();
+		    			}
 						if (subPo != null && subPo.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
 							String accessLevel = foreignTable.getAccessLevel();
 							if ((MTable.ACCESSLEVEL_All.equals(accessLevel)

@@ -30,6 +30,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -92,10 +93,6 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		return DB.executeUpdate(sql, M_InOutLine_ID, trxName);
 	}	//	deleteInOutLineMA
 		
-	
-//	/**	Logger	*/
-//	private static CLogger	s_log	= CLogger.getCLogger (MInOutLineMA.class);
-	
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -258,6 +255,11 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MInOutLine parentline = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+		if (newRecord && parentline.getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
+			return false;
+		}
 		//Set DateMaterialPolicy
 		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
 			//TODO Require testing for all scenario

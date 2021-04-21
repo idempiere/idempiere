@@ -30,7 +30,7 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210416L;
 
     /** Standard Constructor */
     public X_AD_StorageProvider (Properties ctx, int AD_StorageProvider_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
       /** if (AD_StorageProvider_ID == 0)
         {
 			setAD_StorageProvider_ID (0);
+			setIsDefault (false);
+// N
 			setName (null);
         } */
     }
@@ -120,6 +122,30 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	public String getFolder () 
 	{
 		return (String)get_Value(COLUMNNAME_Folder);
+	}
+
+	/** Set Default.
+		@param IsDefault 
+		Default value
+	  */
+	public void setIsDefault (boolean IsDefault)
+	{
+		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
+	}
+
+	/** Get Default.
+		@return Default value
+	  */
+	public boolean isDefault () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDefault);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Method AD_Reference_ID=200019 */

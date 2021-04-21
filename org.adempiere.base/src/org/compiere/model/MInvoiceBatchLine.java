@@ -50,16 +50,6 @@ public class MInvoiceBatchLine extends X_C_InvoiceBatchLine
 		super (ctx, C_InvoiceBatchLine_ID, trxName);
 		if (C_InvoiceBatchLine_ID == 0)
 		{
-		//	setC_InvoiceBatch_ID (0);
-			/**
-			setC_BPartner_ID (0);
-			setC_BPartner_Location_ID (0);
-			setC_Charge_ID (0);
-			setC_DocType_ID (0);	// @C_DocType_ID@
-			setC_Tax_ID (0);
-			setDocumentNo (null);
-			setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_InvoiceBatchLine WHERE C_InvoiceBatch_ID=@C_InvoiceBatch_ID@
-			**/
 			setDateAcct (new Timestamp(System.currentTimeMillis()));	// @DateDoc@
 			setDateInvoiced (new Timestamp(System.currentTimeMillis()));	// @DateDoc@
 			setIsTaxIncluded (false);

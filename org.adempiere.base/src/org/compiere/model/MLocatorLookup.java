@@ -258,7 +258,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 */
 	public MLocator getMLocator (Object keyValue, String trxName)
 	{
-	//	log.fine( "MLocatorLookup.getDirect " + keyValue.getClass() + "=" + keyValue);
 		int M_Locator_ID = -1;
 		try
 		{
@@ -369,7 +368,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		 */
 		public void run()
 		{
-		//	log.config("MLocatorLookup Loader.run " + m_AD_Column_ID);
 			//	Set Info	- see VLocator.actionText
 			int local_only_warehouse_id = getOnly_Warehouse_ID(); // [ 1674891 ] MLocatorLookup - weird error 
 			int local_only_product_id = getOnly_Product_ID();
@@ -495,12 +493,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 				list.add(loc);
 		}
 
-		/**	Sort Data
-		MLocator l = new MLocator (m_ctx, 0);
-		if (!mandatory)
-			list.add (l);
-		Collections.sort (list, l);
-		**/
 		return list;
 	}	//	getArray
 
