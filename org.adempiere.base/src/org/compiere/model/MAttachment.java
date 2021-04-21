@@ -169,8 +169,12 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private void initAttachmentStoreDetails(Properties ctx, String trxName)
 	{
-		MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
-		provider=new MStorageProvider(ctx, clientInfo.getAD_StorageProvider_ID(), trxName);		
+		if (is_new()) {
+			MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
+			setStorageProvider(MStorageProvider.get(ctx, clientInfo.getAD_StorageProvider_ID()));
+		} else {
+			setStorageProvider(MStorageProvider.get(ctx, getAD_StorageProvider_ID()));
+		}
 	}
 	
 	/**
@@ -705,6 +709,7 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;
+		setAD_StorageProvider_ID(p.getAD_StorageProvider_ID());
 	}
 
 }	//	MAttachment
