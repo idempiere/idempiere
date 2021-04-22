@@ -21,10 +21,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 UPDATE AD_Field SET DisplayLogic='@PrintFormatType@=''S''', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-02-20 13:51:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206598
 ;
 
--- Feb 20, 2021, 1:52:53 PM BRT
-UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, ReadOnlyLogic='@PrintFormatType@=''S''', IsToolbarButton=NULL,Updated=TO_DATE('2021-02-20 13:52:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5668
-;
-
 -- Feb 20, 2021, 1:58:50 PM BRT
 UPDATE AD_Field SET DisplayLogic='@PrintFormatType@=F | @PrintFormatType@=S', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-02-20 13:58:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=56373
 ;
@@ -37,8 +33,9 @@ UPDATE AD_Field SET DisplayLogic='@PrintFormatType@=S', AD_Reference_Value_ID=NU
 UPDATE AD_Field SET AD_FieldGroup_ID=200015, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-02-20 14:00:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206598
 ;
 
-
-
+-- Apr 22, 2021, 8:05:02 PM CEST
+UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, ReadOnlyLogic='@#ShowAdvanced@=N', IsToolbarButton=NULL,Updated=TO_DATE('2021-04-22 20:05:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206598
+;
 
 SELECT register_migration_script('202102201441_IDEMPIERE-4709.sql') FROM dual
 ;

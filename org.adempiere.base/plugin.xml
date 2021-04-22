@@ -95,17 +95,6 @@
       </callout>
    </extension>
    <extension
-         id="org.adempiere.model.CalloutPrintFormatType.printformattype"
-         point="org.adempiere.base.IColumnCallout">
-      <callout
-            class="org.adempiere.model.CalloutPrintFormatType"
-            columnName="PrintFormatType"
-            priority="0"
-            tableName="AD_PrintFormatItem">
-      </callout>
-   </extension>
-
-   <extension
          id="org.compiere.model.StandardTaxProvider"
          name="Standard Tax Provider"
          point="org.adempiere.model.ITaxProvider">
