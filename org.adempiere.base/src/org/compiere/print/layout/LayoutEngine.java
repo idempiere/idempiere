@@ -1145,6 +1145,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						element.setMaxWidth(maxWidth);
 					}
 				}
+				/** START DEVCOFFEE: Script print format type **/
+				else if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
+				{
+					element = createStringElement (item.getName(),
+							item.getAD_PrintColor_ID (), item.getAD_PrintFont_ID (),
+							maxWidth, item.getMaxHeight (), item.isHeightOneLine (), alignment, true);
+				}
 				else	//	(item.isTypeText())		//**	Text
 				{
 					String printName = item.getPrintName (m_format.getLanguage ());
@@ -1246,6 +1253,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		newLine();
 		PrintElement element = null;
 		//
+		// COF #10540 - avoid error when generating PDF due to inconsistency in the configuration
+		if (item.getAD_PrintFormatChild_ID() <= 0)
+		{
+			log.log(Level.SEVERE, "Included format not configured. AD_PrintFormat_ID = " + item.getAD_PrintFormat_ID() + ", AD_PrintFormatItem_ID=" + item.getAD_PrintFormatItem_ID());
+			return element;
+		}
+
 		MPrintFormat format = MPrintFormat.get (getCtx(), item.getAD_PrintFormatChild_ID(), false);
 		format.setLanguage(m_format.getLanguage());
 		if (m_format.isTranslationView())
@@ -1800,11 +1814,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					{
 						columnElement = item.getPrintName(format.getLanguage());	
 					}
-					else if (item.isTypeField())
+					else if (item.isTypeField() || item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
 					{
 						Object obj = null;
 						if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
 							obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
+						/** START DEVCOFFEE: Script print format type **/
+						if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
+						{
+							obj = printData.getNode(item.getName());
+						}
 						if (obj == null)
 							;
 						else if (obj instanceof PrintDataElement)
