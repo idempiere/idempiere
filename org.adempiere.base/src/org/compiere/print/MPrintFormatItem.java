@@ -737,8 +737,9 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			setScript(null);
 		}
 		
-		if(!Util.isEmpty(getScript()) && is_ValueChanged(MPrintFormatItem.COLUMNNAME_Script)
-				&& getScript().contains("@SQL") && !MRole.getDefault().isAccessAdvanced()) {
+		if(   !Util.isEmpty(getScript())
+		   && is_ValueChanged(MPrintFormatItem.COLUMNNAME_Script)
+		   && !MRole.getDefault().isAccessAdvanced()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
 			return false;
 		}

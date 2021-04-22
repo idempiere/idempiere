@@ -280,7 +280,7 @@ public class DataEngine
 			.append("c.ColumnSQL, COALESCE(pfi.FormatPattern, c.FormatPattern) ")		//	24, 25
 			//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
 			/** START DEVCOFFEE: script column **/
-			.append(" , pfi.isDesc, pfi.Script, pfi.Name ") //26
+			.append(" , pfi.isDesc, pfi.Script, pfi.Name ") // 26..28
 			//END
 			.append("FROM AD_PrintFormat pf")
 			.append(" INNER JOIN AD_PrintFormatItem pfi ON (pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID)")
@@ -410,6 +410,7 @@ public class DataEngine
 						if (script.startsWith("@SQL="))
 						{
 							script = "(" + script.replace("@SQL=", "") + ")";
+							script = Env.parseContext(Env.getCtx(), 0, script, false);
 						}
 						else
 							script = "'@SCRIPT" + script + "'";
@@ -1314,12 +1315,6 @@ public class DataEngine
 			}
 
 			token = inStr.substring(0, j);
-
-			//format string
-			int f = token.indexOf('<');
-			if (f > 0 && token.endsWith(">")) {
-				token = token.substring(0, f);
-			}
 
 			if (token.startsWith("ACCUMULATE/")) {
 
