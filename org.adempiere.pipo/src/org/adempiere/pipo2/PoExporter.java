@@ -305,7 +305,7 @@ public class PoExporter {
 		if ("BinaryData".equals(columnName)) {
 			MClientInfo ci = MClientInfo.get(po.getAD_Client_ID());
 			if (po.get_Table_ID() == MAttachment.Table_ID && ci.getAD_StorageProvider_ID() > 0) {
-				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getAD_StorageProvider_ID(), po.get_TrxName());
+				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getAD_StorageProvider_ID());
 				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
 					MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName());
 					File tmpfile = att.saveAsZip();
@@ -316,13 +316,13 @@ public class PoExporter {
 					}
 				}
 			} else if (po.get_Table_ID() == MImage.Table_ID && ci.getStorageImage_ID() > 0) {
-				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageImage_ID(), po.get_TrxName());
+				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getStorageImage_ID());
 				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
 					MImage image = new MImage(po.getCtx(), po.get_ID(), po.get_TrxName());
 					value = image.getBinaryData();
 				}
 			} else if (po.get_Table_ID() == MArchive.Table_ID && ci.getStorageArchive_ID() > 0) {
-				MStorageProvider sp = new MStorageProvider(po.getCtx(), ci.getStorageArchive_ID(), po.get_TrxName());
+				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getStorageArchive_ID());
 				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
 					MArchive archive = new MArchive(po.getCtx(), po.get_ID(), po.get_TrxName());
 					File tmpfile = archive.saveAsZip();
