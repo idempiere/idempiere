@@ -421,8 +421,8 @@ public class DataEngine
 					if (ColumnName == null && script.isEmpty())
 						continue;
 
-					sqlSELECT.append(script).append(" AS ").append(m_synonym).append(pfiName).append(",")
-					.append("''").append(" AS ").append(pfiName).append(",");
+					sqlSELECT.append(script).append(" AS \"").append(m_synonym).append(pfiName).append("\",")
+					.append("''").append(" AS \"").append(pfiName).append("\",");
 					//
 					pdc = new PrintDataColumn(-1, pfiName, DisplayType.Text, FieldLength, orderName, isPageBreak);
 					synonymNext();
