@@ -105,6 +105,12 @@ extends AbstractExcelExporter
 				obj = m_printData.getNode(Integer.valueOf(AD_Column_ID));
 		}
 
+		/** DEVCOFFEE: script column **/
+		if (item.isTypeScript())
+		{
+			obj = m_printData.getNode(item.getName());
+		}
+
 		if (obj != null && obj instanceof PrintDataElement) {
 			return (PrintDataElement)obj;
 		}
