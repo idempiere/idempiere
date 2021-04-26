@@ -31,6 +31,7 @@ import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFormFactory;
+import org.adempiere.webui.factory.IMappedFormFactory;
 import org.adempiere.webui.panel.ADForm;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.ICreateFromFactory;
@@ -49,7 +50,7 @@ import org.zkoss.zk.ui.Component;
 public class Extensions {
 
 	private final static CCache<String, IServiceReferenceHolder<IFormFactory>> s_formFactoryCache = new CCache<>(null, "IFormFactory", 100, false);
-	
+
 	/**
 	 *
 	 * @param formId Java class name or equinox extension Id
@@ -81,11 +82,11 @@ public class Extensions {
 		}
 		return null;
 	}
-	
+
 	private final static CCache<String, List<IServiceReferenceHolder<IProcessParameterListener>>> s_processParameterListenerCache = new CCache<>(null, "List<IProcessParameterListener>", 100, false);
-	
+
 	/**
-	 * 
+	 *
 	 * @param processClass
 	 * @param columnName
 	 * @return list of parameter listener
@@ -95,7 +96,7 @@ public class Extensions {
 		List<IServiceReferenceHolder<IProcessParameterListener>> listeners = s_processParameterListenerCache.get(cacheKey);
 		if (listeners != null)
 			return listeners.stream().filter(e -> e.getService() != null).map(e -> e.getService()).collect(Collectors.toCollection(ArrayList::new));
-		
+
 		ServiceQuery query = new ServiceQuery();
 		query.put("ProcessClass", processClass);
 		if (columnName != null)
@@ -106,11 +107,11 @@ public class Extensions {
 		s_processParameterListenerCache.put(cacheKey, listeners);
 		return listeners.stream().filter(e -> e.getService() != null).map(e -> e.getService()).collect(Collectors.toCollection(ArrayList::new));
 	}
-	
+
 	private final static CCache<String, IServiceReferenceHolder<ICreateFromFactory>> s_createFromFactoryCache = new CCache<>(null, "ICreateFromFactory", 100, false);
-	
+
 	/**
-	 * 
+	 *
 	 * @param mTab
 	 * @return ICreateFrom instance
 	 */
@@ -128,9 +129,9 @@ public class Extensions {
 			}
 			s_createFromFactoryCache.remove(cacheKey);
 		}
-		
+
 		List<IServiceReferenceHolder<ICreateFromFactory>> factories = Service.locator().list(ICreateFromFactory.class).getServiceReferences();
-		for (IServiceReferenceHolder<ICreateFromFactory> factory : factories) 
+		for (IServiceReferenceHolder<ICreateFromFactory> factory : factories)
 		{
 			ICreateFromFactory service = factory.getService();
 			if (service != null) {
@@ -141,13 +142,13 @@ public class Extensions {
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	private static final CCache<String, IServiceReferenceHolder<IPaymentFormFactory>> s_paymentFormFactoryCache = new CCache<>(null, "IPaymentFormFactory", 100, false);
 	/**
-	 * 
+	 *
 	 * @param windowNo
 	 * @param mTab
 	 * @param paymentRule
@@ -179,11 +180,11 @@ public class Extensions {
 		}
 		return null;
 	}
-	
+
 	private static final CCache<String, IServiceReferenceHolder<IDashboardGadgetFactory>> s_dashboardGadgetFactoryCache = new CCache<>(null, "IDashboardGadgetFactory", 100, false);
-	
+
 	/**
-	 * 
+	 *
 	 * @param url
 	 * @param parent
 	 * @return Gadget component
@@ -199,7 +200,7 @@ public class Extensions {
 			}
 			s_dashboardGadgetFactoryCache.remove(url);
 		}
-		
+
 		List<IServiceReferenceHolder<IDashboardGadgetFactory>> f = Service.locator().list(IDashboardGadgetFactory.class).getServiceReferences();
         for (IServiceReferenceHolder<IDashboardGadgetFactory> factory : f) {
         	IDashboardGadgetFactory service = factory.getService();
@@ -209,15 +210,37 @@ public class Extensions {
 	            	return component;
         	}
         }
-        
+
         return null;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return list of {@link IChartRendererService}
 	 */
 	public static final List<IChartRendererService> getChartRendererServices() {
 		return Service.locator().list(IChartRendererService.class).getServices();
-	}	
+	}
+
+	private static IServiceReferenceHolder<IMappedFormFactory> s_mappedFormFactoryReference = null;
+
+	/**
+	 *
+	 * @return {@link IMappedFormFactory}
+	 */
+	public static IMappedFormFactory getMappedFormFactory(){
+		IMappedFormFactory formFactoryService = null;
+		if (s_mappedFormFactoryReference != null) {
+			formFactoryService = s_mappedFormFactoryReference.getService();
+			if (formFactoryService != null)
+				return formFactoryService;
+		}
+		IServiceReferenceHolder<IMappedFormFactory> serviceReference = Service.locator().locate(IMappedFormFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			formFactoryService = serviceReference.getService();
+			s_mappedFormFactoryReference = serviceReference;
+		}
+		return formFactoryService;
+	}
+
 }
