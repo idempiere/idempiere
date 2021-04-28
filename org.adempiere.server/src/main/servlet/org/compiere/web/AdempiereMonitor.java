@@ -25,6 +25,9 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -759,6 +762,14 @@ public class AdempiereMonitor extends HttpServlet
 		bb.addElement(new hr());
 		para = new p();
 		ServerInstance[] servers = getServerManager().getServerInstances();		
+		Arrays.sort(servers, new Comparator<ServerInstance>() {
+		    public int compare(ServerInstance o1, ServerInstance o2) {
+		    	if (o1 == null || o1.getModel() == null || o1.getModel().getName() == null
+		    			|| o2 == null || o2.getModel() == null || o2.getModel().getName() == null)
+		    		return 0;
+		        return o1.getModel().getName().compareTo(o2.getModel().getName());
+		    }
+		});
 		for (int i = 0; i < servers.length; i++)
 		{
 			if (i > 0)
@@ -1152,14 +1163,28 @@ public class AdempiereMonitor extends HttpServlet
 		//	List Log Files
 		p p = new p();
 		p.addElement(new b("All Log Files: "));
+		p.addElement(new br());
 		//	All in dir
 		LogFileInfo logFiles[] = systemInfo.getLogFileInfos();
+
+		Arrays.sort(logFiles, new Comparator<LogFileInfo>() {
+		    public int compare(LogFileInfo o1, LogFileInfo o2) {
+		    	if (o1 == null || o1.getFileName() == null
+		    			|| o2 == null || o2.getFileName() == null)
+		    		return 0;
+		        return o1.getFileName().compareTo(o2.getFileName());
+		    }
+		});
 		for (LogFileInfo logFile : logFiles) 
 		{
 			if (logFile != logFiles[0])
 				p.addElement(" - ");
 			String fileName = logFile.getFileName();
-			a link = new a ("idempiereMonitor?Trace=" + fileName, fileName);
+			String displayName = fileName;
+			int index = fileName.lastIndexOf(File.separator);
+			if (index > 1)
+				displayName = fileName.substring(index+1);
+			a link = new a ("idempiereMonitor?Trace=" + fileName, displayName);
 			p.addElement(link);
 			int size = (int)(logFile.getFileSize()/1024);
 			if (size < 1024)
