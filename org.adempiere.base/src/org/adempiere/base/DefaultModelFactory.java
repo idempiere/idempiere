@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.atteo.classindex.ClassIndex;
 import org.compiere.model.MEntityType;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -82,6 +83,21 @@ public class DefaultModelFactory implements IModelFactory {
 				return null;
 			else
 				return cache;
+		}
+
+		// annotation-based search
+		Class<?> candidate = null;
+		for(Class<?> clazz : ClassIndex.getAnnotated(Model.class)){
+			Model ma = clazz.getAnnotation(Model.class);
+			if(ma.table().equalsIgnoreCase(tableName)) {
+				candidate = clazz;
+				if(!ma.intermediate())
+					break;
+			}
+		}
+		if(candidate!=null) {
+			s_classCache.put(tableName, candidate);
+			return candidate;
 		}
 
 		MTable table = MTable.get(Env.getCtx(), tableName);
