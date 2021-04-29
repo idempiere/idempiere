@@ -1166,15 +1166,6 @@ public class AdempiereMonitor extends HttpServlet
 		p.addElement(new br());
 		//	All in dir
 		LogFileInfo logFiles[] = systemInfo.getLogFileInfos();
-
-		Arrays.sort(logFiles, new Comparator<LogFileInfo>() {
-		    public int compare(LogFileInfo o1, LogFileInfo o2) {
-		    	if (o1 == null || o1.getFileName() == null
-		    			|| o2 == null || o2.getFileName() == null)
-		    		return 0;
-		        return o1.getFileName().compareTo(o2.getFileName());
-		    }
-		});
 		for (LogFileInfo logFile : logFiles) 
 		{
 			if (logFile != logFiles[0])
