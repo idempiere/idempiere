@@ -168,7 +168,7 @@ public class ModelClassGenerator
 		start.append("/** Generated Model for ").append(tableName).append(NL)
 			 .append(" *  @author iDempiere (generated) ").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
-			 .append("@org.compiere.base.Model(table=\"").append(tableName).append("\", intermediate=true)").append(NL)
+			 .append("@org.adempiere.base.Model(table=\"").append(tableName).append("\", intermediate=true)").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")
 			 	.append(" implements I_").append(tableName)
