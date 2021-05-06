@@ -18,6 +18,9 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +62,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -880,9 +884,9 @@ public class DashboardController implements EventListener<Event> {
 			String[] params = parameters.split("[,]");
 			for (String s : params)
 			{
-				String[] elements = s.split("[=]");
-				String key = elements[0];
-				String value = elements[1];
+				int pos = s.indexOf("=");
+				String key = s.substring(0, pos);
+				String value = s.substring(pos + 1);
 				paramMap.put(key, value);
 			}
 			MPInstancePara[] iParams = pInstance.getParameters();
@@ -894,6 +898,35 @@ public class DashboardController implements EventListener<Event> {
 				if (variable == null
 					|| (variable != null && variable.length() == 0))
 					value = null;
+				else if (variable.startsWith("@SQL=")) {
+					String	defStr = "";
+					String sql = variable.substring(5);
+					sql = Env.parseContext(Env.getCtx(), 0, sql, false, false);	//	replace variables
+					if (!Util.isEmpty(sql)) {
+						PreparedStatement stmt = null;
+						ResultSet rs = null;
+						try {
+							stmt = DB.prepareStatement(sql, null);
+							rs = stmt.executeQuery();
+							if (rs.next())
+								defStr = rs.getString(1);
+							else {
+								if (logger.isLoggable(Level.INFO))
+									logger.log(Level.INFO, "(" + iPara.getParameterName() + ") - no Result: " + sql);
+							}
+						}
+						catch (SQLException e) {
+							logger.log(Level.WARNING, "(" + iPara.getParameterName() + ") " + sql, e);
+						}
+						finally{
+							DB.close(rs, stmt);
+							rs = null;
+							stmt = null;
+						}
+					}
+					if (!Util.isEmpty(defStr))
+						value = defStr;
+				}	//	SQL Statement
 				else if (variable.indexOf('@') != -1)	//	we have a variable
 				{
 					value = Env.parseContext(Env.getCtx(), 0, variable, false, false);
