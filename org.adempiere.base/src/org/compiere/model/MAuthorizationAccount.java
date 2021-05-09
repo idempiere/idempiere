@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.DB;
@@ -165,6 +166,22 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 		return account;
 	}
 
+	/**
+	 * 
+	 * @param AD_User_ID
+	 * @param scope
+	 * @return list of {@link MAuthorizationAccount}
+	 */
+	public static List<MAuthorizationAccount> getAuthorizedAccouts(int AD_User_ID, String scope) {
+		String where = "AD_User_ID=? AND AD_AuthorizationScope=? AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
+		List<MAuthorizationAccount> accounts = new Query(Env.getCtx(), Table_Name, where, null)
+				.setOnlyActiveRecords(true)
+				.setParameters(AD_User_ID, scope, Env.getAD_Client_ID(Env.getCtx()))
+				.setOrderBy("AD_Client_ID DESC, Updated DESC")
+				.list();
+		return accounts;
+	}
+	
 	/**
 	 * Get an authorization token - refresh it if expired
 	 * @return AuthorizationToken
