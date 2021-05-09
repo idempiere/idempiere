@@ -25,6 +25,7 @@
  **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -39,6 +40,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.report.LinkWindow;
+import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.util.CLogger;
@@ -101,7 +103,11 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 		} else if (IReportViewerExportSource.HTML_MIME_TYPE.equals(contentType)) {
 			cboType.setSelectedIndex(3);
 		} else if (IReportViewerExportSource.CSV_MIME_TYPE.equals(contentType)) {
-			cboType.setSelectedIndex(6);
+			if (IReportViewerExportSource.CSV_FILE_EXT.equals(viewer.getFileExtension())) {
+				cboType.setSelectedIndex(5);
+			} else {
+				cboType.setSelectedIndex(6);
+			}
 		} else if (IReportViewerExportSource.EXCEL_MIME_TYPE.equals(contentType)) {			
 			cboType.setSelectedIndex(7);
 		} else if (IReportViewerExportSource.EXCEL_XML_MIME_TYPE.equals(contentType)) {			
@@ -281,8 +287,9 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 			Page page = this.getPage();
 			onClose();					
 			UploadHandler uh = cboActions.getSelectedItem().getValue();
-			UploadResponse response = uh.handler.uploadMedia(new UploadMedia(media.getName(), media.getContentType(), media.getStreamData(), 
-					media.getByteData().length), uh.account);
+			UploadResponse response = uh.handler.uploadMedia(new UploadMedia(media.getName(), media.getContentType(),
+					media.isBinary() ? media.getStreamData() : new ReaderInputStream(media.getReaderData(), StandardCharsets.UTF_8.name()), 
+					media.isBinary() ? media.getByteData().length : 0), uh.account);
 			if (response != null && response.getLink() != null) {
 				LinkWindow linkWindow = new LinkWindow(response.getLink(), response.getLinkLabel());
 				linkWindow.setPage(page);
