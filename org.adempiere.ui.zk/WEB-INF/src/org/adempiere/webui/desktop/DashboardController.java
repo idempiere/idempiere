@@ -59,6 +59,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -419,14 +420,14 @@ public class DashboardController implements EventListener<Event> {
 				
 				Toolbar toolbar = new Toolbar();
 				content.appendChild(toolbar);
-				btn.setLabel("Open run dialog");						
+				btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
 				toolbar.appendChild(btn);
 				
 				btn = new ToolBarButton();
 				btn.setAttribute("AD_Process_ID", AD_Process_ID);
 				btn.setAttribute("ProcessParameters", processParameters);
 				btn.addEventListener(Events.ON_CLICK, this);
-				btn.setLabel("View report in new tab");
+				btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
 				toolbar.appendChild(new Separator("vertical"));
 				toolbar.appendChild(btn);
 			}
