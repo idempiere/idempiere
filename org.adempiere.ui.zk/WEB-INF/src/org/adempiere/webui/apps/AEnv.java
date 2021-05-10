@@ -206,7 +206,7 @@ public final class AEnv
 	 */
 	public static void logout()
 	{
-		String sessionID = Env.getContext(Env.getCtx(), "#AD_Session_ID");
+		String sessionID = Env.getContext(Env.getCtx(), Env.AD_SESSION_ID);
 		synchronized (windowCache)
 		{
 			CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
@@ -222,7 +222,7 @@ public final class AEnv
 		if (session != null)
 			session.logout();
 		
-		Env.setContext(Env.getCtx(), "#AD_Session_ID", (String)null);
+		Env.setContext(Env.getCtx(), Env.AD_SESSION_ID, (String)null);
 		//
 	}
 
@@ -272,7 +272,7 @@ public final class AEnv
 
 		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = null;
-		String sessionID = Env.getContext(Env.getCtx(), "#AD_Session_ID");
+		String sessionID = Env.getContext(Env.getCtx(), Env.AD_SESSION_ID);
 		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
 		{
 			synchronized (windowCache)

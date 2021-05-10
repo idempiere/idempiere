@@ -14,17 +14,17 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  * @author hengsin
  *
  */
 public class MProductionPlan extends X_M_ProductionPlan {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -8189507724698695756L;
+	private static final long serialVersionUID = 1830027775110768396L;
 
 	/**
 	 * @param ctx
@@ -126,14 +126,10 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		// products used in production
 		String sql = "SELECT M_ProductBom_ID, BOMQty" + " FROM M_Product_BOM"
 				+ " WHERE M_Product_ID=" + finishedProduct.getM_Product_ID() + " ORDER BY Line";
+		
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());) {			
 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			pstmt = DB.prepareStatement(sql, get_TrxName());
-
-			rs = pstmt.executeQuery();
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				
 				lineno = lineno + 10;
@@ -298,9 +294,6 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		} catch (Exception e) {
 			throw new AdempiereException("Failed to create production lines", e);
 		}
-		finally {
-			DB.close(rs, pstmt);
-		}
 
 		return count;
 	}
@@ -310,4 +303,16 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		deleteLines(get_TrxName());
 		return true;
 	}
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) 
+	{
+		MProduction parent = new MProduction(getCtx(), getM_Production_ID(), get_TrxName());
+		if (newRecord && parent.isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+			return false;
+		}
+		return true;
+	}
+
 }

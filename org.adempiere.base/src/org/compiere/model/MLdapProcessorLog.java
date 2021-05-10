@@ -45,8 +45,6 @@ public class MLdapProcessorLog extends X_AD_LdapProcessorLog implements Adempier
 		super (ctx, AD_LdapProcessorLog_ID, trxName);
 		if (AD_LdapProcessorLog_ID == 0)
 		{
-		//	setAD_LdapProcessorLog_ID (0);
-		//	setAD_LdapProcessor_ID (0);
 			setIsError (false);
 		}	
 	}	//	MLdapProcessorLog

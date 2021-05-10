@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 public class MProductionLineMA extends X_M_ProductionLineMA {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3935841562652510880L;
+	private static final long serialVersionUID = -2633782218494352620L;
 
 	public MProductionLineMA(Properties ctx, int M_ProductionLineMA_ID,
 			String trxName) {
@@ -95,5 +96,22 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 		return retValue;
 	}	//	get
 	
-	
+	@Override
+	protected boolean beforeSave(boolean newRecord) 
+	{
+		MProductionLine parentLine = new MProductionLine(getCtx(), getM_ProductionLine_ID(), get_TrxName());
+		MProduction prodParent;
+		if (parentLine.getM_Production_ID() > 0) {
+			prodParent = new MProduction(getCtx(), parentLine.getM_Production_ID(), get_TrxName());
+		} else {
+			MProductionPlan plan = new MProductionPlan(getCtx(), parentLine.getM_ProductionPlan_ID(), get_TrxName());
+			prodParent = new MProduction(getCtx(), plan.getM_Production_ID(), get_TrxName());
+		}
+		if (newRecord && prodParent.isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+			return false;
+		}
+		return true;
+	}
+
 }

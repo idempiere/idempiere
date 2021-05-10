@@ -95,12 +95,9 @@ public class ExpenseAPInvoice extends SvrProcess
 		//
 		int old_BPartner_ID = -1;
 		MInvoice invoice = null;
-		//
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString (), get_TrxName());
+		//		
+		try (PreparedStatement pstmt = DB.prepareStatement (sql.toString (), get_TrxName());)
+		{			
 			int par = 1;
 			pstmt.setInt(par++, getAD_Client_ID());
 			if (m_C_BPartner_ID != 0)
@@ -109,7 +106,7 @@ public class ExpenseAPInvoice extends SvrProcess
 				pstmt.setTimestamp (par++, m_DateFrom);
 			if (m_DateTo != null)
 				pstmt.setTimestamp (par++, m_DateTo);
-			rs = pstmt.executeQuery ();
+			ResultSet rs = pstmt.executeQuery ();
 			while (rs.next())				//	********* Expense Line Loop
 			{
 				MTimeExpense te = new MTimeExpense (getCtx(), rs, get_TrxName());
@@ -200,11 +197,6 @@ public class ExpenseAPInvoice extends SvrProcess
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 		completeInvoice (invoice);
 		StringBuilder msgreturn = new StringBuilder("@Created@=").append(m_noInvoices);

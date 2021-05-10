@@ -209,7 +209,7 @@ ContextMenuListener, IZoomableEditor
             lookup.addListDataListener(this);
             lookup.setMandatory(isMandatory());
             
-            if ((lookup.getDisplayType() == DisplayType.List && Env.getContextAsInt(Env.getCtx(), "#AD_Role_ID") == 0)
+            if ((lookup.getDisplayType() == DisplayType.List && Env.getContextAsInt(Env.getCtx(), Env.AD_ROLE_ID) == 0)
             		|| lookup.getDisplayType() != DisplayType.List) 
             {
     			zoom= true;
@@ -241,7 +241,7 @@ ContextMenuListener, IZoomableEditor
         	if (lookup != null && (lookup.getDisplayType() == DisplayType.TableDir || lookup.getDisplayType() == DisplayType.Table))	// only for Table & TableDir
         	{
     			MTable table = MTable.get(Env.getCtx(), tableName);
-    			isShortListAvailable = (table.getColumnIndex("IsShortList") >= 0);
+    			isShortListAvailable = table.columnExistsInDB("IsShortList");
         		if (isShortListAvailable)
         		{
         			onlyShortListItems=true;
@@ -949,7 +949,7 @@ ContextMenuListener, IZoomableEditor
 		private WTableDirEditor editor;
 		
 		protected CCacheListener(String tableName, WTableDirEditor editor) {
-			super(tableName, tableName+"|CCacheListener", 0, 0, true);
+			super(tableName, tableName+"|CCacheListener", 0, 0, false);
 			this.editor = editor;
 		}
 

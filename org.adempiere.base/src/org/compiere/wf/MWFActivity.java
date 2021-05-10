@@ -179,6 +179,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		//	Document Link
 		setAD_Table_ID(process.getAD_Table_ID());
 		setRecord_ID(process.getRecord_ID());
+		if(process.getPO() != null)
+        	m_po = process.getPO();
 		//modified by Rob Klein
 		setAD_Client_ID(process.getAD_Client_ID());
 		setAD_Org_ID(process.getAD_Org_ID());
@@ -967,7 +969,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			try {
 				if (contextLost)
 				{
-					Env.getCtx().setProperty("#AD_Client_ID", (m_po != null ? Integer.toString(m_po.getAD_Client_ID()) : "0") );
+					Env.getCtx().setProperty(Env.AD_CLIENT_ID, (m_po != null ? Integer.toString(m_po.getAD_Client_ID()) : "0") );
 					m_state = new StateEngine(WFSTATE_Running);
 					setProcessed(true);
 					setWFState (StateEngine.STATE_Aborted);
@@ -992,7 +994,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				}
 			} finally {
 				if (contextLost)
-					Env.getCtx().remove("#AD_Client_ID");
+					Env.getCtx().remove(Env.AD_CLIENT_ID);
 			}
 		}
 		finally

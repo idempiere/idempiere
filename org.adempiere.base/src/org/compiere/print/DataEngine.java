@@ -17,6 +17,7 @@
 package org.compiere.print;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +25,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -45,6 +48,9 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+
+import bsh.EvalError;
+import bsh.Interpreter;
 
 /**
  * Data Engine.
@@ -116,6 +122,7 @@ public class DataEngine
 	/** Key Indicator in Report			*/
 	public static final String KEY = "*";
 
+	private Map<Object, Object> m_summarized = new HashMap<Object, Object>();
 
 	/**************************************************************************
 	 * 	Load Data
@@ -272,20 +279,25 @@ public class DataEngine
 			.append("pfi.IsVarianceCalc, pfi.IsDeviationCalc, ")				//	22..23
 			.append("c.ColumnSQL, COALESCE(pfi.FormatPattern, c.FormatPattern) ")		//	24, 25
 			//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
-			.append(" , pfi.isDesc ") //26
+			/** START DEVCOFFEE: script column **/
+			.append(" , pfi.isDesc, pfi.Script, pfi.Name ") // 26..28
 			//END
 			.append("FROM AD_PrintFormat pf")
 			.append(" INNER JOIN AD_PrintFormatItem pfi ON (pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID)")
-			.append(" INNER JOIN AD_Column c ON (pfi.AD_Column_ID=c.AD_Column_ID)")
+			.append(" LEFT JOIN AD_Column c ON (pfi.AD_Column_ID=c.AD_Column_ID)")
 			.append(" LEFT OUTER JOIN AD_ReportView_Col rvc ON (pf.AD_ReportView_ID=rvc.AD_ReportView_ID AND c.AD_Column_ID=rvc.AD_Column_ID) ")
 			.append("WHERE pf.AD_PrintFormat_ID=?")					//	#1
-			.append(" AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0) ")
+			.append(" AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0 ")
+			.append(" OR EXISTS(select 1 from AD_PrintFormatItem x where x.AD_PrintFormat_ID=pf.AD_PrintFormat_ID and x.DisplayLogic is not null and ")
+			.append("(x.DisplayLogic Like '%@'||c.ColumnName||'@%' OR x.DisplayLogic Like '%@'||c.ColumnName||':%@%' OR x.DisplayLogic Like '%@'||c.ColumnName||'.%@%'))) ")
 			.append(" AND pfi.PrintFormatType IN ('"
 				+ MPrintFormatItem.PRINTFORMATTYPE_Field
 				+ "','"
 				+ MPrintFormatItem.PRINTFORMATTYPE_Image
 				+ "','"
 				+ MPrintFormatItem.PRINTFORMATTYPE_PrintFormat
+				+ "','" 
+				+ MPrintFormatItem.PRINTFORMATTYPE_Script 
 				+ "') ")
 			.append("ORDER BY pfi.IsPrinted DESC, pfi.SeqNo");			//	Functions are put in first column
 		PreparedStatement pstmt = null;
@@ -371,6 +383,10 @@ public class DataEngine
 				//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
 				boolean isDesc = "Y".equals(rs.getString(26));
 				//END
+				/** START DEVCOFFEE: script column  **/
+				String script = rs.getString(27);
+				String pfiName = rs.getString(28);
+
 
 				//	Fully qualified Table.Column for ordering
 				String orderName = tableName + "." + ColumnName;
@@ -385,10 +401,31 @@ public class DataEngine
 					groupByColumns.add(tableName+"."+ColumnName);
 					pdc = new PrintDataColumn(AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, KEY, isPageBreak);	//	KeyColumn
 				}
-				// not printed Sort Columns
-				else if (!IsPrinted)
+				/** START DEVCOFFEE: script column  **/
+				else if (ColumnName == null || script != null && !script.isEmpty())
 				{
-					;
+					//	=> (..) AS AName, Table.ID,
+					if (script != null && !script.isEmpty())
+					{
+						if (script.startsWith("@SQL="))
+						{
+							script = "(" + script.replace("@SQL=", "") + ")";
+							script = Env.parseContext(Env.getCtx(), 0, script, false);
+						}
+						else
+							script = "'@SCRIPT" + script + "'";
+					}
+					else
+						script = "";
+
+					if (ColumnName == null && script.isEmpty())
+						continue;
+
+					sqlSELECT.append(script).append(" AS \"").append(m_synonym).append(pfiName).append("\",")
+					.append("''").append(" AS \"").append(pfiName).append("\",");
+					//
+					pdc = new PrintDataColumn(-1, pfiName, DisplayType.Text, FieldLength, orderName, isPageBreak);
+					synonymNext();
 				}
 				//	-- Parent, TableDir (and unqualified Search) --
 				else if ( /* (IsParent && DisplayType.isLookup(AD_Reference_ID)) || <-- IDEMPIERE-71 Carlos Ruiz - globalqss */ 
@@ -627,9 +664,6 @@ public class DataEngine
 				}
 
 				//
-				if (pdc == null || (!IsPrinted && !IsKey))
-					continue;
-
 				pdc.setFormatPattern(formatPattern);
 				columns.add(pdc);
 			}	//	for all Fields in Tab
@@ -769,7 +803,13 @@ public class DataEngine
 			length++;
 		}
 		else
+		{
 			cc++;
+			// Refs #6532
+			if (cc == 'X')
+				cc++;
+		}
+
 		//
 		m_synonym = String.valueOf(cc);
 		for (int i = 1; i < length; i++) {
@@ -1004,8 +1044,23 @@ public class DataEngine
 								String id = rs.getString(counter++);
 								if (display != null && !rs.wasNull())
 								{
+									/** START DEVCOFFEE: script column **/
+									int displayType = pdc.getDisplayType();
+									if (display.startsWith("@SCRIPT"))
+									{
+										displayType = DisplayType.Number;
+										display = display.replace("@SCRIPT", "");
+										display = parseVariable(display, pdc, pd);
+										Interpreter bsh = new Interpreter ();
+										try {
+											display = bsh.eval(display).toString();
+										} catch (EvalError e) {
+											log.severe(e.getMessage());
+										}
+									}
+
 									ValueNamePair pp = new ValueNamePair(id, display);
-									pde = new PrintDataElement(pdc.getColumnName(), pp, pdc.getDisplayType(), pdc.getFormatPattern());
+									pde = new PrintDataElement(pdc.getColumnName(), pp, displayType, pdc.getFormatPattern());
 								}
 							}
 						}
@@ -1232,7 +1287,65 @@ public class DataEngine
 		}	//	 two lines
 	}	//	printRunningTotal
 
-	
+	/**
+	 * Parse expression, replaces @tag@ with pdc values and/or execute functions
+	 * @param expression
+	 * @param pdc
+	 * @param pd
+	 * @return String
+	 */
+	public String parseVariable(String expression, PrintDataColumn pdc, PrintData pd) {
+		if (expression == null || expression.length() == 0)
+			return "";
+
+		log.info("Analyzing Expression " + expression);
+		String token;
+		String inStr = new String(expression);
+		StringBuffer outStr = new StringBuffer();
+		int i = inStr.indexOf('@');
+		while (i != -1)
+		{
+			outStr.append(inStr.substring(0, i));			// up to @
+			inStr = inStr.substring(i+1, inStr.length());	// from first @
+
+			int j = inStr.indexOf('@');						// next @
+			if (j < 0)
+			{
+				return "";						//	no second tag
+			}
+
+			token = inStr.substring(0, j);
+
+			if (token.startsWith("ACCUMULATE/")) {
+
+				token = token.replace("ACCUMULATE/", "");
+
+				BigDecimal value = (BigDecimal) ((PrintDataElement)pd.getNode(token)).getValue();
+
+				if (m_summarized.containsKey(pdc))
+				{
+					value= ((BigDecimal) m_summarized.get(pdc)).add(value);
+					m_summarized.remove(pdc);
+				}
+
+				m_summarized.put(pdc, value);
+
+				outStr.append(value);
+			}
+			else if (token.startsWith("COL/"))
+			{
+				token = token.replace("COL/", "");
+				BigDecimal value = (BigDecimal) ((PrintDataElement)pd.getNode(token)).getValue();
+				outStr.append(value);
+			}
+
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+			i = inStr.indexOf('@');
+		}
+		outStr.append(inStr);						// add the rest of the string
+
+		return outStr.toString();
+	}
 	/*************************************************************************
 	 * 	Test
 	 * 	@param args args

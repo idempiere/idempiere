@@ -1532,4 +1532,12 @@ public class DB_Oracle implements AdempiereDatabase
 		//
 		return sql.toString();
 	}	//	getSQLModify
+
+	@Override
+	public boolean isQueryTimeout(SQLException ex) {
+		//java.sql.SQLTimeoutException: ORA-01013: user requested cancel of current operation
+		return "72000".equals(ex.getSQLState()) && ex.getErrorCode() == 1013;
+	}
+	
+	
 }   //  DB_Oracle

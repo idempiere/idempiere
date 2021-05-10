@@ -163,8 +163,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureScope))
 				trunc = "D";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		;
+
 			sb.append(" AND TRUNC(")
 				.append(getDateColumn()).append(",'").append(trunc).append("')=TRUNC(")
 				.append(DB.TO_DATE(reportDate)).append(",'").append(trunc).append("')");
@@ -203,8 +202,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureDisplay))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		;
+
 			dateCol = "TRUNC(" + getDateColumn() + ",'" + trunc + "') ";
 			groupBy = dateCol; 
 		}
@@ -277,8 +275,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureDisplay))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		trunc = "D";
+
 			sql.append(" AND TRUNC(").append(getDateColumn()).append(",'").append(trunc)
 				.append("')=TRUNC(").append(DB.TO_DATE(date)).append(",'").append(trunc).append("')");
 		}

@@ -102,8 +102,10 @@ public class LoadBankStatement extends SvrProcess
 			log.log(Level.SEVERE, "Invalid Loader");
 
 		// Start loading bank statement lines
-		else if (!m_controller.loadLines())
+		else if (!m_controller.loadLines()) {
+			message += m_controller.getErrorMessage() + " - " + m_controller.getErrorDescription();
 			log.log(Level.SEVERE, m_controller.getErrorMessage() + " - " + m_controller.getErrorDescription());
+		}
 		
 		else
 		{

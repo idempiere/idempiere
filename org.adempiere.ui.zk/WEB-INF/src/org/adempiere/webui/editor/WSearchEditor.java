@@ -78,15 +78,15 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class WSearchEditor extends WEditor implements ContextMenuListener, ValueChangeListener, IZoomableEditor
 {
-	private static final int MAX_AUTO_COMPLETE_ROWS = 50;	
+	private static final int DEFAULT_MAX_AUTO_COMPLETE_ROWS = 500;	
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
 	public static final String		ATTRIBUTE_IS_INFO_PANEL_OPEN	= "ATTRIBUTE_IS_INFO_PANEL_OPEN";
-	private Lookup 				lookup;
+	protected Lookup 				lookup;
 	private String				m_tableName = null;
 	private String				m_keyColumnName = null;
 	private String 				columnName;
     private Object              value;
-    private InfoPanel			infoPanel = null;
+    protected InfoPanel			infoPanel = null;
 	private String imageUrl;
 	private InfoListSubModel listModel = null;
 
@@ -94,7 +94,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	private static final String IN_PROGRESS_IMAGE = "~./zk/img/progress3.gif";
 	
-	private ADWindow adwindow;
+	protected ADWindow adwindow;
 
 	/**
 	 * 
@@ -228,13 +228,14 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (gridField != null && gridField.isAutocomplete()) {
 			setTableAndKeyColumn();
 			listModel = new InfoListSubModel(lookup, gridField, m_tableName, m_keyColumnName);
-			getComponent().getCombobox().setModel(listModel.getSubModel(null, MAX_AUTO_COMPLETE_ROWS));
+			int maxRows = MSysConfig.getIntValue(MSysConfig.ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS, DEFAULT_MAX_AUTO_COMPLETE_ROWS, Env.getAD_Client_ID(Env.getCtx()));
+			getComponent().getCombobox().setModel(listModel.getSubModel(null, maxRows));
 			
 			getComponent().getCombobox().addEventListener(Events.ON_CHANGING, (EventListener<InputEvent>)(e) -> {
 				if (!e.isChangingBySelectBack()) {
 					listModel.setWhereClause(getWhereClause());
 					String s = e.getValue();					
-					getComponent().getCombobox().setModel(listModel.getSubModel(s, MAX_AUTO_COMPLETE_ROWS));
+					getComponent().getCombobox().setModel(listModel.getSubModel(s, maxRows));
 				}
 			});
 		} else {

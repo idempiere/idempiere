@@ -17,7 +17,9 @@ Import-Package: org.junit.jupiter.api;version="5.6.0",
  org.junit.jupiter.params.converter;version="5.6.0",
  org.junit.jupiter.params.provider;version="5.6.0",
  org.junit.jupiter.params.support;version="5.6.0",
- org.osgi.framework;version="1.9.0"
+ org.osgi.framework;version="1.9.0",
+ org.osgi.service.component.annotations;version="1.3.0",
+ org.osgi.service.event;version="1.4.0"
 Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
  org.adempiere.base.callout;bundle-version="8.2.0",
  org.adempiere.base.process;bundle-version="8.2.0",
@@ -25,3 +27,5 @@ Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.idempiere.test.TestActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.idempiere.test
+Service-Component: OSGI-INF/org.idempiere.test.event.MyComponent.xml

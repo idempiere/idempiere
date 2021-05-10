@@ -86,8 +86,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public static MRole getDefault (Properties ctx, boolean reload)
 	{
-		int AD_Role_ID = Env.getContextAsInt(ctx, "#AD_Role_ID");
-		int AD_User_ID = Env.getContextAsInt(ctx, "#AD_User_ID");
+		int AD_Role_ID = Env.getContextAsInt(ctx, Env.AD_ROLE_ID);
+		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 //		if (!Ini.isClient())	//	none for Server
 //			AD_User_ID = 0;
 		MRole defaultRole = getDefaultRole(); 
@@ -124,7 +124,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public synchronized static MRole get (Properties ctx, int AD_Role_ID, int AD_User_ID, boolean reload)
 	{
-		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
+		if (s_log.isLoggable(Level.CONFIG)) s_log.config("AD_Role_ID=" + AD_Role_ID + ", AD_User_ID=" + AD_User_ID + ", reload=" + reload);
 		String key = AD_Role_ID + "_" + AD_User_ID;
 		MRole role = (MRole)s_roles.get (key, e -> new MRole(ctx, e));
 		if (role == null || reload)
@@ -273,6 +273,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	
 	/**************************************************************************
 	 * 	Standard Constructor
+	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
+	 *         in such case is necessary to use one of the get methods setting the userID
 	 *	@param ctx context
 	 *	@param AD_Role_ID id
 	 *	@param trxName transaction
@@ -303,6 +305,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 	/**
 	 * 	Load Constructor
+	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
+	 *         in such case is necessary to use one of the get methods setting the userID
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -809,16 +813,17 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	private void loadOrgAccessUser(ArrayList<OrgAccess> list)
 	{
 		if (getAD_User_ID() == -1) {
-			log.severe("Trying to load Org Access from User but user has not been set");
+			log.info("Trying to load Org Access from User but user has not been set");
 		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "SELECT * FROM AD_User_OrgAccess "
-			+ "WHERE AD_User_ID=? AND IsActive='Y'";
+			+ "WHERE AD_User_ID=? AND IsActive='Y' AND AD_Client_ID = ?";
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_User_ID());
+			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -845,11 +850,12 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "SELECT * FROM AD_Role_OrgAccess "
-			+ "WHERE AD_Role_ID=? AND IsActive='Y'";
+			+ "WHERE AD_Role_ID=? AND IsActive='Y' AND AD_Client_ID = ?";
 		try
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_Role_ID());
+			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -966,7 +972,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "SELECT AD_Table_ID, AccessLevel, TableName, IsView, "
-			+ "(SELECT ColumnName FROM AD_COLUMN WHERE AD_COLUMN.AD_TABLE_ID = AD_TABLE.AD_TABLE_ID AND AD_COLUMN.COLUMNNAME = AD_TABLE.TABLENAME || '_ID') "
+			+ "(SELECT ColumnName FROM AD_COLUMN WHERE AD_COLUMN.AD_TABLE_ID = AD_TABLE.AD_TABLE_ID AND UPPER(AD_COLUMN.COLUMNNAME) = UPPER(AD_TABLE.TABLENAME) || '_ID') "
 			+ "FROM AD_Table WHERE IsActive='Y'";
 		try
 		{
@@ -2866,7 +2872,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		final int AD_User_ID = getAD_User_ID();
 		if (AD_User_ID < 0)
 		{
-			log.severe("Trying to load Child Roles but user has not been set");
+			log.info("Trying to load Child Roles but user has not been set");
 			//throw new IllegalStateException("AD_User_ID is not set");
 			return ;
 		}
@@ -2902,7 +2908,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		final int AD_User_ID = getAD_User_ID();
 		if (AD_User_ID < 0)
 		{
-			log.severe("Trying to load Substituted Roles but user has not been set");
+			log.info("Trying to load Substituted Roles but user has not been set");
 			//throw new IllegalStateException("AD_User_ID is not set");
 			return;
 		}

@@ -53,6 +53,7 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.CPaper;
@@ -69,6 +70,7 @@ import org.compiere.print.util.SerializableMatrix;
 import org.compiere.print.util.SerializableMatrixImpl;
 import org.compiere.report.MReportLine;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -946,7 +948,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (ci.getLogoReport_ID() > 0) {
 			element = new ImageElement(ci.getLogoReport_ID(), false);
 		} else {
-			element = new ImageElement(org.compiere.Adempiere.getImageLogoSmall(true));	//	48x15
+			element = new ImageElement(org.compiere.Adempiere.getHeaderLogo());
 		}
 	//	element = new ImageElement(org.compiere.Adempiere.getImageLogo());	//	100x30
 		element.layout(48, 15, false, MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft);
@@ -1143,6 +1145,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						element.setMaxWidth(maxWidth);
 					}
 				}
+				/** START DEVCOFFEE: Script print format type **/
+				else if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
+				{
+					element = createStringElement (item.getName(),
+							item.getAD_PrintColor_ID (), item.getAD_PrintFont_ID (),
+							maxWidth, item.getMaxHeight (), item.isHeightOneLine (), alignment, true);
+				}
 				else	//	(item.isTypeText())		//**	Text
 				{
 					String printName = item.getPrintName (m_format.getLanguage ());
@@ -1244,6 +1253,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		newLine();
 		PrintElement element = null;
 		//
+		// COF #10540 - avoid error when generating PDF due to inconsistency in the configuration
+		if (item.getAD_PrintFormatChild_ID() <= 0)
+		{
+			log.log(Level.SEVERE, "Included format not configured. AD_PrintFormat_ID = " + item.getAD_PrintFormat_ID() + ", AD_PrintFormatItem_ID=" + item.getAD_PrintFormatItem_ID());
+			return element;
+		}
+
 		MPrintFormat format = MPrintFormat.get (getCtx(), item.getAD_PrintFormatChild_ID(), false);
 		format.setLanguage(m_format.getLanguage());
 		if (m_format.isTranslationView())
@@ -1649,8 +1665,17 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					additionalLines.put(Integer.valueOf(col), Integer.valueOf(item.getBelowColumn()-1));
 					if (!item.isSuppressNull())
 					{
+						if (item.is_Immutable())
+							item = new MPrintFormatItem(item);
 						item.setIsSuppressNull(true);	//	display size will be set to 0 in TableElement
-						item.saveEx();
+						try {
+							//this can be tenant or system print format
+							PO.setCrossTenantSafe();
+							item.saveEx();
+						} finally {
+							PO.clearCrossTenantSafe();
+						}
+						CacheMgt.get().reset(MPrintFormat.Table_Name, format.get_ID());
 					}
 				}
 				columnHeader[col] = new ValueNamePair(item.getColumnName(),
@@ -1789,11 +1814,16 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					{
 						columnElement = item.getPrintName(format.getLanguage());	
 					}
-					else if (item.isTypeField())
+					else if (item.isTypeField() || item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
 					{
 						Object obj = null;
 						if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
 							obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
+						/** START DEVCOFFEE: Script print format type **/
+						if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
+						{
+							obj = printData.getNode(item.getName());
+						}
 						if (obj == null)
 							;
 						else if (obj instanceof PrintDataElement)

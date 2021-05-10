@@ -54,7 +54,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -977397802747749777L;
+	private static final long serialVersionUID = 7691820074981291939L;
 
 	/**
 	 *  Create & Load existing Persistent Object
@@ -309,5 +309,17 @@ public class MDepositBatch extends X_C_DepositBatch
 		list.toArray(retValue);
 		return retValue;
 	}	//	getLines
+
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isComplete
 
 }	//	MDepositBatch

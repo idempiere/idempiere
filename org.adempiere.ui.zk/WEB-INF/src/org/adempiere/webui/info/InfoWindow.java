@@ -1930,6 +1930,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected boolean testCount(boolean promptError)
 	{
+		if (useQueryTimeoutFromSysConfig)
+			queryTimeout = MSysConfig.getIntValue(MSysConfig.ZK_INFO_QUERY_TIME_OUT, 0, Env.getAD_Client_ID(Env.getCtx()));
+		
 		long start = System.currentTimeMillis();
 		String dynWhere = getSQLWhere();
 		StringBuilder sql = new StringBuilder (m_sqlMain);
@@ -1972,7 +1975,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, countSql, e);
+			if (e instanceof SQLException && DB.getDatabase().isQueryTimeout((SQLException) e))
+			{
+				if (log.isLoggable(Level.INFO))
+					log.log(Level.INFO, countSql, e);
+				FDialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
+			}
+			else
+			{
+				log.log(Level.SEVERE, countSql, e);
+				FDialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
+			}
 			m_count = -2;
 		}
 		finally

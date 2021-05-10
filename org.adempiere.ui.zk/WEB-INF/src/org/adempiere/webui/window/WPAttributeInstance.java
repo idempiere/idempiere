@@ -180,9 +180,10 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		new ColumnInfo(Msg.translate(Env.getCtx(), "SerNo"), "asi.SerNo", String.class), 
 		new ColumnInfo(Msg.translate(Env.getCtx(), "GuaranteeDate"), "asi.GuaranteeDate", Timestamp.class),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "M_Locator_ID"), "l.Value", KeyNamePair.class, "s.M_Locator_ID"),
-		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "s.QtyOnHand", Double.class),
-		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "s.QtyReserved", Double.class),
-		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOrdered"), "s.QtyOrdered", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "SUM(s.QtyOnHand - s.QtyReserved)", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "SUM(s.QtyOnHand)", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "SUM(s.QtyReserved)", Double.class),
+		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOrdered"), "SUM(s.QtyOrdered)", Double.class),
 		//	See RV_Storage
 		new ColumnInfo(Msg.translate(Env.getCtx(), "GoodForDays"), "(daysbetween(asi.GuaranteeDate, getDate()))-p.GuaranteeDaysMin", Integer.class, true, true, null),
 		new ColumnInfo(Msg.translate(Env.getCtx(), "ShelfLifeDays"), "daysbetween(asi.GuaranteeDate, getDate())", Integer.class),
@@ -255,7 +256,8 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 
 		m_sql = m_table.prepareTable (s_layout, s_sqlFrom, 
 					m_M_Warehouse_ID == 0 ? s_sqlWhereWithoutWarehouse : s_sqlWhere, false, "s")
-				+ " ORDER BY asi.GuaranteeDate, s.QtyOnHand";	//	oldest, smallest first
+				+ " GROUP BY s.M_AttributeSetInstance_ID,asi.Description,asi.Lot,asi.SerNo,asi.GuaranteeDate,l.Value,s.M_Locator_ID,p.GuaranteeDaysMin,p.GuaranteeDays"
+				+ " ORDER BY asi.GuaranteeDate, SUM(s.QtyOnHand)";	//	oldest, smallest first
 		//
 		m_table.addEventListener(Events.ON_SELECT, this);
 		//
@@ -268,7 +270,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 	private void refresh()
 	{
 		String sql = m_sql;
-		int pos = m_sql.lastIndexOf(" ORDER BY ");
+		int pos = m_sql.lastIndexOf(" GROUP BY ");
 		if (!showAll.isChecked())
 		{
 			sql = m_sql.substring(0, pos) 

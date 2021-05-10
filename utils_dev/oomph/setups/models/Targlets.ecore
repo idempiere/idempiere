@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="targlets" nsURI="http://www.eclipse.org/oomph/targlets/1.0"
+    nsPrefix="targlets">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="schemaLocation" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Targlets.ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/oomph/base/LabelProvider">
+    <details key="imageBaseURI" value="http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/plugins/org.eclipse.oomph.targlets.edit/icons/full/obj16"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="TargletContainer" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="id"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/oomph/setup/NoExpand"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targlets" upperBound="-1"
+        eType="#//Targlet" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="targlet"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Targlet" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requirements" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/oomph/p2/1.0#//Requirement" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="requirement"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceLocators" upperBound="-1"
+        eType="ecore:EClass http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Resources.ecore#//SourceLocator"
+        containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="sourceLocator"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="installableUnitGenerators"
+        upperBound="-1" eType="#//IUGenerator" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="installableUnitGenerator"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="repositoryLists" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/oomph/p2/1.0#//RepositoryList"
+        containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="repositoryList"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activeRepositoryListName"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="activeRepositoryList"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="activeRepositoryList" eType="ecore:EClass http://www.eclipse.org/oomph/p2/1.0#//RepositoryList"
+        changeable="false" volatile="true" transient="true" derived="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="activeRepository"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="activeRepositories" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/oomph/p2/1.0#//Repository" changeable="false"
+        volatile="true" transient="true" derived="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="activeRepository"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeSources" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeAllPlatforms" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeAllRequirements"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dropinLocations" upperBound="-1"
+        eType="#//DropinLocation" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="dropinLocation"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeBinaryEquivalents"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="profileProperties" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentExtension" eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requirements" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/oomph/p2/1.0#//Requirement" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="requirement"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentDefinition" eSuperTypes="#//ComponentExtension">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="id"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/oomph/p2/1.0#//Version"
+        defaultValueLiteral="1.0.0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IUGenerator" abstract="true" interface="true"
+      eSuperTypes="http://www.eclipse.org/oomph/base/1.0#//ModelElement">
+    <eOperations name="generateIUs" eExceptions="ecore:EDataType http://www.eclipse.org/oomph/base/1.0#//Exception">
+      <eParameters name="project" eType="ecore:EDataType http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore#//Project"/>
+      <eParameters name="qualifierReplacement" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="iuVersions" eType="#//StringToVersionMap"/>
+      <eParameters name="result" upperBound="-1" eType="#//InstallableUnit"/>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PluginGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentDefGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentExtGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CSpecGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CSpexGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SiteGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CategoryGenerator" eSuperTypes="#//SiteGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ProductGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ProjectNameGenerator" eSuperTypes="#//IUGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DropinLocation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rootFolder" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="recursive" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="InstallableUnit" instanceClassName="org.eclipse.equinox.p2.metadata.IInstallableUnit"
+      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="StringToVersionMap" instanceTypeName="java.util.Map&lt;java.lang.String, org.eclipse.equinox.p2.metadata.Version>"
+      serializable="false"/>
+</ecore:EPackage>

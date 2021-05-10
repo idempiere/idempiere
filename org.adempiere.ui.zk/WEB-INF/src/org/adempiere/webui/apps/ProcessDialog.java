@@ -118,22 +118,27 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 
 	/**
 	 * Dialog to start a process/report
-	 * @param ctx
-	 * @param parent
-	 * @param title
-	 * @param aProcess
-	 * @param WindowNo
 	 * @param AD_Process_ID
-	 * @param tableId
-	 * @param recordId
-	 * @param autoStart
+	 * @param isSOTrx
 	 */
 	public ProcessDialog (int AD_Process_ID, boolean isSOTrx)
+	{
+		this(AD_Process_ID, isSOTrx, null);
+	}
+	
+	/**
+	 * Dialog to start a process/report
+	 * @param AD_Process_ID
+	 * @param isSOTrx
+	 * @param predefinedContextVariables
+	 */
+	public ProcessDialog (int AD_Process_ID, boolean isSOTrx, String predefinedContextVariables)
 	{
 		log.info("Process=" + AD_Process_ID );
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
+		Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefinedContextVariables);
 		try
 		{
 			init(Env.getCtx(), m_WindowNo, AD_Process_ID, null, false, false);
@@ -161,6 +166,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
 		} catch (Exception e) {}
 	}
 

@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7231417421289556724L;
+	private static final long serialVersionUID = -6130455457377290526L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -1343,13 +1343,45 @@ public abstract class PO
 		}
 	}	//	load
 
+	/**
+	 * Load record with UUID
+	 * 
+	 * @param uuID    UUID
+	 * @param trxName transaction name
+	 */
+	public void loadByUU(String uuID, String trxName)
+	{
+		if (Util.isEmpty(uuID, true))
+		{
+			throw new IllegalArgumentException("Invalid null or blank UU - Must pass valid UU");
+		}
+		
+		// reset new values
+		m_newValues = new Object[get_ColumnCount()];
+		checkImmutable();
+
+		if (log.isLoggable(Level.FINEST))
+			log.finest("uuID=" + uuID);
+			
+		load(uuID,trxName);
+	} // loadByUU
 
 	/**
 	 *  (re)Load record with m_ID[*]
 	 *  @param trxName transaction
 	 *  @return true if loaded
 	 */
-	public boolean load (String trxName)
+	public boolean load (String trxName) {
+		return load(null, trxName);
+	}
+	
+	/**
+	 *  (re)Load record with uuID
+	 *  @param uuID RecrodUU
+	 *  @param trxName transaction
+	 *  @return true if loaded
+	 */
+	protected boolean load (String uuID,String trxName)
 	{
 		m_trxName = trxName;
 		boolean success = true;
@@ -1368,27 +1400,34 @@ public abstract class PO
 		}
 		sql.append(" FROM ").append(p_info.getTableName())
 			.append(" WHERE ")
-			.append(get_WhereClause(false));
+			.append(get_WhereClause(false,uuID));
 
 		//
 	//	int index = -1;
-		if (log.isLoggable(Level.FINEST)) log.finest(get_WhereClause(true));
+		if (log.isLoggable(Level.FINEST)) log.finest(get_WhereClause(true,uuID));
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), m_trxName);	//	local trx only
-			for (int i = 0; i < m_IDs.length; i++)
+			if (!Util.isEmpty(uuID, true))
 			{
-				Object oo = m_IDs[i];
-				if (oo instanceof Integer)
-					pstmt.setInt(i+1, ((Integer)m_IDs[i]).intValue());
-				else if (oo instanceof Boolean)
-					pstmt.setString(i+1, ((Boolean) m_IDs[i] ? "Y" : "N"));
-				else if (oo instanceof Timestamp)
-					pstmt.setTimestamp(i+1, (Timestamp)m_IDs[i]);
-				else
-					pstmt.setString(i+1, m_IDs[i].toString());
+				pstmt.setString(1, uuID);
+			}
+			else
+			{
+				for (int i = 0; i < m_IDs.length; i++)
+				{
+					Object oo = m_IDs[i];
+					if (oo instanceof Integer)
+						pstmt.setInt(i+1, ((Integer)m_IDs[i]).intValue());
+					else if (oo instanceof Boolean)
+						pstmt.setString(i+1, ((Boolean) m_IDs[i] ? "Y" : "N"));
+					else if (oo instanceof Timestamp)
+						pstmt.setTimestamp(i+1, (Timestamp)m_IDs[i]);
+					else
+						pstmt.setString(i+1, m_IDs[i].toString());
+				}
 			}
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1397,7 +1436,7 @@ public abstract class PO
 			}
 			else
 			{
-				log.log(Level.SEVERE, "NO Data found for " + get_WhereClause(true), new Exception());
+				log.log(Level.SEVERE, "NO Data found for " + get_WhereClause(true,uuID), new Exception());
 				m_IDs = new Object[] {I_ZERO};
 				success = false;
 			//	throw new DBException("NO Data found for " + get_WhereClause(true));
@@ -1411,7 +1450,7 @@ public abstract class PO
 			String msg = "";
 			if (m_trxName != null)
 				msg = "[" + m_trxName + "] - ";
-			msg += get_WhereClause(true)
+			msg += get_WhereClause(true,uuID)
 			//	+ ", Index=" + index
 			//	+ ", Column=" + get_ColumnName(index)
 			//	+ ", " + p_info.toString(index)
@@ -1689,7 +1728,7 @@ public abstract class PO
 			String colName = p_info.getColumnName(i);
 			//  Set Standard Values
 			if (colName.endsWith("tedBy"))
-				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, "#AD_User_ID"));
+				m_newValues[i] = Integer.valueOf(Env.getContextAsInt(p_ctx, Env.AD_USER_ID));
 			else if (colName.equals("Created") || colName.equals("Updated"))
 				m_newValues[i] = new Timestamp (System.currentTimeMillis());
 			else if (colName.equals(p_info.getTableName() + "_ID"))    //  KeyColumn
@@ -2417,10 +2456,10 @@ public abstract class PO
 			m_createNew = false;
 		}
 		if (!newRecord) {
-			CacheMgt.get().reset(p_info.getTableName(), get_ID());
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName()));
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
 		} else if (get_ID() > 0 && success)
-			CacheMgt.get().newRecord(p_info.getTableName(), get_ID());
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
 		
 		return success;
 	}	//	saveFinish
@@ -2574,7 +2613,7 @@ public abstract class PO
 				//	If no changes set UpdatedBy explicitly to ensure commit of lob
 				if (!changes && !updatedBy)
 				{
-					int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+					int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 					set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 					sql.append("UpdatedBy=").append(AD_User_ID);
 					changes = true;
@@ -2753,7 +2792,7 @@ public abstract class PO
 			}
 			if (!updatedBy)	//	UpdatedBy not explicitly set
 			{
-				int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
+				int AD_User_ID = Env.getContextAsInt(p_ctx, Env.AD_USER_ID);
 				set_ValueNoCheck("UpdatedBy", Integer.valueOf(AD_User_ID));
 				if (withValues)
 				{
@@ -3164,15 +3203,37 @@ public abstract class PO
 	{
 		
 	}
-
+	
 	/**
 	 * 	Create Single/Multi Key Where Clause
 	 * 	@param withValues if true uses actual values otherwise ?
 	 * 	@return where clause
 	 */
-	public String get_WhereClause (boolean withValues)
+	public String get_WhereClause (boolean withValues) {
+		return get_WhereClause(withValues,null);
+	}
+
+	/**
+	 * 	Create Single/Multi Key Where Clause
+	 * 	@param withValues if true uses actual values otherwise ?
+	 *  @param uuID RecordUU
+	 * 	@return where clause
+	 */
+	public String get_WhereClause (boolean withValues, String uuID)
 	{
 		StringBuilder sb = new StringBuilder();
+
+		if (!Util.isEmpty(uuID, true))
+		{
+			sb.append(getUUIDColumnName()).append("=");
+			if (withValues)
+				sb.append(DB.TO_STRING(uuID));
+			else
+				sb.append("?");
+
+			return sb.toString();
+		}
+
 		for (int i = 0; i < m_IDs.length; i++)
 		{
 			if (i != 0)
@@ -3579,7 +3640,7 @@ public abstract class PO
 				int size = p_info.getColumnCount();
 				m_oldValues = new Object[size];
 				m_newValues = new Object[size];
-				CacheMgt.get().reset(p_info.getTableName(), Record_ID);
+				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName()));
 			}
 		}
 		finally
@@ -3765,9 +3826,6 @@ public abstract class PO
 			return true;
 
 		String tableName = p_info.getTableName();
-		if (tableName.startsWith("AD") && getAD_Client_ID() == 0)
-			return true;
-
 		//
 		boolean trlColumnChanged = false;
 		for (int i = 0; i < p_info.getColumnCount(); i++)
@@ -3820,12 +3878,14 @@ public abstract class PO
 			}
 		}
 		StringBuilder whereid = new StringBuilder(" WHERE ").append(keyColumn).append("=").append(get_ID());
-		StringBuilder andlang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
-		StringBuilder andnotlang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andClientLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
+		StringBuilder andNotClientLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(client.getAD_Language()));
+		String baselang = Language.getBaseAD_Language();
+		StringBuilder andBaseLang = new StringBuilder(" AND AD_Language=").append(DB.TO_STRING(baselang));
+		StringBuilder andNotBaseLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(baselang));
 		int no = -1;
 
 		if (client.isMultiLingualDocument()) {
-			String baselang = Language.getBaseAD_Language();
 			if (client.getAD_Language().equals(baselang)) {
 				// tenant language = base language
 				// set all translations as untranslated
@@ -3837,13 +3897,14 @@ public abstract class PO
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 			} else {
 				// tenant language <> base language
-				// auto update translation for tenant language
+				// for Tenants auto update translation for tenant language
+				// for System update translation for base language (which in fact must always update zero records as there must not be translations for base)
 				StringBuilder sqlexec = new StringBuilder()
 					.append(sqlupdate)
 					.append(sqlcols)
 					.append("IsTranslated='Y'")
 					.append(whereid)
-					.append(andlang);
+					.append(getAD_Client_ID() == 0 ? andBaseLang : andClientLang);
 				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				if (no >= 0) {
@@ -3852,7 +3913,7 @@ public abstract class PO
 						.append(sqlupdate)
 						.append("IsTranslated='N'")
 						.append(whereid)
-						.append(andnotlang);
+						.append(getAD_Client_ID() == 0 ? andNotBaseLang : andNotClientLang);
 					no = DB.executeUpdate(sqlexec.toString(), m_trxName);
 					if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				}
@@ -4977,7 +5038,7 @@ public abstract class PO
 	}
 
 	private void checkValidContext() {
-		if (getCtx().isEmpty() && getCtx().getProperty("#AD_Client_ID") == null)
+		if (getCtx().isEmpty() && getCtx().getProperty(Env.AD_CLIENT_ID) == null)
 			throw new AdempiereException("Context lost");
 	}
 
@@ -5016,9 +5077,9 @@ public abstract class PO
 					+" Env.AD_Client_ID="+envClientID
 					+" PO.AD_Client_ID="+poClientID
 					+" writing="+writing
-					+" Session="+Env.getContext(getCtx(), "#AD_Session_ID"));
+					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
 				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
-						+ Env.getContext(getCtx(), "#AD_Session_ID") + " for table " + get_TableName()
+						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
 						+ " Record_ID=" + get_ID();
 				throw new AdempiereException(message);
 			}

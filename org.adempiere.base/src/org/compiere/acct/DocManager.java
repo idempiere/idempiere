@@ -47,6 +47,8 @@ import org.compiere.util.ValueNamePair;
  */
 public class DocManager {
 
+	public static final String IDOC_FACTORY_CACHE_TABLE_NAME = "_IDocFactory_Cache";
+
 	private final static CLogger s_log = CLogger.getCLogger(DocManager.class);
 
 	/** AD_Table_ID's of documents          */
@@ -110,7 +112,7 @@ public class DocManager {
 		}
 	}
 
-	private static final CCache<String, IServiceReferenceHolder<IDocFactory>> s_DocFactoryCache = new CCache<>(null, "IDocFactory", 100, false);
+	private static final CCache<String, IServiceReferenceHolder<IDocFactory>> s_DocFactoryCache = new CCache<>(IDOC_FACTORY_CACHE_TABLE_NAME, "IDocFactory", 100, false);
 	
 	/**
 	 *  Create Posting document

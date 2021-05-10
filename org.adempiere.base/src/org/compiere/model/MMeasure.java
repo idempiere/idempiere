@@ -211,7 +211,6 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 					trunc = "MM";
 				else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureDisplay))
 					trunc = "W";
-				//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
 				//		trunc = "D";
 				trunc = "TRUNC(DateDoc,'" + trunc + "')";
 				StringBuilder sql = new StringBuilder ("SELECT SUM(ManualActual), ")

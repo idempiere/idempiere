@@ -19,7 +19,9 @@ package org.compiere.model;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Hashtable;
 import java.util.List;
@@ -31,6 +33,7 @@ import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
@@ -959,7 +962,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Warehouse
 		if (getM_Warehouse_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#M_Warehouse_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.M_WAREHOUSE_ID);
 			if (ii != 0)
 				setM_Warehouse_ID(ii);
 			else
@@ -1025,13 +1028,13 @@ public class MOrder extends X_C_Order implements DocAction
 			if (ii != 0)
 				setC_Currency_ID (ii);
 			else
-				setC_Currency_ID(Env.getContextAsInt(getCtx(), "#C_Currency_ID"));
+				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
 		//	Default Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#SalesRep_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
 			if (ii != 0)
 				setSalesRep_ID (ii);
 		}
@@ -1043,7 +1046,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), "#C_PaymentTerm_ID");
+			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
 			if (ii != 0)
 				setC_PaymentTerm_ID(ii);
 			else
@@ -1462,8 +1465,6 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		
 		m_justPrepared = true;
-	//	if (!DOCACTION_Complete.equals(getDocAction()))		don't set for just prepare 
-	//		setDocAction(DOCACTION_Complete);
 		return DocAction.STATUS_InProgress;
 	}	//	prepareIt
 	
@@ -1633,28 +1634,6 @@ public class MOrder extends X_C_Order implements DocAction
 				if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 				//	New Lines
 				int lineNo = line.getLine ();
-				//find default BOM with valid dates and to this product
-				/*/MPPProductBOM bom = MPPProductBOM.get(product, getAD_Org_ID(),getDatePromised(), get_TrxName());
-				if(bom != null)
-				{	
-					MPPProductBOMLine[] bomlines = bom.getLines(getDatePromised());
-					for (int j = 0; j < bomlines.length; j++)
-					{
-						MPPProductBOMLine bomline = bomlines[j];
-						MOrderLine newLine = new MOrderLine (this);
-						newLine.setLine (++lineNo);
-						newLine.setM_Product_ID (bomline.getM_Product_ID ());
-						newLine.setC_UOM_ID (bomline.getC_UOM_ID ());
-						newLine.setQty (line.getQtyOrdered ().multiply (
-							bomline.getQtyBOM()));
-						if (bomline.getDescription () != null)
-							newLine.setDescription (bomline.getDescription ());
-						//
-						newLine.setPrice ();
-						newLine.saveEx(get_TrxName());
-					}
-				}	*/
-
 				for (MProductBOM bom : MProductBOM.getBOMLines(product))
 				{
 					MOrderLine newLine = new MOrderLine(this);
@@ -2047,12 +2026,12 @@ public class MOrder extends X_C_Order implements DocAction
 		MInvoice lastInvoice = invoices[0];
 		BigDecimal grandTotal = lastInvoice.getGrandTotal();
 		
-		List<X_C_POSPayment> pps = new Query(this.getCtx(), X_C_POSPayment.Table_Name, "C_Order_ID=?", this.get_TrxName())
+		List<MPOSPayment> pps = new Query(this.getCtx(), MPOSPayment.Table_Name, "C_Order_ID=?", this.get_TrxName())
 			.setParameters(this.getC_Order_ID())
 			.setOnlyActiveRecords(true)
 			.list();
 		BigDecimal totalPOSPayments = Env.ZERO; 
-		for (X_C_POSPayment pp : pps) {
+		for (MPOSPayment pp : pps) {
 			totalPOSPayments = totalPOSPayments.add(pp.getPayAmt());
 		}
 		if (totalPOSPayments.compareTo(grandTotal) != 0)
@@ -2081,7 +2060,7 @@ public class MOrder extends X_C_Order implements DocAction
 
 		// Create a payment for each non-guarantee record
 		// associate the payment id and mark the record as processed
-		for (X_C_POSPayment pp : pps) {
+		for (MPOSPayment pp : pps) {
 			X_C_POSTenderType  tt = new X_C_POSTenderType (getCtx(),pp.getC_POSTenderType_ID(), get_TrxName());
 			if (tt.isGuarantee())
 				continue;
@@ -2176,7 +2155,6 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		if (log.isLoggable(Level.INFO)) log.info("For " + dt);
 		MInOut shipment = new MInOut (this, dt.getC_DocTypeShipment_ID(), movementDate);
-	//	shipment.setDateAcct(getDateAcct());
 		if (!shipment.save(get_TrxName()))
 		{
 			m_processMsg = "Could not create Shipment";
@@ -2382,8 +2360,6 @@ public class MOrder extends X_C_Order implements DocAction
 		//
 		counter.setAD_Org_ID(counterAD_Org_ID);
 		counter.setM_Warehouse_ID(counterOrgInfo.getM_Warehouse_ID());
-		//
-//		counter.setBPartner(counterBP); // was set on copyFrom
 		counter.setDatePromised(getDatePromised());		// default is date ordered 
 		//	References (Should not be required)
 		counter.setSalesRep_ID(getSalesRep_ID());
@@ -2862,109 +2838,6 @@ public class MOrder extends X_C_Order implements DocAction
 	}	//	isComplete
 
 	/**
-	 * Finds all order lines that contains not yet delivered physical items of a specific product.
-	 * 
-	 * @param conn			An open connection.
-	 * @param productId		The product id being allocated
-	 * @return  Order lines to allocate products to.
-	 * @throws SQLException
-	 */
-	/*  commenting out wrong unused function - column qtyallocated does not exist
-	public static List<MOrderLine> getOrderLinesToAllocate(Connection conn, int productId, String trxName) throws SQLException {
-		final String OrderLinesToAllocate = "select C_OrderLine.* from C_OrderLine " + 
-				   "JOIN C_Order ON C_OrderLine.C_Order_ID=C_Order.C_Order_ID " + 
-				   "JOIN M_Product ON C_OrderLine.M_Product_ID=M_Product.M_Product_ID " + 
-				   "where C_Order.IsSOTrx='Y' AND C_Order.DocStatus='CO' AND QtyAllocated<(QtyOrdered-QtyDelivered) " + 
-				   "AND M_Product.M_Product_ID=? " + 
-				   "order by PriorityRule, C_OrderLine.Created ";
-		List<MOrderLine> result = new Vector<MOrderLine>();
-		Properties ctx = Env.getCtx();
-		MOrderLine line;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(OrderLinesToAllocate);
-			ps.setInt(1, productId);
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				line = new MOrderLine(ctx, rs, trxName);
-				result.add(line);
-			}
-		} catch (SQLException e) {
-			throw e;
-		} finally {
-			DB.close(rs, ps);
-			rs = null; ps = null;
-		}
-		return(result);
-	}
-	*/
-	
-	/**
-	 * Finds all products that can be allocated. A product can be allocated if there are more items 
-	 * on hand than what is already allocated. To be allocated the item must also be in demand
-	 * (reserved < allocated)
-	 * 
-	 * @param 	conn
-	 * @return
-	 * @throws 	SQLException
-	 */
-	/*  commenting out wrong unused function - column qtyallocated does not exist
-	public static List<StockInfo> getProductsToAllocate(Connection conn, int WarehouseID) throws SQLException {
-		
-		List<StockInfo> result = new Vector<StockInfo>();
-		StockInfo si;
-		String query1 = "select M_Product_ID, sum(qtyonhand), sum(qtyreserved), sum(m_Product_Stock_v.qtyallocated) " +
-						"from M_Product_Stock_v " + 
-						"WHERE M_Warehouse_ID=? AND M_Product_ID in " +
-						"(select DISTINCT C_OrderLine.M_Product_ID FROM C_OrderLine " +
-					   "JOIN C_Order ON C_OrderLine.C_Order_ID=C_Order.C_Order_ID " + 
-					   "JOIN M_Product ON C_OrderLine.M_Product_ID=M_Product.M_Product_ID " +
-					   "JOIN M_Product_Stock_v ON C_OrderLine.M_Product_ID=M_Product_Stock_v.M_Product_ID " +
-					   "WHERE " +
-					   "C_Order.IsSOTrx='Y' AND C_Order.DocStatus='CO' AND C_OrderLine.M_Warehouse_ID=? AND " + 
-					   "(QtyOrdered-QtyDelivered)>0 AND (QtyOrdered-QtyDelivered)>C_OrderLine.QtyAllocated)" + 
-					   "group by M_Product_ID " + 
-					   "order by M_Product_ID";
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(query1);
-			ps.setInt(1, WarehouseID);
-			ps.setInt(2, WarehouseID);
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				si = new StockInfo();
-				si.productId = rs.getInt(1);
-				si.qtyOnHand = rs.getBigDecimal(2);
-				si.qtyReserved = rs.getBigDecimal(3);
-				si.qtyAvailable = si.qtyOnHand.subtract(si.qtyReserved);
-				si.qtyAllocated = rs.getBigDecimal(4);
-				result.add(si);
-			}
-		} catch (SQLException e) {
-			throw e;
-		} finally {
-			DB.close(rs, ps);
-			rs = null; ps = null;
-		}
-		return(result);
-	}
-	
-	public static class StockInfo {
-		
-		public int			productId;
-		public BigDecimal	qtyOnHand;
-		public BigDecimal	qtyAvailable;
-		public BigDecimal	qtyReserved;
-		public BigDecimal	qtyAllocated;
-		
-		public StockInfo() {}
-		
-	}
-	*/
-	
-	/**
 	 * Set process message
 	 * @param processMsg
 	 */
@@ -3000,4 +2873,61 @@ public class MOrder extends X_C_Order implements DocAction
 		return getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID();
 	}
 
+	/**
+	 * 
+	 * @return payment amount for order (prepayment + invoice payment)
+	 */
+	public BigDecimal getPaymentAmt()
+	{
+		BigDecimal orderPaid = null;
+		String sql = "SELECT SUM(currencyconvertpayment(p.c_payment_id, o.c_currency_id, p.PayAmt+p.DiscountAmt+p.WriteOffAmt, null) "
+				+ " - paymentallocated(p.c_payment_id, o.c_currency_id) "
+				+ " * (CASE WHEN p.IsReceipt='Y' THEN 1 ELSE -1 END)) "
+				+ "FROM C_Payment p "
+				+ "INNER JOIN C_Order o ON (p.C_Order_ID=o.C_Order_ID) "
+				+ "WHERE p.C_Order_ID=? AND p.AD_Client_ID=? "
+				+ "AND p.IsActive='Y' AND p.DocStatus IN ('CO','CL') ";
+				
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());)
+		{			
+			pstmt.setInt(1, getC_Order_ID());
+			pstmt.setInt(2, getAD_Client_ID());
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				orderPaid = rs.getBigDecimal(1);
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
+		}
+		
+		BigDecimal invoicePaid = null;
+		sql = "SELECT SUM(invoicepaid(i.c_invoice_id, o.c_currency_id, 1)) "
+				+ "FROM C_Invoice i "
+				+ "INNER JOIN C_Order o ON (i.C_Order_ID=o.C_Order_ID) "
+				+ "WHERE i.C_Order_ID=? AND i.AD_Client_ID=? "
+				+ "AND i.IsActive='Y' AND i.DocStatus IN ('CO','CL') ";
+				
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());)
+		{			
+			pstmt.setInt(1, getC_Order_ID());
+			pstmt.setInt(2, getAD_Client_ID());
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				invoicePaid = rs.getBigDecimal(1);
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
+		}
+		
+		BigDecimal retValue = orderPaid != null ? orderPaid : BigDecimal.ZERO;
+		if (invoicePaid != null)
+			retValue = retValue.add(invoicePaid);
+		return retValue;
+	}
 }	//	MOrder

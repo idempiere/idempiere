@@ -401,7 +401,10 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 
 		chkCreateNew.setChecked(false);
 		chkCreateNew.addEventListener(Events.ON_CHECK, this);
-		
+		if (! MRole.getDefault().isTableAccess(MLocator.Table_ID, false)) {
+			chkCreateNew.setVisible(false);
+		}
+
 		enableNew();
 
 		lstWarehouse.addEventListener(Events.ON_SELECT, this);
@@ -626,13 +629,14 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 
 			MLocator loc = MLocator.get(Env.getCtx(), m_M_Warehouse_ID, txtKey.getText(),
 				txtAisleX.getText(), txtBinY.getText(), txtLevelZ.getText(), lt);
-			
+			if (loc == null) {
+				FDialog.error(m_WindowNo, this, "AccessCannotInsert", Msg.getElement(Env.getCtx(), "M_Locator_ID"));
+				return;
+			}
 			m_M_Locator_ID = loc.getM_Locator_ID();
-			
-			listitem = new ListItem();
-			listitem.setValue(loc);
-			
+
 			locatorField.actionRefresh();
+			locatorField.getComponent().appendItem(loc.getValue(), m_M_Locator_ID);
 			locatorField.setValue(m_M_Locator_ID);
 		} // createNew
 

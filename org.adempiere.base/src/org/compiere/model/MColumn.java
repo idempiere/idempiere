@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
@@ -54,7 +55,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1841918268550762201L;
+	private static final long serialVersionUID = 4379933682905553553L;
 
 	/**
 	 * 	Get MColumn from Cache (immutable)
@@ -126,6 +127,20 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	{
 		MTable table = MTable.get(ctx, tableName);
 		return  table.getColumn(columnName);
+	}	//	get
+
+	/**
+	 * 	Get MColumn given TableName and ColumnName
+	 *	@param ctx context
+	 * 	@param TableName
+	 * 	@param ColumnName
+	 * 	@param TrxName
+	 *	@return MColumn
+	 */
+	public static MColumn get (Properties ctx, String tableName, String columnName, String trxName)
+	{
+		MTable table = MTable.get(ctx, tableName, trxName);
+		return table.getColumn(columnName);
 	}	//	get
 
 	public static String getColumnName (Properties ctx, int AD_Column_ID)
@@ -507,6 +522,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
+		// IDEMPIERE-4714
+		if (isSecure() && isAllowLogging()) {
+			setIsAllowLogging(false);
+		}
+
 		// IDEMPIERE-1615 Multiple key columns lead to data corruption or data loss
 		if ((is_ValueChanged(COLUMNNAME_IsKey) || is_ValueChanged(COLUMNNAME_IsActive)) && isKey() && isActive()) {
 			int cnt = DB.getSQLValueEx(get_TrxName(),
@@ -790,8 +810,13 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
 				if (cnt == 1) {
 					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-					if (rt != null)
-						foreignTable = rt.getAD_Table().getTableName();
+					if (rt != null) {
+						MTable table = MTable.get(getCtx(), rt.getAD_Table_ID(), get_TrxName());
+						if (table == null) {
+							throw new AdempiereException("Table " + rt.getAD_Table_ID() + " not found");
+						}
+						foreignTable = table.getTableName();
+					}
 				}
 			}
 		} else if (DisplayType.Button == refid) {
