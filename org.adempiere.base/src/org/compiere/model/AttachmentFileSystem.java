@@ -48,7 +48,9 @@ import org.xml.sax.SAXException;
  *
  */
 public class AttachmentFileSystem implements IAttachmentStore {
-	
+
+	// TODO: Implement FileSystemFallbackDB
+
 	private final CLogger log = CLogger.getCLogger(getClass());
 	
 	@Override

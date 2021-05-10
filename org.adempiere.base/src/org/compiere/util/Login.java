@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.I_M_Warehouse;
@@ -840,7 +841,7 @@ public class Login
 		Ini.setProperty(Ini.P_PRINTER, printerName);
 		
 		//	Load Role Info
-		MRole.getDefault(m_ctx, true);	
+		MRole.getDefault(m_ctx, false);	
 
 		//	Other
 		loadUserPreferences();
@@ -1024,32 +1025,25 @@ public class Login
 		if (TableName.startsWith("AD_Window")
 			|| TableName.startsWith("AD_PrintFormat")
 			|| TableName.startsWith("AD_Workflow")
+			|| TableName.equals("AD_StorageProvider")
 			|| TableName.startsWith("M_Locator") )
 			return;
 		String value = null;
 		//
-		String sql = "SELECT " + ColumnName + " FROM " + TableName	//	most specific first
-			+ " WHERE IsDefault='Y' AND IsActive='Y' ORDER BY AD_Client_ID DESC, AD_Org_ID DESC";
-		sql = MRole.getDefault(m_ctx, false).addAccessSQL(sql, 
+		StringBuilder sqlb = new StringBuilder("SELECT ")
+			.append(ColumnName).append(" FROM ").append(TableName)	//	most specific first
+			.append(" WHERE IsDefault='Y' AND IsActive='Y' ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, ")
+			.append(ColumnName);
+		String sql = MRole.getDefault(m_ctx, false).addAccessSQL(sqlb.toString(), 
 			TableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				value = rs.getString(1);
+			value = DB.getSQLValueString(value, sql);
 		}
-		catch (SQLException e)
+		catch (DBException e)
 		{
 			log.log(Level.SEVERE, TableName + " (" + sql + ")", e);
 			return;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 		//	Set Context Value
 		if (value != null && value.length() != 0)

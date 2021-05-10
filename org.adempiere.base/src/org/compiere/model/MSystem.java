@@ -83,7 +83,7 @@ public class MSystem extends X_AD_System
 	}	//	get
 	
 	/** System - cached					*/
-	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1, true);
+	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1);
 	
 	/**************************************************************************
 	 * 	Default Constructor

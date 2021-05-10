@@ -71,9 +71,6 @@ public class EMailAuthenticator extends Authenticator
 	{
 		if (m_pass == null)
 			return "EMailAuthenticator[]";
-		if (CLogMgt.isLevelFinest())
-			return "EMailAuthenticator[" 
-				+ m_pass.getUserName() + "/" + m_pass.getPassword() + "]";
 		return "EMailAuthenticator[" 
 			+ m_pass.getUserName() + "/************]";
 	}	//	toString

@@ -422,7 +422,7 @@
          id="javax.validation.api"
          download-size="0"
          install-size="0"
-         version="2.0.1.Final"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin

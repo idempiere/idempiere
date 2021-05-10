@@ -44,6 +44,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EmailSrv;
 import org.compiere.util.EmailSrv.EmailContent;
 import org.compiere.util.EmailSrv.ProcessEmailHandle;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
 /**
@@ -53,6 +54,7 @@ import org.compiere.util.Trx;
  *  @version $Id: RequestEMailProcessor.java,v 1.2 2006/10/23 06:01:20 cruiz Exp $
  *  hieplq:separate email process to other class for easy re-use and do IDEMPIERE-2244
  *  
+ *  IMAPHost format: {imap|imaps}://[IMAPHostURL]:[Port] example: imaps://imap.gmail.com:993
  */
 public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHandle
 {
@@ -64,6 +66,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	protected String	p_InboxFolder = null;
 	protected Boolean	p_NestInbox = true;
 	protected String	p_ErrorFolder = null;
+	protected Boolean 	isSSL = null;
 	protected int C_BPartner_ID = 0;
 	protected int AD_User_ID = 0;
 	protected int AD_Role_ID = 0;
@@ -145,7 +148,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	{
 		parseParameter();
 		
-		EmailSrv emailSrv = new EmailSrv(p_IMAPHost, p_IMAPUser, p_IMAPPwd, p_IMAPPort);
+		EmailSrv emailSrv = new EmailSrv(p_IMAPHost, p_IMAPUser, p_IMAPPwd, p_IMAPPort, isSSL);
 		
 		checkInputParameter (emailSrv);		
 		
@@ -158,6 +161,22 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	}	//	doIt
 	
 	protected void parseParameter() {
+		// === check for ssl input parameter ===
+		int imapProtocolIndex = p_IMAPHost.lastIndexOf("://");
+		
+		if(imapProtocolIndex > 0) {
+			String str_Protocol = p_IMAPHost.substring(0, imapProtocolIndex);
+			if(str_Protocol.toLowerCase().equals("imaps"))
+				isSSL  = true;
+			else if(str_Protocol.toLowerCase().equals("imap"))
+				isSSL = false;
+			else
+				log.warning("Unrecognized protocol - " + str_Protocol);
+			
+			if(isSSL != null)	// Remove Imap Protocol
+				p_IMAPHost = p_IMAPHost.substring(imapProtocolIndex + 3, p_IMAPHost.length());
+		}
+
 		// === check input parameter === 
 		int portStartIndex = p_IMAPHost.lastIndexOf(":");
 		if (portStartIndex > 0){
@@ -170,6 +189,8 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 			}			
 		}else if (p_IMAPHost.startsWith("imap.gmail.com")){
 			p_IMAPPort = 993;
+		} else if(portStartIndex <= 0 && isSSL != null && isSSL) {
+			p_IMAPPort = 993;	// Default Port for IMAPS protocol
 		}
 	}
 	
@@ -432,6 +453,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		}
 		
 		req.saveEx(trxName);
+		addLog(req.getR_Request_ID(), null, null, Msg.parseTranslation(getCtx(), "@Added@ @R_Request_ID@ ") + req.getDocumentNo(), MRequest.Table_ID, req.getR_Request_ID());
 		
 		if (log.isLoggable(Level.INFO)) log.info("created request " + req.getR_Request_ID() + " from msg -> " + emailContent.subject);
 		
@@ -458,6 +480,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		StringBuilder msgreq = new StringBuilder("FROM: ").append(emailContent.fromAddress.get(0)).append("\n").append(emailContent.getTextContent());
 		requp.setResult(msgreq.toString());
 		requp.saveEx(trxName);
+		addLog(requp.getR_Request_ID(), null, null, Msg.parseTranslation(getCtx(), "@Updated@ @R_Request_ID@ ") + requp.getDocumentNo(), MRequest.Table_ID, requp.getR_Request_ID());
 	}
 
 	@Override

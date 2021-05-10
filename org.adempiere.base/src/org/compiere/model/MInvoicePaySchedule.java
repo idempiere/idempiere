@@ -108,11 +108,6 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 		super(ctx, C_InvoicePaySchedule_ID, trxName);
 		if (C_InvoicePaySchedule_ID == 0)
 		{
-		//	setC_Invoice_ID (0);
-		//	setDiscountAmt (Env.ZERO);
-		//	setDiscountDate (new Timestamp(System.currentTimeMillis()));
-		//	setDueAmt (Env.ZERO);
-		//	setDueDate (new Timestamp(System.currentTimeMillis()));
 			setIsValid (false);
 		}
 	}	//	MInvoicePaySchedule

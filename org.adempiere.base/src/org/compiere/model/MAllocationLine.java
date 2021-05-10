@@ -184,8 +184,8 @@ public class MAllocationLine extends X_C_AllocationLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_AllocationLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_AllocationHdr_ID"));
 			return false;
 		}
 		if (!newRecord  

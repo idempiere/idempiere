@@ -54,6 +54,7 @@ import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeUtility;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MAuthorizationAccount;
 
 /**
  * provide function for sent, receive email in imap protocol
@@ -72,25 +73,38 @@ public class EmailSrv {
 	protected String imapUser;
 	protected String imapPass;
 	protected int imapPort = 143;
-	protected boolean isGmail = false;
+	protected boolean isSSL = false;
 	
 	protected Session mailSession;
 	protected Store mailStore;
 	
-	public EmailSrv (String imapHost, String  imapUser, String  imapPass, int imapPort){
+	public EmailSrv (String imapHost, String  imapUser, String  imapPass, int imapPort, Boolean isSSL){
 		this.imapHost = imapHost;
 		this.imapUser = imapUser;
 		this.imapPass = imapPass;
-		isGmail = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
-		if (isGmail && imapPort != 993){
-			log.warning("because imap is gmail server, force port to 993");
-			imapPort = 993;
+		if(isSSL != null) {
+			this.isSSL = isSSL;
+		} else {
+			this.isSSL = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
+			if(!this.isSSL && imapPort == 993)
+				this.isSSL = true;	// Port is 993 set to SSL IMAPS
+			if (this.isSSL && imapPort != 993){
+				log.warning("because imap is gmail server, force port to 993");
+				imapPort = 993;
+			}
 		}
+
 		this.imapPort = imapPort;
 	}
 	
+	/**
+	 * @deprecated working only with gmail host.
+	 * @param imapHost
+	 * @param imapUser
+	 * @param imapPass
+	 */
 	public EmailSrv (String imapHost, String  imapUser, String  imapPass){
-		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143);
+		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? true : false);
 	}
 	
 	public static void logMailPartInfo (Part msg, CLogger log) throws MessagingException{
@@ -159,16 +173,22 @@ public class EmailSrv {
 		//	Session
 		Properties props = System.getProperties();
 		String protocol = "imap";
-		if (isGmail){
+		if (isSSL){
 			protocol = "imaps";
 		}
 		props.put("mail.store.protocol", protocol);
 		props.put("mail.host", imapHost);
-		props.put("mail.imap.port", imapPort);
-		
-		EMailAuthenticator auth = new EMailAuthenticator(imapUser, imapPass);
-		mailSession = Session.getInstance(props, auth);
-		mailSession.setDebug(CLogMgt.isLevelAll());
+		props.put("mail."+protocol+".port", imapPort);
+
+		MAuthorizationAccount authAccount = MAuthorizationAccount.getEMailAccount(imapUser);
+		boolean isOAuth2 = (authAccount != null);
+		if (isOAuth2) {
+			props.put("mail."+protocol+".ssl.enable", "true");
+			props.put("mail."+protocol+".auth.mechanisms", "XOAUTH2");
+			imapPass = authAccount.refreshAndGetAccessToken();
+		}
+		mailSession = Session.getInstance(props);
+		mailSession.setDebug(CLogMgt.isLevelFinest());
 		
 		return mailSession;
 	}	//	getSession
@@ -179,7 +199,7 @@ public class EmailSrv {
 			return mailStore;
 		
 		mailStore = getMailSession().getStore();
-		mailStore.connect();
+		mailStore.connect(imapHost, imapUser, imapPass);
 		return mailStore;
 	}	//	getStore
 	

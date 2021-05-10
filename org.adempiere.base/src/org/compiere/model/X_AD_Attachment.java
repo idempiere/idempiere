@@ -30,7 +30,7 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210416L;
 
     /** Standard Constructor */
     public X_AD_Attachment (Properties ctx, int AD_Attachment_ID, String trxName)
@@ -108,6 +108,31 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 	public String getAD_Attachment_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_AD_Attachment_UU);
+	}
+
+	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
+			.getPO(getAD_StorageProvider_ID(), get_TrxName());	}
+
+	/** Set Storage Provider.
+		@param AD_StorageProvider_ID Storage Provider	  */
+	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
+	{
+		if (AD_StorageProvider_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
+	}
+
+	/** Get Storage Provider.
+		@return Storage Provider	  */
+	public int getAD_StorageProvider_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException

@@ -125,14 +125,14 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	 }
 
 	 /**
-	 * 	Get the Locator with the combination or create new one
+	 * 	Get the Locator with the combination or create new one (when user has permission)
 	 *	@param ctx Context
 	 *	@param M_Warehouse_ID warehouse
 	 *	@param Value value
 	 *	@param X x
 	 *	@param Y y
 	 *	@param Z z
-	 * 	@return locator
+	 * 	@return locator (or null when no insert permission on MLocator)
 	 */
 	 public static MLocator get (Properties ctx, int M_Warehouse_ID, String Value,
 		 String X, String Y, String Z, int M_LocatorType_ID)
@@ -163,11 +163,13 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 		//
 		if (retValue == null)
 		{
-			MWarehouse wh = MWarehouse.get (ctx, M_Warehouse_ID);
-			retValue = new MLocator (wh, Value);
-			retValue.setXYZ(X, Y, Z);
-			retValue.setM_LocatorType_ID(M_LocatorType_ID);
-			retValue.saveEx();
+			if (MRole.getDefault().isTableAccess(MLocator.Table_ID, false)) {
+				MWarehouse wh = MWarehouse.get (ctx, M_Warehouse_ID);
+				retValue = new MLocator (wh, Value);
+				retValue.setXYZ(X, Y, Z);
+				retValue.setM_LocatorType_ID(M_LocatorType_ID);
+				retValue.saveEx();
+			}
 		}
 		return retValue;
 	}	//	get
@@ -248,14 +250,8 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 		super (ctx, M_Locator_ID, trxName);
 		if (M_Locator_ID == 0)
 		{
-		//	setM_Locator_ID (0);		//	PK
-		//	setM_Warehouse_ID (0);		//	Parent
 			setIsDefault (false);
 			setPriorityNo (50);
-		//	setValue (null);
-		//	setX (null);
-		//	setY (null);
-		//	setZ (null);
 		}
 	}	//	MLocator
 
@@ -367,66 +363,6 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 		// This implies that every time you create a new product you must create initial inventory zero for all locators where the product can be stored.
 		// A good enhancement could be a new table to indicate when a locator is exclusive for some products, but I consider current approach not working.
 		return true;
-
-		/*
-		//	Default Locator
-		if (M_Product_ID == 0 || isDefault())
-			return true;
-		
-		int count = 0;
-		PreparedStatement pstmt = null;
-		//	Already Stored
-		String sql = "SELECT COUNT(*) FROM M_Storage s WHERE s.M_Locator_ID=? AND s.M_Product_ID=?";
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, getM_Locator_ID());
-			pstmt.setInt (2, M_Product_ID);
-			ResultSet rs = pstmt.executeQuery ();
-			if (rs.next ())
-				count = rs.getInt(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			log.log (Level.SEVERE, sql, e);
-		}
-		//	Default Product Locator
-		if (count == 0)
-		{
-			sql = "SELECT COUNT(*) FROM M_Product s WHERE s.M_Locator_ID=? AND s.M_Product_ID=?";
-			try
-			{
-				pstmt = DB.prepareStatement (sql, null);
-				pstmt.setInt (1, getM_Locator_ID());
-				pstmt.setInt (2, M_Product_ID);
-				ResultSet rs = pstmt.executeQuery ();
-				if (rs.next ())
-					count = rs.getInt(1);
-				rs.close ();
-				pstmt.close ();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
-				log.log (Level.SEVERE, sql, e);
-			}
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
-		
-		return count != 0;
-		*/
 	}	//	isCanStoreProduct
 	
 	@Override
