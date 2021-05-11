@@ -2417,7 +2417,7 @@ public abstract class PO
 			m_createNew = false;
 		}
 		if (!newRecord) {
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName()));
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
 		} else if (get_ID() > 0 && success)
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
@@ -3579,7 +3579,7 @@ public abstract class PO
 				int size = p_info.getColumnCount();
 				m_oldValues = new Object[size];
 				m_newValues = new Object[size];
-				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName()));
+				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), Record_ID));
 			}
 		}
 		finally
