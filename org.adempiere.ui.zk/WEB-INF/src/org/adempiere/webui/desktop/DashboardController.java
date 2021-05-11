@@ -22,6 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -908,7 +910,6 @@ public class DashboardController implements EventListener<Event> {
 							 || (paramValue != null && paramValue.length() == 0))
 						 value = null;
 					 else if (paramValue.startsWith("@SQL=")) {
-						 String	defStr = "";
 						 String sql = paramValue.substring(5);
 						 sql = Env.parseContext(Env.getCtx(), 0, sql, false, false);	//	replace variables
 						 if (!Util.isEmpty(sql)) {
@@ -917,9 +918,15 @@ public class DashboardController implements EventListener<Event> {
 							 try {
 								 stmt = DB.prepareStatement(sql, null);
 								 rs = stmt.executeQuery();
-								 if (rs.next())
-									 defStr = rs.getString(1);
-								 else {
+								 if (rs.next()) {
+									 if (   DisplayType.isNumeric(iPara.getDisplayType()) 
+										 || DisplayType.isID(iPara.getDisplayType()))
+										 value = rs.getBigDecimal(1);
+									 else if (DisplayType.isDate(iPara.getDisplayType()))
+										 value = rs.getTimestamp(1);
+									 else
+										 value = rs.getString(1);
+								 } else {
 									 if (logger.isLoggable(Level.INFO))
 										 logger.log(Level.INFO, "(" + iPara.getParameterName() + ") - no Result: " + sql);
 								 }
@@ -933,8 +940,6 @@ public class DashboardController implements EventListener<Event> {
 								 stmt = null;
 							 }
 						 }
-						 if (!Util.isEmpty(defStr))
-							 value = defStr;
 					 }	//	SQL Statement
 					 else if (paramValue.indexOf('@') != -1)	//	we have a variable
 					 {
@@ -958,11 +963,15 @@ public class DashboardController implements EventListener<Event> {
 							 bd = new BigDecimal (((Integer)value).intValue());
 						 else
 							 bd = new BigDecimal (value.toString());
+						DecimalFormat decimalFormat = DisplayType.getNumberFormat(iPara.getDisplayType());
+						String info = decimalFormat.format(iPara.getP_Number());
 						 if (isTo) {
 							 iPara.setP_Number_To(bd);
+							 iPara.setInfo_To(info);
 						 }
 						 else {
 							 iPara.setP_Number(bd);
+							 iPara.setInfo(info);
 						 }
 					 }
 					 else if (DisplayType.isDate(iPara.getDisplayType()))
@@ -972,20 +981,26 @@ public class DashboardController implements EventListener<Event> {
 							 ts = (Timestamp)value;
 						 else
 							 ts = Timestamp.valueOf(value.toString());
+						SimpleDateFormat dateFormat = DisplayType.getDateFormat(iPara.getDisplayType());
+						String info = dateFormat.format(ts);
 						 if (isTo) {
 							 iPara.setP_Date_To(ts);
+							 iPara.setInfo_To(info);
 						 }
 						 else {
 							 iPara.setP_Date(ts);
+							 iPara.setInfo(info);
 						 }
 					 }
 					 else
 					 {
 						 if (isTo) {
 							 iPara.setP_String_To(value.toString());
+							 iPara.setInfo_To(value.toString());
 						 }
 						 else {
 							 iPara.setP_String(value.toString());
+							 iPara.setInfo(value.toString());
 						 }
 					 }
 					 iPara.saveEx();
