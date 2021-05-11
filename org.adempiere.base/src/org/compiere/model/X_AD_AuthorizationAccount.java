@@ -32,7 +32,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210224L;
+	private static final long serialVersionUID = 20210511L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
@@ -163,31 +163,31 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 		return ii.intValue();
 	}
 
-	/** AD_AuthorizationScope AD_Reference_ID=200185 */
-	public static final int AD_AUTHORIZATIONSCOPE_AD_Reference_ID=200185;
+	/** AD_AuthorizationScopes AD_Reference_ID=200185 */
+	public static final int AD_AUTHORIZATIONSCOPES_AD_Reference_ID=200185;
 	/** Calendar = Calendar */
-	public static final String AD_AUTHORIZATIONSCOPE_Calendar = "Calendar";
+	public static final String AD_AUTHORIZATIONSCOPES_Calendar = "Calendar";
 	/** EMail = EMail */
-	public static final String AD_AUTHORIZATIONSCOPE_EMail = "EMail";
+	public static final String AD_AUTHORIZATIONSCOPES_EMail = "EMail";
 	/** Document = Document */
-	public static final String AD_AUTHORIZATIONSCOPE_Document = "Document";
+	public static final String AD_AUTHORIZATIONSCOPES_Document = "Document";
 	/** Profile = Profile */
-	public static final String AD_AUTHORIZATIONSCOPE_Profile = "Profile";
+	public static final String AD_AUTHORIZATIONSCOPES_Profile = "Profile";
 	/** Storage = Storage */
-	public static final String AD_AUTHORIZATIONSCOPE_Storage = "Storage";
-	/** Set Authorization Scope.
-		@param AD_AuthorizationScope Authorization Scope	  */
-	public void setAD_AuthorizationScope (String AD_AuthorizationScope)
+	public static final String AD_AUTHORIZATIONSCOPES_Storage = "Storage";
+	/** Set Authorization Scopes.
+		@param AD_AuthorizationScopes Authorization Scopes	  */
+	public void setAD_AuthorizationScopes (String AD_AuthorizationScopes)
 	{
 
-		set_Value (COLUMNNAME_AD_AuthorizationScope, AD_AuthorizationScope);
+		set_Value (COLUMNNAME_AD_AuthorizationScopes, AD_AuthorizationScopes);
 	}
 
-	/** Get Authorization Scope.
-		@return Authorization Scope	  */
-	public String getAD_AuthorizationScope () 
+	/** Get Authorization Scopes.
+		@return Authorization Scopes	  */
+	public String getAD_AuthorizationScopes () 
 	{
-		return (String)get_Value(COLUMNNAME_AD_AuthorizationScope);
+		return (String)get_Value(COLUMNNAME_AD_AuthorizationScopes);
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException

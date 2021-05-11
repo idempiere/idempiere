@@ -269,7 +269,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			if (ThemeManager.isUseFontIconForImage())
 				LayoutUtils.addSclass("medium-toolbarbutton", bExport);
 			
-			List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_Document);
+			List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
 			for (MAuthorizationAccount account : accounts) {
 				IUploadService service = Core.getUploadService(account);
 				if (service != null) {

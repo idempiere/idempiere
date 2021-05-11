@@ -698,7 +698,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		if (m_isCanExport)
 		{
-			List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_Document);
+			List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
 			for (MAuthorizationAccount account : accounts) {
 				IUploadService service = Core.getUploadService(account);
 				if (service != null) {

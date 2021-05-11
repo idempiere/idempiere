@@ -119,6 +119,136 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Upload Action:',0,0,'Y',TO_DATE('2021-05-09 18:40:34','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-09 18:40:34','YYYY-MM-DD HH24:MI:SS'),100,200682,'UploadAction','D','f371db18-d552-47dd-94a5-1622c60eff56')
 ;
 
+-- May 10, 2021, 12:29:01 PM CEST
+UPDATE AD_Menu SET PredefinedContextVariables='OPEN_POPUP=Y',Updated=TO_DATE('2021-05-10 12:29:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=200182
+;
+
+-- May 10, 2021, 12:29:15 PM CEST
+UPDATE AD_Process_Para SET DefaultValue=NULL,Updated=TO_DATE('2021-05-10 12:29:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200335
+;
+
+-- May 11, 2021, 11:57:58 AM MYT
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203485,0,0,'Y',TO_DATE('2021-05-11 11:57:57','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-11 11:57:57','YYYY-MM-DD HH24:MI:SS'),100,'AD_AuthorizationScopes','Authorization Scopes','Authorization Scopes','D','2a60a4ce-76ce-41ca-b70d-b0b6942d927c')
+;
+
+-- May 11, 2021, 11:59:29 AM MYT
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (214426,0,'Authorization Scopes',200272,'AD_AuthorizationScopes',255,'N','N','N','N','N',0,'N',200161,200185,0,0,'Y',TO_DATE('2021-05-11 11:59:29','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-11 11:59:29','YYYY-MM-DD HH24:MI:SS'),100,203485,'Y','N','D','N','N','N','Y','a7c3b27c-e0a7-4a5c-8d39-50f0171faaaa','Y',0,'N','N','N')
+;
+
+-- May 11, 2021, 11:59:39 AM MYT
+ALTER TABLE AD_AuthorizationAccount ADD AD_AuthorizationScopes VARCHAR2(255 CHAR) DEFAULT NULL 
+;
+
+-- May 11, 2021, 12:00:20 PM MYT
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2021-05-11 12:00:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214405
+;
+
+-- May 11, 2021, 12:02:31 PM MYT
+UPDATE AD_Val_Rule SET Code='AD_AuthorizationAccount.AD_User_ID=@AD_User_ID@ AND AD_AuthorizationAccount.AD_AuthorizationScope LIKE ''%Document%''',Updated=TO_DATE('2021-05-11 12:02:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200148
+;
+
+-- May 11, 2021, 12:03:38 PM MYT
+UPDATE AD_Field SET IsActive='N', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 12:03:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206584
+;
+
+-- May 11, 2021, 12:04:27 PM MYT
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206608,'Authorization Scopes',200287,214426,'Y',0,150,0,'N','N','N','N',0,0,'Y',TO_DATE('2021-05-11 12:04:26','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-11 12:04:26','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','46115123-9361-4b50-aa79-19ac62b5bf35','Y',120,1,2,1,'N','N','N','N')
+;
+
+-- May 11, 2021, 12:04:47 PM MYT
+UPDATE AD_Field SET SeqNo=0,IsDisplayed='N', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=206584
+;
+
+-- May 11, 2021, 12:04:47 PM MYT
+UPDATE AD_Field SET SeqNo=40,IsDisplayed='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=206608
+;
+
+-- May 11, 2021, 12:05:01 PM MYT
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=206584
+;
+
+-- May 11, 2021, 12:05:01 PM MYT
+UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=206608
+;
+
+-- May 11, 2021, 12:08:35 PM MYT
+UPDATE AD_Process_Para SET Name='Authorization Scopes', Description=NULL, Help=NULL, AD_Reference_ID=200161, AD_Val_Rule_ID=NULL, FieldLength=255, ColumnName='AD_AuthorizationScopes', AD_Element_ID=203485,Updated=TO_DATE('2021-05-11 12:08:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200335
+;
+
+-- May 11, 2021, 3:15:50 PM MYT
+UPDATE AD_Val_Rule SET Code='AD_AuthorizationCredential.AD_Client_ID IN (0,@#AD_Client_ID@) AND 
+AD_AuthorizationCredential.IsActive=''Y'' AND 
+isIntersectCSV(AD_AuthorizationCredential.AD_AuthorizationScopeList,''@AD_AuthorizationScopes@'')=''true'' AND 
+EXISTS ( 
+  SELECT 1 
+  FROM AD_AuthorizationScopeProv asp 
+    JOIN AD_AuthorizationProvider ap ON (asp.AD_AuthorizationProvider_ID=ap.AD_AuthorizationProvider_ID  
+      AND ap.IsActive=''Y''  
+      AND ap.AD_Client_ID IN (0,@#AD_Client_ID@)) 
+  WHERE asp.AD_AuthorizationProvider_ID=AD_AuthorizationCredential.AD_AuthorizationProvider_ID 
+    AND isIntersectCSV(asp.AD_AuthorizationScope,''@AD_AuthorizationScopes@'')=''true''
+    AND asp.IsActive=''Y'' 
+    AND asp.AD_Client_ID IN (0,@#AD_Client_ID@))',Updated=TO_DATE('2021-05-11 15:15:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200146
+;
+
+UPDATE AD_AuthorizationAccount SET AD_AuthorizationScopes = AD_AuthorizationScope, UPDATED=SYSDATE WHERE AD_AuthorizationScope IS NOT NULL AND AD_AuthorizationScopes IS NULL
+;
+
+-- May 11, 2021, 3:59:13 PM MYT
+UPDATE AD_Val_Rule SET Code='AD_AuthorizationAccount.AD_User_ID=@AD_User_ID@ AND isIntersectCSV(AD_AuthorizationAccount.AD_AuthorizationScopes,''Document'')',Updated=TO_DATE('2021-05-11 15:59:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200148
+;
+
+-- May 11, 2021, 4:00:25 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206608
+;
+
+-- May 11, 2021, 4:00:29 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206585
+;
+
+-- May 11, 2021, 4:00:37 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206587
+;
+
+-- May 11, 2021, 4:00:40 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206588
+;
+
+-- May 11, 2021, 4:00:44 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206590
+;
+
+-- May 11, 2021, 4:00:47 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206591
+;
+
+-- May 11, 2021, 4:00:53 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206592
+;
+
+-- May 11, 2021, 4:00:56 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-05-11 16:00:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206593
+;
+
+-- May 11, 2021, 4:01:57 PM MYT
+UPDATE AD_Tab SET IsInsertRecord='N',Updated=TO_DATE('2021-05-11 16:01:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200287
+;
+
+-- May 11, 2021, 4:04:39 PM MYT
+UPDATE AD_Column SET IsIdentifier='N', SeqNo=0,Updated=TO_DATE('2021-05-11 16:04:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214405
+;
+
+-- May 11, 2021, 4:04:54 PM MYT
+UPDATE AD_Column SET IsIdentifier='Y', SeqNo=20,Updated=TO_DATE('2021-05-11 16:04:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214426
+;
+
+CREATE or REPLACE FUNCTION isIntersectCSV( p_csv1 VARCHAR , p_csv2 VARCHAR) 
+RETURN boolean AS 
+BEGIN
+   return toTableOfVarchar2(p_csv1) MULTISET INTERSECT toTableOfVarchar2(p_csv2) IS NOT EMPTY;
+END;
+/
+
 SELECT Register_Migration_Script ('202105091048_IDEMPIERE-4771.sql') FROM DUAL
 ;
 

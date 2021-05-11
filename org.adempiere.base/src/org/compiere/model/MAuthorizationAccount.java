@@ -157,10 +157,10 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	 * @return
 	 */
 	public static MAuthorizationAccount getEMailAccount(String email) {
-		String where = "EMail=? AND AD_AuthorizationScope=? AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
+		String where = "EMail=? AND " + DB.intersectClauseForCSV("AD_AuthorizationScopes", AD_AUTHORIZATIONSCOPES_EMail) + "='true' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
 		MAuthorizationAccount account = new Query(Env.getCtx(), Table_Name, where, null)
 				.setOnlyActiveRecords(true)
-				.setParameters(email, AD_AUTHORIZATIONSCOPE_EMail, Env.getAD_Client_ID(Env.getCtx()))
+				.setParameters(email, Env.getAD_Client_ID(Env.getCtx()))
 				.setOrderBy("AD_Client_ID DESC, Updated DESC")
 				.first();
 		return account;
@@ -169,14 +169,14 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	/**
 	 * 
 	 * @param AD_User_ID
-	 * @param scope
+	 * @param scopes
 	 * @return list of {@link MAuthorizationAccount}
 	 */
-	public static List<MAuthorizationAccount> getAuthorizedAccouts(int AD_User_ID, String scope) {
-		String where = "AD_User_ID=? AND AD_AuthorizationScope=? AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
+	public static List<MAuthorizationAccount> getAuthorizedAccouts(int AD_User_ID, String scopes) {
+		String where = "AD_User_ID=? AND " + DB.intersectClauseForCSV("AD_AuthorizationScopes", scopes) + "='true' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
 		List<MAuthorizationAccount> accounts = new Query(Env.getCtx(), Table_Name, where, null)
 				.setOnlyActiveRecords(true)
-				.setParameters(AD_User_ID, scope, Env.getAD_Client_ID(Env.getCtx()))
+				.setParameters(AD_User_ID, Env.getAD_Client_ID(Env.getCtx()))
 				.setOrderBy("AD_Client_ID DESC, Updated DESC")
 				.list();
 		return accounts;

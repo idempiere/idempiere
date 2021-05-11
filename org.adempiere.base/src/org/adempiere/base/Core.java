@@ -980,7 +980,7 @@ public class Core {
 	 */
 	public static List<IUploadService> getUploadServices() {
 		List<IUploadService> services = new ArrayList<IUploadService>();
-		List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPE_Document);
+		List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
 		for (MAuthorizationAccount account : accounts) {
 			IUploadService service = getUploadService(account);
 			if (service != null) {
