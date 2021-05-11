@@ -180,7 +180,7 @@ public class CacheTest extends AbstractTestCase {
 	
 	@SuppressWarnings({"unchecked"})
 	@Test
-	public void testPOCacheAfterUpdate() {
+	public void testPOCacheAfterUpdate() throws InterruptedException {
 		int mulch = 137;
 		int oak = 123;
 		//init cache
@@ -212,16 +212,18 @@ public class CacheTest extends AbstractTestCase {
 		p2.saveEx();
 		
 		//get after p2 update, miss should increase
+		//wait 500ms since cache reset after update is async
+		Thread.sleep(500);
 		miss = pc.getMiss();
 		p2 = MProduct.get(Env.getCtx(), oak);
 		assertEquals(oak, p2.getM_Product_ID());
-		assertTrue(pc.getMiss() > miss, "Get of product Oak after update of product Oak, cache miss should increase");
+		assertTrue(pc.getMiss() > miss, "Get of product Oak after update of product Oak, cache miss should increase. before="+miss+" after="+pc.getMiss());
 		
 		//cache for p1 not effected by p2 update, hit should increase
 		hit = pc.getHit();
 		p1 = MProduct.get(Env.getCtx(), mulch);
 		assertEquals(mulch, p1.getM_Product_ID());
-		assertTrue(pc.getHit() > hit, "Get of product Mulch after update of product Oak, cache hit should increase");
+		assertTrue(pc.getHit() > hit, "Get of product Mulch after update of product Oak, cache hit should increase. before="+hit+" after="+pc.getHit());
 		
 		//create p3 to test delete
 		MProduct p3 = new MProduct(Env.getCtx(), 0, getTrxName());
