@@ -422,7 +422,7 @@ public class DashboardController implements EventListener<Event> {
 			if (dc.isEmbedReportContent()) 
 			{
 				String processParameters = dc.getProcessParameters();
-				embedReport(content, AD_Process_ID, processParameters);
+				embedReport(content, AD_Process_ID, processParameters, false);
 				
 				Toolbar toolbar = new Toolbar();
 				content.appendChild(toolbar);
@@ -435,6 +435,15 @@ public class DashboardController implements EventListener<Event> {
 				btn.addEventListener(Events.ON_CLICK, this);
 				btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
 				toolbar.appendChild(new Separator("vertical"));
+				toolbar.appendChild(btn);
+
+				btn = new ToolBarButton();
+				btn.setAttribute("Refresh", true);
+				btn.setAttribute("AD_Process_ID", AD_Process_ID);
+				btn.setAttribute("ProcessParameters", processParameters);
+				btn.setAttribute("Parent", content);
+				btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+				btn.addEventListener(Events.ON_CLICK, this);
 				toolbar.appendChild(btn);
 			}
 			else
@@ -581,8 +590,14 @@ public class DashboardController implements EventListener<Event> {
             	{
             		int processId = (Integer)btn.getAttribute("AD_Process_ID");
             		String parameters = (String)btn.getAttribute("ProcessParameters");
-            		if (processId > 0)
-            			openReportInViewer(processId, parameters);
+            		if (processId > 0) {
+            			if (btn.getAttribute("Refresh") != null) {
+            				Component parent = (Component) btn.getAttribute("Parent");
+            				embedReport(parent, processId, parameters, true);
+            			}
+            			else
+            				openReportInViewer(processId, parameters);
+            		}
             	}
             }
         }
@@ -861,19 +876,34 @@ public class DashboardController implements EventListener<Event> {
 				+ " - " + process.getName());
 		
 		return re;
-   	}
-   	
-   	public void embedReport(Component parent, int AD_Process_ID, String parameters) throws Exception {
+	}
+
+	public void embedReport(Component parent, int AD_Process_ID, String parameters, boolean isRefresh) throws Exception {
+
+		Iframe iframe = null;
+
+		if (isRefresh) {
+			for (Component comp : parent.getChildren()) {
+				if (comp instanceof Iframe)
+					iframe = (Iframe) comp;
+			}	
+		}
+		else {
+			iframe = new Iframe();
+			iframe.setSclass("dashboard-report-iframe");
+			parent.appendChild(iframe);
+		}
+
+		iframe.setContent(generateReport(AD_Process_ID, parameters));
+	}
+
+	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
-		
-		Iframe iframe = new Iframe();
-		iframe.setSclass("dashboard-report-iframe");
+
 		File file = File.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", 
 				SessionManager.getAppDesktop().getComponent().getUuid()));
-		AMedia media = new AMedia(re.getName(), "html", "text/html", file, false);
-		iframe.setContent(media);
-		parent.appendChild(iframe);
+		return new AMedia(re.getName(), "html", "text/html", file, false);
 	}
    	
    	protected void openReportInViewer(int AD_Process_ID, String parameters) {
