@@ -37,8 +37,8 @@ import org.compiere.model.MPInstance;
  */
 public class AddAuthorizationProcess extends SvrProcess {
 
-	/* Authorization Scope */
-	protected String p_AD_AuthorizationScope = null;
+	/* Authorization Scopes */
+	protected String p_AD_AuthorizationScopes = null;
 	/* Authorization Credential */
 	protected int p_AD_AuthorizationCredential_ID = 0;
 	/* Open Browser */
@@ -55,7 +55,7 @@ public class AddAuthorizationProcess extends SvrProcess {
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
 			switch (name) {
-			case "AD_AuthorizationScope": p_AD_AuthorizationScope = para.getParameterAsString(); break;
+			case "AD_AuthorizationScopes": p_AD_AuthorizationScopes = para.getParameterAsString(); break;
 			case "AD_AuthorizationCredential_ID": p_AD_AuthorizationCredential_ID = para.getParameterAsInt(); break;
 			case "Auth_OpenPopup": p_Auth_OpenPopup = para.getParameterAsBoolean(); break;
 			case "AD_Language": break;  // ignored, is just to save it in AD_Process_Para
@@ -75,12 +75,12 @@ public class AddAuthorizationProcess extends SvrProcess {
 	 */
 	protected String doIt() throws Exception {
 		if (log.isLoggable(Level.INFO))
-			log.info("AD_AuthorizationScope" + p_AD_AuthorizationScope
+			log.info("AD_AuthorizationScopes" + p_AD_AuthorizationScopes
 					+ ", AD_AuthorizationCredential_ID=" + p_AD_AuthorizationCredential_ID
 					+ ", Auth_OpenBrowser=" + p_Auth_OpenPopup);
 		MPInstance pinstance = new MPInstance(getCtx(), getAD_PInstance_ID(), get_TrxName());
 		MAuthorizationCredential credential = new MAuthorizationCredential(getCtx(), p_AD_AuthorizationCredential_ID, get_TrxName());
-		f_authURL = credential.getFullAuthorizationEndpoint(p_AD_AuthorizationScope, pinstance.getAD_PInstance_UU());
+		f_authURL = credential.getFullAuthorizationEndpoint(p_AD_AuthorizationScopes, pinstance.getAD_PInstance_UU());
 		if (! p_Auth_OpenPopup || processUI == null) {
 			addLog(f_authURL);
 			return "@Add_Auth_Copy_Link@";
