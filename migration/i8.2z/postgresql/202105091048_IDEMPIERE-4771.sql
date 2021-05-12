@@ -175,7 +175,7 @@ UPDATE AD_Process_Para SET Name='Authorization Scopes', Description=NULL, Help=N
 -- May 11, 2021, 3:15:50 PM MYT
 UPDATE AD_Val_Rule SET Code='AD_AuthorizationCredential.AD_Client_ID IN (0,@#AD_Client_ID@) AND 
 AD_AuthorizationCredential.IsActive=''Y'' AND 
-isIntersectCSV(AD_AuthorizationCredential.AD_AuthorizationScopeList,''@AD_AuthorizationScopes@'')=''true'' AND 
+isIntersectCSV(AD_AuthorizationCredential.AD_AuthorizationScopeList,''@AD_AuthorizationScopes@'')=''Y'' AND 
 EXISTS ( 
   SELECT 1 
   FROM AD_AuthorizationScopeProv asp 
@@ -183,21 +183,26 @@ EXISTS (
       AND ap.IsActive=''Y''  
       AND ap.AD_Client_ID IN (0,@#AD_Client_ID@)) 
   WHERE asp.AD_AuthorizationProvider_ID=AD_AuthorizationCredential.AD_AuthorizationProvider_ID 
-    AND isIntersectCSV(asp.AD_AuthorizationScope,''@AD_AuthorizationScopes@'')=''true''
+    AND isIntersectCSV(asp.AD_AuthorizationScope,''@AD_AuthorizationScopes@'')=''Y''
     AND asp.IsActive=''Y'' 
     AND asp.AD_Client_ID IN (0,@#AD_Client_ID@))',Updated=TO_TIMESTAMP('2021-05-11 15:15:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200146
 ;
 
 CREATE OR REPLACE FUNCTION isintersectcsv(
-	p_csv1 character varying,
-	p_csv2 character varying)
-    RETURNS boolean
+        p_csv1 character varying,
+        p_csv2 character varying)
+    RETURNS char
     LANGUAGE 'plpgsql'
     COST 100
     STABLE PARALLEL SAFE 
 AS $BODY$
 begin
-	return string_to_array(p_csv1, ',') && string_to_array(p_csv2, ',');
+        IF string_to_array(p_csv1, ',') && string_to_array(p_csv2, ',')
+        THEN
+            RETURN 'Y';
+        ELSE
+            RETURN 'N';
+        END IF;
 end;
 $BODY$;
 
@@ -205,7 +210,7 @@ UPDATE AD_AuthorizationAccount SET AD_AuthorizationScopes = AD_AuthorizationScop
 ;
 
 -- May 11, 2021, 3:59:13 PM MYT
-UPDATE AD_Val_Rule SET Code='AD_AuthorizationAccount.AD_User_ID=@AD_User_ID@ AND isIntersectCSV(AD_AuthorizationAccount.AD_AuthorizationScopes,''Document'')',Updated=TO_TIMESTAMP('2021-05-11 15:59:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200148
+UPDATE AD_Val_Rule SET Code='AD_AuthorizationAccount.AD_User_ID=@AD_User_ID@ AND isIntersectCSV(AD_AuthorizationAccount.AD_AuthorizationScopes,''Document'')=''Y''',Updated=TO_TIMESTAMP('2021-05-11 15:59:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200148
 ;
 
 -- May 11, 2021, 4:00:25 PM MYT

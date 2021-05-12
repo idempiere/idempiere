@@ -157,7 +157,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	 * @return
 	 */
 	public static MAuthorizationAccount getEMailAccount(String email) {
-		String where = "EMail=? AND " + DB.intersectClauseForCSV("AD_AuthorizationScopes", AD_AUTHORIZATIONSCOPES_EMail) + "='true' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
+		String where = "EMail=? AND IsIntersectCSV(AD_AuthorizationScopes,"+DB.TO_STRING(AD_AUTHORIZATIONSCOPES_EMail)+")='Y' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
 		MAuthorizationAccount account = new Query(Env.getCtx(), Table_Name, where, null)
 				.setOnlyActiveRecords(true)
 				.setParameters(email, Env.getAD_Client_ID(Env.getCtx()))
@@ -173,7 +173,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	 * @return list of {@link MAuthorizationAccount}
 	 */
 	public static List<MAuthorizationAccount> getAuthorizedAccouts(int AD_User_ID, String scopes) {
-		String where = "AD_User_ID=? AND " + DB.intersectClauseForCSV("AD_AuthorizationScopes", scopes) + "='true' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
+		String where = "AD_User_ID=? AND IsIntersectCSV(AD_AuthorizationScopes,"+DB.TO_STRING(scopes)+")='Y' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
 		List<MAuthorizationAccount> accounts = new Query(Env.getCtx(), Table_Name, where, null)
 				.setOnlyActiveRecords(true)
 				.setParameters(AD_User_ID, Env.getAD_Client_ID(Env.getCtx()))

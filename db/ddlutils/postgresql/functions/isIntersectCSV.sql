@@ -14,15 +14,20 @@
 *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.of
 */
 CREATE OR REPLACE FUNCTION isintersectcsv(
-	p_csv1 character varying,
-	p_csv2 character varying)
-    RETURNS boolean
+        p_csv1 character varying,
+        p_csv2 character varying)
+    RETURNS char
     LANGUAGE 'plpgsql'
     COST 100
     STABLE PARALLEL SAFE 
 AS $BODY$
 begin
-	return string_to_array(p_csv1, ',') && string_to_array(p_csv2, ',');
+        IF string_to_array(p_csv1, ',') && string_to_array(p_csv2, ',')
+        THEN
+            RETURN 'Y';
+        ELSE
+            RETURN 'N';
+        END IF;
 end;
 $BODY$;
 
