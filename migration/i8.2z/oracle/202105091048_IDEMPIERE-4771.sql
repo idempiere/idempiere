@@ -254,6 +254,10 @@ BEGIN
 END;
 /
 
+-- May 12, 2021, 2:21:40 PM MYT
+UPDATE AD_Process_Para SET AD_Val_Rule_ID=200145,Updated=TO_DATE('2021-05-12 14:21:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200335
+;
+
 SELECT Register_Migration_Script ('202105091048_IDEMPIERE-4771.sql') FROM DUAL
 ;
 
