@@ -422,8 +422,12 @@ public class DashboardController implements EventListener<Event> {
 			if (dc.isEmbedReportContent()) 
 			{
 				String processParameters = dc.getProcessParameters();
-				embedReport(content, AD_Process_ID, processParameters);
-				
+
+				Iframe iframe = new Iframe();
+				iframe.setSclass("dashboard-report-iframe");
+				content.appendChild(iframe);
+				iframe.setContent(generateReport(AD_Process_ID, processParameters));
+
 				Toolbar toolbar = new Toolbar();
 				content.appendChild(toolbar);
 				btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
@@ -435,6 +439,17 @@ public class DashboardController implements EventListener<Event> {
 				btn.addEventListener(Events.ON_CLICK, this);
 				btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
 				toolbar.appendChild(new Separator("vertical"));
+				toolbar.appendChild(btn);
+
+				btn = new ToolBarButton();
+				if (ThemeManager.isUseFontIconForImage()) {
+					btn.setIconSclass("z-icon-Refresh");
+					btn.setSclass("trash-toolbarbutton");
+				}
+				else
+					btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+
+				btn.addEventListener(Events.ON_CLICK, e -> iframe.setContent(generateReport(AD_Process_ID, processParameters)));
 				toolbar.appendChild(btn);
 			}
 			else
@@ -861,21 +876,17 @@ public class DashboardController implements EventListener<Event> {
 				+ " - " + process.getName());
 		
 		return re;
-   	}
-   	
-   	public void embedReport(Component parent, int AD_Process_ID, String parameters) throws Exception {
+	}
+
+	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
-		
-		Iframe iframe = new Iframe();
-		iframe.setSclass("dashboard-report-iframe");
+
 		File file = File.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", 
 				SessionManager.getAppDesktop().getComponent().getUuid()));
-		AMedia media = new AMedia(re.getName(), "html", "text/html", file, false);
-		iframe.setContent(media);
-		parent.appendChild(iframe);
+		return new AMedia(re.getName(), "html", "text/html", file, false);
 	}
-   	
+
    	protected void openReportInViewer(int AD_Process_ID, String parameters) {
    		ReportEngine re = runReport(AD_Process_ID, parameters);
    		new ZkReportViewerProvider().openViewer(re);
