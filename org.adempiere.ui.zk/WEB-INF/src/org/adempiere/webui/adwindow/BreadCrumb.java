@@ -283,7 +283,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 					}					
 				});
 				linkPopup.setPage(pathLabel.getPage());
-				linkPopup.open(pathLabel);								
+				linkPopup.open(pathLabel, "after_start");
 			}
 		};
 		pathLabel.addEventListener(Events.ON_CLICK, listener);

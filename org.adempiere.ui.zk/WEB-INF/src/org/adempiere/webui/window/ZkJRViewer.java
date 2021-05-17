@@ -6,10 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -24,6 +30,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MArchive;
+import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
@@ -73,7 +80,7 @@ import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
-public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCloseHandler {
+public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCloseHandler, IReportViewerExportSource {
 	/**
 	 * 
 	 */
@@ -98,9 +105,30 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 	private String m_title; // local title - embedded windows clear the title
 	protected ToolBarButton		bArchive			= new ToolBarButton();
+	protected ToolBarButton bExport = new ToolBarButton();
+	protected ToolBarButton bCloudUpload = new ToolBarButton();
 	private PrintInfo			m_printInfo;
 	
 	private int mediaVersion = 0;
+	
+	protected static final String CSV_OUTPUT_TYPE = "CSV";	
+	protected static final String HTML_OUTPUT_TYPE = "HTML";	
+	protected static final String PDF_OUTPUT_TYPE = "PDF";
+	protected static final String SSV_OUTPUT_TYPE = "SSV";
+	protected static final String XLS_OUTPUT_TYPE = "XLS";	
+	protected static final String XLSX_OUTPUT_TYPE = "XLSX";
+	
+	protected final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
+	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+	
+	private final ExportFormat[] exportFormats = new ExportFormat[] {
+			new ExportFormat(PDF_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
+			new ExportFormat(HTML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileHTML"), HTML_FILE_EXT, HTML_MIME_TYPE),			
+			new ExportFormat(CSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), CSV_FILE_EXT, CSV_MIME_TYPE),
+			new ExportFormat(EXCEL_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), EXCEL_FILE_EXT, EXCEL_MIME_TYPE),
+			new ExportFormat(EXCEL_XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE),
+			new ExportFormat(SSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), SSV_FILE_EXT, CSV_MIME_TYPE)
+	};
 	
 	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo) {
 		super();
@@ -161,31 +189,31 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		previewType.setMold("select");
 		attachment = null;  // Added by Martin Augustine - Ntier software Services 09/10/2013
 		if (isCanExport) {
-			previewType.appendItem("PDF", "PDF");
-			previewType.appendItem("HTML", "HTML");
-			previewType.appendItem("XLS", "XLS");
-			previewType.appendItem("CSV", "CSV");
-			previewType.appendItem("SSV", "SSV");
-			previewType.appendItem("XLSX", "XLSX");
-			if ("PDF".equals(defaultType)) {
+			previewType.appendItem(PDF_OUTPUT_TYPE, PDF_OUTPUT_TYPE);
+			previewType.appendItem(HTML_OUTPUT_TYPE, HTML_OUTPUT_TYPE);
+			previewType.appendItem(XLS_OUTPUT_TYPE, XLS_OUTPUT_TYPE);
+			previewType.appendItem(CSV_OUTPUT_TYPE, CSV_OUTPUT_TYPE);
+			previewType.appendItem(SSV_OUTPUT_TYPE, SSV_OUTPUT_TYPE);
+			previewType.appendItem(XLSX_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
+			if (PDF_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(0);
-			} else if ("HTML".equals(defaultType)) {
+			} else if (HTML_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(1);
-			} else if ("XLS".equals(defaultType)) {
+			} else if (XLS_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(2);
-			} else if ("CSV".equals(defaultType)) {
+			} else if (CSV_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(3);
-			} else if ("SSV".equals(defaultType)) {
+			} else if (SSV_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(4);
-			} else if ("XLSX".equals(defaultType)) {
+			} else if (XLSX_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(5);
 			} else {
 				previewType.setSelectedIndex(0);
 				log.info("Format not Valid: "+defaultType);
 			}
 		} else {
-			previewType.appendItem("PDF", "PDF");
-			previewType.appendItem("HTML", "HTML");
+			previewType.appendItem(PDF_OUTPUT_TYPE, PDF_OUTPUT_TYPE);
+			previewType.appendItem(HTML_OUTPUT_TYPE, HTML_OUTPUT_TYPE);
 			if ("PDF".equals(defaultType)) {
 				previewType.setSelectedIndex(0);
 			} else if ("HTML".equals(defaultType)) {
@@ -228,6 +256,38 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		toolbar.appendChild(bArchive);
 		bArchive.addEventListener(Events.ON_CLICK, this);
 
+		if ( isCanExport )
+		{
+			bExport.setName("Export");
+			if (ThemeManager.isUseFontIconForImage())
+				bExport.setIconSclass("z-icon-Export");
+			else
+				bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
+			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
+			toolbar.appendChild(bExport);
+			bExport.addEventListener(Events.ON_CLICK, this);
+			if (ThemeManager.isUseFontIconForImage())
+				LayoutUtils.addSclass("medium-toolbarbutton", bExport);
+			
+			List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
+			for (MAuthorizationAccount account : accounts) {
+				IUploadService service = Core.getUploadService(account);
+				if (service != null) {
+					uploadServicesMap.put(account, service);
+				}
+			}
+			if (uploadServicesMap.size() > 0) {
+				bCloudUpload.setName("CloudUpload");
+				if (ThemeManager.isUseFontIconForImage())
+					bCloudUpload.setIconSclass("z-icon-FileImport");
+				else
+					bCloudUpload.setImage(ThemeManager.getThemeResource("images/FileImport24.png"));
+				bCloudUpload.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "CloudUpload")));
+				toolbar.appendChild(bCloudUpload);
+				bCloudUpload.addEventListener(Events.ON_CLICK, this);
+			}
+		}
+		
 		North north = new North();
 		layout.appendChild(north);
 		north.appendChild(toolbar);
@@ -251,8 +311,199 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		center.appendChild(iframe);
 
 		this.setBorder("normal");
+		
+		initMediaSuppliers();
 	}
 
+	private void initMediaSuppliers() {
+		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
+			try {
+				attachment = getPDF();
+				return new AMedia(m_title+"."+PDF_FILE_EXT, PDF_FILE_EXT, PDF_MIME_TYPE, attachment, true);			
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			}
+		});
+		
+		mediaSuppliers.put(toMediaType(HTML_MIME_TYPE, HTML_FILE_EXT), () -> {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				File file = File.createTempFile(prefix, "."+HTML_FILE_EXT, new File(path));
+	
+				HtmlExporter exporter = new HtmlExporter();
+				SimpleHtmlReportConfiguration htmlConfig = new SimpleHtmlReportConfiguration();
+				htmlConfig.setEmbedImage(true);
+				htmlConfig.setAccessibleHtml(true);
+				if (!isList){
+					jasperPrintList = new ArrayList<>();
+					jasperPrintList.add(jasperPrint);
+				}
+				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+				exporter.setExporterOutput(new SimpleHtmlExporterOutput(file));
+				exporter.setConfiguration(htmlConfig);
+		 	    exporter.exportReport();
+				return new AMedia(m_title+"."+HTML_FILE_EXT, HTML_FILE_EXT, HTML_MIME_TYPE, file, false);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			}
+		});
+		
+		mediaSuppliers.put(toMediaType(EXCEL_MIME_TYPE, EXCEL_FILE_EXT), () -> {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				File file = File.createTempFile(prefix, ".xls", new File(path));
+		        FileOutputStream fos = new FileOutputStream(file);
+	
+				// coding For Excel:
+				JRXlsExporter exporterXLS = new JRXlsExporter();
+				SimpleXlsReportConfiguration xlsConfig = new SimpleXlsReportConfiguration();
+				xlsConfig.setOnePagePerSheet(false);
+	
+				if (!isList){
+					jasperPrintList = new ArrayList<>();
+					jasperPrintList.add(jasperPrint);
+				}
+				exporterXLS.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+				exporterXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
+				exporterXLS.setConfiguration(xlsConfig);
+				exporterXLS.exportReport();
+				return new AMedia(m_title+"."+EXCEL_FILE_EXT, EXCEL_FILE_EXT, EXCEL_MIME_TYPE, file, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			}
+		});
+		
+		mediaSuppliers.put(toMediaType(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT), () -> {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				File file = File.createTempFile(prefix, "."+EXCEL_XML_FILE_EXT, new File(path));
+		        FileOutputStream fos = new FileOutputStream(file);
+	
+				// coding For Excel:
+				JRXlsxExporter exporterXLSX = new JRXlsxExporter();
+				SimpleXlsxReportConfiguration xlsxConfig = new SimpleXlsxReportConfiguration();
+				xlsxConfig.setOnePagePerSheet(false);
+	
+				if (!isList){
+					jasperPrintList = new ArrayList<>();
+					jasperPrintList.add(jasperPrint);
+				}
+				exporterXLSX.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+				exporterXLSX.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
+				exporterXLSX.setConfiguration(xlsxConfig);
+				exporterXLSX.exportReport();
+				return new AMedia(m_title+"."+EXCEL_XML_FILE_EXT, EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE, file, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			}
+		});
+		
+		mediaSuppliers.put(toMediaType(CSV_MIME_TYPE, CSV_FILE_EXT), () -> {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				File file = File.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
+				FileOutputStream fos = new FileOutputStream(file);
+				JRCsvExporter exporter= new JRCsvExporter();
+				if (!isList){
+					jasperPrintList = new ArrayList<>();
+					jasperPrintList.add(jasperPrint);
+				}
+				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+				exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
+				exporter.exportReport();
+	
+				return new AMedia(m_title+"."+CSV_FILE_EXT, CSV_FILE_EXT, CSV_MIME_TYPE, file, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			}
+		});
+		
+		mediaSuppliers.put(toMediaType(CSV_MIME_TYPE, SSV_FILE_EXT), () -> {
+			try {
+				String path = System.getProperty("java.io.tmpdir");
+				String prefix = null;
+				if (isList)
+					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
+				else
+					prefix = makePrefix(jasperPrint.getName());
+				if (prefix.length() < 3)
+					prefix += "_".repeat(3-prefix.length());
+				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
+				File file = File.createTempFile(prefix, "."+SSV_FILE_EXT, new File(path));
+				FileOutputStream fos = new FileOutputStream(file);
+				JRCsvExporter exporter= new JRCsvExporter();
+				SimpleCsvExporterConfiguration csvConfig = new SimpleCsvExporterConfiguration();
+				csvConfig.setFieldDelimiter(";");
+				if (!isList){
+					jasperPrintList = new ArrayList<>();
+					jasperPrintList.add(jasperPrint);
+				}
+				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+				exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
+				exporter.setConfiguration(csvConfig);
+				exporter.exportReport();
+	
+				return new AMedia(m_title+"."+SSV_FILE_EXT, SSV_FILE_EXT, CSV_MIME_TYPE, file, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				else
+					throw new RuntimeException(e);
+			}
+		});
+	}
+	
+	private String toMediaType(String contentType, String fileExtension) {
+		return contentType + ";" + fileExtension;
+	}
+	
 	private String makePrefix(String name) {
 		StringBuilder prefix = new StringBuilder();
 		char[] nameArray = name.toCharArray();
@@ -278,6 +529,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			cmd_sendMail();
 		else if (e.getTarget() == bArchive)
 			cmd_archive();
+		else if (e.getTarget() == bExport)
+			cmd_export();
+		else if (e.getTarget() == bCloudUpload)
+			cmd_upload();
 	}	//	actionPerformed
 
 	private void cmd_render() {
@@ -352,140 +607,18 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			Thread.currentThread().setContextClassLoader(JasperReport.class.getClassLoader());
 			Listitem selected = previewType.getSelectedItem();
 			reportType=selected.getValue();
-			if ( "PDF".equals( reportType ) )
-			{
-				attachment = getPDF();
-				media = new AMedia(m_title + ".pdf", "pdf", "application/pdf", attachment, true);
-
-			} else if ("HTML".equals(reportType)) {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = null;
-				if (isList)
-					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
-				else
-					prefix = makePrefix(jasperPrint.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, ".html", new File(path));
-
-				HtmlExporter exporter = new HtmlExporter();
-				SimpleHtmlReportConfiguration htmlConfig = new SimpleHtmlReportConfiguration();
-				htmlConfig.setEmbedImage(true);
-				htmlConfig.setAccessibleHtml(true);
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
-				}
-				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporter.setExporterOutput(new SimpleHtmlExporterOutput(file));
-				exporter.setConfiguration(htmlConfig);
-		 	    exporter.exportReport();
-				media = new AMedia(m_title, "html", "text/html", file, false);
-			} else if ("XLS".equals(reportType)) {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = null;
-				if (isList)
-					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
-				else
-					prefix = makePrefix(jasperPrint.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, ".xls", new File(path));
-		        FileOutputStream fos = new FileOutputStream(file);
-
-				// coding For Excel:
-				JRXlsExporter exporterXLS = new JRXlsExporter();
-				SimpleXlsReportConfiguration xlsConfig = new SimpleXlsReportConfiguration();
-				xlsConfig.setOnePagePerSheet(false);
-
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
-				}
-				exporterXLS.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporterXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
-				exporterXLS.setConfiguration(xlsConfig);
-				exporterXLS.exportReport();
-				media = new AMedia(m_title + ".xls", "xls", "application/vnd.ms-excel", file, true);
-
-			} else if ("XLSX".equals(reportType)) {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = null;
-				if (isList)
-					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
-				else
-					prefix = makePrefix(jasperPrint.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, ".xlsx", new File(path));
-		        FileOutputStream fos = new FileOutputStream(file);
-
-				// coding For Excel:
-				JRXlsxExporter exporterXLSX = new JRXlsxExporter();
-				SimpleXlsxReportConfiguration xlsxConfig = new SimpleXlsxReportConfiguration();
-				xlsxConfig.setOnePagePerSheet(false);
-
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
-				}
-				exporterXLSX.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporterXLSX.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
-				exporterXLSX.setConfiguration(xlsxConfig);
-				exporterXLSX.exportReport();
-				media = new AMedia(m_title + ".xlsx", "xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file, true);
-
-			}else if ("CSV".equals(reportType)) {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = null;
-				if (isList)
-					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
-				else
-					prefix = makePrefix(jasperPrint.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, ".csv", new File(path));
-				FileOutputStream fos = new FileOutputStream(file);
-				JRCsvExporter exporter= new JRCsvExporter();
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
-				}
-				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
-				exporter.exportReport();
-
-				media = new AMedia(m_title + ".csv", "csv", "application/csv", file, true);
-
-			}else if ("SSV".equals(reportType)) {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = null;
-				if (isList)
-					prefix = makePrefix(jasperPrintList.get(0).getName())+"_List";
-				else
-					prefix = makePrefix(jasperPrint.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, ".ssv", new File(path));
-				FileOutputStream fos = new FileOutputStream(file);
-				JRCsvExporter exporter= new JRCsvExporter();
-				SimpleCsvExporterConfiguration csvConfig = new SimpleCsvExporterConfiguration();
-				csvConfig.setFieldDelimiter(";");
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
-				}
-				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
-				exporter.setConfiguration(csvConfig);
-				exporter.exportReport();
-
-				media = new AMedia(m_title, "ssv", "application/ssv", file, true);
+			if (PDF_OUTPUT_TYPE.equals(reportType)) {
+				createNewMedia(PDF_MIME_TYPE, PDF_FILE_EXT);
+			} else if (HTML_OUTPUT_TYPE.equals(reportType)) {
+				createNewMedia(HTML_MIME_TYPE, HTML_FILE_EXT);
+			} else if (XLS_OUTPUT_TYPE.equals(reportType)) {
+				createNewMedia(EXCEL_MIME_TYPE, EXCEL_FILE_EXT);
+			} else if (XLSX_OUTPUT_TYPE.equals(reportType)) {
+				createNewMedia(EXCEL_XML_MIME_TYPE, EXCEL_FILE_EXT);
+			} else if (CSV_OUTPUT_TYPE.equals(reportType)) {
+				createNewMedia(CSV_MIME_TYPE, CSV_FILE_EXT);
+			}else if (SSV_OUTPUT_TYPE.equals(reportType)) {
+				createNewMedia(CSV_MIME_TYPE, SSV_FILE_EXT);
 			}
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
@@ -508,7 +641,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		{
 			log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 		}
-		File file = new File(FileUtil.getTempMailName(prefix, ".pdf"));
+		File file = new File(FileUtil.getTempMailName(prefix, "."+PDF_FILE_EXT));
 		JasperReportsContext context = new SimpleJasperReportsContext(DefaultJasperReportsContext.getInstance());
 		JRPdfExporter exporter = new JRPdfExporter(context);
 		if (!isList){
@@ -525,7 +658,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		if (ClientInfo.isMobile()) {
 			Listitem selected = previewType.getSelectedItem();
 			String reportType=selected.getValue();
-			if ( "PDF".equals( reportType ) ) {
+			if ( PDF_OUTPUT_TYPE.equals( reportType ) ) {
 				openWithPdfJsViewer();				
 				return;
 			}
@@ -647,5 +780,65 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 		return fileContent;
 	} // getFileByteData
+
+	/**
+	 * 	Export
+	 */
+	private void cmd_export()
+	{		
+		WReportExportDialog winExportFile = new WReportExportDialog(this);
+		winExportFile.setTitle(Msg.getMsg(Env.getCtx(), "Export") + ": " + getTitle());
+		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		AEnv.showWindow(winExportFile);
+	}	//	cmd_export
+	
+	private void cmd_upload() {
+		if (media == null)
+			return;
+		
+		WReportUploadDialog winUploadFile = new WReportUploadDialog(this);
+		winUploadFile.setTitle(Msg.getMsg(Env.getCtx(), "CloudUpload") + ": " + getTitle());
+		winUploadFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		AEnv.showWindow(winUploadFile);
+	}
+	
+	private void createNewMedia(String contentType, String fileExtension) {
+		media = null;
+		media = getMedia(contentType, fileExtension);
+	}
+		
+	@Override
+	public AMedia getMedia(String contentType, String fileExtension) {
+		if (media != null && media.getContentType().equals(contentType) && media.getFormat().equals(fileExtension))
+			return media;
+		
+		Supplier<AMedia> supplier = mediaSuppliers.get(toMediaType(contentType, fileExtension));
+		return supplier != null ? supplier.get() : null;
+	}
+
+	@Override
+	public ExportFormat[] getExportFormats() {
+		return exportFormats;
+	}
+
+	@Override
+	public String getContentType() {
+		return media.getContentType();
+	}
+
+	@Override
+	public String getFileExtension() {
+		return media.getFormat();
+	}
+
+	@Override
+	public Map<MAuthorizationAccount, IUploadService> getUploadServiceMap() {
+		return uploadServicesMap;
+	}
+
+	@Override
+	public String getReportName() {
+		return m_title;
+	}
 
 }

@@ -31,6 +31,7 @@ import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFormFactory;
+import org.adempiere.webui.factory.IMappedFormFactory;
 import org.adempiere.webui.panel.ADForm;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.ICreateFromFactory;
@@ -219,5 +220,27 @@ public class Extensions {
 	 */
 	public static final List<IChartRendererService> getChartRendererServices() {
 		return Service.locator().list(IChartRendererService.class).getServices();
-	}	
+	}
+
+	private static IServiceReferenceHolder<IMappedFormFactory> s_mappedFormFactoryReference = null;
+
+	/**
+	 *
+	 * @return {@link IMappedFormFactory}
+	 */
+	public static IMappedFormFactory getMappedFormFactory(){
+		IMappedFormFactory formFactoryService = null;
+		if (s_mappedFormFactoryReference != null) {
+			formFactoryService = s_mappedFormFactoryReference.getService();
+			if (formFactoryService != null)
+				return formFactoryService;
+		}
+		IServiceReferenceHolder<IMappedFormFactory> serviceReference = Service.locator().locate(IMappedFormFactory.class).getServiceReference();
+		if (serviceReference != null) {
+			formFactoryService = serviceReference.getService();
+			s_mappedFormFactoryReference = serviceReference;
+		}
+		return formFactoryService;
+	}
+
 }
