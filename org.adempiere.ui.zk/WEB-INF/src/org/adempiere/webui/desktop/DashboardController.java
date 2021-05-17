@@ -49,6 +49,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MChart;
+import org.compiere.model.MColumn;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardContentAccess;
 import org.compiere.model.MDashboardPreference;
@@ -57,7 +58,10 @@ import org.compiere.model.MMenu;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
+import org.compiere.model.MRefTable;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -964,8 +968,7 @@ public class DashboardController implements EventListener<Event> {
 					 }
 
 					 //	Convert to Type				
-					 if (DisplayType.isNumeric(iPara.getDisplayType()) 
-							 || DisplayType.isID(iPara.getDisplayType()))
+					 if (DisplayType.isNumeric(iPara.getDisplayType()))
 					 {
 						 BigDecimal bd = null;
 						 if (value instanceof BigDecimal)
@@ -983,6 +986,17 @@ public class DashboardController implements EventListener<Event> {
 						 else {
 							 iPara.setP_Number(bd);
 							 iPara.setInfo(info);
+						 }
+					 }
+					 else if (DisplayType.isID(iPara.getDisplayType())) {
+
+						 if (isTo) {
+							 iPara.setP_Number_To(new BigDecimal (value.toString()));
+							 iPara.setInfo_To(getDisplay(pInstance, iPara, value));
+						 }
+						 else {
+							 iPara.setP_Number(new BigDecimal (value.toString()));
+							 iPara.setInfo(getDisplay(pInstance, iPara, value));
 						 }
 					 }
 					 else if (DisplayType.isDate(iPara.getDisplayType()))
@@ -1021,7 +1035,48 @@ public class DashboardController implements EventListener<Event> {
 			}
 		}				
 	}
-	
+
+	private static final String displayColumns = "Name,Value,DocumentNo";
+	private String getDisplay(MPInstance i, MPInstancePara ip, Object id) {
+		try {
+			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());
+			MTable table = null;
+			String column = "";
+
+			if (pp != null) {
+				if (pp.getAD_Reference_ID() == DisplayType.Search || pp.getAD_Reference_ID() == DisplayType.TableDir)
+					table = MTable.get(Env.getCtx(), pp.getColumnName().replace("_ID", ""));
+				else if (pp.getAD_Reference_Value_ID() > 0) {
+					MRefTable rt = MRefTable.get(pp.getAD_Reference_Value_ID());
+					table = MTable.get(rt.getAD_Table_ID());
+					column = MColumn.getColumnName(Env.getCtx(), rt.getAD_Display());
+				}
+
+				if (table != null && table.isSingleKey() && table.getKeyColumns().length == 1) { // just to be sure
+
+					if (Util.isEmpty(column) || column.endsWith("_ID")) {
+						for (String columnName : displayColumns.split(",")) {
+							if (table.getColumnIndex(columnName) >= 0) {
+								column = columnName;
+								break;
+							}
+						}
+					}
+
+					StringBuilder sql = new StringBuilder("SELECT ").append(column).append(" FROM ").append(table.getTableName())
+							.append(" WHERE ").append(table.getKeyColumns()[0]).append(" = ?");
+
+					return DB.getSQLValueStringEx(null, sql.toString(), id);
+				}
+			}
+		}
+		catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to retrieve data to display for embedded report " + MProcess.get(i.getAD_Process_ID()).getName() + " : " + ip.getParameterName(), e);
+		}
+
+		return id.toString();
+	}
+
 	public void updateLayout(ClientInfo clientInfo) {
 		if (isShowInDashboard) {
 			if (ClientInfo.isMobile()) {
