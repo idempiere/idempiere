@@ -34,7 +34,7 @@ import org.adempiere.base.MappedByNameFactory;
 import org.adempiere.webui.panel.ADForm;
 import org.osgi.service.component.annotations.Component;
 
-@Component(name = "org.adempiere.ui.zk.MappedProcessFactory",
+@Component(name = "org.adempiere.webui.factory.MappedFormFactory",
 immediate = true,
 service = {IFormFactory.class, IMappedFormFactory.class},
 property = {"service.ranking:Integer=1"})
