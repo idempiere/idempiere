@@ -422,8 +422,12 @@ public class DashboardController implements EventListener<Event> {
 			if (dc.isEmbedReportContent()) 
 			{
 				String processParameters = dc.getProcessParameters();
-				embedReport(content, AD_Process_ID, processParameters, false);
-				
+
+				Iframe iframe = new Iframe();
+				iframe.setSclass("dashboard-report-iframe");
+				content.appendChild(iframe);
+				iframe.setContent(generateReport(AD_Process_ID, processParameters));
+
 				Toolbar toolbar = new Toolbar();
 				content.appendChild(toolbar);
 				btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
@@ -438,12 +442,14 @@ public class DashboardController implements EventListener<Event> {
 				toolbar.appendChild(btn);
 
 				btn = new ToolBarButton();
-				btn.setAttribute("Refresh", true);
-				btn.setAttribute("AD_Process_ID", AD_Process_ID);
-				btn.setAttribute("ProcessParameters", processParameters);
-				btn.setAttribute("Parent", content);
-				btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
-				btn.addEventListener(Events.ON_CLICK, this);
+				if (ThemeManager.isUseFontIconForImage()) {
+					btn.setIconSclass("z-icon-Refresh");
+					btn.setSclass("trash-toolbarbutton");
+				}
+				else
+					btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+
+				btn.addEventListener(Events.ON_CLICK, e -> iframe.setContent(generateReport(AD_Process_ID, processParameters)));
 				toolbar.appendChild(btn);
 			}
 			else
@@ -590,14 +596,8 @@ public class DashboardController implements EventListener<Event> {
             	{
             		int processId = (Integer)btn.getAttribute("AD_Process_ID");
             		String parameters = (String)btn.getAttribute("ProcessParameters");
-            		if (processId > 0) {
-            			if (btn.getAttribute("Refresh") != null) {
-            				Component parent = (Component) btn.getAttribute("Parent");
-            				embedReport(parent, processId, parameters, true);
-            			}
-            			else
-            				openReportInViewer(processId, parameters);
-            		}
+            		if (processId > 0)
+            			openReportInViewer(processId, parameters);
             	}
             }
         }
@@ -878,25 +878,6 @@ public class DashboardController implements EventListener<Event> {
 		return re;
 	}
 
-	public void embedReport(Component parent, int AD_Process_ID, String parameters, boolean isRefresh) throws Exception {
-
-		Iframe iframe = null;
-
-		if (isRefresh) {
-			for (Component comp : parent.getChildren()) {
-				if (comp instanceof Iframe)
-					iframe = (Iframe) comp;
-			}	
-		}
-		else {
-			iframe = new Iframe();
-			iframe.setSclass("dashboard-report-iframe");
-			parent.appendChild(iframe);
-		}
-
-		iframe.setContent(generateReport(AD_Process_ID, parameters));
-	}
-
 	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
 
@@ -905,7 +886,7 @@ public class DashboardController implements EventListener<Event> {
 				SessionManager.getAppDesktop().getComponent().getUuid()));
 		return new AMedia(re.getName(), "html", "text/html", file, false);
 	}
-   	
+
    	protected void openReportInViewer(int AD_Process_ID, String parameters) {
    		ReportEngine re = runReport(AD_Process_ID, parameters);
    		new ZkReportViewerProvider().openViewer(re);
