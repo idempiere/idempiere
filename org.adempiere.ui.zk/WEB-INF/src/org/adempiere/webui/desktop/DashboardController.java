@@ -988,7 +988,7 @@ public class DashboardController implements EventListener<Event> {
 							 iPara.setInfo(info);
 						 }
 					 }
-					 else if (DisplayType.isID(iPara.getDisplayType())) {
+					 else if (iPara.getDisplayType() == DisplayType.Search || iPara.getDisplayType() == DisplayType.Table || iPara.getDisplayType() == DisplayType.TableDir) {
 
 						 if (isTo) {
 							 iPara.setP_Number_To(new BigDecimal (value.toString()));
@@ -1046,7 +1046,7 @@ public class DashboardController implements EventListener<Event> {
 			if (pp != null) {
 				if (pp.getAD_Reference_ID() == DisplayType.Search || pp.getAD_Reference_ID() == DisplayType.TableDir)
 					table = MTable.get(Env.getCtx(), pp.getColumnName().replace("_ID", ""));
-				else if (pp.getAD_Reference_Value_ID() > 0) {
+				else if (pp.getAD_Reference_ID() == DisplayType.Table && pp.getAD_Reference_Value_ID() > 0) {
 					MRefTable rt = MRefTable.get(pp.getAD_Reference_Value_ID());
 					table = MTable.get(rt.getAD_Table_ID());
 					column = MColumn.getColumnName(Env.getCtx(), rt.getAD_Display());
