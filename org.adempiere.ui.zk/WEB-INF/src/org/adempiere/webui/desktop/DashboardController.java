@@ -1044,11 +1044,13 @@ public class DashboardController implements EventListener<Event> {
 			String column = "";
 
 			if (pp != null) {
-				if (pp.getAD_Reference_ID() == DisplayType.Search || pp.getAD_Reference_ID() == DisplayType.TableDir)
+				if ((pp.getAD_Reference_ID() == DisplayType.TableDir || pp.getAD_Reference_ID() == DisplayType.Search) && pp.getAD_Reference_Value_ID() == 0)
 					table = MTable.get(Env.getCtx(), pp.getColumnName().replace("_ID", ""));
-				else if (pp.getAD_Reference_ID() == DisplayType.Table && pp.getAD_Reference_Value_ID() > 0) {
+
+				if (pp.getAD_Reference_Value_ID() > 0) {
 					MRefTable rt = MRefTable.get(pp.getAD_Reference_Value_ID());
-					table = MTable.get(rt.getAD_Table_ID());
+					if (table == null)
+						table = MTable.get(rt.getAD_Table_ID());
 					column = MColumn.getColumnName(Env.getCtx(), rt.getAD_Display());
 				}
 
