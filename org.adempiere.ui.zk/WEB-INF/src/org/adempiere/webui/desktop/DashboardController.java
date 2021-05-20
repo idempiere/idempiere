@@ -493,7 +493,7 @@ public class DashboardController implements EventListener<Event> {
     	{
         	try {
         		
-                Component component = Extensions.getDashboardGadget(url, content);                
+                Component component = Extensions.getDashboardGadget(url, content, dc);
                 if(component != null)
                 {
                 	if (component instanceof Include)
