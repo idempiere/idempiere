@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) Contributors                                             *
+ * Copyright (C) Contributors                                                 *
  * Product: iDempiere ERP & CRM Smart Business Solution                       *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -17,7 +17,7 @@
 package org.adempiere.webui.grid;
 
 import org.adempiere.webui.ISupportMask;
-import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -28,40 +28,41 @@ import org.zkoss.zk.ui.event.EventListener;
  * Interface based on class WQuickEntry by Carlos Ruiz
  * @Author Andreas Sumerauer
  */
-public interface IQuickEntry extends  Component, ISupportMask, EventListener<Event>, ValueChangeListener
+public abstract class AbstractWQuickEntry extends Window implements Component, ISupportMask, EventListener<Event>, ValueChangeListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * check table is editable in quick entry
 	 * user must have write right and table has at least one input field
 	 * @return
 	 */
-	public boolean isAvailableQuickEdit ();
+	public abstract boolean isAvailableQuickEdit ();
 	
 	/**
 	 * Load Record_ID
 	 * @param Record_ID - existing Record or 0 for new
 	 * @return true if loaded
 	 */
-	public boolean loadRecord (int Record_ID);
+	public abstract boolean loadRecord (int Record_ID);
 
 	/**
 	 * Returns Record_ID
 	 * @return Record_ID (0 = not saved)
 	 */
-	public int getRecord_ID();
-
-	public void onEvent(Event e) throws Exception;
-
-	public void valueChange(ValueChangeEvent evt);
+	public abstract int getRecord_ID();
 
 	/**
 	 * refresh all fields
 	 */
-	public void dynamicDisplay();
+	public abstract void dynamicDisplay();
 	
 	/**
 	 * get size quickfields
 	 */
-	public int getQuickFields();
+	public abstract int getQuickFields();
 
-} // IQuickEntry
+} // AbstractWQuickEntry

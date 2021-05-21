@@ -34,7 +34,7 @@ import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFormFactory;
 import org.adempiere.webui.factory.IMappedFormFactory;
 import org.adempiere.webui.factory.IQuickEntryFactory;
-import org.adempiere.webui.grid.IQuickEntry;
+import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.panel.ADForm;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.ICreateFromFactory;
@@ -258,14 +258,14 @@ public class Extensions {
 		return formFactoryService;
 	}
 	
-	private final static CCache<String, IServiceReferenceHolder<IQuickEntryFactory>> s_quickEntryFactoryCache = new CCache<>(null, "IFormFactory", 100, false);
+	private final static CCache<Integer, IServiceReferenceHolder<IQuickEntryFactory>> s_quickEntryFactoryCache = new CCache<>(null, "IQuickEntryFactory", 100, false);
 	
 	/**
 	 *
 	 * @param AD_Window_ID 
 	 * @return IQuickEntryFactory instance or null if AD_Window_ID not found
 	 */
-	private static IQuickEntryFactory getQuickEntryService(String AdWindowID) {
+	private static IQuickEntryFactory getQuickEntryService(Integer AdWindowID) {
 		IServiceReferenceHolder<IQuickEntryFactory> cache = s_quickEntryFactoryCache.get(AdWindowID);
 		if (cache != null) {
 			IQuickEntryFactory service = cache.getService();
@@ -292,10 +292,10 @@ public class Extensions {
 	 * @param AD_Window_ID 
 	 * @return IQuickEntry instance or null if AD_Window_ID not found
 	 */
-	public static IQuickEntry getQuickEntry(int AD_Window_ID) {
-		IQuickEntryFactory service = getQuickEntryService(String.valueOf(AD_Window_ID));
+	public static AbstractWQuickEntry getQuickEntry(int AD_Window_ID) {
+		IQuickEntryFactory service = getQuickEntryService(AD_Window_ID);
 		if (service != null) {
-			IQuickEntry quickEntry = service.newQuickEntryInstance(AD_Window_ID);
+			AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(AD_Window_ID);
 			if (quickEntry != null)
 				return quickEntry;
 		}
@@ -309,10 +309,10 @@ public class Extensions {
 	 * @param TabNo 
 	 * @return IQuickEntry instance or null if AD_Window_ID not found
 	 */
-	public static IQuickEntry getQuickEntry(int WindowNo, int TabNo, int AD_Window_ID) {
-		IQuickEntryFactory service = getQuickEntryService(String.valueOf(AD_Window_ID));
+	public static AbstractWQuickEntry getQuickEntry(int WindowNo, int TabNo, int AD_Window_ID) {
+		IQuickEntryFactory service = getQuickEntryService(AD_Window_ID);
 		if (service != null) {
-			IQuickEntry quickEntry = service.newQuickEntryInstance(WindowNo, TabNo, AD_Window_ID);
+			AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(WindowNo, TabNo, AD_Window_ID);
 			if (quickEntry != null)
 				return quickEntry;
 		}

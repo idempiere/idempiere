@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -64,7 +63,7 @@ import org.zkoss.zul.Vlayout;
  * Author: Carlos Ruiz
  */
 
-public class WQuickEntry extends Window implements IQuickEntry, EventListener<Event>, ValueChangeListener
+public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Event>, ValueChangeListener
 {
 	/**
 	 * 

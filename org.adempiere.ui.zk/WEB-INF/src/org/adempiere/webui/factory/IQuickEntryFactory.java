@@ -15,7 +15,7 @@
 
 package org.adempiere.webui.factory;
 
-import org.adempiere.webui.grid.IQuickEntry;
+import org.adempiere.webui.grid.AbstractWQuickEntry;
 
 /**
  * 
@@ -29,7 +29,7 @@ public interface IQuickEntryFactory {
 	 * @param AD_Window_ID
 	 * @return new QuickEntry instance
 	 */
-	public default IQuickEntry newQuickEntryInstance(int WindowNo, int AD_Window_ID) {
+	public default AbstractWQuickEntry newQuickEntryInstance(int WindowNo, int AD_Window_ID) {
 		return newQuickEntryInstance(WindowNo, 0, AD_Window_ID);
 	}
 	
@@ -39,12 +39,12 @@ public interface IQuickEntryFactory {
 	 * @param AD_Window_ID
 	 * @return new QuickEntry instance
 	 */
-	public IQuickEntry newQuickEntryInstance(int WindowNo, int TabNo, int AD_Window_ID);
+	public AbstractWQuickEntry newQuickEntryInstance(int WindowNo, int TabNo, int AD_Window_ID);
 	
 	/**
 	 * @param AD_Window_ID
 	 * @return new QuickEntry instance
 	 */
-	public IQuickEntry newQuickEntryInstance(int AD_Window_ID);
+	public AbstractWQuickEntry newQuickEntryInstance(int AD_Window_ID);
 	
 }
