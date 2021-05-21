@@ -26,15 +26,6 @@ public interface IQuickEntryFactory {
 
 	/**
 	 * @param WindowNo
-	 * @param AD_Window_ID
-	 * @return new QuickEntry instance
-	 */
-	public default AbstractWQuickEntry newQuickEntryInstance(int WindowNo, int AD_Window_ID) {
-		return newQuickEntryInstance(WindowNo, 0, AD_Window_ID);
-	}
-	
-	/**
-	 * @param WindowNo
 	 * @param TabNo
 	 * @param AD_Window_ID
 	 * @return new QuickEntry instance

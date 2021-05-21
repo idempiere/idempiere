@@ -118,11 +118,10 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		parent_WindowNo = WindowNo;
 		parent_TabNo = TabNo;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
-		log.info("R/O=" + isReadOnly());
 
 		try
 		{
-			jbInit();
+			initLayout();
 		}
 		catch(Exception ex)
 		{
@@ -133,6 +132,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_WINDOW, parent_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, QUICK_ENTRY_CALLER_TAB, parent_TabNo);
 		initPOs();
+		log.info("R/O=" + isReadOnly());
 
 	}	//	WQuickEntry
 	
@@ -151,7 +151,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	 * 	@throws Exception
 	 */
 
-	protected void jbInit() throws Exception
+	protected void initLayout() throws Exception
 	{
 		if (!ThemeManager.isUseCSSForWindowSize()) {
 			ZKUpdateUtil.setWindowWidthX(this, 350);
