@@ -34,12 +34,11 @@ import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.AutoComplete;
 import org.adempiere.webui.component.Combobox;
-import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
-import org.adempiere.webui.grid.IQuickEntry;
+import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
@@ -667,7 +666,7 @@ ContextMenuListener, IZoomableEditor
 			return;
 
 		int tabNo = gridField != null && gridField.getGridTab() != null ? gridField.getGridTab().getTabNo() : 0;
-		final IQuickEntry vqe = Extensions.getQuickEntry(lookup.getWindowNo(), tabNo, lookup.getZoom());
+		final AbstractWQuickEntry vqe = Extensions.getQuickEntry(lookup.getWindowNo(), tabNo, lookup.getZoom());
 		int Record_ID = 0;
 
 		Object value = getValue();
@@ -704,7 +703,7 @@ ContextMenuListener, IZoomableEditor
 		});
 
 		vqe.setVisible(true);
-		AEnv.showWindow((Window)vqe);		
+		AEnv.showWindow(vqe);		
 	}	//	actionQuickEntry
 
 	protected void actionLocation() {
