@@ -2,8 +2,8 @@
  * This file is part of Adempiere ERP Bazaar                                  *
  * http://www.adempiere.org                                                   *
  *                                                                            *
- * Copyright (C) Jorg Viola			                                          *
- * Copyright (C) Contributors												  *
+ * Copyright (C) Jorg Viola                                                   *
+ * Copyright (C) Contributors                                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -17,6 +17,7 @@
  *                                                                            *
  * Contributors:                                                              *
  * - Heng Sin Low                                                             *
+ * - Andreas Sumerauer                                                        *
  *****************************************************************************/
 package org.adempiere.webui;
 
@@ -32,6 +33,8 @@ import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFormFactory;
 import org.adempiere.webui.factory.IMappedFormFactory;
+import org.adempiere.webui.factory.IQuickEntryFactory;
+import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.panel.ADForm;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.ICreateFromFactory;
@@ -254,5 +257,65 @@ public class Extensions {
 		}
 		return formFactoryService;
 	}
-
+	
+	private final static CCache<Integer, IServiceReferenceHolder<IQuickEntryFactory>> s_quickEntryFactoryCache = new CCache<>(null, "IQuickEntryFactory", 100, false);
+	
+	/**
+	 *
+	 * @param AD_Window_ID 
+	 * @return IQuickEntryFactory instance or null if AD_Window_ID not found
+	 */
+	private static IQuickEntryFactory getQuickEntryService(Integer AdWindowID) {
+		IServiceReferenceHolder<IQuickEntryFactory> cache = s_quickEntryFactoryCache.get(AdWindowID);
+		if (cache != null) {
+			IQuickEntryFactory service = cache.getService();
+			if (service != null) {
+				return service;
+			}
+			s_quickEntryFactoryCache.remove(AdWindowID);
+		}
+		List<IServiceReferenceHolder<IQuickEntryFactory>> factories = Service.locator().list(IQuickEntryFactory.class).getServiceReferences();
+		if (factories != null) {
+			for(IServiceReferenceHolder<IQuickEntryFactory> factory : factories) {
+				IQuickEntryFactory service = factory.getService();
+				if (service != null) {
+					s_quickEntryFactoryCache.put(AdWindowID, factory);
+					return service;
+				}
+			}
+		}
+		return null;		
+	}
+	
+	/**
+	 *
+	 * @param AD_Window_ID 
+	 * @return IQuickEntry instance or null if AD_Window_ID not found
+	 */
+	public static AbstractWQuickEntry getQuickEntry(int AD_Window_ID) {
+		IQuickEntryFactory service = getQuickEntryService(AD_Window_ID);
+		if (service != null) {
+			AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(AD_Window_ID);
+			if (quickEntry != null)
+				return quickEntry;
+		}
+		return null;
+	}
+	
+	/**
+	 *
+	 * @param WindowNo 
+	 * @param AD_Window_ID 
+	 * @param TabNo 
+	 * @return IQuickEntry instance or null if AD_Window_ID not found
+	 */
+	public static AbstractWQuickEntry getQuickEntry(int WindowNo, int TabNo, int AD_Window_ID) {
+		IQuickEntryFactory service = getQuickEntryService(AD_Window_ID);
+		if (service != null) {
+			AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(WindowNo, TabNo, AD_Window_ID);
+			if (quickEntry != null)
+				return quickEntry;
+		}
+		return null;
+	}	
 }

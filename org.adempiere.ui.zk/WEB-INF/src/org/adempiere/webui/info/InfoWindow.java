@@ -24,6 +24,7 @@ import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -57,7 +58,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.factory.ButtonFactory;
-import org.adempiere.webui.grid.WQuickEntry;
+import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -150,7 +151,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected TableInfo[] tableInfos;
 	protected InfoColumnVO[] infoColumns;	
 	
-	protected WQuickEntry vqe;
+	protected AbstractWQuickEntry vqe;
 	
 	private List<GridField> gridFields;
 	private TreeMap<Integer, List<Object[]>> parameterTree;
@@ -2181,7 +2182,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			GridWindow gridwindow = GridWindow.get(Env.getCtx(), 0, getADWindowID());
 			hasRightQuickEntry = gridwindow != null;
 			if (hasRightQuickEntry)
-				vqe = new WQuickEntry (0, getADWindowID());
+				vqe = Extensions.getQuickEntry(0, 0, getADWindowID());
 		}
 			
 		return hasNew && vqe != null && vqe.isAvailableQuickEdit();
@@ -2208,7 +2209,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// each time close WQuickEntry dialog, 
 		// window is  un-registry, variable environment of this window as _QUICK_ENTRY_MODE_ is removed
 		// so if reuse WQuickEntry will let some field in child tab init at read only state
-		WQuickEntry vqe = new WQuickEntry (0, getADWindowID());
+		AbstractWQuickEntry vqe = Extensions.getQuickEntry(0, 0, getADWindowID());
 		
 		vqe.loadRecord (0);								
 		
