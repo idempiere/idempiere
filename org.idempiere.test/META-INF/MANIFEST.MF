@@ -25,3 +25,4 @@ Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.idempiere.test.TestActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.idempiere.test
