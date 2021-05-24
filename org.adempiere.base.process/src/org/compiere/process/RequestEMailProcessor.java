@@ -74,6 +74,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	protected int R_RequestType_ID = 0;
 	protected String p_DefaultPriority = null;
 	protected String p_DefaultConfidentiality = null;
+	protected String p_HTMLAttachmentType = "H";
 
 	protected int noProcessed = 0;
 	protected int noRequest = 0;
@@ -133,9 +134,14 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 				p_DefaultConfidentiality = ((String)para[i].getParameter());
 			else if (name.equals("p_NestInbox"))
 				p_NestInbox = "Y".equalsIgnoreCase(para[i].getParameter().toString());
+			else if (name.equals("HTMLAttachmentType"))
+				p_HTMLAttachmentType = para[i].getParameterAsString();
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
+		
+		if(p_HTMLAttachmentType == null)
+			p_HTMLAttachmentType = "H";
 		
 	}	//	prepare
 
@@ -457,14 +463,26 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		
 		if (log.isLoggable(Level.INFO)) log.info("created request " + req.getR_Request_ID() + " from msg -> " + emailContent.subject);
 		
-		String htmlContent = emailContent.getHtmlContent(true);
-		if (htmlContent != null){
-			MAttachment attach = req.createAttachment();
-			
-			attach.addEntry(emailContent.subject + ".html", emailContent.getHtmlContent(true).getBytes(Charset.forName("UTF-8")));
-			attach.saveEx(trxName);
+		if(p_HTMLAttachmentType.contains("H")) {
+			String htmlContent = emailContent.getHtmlContent(true);
+			if (htmlContent != null){
+				MAttachment attach = req.createAttachment();
+				
+				attach.addEntry(emailContent.subject + ".html", emailContent.getHtmlContent(true).getBytes(Charset.forName("UTF-8")));
+				attach.saveEx(trxName);
+			}
 		}
 		
+		if(p_HTMLAttachmentType.contains("I")) {
+			ArrayList<BodyPart> imagesList = emailContent.getHTMLImageBodyParts();
+			for(BodyPart image: imagesList) {
+				MAttachment attach = req.createAttachment();
+				
+				attach.addEntry(image.getFileName(), EmailSrv.getBinaryData(image));
+				attach.saveEx(trxName);
+			}
+		}
+				
 		for (BodyPart attachFile : emailContent.lsAttachPart){
 			MAttachment attach = req.createAttachment();
 			attach.addEntry(attachFile.getFileName(), EmailSrv.getBinaryData(attachFile));
