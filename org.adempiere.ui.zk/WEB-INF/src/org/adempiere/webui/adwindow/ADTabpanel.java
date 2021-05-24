@@ -482,6 +482,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 		
 		form.getParent().appendChild(tabbox);
+		setGroupTabboxVisibility();
 		ZKUpdateUtil.setWidth(tabbox, "100%");
 		tabbox.setStyle("margin: 20px 0px 20px 0px; padding: 0px 20px 0px 20px; ");
 		if (ClientInfo.isMobile()) {
@@ -658,6 +659,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     				if (tabs == null) {
     					tabs = new Tabs();
     					tabbox.appendChild(tabs);
+    					setGroupTabboxVisibility();
     				}
     				Tab tab = new Tab(fieldGroup);
     				tabs.appendChild(tab);
@@ -1894,13 +1896,14 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public void switchRowPresentation() {
 		if (form.isVisible()) {
 			form.setVisible(false);
-			tabbox.setVisible(false);
 			((HtmlBasedComponent)form.getParent()).setStyle("");
 		} else {
 			form.setVisible(true);
-			tabbox.setVisible(true);
 			((HtmlBasedComponent)form.getParent()).setStyle("overflow-y: visible;");
 		}
+		
+		setGroupTabboxVisibility();
+		
 		listPanel.setVisible(!form.isVisible());
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
@@ -2289,5 +2292,16 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 		
 		return hasQuickForm;
+	}
+	
+	/**
+	 * Set Visibility for Tabbox based on Children and Form Visibility
+	 */
+	private void setGroupTabboxVisibility() {
+		boolean isGroupTabVisible = false;
+		if(tabbox.getChildren() != null && tabbox.getChildren().size() > 0) {
+			isGroupTabVisible = form.isVisible();
+		}
+		tabbox.setVisible(isGroupTabVisible);
 	}
 }
