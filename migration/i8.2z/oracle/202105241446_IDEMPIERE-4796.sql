@@ -22,3 +22,5 @@ INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,
 INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,AD_Process_ID,SeqNo,AD_Reference_ID,AD_Reference_Value_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200342,0,0,'Y',TO_DATE('2021-05-24 14:43:33','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-05-24 14:43:33','YYYY-MM-DD HH24:MI:SS'),0,'HTML Attachment Type','Define html email body processing behaviour. HTML Email body can be converted as attachment *.html file or parse images into attachment.',50012,140,17,200186,'N',1,'Y','H','HTMLAttachmentType','Y','D',203486,'b86cbb49-9fdf-47c8-af70-203e7354784c','N','N')
 ;
 
+SELECT Register_Migration_Script ('202105241446_IDEMPIERE-4796.sql') FROM DUAL
+;
