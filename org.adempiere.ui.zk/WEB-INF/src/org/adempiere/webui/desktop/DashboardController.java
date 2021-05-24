@@ -49,19 +49,19 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MChart;
-import org.compiere.model.MColumn;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardContentAccess;
 import org.compiere.model.MDashboardPreference;
 import org.compiere.model.MGoal;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
+import org.compiere.model.MLookupInfo;
 import org.compiere.model.MMenu;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
-import org.compiere.model.MRefTable;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.MTable;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -989,14 +989,14 @@ public class DashboardController implements EventListener<Event> {
 						 }
 					 }
 					 else if (iPara.getDisplayType() == DisplayType.Search || iPara.getDisplayType() == DisplayType.Table || iPara.getDisplayType() == DisplayType.TableDir) {
-
+						 int id = new BigDecimal (value.toString()).intValue();
 						 if (isTo) {
 							 iPara.setP_Number_To(new BigDecimal (value.toString()));
-							 iPara.setInfo_To(getDisplay(pInstance, iPara, value));
+							 iPara.setInfo_To(getDisplay(pInstance, iPara, id));
 						 }
 						 else {
 							 iPara.setP_Number(new BigDecimal (value.toString()));
-							 iPara.setInfo(getDisplay(pInstance, iPara, value));
+							 iPara.setInfo(getDisplay(pInstance, iPara, id));
 						 }
 					 }
 					 else if (DisplayType.isDate(iPara.getDisplayType()))
@@ -1036,47 +1036,50 @@ public class DashboardController implements EventListener<Event> {
 		}				
 	}
 
-	private static final String displayColumns = "Name,Value,DocumentNo";
-	private String getDisplay(MPInstance i, MPInstancePara ip, Object id) {
+	private String getDisplay(MPInstance i, MPInstancePara ip, int id) {
 		try {
 			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());
-			MTable table = null;
-			String column = "";
 
 			if (pp != null) {
-				if ((pp.getAD_Reference_ID() == DisplayType.TableDir || pp.getAD_Reference_ID() == DisplayType.Search) && pp.getAD_Reference_Value_ID() == 0)
-					table = MTable.get(Env.getCtx(), pp.getColumnName().replace("_ID", ""));
 
-				if (pp.getAD_Reference_Value_ID() > 0) {
-					MRefTable rt = MRefTable.get(pp.getAD_Reference_Value_ID());
-					if (table == null)
-						table = MTable.get(rt.getAD_Table_ID());
-					column = MColumn.getColumnName(Env.getCtx(), rt.getAD_Display());
-				}
+				MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), 0, 0, pp.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), "", pp.getAD_Reference_Value_ID(), false, "");
 
-				if (table != null && table.isSingleKey() && table.getKeyColumns().length == 1) { // just to be sure
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				StringBuilder name = new StringBuilder("");
+				try
+				{
+					pstmt = DB.prepareStatement(mli.QueryDirect, null);
+					pstmt.setInt(1, id);
 
-					if (Util.isEmpty(column) || column.endsWith("_ID")) {
-						for (String columnName : displayColumns.split(",")) {
-							if (table.getColumnIndex(columnName) >= 0) {
-								column = columnName;
-								break;
-							}
-						}
+					rs = pstmt.executeQuery();
+					if (rs.next()) {
+						name.append(rs.getString(3));
+						boolean isActive = rs.getString(4).equals("Y");
+						if (!isActive)
+							name.insert(0, MLookup.INACTIVE_S).append(MLookup.INACTIVE_E);
+
+						if (rs.next())
+							logger.log(Level.SEVERE, "Error while displaying parameter for embedded report - Not unique (first returned) for SQL=" + mli.QueryDirect);
 					}
-
-					StringBuilder sql = new StringBuilder("SELECT ").append(column).append(" FROM ").append(table.getTableName())
-							.append(" WHERE ").append(table.getKeyColumns()[0]).append(" = ?");
-
-					return DB.getSQLValueStringEx(null, sql.toString(), id);
 				}
+				catch (Exception e) {
+					logger.log(Level.SEVERE, "Error while displaying parameter for embedded report - " + mli.KeyColumn + ": SQL=" + mli.QueryDirect + " : " + e);
+				}
+				finally {
+					DB.close(rs, pstmt);
+					rs = null;
+					pstmt = null;
+				}
+
+				return name.toString();
 			}
 		}
 		catch (Exception e) {
 			logger.log(Level.WARNING, "Failed to retrieve data to display for embedded report " + MProcess.get(i.getAD_Process_ID()).getName() + " : " + ip.getParameterName(), e);
 		}
 
-		return id.toString();
+		return Integer.toString(id);
 	}
 
 	public void updateLayout(ClientInfo clientInfo) {
