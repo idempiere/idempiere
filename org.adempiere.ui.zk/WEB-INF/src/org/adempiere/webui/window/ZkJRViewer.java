@@ -115,7 +115,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	protected static final String CSV_OUTPUT_TYPE = "CSV";	
 	protected static final String HTML_OUTPUT_TYPE = "HTML";	
 	protected static final String PDF_OUTPUT_TYPE = "PDF";
-	protected static final String SSV_OUTPUT_TYPE = "SSV";
 	protected static final String XLS_OUTPUT_TYPE = "XLS";	
 	protected static final String XLSX_OUTPUT_TYPE = "XLSX";
 	
@@ -613,8 +612,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				createNewMedia(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT);
 			} else if (CSV_OUTPUT_TYPE.equals(reportType)) {
 				createNewMedia(CSV_MIME_TYPE, CSV_FILE_EXT);
-			}else if (SSV_OUTPUT_TYPE.equals(reportType)) {
-				createNewMedia(CSV_MIME_TYPE, SSV_FILE_EXT);
 			}
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);

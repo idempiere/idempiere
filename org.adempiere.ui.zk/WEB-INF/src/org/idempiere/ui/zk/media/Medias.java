@@ -24,6 +24,8 @@
  **********************************************************************/
 package org.idempiere.ui.zk.media;
 
+import com.google.common.net.MediaType;
+
 /**
  * 
  * @author hengsin
@@ -31,14 +33,14 @@ package org.idempiere.ui.zk.media;
  */
 public final class Medias {
 
-	public static final String CSV_MIME_TYPE = "text/csv";
-	public static final String EXCEL_MIME_TYPE = "application/vnd.ms-excel";	
-	public static final String EXCEL_XML_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-	public static final String HTML_MIME_TYPE = "text/html";
-	public static final String PDF_MIME_TYPE = "application/pdf";
-	public static final String POSTSCRIPT_MIME_TYPE = "application/postscript";	
-	public static final String TEXT_MIME_TYPE = "text/plain";
-	public static final String XML_MIME_TYPE = "text/xml";
+	public static final String CSV_MIME_TYPE = MediaType.CSV_UTF_8.toString();
+	public static final String EXCEL_MIME_TYPE = MediaType.MICROSOFT_EXCEL.toString();	
+	public static final String EXCEL_XML_MIME_TYPE = MediaType.OOXML_SHEET.toString();
+	public static final String HTML_MIME_TYPE = MediaType.HTML_UTF_8.toString();
+	public static final String PDF_MIME_TYPE = MediaType.PDF.toString();
+	public static final String POSTSCRIPT_MIME_TYPE = MediaType.POSTSCRIPT.toString();	
+	public static final String TEXT_MIME_TYPE = MediaType.PLAIN_TEXT_UTF_8.toString();
+	public static final String XML_MIME_TYPE = MediaType.XML_UTF_8.toString();
 	
 	public static final String CSV_FILE_EXT = "csv";
 	public static final String SSV_FILE_EXT = "ssv";
