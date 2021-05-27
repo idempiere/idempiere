@@ -408,6 +408,7 @@
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
         <setEntry value="org.idempiere.felix.webconsole@default:true"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
+        <setEntry value="org.idempiere.keikai@default:false"/>
         <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>
     </setAttribute>

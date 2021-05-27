@@ -43,6 +43,8 @@ import org.compiere.grid.IPaymentFormFactory;
 import org.compiere.model.GridTab;
 import org.compiere.model.MDashboardContent;
 import org.compiere.util.CCache;
+import org.idempiere.ui.zk.media.IMediaView;
+import org.idempiere.ui.zk.media.IMediaViewProvider;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -317,5 +319,46 @@ public class Extensions {
 				return quickEntry;
 		}
 		return null;
-	}	
+	}
+	
+	private static final CCache<String, IServiceReferenceHolder<IMediaViewProvider>> s_mediaViewProviderCache = new CCache<>("_IMediaViewProvider_Cache", "IMediaViewProvider", 100, false);
+	
+	/**
+	 * 
+	 * @param contentType
+	 * @param extension
+	 * @param mobile
+	 * @return {@link IMediaView}
+	 */
+	public static IMediaView getMediaView(String contentType, String extension, boolean mobile) {
+		String key = contentType + "|" + extension;
+		
+		IMediaView view = null;
+		IServiceReferenceHolder<IMediaViewProvider> cache = s_mediaViewProviderCache.get(key);
+		if (cache != null) {
+			IMediaViewProvider service = cache.getService();
+			if (service != null) {
+				view = service.getMediaView(contentType, extension, mobile);
+				if (view != null)
+					return view;
+			}
+			s_mediaViewProviderCache.remove(key);
+		}
+		List<IServiceReferenceHolder<IMediaViewProvider>> serviceReferences = Service.locator().list(IMediaViewProvider.class).getServiceReferences();
+		if (serviceReferences == null) 
+			return null;
+		for (IServiceReferenceHolder<IMediaViewProvider> serviceReference : serviceReferences)
+		{
+			IMediaViewProvider service = serviceReference.getService();
+			if (service != null) {
+				view = service.getMediaView(contentType, extension, mobile);
+				if (view != null) {
+					s_mediaViewProviderCache.put(key, serviceReference);
+					return view;
+				}
+			}
+		}
+		
+		return null;
+	}
 }

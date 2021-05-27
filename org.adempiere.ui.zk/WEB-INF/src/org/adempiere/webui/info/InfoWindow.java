@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.impexp.AbstractExcelExporter;
 import org.adempiere.model.IInfoColumn;
@@ -49,6 +50,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.WInfoWindowListItemRenderer;
 import org.adempiere.webui.component.WListbox;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -75,6 +77,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.InfoColumnVO;
 import org.compiere.model.InfoRelatedVO;
 import org.compiere.model.Lookup;
+import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
@@ -93,6 +96,9 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.ui.zk.media.IMediaView;
+import org.idempiere.ui.zk.media.Medias;
+import org.idempiere.ui.zk.media.WMediaOptions;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
@@ -2603,7 +2609,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			
 			String dataSql = buildDataSQL(0, 0);
 			
-			File file = File.createTempFile("Export", ".xls");
+			File file = File.createTempFile(infoWindow.get_Translation("Name")+"_", ".xls");
 			
 			testCount();
 			
@@ -2641,9 +2647,24 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					currentRow = -1;
 				}
 				
-				AMedia media = null;
-				media = new AMedia(file.getName(), null, "application/vnd.ms-excel", file, true);
-				Filedownload.save(media);
+				AMedia media = new AMedia(file.getName(), null, Medias.EXCEL_MIME_TYPE, file, true);
+				IMediaView view = Extensions.getMediaView(Medias.EXCEL_MIME_TYPE, Medias.EXCEL_FILE_EXT, ClientInfo.isMobile());
+				Map<MAuthorizationAccount, IUploadService> uploadServicesMap = MAuthorizationAccount.getUserUploadServices();
+				if (view != null || uploadServicesMap.size() > 0) {				
+					WMediaOptions options = new WMediaOptions(media, view != null ? () -> {
+						Window viewWindow = new Window();
+						viewWindow.setWidth("100%");
+						viewWindow.setHeight("100%");
+						viewWindow.setTitle(media.getName());
+						viewWindow.setAttribute(Window.MODE_KEY, Mode.EMBEDDED);
+						AEnv.showWindow(viewWindow);
+						view.renderMediaView(viewWindow, media, false);
+					} : null, uploadServicesMap);
+					options.setPage(getPage());
+					options.doHighlighted();
+				} else {
+					Filedownload.save(media);
+				}
 			}			
 		}
 

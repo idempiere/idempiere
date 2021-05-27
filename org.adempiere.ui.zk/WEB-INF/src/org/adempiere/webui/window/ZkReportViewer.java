@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -33,12 +32,12 @@ import java.util.logging.Level;
 import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
@@ -90,6 +89,8 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.media.IMediaView;
+import org.idempiere.ui.zk.media.WMediaOptions;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
@@ -224,6 +225,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	};
 	
 	private final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
+
+	private Center center;
 	/**
 	 * 	Static Layout
 	 * 	@throws Exception
@@ -325,7 +328,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				}
 				File file = File.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
 				m_reportEngine.createCSV(file, ',', AEnv.getLanguage(Env.getCtx()));
-				return new AMedia(file.getName(), CSV_FILE_EXT, CSV_MIME_TYPE, file, true);
+				return new AMedia(file.getName(), CSV_FILE_EXT, CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -363,21 +366,21 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		mediaSuppliers.put(toMediaType(XML_MIME_TYPE, XML_FILE_EXT), () -> {
 			StringWriter sw = new StringWriter();							
 			m_reportEngine.createXML(sw);
-			byte[] data = sw.getBuffer().toString().getBytes();
+			String data = sw.getBuffer().toString();
 			return new AMedia(m_reportEngine.getName() + "."+XML_FILE_EXT, XML_FILE_EXT, XML_MIME_TYPE, data);
 		});
 		
 		mediaSuppliers.put(toMediaType(CSV_MIME_TYPE, SSV_FILE_EXT), () -> {
 			StringWriter sw = new StringWriter();							
 			m_reportEngine.createCSV(sw, ';', m_reportEngine.getPrintFormat().getLanguage());
-			byte[] data = sw.getBuffer().toString().getBytes();
+			String data = sw.getBuffer().toString();
 			return new AMedia(m_reportEngine.getName() + "."+SSV_FILE_EXT, SSV_FILE_EXT, CSV_MIME_TYPE, data);
 		});
 		
 		mediaSuppliers.put(toMediaType(TEXT_MIME_TYPE, TEXT_FILE_EXT), () -> {
 			StringWriter sw = new StringWriter();							
 			m_reportEngine.createCSV(sw, '\t', m_reportEngine.getPrintFormat().getLanguage());
-			byte[] data = sw.getBuffer().toString().getBytes();
+			String data = sw.getBuffer().toString();
 			return new AMedia(m_reportEngine.getName() + "."+TEXT_FILE_EXT, TEXT_FILE_EXT, TEXT_MIME_TYPE, data);
 		});
 	}
@@ -412,10 +415,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 	private void init() {
 		Borderlayout layout = new Borderlayout();
-		layout.setStyle("position: absolute; height: 97%; width: 98%; border:none; padding:none; margin:none;");
+		layout.setWidth("100%");
+		layout.setHeight("100%");
 		this.appendChild(layout);
-		this.setStyle("width: 100%; height: 100%; position: absolute; border:none; padding:none; margin:none;");
-
+		this.setWidth("100%");
+		this.setHeight("100%");
+		
 		ZKUpdateUtil.setHeight(toolBar, "32px");
 		
 		ZKUpdateUtil.setWidth(toolBar, "100%");
@@ -698,13 +703,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		if (m_isCanExport)
 		{
-			List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
-			for (MAuthorizationAccount account : accounts) {
-				IUploadService service = Core.getUploadService(account);
-				if (service != null) {
-					uploadServicesMap.put(account, service);
-				}
-			}
+			uploadServicesMap = MAuthorizationAccount.getUserUploadServices();
 			if (uploadServicesMap.size() > 0) {
 				bCloudUpload.setName("CloudUpload");
 				if (ThemeManager.isUseFontIconForImage())
@@ -728,7 +727,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		north.appendChild(toolBar);
 		ZKUpdateUtil.setVflex(north, "min");
 		
-		Center center = new Center();
+		center = new Center();
 		layout.appendChild(center);
 		iframe = new Iframe();
 		ZKUpdateUtil.setWidth(iframe, "100%");
@@ -851,33 +850,91 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			reportLink.setHref(url);
 			reportLink.setLabel(media.getName());			
 			
-			if (ClientInfo.isMobile()) {
-				Listitem selected = previewType.getSelectedItem();
-				if (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue())) {					
+			Listitem selected = previewType.getSelectedItem();
+			String outputType = previewType.getSelectedItem().getValue();
+			if (ClientInfo.isMobile()) {				
+				if (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue())) {
+					attachIFrame();
 					iframe.setSrc(pdfJsUrl);
-				} else if (HTML_OUTPUT_TYPE.equals(previewType.getSelectedItem().getValue())) {
+				} else if (HTML_OUTPUT_TYPE.equals(outputType)) {
+					attachIFrame();
 					iframe.setSrc(null);
 					iframe.setContent(media);
 				} else {
-					iframe.setSrc(null);
-					iframe.setContent(null);					
-					String script = "zk.Widget.$('#" + reportLink.getUuid()+"').$n().click();";
-					Clients.evalJavaScript(script);
+					IMediaView view = null;
+					boolean showOptions = false;
+					if (XLS_OUTPUT_TYPE.equals(outputType) || XLSX_OUTPUT_TYPE.equals(outputType)) {						
+						if (XLS_OUTPUT_TYPE.equals(outputType))
+							view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, true);
+						else
+							view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, true);
+						showOptions = true;
+					} else if (CSV_OUTPUT_TYPE.equals(outputType)) {
+						view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, true);
+						showOptions = true;
+					}
+					
+					if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
+						detachIFrame();
+						final IMediaView fview = view;
+						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+						options.setPage(getPage());
+						options.doHighlighted();
+					} else {
+						attachIFrame();
+						iframe.setSrc(null);
+						iframe.setContent(null);
+						String script = "zk.Widget.$('#" + reportLink.getUuid()+"').$n().click();";
+						Clients.evalJavaScript(script);
+					}
 				}
 			} else {
-				Listitem selected = previewType.getSelectedItem();
 				if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
 						&& (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue()))) {
+					attachIFrame();
 					iframe.setSrc(pdfJsUrl);
 				} else {
-					iframe.setSrc(null);
-					iframe.setContent(media);
+					IMediaView view = null;
+					boolean showOptions = false;
+					if (XLS_OUTPUT_TYPE.equals(outputType) || XLSX_OUTPUT_TYPE.equals(outputType)) {						
+						if (XLS_OUTPUT_TYPE.equals(outputType))
+							view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, false);
+						else
+							view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, false);
+						showOptions = true;
+					} else if (CSV_OUTPUT_TYPE.equals(outputType)) {
+						view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, false);
+						showOptions = true;
+					}
+					
+					if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
+						detachIFrame();
+						final IMediaView fview = view;
+						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+						options.setPage(getPage());
+						options.doHighlighted();
+					} else {
+						attachIFrame();
+						iframe.setSrc(null);
+						iframe.setContent(media);
+					}
 				}
 			}
 			
 			revalidate();
 		} finally {
 			hideBusyDialog();
+		}
+	}
+
+	private void detachIFrame() {
+		center.getChildren().clear();
+	}
+
+	private void attachIFrame() {
+		if (iframe != null && iframe.getPage() == null) {
+			center.getChildren().clear();
+			center.appendChild(iframe);
 		}
 	}
 
