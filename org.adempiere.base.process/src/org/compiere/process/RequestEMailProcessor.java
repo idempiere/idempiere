@@ -463,7 +463,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		
 		if (log.isLoggable(Level.INFO)) log.info("created request " + req.getR_Request_ID() + " from msg -> " + emailContent.subject);
 		
-		if(p_HTMLAttachmentType.contains("H")) {
+		if("H".equals(p_HTMLAttachmentType)) {
 			String htmlContent = emailContent.getHtmlContent(true);
 			if (htmlContent != null){
 				MAttachment attach = req.createAttachment();
@@ -471,9 +471,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 				attach.addEntry(emailContent.subject + ".html", emailContent.getHtmlContent(true).getBytes(Charset.forName("UTF-8")));
 				attach.saveEx(trxName);
 			}
-		}
-		
-		if(p_HTMLAttachmentType.contains("I")) {
+		} else if("I".equals(p_HTMLAttachmentType)) {
 			ArrayList<BodyPart> imagesList = emailContent.getHTMLImageBodyParts();
 			for(BodyPart image: imagesList) {
 				MAttachment attach = req.createAttachment();
