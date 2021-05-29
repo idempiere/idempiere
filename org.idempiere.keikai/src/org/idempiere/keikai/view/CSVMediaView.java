@@ -85,8 +85,10 @@ public class CSVMediaView implements IMediaView {
 			Sheet sheet = book.getSheetAt(0);
 			ICsvListReader csvListReader = new CsvListReader(media.getReaderData(), CsvPreference.STANDARD_PREFERENCE);
 			List<String> headers = csvListReader.read();
-			for(int i = 0; i < headers.size(); i++) {
-				Ranges.range(sheet, 0, i).setCellValue(headers.get(i));
+			if (headers != null) {
+				for(int i = 0; i < headers.size(); i++) {
+					Ranges.range(sheet, 0, i).setCellValue(headers.get(i));
+				}
 			}
 			List<String> line = null;
 			int row = 0;
