@@ -29,9 +29,13 @@ import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.upload.IUploadService;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.SecureEngine;
@@ -191,6 +195,22 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	public String refreshAndGetAccessToken() throws GeneralSecurityException, IOException {
 		refresh();
 		return getAccessToken();
+	}
+	
+	/**
+	 * 
+	 * @return map of {@link MAuthorizationAccount} and {@link IUploadService}
+	 */
+	public static Map<MAuthorizationAccount, IUploadService> getUserUploadServices() {
+		Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+		List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
+		for (MAuthorizationAccount account : accounts) {
+			IUploadService service = Core.getUploadService(account);
+			if (service != null) {
+				uploadServicesMap.put(account, service);
+			}
+		}
+		return uploadServicesMap;
 	}
 
 } // MAuthorizationAccount

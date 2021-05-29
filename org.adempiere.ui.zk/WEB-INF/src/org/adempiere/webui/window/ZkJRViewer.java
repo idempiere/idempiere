@@ -7,17 +7,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
 
-import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Listbox;
@@ -40,6 +39,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.media.IMediaView;
+import org.idempiere.ui.zk.media.WMediaOptions;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -114,7 +115,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	protected static final String CSV_OUTPUT_TYPE = "CSV";	
 	protected static final String HTML_OUTPUT_TYPE = "HTML";	
 	protected static final String PDF_OUTPUT_TYPE = "PDF";
-	protected static final String SSV_OUTPUT_TYPE = "SSV";
 	protected static final String XLS_OUTPUT_TYPE = "XLS";	
 	protected static final String XLSX_OUTPUT_TYPE = "XLSX";
 	
@@ -129,6 +129,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			new ExportFormat(EXCEL_XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE),
 			new ExportFormat(SSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), SSV_FILE_EXT, CSV_MIME_TYPE)
 	};
+
+	private Center center;
 	
 	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo) {
 		super();
@@ -178,6 +180,12 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));//It gets default Jasper output type
 		}
 
+		if (Util.isEmpty(defaultType)) {
+			defaultType = PDF_OUTPUT_TYPE;
+		}
+		
+		initMediaSuppliers();
+		
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("position: absolute; height: 99%; width: 99%");
 		this.appendChild(layout);
@@ -193,7 +201,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			previewType.appendItem(HTML_OUTPUT_TYPE, HTML_OUTPUT_TYPE);
 			previewType.appendItem(XLS_OUTPUT_TYPE, XLS_OUTPUT_TYPE);
 			previewType.appendItem(CSV_OUTPUT_TYPE, CSV_OUTPUT_TYPE);
-			previewType.appendItem(SSV_OUTPUT_TYPE, SSV_OUTPUT_TYPE);
 			previewType.appendItem(XLSX_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
 			if (PDF_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(0);
@@ -203,10 +210,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				previewType.setSelectedIndex(2);
 			} else if (CSV_OUTPUT_TYPE.equals(defaultType)) {
 				previewType.setSelectedIndex(3);
-			} else if (SSV_OUTPUT_TYPE.equals(defaultType)) {
-				previewType.setSelectedIndex(4);
 			} else if (XLSX_OUTPUT_TYPE.equals(defaultType)) {
-				previewType.setSelectedIndex(5);
+				previewType.setSelectedIndex(4);
 			} else {
 				previewType.setSelectedIndex(0);
 				log.info("Format not Valid: "+defaultType);
@@ -221,8 +226,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			} else if ("XLS".equals(defaultType)) {
 				previewType.setSelectedIndex(0); // default to PDF if cannot export
 			} else if ("CSV".equals(defaultType)) {
-				previewType.setSelectedIndex(0); // default to PDF if cannot export
-			} else if ("SSV".equals(defaultType)) {
 				previewType.setSelectedIndex(0); // default to PDF if cannot export
 			} else if ("XLSX".equals(defaultType)) {
 				previewType.setSelectedIndex(0); // default to PDF if cannot export
@@ -269,13 +272,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			if (ThemeManager.isUseFontIconForImage())
 				LayoutUtils.addSclass("medium-toolbarbutton", bExport);
 			
-			List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
-			for (MAuthorizationAccount account : accounts) {
-				IUploadService service = Core.getUploadService(account);
-				if (service != null) {
-					uploadServicesMap.put(account, service);
-				}
-			}
+			uploadServicesMap = MAuthorizationAccount.getUserUploadServices();
 			if (uploadServicesMap.size() > 0) {
 				bCloudUpload.setName("CloudUpload");
 				if (ThemeManager.isUseFontIconForImage())
@@ -293,7 +290,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		north.appendChild(toolbar);
 		ZKUpdateUtil.setVflex(north, "min");
 
-		Center center = new Center();
+		center = new Center();
 		layout.appendChild(center);
 		iframe = new Iframe();
 		ZKUpdateUtil.setHflex(iframe, "true");
@@ -310,9 +307,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		}
 		center.appendChild(iframe);
 
-		this.setBorder("normal");
-		
-		initMediaSuppliers();
+		this.setBorder("normal");				
 	}
 
 	private void initMediaSuppliers() {
@@ -456,7 +451,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
 				exporter.exportReport();
 	
-				return new AMedia(m_title+"."+CSV_FILE_EXT, CSV_FILE_EXT, CSV_MIME_TYPE, file, true);
+				return new AMedia(m_title+"."+CSV_FILE_EXT, CSV_FILE_EXT, CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -490,7 +485,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				exporter.setConfiguration(csvConfig);
 				exporter.exportReport();
 	
-				return new AMedia(m_title+"."+SSV_FILE_EXT, SSV_FILE_EXT, CSV_MIME_TYPE, file, true);
+				return new AMedia(m_title+"."+SSV_FILE_EXT, SSV_FILE_EXT, CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -614,11 +609,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			} else if (XLS_OUTPUT_TYPE.equals(reportType)) {
 				createNewMedia(EXCEL_MIME_TYPE, EXCEL_FILE_EXT);
 			} else if (XLSX_OUTPUT_TYPE.equals(reportType)) {
-				createNewMedia(EXCEL_XML_MIME_TYPE, EXCEL_FILE_EXT);
+				createNewMedia(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT);
 			} else if (CSV_OUTPUT_TYPE.equals(reportType)) {
 				createNewMedia(CSV_MIME_TYPE, CSV_FILE_EXT);
-			}else if (SSV_OUTPUT_TYPE.equals(reportType)) {
-				createNewMedia(CSV_MIME_TYPE, SSV_FILE_EXT);
 			}
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
@@ -655,26 +648,75 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	}
 
 	public void onRenderReport() {
-		if (ClientInfo.isMobile()) {
-			Listitem selected = previewType.getSelectedItem();
-			String reportType=selected.getValue();
+		Listitem selected = previewType.getSelectedItem();
+		String reportType=selected.getValue();
+		if (ClientInfo.isMobile()) {			
 			if ( PDF_OUTPUT_TYPE.equals( reportType ) ) {
 				openWithPdfJsViewer();				
-				return;
+			} else if (HTML_OUTPUT_TYPE.equals(reportType)) {
+				attachIFrame();
+				iframe.setSrc(null);
+				iframe.setContent(media);
+			} else {
+				IMediaView view = null;
+				boolean showOptions = false;
+				if (XLS_OUTPUT_TYPE.equals(reportType) || XLSX_OUTPUT_TYPE.equals(reportType)) {						
+					if (XLS_OUTPUT_TYPE.equals(reportType))
+						view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, true);
+					else
+						view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, true);
+					showOptions = true;
+				} else if (CSV_OUTPUT_TYPE.equals(reportType)) {
+					view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, true);
+					showOptions = true;
+				}
+				
+				if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
+					clearPreviewContainer();
+					final IMediaView fview = view;
+					WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+					options.setPage(getPage());
+					options.doHighlighted();
+				} else {
+					attachIFrame();
+					iframe.setSrc(null);
+					iframe.setContent(media);
+				}
 			}
 		} else {
-			Listitem selected = previewType.getSelectedItem();
-			String reportType=selected.getValue();
 			if (MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) && "PDF".equals( reportType ) ) {
 				openWithPdfJsViewer();
 			} else {
-				iframe.setSrc(null);
-				iframe.setContent(media);
+				IMediaView view = null;
+				boolean showOptions = false;
+				if (XLS_OUTPUT_TYPE.equals(reportType) || XLSX_OUTPUT_TYPE.equals(reportType)) {						
+					if (XLS_OUTPUT_TYPE.equals(reportType))
+						view = Extensions.getMediaView(EXCEL_MIME_TYPE, EXCEL_FILE_EXT, false);
+					else
+						view = Extensions.getMediaView(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT, false);
+					showOptions = true;
+				} else if (CSV_OUTPUT_TYPE.equals(reportType)) {
+					view = Extensions.getMediaView(CSV_MIME_TYPE, CSV_FILE_EXT, false);
+					showOptions = true;
+				}
+				
+				if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
+					clearPreviewContainer();
+					final IMediaView fview = view;
+					WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+					options.setPage(getPage());
+					options.doHighlighted();
+				} else {
+					attachIFrame();
+					iframe.setSrc(null);
+					iframe.setContent(media);
+				}
 			}
 		}
 	}
 
 	protected void openWithPdfJsViewer() {
+		attachIFrame();
 		mediaVersion++;
 		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
 		String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
@@ -682,6 +724,17 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		iframe.setSrc(pdfJsUrl);
 	}
 
+	private void clearPreviewContainer() {
+		center.getChildren().clear();
+	}
+
+	private void attachIFrame() {
+		if (iframe != null && iframe.getPage() == null) {
+			center.getChildren().clear();
+			center.appendChild(iframe);
+		}
+	}
+	
 	@Override
 	public void onClose(Tabpanel tabPanel) {
 		Tab tab = tabPanel.getLinkedTab();
