@@ -151,6 +151,8 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  wrapped.com.google.http-client.google-http-client-gson;bundle-version="1.38.1",
  org.apache.httpcomponents.httpclient;bundle-version="4.5.10",
  org.apache.httpcomponents.httpcore;bundle-version="4.4.12",
- com.google.guava;bundle-version="28.2.0"
+ com.google.guava;bundle-version="28.2.0",
+ wrapped.com.google.zxing.javase;bundle-version="3.4.1",
+ wrapped.dev.samstevens.totp.totp;bundle-version="1.7.1"
 Automatic-Module-Name: org.adempiere.base
 Bundle-Vendor: iDempiere Community

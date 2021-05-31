@@ -32,6 +32,7 @@ import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
 import org.adempiere.webui.panel.ResetPasswordPanel;
 import org.adempiere.webui.panel.RolePanel;
+import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MSysConfig;
@@ -61,13 +62,14 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5169830531440825871L;
+	private static final long serialVersionUID = 2783026164782754864L;
 
 	protected IWebClient app;
     protected Properties ctx;
     protected LoginPanel pnlLogin;
     protected ResetPasswordPanel pnlResetPassword;
     protected ChangePasswordPanel pnlChangePassword;
+    protected ValidateMFAPanel pnlValidateMFA;
     protected RolePanel pnlRole;
 
     public LoginWindow() {}
@@ -130,7 +132,18 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 		pnlResetPassword = new ResetPasswordPanel(ctx, this, userName, noSecurityQuestion);
 	}
 
-    public void loginCompleted()
+	public void validateMFA(KeyNamePair orgKNPair) {
+    	Clients.clearBusy();
+		createValidateMFAPanel(orgKNPair);
+        this.getChildren().clear();
+        this.appendChild(pnlValidateMFA);
+	}
+
+	private void createValidateMFAPanel(KeyNamePair orgKNPair) {
+		pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair);
+	}
+
+	public void loginCompleted()
     {
         app.loginCompleted();
     }
@@ -178,6 +191,12 @@ public class LoginWindow extends FWindow implements EventListener<Event>
         	   resetPasswordPanel.validate();
         	   return;
            }
+
+           ValidateMFAPanel validateMFAPanel = (ValidateMFAPanel)this.getFellowIfAny("validateMFAPanel");
+           if (validateMFAPanel != null){
+        	   validateMFAPanel.validateMFAComplete(true);
+        	   return;
+           }
        }
     }
     
@@ -189,6 +208,8 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     public void changeRole(Locale locale, Properties ctx)
     {
     	Env.setCtx(ctx);
+    	// clear the org ID - to force a logout if the user pushes Refresh on RolePanel
+		Env.setContext(ctx, Env.AD_ORG_ID, "");
     	getDesktop().getSession().setAttribute(SessionContextListener.SESSION_CTX, ctx);
     	
     	//reload theme preference
