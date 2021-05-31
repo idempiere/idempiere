@@ -913,7 +913,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (! colSQL.toUpperCase().contains(" AS "))
 			colSQL += " AS " + infoColumn.getColumnName();
         editorMap.put(colSQL, editor);
-        Class<?> colClass = columnName.endsWith("_ID") || columnName.endsWith("tedBy") ? KeyNamePair.class : String.class;
+        Class<?> colClass = columnName.endsWith("_ID") || columnName.equals("CreatedBy") || columnName.equals("UpdatedBy") ? KeyNamePair.class : String.class;
 		ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, colClass, (String)null, infoColumn.isReadOnly() || haveNotProcess);
 		return columnInfo;
 	}
