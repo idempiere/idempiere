@@ -213,7 +213,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		String whereClause = "AD_UserDef_Proc_ID!=" + get_ID();
-		List<MUserDefProc> records = new Query(getCtx(), MUserDefProc.Table_Name, whereClause, get_TrxName()).list();
+		List<MUserDefProc> records = new Query(getCtx(), MUserDefProc.Table_Name, whereClause, get_TrxName()).setClient_ID().list();
 
 		if(records.size() > 0){
 			for(MUserDefProc record : records){
@@ -222,17 +222,17 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 						&& record.getAD_User_ID() == getAD_User_ID()
 						&& record.getAD_Process_ID() == getAD_Process_ID()){
 
-					throw new AdempiereException("Personalização de processo já existe: " + record.getName() + " - ID: " + record.get_ID());
+					throw new AdempiereException("Process customization already exists: " + record.getName() + " - ID: " + record.get_ID());
 				}
 			}
 		}
 
 		if(!newRecord){
-			MUserDefProc old = (MUserDefProc) new Query(getCtx(), MUserDefProc.Table_Name, "AD_UserDef_Proc_ID=" + get_ID(), get_TrxName()).first();
-			records = new Query(getCtx(), MUserDefProcParameter.Table_Name, "AD_UserDef_Proc_ID=" + get_ID(), get_TrxName()).list();
+			MUserDefProc old = (MUserDefProc) new Query(getCtx(), MUserDefProc.Table_Name, "AD_UserDef_Proc_ID=?", get_TrxName()).setParameters(getAD_UserDef_Proc_ID()).first();
+			records = new Query(getCtx(), MUserDefProcParameter.Table_Name, "AD_UserDef_Proc_ID=?", get_TrxName()).setParameters(getAD_UserDef_Proc_ID()).list();
 
 			if(records.size() > 0 && old.getAD_Process_ID() != getAD_Process_ID())
-				throw new AdempiereException("Esta personalização de processo já possui parametros configurados.");
+				throw new AdempiereException("This process customization has parameters already configured.");
 		}
 
 		synchronized (m_fullMap) {
