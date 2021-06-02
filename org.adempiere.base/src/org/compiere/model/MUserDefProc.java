@@ -229,7 +229,7 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 
 		if(!newRecord){
 			MUserDefProc old = (MUserDefProc) new Query(getCtx(), MUserDefProc.Table_Name, "AD_UserDef_Proc_ID=?", get_TrxName()).setParameters(getAD_UserDef_Proc_ID()).first();
-			records = new Query(getCtx(), MUserDefProcParameter.Table_Name, "AD_UserDef_Proc_ID=?", get_TrxName()).setParameters(getAD_UserDef_Proc_ID()).list();
+			records = new Query(getCtx(), MUserDefProcParameter.Table_Name, "AD_UserDef_Proc_ID=?", get_TrxName()).setParameters(getAD_UserDef_Proc_ID()).setClient_ID().list();
 
 			if(records.size() > 0 && old.getAD_Process_ID() != getAD_Process_ID())
 				throw new AdempiereException("This process customization has parameters already configured.");
