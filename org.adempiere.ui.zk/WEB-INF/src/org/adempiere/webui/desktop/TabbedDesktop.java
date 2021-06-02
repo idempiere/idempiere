@@ -87,7 +87,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @return ADWindow
      */
 	public ADForm openForm(int formId) {
-		ADForm form = ADForm.openForm(formId, getPredefinedContextVariables());
+		ADForm form = ADForm.openForm(formId, null, null, getPredefinedContextVariables(), isMenuSOTrx());
 
 		if (Window.Mode.EMBEDDED == form.getWindowMode()) {
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
