@@ -71,6 +71,8 @@ public class MCountry extends X_C_Country
 	 */
 	public static MCountry get (Properties ctx, int C_Country_ID)
 	{
+		if(C_Country_ID <= 0)
+			return null;
 		loadAllCountriesIfNeeded();
 		MCountry c = s_countries.get(ctx, C_Country_ID, e -> new MCountry(ctx, e));
 		if (c != null)
