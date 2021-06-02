@@ -189,28 +189,6 @@ public interface I_AD_PrintFormat
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
-    /** Column name Args */
-    public static final String COLUMNNAME_Args = "Args";
-
-	/** Set Args	  */
-	public void setArgs (String Args);
-
-	/** Get Args	  */
-	public String getArgs();
-
-    /** Column name Classname */
-    public static final String COLUMNNAME_Classname = "Classname";
-
-	/** Set Classname.
-	  * Java Classname
-	  */
-	public void setClassname (String Classname);
-
-	/** Get Classname.
-	  * Java Classname
-	  */
-	public String getClassname();
-
     /** Column name CreateCopy */
     public static final String COLUMNNAME_CreateCopy = "CreateCopy";
 
@@ -248,6 +226,15 @@ public interface I_AD_PrintFormat
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name FileNamePattern */
+    public static final String COLUMNNAME_FileNamePattern = "FileNamePattern";
+
+	/** Set File Name Pattern	  */
+	public void setFileNamePattern (String FileNamePattern);
+
+	/** Get File Name Pattern	  */
+	public String getFileNamePattern();
 
     /** Column name FooterMargin */
     public static final String COLUMNNAME_FooterMargin = "FooterMargin";
