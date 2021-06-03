@@ -477,8 +477,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 							btn.setLabel(label);
 						}
 
-						ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(toolbarButton, btn, actionId, tabPanel.getGridTab().getWindowNo());
-						tp.toolbarCustomButtons.add(toolbarCustomBtn);
+						ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(toolbarButton, btn, actionId, tabPanel.getGridTab().getWindowNo(), tabPanel.getGridTab().getTabNo());
+						tp.toolbarCustomButtons.put(btn, toolbarCustomBtn);
 
 						toolbar.appendChild(btn);
 					}
@@ -877,7 +877,10 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         			btn.setVisible(false);
         		} else if (tabRestrictList.contains(btn.getId())) {
         			btn.setVisible(false);
-        		} else {
+        		} else if (tabpanel.toolbarCustomButtons.containsKey(btn)) {
+        			ToolbarCustomButton customButton = tabpanel.toolbarCustomButtons.get(btn);
+        			customButton.dynamicDisplay();
+        		}else {
         			btn.setVisible(true);
         		}
         	}        	
@@ -1090,7 +1093,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 		private IADTabpanel adTabPanel;
 		
-		private List<ToolbarCustomButton> toolbarCustomButtons = new ArrayList<ToolbarCustomButton>();
+		private HashMap<ToolBarButton, ToolbarCustomButton> toolbarCustomButtons = new HashMap<ToolBarButton, ToolbarCustomButton>();
 
 		private A overflowButton;
 
