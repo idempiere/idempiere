@@ -473,11 +473,13 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 			}
 		} else if("I".equals(p_HTMLAttachmentType)) {
 			ArrayList<BodyPart> imagesList = emailContent.getHTMLImageBodyParts();
-			for(BodyPart image: imagesList) {
-				MAttachment attach = req.createAttachment();
-				
-				attach.addEntry(image.getFileName(), EmailSrv.getBinaryData(image));
-				attach.saveEx(trxName);
+			if(imagesList != null) {
+				for(BodyPart image: imagesList) {
+					MAttachment attach = req.createAttachment();
+					
+					attach.addEntry(image.getFileName(), EmailSrv.getBinaryData(image));
+					attach.saveEx(trxName);
+				}
 			}
 		}
 				
