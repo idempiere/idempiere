@@ -30,7 +30,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210602L;
+	private static final long serialVersionUID = 20210603L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
@@ -247,9 +247,9 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public void setAD_ReportView_ID (int AD_ReportView_ID)
 	{
 		if (AD_ReportView_ID < 1) 
-			set_Value (COLUMNNAME_AD_ReportView_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_ReportView_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_ReportView_ID, Integer.valueOf(AD_ReportView_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_ReportView_ID, Integer.valueOf(AD_ReportView_ID));
 	}
 
 	/** Get Report View.
@@ -317,6 +317,37 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Args.
+		@param Args Args	  */
+	public void setArgs (String Args)
+	{
+		set_Value (COLUMNNAME_Args, Args);
+	}
+
+	/** Get Args.
+		@return Args	  */
+	public String getArgs () 
+	{
+		return (String)get_Value(COLUMNNAME_Args);
+	}
+
+	/** Set Classname.
+		@param Classname 
+		Java Classname
+	  */
+	public void setClassname (String Classname)
+	{
+		set_Value (COLUMNNAME_Classname, Classname);
+	}
+
+	/** Get Classname.
+		@return Java Classname
+	  */
+	public String getClassname () 
+	{
+		return (String)get_Value(COLUMNNAME_Classname);
 	}
 
 	/** Set Create Copy.
