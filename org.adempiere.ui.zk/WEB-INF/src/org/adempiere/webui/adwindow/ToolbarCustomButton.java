@@ -34,12 +34,7 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 	private MToolBarButton mToolbarButton;
 
 	public ToolbarCustomButton(MToolBarButton mToolbarButton, Toolbarbutton btn, String actionId, int windowNo) {
-		toolbarButton = btn;
-		this.actionId = actionId;
-		this.windowNo = windowNo;
-		this.mToolbarButton = mToolbarButton;
-		
-		toolbarButton.addEventListener(Events.ON_CLICK, this);
+		this(mToolbarButton, btn, actionId, windowNo, -1);
 	}
 	
 	public ToolbarCustomButton(MToolBarButton mToolbarButton, Toolbarbutton btn, String actionId, int windowNo, int tabNo) {
