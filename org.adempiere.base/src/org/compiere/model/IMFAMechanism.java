@@ -58,15 +58,6 @@ public interface IMFAMechanism {
 	String complete(Properties ctx, MMFARegistration reg, String code, String name, boolean preferred, String trxName);
 
 	/**
-	 * Generate recovery codes for a registration
-	 * @param ctx
-	 * @param reg
-	 * @param trxName
-	 * @return message with instructions
-	 */
-	String generateRecoveryCodes(Properties ctx, MMFARegistration reg, String trxName);
-
-	/**
 	 * Generate a validation code (when needed depending on the method)
 	 * @param reg
 	 * @return

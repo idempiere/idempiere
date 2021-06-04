@@ -25,7 +25,7 @@
  * - Carlos Ruiz                                                       *
  **********************************************************************/
 
-package org.idempiere.process;
+package org.compiere.process;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +33,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MMFARegisteredDevice;
 import org.compiere.model.Query;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 
 /**

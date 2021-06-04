@@ -141,33 +141,6 @@ public interface I_MFA_Rule
 	/** Get MFA_Rule_UU	  */
 	public String getMFA_Rule_UU();
 
-    /** Column name NotifyInvalidCodeByEMail */
-    public static final String COLUMNNAME_NotifyInvalidCodeByEMail = "NotifyInvalidCodeByEMail";
-
-	/** Set Notify Invalid Code by EMail	  */
-	public void setNotifyInvalidCodeByEMail (boolean NotifyInvalidCodeByEMail);
-
-	/** Get Notify Invalid Code by EMail	  */
-	public boolean isNotifyInvalidCodeByEMail();
-
-    /** Column name NotifyInvalidCodeByMessage */
-    public static final String COLUMNNAME_NotifyInvalidCodeByMessage = "NotifyInvalidCodeByMessage";
-
-	/** Set Notify Invalid Code by Message	  */
-	public void setNotifyInvalidCodeByMessage (boolean NotifyInvalidCodeByMessage);
-
-	/** Get Notify Invalid Code by Message	  */
-	public boolean isNotifyInvalidCodeByMessage();
-
-    /** Column name NotifyInvalidCodeByNotice */
-    public static final String COLUMNNAME_NotifyInvalidCodeByNotice = "NotifyInvalidCodeByNotice";
-
-	/** Set Notify Invalid Code by Notice	  */
-	public void setNotifyInvalidCodeByNotice (boolean NotifyInvalidCodeByNotice);
-
-	/** Get Notify Invalid Code by Notice	  */
-	public boolean isNotifyInvalidCodeByNotice();
-
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

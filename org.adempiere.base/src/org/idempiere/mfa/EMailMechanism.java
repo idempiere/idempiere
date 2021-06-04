@@ -161,12 +161,6 @@ public class EMailMechanism implements IMFAMechanism {
 		return Msg.getMsg(ctx, "MFARegistrationCompleted");
 	}
 
-	@Override
-	public String generateRecoveryCodes(Properties ctx, MMFARegistration reg, String trxName) {
-		// TODO Auto-generated method stub
-		throw new AdempiereException("Not implemented yet");
-	}
-
 	/**
 	 * Send email with validation code
 	 */

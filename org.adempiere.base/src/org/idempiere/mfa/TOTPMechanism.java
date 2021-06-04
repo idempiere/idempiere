@@ -65,10 +65,10 @@ public class TOTPMechanism implements IMFAMechanism {
 	 * @param trxName
 	 * @return Object[] - first object is the String with the instructions to follow
 	 *                    second object is the registration generated
-	 *                    third message secret
-	 *                    fourth secret
-	 *                    fifth message qrcode
-	 *                    sixth qrcode
+	 *                    third message qrcode
+	 *                    fourth qrcode
+	 *                    fifth message secret
+	 *                    sixth secret
 	 */
 	@Override
 	public Object[] register(Properties ctx, MMFAMethod method, String prm, String trxName) {
@@ -129,11 +129,11 @@ public class TOTPMechanism implements IMFAMechanism {
 		// Notify the user that TOTP mechanism was registered and follow next step
 		Object[] ret = new Object[6];
 		ret[0] = Msg.getMsg(Env.getCtx(), "MFATOTPRegistered");
-		ret[1]  = Msg.getMsg(Env.getCtx(), "MFATOTPSecret");
-		ret[2] = reg;
-		ret[3] = secret;
-		ret[4]  = Msg.getMsg(Env.getCtx(), "MFATOTPImage");
-		ret[5] = dataUri;
+		ret[1] = reg;
+		ret[2]  = Msg.getMsg(Env.getCtx(), "MFATOTPImage");
+		ret[3] = dataUri;
+		ret[4]  = Msg.getMsg(Env.getCtx(), "MFATOTPSecret");
+		ret[5] = secret;
 
 		return ret;
 	}
@@ -195,12 +195,6 @@ public class TOTPMechanism implements IMFAMechanism {
 		}
 
 		return verifier.isValidCode(reg.getMFASecret(), code);
-	}
-
-	@Override
-	public String generateRecoveryCodes(Properties ctx, MMFARegistration reg, String trxName) {
-		// TODO Auto-generated method stub
-		throw new AdempiereException("Not implemented yet");
 	}
 
 	@Override

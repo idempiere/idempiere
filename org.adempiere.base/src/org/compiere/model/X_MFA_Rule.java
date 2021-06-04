@@ -29,7 +29,7 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210601L;
+	private static final long serialVersionUID = 20210605L;
 
     /** Standard Constructor */
     public X_MFA_Rule (Properties ctx, int MFA_Rule_ID, String trxName)
@@ -150,68 +150,5 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	public String getMFA_Rule_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_MFA_Rule_UU);
-	}
-
-	/** Set Notify Invalid Code by EMail.
-		@param NotifyInvalidCodeByEMail Notify Invalid Code by EMail	  */
-	public void setNotifyInvalidCodeByEMail (boolean NotifyInvalidCodeByEMail)
-	{
-		set_Value (COLUMNNAME_NotifyInvalidCodeByEMail, Boolean.valueOf(NotifyInvalidCodeByEMail));
-	}
-
-	/** Get Notify Invalid Code by EMail.
-		@return Notify Invalid Code by EMail	  */
-	public boolean isNotifyInvalidCodeByEMail () 
-	{
-		Object oo = get_Value(COLUMNNAME_NotifyInvalidCodeByEMail);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Notify Invalid Code by Message.
-		@param NotifyInvalidCodeByMessage Notify Invalid Code by Message	  */
-	public void setNotifyInvalidCodeByMessage (boolean NotifyInvalidCodeByMessage)
-	{
-		set_Value (COLUMNNAME_NotifyInvalidCodeByMessage, Boolean.valueOf(NotifyInvalidCodeByMessage));
-	}
-
-	/** Get Notify Invalid Code by Message.
-		@return Notify Invalid Code by Message	  */
-	public boolean isNotifyInvalidCodeByMessage () 
-	{
-		Object oo = get_Value(COLUMNNAME_NotifyInvalidCodeByMessage);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Notify Invalid Code by Notice.
-		@param NotifyInvalidCodeByNotice Notify Invalid Code by Notice	  */
-	public void setNotifyInvalidCodeByNotice (boolean NotifyInvalidCodeByNotice)
-	{
-		set_Value (COLUMNNAME_NotifyInvalidCodeByNotice, Boolean.valueOf(NotifyInvalidCodeByNotice));
-	}
-
-	/** Get Notify Invalid Code by Notice.
-		@return Notify Invalid Code by Notice	  */
-	public boolean isNotifyInvalidCodeByNotice () 
-	{
-		Object oo = get_Value(COLUMNNAME_NotifyInvalidCodeByNotice);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 }

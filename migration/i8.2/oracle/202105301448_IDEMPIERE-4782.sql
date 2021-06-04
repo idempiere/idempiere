@@ -1015,42 +1015,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ALTER TABLE MFA_Rule ADD MFA_Method_ID NUMBER(10) NOT NULL
 ;
 
--- May 30, 2021, 2:45:21 PM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203509,0,0,'Y',TO_DATE('2021-05-30 14:45:20','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:20','YYYY-MM-DD HH24:MI:SS'),100,'NotifyInvalidCodeByEMail','Notify Invalid Code by EMail','Notify Invalid Code by EMail','D','a0d5bb31-6198-4e32-94d1-646a69f62c6e')
-;
-
--- May 30, 2021, 2:45:21 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214494,0,'Notify Invalid Code by EMail',200276,'NotifyInvalidCodeByEMail','Y',1,'N','N','N','N','N',0,'N',20,0,0,'Y',TO_DATE('2021-05-30 14:45:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:21','YYYY-MM-DD HH24:MI:SS'),100,203509,'Y','N','D','Y','N','N','Y','dec51357-53ad-478c-bd84-e5f9d4f411fa','Y',0,'N','N','N','N')
-;
-
--- May 30, 2021, 2:45:21 PM CEST
-ALTER TABLE MFA_Rule ADD NotifyInvalidCodeByEMail CHAR(1) DEFAULT 'Y' CHECK (NotifyInvalidCodeByEMail IN ('Y','N'))
-;
-
--- May 30, 2021, 2:45:21 PM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203510,0,0,'Y',TO_DATE('2021-05-30 14:45:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:21','YYYY-MM-DD HH24:MI:SS'),100,'NotifyInvalidCodeByMessage','Notify Invalid Code by Message','Notify Invalid Code by Message','D','fec0a09b-6aeb-4ee7-8d5e-3c0f57ea151c')
-;
-
--- May 30, 2021, 2:45:22 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214495,0,'Notify Invalid Code by Message',200276,'NotifyInvalidCodeByMessage','N',1,'N','N','N','N','N',0,'N',20,0,0,'Y',TO_DATE('2021-05-30 14:45:21','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:21','YYYY-MM-DD HH24:MI:SS'),100,203510,'Y','N','D','Y','N','N','Y','9d0139c5-9922-4d7d-a3e7-de2fe271ae1a','Y',0,'N','N','N','N')
-;
-
--- May 30, 2021, 2:45:22 PM CEST
-ALTER TABLE MFA_Rule ADD NotifyInvalidCodeByMessage CHAR(1) DEFAULT 'N' CHECK (NotifyInvalidCodeByMessage IN ('Y','N'))
-;
-
--- May 30, 2021, 2:45:22 PM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203511,0,0,'Y',TO_DATE('2021-05-30 14:45:22','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:22','YYYY-MM-DD HH24:MI:SS'),100,'NotifyInvalidCodeByNotice','Notify Invalid Code by Notice','Notify Invalid Code by Notice','D','d123becf-e16d-4879-8d23-97968cdc9afa')
-;
-
--- May 30, 2021, 2:45:22 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214496,0,'Notify Invalid Code by Notice',200276,'NotifyInvalidCodeByNotice','N',1,'N','N','N','N','N',0,'N',20,0,0,'Y',TO_DATE('2021-05-30 14:45:22','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:22','YYYY-MM-DD HH24:MI:SS'),100,203511,'Y','N','D','Y','N','N','Y','08e2860b-b7c3-4a3a-a18d-4759803a7ebe','Y',0,'N','N','N','N')
-;
-
--- May 30, 2021, 2:45:22 PM CEST
-ALTER TABLE MFA_Rule ADD NotifyInvalidCodeByNotice CHAR(1) DEFAULT 'N' CHECK (NotifyInvalidCodeByNotice IN ('Y','N'))
-;
-
 -- May 30, 2021, 2:45:23 PM CEST
 INSERT INTO AD_Tab (AD_Tab_ID,Name,Description,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,OrderByClause,Processing,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200291,'MFA Rule','Multi-factor Authentication Rule',200117,10,'Y',200276,0,0,'Y',TO_DATE('2021-05-30 14:45:22','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:22','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N','MFA_Rule.Created DESC','N',0,'N','D','Y','Y','b870c13f-8ff8-462a-80fa-9e27ca0fb329','B','N','Y',0)
 ;
@@ -1077,18 +1041,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 
 -- May 30, 2021, 2:45:25 PM CEST
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206658,'Comment/Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.',200291,214488,'Y',2000,50,'N','N','N','N',0,0,'Y',TO_DATE('2021-05-30 14:45:24','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:24','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','fa1f35dc-1ad6-445e-9157-14357b2273e3','Y',20,1,5,3,'N','N','N','N')
-;
-
--- May 30, 2021, 2:45:25 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206659,'Notify Invalid Code by EMail',200291,214494,'Y',1,60,'N','N','N','N',0,0,'Y',TO_DATE('2021-05-30 14:45:25','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:25','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','babd6d03-7d01-431b-b142-198f266c69eb','Y',50,2,2,1,'N','N','N','N')
-;
-
--- May 30, 2021, 2:45:25 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206660,'Notify Invalid Code by Message',200291,214495,'Y',1,70,'N','N','N','N',0,0,'Y',TO_DATE('2021-05-30 14:45:25','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:25','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','7da0ac99-2d72-48da-9cf6-506e20132fac','Y',60,2,2,1,'N','N','N','N')
-;
-
--- May 30, 2021, 2:45:26 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206661,'Notify Invalid Code by Notice',200291,214496,'Y',1,80,'N','N','N','N',0,0,'Y',TO_DATE('2021-05-30 14:45:25','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-05-30 14:45:25','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','d827b8cf-5a96-4ee1-91bb-53493294d0bc','Y',70,2,2,1,'N','N','N','N')
 ;
 
 -- May 30, 2021, 2:45:26 PM CEST
@@ -1299,11 +1251,11 @@ INSERT INTO MFA_Method (MFA_Method_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,I
 ;
 
 -- May 30, 2021, 2:46:41 PM CEST
-INSERT INTO MFA_Rule (MFA_Rule_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,MFA_Rule_UU,Updated,UpdatedBy,MFA_Method_ID,NotifyInvalidCodeByEMail,NotifyInvalidCodeByMessage,NotifyInvalidCodeByNotice) VALUES (200000,0,0,TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,'Y','2c0c1a47-398d-4e25-9d8c-d13296e5703e',TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,200000,'N','Y','N')
+INSERT INTO MFA_Rule (MFA_Rule_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,MFA_Rule_UU,Updated,UpdatedBy,MFA_Method_ID) VALUES (200000,0,0,TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,'Y','2c0c1a47-398d-4e25-9d8c-d13296e5703e',TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,200000)
 ;
 
 -- May 30, 2021, 2:46:42 PM CEST
-INSERT INTO MFA_Rule (MFA_Rule_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,MFA_Rule_UU,Updated,UpdatedBy,MFA_Method_ID,NotifyInvalidCodeByEMail,NotifyInvalidCodeByMessage,NotifyInvalidCodeByNotice) VALUES (200001,0,0,TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,'Y','ac727f25-ca8c-4de9-a2e7-934ee9b4569d',TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,200001,'Y','N','N')
+INSERT INTO MFA_Rule (MFA_Rule_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,MFA_Rule_UU,Updated,UpdatedBy,MFA_Method_ID) VALUES (200001,0,0,TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,'Y','ac727f25-ca8c-4de9-a2e7-934ee9b4569d',TO_DATE('2021-05-30 14:46:41','YYYY-MM-DD HH24:MI:SS'),100,200001)
 ;
 
 -- May 30, 2021, 2:47:38 PM CEST
@@ -1484,6 +1436,43 @@ UPDATE AD_Val_Rule SET Name='MFA_Registration - Pending to Complete from User', 
 
 -- Jun 1, 2021, 1:13:16 AM CEST
 UPDATE AD_Val_Rule SET Name='MFA_RegisteredDevice - not expired from User',Updated=TO_DATE('2021-06-01 01:13:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200150
+;
+
+-- Jun 4, 2021, 1:01:16 PM CEST
+UPDATE AD_Message SET MsgText='<ul><li><b>Step 1:</b> Visit the App Store to get an authenticator app like Google Authenticator or Authy, then follow the instructions in the application to set up an account with them</li><li><b>Step 2:</b> Use your authenticator app to scan the barcode below or enter manually the Secret instead</li></ul>
+',Updated=TO_DATE('2021-06-04 13:01:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200707
+;
+
+-- Jun 4, 2021, 1:27:06 PM CEST
+UPDATE AD_Message SET MsgText='Register this device for {0,choice,1#1 day|1<{0} days}',Updated=TO_DATE('2021-06-04 13:27:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200709
+;
+
+-- Jun 4, 2021, 1:33:09 PM CEST
+INSERT INTO AD_Form (AD_Form_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Classname,AccessLevel,EntityType,IsBetaFunctionality,AD_Form_UU) VALUES (200017,0,0,'Y',TO_DATE('2021-06-04 13:33:08','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-06-04 13:33:08','YYYY-MM-DD HH24:MI:SS'),100,'Register MFA','org.adempiere.webui.apps.form.MFARegister','7','D','N','225070fb-7912-4873-b9aa-785e377c9980')
+;
+
+-- Jun 4, 2021, 1:34:46 PM CEST
+UPDATE AD_Form SET Description='Register a multi-factor authentication mechanism',Updated=TO_DATE('2021-06-04 13:34:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Form_ID=200017
+;
+
+-- Jun 4, 2021, 5:42:58 PM CEST
+UPDATE AD_Process SET Classname='org.compiere.process.MFACompleteRegistration',Updated=TO_DATE('2021-06-04 17:42:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200130
+;
+
+-- Jun 4, 2021, 5:43:05 PM CEST
+UPDATE AD_Process SET Classname='org.compiere.process.MFARegister',Updated=TO_DATE('2021-06-04 17:43:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200132
+;
+
+-- Jun 4, 2021, 5:43:10 PM CEST
+UPDATE AD_Process SET Classname='org.compiere.process.MFARevokeDevice',Updated=TO_DATE('2021-06-04 17:43:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200131
+;
+
+-- Jun 4, 2021, 5:43:15 PM CEST
+UPDATE AD_Process SET Classname='org.compiere.process.MFAUnregister',Updated=TO_DATE('2021-06-04 17:43:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200129
+;
+
+-- Jun 4, 2021, 6:15:23 PM CEST
+UPDATE AD_Form SET Classname='org.adempiere.webui.apps.form.MFARegisterForm',Updated=TO_DATE('2021-06-04 18:15:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Form_ID=200017
 ;
 
 SELECT register_migration_script('202105301448_IDEMPIERE-4782.sql') FROM dual

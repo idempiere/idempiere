@@ -69,7 +69,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     protected LoginPanel pnlLogin;
     protected ResetPasswordPanel pnlResetPassword;
     protected ChangePasswordPanel pnlChangePassword;
-    protected ValidateMFAPanel pnlValidateMFA;
+    protected ValidateMFAPanel pnlValidateMFA = null;
     protected RolePanel pnlRole;
 
     public LoginWindow() {}
@@ -99,7 +99,10 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     {
         createRolePanel(userName, show, clientsKNPairs);
         this.getChildren().clear();
-        this.appendChild(pnlRole);
+        if (pnlRole.show())
+        	this.appendChild(pnlRole);
+        else
+        	this.appendChild(pnlValidateMFA);
     }
 
 	protected void createRolePanel(String userName, boolean show,
@@ -140,7 +143,8 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 	}
 
 	private void createValidateMFAPanel(KeyNamePair orgKNPair) {
-		pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair);
+		if (pnlValidateMFA == null)
+			pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair);
 	}
 
 	public void loginCompleted()

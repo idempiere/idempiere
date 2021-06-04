@@ -273,13 +273,14 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 		chkSetPreferred = new Checkbox(Msg.getMsg(m_ctx, "MFALoginSetPreferred"));
 		chkSetPreferred.setId("chkSetPreferred");
+		chkSetPreferred.setChecked(false);
 
 		int daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
 		chkRegisterDevice = new Checkbox(Msg.getMsg(m_ctx, "MFALoginRegisterDevice", new Object[] {daysExpire}));
 		chkRegisterDevice.setId("chkRegisterDevice");
 		boolean enableRegisterDevice = (daysExpire > 0);
 		chkRegisterDevice.setVisible(enableRegisterDevice);
-		chkRegisterDevice.setChecked(enableRegisterDevice);
+		chkRegisterDevice.setChecked(false);
 
 		txtValidationCode = new Textbox();
 		txtValidationCode.setId("txtValidationCode");

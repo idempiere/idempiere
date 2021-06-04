@@ -80,7 +80,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4763398859555693370L;
+	private static final long serialVersionUID = -618446343598384819L;
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -665,5 +665,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
 	public boolean isDeferrable() {
 		return false;
+	}
+
+	public boolean show() {
+		return m_show;
 	}
 }

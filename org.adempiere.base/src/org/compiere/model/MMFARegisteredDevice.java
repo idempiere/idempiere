@@ -37,7 +37,7 @@ public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5126337051824276360L;
+	private static final long serialVersionUID = 7913538709234444407L;
 
 	/**
 	 * Read/Create empty MFA Registered Device
@@ -75,5 +75,20 @@ public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 				.first();
 		return (rd != null);
 	}
+
+	/**
+	 * 	Set User/Contact.
+     * @param AD_User_ID
+     * User within the system - Internal or Business Partner Contact
+     * Overridden to allow saving System record (zero ID)
+	 */
+	@Override
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID == 0) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
+		else 
+			super.setAD_User_ID(AD_User_ID);
+	} //setAD_User_ID
 
 } // MMFARegisteredDevice

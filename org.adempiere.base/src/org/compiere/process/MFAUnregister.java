@@ -25,14 +25,12 @@
  * - Carlos Ruiz                                                       *
  **********************************************************************/
 
-package org.idempiere.process;
+package org.compiere.process;
 
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.compiere.model.MMFARegistration;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
 
 /**
  *	IDEMPIERE-4782

@@ -40,7 +40,7 @@ public class MMFARegistration extends X_MFA_Registration {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4876683026770902015L;
+	private static final long serialVersionUID = -2032862057961778934L;
 
 	/**
 	 * Read/Create empty MFA Registration
@@ -119,17 +119,19 @@ public class MMFARegistration extends X_MFA_Registration {
 	@Override
 	public void setIsUserMFAPreferred(boolean IsUserMFAPreferred) {
 		super.setIsUserMFAPreferred(IsUserMFAPreferred);
-		int userId = getAD_User_ID();
-		int clientId = getAD_Client_ID();
-		int regId = getMFA_Registration_ID();
-		final String sql = ""
-				+ "UPDATE MFA_Registration"
-				+ " SET IsUserMFAPreferred='N'"
-				+ " WHERE AD_User_ID=?"
-				+ "  AND AD_Client_ID=?"
-				+ "  AND IsUserMFAPreferred='Y'"
-				+ "  AND MFA_Registration_ID!=?";
-		DB.executeUpdateEx(sql, new Object[] {userId, clientId, regId}, get_TrxName());
+		if (IsUserMFAPreferred) {
+			int userId = getAD_User_ID();
+			int clientId = getAD_Client_ID();
+			int regId = getMFA_Registration_ID();
+			final String sql = ""
+					+ "UPDATE MFA_Registration"
+					+ " SET IsUserMFAPreferred='N'"
+					+ " WHERE AD_User_ID=?"
+					+ "  AND AD_Client_ID=?"
+					+ "  AND IsUserMFAPreferred='Y'"
+					+ "  AND MFA_Registration_ID!=?";
+			DB.executeUpdateEx(sql, new Object[] {userId, clientId, regId}, get_TrxName());
+		}
 	}
 
 	/**
@@ -187,5 +189,20 @@ public class MMFARegistration extends X_MFA_Registration {
 		String msg = mechanism.validateCode(reg, code, setPreferred);
 		return msg;
 	}
+
+	/**
+	 * 	Set User/Contact.
+     * @param AD_User_ID
+     * User within the system - Internal or Business Partner Contact
+     * Overridden to allow saving System record (zero ID)
+	 */
+	@Override
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID == 0) 
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
+		else 
+			super.setAD_User_ID(AD_User_ID);
+	} //setAD_User_ID
 
 } // MMFARegistration

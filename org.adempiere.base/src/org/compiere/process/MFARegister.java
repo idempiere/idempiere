@@ -24,43 +24,38 @@
  * Contributors:                                                       *
  * - Carlos Ruiz                                                       *
  **********************************************************************/
-package org.idempiere.process;
 
-import java.sql.Timestamp;
+package org.compiere.process;
+
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.IMFAMechanism;
 import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegistration;
-import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
 
 /**
  *	IDEMPIERE-4782
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
-public class MFACompleteRegistration extends SvrProcess {
-	/* MFA Registration */
-	private int p_MFA_Registration_ID = 0;
-	/* Validation Code */
-	private String p_MFAValidationCode = null;
-	/* Name */
-	private String p_Name = null;
-	/* Preferred */
-	private boolean p_IsUserMFAPreferred = false;
+public class MFARegister extends SvrProcess {
+
+	/* MFA Method */
+	private int p_MFA_Method_ID = 0;
+	/* Parameter Value */
+	private String p_ParameterValue = null;
+
+	/* Return array from mechanism */
+	protected Object[] retArray;
 
 	@Override
 	protected void prepare() {
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
 			switch (name) {
-			case "MFA_Registration_ID": p_MFA_Registration_ID = para.getParameterAsInt(); break;
-			case "MFAValidationCode": p_MFAValidationCode = para.getParameterAsString(); break;
-			case "Name": p_Name = para.getParameterAsString(); break;
-			case "IsUserMFAPreferred": p_IsUserMFAPreferred = para.getParameterAsBoolean(); break;
+			case "MFA_Method_ID": p_MFA_Method_ID = para.getParameterAsInt(); break;
+			case "ParameterValue": p_ParameterValue = para.getParameterAsString(); break;
 			default:
 				if (log.isLoggable(Level.INFO))
 					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
@@ -76,27 +71,33 @@ public class MFACompleteRegistration extends SvrProcess {
 	 */
 	protected String doIt() throws Exception {
 		if (log.isLoggable(Level.INFO))
-			log.info("MFA_Registration_ID=" + p_MFA_Registration_ID
-					+ ", MFAValidationCode=" + p_MFAValidationCode
-					+ ", Name=" + p_Name
-					+ ", IsUserMFAPreferred=" + p_IsUserMFAPreferred);
+			log.info("MFA_Method_ID=" + p_MFA_Method_ID
+					+ ", ParameterValue=" + p_ParameterValue);
 
-		MMFARegistration reg = new MMFARegistration(getCtx(), p_MFA_Registration_ID, get_TrxName());
-		if (reg.isValid())
-			throw new AdempiereException(Msg.getMsg(getCtx(), "MFARegistrationAlreadyValid"));
-
-		if (Util.isEmpty(p_MFAValidationCode))
-			throw new AdempiereException(Msg.getMsg(getCtx(), "MFACodeRequired"));
-
-		Timestamp now = new Timestamp(System.currentTimeMillis());
-		if (reg.getExpiration() != null && now.after(reg.getExpiration()))
-			throw new AdempiereException(Msg.getMsg(getCtx(), "MFARegistrationExpired"));
-		
-		MMFAMethod method = new MMFAMethod(getCtx(), reg.getMFA_Method_ID(), get_TrxName());
+		MMFAMethod method = new MMFAMethod(getCtx(), p_MFA_Method_ID, get_TrxName());
 		IMFAMechanism mechanism = method.getMFAMechanism();
 
-		String msg = mechanism.complete(getCtx(), reg, p_MFAValidationCode, p_Name, p_IsUserMFAPreferred, get_TrxName());
-		return msg;
+		retArray = mechanism.register(getCtx(), method, p_ParameterValue, get_TrxName());
+		if (retArray == null || retArray.length == 0 || ! (retArray[0] instanceof String) )
+			throw new AdempiereSystemError("Wrong return from mechanism.validate");
+
+		if (processUI == null) {
+			for (int i = 0; i < retArray.length; i++) {
+				if (retArray[i] instanceof String) {
+					String reti = (String) retArray[i];
+					if (reti.startsWith("data:image/png;base64,"))
+						addLog("<img src=\"" + reti + "\" width=\"180\" height=\"180\"/>"); // show QR code
+					else
+						addLog((String) reti); 
+				} else if (retArray[i] instanceof MMFARegistration) {
+					MMFARegistration reg = (MMFARegistration) retArray[i];
+					addLog(0, null, null, Msg.parseTranslation(getCtx(), "@Created@: @MFA_Registration_ID@"), MMFARegistration.Table_ID, reg.getMFA_Registration_ID());
+				}
+			}
+		}
+		// else -> when the process is driven by zkwebui it will show the MFARegisterForm next, no need to save the parameters
+
+		return "@OK@";
 	}
 
-}	//	RegisterMFA
+}	//	MFARegister
