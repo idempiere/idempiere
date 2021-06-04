@@ -45,7 +45,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1621402409447265196L;
+	private static final long serialVersionUID = -2238655179806815227L;
 
 	/** The class' logging enabler */
     protected static final CLogger logger;
@@ -135,7 +135,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	 */
 	public static ADForm openForm (int adFormID)
 	{
-        return openForm(adFormID, null, null, null);
+        return openForm(adFormID, null, null, null, false);
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	 * @return The created form
 	 */
 	public static ADForm openForm(int formId, String predefinedContextVariables) {
-		return openForm(formId, null, null, predefinedContextVariables);
+		return openForm(formId, null, null, predefinedContextVariables, false);
 	}
 
 	/**
@@ -158,7 +158,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
      */
 	public static ADForm openForm (int adFormID, GridTab gridTab)
 	{
-        return openForm(adFormID, gridTab, null, null);
+        return openForm(adFormID, gridTab, null, null, false);
     }
 
 	/**
@@ -171,7 +171,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	 */
 	public static ADForm openForm (int adFormID, GridTab gridTab, ProcessInfo pi)
 	{
-        return openForm(adFormID, gridTab, pi, null);
+        return openForm(adFormID, gridTab, pi, null, false);
     }
 
     /**
@@ -183,7 +183,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
      * @param predefinedContextVariables
      * @return The created form
      */
-    public static ADForm openForm (int adFormID, GridTab gridTab, ProcessInfo pi, String predefinedContextVariables)
+    public static ADForm openForm (int adFormID, GridTab gridTab, ProcessInfo pi, String predefinedContextVariables, boolean isSOTrx)
     {
 		ADForm form;
 		MForm mform = new MForm(Env.getCtx(), adFormID, null);
@@ -204,6 +204,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     			form.gridTab = gridTab;
                 form.setProcessInfo(pi);
         		Env.setPredefinedVariables(Env.getCtx(), form.getWindowNo(), predefinedContextVariables);
+        		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", isSOTrx);
 				form.init(adFormID, name);
 				return form;
     		}

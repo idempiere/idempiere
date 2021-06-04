@@ -44,6 +44,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	private transient ClientInfo clientInfo;
 
 	private String predefinedContextVariables;
+	private boolean menuIsSOTrx;
 
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(AbstractDesktop.class);
@@ -68,6 +69,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
       try
       {
         setPredefinedContextVariables(menu.getPredefinedContextVariables());
+        setMenuIsSOTrx(menu.isSOTrx());
 
         if(menu.getAction().equals(MMenu.ACTION_Window))
         {
@@ -337,4 +339,11 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		return this.predefinedContextVariables;
 	}
 
+	public void setMenuIsSOTrx(boolean isSOTrx) {
+		this.menuIsSOTrx = isSOTrx;
+	}
+	
+	protected boolean isMenuSOTrx() {
+		return this.menuIsSOTrx;
+	}
 }
