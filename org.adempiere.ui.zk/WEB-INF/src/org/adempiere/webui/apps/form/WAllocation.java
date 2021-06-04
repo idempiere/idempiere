@@ -98,7 +98,6 @@ public class WAllocation extends Allocation
 	 */
 	public WAllocation()
 	{
-		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", "Y");   //  defaults to no
 		try
 		{
 			super.dynInit();
