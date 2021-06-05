@@ -243,7 +243,12 @@ public class EMailMechanism implements IMFAMechanism {
 
 		if (setPreferred) {
 			reg.setIsUserMFAPreferred(true);
-			reg.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				reg.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 		}
 		
 		return null;

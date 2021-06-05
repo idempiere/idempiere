@@ -262,7 +262,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 					m_autoCall = true;
 				}
 			}
-			ComboItem ci = new ComboItem(method.getName() + " - " + reg.getName(), reg.getMFA_Registration_ID());
+			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
 			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
 			if (lstMFAMechanism.getFellowIfAny(id) == null)
 				ci.setId(id);
@@ -273,6 +273,8 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 		chkSetPreferred = new Checkbox(Msg.getMsg(m_ctx, "MFALoginSetPreferred"));
 		chkSetPreferred.setId("chkSetPreferred");
+		boolean enablePreferred = (lstMFAMechanism.getChildren().size() > 1 && lstMFAMechanism.getSelectedIndex() > 0);
+		chkSetPreferred.setVisible(enablePreferred);
 		chkSetPreferred.setChecked(false);
 
 		int daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
@@ -306,6 +308,8 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		int registrationId = 0;
 		if (required) {
 			registrationId = lstMFAMechanism.getSelectedItem().getValue();
+			boolean enablePreferred = (lstMFAMechanism.getChildren().size() > 1 && lstMFAMechanism.getSelectedIndex() > 0);
+			chkSetPreferred.setVisible(enablePreferred);
 			MMFARegistration reg = new MMFARegistration(Env.getCtx(), registrationId, null);
 			if (txtValidationCode.isDisabled()) {
 				String msg = reg.generateValidationCode(reg);

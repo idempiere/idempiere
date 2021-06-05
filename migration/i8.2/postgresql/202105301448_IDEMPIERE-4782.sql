@@ -1472,6 +1472,22 @@ UPDATE AD_Process SET Classname='org.compiere.process.MFAUnregister',Updated=TO_
 UPDATE AD_Form SET Classname='org.adempiere.webui.apps.form.MFARegisterForm',Updated=TO_TIMESTAMP('2021-06-04 18:15:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Form_ID=200017
 ;
 
+-- Jun 5, 2021, 11:11:16 AM CEST
+UPDATE MFA_Method SET Name='TOTP (Google Auth, Authy, etc)',Updated=TO_TIMESTAMP('2021-06-05 11:11:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE MFA_Method_ID=200000
+;
+
+-- Jun 5, 2021, 11:31:46 AM CEST
+UPDATE AD_Column SET SeqNo=3,Updated=TO_TIMESTAMP('2021-06-05 11:31:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214468
+;
+
+-- Jun 5, 2021, 11:31:49 AM CEST
+UPDATE AD_Column SET SeqNo=2,Updated=TO_TIMESTAMP('2021-06-05 11:31:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214474
+;
+
+-- Jun 5, 2021, 11:31:53 AM CEST
+UPDATE AD_Column SET SeqNo=1,Updated=TO_TIMESTAMP('2021-06-05 11:31:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214468
+;
+
 SELECT register_migration_script('202105301448_IDEMPIERE-4782.sql') FROM dual
 ;
 
