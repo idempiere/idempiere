@@ -395,7 +395,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	 * @param value
 	 */
 	public static void setCookie(String name, String value) {
-		((HttpServletResponse) Executions.getCurrent().getNativeResponse()).addCookie(new Cookie(name, value));
+		Cookie cookie = new Cookie(name, value);
+		cookie.setSecure(true);
+		((HttpServletResponse) Executions.getCurrent().getNativeResponse()).addCookie(cookie);
 	}
 
 	/**
