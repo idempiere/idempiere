@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.util.Callback;
+import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ComboItem;
@@ -108,6 +109,11 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 	/* Push the first OK automatically - when the first record is TOTP */
 	private boolean m_autoCall = false;
+
+	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
+
+	/* Number of failures to calculate an incremental delay on every trial */
+	private int failures = 0;
 
 	public ValidateMFAPanel(Properties ctx, LoginWindow loginWindow, KeyNamePair orgKNPair) {
 		this.wndLogin = loginWindow;
@@ -330,6 +336,17 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				} else {
 					String msg = reg.validateCode(reg, txtValidationCode.getText(), chkSetPreferred.isChecked());
 					if (msg != null) {
+
+						String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
+						if (x_Forward_IP == null)
+							x_Forward_IP = Executions.getCurrent().getRemoteAddr();
+						logAuthFailure.log(x_Forward_IP, "/webui", Env.getContext(m_ctx, Env.AD_USER_NAME), msg);
+
+						// Incremental delay to avoid brute-force attack on testing codes
+						try {
+							Thread.sleep(failures * 2000);
+						} catch (InterruptedException e) {}
+						failures++;
 						AuFocus auf = new AuFocus(txtValidationCode);
 						Clients.response(auf);
 						throw new WrongValueException(txtValidationCode, msg);

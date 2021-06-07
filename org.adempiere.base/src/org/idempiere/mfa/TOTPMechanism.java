@@ -195,17 +195,47 @@ public class TOTPMechanism implements IMFAMechanism {
 			verifier.setAllowedTimePeriodDiscrepancy(method.getMFAAllowedTimeDiscrepancy());
 		}
 
-		return verifier.isValidCode(reg.getMFASecret(), code);
+		boolean valid = verifier.isValidCode(reg.getMFASecret(), code);
+		if (valid) {
+			reg.setMFALastSecret(code);
+			reg.setLastSuccess(new Timestamp(System.currentTimeMillis()));
+			reg.setFailedLoginCount(0);
+		} else  {
+			reg.setLastFailure(new Timestamp(System.currentTimeMillis()));
+			reg.setFailedLoginCount(reg.getFailedLoginCount() + 1);
+		}
+		try {
+			PO.setCrossTenantSafe();
+			reg.saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+		return valid;
 	}
 
+	/**
+	 * Generate a validation code - do nothing for TOTP
+	 * @param reg
+	 * @return
+	 */
 	@Override
 	public String generateValidationCode(MMFARegistration reg) {
 		return Msg.getMsg(Env.getCtx(), "MFATOTPEnterValidationCode");
 	}
 
+	/**
+	 * Validate a code
+	 * @param reg
+	 * @param code
+	 * @param setPreferred
+	 * @return message on error, null when OK
+	 */
 	@Override
 	public String validateCode(MMFARegistration reg, String code, boolean setPreferred) {
 		Properties ctx = reg.getCtx();
+		if (code.equals(reg.getMFALastSecret()))
+			return Msg.getMsg(ctx, "MFACodeAlreadyConsumed");
+
 		if (! isValidCode(ctx, reg, code, reg.get_TrxName()))
 			return Msg.getMsg(ctx, "MFACodeInvalid");
 

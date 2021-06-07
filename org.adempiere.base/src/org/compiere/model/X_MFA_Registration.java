@@ -31,7 +31,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210605L;
+	private static final long serialVersionUID = 20210607L;
 
     /** Standard Constructor */
     public X_MFA_Registration (Properties ctx, int MFA_Registration_ID, String trxName)
@@ -122,6 +122,23 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 		return (Timestamp)get_Value(COLUMNNAME_Expiration);
 	}
 
+	/** Set Failed Login Count.
+		@param FailedLoginCount Failed Login Count	  */
+	public void setFailedLoginCount (int FailedLoginCount)
+	{
+		set_ValueNoCheck (COLUMNNAME_FailedLoginCount, Integer.valueOf(FailedLoginCount));
+	}
+
+	/** Get Failed Login Count.
+		@return Failed Login Count	  */
+	public int getFailedLoginCount () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_FailedLoginCount);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Comment/Help.
 		@param Help 
 		Comment or Hint
@@ -184,6 +201,48 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 		return false;
 	}
 
+	/** Set Last Failure.
+		@param LastFailure Last Failure	  */
+	public void setLastFailure (Timestamp LastFailure)
+	{
+		set_Value (COLUMNNAME_LastFailure, LastFailure);
+	}
+
+	/** Get Last Failure.
+		@return Last Failure	  */
+	public Timestamp getLastFailure () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_LastFailure);
+	}
+
+	/** Set Last Success.
+		@param LastSuccess Last Success	  */
+	public void setLastSuccess (Timestamp LastSuccess)
+	{
+		set_Value (COLUMNNAME_LastSuccess, LastSuccess);
+	}
+
+	/** Get Last Success.
+		@return Last Success	  */
+	public Timestamp getLastSuccess () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_LastSuccess);
+	}
+
+	/** Set Last MFA Secret.
+		@param MFALastSecret Last MFA Secret	  */
+	public void setMFALastSecret (String MFALastSecret)
+	{
+		set_Value (COLUMNNAME_MFALastSecret, MFALastSecret);
+	}
+
+	/** Get Last MFA Secret.
+		@return Last MFA Secret	  */
+	public String getMFALastSecret () 
+	{
+		return (String)get_Value(COLUMNNAME_MFALastSecret);
+	}
+
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
     {
 		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_Name)
@@ -211,14 +270,6 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 			 return 0;
 		return ii.intValue();
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getMFA_Method_ID()));
-    }
 
 	/** Set MFA Registration.
 		@param MFA_Registration_ID MFA Registration	  */
@@ -315,6 +366,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getName());
+    }
 
 	/** Set Parameter Value.
 		@param ParameterValue Parameter Value	  */

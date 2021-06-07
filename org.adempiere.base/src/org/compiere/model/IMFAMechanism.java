@@ -69,7 +69,7 @@ public interface IMFAMechanism {
 	 * @param reg
 	 * @param code
 	 * @param setPreferred
-	 * @return
+	 * @return message on error, null when OK
 	 */
 	String validateCode(MMFARegistration reg, String code, boolean setPreferred);
 

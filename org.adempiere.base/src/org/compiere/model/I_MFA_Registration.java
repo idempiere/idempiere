@@ -106,6 +106,15 @@ public interface I_MFA_Registration
 	  */
 	public Timestamp getExpiration();
 
+    /** Column name FailedLoginCount */
+    public static final String COLUMNNAME_FailedLoginCount = "FailedLoginCount";
+
+	/** Set Failed Login Count	  */
+	public void setFailedLoginCount (int FailedLoginCount);
+
+	/** Get Failed Login Count	  */
+	public int getFailedLoginCount();
+
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
 
@@ -153,6 +162,33 @@ public interface I_MFA_Registration
 	  * Element is valid
 	  */
 	public boolean isValid();
+
+    /** Column name LastFailure */
+    public static final String COLUMNNAME_LastFailure = "LastFailure";
+
+	/** Set Last Failure	  */
+	public void setLastFailure (Timestamp LastFailure);
+
+	/** Get Last Failure	  */
+	public Timestamp getLastFailure();
+
+    /** Column name LastSuccess */
+    public static final String COLUMNNAME_LastSuccess = "LastSuccess";
+
+	/** Set Last Success	  */
+	public void setLastSuccess (Timestamp LastSuccess);
+
+	/** Get Last Success	  */
+	public Timestamp getLastSuccess();
+
+    /** Column name MFALastSecret */
+    public static final String COLUMNNAME_MFALastSecret = "MFALastSecret";
+
+	/** Set Last MFA Secret	  */
+	public void setMFALastSecret (String MFALastSecret);
+
+	/** Get Last MFA Secret	  */
+	public String getMFALastSecret();
 
     /** Column name MFA_Method_ID */
     public static final String COLUMNNAME_MFA_Method_ID = "MFA_Method_ID";

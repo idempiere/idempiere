@@ -143,12 +143,24 @@ public class EMailMechanism implements IMFAMechanism {
 	 * @return msg A message indicating success, errors throw exception
 	 */
 	@Override
-	public String complete(Properties ctx, MMFARegistration reg, String code, String name, boolean preferred,
-			String trxName) {
-		if (!code.equals(reg.getMFASecret()))
+	public String complete(Properties ctx, MMFARegistration reg, String code, String name, boolean preferred, String trxName) {
+		boolean valid = code.equals(reg.getMFASecret());
+		if (! valid) {
+			reg.setLastFailure(new Timestamp(System.currentTimeMillis()));
+			reg.setFailedLoginCount(reg.getFailedLoginCount() + 1);
+			try {
+				PO.setCrossTenantSafe();
+				reg.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 			throw new AdempiereException(Msg.getMsg(ctx, "MFACodeInvalid"));
+		}
 
 		// valid code
+		reg.setMFALastSecret(code);
+		reg.setLastSuccess(new Timestamp(System.currentTimeMillis()));
+		reg.setFailedLoginCount(0);
 		reg.setIsValid(true);
 		reg.setMFAValidatedAt(new Timestamp(System.currentTimeMillis()));
 		reg.setExpiration(null);
@@ -156,13 +168,20 @@ public class EMailMechanism implements IMFAMechanism {
 			reg.setName(name);
 		if (preferred)
 			reg.setIsUserMFAPreferred(true);
-		reg.saveEx();
+		try {
+			PO.setCrossTenantSafe();
+			reg.saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 
 		return Msg.getMsg(ctx, "MFARegistrationCompleted");
 	}
 
 	/**
 	 * Send email with validation code
+	 * @param reg
+	 * @return
 	 */
 	@Override
 	public String generateValidationCode(MMFARegistration reg) {
@@ -230,7 +249,11 @@ public class EMailMechanism implements IMFAMechanism {
 	}
 
 	/**
-	 * Validate the generated code
+	 * Validate a code
+	 * @param reg
+	 * @param code
+	 * @param setPreferred
+	 * @return message on error, null when OK
 	 */
 	@Override
 	public String validateCode(MMFARegistration reg, String code, boolean setPreferred) {
@@ -238,17 +261,27 @@ public class EMailMechanism implements IMFAMechanism {
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		if (reg.getExpiration() != null && now.after(reg.getExpiration()))
 			return Msg.getMsg(ctx, "MFARegistrationExpired");
-		if (!code.equals(reg.getMFASecret()))
-			return Msg.getMsg(ctx, "MFACodeInvalid");
+		if (code.equals(reg.getMFALastSecret()))
+			return Msg.getMsg(ctx, "MFACodeAlreadyConsumed");
 
-		if (setPreferred) {
+		boolean valid = code.equals(reg.getMFASecret());
+		if (! valid) {
+			reg.setLastFailure(new Timestamp(System.currentTimeMillis()));
+			reg.setFailedLoginCount(reg.getFailedLoginCount() + 1);
+			reg.saveEx();
+			return Msg.getMsg(ctx, "MFACodeInvalid");
+		}
+
+		reg.setMFALastSecret(code);
+		reg.setLastSuccess(new Timestamp(System.currentTimeMillis()));
+		reg.setFailedLoginCount(0);
+		if (setPreferred)
 			reg.setIsUserMFAPreferred(true);
-			try {
-				PO.setCrossTenantSafe();
-				reg.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+		try {
+			PO.setCrossTenantSafe();
+			reg.saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
 		}
 		
 		return null;
