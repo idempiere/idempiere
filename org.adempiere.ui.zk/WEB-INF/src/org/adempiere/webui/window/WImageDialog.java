@@ -17,8 +17,11 @@
 package org.adempiere.webui.window;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -34,6 +37,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.compiere.model.MImage;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.MimeType;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.image.AImage;
@@ -47,7 +51,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Image;
+import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
@@ -97,6 +101,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 					AImage aImage = new AImage(m_mImage.getName(), m_mImage.getData());
 					
 					image.setContent(aImage);
+					image.setClientAttribute("sandbox", "");
+					image.setVisible(true);
+					image.invalidate();
 				} catch (Exception e) {
 					log.log(Level.WARNING, "load image", e);
 				}
@@ -117,7 +124,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 	private Panel parameterPanel = new Panel();
 	private Button fileButton = new Button();
 	private Button captureButton = new Button();
-	private Image image = new Image();
+	private Iframe image = new Iframe();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true,false,true,false,false,false);
 	private boolean cancel = false;
 	private Textbox fileNameTextbox = new Textbox();
@@ -125,7 +132,19 @@ public class WImageDialog extends Window implements EventListener<Event>
 	private Div captureDiv;
 	private String defaultNameForCaptureImage = "CapturedImage";
 	private Button cancelCaptureButton;
-	
+
+	private static List<String> autoPreviewList;
+
+	static {
+		autoPreviewList = new ArrayList<String>();
+		autoPreviewList.add("image/jpeg");
+		autoPreviewList.add("image/png");
+		autoPreviewList.add("image/gif");
+		autoPreviewList.add("image/tiff");
+		autoPreviewList.add("image/bmp");
+		autoPreviewList.add("image/x-icon");
+	}
+
 	/**
 	 *  Static Init
 	 *  @throws Exception
@@ -243,6 +262,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 		{
 			AImage img = null;
 			image.setContent(img);
+			image.setClientAttribute("sandbox", "");
+			image.setVisible(true);
+			image.invalidate();
 			fileNameTextbox.setValue(null);
 		}
 		else if (e.getTarget() == captureButton)
@@ -270,6 +292,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 				byte[] imageData = Base64.decodeBase64(dataUrl.substring(contentStartIndex).getBytes());
 				AImage img = new AImage(defaultNameForCaptureImage, imageData);
 				image.setContent(img);
+				image.setClientAttribute("sandbox", "");
+				image.setVisible(true);
+				image.invalidate();
 				
 				if (m_mImage == null)
 					m_mImage = new MImage (Env.getCtx(), 0, null);
@@ -328,14 +353,25 @@ public class WImageDialog extends Window implements EventListener<Event>
 			return;
 
 		String fileName = imageFile.getName();
-		
+		String mimeType = MimeType.getMimeType(fileName);
+		if (! autoPreviewList.contains(mimeType))
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "UploadImageTypeNotAllowed"));
+
 		//  See if we can load & display it
 		try
 		{
 			InputStream is = imageFile.getStreamData();
 			AImage aImage = new AImage(fileName, is);
-			
-			image.setContent(aImage);
+
+			if (autoPreviewList.contains(mimeType)) {
+				image.setContent(aImage);
+				image.setClientAttribute("sandbox", "");
+				image.setVisible(true);
+				image.invalidate();
+			} else {
+				image.setSrc(null);
+				image.setVisible(false);
+			}
 			
 			is.close();
 		}
