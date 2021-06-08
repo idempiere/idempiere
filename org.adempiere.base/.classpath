@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src/"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsh.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-validator.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cron4j.jar"/>
@@ -19,5 +19,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/httpcore.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opencensus-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opencensus-contrib-http-util.jar"/>
+	<classpathentry kind="lib" path="lib/javase.jar"/>
+	<classpathentry kind="lib" path="lib/totp.jar" sourcepath="/home/carlos/libsources/totp-1.7.1-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

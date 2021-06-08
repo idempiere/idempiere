@@ -83,6 +83,16 @@
 									<artifactId>httpcore</artifactId>
 									<version>4.4.14</version>
 								</artifactItem>
+								<artifactItem>
+									<groupId>dev.samstevens.totp</groupId>
+									<artifactId>totp</artifactId>
+									<version>1.7.1</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.google.zxing</groupId>
+									<artifactId>javase</artifactId>
+									<version>3.4.1</version>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>

@@ -60,6 +60,7 @@ public class SystemIDs
 	public final static int FORM_REPORT_WIZARD = 200002;
 	public final static int FORM_SETUP_WIZARD = 200000;
 	public final static int FORM_ADD_AUTHORIZATION = 200016;
+	public final static int FORM_MFA_REGISTER = 200017;
 
 	public final static int MENU_NOTICE = 233;
 

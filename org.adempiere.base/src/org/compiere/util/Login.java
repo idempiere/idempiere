@@ -38,6 +38,8 @@ import org.compiere.model.I_M_Warehouse;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MCountry;
+import org.compiere.model.MMFARegisteredDevice;
+import org.compiere.model.MMFARegistration;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
@@ -1666,5 +1668,18 @@ public class Login
 		}
 		return retValue;		
 	}
-	
+
+	/**
+	 * Validate if MFA is required taking into account the registerCookie and the IPAddress
+	 * @param registerCookie
+	 * @return
+	 */
+	public boolean isMFARequired(String registerCookie) {
+		if (registerCookie != null && MMFARegisteredDevice.isValid(registerCookie))
+			return false;
+		if (MMFARegistration.userHasValidRegistration())
+			return true;
+		return false;
+	}
+
 }	//	Login

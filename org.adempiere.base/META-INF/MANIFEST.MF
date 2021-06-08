@@ -15,7 +15,9 @@ Bundle-ClassPath: .,
  lib/httpclient.jar,
  lib/httpcore.jar,
  lib/opencensus-api.jar,
- lib/opencensus-contrib-http-util.jar
+ lib/opencensus-contrib-http-util.jar,
+ lib/javase.jar,
+ lib/totp.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,
@@ -62,10 +64,7 @@ Export-Package: bsh,
  org.idempiere.model
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
-Import-Package: com.google.zxing,
- com.google.zxing.qrcode.decoder,
- com.google.zxing.qrcode.encoder,
- com.sun.mail.smtp;version="1.5",
+Import-Package: com.sun.mail.smtp;version="1.5",
  javax.jms;version="1.1.0",
  javax.mail;version="1.5",
  javax.mail.internet;version="1.5",
@@ -125,6 +124,8 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  org.jfree.chart;bundle-version="1.0.19",
  org.jfree.jcommon;bundle-version="1.0.23",
  com.google.guava;bundle-version="27.1.0",
- com.google.gson;bundle-version="2.8.2"
+ com.google.gson;bundle-version="2.8.2",
+ org.apache.commons.codec;bundle-version="1.13.0",
+ com.google.zxing.core;bundle-version="3.4.0"
 Automatic-Module-Name: org.adempiere.base
 Bundle-Vendor: iDempiere Community

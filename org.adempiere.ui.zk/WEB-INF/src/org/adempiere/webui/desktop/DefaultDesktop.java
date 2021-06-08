@@ -805,7 +805,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			sideController.onLogOut();
 			sideController = null;
 		}
-		layout.detach();
+		if (layout != null) {
+			layout.detach();
+		}
 		layout = null;
 		pnlHead = null;
 		max = null;

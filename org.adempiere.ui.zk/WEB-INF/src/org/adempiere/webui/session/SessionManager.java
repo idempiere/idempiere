@@ -43,9 +43,13 @@ public class SessionManager
         String adRoleId = Env.getContext(ctx, "#AD_Role_ID");
         String adClientId = Env.getContext(ctx, "#AD_Client_ID");
         String adOrgId = Env.getContext(ctx, "#AD_Org_ID");
+        String mfaId = Env.getContext(ctx, "#MFA_Registration_ID");
 
-        return (!"".equals(adUserId) && !"".equals(adRoleId)
-                && !"".equals(adClientId) && !"".equals(adOrgId));
+        return (   !"".equals(mfaId)
+        		&& !"".equals(adOrgId)
+        		&& !"".equals(adUserId)
+        		&& !"".equals(adRoleId)
+        		&& !"".equals(adClientId));
     }
     
     public static void setSessionApplication(IWebClient app)

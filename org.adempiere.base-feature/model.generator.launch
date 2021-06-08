@@ -45,6 +45,7 @@
         <setEntry value="org.apache.activemq.activemq-core@default:default"/>
         <setEntry value="org.apache.activemq.kahadb@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
+        <setEntry value="org.apache.commons.codec@default:default"/>
         <setEntry value="org.apache.commons.collections@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
         <setEntry value="org.apache.commons.compress@default:default"/>
