@@ -17,8 +17,11 @@
 package org.adempiere.webui.window;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -34,6 +37,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.compiere.model.MImage;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.MimeType;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.image.AImage;
@@ -128,7 +132,16 @@ public class WImageDialog extends Window implements EventListener<Event>
 	private Div captureDiv;
 	private String defaultNameForCaptureImage = "CapturedImage";
 	private Button cancelCaptureButton;
-	
+
+	private static List<String> autoPreviewList;
+
+	static {
+		autoPreviewList = new ArrayList<String>();
+		autoPreviewList.add("image/jpeg");
+		autoPreviewList.add("image/png");
+		autoPreviewList.add("image/gif");
+	}
+
 	/**
 	 *  Static Init
 	 *  @throws Exception
@@ -337,17 +350,25 @@ public class WImageDialog extends Window implements EventListener<Event>
 			return;
 
 		String fileName = imageFile.getName();
-		
+		String mimeType = MimeType.getMimeType(fileName);
+		if (! autoPreviewList.contains(mimeType))
+			throw new AdempiereException("File not allowed for uploading, just image types jpg/png/gif");
+
 		//  See if we can load & display it
 		try
 		{
 			InputStream is = imageFile.getStreamData();
 			AImage aImage = new AImage(fileName, is);
-			
-			image.setContent(aImage);
-			image.setClientAttribute("sandbox", "");
-			image.setVisible(true);
-			image.invalidate();
+
+			if (autoPreviewList.contains(mimeType)) {
+				image.setContent(aImage);
+				image.setClientAttribute("sandbox", "");
+				image.setVisible(true);
+				image.invalidate();
+			} else {
+				image.setSrc(null);
+				image.setVisible(false);
+			}
 			
 			is.close();
 		}
