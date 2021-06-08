@@ -140,6 +140,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 		autoPreviewList.add("image/jpeg");
 		autoPreviewList.add("image/png");
 		autoPreviewList.add("image/gif");
+		autoPreviewList.add("image/tiff");
+		autoPreviewList.add("image/bmp");
+		autoPreviewList.add("image/x-icon");
 	}
 
 	/**
@@ -352,7 +355,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		String fileName = imageFile.getName();
 		String mimeType = MimeType.getMimeType(fileName);
 		if (! autoPreviewList.contains(mimeType))
-			throw new AdempiereException("File not allowed for uploading, just image types jpg/png/gif");
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "UploadImageTypeNotAllowed"));
 
 		//  See if we can load & display it
 		try
