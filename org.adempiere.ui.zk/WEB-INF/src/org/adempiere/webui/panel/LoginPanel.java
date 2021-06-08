@@ -125,6 +125,9 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected ConfirmPanel pnlButtons; 
     protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
     protected String validLstLanguage = null;
+
+	/* Number of failures to calculate an incremental delay on every trial */
+	private int failures = 0;
     
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
@@ -592,6 +595,11 @@ public class LoginPanel extends Window implements EventListener<Event>
             }
         	logAuthFailure.log(x_Forward_IP, "/webui", userId, loginErrMsg);
 
+			// Incremental delay to avoid brute-force attack on testing codes
+			try {
+				Thread.sleep(failures * 2000);
+			} catch (InterruptedException e) {}
+			failures++;
         	Clients.clearBusy();
        		throw new WrongValueException(loginErrMsg);
         }

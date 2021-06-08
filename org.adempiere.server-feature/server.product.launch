@@ -371,6 +371,8 @@
         <setEntry value="slf4j.jcl@default:false"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
+        <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
+        <setEntry value="wrapped.dev.samstevens.totp.totp@default:default"/>
         <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
