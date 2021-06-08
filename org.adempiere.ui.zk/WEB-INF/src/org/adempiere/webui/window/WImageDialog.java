@@ -47,7 +47,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Image;
+import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
@@ -97,6 +97,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 					AImage aImage = new AImage(m_mImage.getName(), m_mImage.getData());
 					
 					image.setContent(aImage);
+					image.setClientAttribute("sandbox", "");
+					image.setVisible(true);
+					image.invalidate();
 				} catch (Exception e) {
 					log.log(Level.WARNING, "load image", e);
 				}
@@ -117,7 +120,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 	private Panel parameterPanel = new Panel();
 	private Button fileButton = new Button();
 	private Button captureButton = new Button();
-	private Image image = new Image();
+	private Iframe image = new Iframe();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true,false,true,false,false,false);
 	private boolean cancel = false;
 	private Textbox fileNameTextbox = new Textbox();
@@ -243,6 +246,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 		{
 			AImage img = null;
 			image.setContent(img);
+			image.setClientAttribute("sandbox", "");
+			image.setVisible(true);
+			image.invalidate();
 			fileNameTextbox.setValue(null);
 		}
 		else if (e.getTarget() == captureButton)
@@ -270,6 +276,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 				byte[] imageData = Base64.decodeBase64(dataUrl.substring(contentStartIndex).getBytes());
 				AImage img = new AImage(defaultNameForCaptureImage, imageData);
 				image.setContent(img);
+				image.setClientAttribute("sandbox", "");
+				image.setVisible(true);
+				image.invalidate();
 				
 				if (m_mImage == null)
 					m_mImage = new MImage (Env.getCtx(), 0, null);
@@ -336,6 +345,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 			AImage aImage = new AImage(fileName, is);
 			
 			image.setContent(aImage);
+			image.setClientAttribute("sandbox", "");
+			image.setVisible(true);
+			image.invalidate();
 			
 			is.close();
 		}
