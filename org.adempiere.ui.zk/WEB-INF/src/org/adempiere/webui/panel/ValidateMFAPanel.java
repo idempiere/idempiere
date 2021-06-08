@@ -340,7 +340,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 						String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
 						if (x_Forward_IP == null)
 							x_Forward_IP = Executions.getCurrent().getRemoteAddr();
-						logAuthFailure.log(x_Forward_IP, "/webui", Env.getContext(m_ctx, Env.AD_USER_NAME), msg);
+						MUser user = MUser.get(m_ctx);
+						boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+						logAuthFailure.log(x_Forward_IP, "/webui", email_login ? user.getEMail() : user.getName(), msg);
 
 						// Incremental delay to avoid brute-force attack on testing codes
 						try {
