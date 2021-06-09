@@ -197,8 +197,6 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 		super (ctx, C_AcctSchema_ID, trxName);
 		if (C_AcctSchema_ID == 0)
 		{
-		//	setC_Currency_ID (0);
-		//	setName (null);
 			setAutoPeriodControl (true);
 			setPeriod_OpenFuture(2);
 			setPeriod_OpenHistory(2);
