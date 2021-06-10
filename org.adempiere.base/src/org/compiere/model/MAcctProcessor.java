@@ -66,10 +66,6 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		super (ctx, C_AcctProcessor_ID, trxName);
 		if (C_AcctProcessor_ID == 0)
 		{
-		//	setName (null);
-		//	setSupervisor_ID (0);
-		//	setFrequencyType (FREQUENCYTYPE_Hour);
-		//	setFrequency (1);
 			setKeepLogDays (7);	// 7
 		}	
 	}	//	MAcctProcessor
