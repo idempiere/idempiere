@@ -465,19 +465,22 @@
 	      <version>1.1.0.Final</version>
 		  <type>jar</type>
 	  </location>
-	  <location includeSource="true" missingManifest="generate"
-		type="Maven">
-		<groupId>dev.samstevens.totp</groupId>
-		<artifactId>totp</artifactId>
-		<version>1.7.1</version>
-		<type>jar</type>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>dev.samstevens.totp</groupId>
+		  <artifactId>totp</artifactId>
+		  <version>1.7.1</version>
+		  <type>jar</type>
 	  </location>
-	  <location includeSource="true" missingManifest="generate"
-		type="Maven">
-		<groupId>com.google.zxing</groupId>
-		<artifactId>javase</artifactId>
-		<version>3.4.1</version>
-		<type>jar</type>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.zxing</groupId>
+		  <artifactId>javase</artifactId>
+		  <version>3.4.1</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>org.antlr</groupId>
+		  <artifactId>antlr4-runtime</artifactId>
+		  <version>4.9.2</version>
 	  </location>
   </locations>
 </target>

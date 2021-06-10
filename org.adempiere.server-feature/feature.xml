@@ -560,4 +560,25 @@
          fragment="true"
          unpack="false"/>
 
+   <plugin
+         id="org.antlr.antlr4-runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="wrapped.com.google.zxing.javase"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="wrapped.dev.samstevens.totp.totp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
