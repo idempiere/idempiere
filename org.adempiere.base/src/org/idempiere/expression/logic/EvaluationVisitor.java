@@ -189,7 +189,22 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 	@Override
 	public Object visitContextVariables(ContextVariablesContext ctx) {
 		String context = ctx.getText().substring(1, ctx.getText().length()-1);
+		
+		// IDEMPIERE-194 Handling null context variable
+		String defaultValue = "";
+		int idx = context.indexOf(":");	//	or clause
+		if (idx  >=  0) 
+		{
+			defaultValue = context.substring(idx+1, context.length());
+			context = context.substring(0, idx);
+		}
 		String value = evaluatee.get_ValueAsString(context);
+		if (Util.isEmpty(value) && !Util.isEmpty(defaultValue)) {
+			value = defaultValue;
+		}
+		if (value == null)
+			value = "";
+		
 		if (Util.isEmpty(value, true) && context.endsWith("_ID"))
 			return "0";
 		else

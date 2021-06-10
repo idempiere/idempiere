@@ -46,7 +46,7 @@ RE		   : '~' ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
-VARIABLE   : '@'[$#~a-zA-Z_0-9]*'@' ;
+VARIABLE   : '@'(.*?)'@' ;
 QTEXT 	   : ['](.*?)['] ;
 DQTEXT 	   : ["](.*?)["] ;
 TEXT 	   : [a-zA-Z_0-9,]+ ;

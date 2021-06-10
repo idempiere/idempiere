@@ -419,6 +419,26 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		System.out.println(ex.getMessage());
 	}
 	
+	@Test
+	public void testConditionalVariable() {
+		String expr = "@IsSOTrx:N@=N | @+IgnoreIsSOTrxInBPInfo:N@=Y";
+		Env.setContext(Env.getCtx(), "IsSOTrx", (String)null);
+		Env.setContext(Env.getCtx(), "+IgnoreIsSOTrxInBPInfo", (String)null);
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "IsSOTrx", "Y");
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "+IgnoreIsSOTrxInBPInfo", "Y");
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		Env.setContext(Env.getCtx(), "IsSOTrx", (String)null);
+		Env.setContext(Env.getCtx(), "+IgnoreIsSOTrxInBPInfo", (String)null);
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "IsSOTrx", "Y");
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "+IgnoreIsSOTrxInBPInfo", "Y");
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+	
 	private static class ContextEvaluatee implements Evaluatee {
 
 		@Override

@@ -1,4 +1,4 @@
-// Generated from SimpleBoolean.g4 by ANTLR 4.9.2
+// Generated from SimpleBoolean.g4 by ANTLR 4.4
 
     package org.idempiere.expression.logic;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class SimpleBooleanParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.9.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.4", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -22,66 +22,23 @@ public class SimpleBooleanParser extends Parser {
 		AND=1, OR=2, NOT=3, TRUE=4, FALSE=5, GT=6, GE=7, LT=8, LE=9, EQ=10, NE=11, 
 		RE=12, LPAREN=13, RPAREN=14, DECIMAL=15, VARIABLE=16, QTEXT=17, DQTEXT=18, 
 		TEXT=19, WS=20;
+	public static final String[] tokenNames = {
+		"<INVALID>", "'&'", "'|'", "'$!'", "'true'", "'false'", "'>'", "'>='", 
+		"'<'", "'<='", "'='", "NE", "'~'", "'('", "')'", "DECIMAL", "VARIABLE", 
+		"QTEXT", "DQTEXT", "TEXT", "WS"
+	};
 	public static final int
 		RULE_parse = 0, RULE_expression = 1, RULE_comparator = 2, RULE_binary = 3, 
 		RULE_bool = 4;
-	private static String[] makeRuleNames() {
-		return new String[] {
-			"parse", "expression", "comparator", "binary", "bool"
-		};
-	}
-	public static final String[] ruleNames = makeRuleNames();
-
-	private static String[] makeLiteralNames() {
-		return new String[] {
-			null, "'&'", "'|'", "'$!'", "'true'", "'false'", "'>'", "'>='", "'<'", 
-			"'<='", "'='", null, "'~'", "'('", "')'"
-		};
-	}
-	private static final String[] _LITERAL_NAMES = makeLiteralNames();
-	private static String[] makeSymbolicNames() {
-		return new String[] {
-			null, "AND", "OR", "NOT", "TRUE", "FALSE", "GT", "GE", "LT", "LE", "EQ", 
-			"NE", "RE", "LPAREN", "RPAREN", "DECIMAL", "VARIABLE", "QTEXT", "DQTEXT", 
-			"TEXT", "WS"
-		};
-	}
-	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
-	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
-
-	/**
-	 * @deprecated Use {@link #VOCABULARY} instead.
-	 */
-	@Deprecated
-	public static final String[] tokenNames;
-	static {
-		tokenNames = new String[_SYMBOLIC_NAMES.length];
-		for (int i = 0; i < tokenNames.length; i++) {
-			tokenNames[i] = VOCABULARY.getLiteralName(i);
-			if (tokenNames[i] == null) {
-				tokenNames[i] = VOCABULARY.getSymbolicName(i);
-			}
-
-			if (tokenNames[i] == null) {
-				tokenNames[i] = "<INVALID>";
-			}
-		}
-	}
-
-	@Override
-	@Deprecated
-	public String[] getTokenNames() {
-		return tokenNames;
-	}
-
-	@Override
-
-	public Vocabulary getVocabulary() {
-		return VOCABULARY;
-	}
+	public static final String[] ruleNames = {
+		"parse", "expression", "comparator", "binary", "bool"
+	};
 
 	@Override
 	public String getGrammarFileName() { return "SimpleBoolean.g4"; }
+
+	@Override
+	public String[] getTokenNames() { return tokenNames; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -96,12 +53,11 @@ public class SimpleBooleanParser extends Parser {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
-
 	public static class ParseContext extends ParserRuleContext {
+		public TerminalNode EOF() { return getToken(SimpleBooleanParser.EOF, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode EOF() { return getToken(SimpleBooleanParser.EOF, 0); }
 		public ParseContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -119,10 +75,8 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(10);
-			expression(0);
-			setState(11);
-			match(EOF);
+			setState(10); expression(0);
+			setState(11); match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -151,14 +105,14 @@ public class SimpleBooleanParser extends Parser {
 		public ExpressionContext left;
 		public BinaryContext op;
 		public ExpressionContext right;
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+		public BinaryContext binary() {
+			return getRuleContext(BinaryContext.class,0);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public BinaryContext binary() {
-			return getRuleContext(BinaryContext.class,0);
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
 		}
 		public BinaryExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
@@ -210,10 +164,10 @@ public class SimpleBooleanParser extends Parser {
 	}
 	public static class ParenExpressionContext extends ExpressionContext {
 		public TerminalNode LPAREN() { return getToken(SimpleBooleanParser.LPAREN, 0); }
+		public TerminalNode RPAREN() { return getToken(SimpleBooleanParser.RPAREN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode RPAREN() { return getToken(SimpleBooleanParser.RPAREN, 0); }
 		public ParenExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -252,14 +206,14 @@ public class SimpleBooleanParser extends Parser {
 		public ExpressionContext left;
 		public ComparatorContext op;
 		public ExpressionContext right;
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
+		public ComparatorContext comparator() {
+			return getRuleContext(ComparatorContext.class,0);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public ComparatorContext comparator() {
-			return getRuleContext(ComparatorContext.class,0);
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
 		}
 		public ComparatorExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
@@ -285,31 +239,25 @@ public class SimpleBooleanParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(26);
-			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case LPAREN:
-				{
-				_localctx = new ParenExpressionContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-
-				setState(14);
-				match(LPAREN);
-				setState(15);
-				expression(0);
-				setState(16);
-				match(RPAREN);
-				}
-				break;
 			case NOT:
 				{
 				_localctx = new NotExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(18);
-				match(NOT);
-				setState(19);
-				expression(9);
+
+				setState(14); match(NOT);
+				setState(15); expression(9);
+				}
+				break;
+			case LPAREN:
+				{
+				_localctx = new ParenExpressionContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(16); match(LPAREN);
+				setState(17); expression(0);
+				setState(18); match(RPAREN);
 				}
 				break;
 			case TRUE:
@@ -318,8 +266,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new BoolExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(20);
-				bool();
+				setState(20); bool();
 				}
 				break;
 			case VARIABLE:
@@ -327,8 +274,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new ContextVariablesContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(21);
-				match(VARIABLE);
+				setState(21); match(VARIABLE);
 				}
 				break;
 			case QTEXT:
@@ -336,8 +282,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new QuotedTextContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(22);
-				match(QTEXT);
+				setState(22); match(QTEXT);
 				}
 				break;
 			case DQTEXT:
@@ -345,8 +290,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new DoubleQuotedTextContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(23);
-				match(DQTEXT);
+				setState(23); match(DQTEXT);
 				}
 				break;
 			case TEXT:
@@ -354,8 +298,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new TextContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(24);
-				match(TEXT);
+				setState(24); match(TEXT);
 				}
 				break;
 			case DECIMAL:
@@ -363,8 +306,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new DecimalExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(25);
-				match(DECIMAL);
+				setState(25); match(DECIMAL);
 				}
 				break;
 			default:
@@ -380,7 +322,6 @@ public class SimpleBooleanParser extends Parser {
 					_prevctx = _localctx;
 					{
 					setState(36);
-					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 					case 1:
 						{
@@ -389,10 +330,8 @@ public class SimpleBooleanParser extends Parser {
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(28);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(29);
-						((ComparatorExpressionContext)_localctx).op = comparator();
-						setState(30);
-						((ComparatorExpressionContext)_localctx).right = expression(9);
+						setState(29); ((ComparatorExpressionContext)_localctx).op = comparator();
+						setState(30); ((ComparatorExpressionContext)_localctx).right = expression(9);
 						}
 						break;
 					case 2:
@@ -402,10 +341,8 @@ public class SimpleBooleanParser extends Parser {
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(32);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(33);
-						((BinaryExpressionContext)_localctx).op = binary();
-						setState(34);
-						((BinaryExpressionContext)_localctx).right = expression(8);
+						setState(33); ((BinaryExpressionContext)_localctx).op = binary();
+						setState(34); ((BinaryExpressionContext)_localctx).right = expression(8);
 						}
 						break;
 					}
@@ -429,13 +366,13 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class ComparatorContext extends ParserRuleContext {
-		public TerminalNode GT() { return getToken(SimpleBooleanParser.GT, 0); }
+		public TerminalNode RE() { return getToken(SimpleBooleanParser.RE, 0); }
 		public TerminalNode GE() { return getToken(SimpleBooleanParser.GE, 0); }
 		public TerminalNode LT() { return getToken(SimpleBooleanParser.LT, 0); }
+		public TerminalNode GT() { return getToken(SimpleBooleanParser.GT, 0); }
 		public TerminalNode LE() { return getToken(SimpleBooleanParser.LE, 0); }
 		public TerminalNode EQ() { return getToken(SimpleBooleanParser.EQ, 0); }
 		public TerminalNode NE() { return getToken(SimpleBooleanParser.NE, 0); }
-		public TerminalNode RE() { return getToken(SimpleBooleanParser.RE, 0); }
 		public ComparatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -459,11 +396,7 @@ public class SimpleBooleanParser extends Parser {
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GT) | (1L << GE) | (1L << LT) | (1L << LE) | (1L << EQ) | (1L << NE) | (1L << RE))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -503,11 +436,7 @@ public class SimpleBooleanParser extends Parser {
 			if ( !(_la==AND || _la==OR) ) {
 			_errHandler.recoverInline(this);
 			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -522,8 +451,8 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class BoolContext extends ParserRuleContext {
-		public TerminalNode TRUE() { return getToken(SimpleBooleanParser.TRUE, 0); }
 		public TerminalNode FALSE() { return getToken(SimpleBooleanParser.FALSE, 0); }
+		public TerminalNode TRUE() { return getToken(SimpleBooleanParser.TRUE, 0); }
 		public BoolContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -547,11 +476,7 @@ public class SimpleBooleanParser extends Parser {
 			if ( !(_la==TRUE || _la==FALSE) ) {
 			_errHandler.recoverInline(this);
 			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -567,36 +492,33 @@ public class SimpleBooleanParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 1:
-			return expression_sempred((ExpressionContext)_localctx, predIndex);
+		case 1: return expression_sempred((ExpressionContext)_localctx, predIndex);
 		}
 		return true;
 	}
 	private boolean expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0:
-			return precpred(_ctx, 8);
-		case 1:
-			return precpred(_ctx, 7);
+		case 0: return precpred(_ctx, 8);
+		case 1: return precpred(_ctx, 7);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\26\62\4\2\t\2\4\3"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\26\62\4\2\t\2\4\3"+
 		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\3\3\3\5\3\35\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3"+
 		"\'\n\3\f\3\16\3*\13\3\3\4\3\4\3\5\3\5\3\6\3\6\3\6\2\3\4\7\2\4\6\b\n\2"+
-		"\5\3\2\b\16\3\2\3\4\3\2\6\7\2\65\2\f\3\2\2\2\4\34\3\2\2\2\6+\3\2\2\2\b"+
-		"-\3\2\2\2\n/\3\2\2\2\f\r\5\4\3\2\r\16\7\2\2\3\16\3\3\2\2\2\17\20\b\3\1"+
-		"\2\20\21\7\17\2\2\21\22\5\4\3\2\22\23\7\20\2\2\23\35\3\2\2\2\24\25\7\5"+
-		"\2\2\25\35\5\4\3\13\26\35\5\n\6\2\27\35\7\22\2\2\30\35\7\23\2\2\31\35"+
-		"\7\24\2\2\32\35\7\25\2\2\33\35\7\21\2\2\34\17\3\2\2\2\34\24\3\2\2\2\34"+
-		"\26\3\2\2\2\34\27\3\2\2\2\34\30\3\2\2\2\34\31\3\2\2\2\34\32\3\2\2\2\34"+
-		"\33\3\2\2\2\35(\3\2\2\2\36\37\f\n\2\2\37 \5\6\4\2 !\5\4\3\13!\'\3\2\2"+
-		"\2\"#\f\t\2\2#$\5\b\5\2$%\5\4\3\n%\'\3\2\2\2&\36\3\2\2\2&\"\3\2\2\2\'"+
-		"*\3\2\2\2(&\3\2\2\2()\3\2\2\2)\5\3\2\2\2*(\3\2\2\2+,\t\2\2\2,\7\3\2\2"+
-		"\2-.\t\3\2\2.\t\3\2\2\2/\60\t\4\2\2\60\13\3\2\2\2\5\34&(";
+		"\5\3\2\b\16\3\2\3\4\3\2\6\7\65\2\f\3\2\2\2\4\34\3\2\2\2\6+\3\2\2\2\b-"+
+		"\3\2\2\2\n/\3\2\2\2\f\r\5\4\3\2\r\16\7\2\2\3\16\3\3\2\2\2\17\20\b\3\1"+
+		"\2\20\21\7\5\2\2\21\35\5\4\3\13\22\23\7\17\2\2\23\24\5\4\3\2\24\25\7\20"+
+		"\2\2\25\35\3\2\2\2\26\35\5\n\6\2\27\35\7\22\2\2\30\35\7\23\2\2\31\35\7"+
+		"\24\2\2\32\35\7\25\2\2\33\35\7\21\2\2\34\17\3\2\2\2\34\22\3\2\2\2\34\26"+
+		"\3\2\2\2\34\27\3\2\2\2\34\30\3\2\2\2\34\31\3\2\2\2\34\32\3\2\2\2\34\33"+
+		"\3\2\2\2\35(\3\2\2\2\36\37\f\n\2\2\37 \5\6\4\2 !\5\4\3\13!\'\3\2\2\2\""+
+		"#\f\t\2\2#$\5\b\5\2$%\5\4\3\n%\'\3\2\2\2&\36\3\2\2\2&\"\3\2\2\2\'*\3\2"+
+		"\2\2(&\3\2\2\2()\3\2\2\2)\5\3\2\2\2*(\3\2\2\2+,\t\2\2\2,\7\3\2\2\2-.\t"+
+		"\3\2\2.\t\3\2\2\2/\60\t\4\2\2\60\13\3\2\2\2\5\34&(";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
