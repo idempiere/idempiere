@@ -229,7 +229,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	
 	private boolean m_summary = false;
 	
-	private String m_filename = null;
+	private String m_name = null;
 	
 	/**
 	 * store all column has same css rule into a list
@@ -383,9 +383,9 @@ public class ReportEngine implements PrintServiceAttributeListener
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dt = sdf.format(cal.getTime());
 			
-			m_filename = m_printFormat.get_Translation("Name") + "_" + dt;
+			m_name = m_printFormat.get_Translation("Name") + "_" + dt;
 		} else {
-			m_filename = FileUtil.parseTitle(m_ctx, processFileNamePattern, m_info.getAD_Table_ID(), m_info.getRecord_ID(), m_windowNo, m_trxName);
+			m_name = FileUtil.parseTitle(m_ctx, processFileNamePattern, m_info.getAD_Table_ID(), m_info.getRecord_ID(), m_windowNo, m_trxName);
 		}
 	}	//	initName
 
@@ -395,9 +395,9 @@ public class ReportEngine implements PrintServiceAttributeListener
 	 */
 	public String getName()
 	{
-		if (m_filename==null)
+		if (m_name==null)
 			initName();
-		return m_filename;
+		return m_name;
 	}	//	getName
 
 	/**
