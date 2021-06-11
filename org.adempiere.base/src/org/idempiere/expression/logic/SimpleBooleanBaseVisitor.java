@@ -1,8 +1,7 @@
-// Generated from SimpleBoolean.g4 by ANTLR 4.4
+// Generated from SimpleBoolean.g4 by ANTLR 4.9.2
 
     package org.idempiere.expression.logic;
 
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -20,96 +19,96 @@ public class SimpleBooleanBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBoolExpression(@NotNull SimpleBooleanParser.BoolExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParse(SimpleBooleanParser.ParseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBool(@NotNull SimpleBooleanParser.BoolContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBinaryExpression(SimpleBooleanParser.BinaryExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNotExpression(@NotNull SimpleBooleanParser.NotExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDecimalExpression(SimpleBooleanParser.DecimalExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParse(@NotNull SimpleBooleanParser.ParseContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBoolExpression(SimpleBooleanParser.BoolExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParenExpression(@NotNull SimpleBooleanParser.ParenExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitContextVariables(SimpleBooleanParser.ContextVariablesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDoubleQuotedText(@NotNull SimpleBooleanParser.DoubleQuotedTextContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNotExpression(SimpleBooleanParser.NotExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBinaryExpression(@NotNull SimpleBooleanParser.BinaryExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParenExpression(SimpleBooleanParser.ParenExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComparator(@NotNull SimpleBooleanParser.ComparatorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitText(SimpleBooleanParser.TextContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDecimalExpression(@NotNull SimpleBooleanParser.DecimalExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitQuotedText(SimpleBooleanParser.QuotedTextContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBinary(@NotNull SimpleBooleanParser.BinaryContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDoubleQuotedText(SimpleBooleanParser.DoubleQuotedTextContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitContextVariables(@NotNull SimpleBooleanParser.ContextVariablesContext ctx) { return visitChildren(ctx); }
+	@Override public T visitComparatorExpression(SimpleBooleanParser.ComparatorExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitText(@NotNull SimpleBooleanParser.TextContext ctx) { return visitChildren(ctx); }
+	@Override public T visitComparator(SimpleBooleanParser.ComparatorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitQuotedText(@NotNull SimpleBooleanParser.QuotedTextContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBinary(SimpleBooleanParser.BinaryContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComparatorExpression(@NotNull SimpleBooleanParser.ComparatorExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBool(SimpleBooleanParser.BoolContext ctx) { return visitChildren(ctx); }
 }
