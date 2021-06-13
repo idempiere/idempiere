@@ -28,7 +28,19 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.Query;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.LegacyLogicEvaluator;
@@ -437,6 +449,47 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
 		Env.setContext(Env.getCtx(), "+IgnoreIsSOTrxInBPInfo", "Y");
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+	
+	@Test
+	public void testValidateAD() {
+		String[] columns = {"MandatoryLogic","DocValueLogic","ReadOnlyLogic","DisplayLogic","ZoomLogic"};
+		Query query = new Query(Env.getCtx(), MColumn.Table_Name, "AD_Column_ID < 1000000 AND ColumnName=?", getTrxName());
+		query.setOnlyActiveRecords(true);
+		List<Exception> exceptions = new ArrayList<Exception>();
+		for(String column : columns) {
+			List<MColumn> list = query.setParameters(column).list();
+			for(MColumn mc : list) {
+				MTable table = MTable.get(mc.getAD_Table_ID());
+				if (!table.isActive() || table.getAD_Table_ID() >= 1000000)
+					continue;
+				StringBuilder builder = new StringBuilder();
+				builder.append("SELECT * ")
+					.append(" FROM ")
+					.append(table.getTableName())
+					.append(" WHERE ")
+					.append(mc.getColumnName())
+					.append(" IS NOT NULL");
+				try (PreparedStatement stmt = DB.prepareStatement(builder.toString(), getTrxName())) {
+					ResultSet rs = stmt.executeQuery();
+					while (rs.next()) {
+						String expr = rs.getString(mc.getColumnName());
+						if (expr.startsWith("@SQL=") || expr.startsWith("SQL="))
+							continue;
+						try {
+							LogicEvaluator.validate(expr);
+						} catch (Exception e) {
+							PO po = table.getPO(rs, getTrxName());
+							System.out.println(po.toString()+", " + table.getTableName()+"."+mc.getColumnName()+" = " + expr);
+							exceptions.add(e);			
+						}
+					}
+				} catch (SQLException e) {
+					fail(e.getMessage(), e);
+				}
+			}
+		}
+		assertTrue(exceptions.isEmpty(), "Found " + exceptions.size() + " logic expression with invalid syntax in AD");
 	}
 	
 	private static class ContextEvaluatee implements Evaluatee {
