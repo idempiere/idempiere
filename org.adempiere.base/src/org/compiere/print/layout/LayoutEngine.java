@@ -1888,7 +1888,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	 */
 	private PrintElement layoutParameter ()
 	{
-		if (m_query == null || !m_query.isActive())
+		if (m_query == null || !m_query.isActive() || (m_query.getReportProcessQuery() != null && !m_query.getReportProcessQuery().isActive()))
 			return null;
 		//
 		ParameterElement pe = new ParameterElement(m_query, m_printCtx, m_format.getTableFormat());
