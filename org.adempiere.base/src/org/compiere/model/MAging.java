@@ -47,11 +47,6 @@ public class MAging extends X_T_Aging
 		super (ctx, T_Aging_ID, trxName);
 		if (T_Aging_ID == 0)
 		{
-		//	setAD_PInstance_ID (0);
-		//	setC_BP_Group_ID (0);
-		//	setC_BPartner_ID (0);
-		//	setC_Currency_ID (0);
-			//
 			setDueAmt (Env.ZERO);
 			setDue0 (Env.ZERO);
 			setDue0_7 (Env.ZERO);
@@ -79,8 +74,6 @@ public class MAging extends X_T_Aging
 			//
 			setIsListInvoices (false);
 			setIsSOTrx (false);
-		//	setDueDate (new Timestamp(System.currentTimeMillis()));
-		//	setStatementDate (new Timestamp(System.currentTimeMillis()));
 		}
 	}	//	T_Aging
 
@@ -114,10 +107,7 @@ public class MAging extends X_T_Aging
 		setAD_Org_ID(AD_Org_ID);
 		setIsSOTrx (IsSOTrx);
 
-		//	Optional
-	//	setC_Invoice_ID (C_Invoice_ID);		// may be zero
 		set_ValueNoCheck ("C_Invoice_ID", Integer.valueOf(C_Invoice_ID));
-	//	setC_InvoicePaySchedule_ID(C_InvoicePaySchedule_ID);	//	may be zero
 		set_Value ("C_InvoicePaySchedule_ID", Integer.valueOf(C_InvoicePaySchedule_ID));
 		setIsListInvoices(C_Invoice_ID != 0);
 		//
@@ -154,10 +144,7 @@ public class MAging extends X_T_Aging
 		setC_BP_Group_ID (C_BP_Group_ID);
 		setIsSOTrx (IsSOTrx);
 
-		//	Optional
-	//	setC_Invoice_ID (C_Invoice_ID);		// may be zero
 		set_ValueNoCheck ("C_Invoice_ID", Integer.valueOf(C_Invoice_ID));
-	//	setC_InvoicePaySchedule_ID(C_InvoicePaySchedule_ID);	//	may be zero
 		set_Value ("C_InvoicePaySchedule_ID", Integer.valueOf(C_InvoicePaySchedule_ID));
 		setIsListInvoices(C_Invoice_ID != 0);
 		//
