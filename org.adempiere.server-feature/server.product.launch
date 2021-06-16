@@ -145,6 +145,7 @@
         <setEntry value="json*20190722.0.0@default:default"/>
         <setEntry value="net.sf.jasperreports.engine@default:default"/>
         <setEntry value="net.sf.supercsv.super-csv@default:default"/>
+        <setEntry value="org.antlr.antlr4-runtime@default:default"/>
         <setEntry value="org.antlr.runtime@default:default"/>
         <setEntry value="org.aopalliance@default:default"/>
         <setEntry value="org.apache.activemq.activemq-core@default:default"/>
@@ -371,6 +372,8 @@
         <setEntry value="slf4j.jcl@default:false"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
+        <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
+        <setEntry value="wrapped.dev.samstevens.totp.totp@default:default"/>
         <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
@@ -408,6 +411,7 @@
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
         <setEntry value="org.idempiere.felix.webconsole@default:true"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
+        <setEntry value="org.idempiere.keikai@default:false"/>
         <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>
     </setAttribute>

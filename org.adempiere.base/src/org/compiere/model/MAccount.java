@@ -214,7 +214,6 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 			whereClause.append(" AND UserElement2_ID=?");
 			params.add(UserElement2_ID);
 		}
-		//	whereClause.append(" ORDER BY IsFullyQualified DESC");
 		
 		MAccount existingAccount = new Query(ctx, MAccount.Table_Name, whereClause.toString(), trxName)
 										.setParameters(params)
@@ -426,8 +425,6 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 		super (ctx, C_ValidCombination_ID, trxName);
 		if (C_ValidCombination_ID == 0)
 		{
-		//	setAccount_ID (0);
-		//	setC_AcctSchema_ID (0);
 			setIsFullyQualified (false);
 		}
 	}   //  MAccount
@@ -503,7 +500,6 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 				.append(getCombination());
 		else
 		{
-			//	.append(",Client=").append(getAD_Client_ID())
 			sb.append(",Schema=").append(getC_AcctSchema_ID())
 				.append(",Org=").append(getAD_Org_ID())
 				.append(",Acct=").append(getAccount_ID())
@@ -652,7 +648,6 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 				{
 					combiStr = "*";
 					descrStr = "*";
-					//fullyQualified = false; IDEMPIERE 159 - allow combination with org *
 				}
 			}
 			else if (MAcctSchemaElement.ELEMENTTYPE_Account.equals(element.getElementType()))

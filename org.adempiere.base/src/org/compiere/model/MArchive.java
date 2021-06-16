@@ -252,7 +252,7 @@ public class MArchive extends X_AD_Archive {
 		if (this.getRecord_ID() > 0) {
 			path.append(this.getRecord_ID()).append(File.separator);
 		}
-		// path = path + this.get_ID() + ".pdf";
+
 		return path.toString();
 	}
 

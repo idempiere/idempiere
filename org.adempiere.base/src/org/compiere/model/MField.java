@@ -20,8 +20,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.expression.logic.LogicEvaluator;
 
 
 /**
@@ -216,14 +218,24 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			setAD_Val_Rule_ID(0);
 			setIsToolbarButton(null);
 		}
-		if (isDisplayed()) {
-			MColumn column = (MColumn) getAD_Column();
-			if (column.isVirtualSearchColumn()) {
-				setIsDisplayed(false);
-				setIsDisplayedGrid(false);
+
+		//validate logic expression
+		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getReadOnlyLogic());
 			}
 		}
-
+		if (newRecord || is_ValueChanged(COLUMNNAME_DisplayLogic)) {
+			if (isActive() && !Util.isEmpty(getDisplayLogic(), true) && !getDisplayLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getDisplayLogic());
+			}
+		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_MandatoryLogic)) {
+			if (isActive() && !Util.isEmpty(getMandatoryLogic(), true) && !getMandatoryLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getMandatoryLogic());
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 	

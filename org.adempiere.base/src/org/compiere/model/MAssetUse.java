@@ -16,10 +16,6 @@ public class MAssetUse extends X_A_Asset_Use
 	public MAssetUse (Properties ctx, int A_Asset_Use_ID, String trxName)
 	{
 		super (ctx, A_Asset_Use_ID, trxName);
-		if (A_Asset_Use_ID == 0)
-		{
-			// empty block
-		}
 	}	//	MAssetUse
 
 	/**

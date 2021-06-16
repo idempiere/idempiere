@@ -81,8 +81,6 @@ public class MAssignmentSlot implements Comparator<Object>
 		setName(name);
 		setDescription(description);
 		setStatus(status);
-		//
-	//	log.fine( toString());
 	}	//	MAssignmentSlot
 
 	/**
@@ -93,7 +91,6 @@ public class MAssignmentSlot implements Comparator<Object>
 	{
 		setStatus(assignment.isConfirmed() ? STATUS_Confirmed : STATUS_NotConfirmed);
 		setMAssignment(assignment);
-	//	log.fine( toString());
 	}	//	MAssignmentSlot
 
 
@@ -562,14 +559,12 @@ public class MAssignmentSlot implements Comparator<Object>
 		//	after end				|---| x
 		if (compare.after(end))
 		{
-		//	System.out.println("InSlot-false Compare=" + compare + " after end " + end);
 			return false;
 		}
 
 		//	start					x---|
 		if (!endTime && compare.equals(start))
 		{
-		//	System.out.println("InSlot-true Compare=" + compare + " = Start=" + start);
 			return true;
 		}
 
@@ -577,13 +572,11 @@ public class MAssignmentSlot implements Comparator<Object>
 		//	end						|---x
 		if (endTime && compare.equals(end))
 		{
-		//	System.out.println("InSlot-true Compare=" + compare + " = End=" + end);
 			return true;
 		}
 		//	between start/end		|-x-|
 		if (compare.before(end))
 		{
-		//	System.out.println("InSlot-true Compare=" + compare + " before end " + end);
 			return true;
 		}
 		return false;
