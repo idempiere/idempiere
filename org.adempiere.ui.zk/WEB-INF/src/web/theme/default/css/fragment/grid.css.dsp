@@ -56,7 +56,7 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: inline-block;
-	width: 100%;
+	width: 99%;
 }
 @media only screen 
   and (max-device-width: 700px) {
@@ -73,7 +73,7 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 }
 
 .z-row .z-cell, .z-listitem .z-listcell, .z-listitem.z-listitem-selected>.z-listcell {
-	border-left: 1px solid #cfcfcf;
+	border-right: 1px solid #cfcfcf;
 }
 
 .z-grid-emptybody td {
@@ -116,5 +116,28 @@ div.z-listbox-body .z-listcell {
 
 .z-listbox-autopaging .z-listcell-cnt {
 	height: 20px;
+}
+
+.z-listhead-bar {
+	border-right: 0px !important;
+	border-left: 1px solid #CFCFCF;
+	border-bottom: 0px;
+}
+
+.z-listbox-header {
+	border-bottom: 1px solid #CFCFCF;
+}
+
+.z-listheader  {
+	border-bottom: 0px !important;
+}
+
+.create-from-window .z-listitem {
+	height: 31px;
+} 
+
+.create-from-window .z-listcell {
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
 }
 

@@ -44,6 +44,8 @@ public class WTableColumn
     protected Class<?> columnClass;
     
     protected String tooltipText;
+    
+    protected String columnName;
 
 	private int AD_Reference_ID;
 
@@ -67,6 +69,15 @@ public class WTableColumn
 		headerValue = null;
     }
     
+    
+    public String getColumnName() {
+    	return columnName;
+    }
+    
+    public void setColumnName(String coulmnName) {
+    	this.columnName = coulmnName;
+    	return;
+    }
 
     /**
      * Sets the <code>Object</code> whose string representation will be

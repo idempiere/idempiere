@@ -51,6 +51,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
@@ -66,6 +67,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
@@ -185,6 +187,7 @@ public class WMatch extends Match
 	private WNumberEditor xMatchedTo = new WNumberEditor("xMatchedTo", false, true, false, DisplayType.Quantity, "xMatchedTo");
 	private WNumberEditor difference = new WNumberEditor("Difference", false, true, false, DisplayType.Quantity, "Difference");
 	private Button bProcess = new Button();
+	private Button bSaveColumnWidth = new Button();
 	private Panel centerPanel = new Panel();
 	private Borderlayout centerLayout = new Borderlayout();
 	private Label xMatchedBorder = new Label("xMatched");
@@ -231,6 +234,8 @@ public class WMatch extends Match
 		xMatchedLabel.setText(Msg.translate(Env.getCtx(), "ToBeMatched"));
 		xMatchedToLabel.setText(Msg.translate(Env.getCtx(), "Matching"));
 		differenceLabel.setText(Msg.translate(Env.getCtx(), "Difference"));
+		bSaveColumnWidth.setImage(ThemeManager.getThemeResource("images/Customize16.png"));
+		bSaveColumnWidth.setTooltiptext(Msg.getMsg(Env.getCtx(), "Save column width"));
 		bProcess.setLabel(Msg.translate(Env.getCtx(), "Process"));
 		centerPanel.appendChild(centerLayout);
 		sameProduct.setSelected(true);
@@ -345,8 +350,11 @@ public class WMatch extends Match
 		row.appendChild(difference.getComponent());
 		
 		row = rows.newRow();
-		row.appendCellChild(bProcess, noOfColumn);
-		bProcess.setStyle("float: right");
+		Hbox box = new Hbox();
+		box.appendChild(bSaveColumnWidth);
+		box.appendChild(bProcess);
+		box.setStyle("float: right");
+		row.appendCellChild(box , noOfColumn );
 		if (noOfColumn < 6)
 			LayoutUtils.compactTo(southLayout, noOfColumn);
 	}
@@ -393,19 +401,27 @@ public class WMatch extends Match
 	private void dynInit()
 	{
 		ColumnInfo[] layout = new ColumnInfo[] {
-			new ColumnInfo(" ",                                         ".", IDColumn.class, false, false, ""),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"),   ".", String.class),             //  1
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Date"),         ".", Timestamp.class),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"),".", KeyNamePair.class, "."),   //  3
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Line"),         ".", KeyNamePair.class, "."),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "M_Product_ID"), ".", KeyNamePair.class, "."),   //  5
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Qty"),          ".", Double.class),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Matched"),      ".", Double.class)
+			new ColumnInfo(Msg.translate(Env.getCtx(), "Select"),				".", 	 IDColumn.class, 	false, true, "",  "."),
+			new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"),    "DocumentNo", 	 String.class, 		true,  true, "",  "DocumentNo"),  //  1
+			new ColumnInfo(Msg.translate(Env.getCtx(), "Date"),         "Date", 		 Timestamp.class,   true,  true, "",  "Date"),
+			new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"),"C_BPartner_ID", KeyNamePair.class,	true,  true, ".", "C_BPartner_ID"),   //  3
+			new ColumnInfo(Msg.translate(Env.getCtx(), "Line"),         "Line", 		 KeyNamePair.class,	true,  true, ".", "Line"),
+			new ColumnInfo(Msg.translate(Env.getCtx(), "M_Product_ID"), "M_Product_ID",  KeyNamePair.class,	true,  true, ".", "M_Product_ID"),   //  5
+			new ColumnInfo(Msg.translate(Env.getCtx(), "Qty"),          "Qty", 			 Double.class, 		true,  true, "",  "Qty"),
+			new ColumnInfo(Msg.translate(Env.getCtx(), "Matched"),      "Matched", 		 Double.class, 		true,  true, "",  "Matched")
 		};
-
 		xMatchedTable.prepareTable(layout, "", "", false, "");
-		xMatchedToTable.prepareTable(layout, "", "", true, "");
+		xMatchedTable.setwListBoxName("xMatchedTable");
+		xMatchedTable.setadWindowID(0);
+		xMatchedTable.repaint();
+		xMatchedTable.renderHeaderColumnWidth();
 
+		xMatchedToTable.prepareTable(layout, "", "", true, "");		
+		xMatchedToTable.setwListBoxName("xMatchedToTable");
+		xMatchedToTable.setadWindowID(0);
+		xMatchedToTable.repaint();
+		xMatchedToTable.renderHeaderColumnWidth();
+		
 		matchFrom.setSelectedIndex(0);
 		//  Listener
 		matchFrom.addActionListener(this);
@@ -414,6 +430,7 @@ public class WMatch extends Match
 		xMatchedTable.addEventListener(Events.ON_SELECT, this);
 		xMatchedToTable.getModel().addTableModelListener(this);
 		bProcess.addActionListener(this);
+		bSaveColumnWidth.addActionListener(this);
 		sameBPartner.addActionListener(this);
 		sameProduct.addActionListener(this);
 		sameQty.addActionListener(this);
@@ -534,6 +551,11 @@ public class WMatch extends Match
 			cmd_searchTo();
 		else if (AEnv.contains(xMatchedTable, e.getTarget()))
 			cmd_searchTo();
+		else if (e.getTarget() == bSaveColumnWidth)
+		{
+			xMatchedTable.saveColumnWidth();
+			xMatchedToTable.saveColumnWidth();
+		}
 	}   //  actionPerformed
 
 	

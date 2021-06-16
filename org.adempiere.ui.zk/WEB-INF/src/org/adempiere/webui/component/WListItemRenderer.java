@@ -38,11 +38,15 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.minigrid.ColumnInfo; 
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MImage;
+import org.compiere.model.MLocator;
+import org.compiere.model.MLocatorLookup;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.MSort;
 import org.compiere.util.Util;
 import org.zkoss.image.AImage;
@@ -51,6 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Comboitem;  
 import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
@@ -116,7 +121,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 * @param columnIndex	The index of the column for which details are to be retrieved.
 	 * @return	The details of the column at the specified index.
 	 */
-	private WTableColumn getColumn(int columnIndex)
+	public WTableColumn getColumn(int columnIndex)
 	{
 		try
 		{
@@ -128,6 +133,16 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
                     + columnIndex);
 		}
 	}
+	
+	public String getColumnName(int index) {
+		if (index >= 0 && index < m_tableColumns.size())
+		{
+			return m_tableColumns.get(index).getColumnName();
+		}
+		return null;
+	}	
+	
+	
 
 
 	/* (non-Javadoc)
@@ -201,7 +216,11 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	protected Listcell getCellComponent(WListbox table, Object field,
 									  int rowIndex, int columnIndex)
 	{
+		ColumnInfo[] layout = null;
 		ListCell listcell = new ListCell();
+		if (table.getLayout() != null) {
+			layout =  table.getLayout();  //
+		}
 		if (m_tableColumns.size() > columnIndex) {
 			WTableColumn column = getColumn(columnIndex);
 			if (column != null && column.getHeaderValue() != null) {
@@ -364,12 +383,67 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					table.addEventListener(Events.ON_SELECT, this);
 				}
 			}
-			else
+			
+			else if (field instanceof KeyNamePair) 
+			{ 
+				String columnName = "None";
+				List<WTableColumn> tableColumns = this.getTableColumns();//   renderer.getTableColumns();
+				if (layout != null)
+					columnName = layout[columnIndex].getColumnName();
+				else if (tableColumns != null)
+					columnName = tableColumns.get(columnIndex).getColumnName();
+
+				if (columnName == null)
+					columnName = "none";
+				
+				if (columnName.equals("M_Locator_ID")) 
+				{
+					if (isCellEditable)
+					{
+						MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), 1);
+						int warehouse = MLocator.get(Env.getCtx(), ((KeyNamePair)field).getKey() ).getM_Warehouse_ID(); 
+						locator.setOnly_Warehouse_ID(warehouse);
+						Combobox locatorCB = new Combobox(); //add combobox to the line
+						locator.fillComboBox(true, true, true, false, false); 
+
+						for (int i = 0; i < locator.getSize(); i++)
+						{
+							Object obj = locator.getElementAt(i);
+							locatorCB.appendItem(obj.toString(), obj);
+						}
+						//Start needs to default the locator to the locator field we are comming from
+						if (locatorCB.getItemCount() > 0)
+						{
+							int size = locatorCB.getItemCount();
+							for (int i = 0; i < size; i++)
+							{
+								MLocator Locator = (MLocator) locator.getElementAt(i);
+								
+								if (Locator.getM_Locator_ID() == ((KeyNamePair)field).getKey() )
+								{
+									locatorCB.setSelectedIndex(i);
+									continue;
+								} 
+							}
+						 }
+						locatorCB.addEventListener(Events.ON_SELECT, this);
+						ZkCssHelper.appendStyle(locatorCB, "width: 96%;");
+						listcell.appendChild(locatorCB);
+						
+					} else
+					{
+						listcell.setLabel(field.toString());
+						listcell.setValue(field.toString());
+	
+				}
+				}else			
+			
 			{
 				listcell.setLabel(field.toString());
 				listcell.setValue(field.toString());
 			}
 		}
+	}
 		else
 		{
 			listcell.setLabel("");
@@ -652,6 +726,18 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 				if (((Datebox)source).getValue() != null)
 					value = new Timestamp(((Datebox)source).getValue().getTime());
 			}
+			// update the value from the combobox
+			else if (source instanceof Combobox)  
+			{
+				MLocator l = null;
+				Comboitem listitem = ((Combobox)source).getSelectedItem();
+
+				if (listitem != null)
+					l = (MLocator) listitem.getValue();
+				
+				value =	new KeyNamePair(l.get_ID(), l.getValue());
+			}
+			
 			else if (source instanceof Textbox)
 			{
 				value = ((Textbox)source).getValue();
@@ -865,7 +951,15 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			m_tableColumns.get(index).setColumnClass(classType);
 		}
 	}
-	
+
+	public void setColumnName(int index, String columnName) {
+		if (index >= 0 && index < m_tableColumns.size())
+		{
+			String s = getColumnName(index);
+			m_tableColumns.get(index).setColumnName(columnName);
+
+		}
+	}	
 	public List<WTableColumn> getTableColumns() {
 		return Collections.unmodifiableList(m_tableColumns);
 	}

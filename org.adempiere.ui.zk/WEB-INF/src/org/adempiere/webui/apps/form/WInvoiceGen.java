@@ -188,6 +188,7 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
         cmbDocType.setSelectedIndex(0);
 
         form.getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "InvGenerateSel"));//@@
+        form.getMiniTable().setwListBoxName("CreateInvoiceManual");
 	}	//	fillPicks
 
 	/**
@@ -203,7 +204,6 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 			if (comp instanceof North)
 				((North)comp).setOpen(false);
 		}
-		form.getMiniTable().repaint();
 		form.invalidate();
 	}   //  executeQuery
 

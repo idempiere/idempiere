@@ -358,6 +358,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			hideCell(lbl4);
 			hideCell(txt4);
 		}
+		this.contentPanel.repaint();
+		this.contentPanel.renderHeaderColumnWidth();
 		return true;
 	}
 
@@ -533,7 +535,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 				if (colClass != null)
 				{
-					list.add(new ColumnInfo(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass));
+					list.add(new ColumnInfo(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass, null, columnName));
 					if (log.isLoggable(Level.FINEST)) log.finest("Added Column=" + columnName);
 				}
 				else if (isDisplayed && DisplayType.isLookup(displayType))

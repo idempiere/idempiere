@@ -23,6 +23,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.compiere.apps.IStatusBar;
+import org.compiere.grid.CreateFrom.DocumentType;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MCurrency;
@@ -45,6 +46,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.minigrid.ColumnInfo;
 
 /**
  *  Create Invoice Transactions from PO Orders or Receipt
@@ -148,12 +150,17 @@ public abstract class CreateFromInvoice extends CreateFrom
 	protected ArrayList<KeyNamePair> loadRMAData(int C_BPartner_ID) {
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 
-		String sqlStmt = "SELECT r.M_RMA_ID, r.DocumentNo || '-' || r.Amt from M_RMA r "
-				+ "WHERE ISSOTRX='N' AND r.DocStatus in ('CO', 'CL') "
-				+ "AND r.C_BPartner_ID=? "
-				+ "AND NOT EXISTS (SELECT * FROM C_Invoice inv "
-				+ "WHERE inv.M_RMA_ID=r.M_RMA_ID AND inv.DocStatus IN ('CO', 'CL'))";
-
+		String sqlStmt = "SELECT r.M_RMA_ID, r.DocumentNo || '-' || r.Amt from M_RMA r ";
+				if (isSOTrx) {
+					sqlStmt += "WHERE ISSOTRX='Y' ";
+				} else {
+					sqlStmt += "WHERE ISSOTRX='N' ";
+				}
+				sqlStmt += "AND r.DocStatus in ('CO', 'CL')  ";
+				sqlStmt += "AND r.C_BPartner_ID=?  ";
+				sqlStmt += "AND NOT EXISTS (SELECT * FROM C_Invoice inv  ";
+				sqlStmt += "WHERE inv.M_RMA_ID=r.M_RMA_ID AND inv.DocStatus IN ('CO', 'CL')) ";
+				
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -193,22 +200,21 @@ public abstract class CreateFromInvoice extends CreateFrom
 		//
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT ");	//	QtyEntered
-		if(!isSOTrx)
-			sql.append("l.MovementQty-SUM(COALESCE(mi.Qty, 0)),");
-		else
-			sql.append("l.MovementQty-SUM(COALESCE(il.QtyInvoiced,0)),");
-		sql.append(" l.QtyEntered/l.MovementQty,"
-			+ " l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name),"			//  3..4
-			+ " l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line,"        //  5..9
-			+ " l.C_OrderLine_ID " //  10
-			+ " FROM M_InOutLine l "
-			);
+		sql.append(" l.movementqty -  COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.C_OrderLine_ID = l.C_OrderLine_ID) ,0),");
+		sql.append(" CASE WHEN l.movementqty=0 THEN 0 ELSE l.movementqty/l.movementqty END, ");
+		sql.append(" COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.processed = 'N' and il.C_OrderLine_ID = l.C_OrderLine_ID) ,0) , ");
+		sql.append(" COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.processed = 'Y' and il.C_OrderLine_ID = l.C_OrderLine_ID) ,0) , ");
+		sql.append(" l.MovementQty,");
+		sql.append(" l.C_UOM_ID,");
+		sql.append(" COALESCE(uom.UOMSymbol, uom.Name), loc.m_locator_id, loc.value, ");
+		sql.append(" l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, io.documentno, l.Line, l.C_OrderLine_ID ");
+		sql.append(" FROM M_InOutLine l ");
 		if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
 			sql.append(" LEFT OUTER JOIN C_UOM uom ON (l.C_UOM_ID=uom.C_UOM_ID)");
 		else
 			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language='")
 				.append(Env.getAD_Language(Env.getCtx())).append("')");
-
+		sql.append(" LEFT OUTER JOIN M_Locator loc ON (loc.m_locator_id = l.m_locator_id AND loc.ad_client_id = l.ad_client_id)");
 		sql.append(" LEFT OUTER JOIN M_Product p ON (l.M_Product_ID=p.M_Product_ID)")
 			.append(" INNER JOIN M_InOut io ON (l.M_InOut_ID=io.M_InOut_ID)");
 		if(!isSOTrx)
@@ -219,8 +225,8 @@ public abstract class CreateFromInvoice extends CreateFrom
 
 			.append(" WHERE l.M_InOut_ID=? AND l.MovementQty<>0 ")
 			.append("GROUP BY l.MovementQty, l.QtyEntered/l.MovementQty, "
-				+ "l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name), "
-				+ "l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line, l.C_OrderLine_ID ");
+					+ "l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name), loc.m_locator_id, loc.value, "
+					+ "l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, io.documentno, l.Line, l.C_OrderLine_ID ");
 		if(!isSOTrx)
 			sql.append(" HAVING l.MovementQty-SUM(COALESCE(mi.Qty, 0)) <>0");
 		else
@@ -237,23 +243,26 @@ public abstract class CreateFromInvoice extends CreateFrom
 			{
 				Vector<Object> line = new Vector<Object>(7);
 				line.add(Boolean.FALSE);           //  0-Selection
-				BigDecimal qtyMovement = rs.getBigDecimal(1);
+
 				BigDecimal multiplier = rs.getBigDecimal(2);
-				BigDecimal qtyEntered = qtyMovement.multiply(multiplier);
-				line.add(qtyEntered);  //  1-Qty
-				KeyNamePair pp = new KeyNamePair(rs.getInt(3), rs.getString(4).trim());
-				line.add(pp);                           //  2-UOM
-				pp = new KeyNamePair(rs.getInt(5), rs.getString(6));
-				line.add(pp);                           //  3-Product
-				line.add(rs.getString(7));				// 4-VendorProductNo
-				int C_OrderLine_ID = rs.getInt(10);
-				if (rs.wasNull())
-					line.add(null);                     //  5-Order
-				else
-					line.add(new KeyNamePair(C_OrderLine_ID,"."));
+				line.add(rs.getBigDecimal(1).multiply(multiplier));    						// Qty
+				line.add(rs.getBigDecimal(3));
+				line.add(rs.getBigDecimal(4));
+				line.add(rs.getBigDecimal(5));
+				KeyNamePair pp = new KeyNamePair(rs.getInt(6), rs.getString(7).trim());
+				line.add(pp); 																// UOM
 				pp = new KeyNamePair(rs.getInt(8), rs.getString(9));
-				line.add(pp);                           //  6-Ship
-				line.add(null);                     	//  7-RMA
+				line.add(pp);                           									// Locator
+	
+				pp = new KeyNamePair(rs.getInt(10), rs.getString(11));
+				line.add(pp);                           									// Product
+				line.add(rs.getString(12));													// VendorProductNo
+				
+				pp = new KeyNamePair(InOut, rs.getString(13));
+				line.add(pp);																// document no
+
+				pp = new KeyNamePair(rs.getInt(14), rs.getString(15));						// Line no
+				line.add(pp);
 				data.add(line);
 			}
 		}
@@ -283,9 +292,17 @@ public abstract class CreateFromInvoice extends CreateFrom
 
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 	    StringBuilder sqlStmt = new StringBuilder();
-	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - COALESCE(rl.QtyInvoiced, 0), iol.M_Product_ID, p.Name, uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
+	    sqlStmt.append("SELECT ");
+	    sqlStmt.append(" rl.Qty - COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.m_rmaline_id = rl.m_rmaline_id) ,0),");
+	    sqlStmt.append(" CASE WHEN rl.Qty=0 THEN 0 ELSE rl.Qty/rl.Qty END, ");
+	    sqlStmt.append(" COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.processed = 'N' and il.m_rmaline_id = rl.m_rmaline_id) ,0) , ");
+	    sqlStmt.append(" COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.processed = 'Y' and il.m_rmaline_id = rl.m_rmaline_id) ,0) , ");
+	    sqlStmt.append(" rl.Qty,");
+	    sqlStmt.append(" uom.C_UOM_ID,");
+	    sqlStmt.append(" COALESCE(uom.UOMSymbol,uom.Name),");
+	    sqlStmt.append(" iol.M_Product_ID, p.Name, rl.M_RMALine_ID, rl.line, r.documentno ");
 	    sqlStmt.append("FROM M_RMALine rl INNER JOIN M_InOutLine iol ON rl.M_InOutLine_ID=iol.M_InOutLine_ID ");
-
+	    sqlStmt.append(" INNER JOIN M_RMA r ON (r.M_RMA_ID=rl.M_RMA_ID) ");
 	    if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
         {
 	        sqlStmt.append("LEFT OUTER JOIN C_UOM uom ON (uom.C_UOM_ID=iol.C_UOM_ID) ");
@@ -295,14 +312,24 @@ public abstract class CreateFromInvoice extends CreateFrom
 	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=iol.C_UOM_ID AND uom.AD_Language='");
 	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
         }
+	    sqlStmt.append(" LEFT OUTER JOIN M_Product_PO po ON (rl.M_Product_ID = po.M_Product_ID AND r.C_BPartner_ID = po.C_BPartner_ID) ");
 	    sqlStmt.append("LEFT OUTER JOIN M_Product p ON p.M_Product_ID=iol.M_Product_ID ");
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
 	    sqlStmt.append("AND rl.M_INOUTLINE_ID IS NOT NULL");
 
 	    sqlStmt.append(" UNION ");
 
-	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - rl.QtyDelivered, 0, c.Name, uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
+	    sqlStmt.append("SELECT ");
+	    sqlStmt.append(" rl.Qty - COALESCE(rl.QtyInvoiced, 0),");
+	    sqlStmt.append(" CASE WHEN rl.Qty=0 THEN 0 ELSE rl.Qty/rl.Qty END, ");
+	    sqlStmt.append(" COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.processed = 'N' and il.m_rmaline_id = rl.m_rmaline_id) ,0) , ");
+	    sqlStmt.append(" COALESCE((SELECT sum(il.qtyinvoiced) FROM C_InvoiceLine il where il.processed = 'Y' and il.m_rmaline_id = rl.m_rmaline_id) ,0) , ");
+	    sqlStmt.append(" rl.Qty,");
+	    sqlStmt.append(" uom.C_UOM_ID,");
+	    sqlStmt.append(" COALESCE(uom.UOMSymbol, uom.Name ), ");
+	    sqlStmt.append(" 0, c.Name, rl.M_RMALine_ID, rl.line, r.documentno  ");
 	    sqlStmt.append("FROM M_RMALine rl INNER JOIN C_Charge c ON c.C_Charge_ID = rl.C_Charge_ID ");
+	    sqlStmt.append(" INNER JOIN M_RMA r ON (r.M_RMA_ID=rl.M_RMA_ID) ");
 	    if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
         {
 	        sqlStmt.append("LEFT OUTER JOIN C_UOM uom ON (uom.C_UOM_ID=100) ");
@@ -312,6 +339,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language='");
 	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
         }
+	    sqlStmt.append(" LEFT OUTER JOIN M_Product_PO po ON (rl.M_Product_ID = po.M_Product_ID AND r.C_BPartner_ID = po.C_BPartner_ID) ");
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
 	    sqlStmt.append("AND rl.C_Charge_ID IS NOT NULL");
 
@@ -328,16 +356,19 @@ public abstract class CreateFromInvoice extends CreateFrom
             {
 	            Vector<Object> line = new Vector<Object>(7);
 	            line.add(Boolean.FALSE);   // 0-Selection
+	            line.add(rs.getBigDecimal(1));  // 1-Qty
 	            line.add(rs.getBigDecimal(3));  // 1-Qty
+	            line.add(rs.getBigDecimal(4));  // 1-Qty
+	            line.add(rs.getBigDecimal(5));  // 1-Qty
 	            KeyNamePair pp = new KeyNamePair(rs.getInt(6), rs.getString(7));
 	            line.add(pp); // 2-UOM
-	            pp = new KeyNamePair(rs.getInt(4), rs.getString(5));
+	            pp = new KeyNamePair(rs.getInt(8), rs.getString(9));
 	            line.add(pp); // 3-Product
-	            line.add(null); //4-Vendor Product No
-	            line.add(null); //5-Order
-	            pp = new KeyNamePair(rs.getInt(1), rs.getString(2));
-	            line.add(null);   //6-Ship
-	            line.add(pp);   //7-RMA
+//	            line.add(null); //4-Vendor Product No
+	            pp = new KeyNamePair(RMAReceipt, rs.getString(12));
+	            line.add(pp); 								//Document No
+	            pp = new KeyNamePair(rs.getInt(10), rs.getString(11));
+	            line.add(pp); // line no
 	            data.add(line);
             }
 	    }
@@ -365,13 +396,16 @@ public abstract class CreateFromInvoice extends CreateFrom
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
-		miniTable.setColumnClass(1, BigDecimal.class, false);        //  1-Qty
-		miniTable.setColumnClass(2, String.class, true);        //  2-UOM
-		miniTable.setColumnClass(3, String.class, true);        //  3-Product
-		miniTable.setColumnClass(4, String.class, true);        //  4-VendorProductNo
-		miniTable.setColumnClass(5, String.class, true);        //  5-Order
-		miniTable.setColumnClass(6, String.class, true);        //  6-Ship
-		miniTable.setColumnClass(7, String.class, true);        //  7-Invoice
+		miniTable.setColumnClass(1, BigDecimal.class, false);   //  1-Qty
+		miniTable.setColumnClass(2, BigDecimal.class, true);   	//  Qty
+		miniTable.setColumnClass(3, BigDecimal.class, true);   	//  Qty
+		miniTable.setColumnClass(4, BigDecimal.class, true);   	//  Qty
+		miniTable.setColumnClass(5, String.class, true);        //  2-UOM
+		miniTable.setColumnClass(6, String.class, true);        //  3-Product
+		miniTable.setColumnClass(7, String.class, true);        //  4-VendorProductNo
+		miniTable.setColumnClass(8, String.class, true);        //  5-Order
+		miniTable.setColumnClass(9, String.class, true);        //  6-Ship
+		miniTable.setColumnClass(10, String.class, true);        //  7-Invoice
 		//  Table UI
 		miniTable.autoSize();
 	}
@@ -420,28 +454,34 @@ public abstract class CreateFromInvoice extends CreateFrom
 				//  variable values
 				BigDecimal QtyEntered = (BigDecimal)miniTable.getValueAt(i, 1);              //  1-Qty
 
-				KeyNamePair pp = (KeyNamePair)miniTable.getValueAt(i, 2);   //  2-UOM
+				KeyNamePair pp = (KeyNamePair)miniTable.getValueAt(i, 5);   //  5-UOM
 				int C_UOM_ID = pp.getKey();
 				//
-				pp = (KeyNamePair)miniTable.getValueAt(i, 3);               //  3-Product
+				pp = (KeyNamePair)miniTable.getValueAt(i, 6);               //  6-Product
 				int M_Product_ID = 0;
 				if (pp != null)
 					M_Product_ID = pp.getKey();
 				//
 				int C_OrderLine_ID = 0;
-				pp = (KeyNamePair)miniTable.getValueAt(i, 5);               //  5-OrderLine
-				if (pp != null)
-					C_OrderLine_ID = pp.getKey();
 				int M_InOutLine_ID = 0;
-				pp = (KeyNamePair)miniTable.getValueAt(i, 6);               //  6-Shipment
-				if (pp != null)
-					M_InOutLine_ID = pp.getKey();
-				//
 				int M_RMALine_ID = 0;
-				pp = (KeyNamePair)miniTable.getValueAt(i, 7);               //  7-RMALine
-				if (pp != null)
-					M_RMALine_ID = pp.getKey();
 
+				pp =  (KeyNamePair) miniTable.getValueAt(i, 8);  // get the document type
+				int docType = pp.getKey();
+				pp = (KeyNamePair) miniTable.getValueAt(i, 9); // get the ID 
+
+				switch (docType) {
+				case Sales:	    
+					C_OrderLine_ID = pp.getKey();
+					break;
+				case RMAReceipt:	
+					M_RMALine_ID = pp.getKey();
+					break;
+				case InOut:
+					M_InOutLine_ID = pp.getKey();
+					break;
+				}	
+				
 				//	Precision of Qty UOM
 				int precision = 2;
 				if (M_Product_ID != 0)
@@ -565,7 +605,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 					//RMA Info
 					if (rmaLine != null)
 					{
-						invoiceLine.setRMALine(rmaLine);		//	overwrites
+						invoiceLine.setRMALine(rmaLine, QtyEntered);		//	overwrites
 					}
 					else
 						log.fine("No RMA Line");
@@ -614,20 +654,18 @@ public abstract class CreateFromInvoice extends CreateFrom
 		return true;
 	}   //  saveInvoice
 
-	protected Vector<String> getOISColumnNames()
+/*	
+	protected Vector<String> getOISColumnNames( DocumentType docType, Boolean withLocation)
 	{
 		//  Header Info
-	    Vector<String> columnNames = new Vector<String>(7);
-	    columnNames.add(Msg.getMsg(Env.getCtx(), "Select"));
-	    columnNames.add(Msg.translate(Env.getCtx(), "Quantity"));
-	    columnNames.add(Msg.translate(Env.getCtx(), "C_UOM_ID"));
-	    columnNames.add(Msg.translate(Env.getCtx(), "M_Product_ID"));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "VendorProductNo", isSOTrx));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "C_Order_ID", isSOTrx));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "M_InOut_ID", isSOTrx));
-	    columnNames.add(Msg.getElement(Env.getCtx(), "M_RMA_ID", isSOTrx));
-
+		ColumnInfo[] columns = getlayout(docType, withLocation);
+		Vector<String> columnNames = new Vector<String>(columns.length);
+		
+		for (int i = 0; i < columns.length; i++)
+		{
+			columnNames.add(columns[i].getColHeader());
+		}
 	    return columnNames;
 	}
-
+*/
 }

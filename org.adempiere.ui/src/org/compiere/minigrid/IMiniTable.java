@@ -24,6 +24,8 @@ public interface IMiniTable
 	
 	public void setColumnClass (int index, Class<?> classType, boolean readOnly);
 	
+	public void setColumnClass (int index, Class<?> classType, boolean readOnly,String header, String columnName);
+	
 	public void loadTable(ResultSet rs);
 	
 	public void loadTable(PO[] pos);

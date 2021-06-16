@@ -1324,10 +1324,18 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	}	//	copyLinesFrom
 	// end MZ
 
+	/** This function memics the orignal setRMALine function with the orignal parameters
+	 * 
+	 */
+	public void setRMALine(MRMALine rmaLine)
+	{
+		setRMALine(rmaLine, null);
+	}	
+	
 	/**
 	 * @param rmaline
 	 */
-	public void setRMALine(MRMALine rmaLine)
+	public void setRMALine(MRMALine rmaLine,  BigDecimal updateQty)
 	{
 		// Check if this invoice is CreditMemo - teo_sarca [ 2804142 ]
 		if (!getParent().isCreditMemo())
@@ -1344,8 +1352,16 @@ public class MInvoiceLine extends X_C_InvoiceLine
         setC_Tax_ID(rmaLine.getC_Tax_ID());
         setPrice(rmaLine.getAmt());
         BigDecimal qty = rmaLine.getQty();
-        if (rmaLine.getQtyInvoiced() != null)
-        	qty = qty.subtract(rmaLine.getQtyInvoiced());
+        
+        if (updateQty == null) {
+        	qty = rmaLine.getQty();
+            if (rmaLine.getQtyInvoiced() != null)
+            	qty = qty.subtract(rmaLine.getQtyInvoiced());        	
+        } 
+        else
+        {
+        	qty = updateQty;
+        }
         setQty(qty);
         setLineNetAmt();
         setTaxAmt();

@@ -24,6 +24,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -42,13 +43,17 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.grid.CreateFromShipment;
+import org.compiere.minigrid.ColumnInfo;
+import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLocatorLookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MProduct;
+import org.compiere.model.MWarehouse;
 
 import static org.compiere.model.SystemIDs.*;
 
@@ -117,7 +122,10 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	protected WLocatorEditor locatorField = new WLocatorEditor();
 	protected Label upcLabel = new Label();
 	protected WStringEditor upcField = new WStringEditor();
-
+	protected Label warehouseLabel = new Label();
+	protected WStringEditor warehouseField = new WStringEditor();
+	protected Button updateLocatorBtn = new Button();
+	
 	private Grid parameterStdLayout;
 
 	private int noOfParameterColumn;
@@ -140,7 +148,9 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		//  load Locator
 		MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), p_WindowNo);
 		locatorField = new WLocatorEditor ("M_Locator_ID", true, false, true, locator, p_WindowNo);
-
+		locatorField.getComponent().addEventListener(Events.ON_CHANGE,this);
+		locatorField.addValueChangeListener(this);
+		
 		initBPartner(false);
 		bPartnerField.addValueChangeListener(this);
 		locatorLabel.setMandatory(true);
@@ -148,22 +158,71 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		upcField = new WStringEditor ("UPC", false, false, true, 10, 30, null, null);
 		upcField.getComponent().addEventListener(Events.ON_CHANGE, this);
 
+		warehouseField = new WStringEditor ("Warehouse_ID", false, false, false, 40, 40, null, null);
+		updateLocatorBtn.setLabel(Msg.getMsg(Env.getCtx(), "Update locator"));
+		updateLocatorBtn.setImage(ThemeManager.getThemeResource("images/Locator16.png"));
+		updateLocatorBtn.setDisabled(true);
+		updateLocatorBtn.addActionListener(this);
+		window.getConfirmPanel().addComponentsCenter(updateLocatorBtn);			
+
 		return true;
 	}   //  dynInit
 	
 	protected void zkInit() throws Exception
 	{
-    	boolean isRMAWindow = ((getGridTab().getAD_Window_ID() == WINDOW_RETURNTOVENDOR) || (getGridTab().getAD_Window_ID() == WINDOW_CUSTOMERRETURN)); 
+		DocumentType docType = DocumentType.Purchase; 
+		boolean isRMAWindow = ((getGridTab().getAD_Window_ID() == WINDOW_RETURNTOVENDOR) || (getGridTab().getAD_Window_ID() == WINDOW_CUSTOMERRETURN)); 
 
+    	int C_Order_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_Order_ID");	
+    	int C_Invoice_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_Invoice_ID"); 
+    	
+       	if (C_Order_ID == 0 && C_Invoice_ID == 0 )
+    	{
+    		orderField.setEnabled(true);
+    		invoiceField.setEnabled(true);
+    	}
+    	else if (C_Invoice_ID == 0)
+    	{
+    		int cnt = orderField.getItemCount();
+    		
+    		for (int i = 0; i < cnt; i++)
+    		{
+    			if (orderField.getItemAtIndex(i).getValue().hashCode() == C_Invoice_ID)
+    			{
+    				orderField.setSelectedIndex(i);
+    				//execute an on_change event, as this is not done in standard zk
+    				Events.postEvent(Events.ON_CHANGE, orderField, null);
+    			}
+    		}    		
+    	} 
+    	else if (C_Order_ID == 0)
+    	{
+    		int cnt = invoiceField.getItemCount();
+    		
+    		for (int i = 0; i < cnt; i++)
+    		{
+    			if (invoiceField.getItemAtIndex(i).getValue().hashCode() == C_Invoice_ID)
+    			{
+    				invoiceField.setSelectedIndex(i);
+    				//execute an on_change event, as this is not done in standard zk
+    				Events.postEvent(Events.ON_CHANGE, invoiceField, null);
+    			}
+    		}
+    	}		
+		
+		
     	bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
 		orderLabel.setText(Msg.getElement(Env.getCtx(), "C_Order_ID", false));
 		invoiceLabel.setText(Msg.getElement(Env.getCtx(), "C_Invoice_ID", false));
         rmaLabel.setText(Msg.translate(Env.getCtx(), "M_RMA_ID"));
 		locatorLabel.setText(Msg.translate(Env.getCtx(), "M_Locator_ID"));
-        sameWarehouseCb.setText(Msg.getMsg(Env.getCtx(), "FromSameWarehouseOnly", true));
+		warehouseLabel.setText(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));  
+		sameWarehouseCb.setText(Msg.getMsg(Env.getCtx(), "FromSameWarehouseOnly", true));
         sameWarehouseCb.setTooltiptext(Msg.getMsg(Env.getCtx(), "FromSameWarehouseOnly", false));
         upcLabel.setText(Msg.getElement(Env.getCtx(), "UPC", false));
-
+        warehouseField.setValue(MWarehouse.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID")).getName());
+        warehouseField.setReadWrite(false);
+        
 		Vlayout vlayout = new Vlayout();
 		ZKUpdateUtil.setVflex(vlayout, "min");
 		ZKUpdateUtil.setWidth(vlayout, "100%");
@@ -182,16 +241,24 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		if (bPartnerField != null) {
 			row.appendChild(bPartnerField.getComponent());
 			bPartnerField.fillHorizontal();
+			bPartnerField.setReadWrite(false);
 		}
     	if (! isRMAWindow) {
     		row.appendChild(orderLabel.rightAlign());
     		row.appendChild(orderField);
     		ZKUpdateUtil.setHflex(orderField, "1");
     	}
-		
+    	if (isRMAWindow) {
+            // Add RMA document selection to panel
+            row.appendChild(rmaLabel.rightAlign());
+            row.appendChild(rmaField);
+            ZKUpdateUtil.setHflex(rmaField, "1");
+            docType = DocumentType.RMAReceipt;
+    	}
 		row = rows.newRow();
-		row.appendChild(locatorLabel.rightAlign());
-		row.appendChild(locatorField.getComponent());
+		row.appendChild(warehouseLabel.rightAlign());
+		row.appendChild(warehouseField.getComponent());
+    	
     	if (! isRMAWindow) {
     		row.appendChild(invoiceLabel.rightAlign());
     		row.appendChild(invoiceField);
@@ -199,6 +266,9 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
     	}
         
 		row = rows.newRow();
+		row.appendChild(locatorLabel.rightAlign());
+		row.appendChild(locatorField.getComponent());
+
 		row.appendChild(new Space());
 		row.appendChild(sameWarehouseCb);
 		
@@ -206,6 +276,8 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		row.appendChild(upcLabel.rightAlign());
 		row.appendChild(upcField.getComponent());
 		ZKUpdateUtil.setHflex(upcField.getComponent(), "1");
+		loadEmpty(docType);  //this enable showing the headers in the listbox
+		
     	if (isRMAWindow) {
             // Add RMA document selection to panel
             row.appendChild(rmaLabel.rightAlign());
@@ -220,6 +292,18 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		}
 	}
 
+	/**
+	 *  Load Data - Empty
+	 *  @param C_Order_ID Order
+	 *  @param forInvoice true if for invoice vs. delivery qty
+	 *  this data is used for algning the numerics fields
+	 */
+	protected void loadEmpty (DocumentType docType)
+	{
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		loadTableOIS(data, docType);	
+	}   //  LoadEmpty		
+	
 	private boolean 	m_actionActive = false;
 	
 	/**
@@ -323,9 +407,29 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
         	int bpId = bPartnerField.getValue() == null?0:((Integer)bPartnerField.getValue()).intValue();
         	initBPOrderDetails(bpId, false);
         }	
+		//updateLocatorBtn update all selected lines with the location from the header
+        else if (e.getTarget().equals(updateLocatorBtn))
+        {
+        	preferredLocator_ID  =  locatorField.getValue()!=null?((Integer)locatorField.getValue()).intValue():0;
+        	String display = locatorField.getDisplay()!= null ? locatorField.getDisplay(): "";
+        	Object value =	new KeyNamePair(preferredLocator_ID,display);
+        	ListModelTable model =   window.getWListbox().getModel();
+        	int rows = model.getSize();
+			for (int i = 0; i < rows; i++) {
+				if ((boolean)model.getValueAt(i, 0)){
+					model.setValueAt(value, i, 6);
+				}
+			}
+        }
 		else if (e.getTarget().equals(upcField.getComponent()))
 		{
 			checkProductUsingUPC();
+		}
+		
+		if (window.getWListbox().getModel().getSize() > 0){
+			updateLocatorBtn.setDisabled(false);
+		} else {
+			updateLocatorBtn.setDisabled(true);
 		}
 		
 		m_actionActive = false;
@@ -370,7 +474,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		ListModelTable model = (ListModelTable) window.getWListbox().getModel();
 		KeyNamePair kp;
 		for (int i=0; i<model.getRowCount(); i++) {
-			kp = (KeyNamePair)model.getValueAt(i, 4);
+			kp = (KeyNamePair)model.getValueAt(i, 7);
 			if (kp.getKey()==M_Product_ID) {
 				return(i);
 			}
@@ -521,7 +625,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	 */
 	protected void loadOrder (int C_Order_ID, boolean forInvoice, int M_Locator_ID)
 	{
-		loadTableOIS(getOrderData(C_Order_ID, forInvoice, M_Locator_ID));
+		loadTableOIS(getOrderData(C_Order_ID, forInvoice, M_Locator_ID), DocumentType.Purchase);
 	}   //  LoadOrder
 	
 	/**
@@ -531,7 +635,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	 */
 	protected void loadRMA (int M_RMA_ID, int M_Locator_ID)
 	{
-		loadTableOIS(getRMAData(M_RMA_ID, M_Locator_ID));
+		loadTableOIS(getRMAData(M_RMA_ID, M_Locator_ID), DocumentType.RMAReceipt);
 	}
 		
 	/**
@@ -541,27 +645,41 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	 */
 	protected void loadInvoice (int C_Invoice_ID, int M_Locator_ID)
 	{
-		loadTableOIS(getInvoiceData(C_Invoice_ID, M_Locator_ID));
+		loadTableOIS(getInvoiceData(C_Invoice_ID, M_Locator_ID), DocumentType.Invoice);
 	}
 		
 	/**
 	 *  Load Order/Invoice/Shipment data into Table
 	 *  @param data data
 	 */
-	protected void loadTableOIS (Vector<?> data)
+	protected void loadTableOIS (Vector<?> data, DocumentType docType)
 	{
 		window.getWListbox().clear();
+		window.getWListbox().setLayout(getlayout(window.getWListbox(), docType));
 		
 		//  Remove previous listeners
 		window.getWListbox().getModel().removeTableModelListener(window);
 		//  Set Model
 		ListModelTable model = new ListModelTable(data);
 		model.addTableModelListener(window);
-		window.getWListbox().setData(model, getOISColumnNames());
-		//
+		window.getWListbox().setData(model, getOISColumnNames(docType));
+		window.getWListbox().setwListBoxName("WCreateFromShipmentUI");
 		
-		configureMiniTable(window.getWListbox());
+		//int adWindowID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "_WinInfo_AD_Window_ID");
+		window.getWListbox().setadWindowID(0); //adWindowID);
+		window.getWListbox().renderHeaderColumnWidth();
 	}   //  loadOrder
+	
+	protected ColumnInfo[] getlayout(IMiniTable miniTable, DocumentType docType) 
+	{
+		ColumnInfo[] columns = getlayout(docType);
+		for (int i = 0; i < columns.length; i++)
+		{
+			miniTable.setColumnClass(i, columns[i].getColClass(), columns[i].isReadOnly(), 	columns[i].getColHeader());
+		}
+
+		return columns;
+	}
 	
 	public void showWindow()
 	{

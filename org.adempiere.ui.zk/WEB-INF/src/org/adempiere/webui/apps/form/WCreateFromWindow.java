@@ -53,7 +53,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 	private Panel parameterPanel = new Panel();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private StatusBarPanel statusBar = new StatusBarPanel();
-	private WListbox dataTable = ListboxFactory.newDataTable();
+	private WListbox dataTable = ListboxFactory.newDataTableAutoSize();//.newDataTable();
 
 	private boolean isCancel;
 	
@@ -150,6 +150,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 						save(trxName);
 					}
 				});
+				dataTable.saveColumnWidth();
 				dispose();
 			}
 			catch (Exception ex)
@@ -160,6 +161,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		//  Cancel
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
+			dataTable.saveColumnWidth();
 			isCancel = true;
 			dispose();
 		}

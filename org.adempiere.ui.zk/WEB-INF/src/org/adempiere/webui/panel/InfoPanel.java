@@ -51,6 +51,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
+import org.adempiere.webui.component.ListboxFactory;
 import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
@@ -92,6 +93,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -179,7 +181,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * {@link #syncSelectedAfterRequery()}
 	*/
 	protected boolean isRequeryByRunSuccessProcess = false;
-	
+
+	protected int m_WindowID;
+	protected int p_AD_InfoWindow_ID;
 	
     public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, String value,
@@ -455,7 +459,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**	Logger			*/
 	protected transient CLogger log = CLogger.getCLogger(getClass());
 
-	protected WListbox contentPanel = new WListbox();
+	protected WListbox contentPanel = ListboxFactory.newDataTable(); 
 	protected Paging paging;
 	protected int pageNo;
 	protected int m_count;
@@ -863,7 +867,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	            model.addTableModelListener(this);
 	            model.setMultiple(p_multipleSelection);
 	            contentPanel.setData(model, null);
-
+	            contentPanel.renderHeaderColumnWidth();
 	            pageNo = 0;
         	}
         	else
@@ -874,11 +878,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         			paging.setActivePage(0);
         			pageNo = 0;
         		}
-	            model = new ListModelTable(readLine(0, -1));
-	            model.setSorter(this);
-	            model.addTableModelListener(this);
-	            model.setMultiple(p_multipleSelection);
-	            contentPanel.setData(model, null);
+        		renderHeader(new ListModelTable(readLine(0, -1)));
         	}
         }
         else
@@ -889,11 +889,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     			paging.setActivePage(0);
     			pageNo = 0;
     		}
+        	renderHeader(new ListModelTable(new ArrayList<Object>()));
         	model = new ListModelTable(new ArrayList<Object>());
         	model.setSorter(this);
             model.addTableModelListener(this);
             model.setMultiple(p_multipleSelection);
             contentPanel.setData(model, null);
+            contentPanel.setWindowNo(0);
+            contentPanel.renderHeaderColumnWidth();
+            
         }
         restoreSelectedInPage();
         updateStatusBar (m_count);
@@ -902,6 +906,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         
         if (paging != null && paging.getParent() == null)
         	insertPagingComponent();
+    }
+    
+    public void renderHeader(ListModelTable model) {
+        //model = new ListModelTable(readLine(0, -1));
+	    model.setSorter(this);
+	    model.addTableModelListener(this);
+	    model.setMultiple(p_multipleSelection);
+	    contentPanel.setData(model, null);
+	    // we only want to render the header of the wListBox the first time
+	 //   if (model.getSize() == 0)
+	    {
+	    	contentPanel.renderHeaderColumnWidth();	
+	    }
+	    
     }
 
     protected void updateStatusBar (int no){
@@ -1835,7 +1853,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  Customize dialog
 	 *	To be overwritten by concrete classes
 	 */	
-	protected void customize()					{}
+	protected void customize()					
+	{
+		 contentPanel.setwListBoxName(this.getClass().toString().substring(this.getClass().toString().lastIndexOf(".") + 1));
+	     contentPanel.saveColumnWidth();
+	}
 	/**
 	 *  Has Customize (false)
 	 *	To be overwritten by concrete classes
@@ -1914,6 +1936,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         
             if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_OK)))
             {
+            	this.contentPanel.saveColumnWidth();
                 onOk();
             }
             else if (event.getTarget() == contentPanel && event.getName().equals(Events.ON_SELECT))
@@ -1973,6 +1996,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             }
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_CANCEL)))
             {
+            	this.contentPanel.saveColumnWidth();
             	m_cancel = true;
                 dispose(false);
             }
@@ -1989,11 +2013,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             }
     		else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_CUSTOMIZE)))
     		{
-            	if (!contentPanel.getChildren().isEmpty() && contentPanel.getSelectedRowKey()!=null)
-                {
-            		customize();
-                }
-    		}
+           		customize();
+        	}
             //
             else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_ZOOM)))
             {
@@ -2103,6 +2124,24 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             }
     }  //  onEvent
 
+    public int getADinfoWindowID() {
+		return m_infoWindowID;
+	}
+
+	public void setADinfoWindowID(int p_infoWindowID) {
+		m_infoWindowID = p_infoWindowID;
+	}
+
+	
+	
+    public int getFromADWindowID() {
+		return m_WindowID;
+	}
+
+	public void setFromADWindowID(int p_WindowID) {
+		m_WindowID = p_WindowID;
+	}   
+    
     public static final int VK_ENTER          = '\r';
     public static final int VK_ESCAPE         = 0x1B;
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
@@ -2487,7 +2526,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         		restoreSelectedInPage();
         	}
         	// IDEMPIERE-1334 after refresh, restore prev selected item end
-        	updateSubcontent ();
+        	//updateSubcontent ();
         }
     	finally
     	{
@@ -2586,7 +2625,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
         m_ok = ok;
-
+        saveWlistBoxColumnWidth(this.getFirstChild());
         //  End Worker
         if (isLookup())
         {
@@ -2598,6 +2637,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        this.detach();
     }   //  dispose
 
+    /* This saves the width of the columns for all wListboxes on a given form
+     * 
+     */
+    public void saveWlistBoxColumnWidth(Component comp){
+
+        if(comp instanceof WListbox){
+        	((WListbox)comp).saveColumnWidth();
+        }
+
+        List<Component> list = comp.getChildren();
+        for(Component child:list){
+        	saveWlistBoxColumnWidth(child);
+        }
+     } 
+    
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		updateListSelected();
 		WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;

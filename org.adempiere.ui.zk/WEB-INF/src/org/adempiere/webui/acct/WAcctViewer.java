@@ -18,6 +18,7 @@
 package org.adempiere.webui.acct;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,12 +48,14 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MColumn;
@@ -168,7 +171,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 	private Tabbox tabbedPane = new Tabbox();
 
-	private Listbox table = new Listbox();
+	private WListbox tableData = new WListbox();
 	private Paging paging = new Paging();
 
 	private VerticalBox displayPanel = new VerticalBox();
@@ -539,16 +542,20 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		Center resultCenter = new Center();
 		resultPanel.appendChild(resultCenter);
-		ZKUpdateUtil.setHflex(table, "1");
-		ZKUpdateUtil.setVflex(table, true);
+		ZKUpdateUtil.setHflex(tableData, "1");
+		ZKUpdateUtil.setVflex(tableData, true);
 		//ZKUpdateUtil.setHeight(table, "99%");
 		//table.setStyle("position: absolute;");
-		resultCenter.appendChild(table);
-		ZKUpdateUtil.setHflex(table, "1");
+		resultCenter.appendChild(tableData);
+		ZKUpdateUtil.setHflex(tableData, "1");
 		//ZKUpdateUtil.setVflex(table, "1");
-		table.addEventListener(Events.ON_DOUBLE_CLICK, this);
+		tableData.addEventListener(Events.ON_DOUBLE_CLICK, this);
+		tableData.setLayout(getlayout());
+		tableData.setName("accountViewer");
+		tableData.repaint();
+		tableData.renderHeaderColumnWidth();
 		if (ClientInfo.isMobile())
-			table.setSizedByContent(true);
+			tableData.setSizedByContent(true);
 
 		pagingPanel = new South();
 		resultPanel.appendChild(pagingPanel);
@@ -789,9 +796,9 @@ public class WAcctViewer extends Window implements EventListener<Event>
 				end = paging.getTotalSize();
 			List<ArrayList<Object>> list = m_queryData.subList(start, end);
 			ListModelTable model = new ListModelTable(list);
-			table.setModel(model);
+			tableData.setModel(model);
 		}
-		else if (Events.ON_DOUBLE_CLICK.equals(e.getName()) && source instanceof Listbox && source == table) {
+		else if (Events.ON_DOUBLE_CLICK.equals(e.getName()) && source instanceof Listbox && source == tableData) {
 			actionZoomFactAcct();
 		}
 	} // onEvent
@@ -1078,7 +1085,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		ListModelTable listmodeltable = new ListModelTable(list);
 
-		if (table.getListhead() == null)
+		if (tableData.getListhead() == null)
 		{
 			Listhead listhead = new Listhead();
 			listhead.setSizable(true);
@@ -1104,12 +1111,12 @@ public class WAcctViewer extends Window implements EventListener<Event>
 				listhead.appendChild(listheader);
 			}
 
-			table.appendChild(listhead);
+			tableData.appendChild(listhead);
 		}
 		// Elaine 2008/07/28
 		else
 		{
-			Listhead listhead = table.getListhead();
+			Listhead listhead = tableData.getListhead();
 
 			// remove existing column header
 			listhead.getChildren().clear();
@@ -1133,11 +1140,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		}
 		//
 
-		table.getItems().clear();
+		tableData.getItems().clear();
 
-		table.setItemRenderer(new WListItemRenderer());
-		table.setModel(listmodeltable);
-		table.setSizedByContent(true);
+		tableData.setItemRenderer(new WListItemRenderer());
+		tableData.setModel(listmodeltable);
+		tableData.setSizedByContent(true);
 
 		resultPanel.invalidate();
 
@@ -1145,6 +1152,38 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		statusLine.setValue(" " + Msg.getMsg(Env.getCtx(), "ViewerOptions"));
 	}   //  actionQuery
 
+	//Added to support the rendering heading of the listboxes
+	public ColumnInfo[] getlayout() 
+	{
+		ColumnInfo[] layout = new ColumnInfo[] {};
+		
+		layout = new ColumnInfo[] {
+				new ColumnInfo(Msg.translate(Env.getCtx(), "AD_Org_ID"),	"AD_Org_ID", 			String.class, 		true,	true, "", "AD_Org_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Account_ID"),	"Account_ID",			String.class,	 	true,	true, "", "Account_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "AmtSourceDr"),	"AmtSourceDr", 			BigDecimal.class, 	true,	true, "", "AmtSourceDr"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "AmtSourceCr"), 	"AmtSourceCr", 			BigDecimal.class, 	true,	true, "", "AmtSourceCr"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "DateTrx"), 		"DATE", 				Timestamp.class,	true,	true, "", "DateTrx"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "C_Currency_ID"),"C_Currency_ID",	    String.class, 		true,	true, "", "C_Currency_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "AmtSourceDr"),	"AmtSourceDr", 			BigDecimal.class, 	true,	true, "", "AmtSourceDr"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "AmtSourceCr"), 	"AmtSourceCr", 			BigDecimal.class, 	true,	true, "", "AmtSourceCr"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Rate"), 	    "Rate", 			    BigDecimal.class, 	true,	true, "", "Rate"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "M_Product_ID"),	"M_Product_ID", 		String.class, 		true,	true, "", "M_Product_ID"),   
+				new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"),"C_BPartner_ID",		String.class, 		true,	true, "", "C_BPartner_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "C_Project_ID"),	"C_Project_ID", 		String.class, 		true,	true, "", "C_Project_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "C_Campaign_ID"),"C_Campaign_ID",		String.class, 		true,	true, "", "C_Campaign_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "DateAcct"), 	"DATE", 				Timestamp.class,	true,	true, "", "DateAcct"), 		
+				new ColumnInfo(Msg.translate(Env.getCtx(), "C_UOM_ID"),		"C_UOM_ID", 			String.class, 		true,	true, "", "C_UOM_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Qty"),			"Qty", 					BigDecimal.class, 	true,	true, "", "Qty"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "AD_Table_ID"),	"AD_Table_ID", 			String.class, 		true,	true, "", "AD_Table_ID"),   
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Record_ID"),	"Record_ID", 			String.class, 		true,	true, "", "Record_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Fact_Acct_ID"),	"Fact_Acct_ID", 		String.class, 		true,	true, "", "Fact_Acct_ID"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "Description"),	"Description", 			String.class, 		true,	true, "", "Description"),
+				new ColumnInfo(Msg.translate(Env.getCtx(), "PostingType"),	"PostingType", 			String.class, 		true,	true, "", "PostingType")};
+		return layout;	
+	}	
+	
+	
+	
 	/**
 	 *  Document selection
 	 */
@@ -1342,12 +1381,12 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	// Elaine 2009/07/29
 	private void actionZoom()
 	{
-		int selected = table.getSelectedIndex();
+		int selected = tableData.getSelectedIndex();
 		if(selected == -1) return;
 
 		int tableIdColumn = m_rmodel.getColumnIndex("AD_Table_ID");
 		int recordIdColumn = m_rmodel.getColumnIndex("Record_ID");
-		ListModelTable model = (ListModelTable) table.getListModel();
+		ListModelTable model = (ListModelTable) tableData.getListModel();
 		KeyNamePair tabknp = (KeyNamePair) model.getDataAt(selected, tableIdColumn);
 		Integer recint = (Integer) model.getDataAt(selected, recordIdColumn);
 		if (tabknp != null && recint != null) {
@@ -1360,11 +1399,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	//
 	
 	private void actionZoomFactAcct() {
-		int selected = table.getSelectedIndex();
+		int selected = tableData.getSelectedIndex();
 		if(selected == -1) return;
 
 		int factAcctIdColumn = m_rmodel.getColumnIndex("Fact_Acct_ID");
-		ListModelTable model = (ListModelTable) table.getListModel();
+		ListModelTable model = (ListModelTable) tableData.getListModel();
 		Integer faint = (Integer) model.getDataAt(selected, factAcctIdColumn);
 		if (faint != null) {
 			int fact_acct_ID = faint.intValue();

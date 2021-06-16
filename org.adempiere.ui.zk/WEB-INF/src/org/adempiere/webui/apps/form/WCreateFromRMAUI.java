@@ -158,14 +158,14 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	
 	protected void loadRMA()
 	{
-		loadTableOIS(getRMAData());
+		loadTableOIS(getRMAData(), true);
 	}
 	
 	/**
 	 *  Load Order/Invoice/Shipment data into Table
 	 *  @param data data
 	 */
-	protected void loadTableOIS (Vector<?> data)
+	protected void loadTableOIS (Vector<?> data, Boolean withLocation) 
 	{
 		window.getWListbox().clear();
 		

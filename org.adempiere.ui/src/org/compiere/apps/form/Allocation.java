@@ -24,6 +24,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.minigrid.ColumnInfo;
+import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
@@ -214,17 +216,17 @@ public class Allocation
 	public void setPaymentColumnClass(IMiniTable paymentTable, boolean isMultiCurrency)
 	{
 		int i = 0;
-		paymentTable.setColumnClass(i++, Boolean.class, false);         //  0-Selection
-		paymentTable.setColumnClass(i++, Timestamp.class, true);        //  1-TrxDate
-		paymentTable.setColumnClass(i++, String.class, true);           //  2-Value
+		paymentTable.setColumnClass(i++, Boolean.class,   false, "Select", "Select");         //  0-Selection
+		paymentTable.setColumnClass(i++, Timestamp.class, true,  "Date",  "Date");        //  1-TrxDate
+		paymentTable.setColumnClass(i++, String.class,    true,  "DocumentNo",  "DocumentNo");           //  2-Value
 		if (isMultiCurrency)
 		{
-			paymentTable.setColumnClass(i++, String.class, true);       //  3-Currency
-			paymentTable.setColumnClass(i++, BigDecimal.class, true);   //  4-PayAmt
+			paymentTable.setColumnClass(i++, String.class,     true, "TrxCurrency", "TrxCurrency");       //  3-Currency
+			paymentTable.setColumnClass(i++, BigDecimal.class, true, "Amount", "Amount");   //  4-PayAmt
 		}
-		paymentTable.setColumnClass(i++, BigDecimal.class, true);       //  5-ConvAmt
-		paymentTable.setColumnClass(i++, BigDecimal.class, true);       //  6-ConvOpen
-		paymentTable.setColumnClass(i++, BigDecimal.class, false);      //  7-Allocated
+		paymentTable.setColumnClass(i++, BigDecimal.class, true,  "ConvertedAmount",  "ConvertedAmount");       //  5-ConvAmt
+		paymentTable.setColumnClass(i++, BigDecimal.class, true,  "OpenAmt",  "OpenAmt");       //  6-ConvOpen
+		paymentTable.setColumnClass(i++, BigDecimal.class, false, "AppliedAmt", "AppliedAmt");      //  7-Allocated
 //		paymentTable.setColumnClass(i++, BigDecimal.class, true);      	//  8-Multiplier
 
 		//
@@ -359,23 +361,23 @@ public class Allocation
 	public void setInvoiceColumnClass(IMiniTable invoiceTable, boolean isMultiCurrency)
 	{
 		int i = 0;
-		invoiceTable.setColumnClass(i++, Boolean.class, false);         //  0-Selection
-		invoiceTable.setColumnClass(i++, Timestamp.class, true);        //  1-TrxDate
-		invoiceTable.setColumnClass(i++, String.class, true);           //  2-Value
+		invoiceTable.setColumnClass(i++, Boolean.class,   false, "Select", "Select");         //  0-Selection
+		invoiceTable.setColumnClass(i++, Timestamp.class, true,  "Date",  "Date");        //  1-TrxDate
+		invoiceTable.setColumnClass(i++, String.class,    true,  "DocumentNo",  "DocumentNo");           //  2-Value
 		if (isMultiCurrency)
 		{
-			invoiceTable.setColumnClass(i++, String.class, true);       //  3-Currency
-			invoiceTable.setColumnClass(i++, BigDecimal.class, true);   //  4-Amt
+			invoiceTable.setColumnClass(i++, String.class, true, "TrxCurrency", "TrxCurrency");       //  3-Currency
+			invoiceTable.setColumnClass(i++, BigDecimal.class, true, "Amount", "Amount");   //  4-Amt
 		}
-		invoiceTable.setColumnClass(i++, BigDecimal.class, true);       //  5-ConvAmt
-		invoiceTable.setColumnClass(i++, BigDecimal.class, true);       //  6-ConvAmt Open
-		invoiceTable.setColumnClass(i++, BigDecimal.class, false);      //  7-Conv Discount
-		invoiceTable.setColumnClass(i++, BigDecimal.class, false);      //  8-Conv WriteOff
-		invoiceTable.setColumnClass(i++, BigDecimal.class, false);      //  9-Conv OverUnder
-		invoiceTable.setColumnClass(i++, BigDecimal.class, true);		//	10-Conv Applied
+		invoiceTable.setColumnClass(i++, BigDecimal.class, true,  "ConvertedAmount",  "ConvertedAmount");       //  5-ConvAmt
+		invoiceTable.setColumnClass(i++, BigDecimal.class, true,  "OpenAmt",  "OpenAmt");       //  6-ConvAmt Open
+		invoiceTable.setColumnClass(i++, BigDecimal.class, false, "Discount", "Discount");      //  7-Conv Discount
+		invoiceTable.setColumnClass(i++, BigDecimal.class, false, "WriteOff", "WriteOff");      //  8-Conv WriteOff
+		invoiceTable.setColumnClass(i++, BigDecimal.class, false, "AppliedAmt", "AppliedAmt");      //  9-Conv OverUnder
+		invoiceTable.setColumnClass(i++, BigDecimal.class, true,  "OverUnderAmt",  "OverUnderAmt");		//	10-Conv Applied
 //		invoiceTable.setColumnClass(i++, BigDecimal.class, true);      	//  10-Multiplier
 		//  Table UI
-		invoiceTable.autoSize();
+		invoiceTable.autoSize(); 
 	}
 	
 	public void calculate(boolean isMultiCurrency)

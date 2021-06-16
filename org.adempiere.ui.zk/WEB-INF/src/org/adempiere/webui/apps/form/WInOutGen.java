@@ -189,6 +189,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		cmbDocType.setSelectedIndex(0);
 
 		form.getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "InOutGenerateSel"));//@@
+		form.getMiniTable().setwListBoxName("CreateShipmentManualt");
 	}	//	fillPicks
 
 	/**
@@ -204,7 +205,6 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 			if (comp instanceof North)
 				((North)comp).setOpen(false);
 		}
-		form.getMiniTable().repaint();
 		form.invalidate();
 	}   //  executeQuery
 

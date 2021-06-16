@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -30,16 +31,24 @@ import org.adempiere.webui.event.TableValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
+import org.compiere.model.MWListboxCustomization;
 import org.compiere.model.MRole;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 
 /**
  * Replacement for the Swing client minigrid component
@@ -85,6 +94,13 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	// F3P: support IDColumn for selection
 	private boolean allowIDColumnForReadWrite = false;
 
+	private String wListBoxName = null; 
+	private int WindowNo = 0;
+	
+	private int p_adWindowID;
+	private int p_adInfowindowID;
+	private int p_adFormID;	
+	
 	/**
 	 * Default constructor.
 	 *
@@ -99,6 +115,18 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		setItemRenderer(rowRenderer);
 		setModel(new ListModelTable());
 	}
+	
+	public WListbox(int    adWindowID,
+    		int    adInfowindowID,
+    		int    adFormID,
+    		String WListBoxName)
+	{
+		this();
+		setwListBoxName(WListBoxName);
+		setadWindowID(adWindowID);
+		setadInfowindowID(adInfowindowID);
+		setadFormID(adFormID);
+	}	
 
 	/**
 	 * Set the data model and column header names for the Listbox.
@@ -119,6 +147,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		}
 	    // assign the model and renderer
 	    this.setModel(model);
+
 	    if (rowRenderer != null)
 	    {
 	    	getModel().setNoColumns(columnNames.size());
@@ -132,8 +161,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		    	rowRenderer.renderListHead(head);
 	    	}
 	    }
-
-	    repaint();
+    	repaint();
 	}
 
     public void setModel(ListModel<?> model)
@@ -337,6 +365,35 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		return;
 	}   //  setColumnReadOnly
 
+	
+    /**
+     *  Prepare Table and return SQL required to get resultset to
+     *  populate table
+     *
+     * @param layout            array of column info
+     * @param from              SQL FROM content
+     * @param where             SQL WHERE content
+     * @param multiSelection    multiple selections
+     * @param tableName         multiple selections
+     * @param addAccessSQL      specifies whether to addAcessSQL
+     * @return  SQL statement to use to get resultset to populate table
+     */
+    public String prepareTable(ColumnInfo[] layout,
+            String from,
+            String where,
+            int adWindowID,
+            int adInfowindowID,
+            int adFormID,
+            boolean multiSelection,
+            String tableName,
+            boolean addAccessSQL)
+    {	
+        setadFormID(adFormID);
+        setadInfowindowID(adInfowindowID);
+        setadWindowID(adWindowID);
+    	return prepareTable(layout, from, where, multiSelection, tableName, addAccessSQL);
+    }	
+	
 	/**
 	 *  Prepare Table and return SQL required to get resultset to
 	 *  populate table.
@@ -378,15 +435,22 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
         int columnIndex = 0;
         StringBuilder sql = new StringBuilder ("SELECT ");
         setLayout(layout);
-
+        if (getwListBoxName() == null) 
+        {
+	        if (from.indexOf(" ") > 0)
+	        	setwListBoxName(from.substring(0, from.indexOf(" ") ));
+	        else
+	        	setwListBoxName(from);
+        }
         clearColumns();
-
+        WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
         setMultiSelection(multiSelection);
 
         //  add columns & sql
         for (columnIndex = 0; columnIndex < layout.length; columnIndex++)
         {
             //  create sql
+        	renderer.setColumnName(columnIndex, layout[columnIndex].getColumnName());
             if (columnIndex > 0)
             {
                 sql.append(", ");
@@ -533,12 +597,40 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
         WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
 
         renderer.setColumnClass(index, classType);
-
+ 
         m_modelHeaderClass.add(classType);
 
         return;
     }
+    
+	public void setColumnClass (int index, Class<?> classType, boolean readOnly,  String header, String columnName) {
 
+		WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
+
+		setColumnReadOnly(index, readOnly);
+
+		renderer.setColumnHeader(index, header);
+        renderer.setColumnName(index, columnName);
+		renderer.setColumnClass(index, classType);
+		
+		if (index < m_modelHeaderClass.size())
+			m_modelHeaderClass.set(index, classType);
+		else
+			m_modelHeaderClass.add(classType);
+ 		return;
+	}
+
+	
+	public void setColumnClass (int index, String columnName) {
+
+		WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
+        renderer.setColumnName(index, columnName);
+	
+ 		return;
+
+	}	
+	
+	
 	/**
 	 * Set the attributes of the column.
 	 *
@@ -673,9 +765,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		}
 		if (getShowTotals())
 			addTotals(m_layout);
-		
-		repaint();
-
 		if (logger.isLoggable(Level.CONFIG)) logger.config("Row(rs)=" + getRowCount());
 	}	//	loadTable
 
@@ -1105,7 +1194,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * @param layout	The new layout to set for the table
 	 * @see #getLayout()
 	 */
-	private void setLayout(ColumnInfo[] layout)
+	public void setLayout(ColumnInfo[] layout)
 	{
 		this.m_layout = layout;
 		getModel().setNoColumns(m_layout.length);
@@ -1256,4 +1345,149 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		this.allowIDColumnForReadWrite = allowIDColumnForReadWrite;
 	}
 
+	public void setwListBoxName(String wListBoxName) {
+		this.wListBoxName = wListBoxName;
+	}
+	
+	public String getwListBoxName() {
+		return wListBoxName;
+	}
+	
+	public int getWindowNo() {
+		return WindowNo;
+	}
+	
+	public void setWindowNo(int windowNo) {
+		this.WindowNo = windowNo;
+	}
+	
+	public int getadWindowID() {
+		return p_adWindowID;
+	}
+
+	public void setadWindowID(int adWindowID) {
+		this.p_adWindowID = adWindowID;
+	}
+
+	public int getadInfowindowID() {
+		return p_adInfowindowID;
+	}
+
+	public void setadInfowindowID(int adInfowindowID) {
+		this.p_adInfowindowID = adInfowindowID;
+	}
+	
+	public void setadFormID(int adFormID) {
+		this.p_adFormID = adFormID;
+	}
+
+	public int getadFormID() {
+		return p_adFormID;
+	}
+	
+	public String getColumnWidth(String columnName, List<String>columnList) {
+		
+		String width ="null";
+		String[] w;
+		
+		if (columnName != null)
+		{
+			for (String column : columnList)
+			{
+				if (column.startsWith(columnName)) {
+					w = column.trim().split("=");
+					return w[1];
+				}
+			}
+		}
+		
+		return width;
+	}	
+	
+	public void renderHeaderColumnWidth () {
+		List<WTableColumn> tableColumns = null;
+		String columnWidth = null;
+		
+		if (wListBoxName != null && getListHead() != null) {
+			MWListboxCustomization WListBoxCustomization =    MWListboxCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()),getadWindowID(), getadInfowindowID(), getadFormID(), wListBoxName, null);
+			Boolean isHasCustomizeData =  WListBoxCustomization != null &&
+					  WListBoxCustomization.getAD_WListboxCustomization_ID() > 0 &&
+					  WListBoxCustomization.getCustom() != null &&
+					  WListBoxCustomization.getCustom().trim().length() > 0;			
+			if (isHasCustomizeData) {
+				//String 
+				String[] custom = WListBoxCustomization.getCustom().trim().split(",");		
+				List<String>columnList = Arrays.asList(custom);
+				ColumnInfo[] Columns = this.getLayout();
+				if (Columns == null)
+				{
+					WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
+					tableColumns = renderer.getTableColumns();
+				}
+				Listhead listHead =  getListhead();
+				if (listHead != null && columnList.size() > 0) 
+				{
+					List<?> headers = listHead.getChildren();
+					int i = 0;
+					for(Object obj : headers)
+					{
+						Listheader header = (Listheader) obj;
+						if (Columns != null)
+						{
+							columnWidth = this.getColumnWidth(Columns[i].getColumnName(), columnList);	
+						} 
+						else if (tableColumns != null)
+						{
+							columnWidth = this.getColumnWidth(tableColumns.get(i).getColumnName(), columnList);
+						}
+						
+						if (!columnWidth.contains("null"))	
+							ZKUpdateUtil.setWidth(header, columnWidth);
+						i++; 
+					}
+				}
+			}
+		}
+	}
+	
+	
+	public boolean saveColumnWidth() {
+		boolean ok = false;
+		StringBuilder custom = new StringBuilder(); 
+		String width = "";
+		String colName = "";
+
+		WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
+		List<WTableColumn> tableColumns = renderer.getTableColumns();
+		Listhead listHead = getListHead();
+		ColumnInfo[] layout = getLayout();
+		
+		if (listHead != null && renderer != null) {
+			List<?> headers = listHead.getChildren();
+			int i = 0;
+			for(Object obj : headers)
+			{
+				Listheader header = (Listheader) obj;
+				width = header.getWidth();
+				//
+				//renderer.getTableColumns().
+				if (layout != null) {
+					colName = layout[i].getColumnName();
+				} else	if (tableColumns != null) {
+					colName = tableColumns.get(i).getColumnName();
+				}
+				custom.append (colName + "=");
+				if (width == null)  
+					width = "null";
+					custom.append(width);
+					custom.append(",");
+				i++;
+			}
+			if (custom.length() > 0)
+				custom.deleteCharAt(custom.length() - 1);
+			ok = MWListboxCustomization.saveData(Env.getCtx(), getwListBoxName(), Env.getAD_User_ID(Env.getCtx()),getadWindowID(), getadInfowindowID(), getadFormID(), custom.toString(), null);
+		}			
+	return ok;
+	}
+	
 }

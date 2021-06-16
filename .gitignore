@@ -32,3 +32,13 @@ External Plug-in Libraries
 **/.classpath
 org.idempiere.maven.to.p2/org.idempiere.webservice.client/.settings/
 **/org.eclipse.jdt.core.prefs
+migration/postgresql.properties
+migration/i8.2z/postgresql/psql.log
+migration/i8.2z/postgresql/build.xml
+migration/i8.2z/postgresql/build.log
+migration/i8.2/postgresql/psql.log
+migration/i8.2/postgresql/build.log
+migration/i8.1z/postgresql/psql.log
+migration/i8.1z/postgresql/dist/migration-0.5.zip
+migration/i8.1z/postgresql/build.xml
+migration/i8.1z/postgresql/build.log

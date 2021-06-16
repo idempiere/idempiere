@@ -52,9 +52,11 @@ import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.apps.form.Allocation;
+import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -155,7 +157,7 @@ public class WAllocation extends Allocation
 	private Label organizationLabel = new Label();
 	private WTableDirEditor organizationPick;
 	private int noOfColumn;
-	
+	private Button bSaveColumnWidth = new Button();	
 	/**
 	 *  Static Init
 	 *  @throws Exception
@@ -193,6 +195,9 @@ public class WAllocation extends Allocation
 		differenceField.setText("0");
 		differenceField.setReadonly(true);
 		differenceField.setStyle("text-align: right");
+		bSaveColumnWidth.setImage(ThemeManager.getThemeResource("images/Customize16.png"));
+		bSaveColumnWidth.setTooltiptext(Msg.getMsg(Env.getCtx(), "Save column width"));
+		bSaveColumnWidth.addActionListener(this);
 		allocateButton.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Process")));
 		allocateButton.addActionListener(this);
 		refreshButton.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
@@ -337,7 +342,6 @@ public class WAllocation extends Allocation
 			LayoutUtils.compactTo(parameterLayout, noOfColumn);
 		else
 			LayoutUtils.expandTo(parameterLayout, noOfColumn, true);
-		
 		// footer/allocations layout
 		South south = new South();
 		south.setBorder("none");
@@ -390,6 +394,7 @@ public class WAllocation extends Allocation
 			Hbox box = new Hbox();
 			box.setWidth("100%");
 			box.setPack("end");
+			box.appendChild(bSaveColumnWidth);
 			box.appendChild(allocateButton);
 			box.appendChild(refreshButton);
 			row.appendCellChild(box, 2);
@@ -398,6 +403,7 @@ public class WAllocation extends Allocation
 		{
 			Hbox box = new Hbox();
 			box.setPack("end");
+			box.appendChild(bSaveColumnWidth);
 			box.appendChild(allocateButton);
 			box.appendChild(refreshButton);
 			ZKUpdateUtil.setHflex(box, "1");
@@ -475,13 +481,53 @@ public class WAllocation extends Allocation
 		chargePick.setValue(Integer.valueOf(m_C_Charge_ID));
 		chargePick.addValueChangeListener(this);
 		
-	//  Charge
-			AD_Column_ID = 212213;    //  C_AllocationLine.C_Charge_ID
-			MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
-			DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
-			DocTypePick.setValue(Integer.valueOf(m_C_DocType_ID));
-			DocTypePick.addValueChangeListener(this);
+		//  Charge
+		AD_Column_ID = 212213;    //  C_AllocationLine.C_Charge_ID
+		MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
+		DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
+		DocTypePick.setValue(Integer.valueOf(m_C_DocType_ID));
+		DocTypePick.addValueChangeListener(this);
+					
+		//cph		
+		
+		paymentTable.setwListBoxName("paymentTable");
+		paymentTable.setadWindowID(0);
+		invoiceTable.setwListBoxName("invoiceTable");
+		invoiceTable.setadWindowID(0);
+		loadBPartner ();
+
+/*		
+		
+		
+
+		Vector<Vector<Object>> data = getPaymentData(multiCurrency.isSelected(), dateField.getValue(), paymentTable);
+		Vector<String> columnNames = getPaymentColumnNames(multiCurrency.isSelected());
 			
+		ListModelTable modelP = new ListModelTable(data);
+		modelP.addTableModelListener(this);
+		paymentTable.setData(modelP, columnNames);
+	
+		setPaymentColumnClass(paymentTable, multiCurrency.isSelected());
+		
+		
+		paymentTable.setadWindowID(0);
+		paymentTable.renderHeaderColumnWidth();
+		
+		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), invoiceTable);
+		columnNames = getInvoiceColumnNames(multiCurrency.isSelected());
+
+		//  Set Model
+		ListModelTable modelI = new ListModelTable(data);
+		modelI.addTableModelListener(this);
+		invoiceTable.setData(modelI, columnNames);
+		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected());
+		
+		
+		invoiceTable.renderHeaderColumnWidth();	
+	
+		*/
+		
+		
 	}   //  dynInit
 	
 	protected void onClientInfo()
@@ -541,6 +587,11 @@ public class WAllocation extends Allocation
 		else if (e.getTarget().equals(refreshButton))
 		{
 			loadBPartner();
+		}
+		else if (e.getTarget() == bSaveColumnWidth)
+		{
+			paymentTable.saveColumnWidth();
+			invoiceTable.saveColumnWidth();
 		}
 	}   //  actionPerformed
 
@@ -661,33 +712,20 @@ public class WAllocation extends Allocation
 		checkBPartner();
 		
 		Vector<Vector<Object>> data = getPaymentData(multiCurrency.isSelected(), dateField.getValue(), paymentTable);
-		Vector<String> columnNames = getPaymentColumnNames(multiCurrency.isSelected());
-		
-		paymentTable.clear();
-		
-		//  Remove previous listeners
-		paymentTable.getModel().removeTableModelListener(this);
-		
-		//  Set Model
 		ListModelTable modelP = new ListModelTable(data);
 		modelP.addTableModelListener(this);
+		Vector<String> columnNames = getPaymentColumnNames(multiCurrency.isSelected());
 		paymentTable.setData(modelP, columnNames);
 		setPaymentColumnClass(paymentTable, multiCurrency.isSelected());
-		//
-
+		paymentTable.renderHeaderColumnWidth();
+		
 		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), invoiceTable);
-		columnNames = getInvoiceColumnNames(multiCurrency.isSelected());
-		
-		invoiceTable.clear();
-		
-		//  Remove previous listeners
-		invoiceTable.getModel().removeTableModelListener(this);
-		
-		//  Set Model
 		ListModelTable modelI = new ListModelTable(data);
 		modelI.addTableModelListener(this);
+		columnNames = getInvoiceColumnNames(multiCurrency.isSelected());
 		invoiceTable.setData(modelI, columnNames);
 		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected());
+		invoiceTable.renderHeaderColumnWidth();
 		//
 		
 		calculate(multiCurrency.isSelected());

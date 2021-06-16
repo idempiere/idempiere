@@ -225,6 +225,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		
 		Button button = confirmPanelSel.getButton(ConfirmPanel.A_OK);
 		button.setEnabled(false);
+		miniTable.repaint();
+		miniTable.renderHeaderColumnWidth();
+		
 	}	//	dynInit
 
 	public void postQueryEvent() 
@@ -258,6 +261,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		//
 		if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
+			miniTable.saveColumnWidth();
 			dispose();
 			return;
 		}
@@ -281,6 +285,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
+			miniTable.saveColumnWidth();
 			genForm.validate();
 		}
 		else

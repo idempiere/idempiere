@@ -38,6 +38,8 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.grid.CreateFromInvoice;
+import org.compiere.minigrid.ColumnInfo;
+import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLookup;
@@ -160,7 +162,11 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		Row row = rows.newRow();
 		row.appendChild(bPartnerLabel.rightAlign());
 		if (bPartnerField != null)
+		{
 			row.appendChild(bPartnerField.getComponent());
+			bPartnerField.setReadWrite(false);
+		}
+			
 		row.appendChild(orderLabel.rightAlign());
 		ZKUpdateUtil.setHflex(orderField, "1");
 		row.appendChild(orderField);
@@ -187,6 +193,11 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		}
         
         hideEmptyRow(rows);
+        if (isSOTrx) {
+        	loadEmpty(DocumentType.Sales);  // add the wlistbox headers
+        } else {
+        	loadEmpty(DocumentType.Purchase);  // add the wlistbox headers
+        }
 	}
 
 	private void hideEmptyRow(org.zkoss.zul.Rows rows) {
@@ -387,37 +398,66 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	 */
 	protected void loadOrder (int C_Order_ID, boolean forInvoice)
 	{
-		loadTableOIS(getOrderData(C_Order_ID, forInvoice, isCreditMemo));
+		loadTableOIS(getOrderData(C_Order_ID, forInvoice, isCreditMemo) ,DocumentType.Sales);
 	}   //  LoadOrder
 	
 	protected void loadRMA (int M_RMA_ID)
 	{
-		loadTableOIS(getRMAData(M_RMA_ID));
+		loadTableOIS(getRMAData(M_RMA_ID), DocumentType.RMAReceipt);
 	}
 	
 	protected void loadShipment (int M_InOut_ID)
 	{
-		loadTableOIS(getShipmentData(M_InOut_ID));
+		loadTableOIS(getShipmentData(M_InOut_ID), DocumentType.InOut);
 	}
 	
 	/**
 	 *  Load Order/Invoice/Shipment data into Table
 	 *  @param data data
 	 */
-	protected void loadTableOIS (Vector<?> data)
+	protected void loadTableOIS (Vector<?> data, DocumentType docType)
 	{
+		ColumnInfo[] col = getlayout(window.getWListbox(), docType);
 		window.getWListbox().clear();
+		window.getWListbox().setLayout(col);
 		
 		//  Remove previous listeners
 		window.getWListbox().getModel().removeTableModelListener(window);
 		//  Set Model
 		ListModelTable model = new ListModelTable(data);
 		model.addTableModelListener(window);
-		window.getWListbox().setData(model, getOISColumnNames());
-		//
+		window.getWListbox().setData(model, getOISColumnNames(col));
 		
-		configureMiniTable(window.getWListbox());
+		window.getWListbox().setwListBoxName("WCreateFromInvoiceUI");
+		window.getWListbox().setadWindowID(0);
+		window.getWListbox().renderHeaderColumnWidth();
+		
 	}   //  loadOrder
+
+	
+	protected ColumnInfo[] getlayout(IMiniTable miniTable, DocumentType docType) 
+	{
+		ColumnInfo[] columns = getlayout(docType);
+		for (int i = 0; i < columns.length; i++)
+		{
+ 			if (columns[i] != null) 
+				miniTable.setColumnClass(i, columns[i].getColClass(), columns[i].isReadOnly(), 	columns[i].getColHeader());
+		}
+		return columns;
+	}
+	
+	
+	/**
+	 *  Load Data - Empty
+	 *  @param DocumentType, specify the headers to show in the listbox
+	 *  @param 
+	 *  
+	 */
+	protected void loadEmpty (DocumentType docType)
+	{
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		loadTableOIS(data, docType);	
+	} 	
 	
 	public void showWindow()
 	{

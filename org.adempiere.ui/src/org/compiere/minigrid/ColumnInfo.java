@@ -64,6 +64,17 @@ public class ColumnInfo
 		this(colHeader, colSQL, colClass, true, false, keyPairColSQL);
 	}   //  ColumnInfo
 
+	
+	
+	
+	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, String keyPairColSQL, String columnName)
+	{
+		this(colHeader, colSQL, colClass, true, false, keyPairColSQL, columnName);
+
+	}   //  ColumnInfo
+
+	
+	
 	/**
 	 *  Create Info Column (r/o and not color column)
 	 *
@@ -117,15 +128,25 @@ public class ColumnInfo
 		setKeyPairColSQL(keyPairColSQL);
 	}   //  ColumnInfo
 
+	
+	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, boolean readOnly, String columnName)
+	{
+		setColHeader(colHeader);
+		setColSQL(colSQL);
+		setColClass(colClass);
+		setReadOnly(readOnly);
+		setColumnName(columnName);
+	}   //  ColumnInfo		
+	
 
 	private String      m_colHeader;
 	private String      m_columnName;
 	private String      m_colSQL;
-	private Class<?>       m_colClass;
+	private Class<?>    m_colClass;
 	private boolean     m_readOnly;
 	private boolean     m_colorColumn;
 	private String      m_keyPairColSQL = "";
-	private GridField m_gridField;
+	private GridField   m_gridField;
 	
 	private String colDescription;
 	private int AD_Reference_ID;

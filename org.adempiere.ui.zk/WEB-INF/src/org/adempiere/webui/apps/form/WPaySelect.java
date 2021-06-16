@@ -128,6 +128,7 @@ public class WPaySelect extends PaySelect
 	@SuppressWarnings("unused")
 	private ProcessInfo m_pi;
 	private boolean m_isLock;
+	private Button bSaveColumnWidth = commandPanel.createButton(ConfirmPanel.A_CUSTOMIZE);
 	
 	/**
 	 *	Initialize Panel
@@ -199,6 +200,8 @@ public class WPaySelect extends PaySelect
 		bGenerate.addActionListener(this);
 		bCancel.addActionListener(this);
 		//
+		bSaveColumnWidth.addActionListener(this);
+
 		North north = new North();
 		north.setStyle("border: none;");
 		if (ClientInfo.isMobile())
@@ -303,6 +306,7 @@ public class WPaySelect extends PaySelect
 		center.appendChild(miniTable);
 		//
 		commandPanel.addButton(bGenerate);
+		commandPanel.addButton(bSaveColumnWidth);
 		commandPanel.getButton(ConfirmPanel.A_OK).setVisible(false);
 	}   //  jbInit
 
@@ -336,6 +340,10 @@ public class WPaySelect extends PaySelect
 		
 		miniTable.getModel().addTableModelListener(this);
 		//
+		miniTable.setwListBoxName("PaymentSelection");
+		miniTable.setadWindowID(0);
+		miniTable.repaint();
+		miniTable.renderHeaderColumnWidth();
 		fieldPayDate.setMandatory(true);
 		fieldPayDate.setValue(new Timestamp(System.currentTimeMillis()));
 	}   //  dynInit
@@ -424,7 +432,15 @@ public class WPaySelect extends PaySelect
 		}
 
 		else if (e.getTarget() == bCancel)
+		{
+			miniTable.saveColumnWidth();
 			dispose();
+		}
+		
+		else if (e.getTarget() == bSaveColumnWidth)
+		{
+			miniTable.saveColumnWidth();
+		}
 
 		//  Update Open Invoices
 		else if (e.getTarget() == fieldBPartner || e.getTarget() == bRefresh || e.getTarget() == fieldDtype
@@ -457,6 +473,10 @@ public class WPaySelect extends PaySelect
 		else if (e.getTarget().equals(chkOnePaymentPerInv))
 		{
 			m_isOnePaymentPerInvoice = chkOnePaymentPerInv.isChecked();
+		}
+		else if (e.getTarget() == bSaveColumnWidth)
+		{
+			miniTable.saveColumnWidth();
 		}
 	}   //  actionPerformed
 
