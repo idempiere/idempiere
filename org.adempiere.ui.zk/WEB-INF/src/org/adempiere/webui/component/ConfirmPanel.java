@@ -259,8 +259,15 @@ public final class ConfirmPanel extends Div
 
         // IDEMPIERE-1334 start
         pnlBtnCenter = new Hlayout();
-        pnlBtnCenter.setSclass("confirm-panel-center");
+        pnlBtnCenter.setSclass("z-valign-middle confirm-panel-center");
+        pnlBtnCenter.setStyle("height: 100%");
         // IDEMPIERE-1334 end
+
+        // Invisible Spacer. Lets Checkboxes appear vertically aligned to center.  
+        // TODO: Find a better solution that does not require the Div height to be hardcoded.
+        Div alignmentFix = new Div();
+        alignmentFix.setStyle("content: \"\"; display: inline-block; vertical-align: middle; height: 30px;");
+        pnlBtnCenter.appendChild(alignmentFix);
         
         this.appendChild(pnlBtnLeft);
         // IDEMPIERE-1334
@@ -343,6 +350,16 @@ public final class ConfirmPanel extends Div
     public void addComponentsCenter(Combobox cbb){
     	pnlBtnCenter.appendChild(cbb);
     }
+    
+    /**
+     * Add checkbox to center panel
+     * @param cb
+     * @param labelText
+     */
+    public void addComponentsCenter(Checkbox cb){
+    	pnlBtnCenter.appendChild(cb);
+    	
+    }    
     
     /**
      * return button of the specified id
@@ -529,8 +546,11 @@ public final class ConfirmPanel extends Div
         // IDEMPIERE-1334 start
         while (iter3.hasNext())
         {
-            Button button = (Button)iter3.next();
-            button.addEventListener(event, listener);
+        	Object element = iter3.next();
+        	if (element instanceof Button) 
+        	{
+	            ((Button)element).addEventListener(event, listener);
+        	}
         }
         // IDEMPIERE-1334 start
     }
