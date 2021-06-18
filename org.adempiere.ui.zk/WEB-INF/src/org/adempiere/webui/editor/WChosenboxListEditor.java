@@ -591,7 +591,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		private WChosenboxListEditor editor;
 		
 		protected CCacheListener(String tableName, WChosenboxListEditor editor) {
-			super(tableName, tableName, 0, true);
+			super(tableName, tableName+"|CCacheListener", 0, false);
 			this.editor = editor;
 		}
 

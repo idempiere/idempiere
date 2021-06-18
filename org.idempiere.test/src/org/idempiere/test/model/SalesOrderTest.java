@@ -34,7 +34,9 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MClient;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
@@ -44,10 +46,13 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPayment;
 import org.compiere.model.MProduct;
+import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MWarehouse;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -66,6 +71,10 @@ public class SalesOrderTest extends AbstractTestCase {
 	private final static int BP_JOE_BLOCK = 118;
 	private static final int PRODUCT_OAK_TREE = 123;
 	private static final int PRODUCT_AZALEA = 128;
+	private static final int PRODUCT_FERT50 = 136;
+	private static final int ORG_FERTILIZER = 50001;
+	private static final int WAREHOUSE_FERTILIZER = 50002;
+	private static final int LOCATOR_FERTILIZER = 50001;
 
 	@Test
 	/**
@@ -643,4 +652,86 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(0, line1.getQtyReserved().intValue());
 		assertEquals(1, line1.getQtyDelivered().intValue());
 	}
+
+	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4768
+	 */
+	public void testMultiASIShipment() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		MProduct fert50 = new MProduct(ctx, PRODUCT_FERT50, trxName);
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp past_month = TimeUtil.addMonths(today, -1);
+
+		MWarehouse wh = new MWarehouse(ctx, WAREHOUSE_FERTILIZER, trxName);
+		wh.setIsDisallowNegativeInv(true);
+		wh.saveEx();
+		CacheMgt.get().reset(MWarehouse.Table_Name, WAREHOUSE_FERTILIZER);
+		// Put the modified record into cache
+		MWarehouse.get(ctx, WAREHOUSE_FERTILIZER, trxName);
+
+		// create an ASI for Fertilizer Lot with Lot 1010  
+		MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+		asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
+		asi.setLot("1010");
+		asi.saveEx();
+
+		MStorageOnHand.add(ctx, WAREHOUSE_FERTILIZER, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, past_month, trxName);
+		MStorageOnHand.add(ctx, WAREHOUSE_FERTILIZER, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
+
+		// Expected to create two entries in storage because of the different dates
+		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, WAREHOUSE_FERTILIZER,
+				PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), null,
+				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
+				0, trxName);
+		assertEquals(2, storages.length);
+		for (int i = 0; i < storages.length; i++) {
+			MStorageOnHand storage = storages[i];
+			assertEquals(1, storage.getQtyOnHand().intValue());
+			if (i == 0)
+				assertEquals(past_month, storage.getDateMaterialPolicy());
+			else
+				assertEquals(today, storage.getDateMaterialPolicy());
+		}
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setAD_Org_ID(ORG_FERTILIZER);
+		order.setBPartner(MBPartner.get(ctx, BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_POS);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setM_Warehouse_ID(WAREHOUSE_FERTILIZER);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.setPaymentRule(MOrder.PAYMENTRULE_OnCredit); // this is the default, just making it explicit
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, PRODUCT_FERT50));
+		line1.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+		line1.setQty(new BigDecimal("2"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		// Expected to complete without problems
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(trxName);
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(2, line1.getQtyDelivered().intValue());
+		assertEquals(2, line1.getQtyInvoiced().intValue());
+
+		// Expected to have cleared both storage entries on shipment
+		storages = MStorageOnHand.getWarehouse(ctx, WAREHOUSE_FERTILIZER,
+				PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), null,
+				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
+				0, trxName);
+		assertEquals(0, storages.length);
+	}
+
 }

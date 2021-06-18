@@ -129,9 +129,6 @@ implements DocAction
 				return status;
 		}
 
-		// Set the definite document number after completed (if needed)
-		//setDefiniteDocumentNo();
-
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -143,10 +140,6 @@ implements DocAction
 		MAsset asset = MAsset.get(getCtx(), getA_Asset_ID(), get_TrxName());
 		asset.setA_Asset_RevalDate(this.getDateDoc());
 		asset.saveEx();
-		//rebuild depreciation
-		/* commented out by @win, deprecating existing design
-		assetwk.buildDepreciation();
-		*/
 		
         //	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
@@ -245,13 +238,4 @@ implements DocAction
 	{
 		return null;
 	}
-	/**	Before save
-	 *	@param	newRecord
-	 *	@return true on success
-	 */
-	//protected boolean beforeSave (boolean newRecord)
-	//{
-		//return true;
-	//}
- 
 }

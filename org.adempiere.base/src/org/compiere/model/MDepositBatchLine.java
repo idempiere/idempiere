@@ -36,6 +36,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
  
 /**
  *	Bank Statement Line Model
@@ -122,6 +123,11 @@ import org.compiere.util.Env;
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MDepositBatch parent = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+		if (newRecord && parent.isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_DepositBatch_ID"));
+			return false;
+		}
 		//	Set Line No
 		if (getLine() == 0)
 		{

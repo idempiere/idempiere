@@ -166,6 +166,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
 		} catch (Exception e) {}
 	}
 

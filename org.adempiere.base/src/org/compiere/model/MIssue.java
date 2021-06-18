@@ -337,9 +337,6 @@ public class MIssue extends X_AD_Issue
 		MIssueProject.get(this);	//	sets also Asset
 		MIssueSystem.get(this);
 		MIssueUser.get(this);
-		//
-	//	setR_IssueKnown_ID(0);
-	//	setR_Request_ID(0);
 		return createAnswer();
 	}	//	process
 	
@@ -406,130 +403,8 @@ public class MIssue extends X_AD_Issue
 	 */
 	public String report()
 	{
-		//if (true)
 		return null;
-		/*StringBuilder parameter = new StringBuilder("?");
-		if (getRecord_ID() == 0)	//	don't report
-			return "ID=0";
-		if (getRecord_ID() == 1)	//	new
-		{
-			parameter.append("ISSUE=");
-			HashMap<String,String> htOut = get_HashMap();
-			try		//	deserializing in create
-			{
-				ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-				ObjectOutput oOut = new ObjectOutputStream(bOut);
-				oOut.writeObject(htOut);
-				oOut.flush();
-				String hexString = Secure.convertToHexString(bOut.toByteArray());
-				parameter.append(hexString);
-			}
-			catch (Exception e) 
-			{
-				log.severe(e.getLocalizedMessage());
-				StringBuilder msgreturn = new StringBuilder("New-").append(e.getLocalizedMessage());
-				return msgreturn.toString();
-			}
-		}
-		else	//	existing
-		{
-			try
-			{
-				parameter.append("RECORDID=").append(getRecord_ID());
-				parameter.append("&DBADDRESS=").append(URLEncoder.encode(getDBAddress(), "UTF-8"));
-				parameter.append("&COMMENTS=").append(URLEncoder.encode(getComments(), "UTF-8"));
-			}
-			catch (Exception e) 
-			{
-				log.severe(e.getLocalizedMessage());
-				StringBuilder msgreturn = new StringBuilder("Update-").append(e.getLocalizedMessage());
-				return msgreturn.toString();
-			}
-		}
-		
-		InputStreamReader in = null;
-		String target = "http://dev1/wstore/issueReportServlet";
-		try		//	Send GET Request
-		{
-			StringBuilder urlString = new StringBuilder(target)
-				.append(parameter);
-			URL url = new URL (urlString.toString());
-			URLConnection uc = url.openConnection();
-			in = new InputStreamReader(uc.getInputStream());
-		}
-		catch (Exception e)
-		{
-			StringBuilder msg = new StringBuilder("Cannot connect to http://").append(target); 
-			if (e instanceof FileNotFoundException || e instanceof ConnectException)
-				msg.append("\nServer temporarily down - Please try again later");
-			else
-			{
-				msg.append("\nCheck connection - ").append(e.getLocalizedMessage());
-				log.log(Level.FINE, msg.toString());
-			}
-			return msg.toString();
-		}
-		return readResponse(in);*/
 	}	//	report
-	
-	/**
-	 * 	Read Response
-	 *	@param in input stream
-	 *	@return error message
-	 */
-	/*private String readResponse(InputStreamReader in)
-	{
-		StringBuilder sb = new StringBuilder();
-		int Record_ID = 0;
-		String ResponseText = null;
-		String RequestDocumentNo = null;
-		try		//	Get Answer
-		{
-			int c;
-			while ((c = in.read()) != -1)
-				sb.append((char)c);
-			in.close();
-			log.fine(sb.toString());
-			String clear = URLDecoder.decode(sb.toString(), "UTF-8");
-			log.fine(clear);
-			//	Interpret Data
-			StringTokenizer st = new StringTokenizer(clear, DELIMITER);
-			while (st.hasMoreElements())
-			{
-				String pair = st.nextToken();
-				try
-				{
-					int index = pair.indexOf('=');
-					if (pair.startsWith("RECORDID="))
-					{
-						String info = pair.substring(index+1);
-						Record_ID = Integer.parseInt(info);
-					}
-					else if (pair.startsWith("RESPONSE="))
-						ResponseText = pair.substring(index+1);
-					else if (pair.startsWith("DOCUMENTNO="))
-						RequestDocumentNo = pair.substring(index+1);
-				}
-				catch (Exception e)
-				{
-					log.warning(pair + " - " + e.getMessage());
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			log.log(Level.FINE, "", ex);
-			return "Reading-" + ex.getLocalizedMessage();
-		}
-
-		if (Record_ID != 0)
-			setRecord_ID(Record_ID);
-		if (ResponseText != null)
-			setResponseText(ResponseText);
-		if (RequestDocumentNo != null)
-			setRequestDocumentNo(RequestDocumentNo);
-		return null;
-	}	//	readResponse*/
 	
 	/**
 	 * 	String Representation

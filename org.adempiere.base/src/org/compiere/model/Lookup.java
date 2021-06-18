@@ -112,14 +112,12 @@ public abstract class Lookup extends AbstractListModel<Object>
 			if (p_data.contains(anObject) || anObject == null)
 			{
 				m_selectedObject = anObject;
-			//	Log.trace(s_ll, "Lookup.setSelectedItem", anObject);
 			}
 			else
 			{
 				m_selectedObject = null;
 				if (log.isLoggable(Level.FINE)) log.fine(getColumnName() + ": setSelectedItem - Set to NULL");
 			}
-		//	if (m_worker == null || !m_worker.isAlive())
 			fireContentsChanged(this, -1, -1);
 		}
 	}   //  setSelectedItem
@@ -274,8 +272,6 @@ public abstract class Lookup extends AbstractListModel<Object>
 			m_tempData = new Object[size];
 			//  We need to do a deep copy, so store it in Array
 			p_data.toArray(m_tempData);
-		//	for (int i = 0; i < size; i++)
-		//		m_tempData[i] = p_data.get(i);
 		}
 
 
@@ -292,16 +288,6 @@ public abstract class Lookup extends AbstractListModel<Object>
 			obj = m_selectedObject;
 		}
 
-		// comment next code because of bug [ 2053140 ] Mandatory lookup fields autofilled (badly)
-		//  if nothing selected & mandatory, select first
-		// if (obj == null && mandatory  && p_data.size() > 0)
-		// {
-		// 	obj = p_data.get(0);
-		// 	m_selectedObject = obj;
-		// 	log.finest(getColumnName() + ": SelectedValue SetToFirst=" + obj);
-		// //	fireContentsChanged(this, -1, -1);
-		// }
-		
 		m_loaded = true; 
 		fireContentsChanged(this, 0, p_data.size());
 		if (p_data.size() == 0) {

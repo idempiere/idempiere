@@ -24,13 +24,68 @@ import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
-public class MStorageProvider extends X_AD_StorageProvider {
+public class MStorageProvider extends X_AD_StorageProvider implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5889682671195395536L;
+	private static final long serialVersionUID = -7444967391781941193L;
 
+	/**	Cache							*/
+	static private ImmutableIntPOCache<Integer,MStorageProvider> s_cache = new ImmutableIntPOCache<Integer,MStorageProvider>(Table_Name, 10);
+
+	/**
+	 * 	Get Storage Provider (cached) (immutable)
+	 *	@param AD_StorageProvider_ID id
+	 *	@return Storage Provider
+	 */
+	public static MStorageProvider get (int AD_StorageProvider_ID)
+	{
+		return get(Env.getCtx(), AD_StorageProvider_ID);
+	}
+	
+	/**
+	 * 	Get Storage Provider (cached) (immutable)
+	 *	@param ctx context
+	 *	@param AD_StorageProvider_ID id
+	 *	@return Storage Provider
+	 */
+	public static MStorageProvider get (Properties ctx, int AD_StorageProvider_ID)
+	{
+		Integer key = Integer.valueOf(AD_StorageProvider_ID);
+		MStorageProvider retValue = s_cache.get(ctx, key, e -> new MStorageProvider(ctx, e));
+		if (retValue == null)
+		{
+			retValue = new MStorageProvider (ctx, AD_StorageProvider_ID, null);
+			if (retValue.get_ID() == AD_StorageProvider_ID)
+			{
+				s_cache.put(key, retValue, e -> new MStorageProvider(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
+		}
+		return retValue;
+	}	//	get
+
+	/**
+	 * Get updateable copy of MStorageProvider from cache
+	 * @param ctx
+	 * @param AD_StorageProvider_ID
+	 * @param trxName
+	 * @return MStorageProvider
+	 */
+	public static MStorageProvider getCopy(Properties ctx, int AD_StorageProvider_ID, String trxName)
+	{
+		MStorageProvider rt = get(AD_StorageProvider_ID);
+		if (rt != null)
+			rt = new MStorageProvider(ctx, rt, trxName);		
+		return rt;
+	}
+	
 	public MStorageProvider(Properties ctx, int AD_StorageProvider_ID, String trxName) {
 		super(ctx, AD_StorageProvider_ID, trxName);
 	}
@@ -39,6 +94,37 @@ public class MStorageProvider extends X_AD_StorageProvider {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MStorageProvider(MStorageProvider copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MStorageProvider(Properties ctx, MStorageProvider copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MStorageProvider(Properties ctx, MStorageProvider copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 
 	 * @return {@link IAttachmentStore}
@@ -167,4 +253,19 @@ public class MStorageProvider extends X_AD_StorageProvider {
 		}
 		return store;
 	}
+
+	public static int getDefaultStorageProviderID() {
+		final String sql = "SELECT AD_StorageProvider_ID FROM AD_StorageProvider WHERE IsDefault='Y' AND IsActive='Y' ORDER BY AD_StorageProvider_ID";
+		return DB.getSQLValueEx(null, sql);
+	}
+
+	@Override
+	public MStorageProvider markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }

@@ -106,12 +106,7 @@ public class MInOutLine extends X_M_InOutLine
 		super (ctx, M_InOutLine_ID, trxName);
 		if (M_InOutLine_ID == 0)
 		{
-		//	setLine (0);
-		//	setM_Locator_ID (0);
-		//	setC_UOM_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);
-		//	setMovementQty (Env.ZERO);
 			setConfirmedQty(Env.ZERO);
 			setPickedQty(Env.ZERO);
 			setScrappedQty(Env.ZERO);
@@ -510,8 +505,8 @@ public class MInOutLine extends X_M_InOutLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		log.fine("");
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOutLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
 		}
 		if (getParent().pendingConfirmations()) {
@@ -616,37 +611,6 @@ public class MInOutLine extends X_M_InOutLine
 			MAttributeSetInstance asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
 			setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 		}
-	//	if (getC_Charge_ID() == 0 && getM_Product_ID() == 0)
-	//		;
-
-		/**	 Qty on instance ASI
-		if (getM_AttributeSetInstance_ID() != 0)
-		{
-			MProduct product = getProduct();
-			int M_AttributeSet_ID = product.getM_AttributeSet_ID();
-			boolean isInstance = M_AttributeSet_ID != 0;
-			if (isInstance)
-			{
-				MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
-				isInstance = mas.isInstanceAttribute();
-			}
-			//	Max
-			if (isInstance)
-			{
-				MStorage storage = MStorage.get(getCtx(), getM_Locator_ID(),
-					getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
-				if (storage != null)
-				{
-					BigDecimal qty = storage.getQtyOnHand();
-					if (getMovementQty().compareTo(qty) > 0)
-					{
-						log.warning("Qty - Stock=" + qty + ", Movement=" + getMovementQty());
-						log.saveError("QtyInsufficient", "=" + qty);
-						return false;
-					}
-				}
-			}
-		}	/**/
 
 		/* Carlos Ruiz - globalqss
 		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge

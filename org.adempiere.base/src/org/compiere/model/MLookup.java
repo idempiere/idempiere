@@ -90,12 +90,7 @@ public final class MLookup extends Lookup implements Serializable
 			m_hasInactive = true;		//	creates focus listener for dynamic loading
 			return;						//	required when parent needs to be selected (e.g. price from product)
 		}
-		//
-		//m_loader = new MLoader();
-	//	if (TabNo != 0)
-	//		m_loader.setPriority(Thread.NORM_PRIORITY - 1);
-		//m_loader.start();
-		//m_loader.run();		//	test sync call
+
 	}	//	MLookup
 
 	/** Inactive Marker Start       */
@@ -373,7 +368,6 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		if (m_info == null)
 			return false;
-		//return m_info.IsValidated;
 		return isValidated(m_info);
 	}	//	isValidated
 
@@ -433,13 +427,10 @@ public final class MLookup extends Lookup implements Serializable
 			loadData (loadParent);
 
 		//	already validation included
-		//if (m_info.IsValidated)
 		boolean validated = this.isValidated(m_info);
 		if (validated)
 			return new ArrayList<Object>(m_lookup.values());
 		
-
-		//if (!m_info.IsValidated && onlyValidated)
 		if (!validated && onlyValidated)
 		{
 			loadData (loadParent);
@@ -1177,7 +1168,6 @@ public final class MLookup extends Lookup implements Serializable
 						m_lookup.put(value, p);
 						vnpCache.add(p);
 					}
-				//	if (log.isLoggable(Level.FINE)) log.fine( m_info.KeyColumn + ": " + name);
 				}				
 			}
 			catch (SQLException e)
@@ -1191,7 +1181,6 @@ public final class MLookup extends Lookup implements Serializable
 			int size = m_lookup.size();
 			if (log.isLoggable(Level.FINER)) log.finer(m_info.KeyColumn
 					+ " (" + m_info.Column_ID + "):"
-				//	+ " ID=" + m_info.AD_Column_ID + " " +
 					+ " - Loader complete #" + size + " - all=" + m_allLoaded
 					+ " - ms=" + String.valueOf(System.currentTimeMillis()-m_startTime)
 					+ " (" + String.valueOf(System.currentTimeMillis()-startTime) + ")");

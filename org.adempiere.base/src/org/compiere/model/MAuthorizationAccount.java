@@ -29,8 +29,13 @@ import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.upload.IUploadService;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.SecureEngine;
@@ -156,15 +161,31 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	 * @return
 	 */
 	public static MAuthorizationAccount getEMailAccount(String email) {
-		String where = "EMail=? AND AD_AuthorizationScope=? AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
+		String where = "EMail=? AND IsIntersectCSV(AD_AuthorizationScopes,"+DB.TO_STRING(AD_AUTHORIZATIONSCOPES_EMail)+")='Y' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
 		MAuthorizationAccount account = new Query(Env.getCtx(), Table_Name, where, null)
 				.setOnlyActiveRecords(true)
-				.setParameters(email, AD_AUTHORIZATIONSCOPE_EMail, Env.getAD_Client_ID(Env.getCtx()))
+				.setParameters(email, Env.getAD_Client_ID(Env.getCtx()))
 				.setOrderBy("AD_Client_ID DESC, Updated DESC")
 				.first();
 		return account;
 	}
 
+	/**
+	 * 
+	 * @param AD_User_ID
+	 * @param scopes
+	 * @return list of {@link MAuthorizationAccount}
+	 */
+	public static List<MAuthorizationAccount> getAuthorizedAccouts(int AD_User_ID, String scopes) {
+		String where = "AD_User_ID=? AND IsIntersectCSV(AD_AuthorizationScopes,"+DB.TO_STRING(scopes)+")='Y' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
+		List<MAuthorizationAccount> accounts = new Query(Env.getCtx(), Table_Name, where, null)
+				.setOnlyActiveRecords(true)
+				.setParameters(AD_User_ID, Env.getAD_Client_ID(Env.getCtx()))
+				.setOrderBy("AD_Client_ID DESC, Updated DESC")
+				.list();
+		return accounts;
+	}
+	
 	/**
 	 * Get an authorization token - refresh it if expired
 	 * @return AuthorizationToken
@@ -174,6 +195,22 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	public String refreshAndGetAccessToken() throws GeneralSecurityException, IOException {
 		refresh();
 		return getAccessToken();
+	}
+	
+	/**
+	 * 
+	 * @return map of {@link MAuthorizationAccount} and {@link IUploadService}
+	 */
+	public static Map<MAuthorizationAccount, IUploadService> getUserUploadServices() {
+		Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+		List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
+		for (MAuthorizationAccount account : accounts) {
+			IUploadService service = Core.getUploadService(account);
+			if (service != null) {
+				uploadServicesMap.put(account, service);
+			}
+		}
+		return uploadServicesMap;
 	}
 
 } // MAuthorizationAccount

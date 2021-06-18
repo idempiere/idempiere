@@ -33,7 +33,10 @@
         <setEntry value="bcprov@default:default"/>
         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
         <setEntry value="com.google.gson@default:default"/>
+        <setEntry value="com.google.guava.failureaccess@default:default"/>
         <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.http-client.google-http-client@default:default"/>
+        <setEntry value="com.google.oauth-client@default:default"/>
         <setEntry value="com.google.zxing.core@default:default"/>
         <setEntry value="com.itextpdf@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
@@ -52,6 +55,7 @@
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="javax.jms@default:default"/>
         <setEntry value="net.sf.supercsv.super-csv@default:default"/>
+        <setEntry value="org.antlr.antlr4-runtime@default:default"/>
         <setEntry value="org.apache.activemq.activemq-core@default:default"/>
         <setEntry value="org.apache.activemq.kahadb@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
@@ -65,6 +69,8 @@
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
         <setEntry value="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec@default:default"/>
+        <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
+        <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
         <setEntry value="org.apache.poi.poi-ooxml-schemas@default:default"/>
         <setEntry value="org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="org.apache.poi.poi@default:default"/>
@@ -93,10 +99,17 @@
         <setEntry value="org.eclipse.osgi@-1:true"/>
         <setEntry value="org.jfree.chart@default:default"/>
         <setEntry value="org.jfree.jcommon@default:default"/>
+        <setEntry value="org.jsr-305@default:default"/>
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="slf4j.api@default:default"/>
         <setEntry value="slf4j.jcl@default:false"/>
+        <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
+        <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
+        <setEntry value="wrapped.dev.samstevens.totp.totp@default:default"/>
+        <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
+        <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
+        <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.adempiere.base.callout@default:default"/>

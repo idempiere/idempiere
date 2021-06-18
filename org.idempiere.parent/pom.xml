@@ -11,7 +11,7 @@
 
 	<properties>
 		<jdk.version>11</jdk.version>
-		<tycho.version>2.0.0</tycho.version>
+		<tycho.version>2.4.0-SNAPSHOT</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.15.0</jp.version>
@@ -93,6 +93,25 @@
 										</versionRange>
 										<goals>
 											<goal>copy</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											target-platform-configuration
+										</artifactId>
+										<versionRange>
+											[2.4.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>target-platform</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -461,6 +480,12 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <pluginRepositories>
+		   <pluginRepository>
+		      <id>tycho-snapshots</id>
+		      <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+		   </pluginRepository>
+	    </pluginRepositories>
             <repositories>
 	            <repository>
 		            <id>Central</id>

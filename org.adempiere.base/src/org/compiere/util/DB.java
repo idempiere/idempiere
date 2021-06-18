@@ -1749,7 +1749,7 @@ public final class DB
         if (noIsSOTrxColumn && TableName.endsWith("Line")) {
         	noIsSOTrxColumn = false;
         	String hdr = TableName.substring(0, TableName.indexOf("Line"));
-        	if (MTable.get(Env.getCtx(), hdr).getColumn("IsSOTrx") == null) {
+        	if (MTable.get(Env.getCtx(), hdr) == null || MTable.get(Env.getCtx(), hdr).getColumn("IsSOTrx") == null) {
         		noIsSOTrxColumn = true;
         	} else {
         		// use IN instead of EXISTS as the subquery should be highly selective

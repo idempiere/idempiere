@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.factory;
 
+import org.compiere.model.MDashboardContent;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -23,9 +24,20 @@ import org.zkoss.zk.ui.Component;
 public interface IDashboardGadgetFactory {
 	/**
      * 
-     * @param uri
-     * @param parent
+     * @param String uri
+     * @param Component parent
      * @return Component instance of DashboardPanel or null
      */
     public Component getGadget(String uri, Component parent);
+
+	/**
+	 * @param String url
+	 * @param Component parent
+	 * @param MDashboardContent dc
+     * @return Component instance of DashboardPanel or null
+	 */
+    default public Component getGadget(String url, Component parent, MDashboardContent dc) {
+    	return getGadget(url, parent); // ignore the third method by default (backward compatibility)
+    }
+
 }

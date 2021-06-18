@@ -831,7 +831,7 @@ public class MoveClient extends SvrProcess {
 										|| "AD_Language".equalsIgnoreCase(columnName)
 										|| "EntityType".equalsIgnoreCase(columnName))) {
 							convertTable = "";
-						} else if ("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0) {
+						} else if ("Record_ID".equalsIgnoreCase(columnName) && table.columnExistsInDB("AD_Table_ID")) {
 							// Special case for Record_ID
 							int tableId = rsGD.getInt("AD_Table_ID");
 							if (tableId > 0) {
@@ -920,7 +920,7 @@ public class MoveClient extends SvrProcess {
 										// not found in the table - try to get it again - could be missed in first pass
 										convertedId = getLocalIDFor(convertTable, id, tableName);
 										if (convertedId < 0) {
-											if (("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0)
+											if (("Record_ID".equalsIgnoreCase(columnName) && table.columnExistsInDB("AD_Table_ID"))
 													|| (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
 															&& (       "AD_TreeNode".equalsIgnoreCase(tableName)
 																	|| "AD_TreeNodeMM".equalsIgnoreCase(tableName)

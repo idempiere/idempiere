@@ -73,25 +73,38 @@ public class EmailSrv {
 	protected String imapUser;
 	protected String imapPass;
 	protected int imapPort = 143;
-	protected boolean isGmail = false;
+	protected boolean isSSL = false;
 	
 	protected Session mailSession;
 	protected Store mailStore;
 	
-	public EmailSrv (String imapHost, String  imapUser, String  imapPass, int imapPort){
+	public EmailSrv (String imapHost, String  imapUser, String  imapPass, int imapPort, Boolean isSSL){
 		this.imapHost = imapHost;
 		this.imapUser = imapUser;
 		this.imapPass = imapPass;
-		isGmail = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
-		if (isGmail && imapPort != 993){
-			log.warning("because imap is gmail server, force port to 993");
-			imapPort = 993;
+		if(isSSL != null) {
+			this.isSSL = isSSL;
+		} else {
+			this.isSSL = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
+			if(!this.isSSL && imapPort == 993)
+				this.isSSL = true;	// Port is 993 set to SSL IMAPS
+			if (this.isSSL && imapPort != 993){
+				log.warning("because imap is gmail server, force port to 993");
+				imapPort = 993;
+			}
 		}
+
 		this.imapPort = imapPort;
 	}
 	
+	/**
+	 * @deprecated working only with gmail host.
+	 * @param imapHost
+	 * @param imapUser
+	 * @param imapPass
+	 */
 	public EmailSrv (String imapHost, String  imapUser, String  imapPass){
-		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143);
+		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? true : false);
 	}
 	
 	public static void logMailPartInfo (Part msg, CLogger log) throws MessagingException{
@@ -160,7 +173,7 @@ public class EmailSrv {
 		//	Session
 		Properties props = System.getProperties();
 		String protocol = "imap";
-		if (isGmail){
+		if (isSSL){
 			protocol = "imaps";
 		}
 		props.put("mail.store.protocol", protocol);
@@ -696,6 +709,45 @@ public class EmailSrv {
 		
 		return reconstructSign.toString();
 	}
+	
+	public static ArrayList<BodyPart> getEmbededImages(String mailContent, ProvideBase64Data provideBase64Data, String embedPattern)  throws MessagingException, IOException {
+		ArrayList<BodyPart> bodyPartImagesList = new ArrayList<BodyPart>();
+		
+		String origonSign = mailContent;
+		
+		// pattern to get src value of attach image.
+		Pattern imgPattern = Pattern.compile(embedPattern);
+		// matcher object to anlysic image tab in sign
+		Matcher imgMatcher = imgPattern.matcher(origonSign);
+		// list image name in sign
+		List<String> lsImgSrc = new ArrayList<String> ();
+		
+		while (imgMatcher.find()){
+			// get image name
+			lsImgSrc.add(imgMatcher.group(1).trim());
+		}
+		// end string not include "cid:imageName"
+		
+		// no image in sign return origon
+		if (lsImgSrc.size() == 0){
+			return bodyPartImagesList;
+		}
+		
+		// reconstruct with image source convert to embed image by base64 encode
+		for (int i = 0; i < lsImgSrc.size(); i++){
+			
+			BodyPart image = provideBase64Data.getBodyPart(lsImgSrc.get(i));
+			
+			if (image == null){
+				log.warning("miss data of image has id is:" + lsImgSrc.get(i));
+			}else{
+				// convert image to base64 encode and embed to img tag
+				bodyPartImagesList.add(image);
+			}
+		}
+		
+		return bodyPartImagesList;
+	}
 		
 	public static boolean isBinaryPart (Part binaryPart) throws MessagingException{
 		return binaryPart.isMimeType("application/*") || binaryPart.isMimeType ("image/*");
@@ -773,6 +825,8 @@ public class EmailSrv {
 	 */
 	public static interface ProvideBase64Data {
 		public String getBase64Data (String dataId) throws MessagingException, IOException;
+		
+		public BodyPart getBodyPart (String dataId) throws MessagingException, IOException;
 	}
 	
 	/**
@@ -849,6 +903,20 @@ public class EmailSrv {
 			
 			return null;
 		}
+
+		@Override
+		public BodyPart getBodyPart(String contentId) throws MessagingException, IOException {
+			if (contentId == null)
+				return null;
+			
+			for (BodyPart imageEmbed : emailContent.lsEmbedPart){
+				if (contentId.equalsIgnoreCase(EmailSrv.getContentID(imageEmbed))){
+					return imageEmbed;
+				}
+			}
+			
+			return null;
+		}
 	}
 	
 	/**
@@ -906,6 +974,15 @@ public class EmailSrv {
 			EmailEmbedProvideBase64Data provideBase64Data = new EmailEmbedProvideBase64Data(this);
 			
 			return EmailSrv.embedImgToEmail(htmlContentBuild.toString(), provideBase64Data, "\\s+src\\s*=\\s*(?:3D)?\\s*\"cid:(.*?)\"");
+		}
+		
+		public ArrayList<BodyPart> getHTMLImageBodyParts() throws MessagingException, IOException{
+			if (htmlContentBuild == null || htmlContentBuild.length() == 0)
+				return null;
+			
+			EmailEmbedProvideBase64Data provideBase64Data = new EmailEmbedProvideBase64Data(this);
+			
+			return EmailSrv.getEmbededImages(htmlContentBuild.toString(), provideBase64Data, "\\s+src\\s*=\\s*(?:3D)?\\s*\"cid:(.*?)\"");
 		}
 	
 		/**
