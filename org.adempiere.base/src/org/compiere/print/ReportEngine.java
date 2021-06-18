@@ -1553,7 +1553,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	throws Exception
 	{
 		Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
-		PrintDataXLSXExporter exp = new PrintDataXLSXExporter(getPrintData(), getPrintFormat(), colSuppressRepeats);
+		Map<MPrintFormatItem, PrintData> childFormats = m_layout != null ? m_layout.getChildPrintFormatDetails() : null;
+		PrintDataXLSXExporter exp = new PrintDataXLSXExporter(getPrintData(), getPrintFormat(), childFormats, colSuppressRepeats, m_query);
 		exp.export(outFile, language);
 	}
 	
