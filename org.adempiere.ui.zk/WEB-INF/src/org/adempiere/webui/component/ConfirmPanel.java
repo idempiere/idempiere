@@ -259,15 +259,8 @@ public final class ConfirmPanel extends Div
 
         // IDEMPIERE-1334 start
         pnlBtnCenter = new Hlayout();
-        pnlBtnCenter.setSclass("z-valign-middle confirm-panel-center");
-        pnlBtnCenter.setStyle("height: 100%");
+        pnlBtnCenter.setSclass("confirm-panel-center");
         // IDEMPIERE-1334 end
-
-        // Invisible Spacer. Lets Checkboxes appear vertically aligned to center.  
-        // TODO: Find a better solution that does not require the Div height to be hardcoded.
-        Div alignmentFix = new Div();
-        alignmentFix.setStyle("content: \"\"; display: inline-block; vertical-align: middle; height: 30px;");
-        pnlBtnCenter.appendChild(alignmentFix);
         
         this.appendChild(pnlBtnLeft);
         // IDEMPIERE-1334
