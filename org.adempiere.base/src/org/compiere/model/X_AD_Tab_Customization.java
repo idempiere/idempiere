@@ -29,7 +29,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210619L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -172,6 +172,27 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	public String getCustom () 
 	{
 		return (String)get_Value(COLUMNNAME_Custom);
+	}
+
+	/** IsAutoHideEmptyColumn AD_Reference_ID=319 */
+	public static final int ISAUTOHIDEEMPTYCOLUMN_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISAUTOHIDEEMPTYCOLUMN_Yes = "Y";
+	/** No = N */
+	public static final String ISAUTOHIDEEMPTYCOLUMN_No = "N";
+	/** Set Auto Hide Empty Column.
+		@param IsAutoHideEmptyColumn Auto Hide Empty Column	  */
+	public void setIsAutoHideEmptyColumn (String IsAutoHideEmptyColumn)
+	{
+
+		set_Value (COLUMNNAME_IsAutoHideEmptyColumn, IsAutoHideEmptyColumn);
+	}
+
+	/** Get Auto Hide Empty Column.
+		@return Auto Hide Empty Column	  */
+	public String getIsAutoHideEmptyColumn () 
+	{
+		return (String)get_Value(COLUMNNAME_IsAutoHideEmptyColumn);
 	}
 
 	/** IsDisplayedGrid AD_Reference_ID=319 */

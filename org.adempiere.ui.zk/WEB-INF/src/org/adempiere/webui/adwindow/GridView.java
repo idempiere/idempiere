@@ -76,11 +76,11 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  */
 public class GridView extends Vlayout implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener
 {
-	private static final String ZERO_PX_WIDTH = "0px";
+	public static final String ZERO_PX_WIDTH = "0px";
 
 	private static final String GRID_VIEW_GRID_FIELD_INDEX = "gridView.gridField.index";
 
-	private static final String COLUMN_WIDTH_ORIGINAL = "column.width.original";
+	public static final String COLUMN_WIDTH_ORIGINAL = "column.width.original";
 
 	private static final String COLUMN_HFLEX_ORIGINAL = "column.hflex.original";
 
@@ -156,6 +156,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	boolean isHasCustomizeData = false;
 
 	private boolean showCurrentRowIndicatorColumn = true;
+
+	private String m_isAutoHideEmptyColumn;
 
 	public GridView()
 	{
@@ -315,6 +317,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		updateListIndex();
 
+		autoHideEmptyColumns();
+		
 		this.init = true;
 		
 		showRecordsCount();
@@ -369,6 +373,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 					columnWidthMap.put(gridField[i].getAD_Field_ID(), widths[i]);
 				}
 			}
+			m_isAutoHideEmptyColumn = tabCustomization.getIsAutoHideEmptyColumn();
 		} else {
 			ArrayList<GridField> gridFieldList = new ArrayList<GridField>();
 			
@@ -692,8 +697,6 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 
 		updateModel();
 
-		autoHideEmptyColumns();
-		
 		if (pageSize > 0)
 		{
 			paging = new Paging();
@@ -799,7 +802,10 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	private boolean isAutoHideEmptyColumns() {
-		return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		if (!Util.isEmpty(m_isAutoHideEmptyColumn, true)) 
+			return "Y".equalsIgnoreCase(m_isAutoHideEmptyColumn);
+		else
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	private void updateEmptyMessage() {

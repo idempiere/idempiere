@@ -121,6 +121,9 @@ public class CustomizeGridViewDialog extends Window {
 			int offset = tabPanel.getGridView().isShowCurrentRowIndicatorColumn() ? 2 : 1;
 			Column column = (Column) columnList.get(i+offset);
 			String width = column.getWidth();
+			if (GridView.ZERO_PX_WIDTH.equals(width) && column.getAttribute(GridView.COLUMN_WIDTH_ORIGINAL) != null) {
+				width = (String) column.getAttribute(GridView.COLUMN_WIDTH_ORIGINAL);
+			}
 			columnsWidth.put(fields[i].getAD_Field_ID(), width);
 			gridFieldIds.add(fields[i].getAD_Field_ID());
 
