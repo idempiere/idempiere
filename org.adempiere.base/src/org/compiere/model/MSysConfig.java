@@ -180,6 +180,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_FOOTER_SERVER_DATETIME_FORMAT = "ZK_FOOTER_SERVER_DATETIME_FORMAT";
     public static final String ZK_FOOTER_SERVER_MSG = "ZK_FOOTER_SERVER_MSG";
     public static final String ZK_GRID_AFTER_FIND = "ZK_GRID_AFTER_FIND";
+    public static final String ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS = "ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS";
     public static final String ZK_GRID_EDIT_MODELESS = "ZK_GRID_EDIT_MODELESS";
     public static final String ZK_GRID_MOBILE_EDITABLE = "ZK_GRID_MOBILE_EDITABLE";
     public static final String ZK_GRID_MOBILE_EDIT_MODELESS = "ZK_GRID_MOBILE_EDIT_MODELESS";
