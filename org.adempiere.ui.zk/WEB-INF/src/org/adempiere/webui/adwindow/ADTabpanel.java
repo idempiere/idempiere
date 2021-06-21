@@ -47,6 +47,9 @@ import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.SimpleTreeModel;
+import org.adempiere.webui.component.Tab;
+import org.adempiere.webui.component.Tabbox;
+import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WButtonEditor;
@@ -114,6 +117,8 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Style;
+import org.zkoss.zul.Tabpanels;
+import org.zkoss.zul.Tabs;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vlayout;
@@ -193,6 +198,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     private Map<String, List<Row>> fieldGroupContents;
 
     private Map<String, List<org.zkoss.zul.Row>> fieldGroupHeaders;
+    
+    private Map<String, List<Tab>> fieldGroupTabHeaders;
 
 	private ArrayList<Row> rowList;
 
@@ -224,6 +231,13 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	private static final String DEFAULT_PANEL_WIDTH = "300px";
 
 	private static CCache<Integer, Boolean> quickFormCache = new CCache<Integer, Boolean>(null, "QuickForm", 20, false);
+	
+	/** Tab Box for Tab Field Groups */
+	private Tabbox tabbox = new Tabbox();
+	/** List of Tab Group Grids */
+	private List<Grid> tabForms;
+	/** Current Tab Group Rows */
+	private Rows currentTabRows;
 
 	private static enum SouthEvent {
     	SLIDE(),
@@ -466,6 +480,16 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			center.appendChild(div);
 			formContainer = layout;			
 		}
+		
+		form.getParent().appendChild(tabbox);
+		setGroupTabboxVisibility();
+		ZKUpdateUtil.setWidth(tabbox, "100%");
+		tabbox.setStyle("margin: 20px 0px 20px 0px; padding: 0px 20px 0px 20px; ");
+		if (ClientInfo.isMobile()) {
+			tabbox.setStyle("");
+			tabbox.setMold("accordion");
+		}
+		
 
 		form.getParent().appendChild(listPanel);
         listPanel.setVisible(false);
@@ -498,6 +522,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	fieldGroupContents = new HashMap<String, List<Row>>();
     	fieldGroupHeaders = new HashMap<String, List<org.zkoss.zul.Row>>();
     	allCollapsibleGroups = new ArrayList<Group>();
+    	
+    	tabForms = new ArrayList<Grid>();
+    	fieldGroupTabHeaders = new HashMap<String, List<Tab>>();
     	
     	int numCols=gridTab.getNumColumns();
     	if (numCols <= 0) {
@@ -591,8 +618,13 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		
         		if (numCols - actualxpos + 1 > 0)
         			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
-        		row.setGroup(currentGroup);
-        		rows.appendChild(row);
+        		if(currentTabRows != null) {
+        			currentTabRows.appendChild(row);
+        		} else {
+            		row.setGroup(currentGroup);
+            		rows.appendChild(row);
+        		}
+
                 if (rowList != null)
         			rowList.add(row);
 
@@ -617,6 +649,62 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			rows.appendChild(row);
         			headerRows.add(row);
         			currentGroup = null;
+        			currentTabRows = null;
+        		} else if(X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType())) {
+        			// Create New Tab for FieldGroup
+            		List<Tab> headerTabs = new ArrayList<Tab>();
+            		fieldGroupTabHeaders.put(fieldGroup, headerTabs);
+            		
+        			Tabs tabs = tabbox.getTabs();
+    				if (tabs == null) {
+    					tabs = new Tabs();
+    					tabbox.appendChild(tabs);
+    					setGroupTabboxVisibility();
+    				}
+    				Tab tab = new Tab(fieldGroup);
+    				tabs.appendChild(tab);
+    				headerTabs.add(tab);
+    				
+    				Grid tabForm = new Grid();
+    				tabForms.add(tabForm);
+    				ZKUpdateUtil.setHflex(tabForm, "1");
+    			    ZKUpdateUtil.setHeight(tabForm, null);
+    			    tabForm.setVflex(false);
+    			    tabForm.setSclass("grid-layout adwindow-form");
+    			    
+    		    	Columns tabColumns = new Columns();
+    		    	tabForm.appendChild(tabColumns);
+    		    	double tabEqualWidth = 95.5d / numCols;
+    		    	DecimalFormat tabDecimalFormat = new DecimalFormat("0.00");
+    		    	decimalFormat.setRoundingMode(RoundingMode.DOWN);
+    		    	String tabColumnWidth = tabDecimalFormat.format(tabEqualWidth);
+    		    	for (int h=0;h<numCols+1;h++){
+    		    		Column col = new Column();
+    		    		if (h == numCols) {
+    		    			ZKUpdateUtil.setWidth(col, "4.5%");
+    		    		} else {
+    		    			ZKUpdateUtil.setWidth(col, tabColumnWidth + "%");
+    		    		}
+    		    		tabColumns.appendChild(col);
+    		    	}
+    		    	
+    		    	tabForm.appendChild(tabColumns);
+    		    	
+    			    Rows tabRows = tabForm.newRows();
+    				
+    				Tabpanels tabpanels = tabbox.getTabpanels();
+    				if (tabpanels == null) {
+    					tabpanels = new Tabpanels();
+    					ZKUpdateUtil.setWidth(tabpanels, "100%");
+    					tabbox.appendChild(tabpanels);
+    				}
+    				Tabpanel tp = new Tabpanel();
+    				tabpanels.appendChild(tp);
+    			    tp.setStyle(" padding: 20px 0px 20px 0px; ");
+    				tp.appendChild(tabForm);
+
+    				currentGroup = null;
+    				currentTabRows = tabRows;
         		}
         		else
         		{
@@ -631,6 +719,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			{
         				rowg.setOpen(false);
         			}
+        			currentTabRows = null;
         			currentGroup = rowg;
         			rows.appendChild(rowg);
         			headerRows.add(rowg);
@@ -657,8 +746,13 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		// Fill right part of the row with spacers until number of columns
         		if (numCols - actualxpos + 1 > 0)
         			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
-        		row.setGroup(currentGroup);
-        		rows.appendChild(row);
+        		// Tab Group vs Grid Group
+        		if(currentTabRows != null) {
+        			currentTabRows.appendChild(row);
+        		} else {
+        			row.setGroup(currentGroup);
+            		rows.appendChild(row);
+        		}
                 if (rowList != null)
         			rowList.add(row);
         		row=new Row();
@@ -811,8 +905,13 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         
 		if (numCols - actualxpos + 1 > 0)
 			row.appendCellChild(createSpacer(), numCols - actualxpos + 1);
-		row.setGroup(currentGroup);
-		rows.appendChild(row);
+		// Tab Group vs Grid Group
+		if(currentTabRows != null) {
+			currentTabRows.appendChild(row);
+		} else {
+			row.setGroup(currentGroup);
+			rows.appendChild(row);
+		}
         if (rowList != null)
 			rowList.add(row);
 
@@ -1011,6 +1110,36 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	}
         }
 
+        //hide row if all editor within the row is invisible in Tabbox grid
+        for(Grid tabForm: tabForms) {
+            List<Component> tabrows = tabForm.getRows().getChildren();
+            for (Component comp : tabrows)
+            {
+            	if (comp instanceof Row) {
+                	Row row = (Row) comp;
+                	boolean visible = false;
+                	boolean editorRow = false;
+                	for (Component cellComponent : row.getChildren())
+                	{
+                		Component component = cellComponent.getFirstChild();
+                		if (editorComps.contains(component))
+                		{
+                			editorRow = true;
+                			if (component.isVisible())
+                			{
+                				visible = true;
+                				break;
+                			}
+                		}
+                	}
+                	if (editorRow && (row.isVisible() != visible))
+                	{
+                		row.setVisible(visible);
+                	}
+            	}
+            }
+        }
+        
         //hide fieldgroup if all editor row within the fieldgroup is invisible
         for(Iterator<Entry<String, List<org.zkoss.zul.Row>>> i = fieldGroupHeaders.entrySet().iterator(); i.hasNext();)
         {
@@ -1032,7 +1161,40 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         			row.setVisible(visible);
         	}
         }
+        
+        // Check Field Group Tabs and Hide if all rows are invisible        
+        Tab visibleTab = null;	// Change Selected Tab which will become invisible to another Tab
+        boolean isSelectedTabInvisible = false;
+        for(Iterator<Entry<String, List<Tab>>> i = fieldGroupTabHeaders.entrySet().iterator(); i.hasNext();)
+        {
+        	Map.Entry<String, List<Tab>> entry = i.next();
+        	List<Row> contents = fieldGroupContents.get(entry.getKey());
+        	boolean visible = false;
+        	for (Row row : contents)
+        	{
+        		if (row.isVisible())
+        		{
+        			visible = true;
+        			break;
+        		}
+        	}
+        	List<Tab> tabs = entry.getValue();
 
+        	for(Tab tab : tabs)
+        	{
+        		if (tab.isVisible() != visible) {
+        			if(tab.isSelected() && !visible)
+        				isSelectedTabInvisible = true;
+        			tab.setVisible(visible);
+        		}
+        		if(tab.isVisible())
+        			visibleTab = tab;
+        	}
+        }
+
+        if(isSelectedTabInvisible && visibleTab != null) {
+    		tabbox.setSelectedTab(visibleTab);
+        }
         // collapse the groups closed
         for (Group group : collapsedGroups) {
         	group.setOpen(false);
@@ -1739,6 +1901,9 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 			form.setVisible(true);
 			((HtmlBasedComponent)form.getParent()).setStyle("overflow-y: visible;");
 		}
+		
+		setGroupTabboxVisibility();
+		
 		listPanel.setVisible(!form.isVisible());
 		if (listPanel.isVisible()) {
 			listPanel.refresh(gridTab);
@@ -2127,5 +2292,16 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 		
 		return hasQuickForm;
+	}
+	
+	/**
+	 * Set Visibility for Tabbox based on Children and Form Visibility
+	 */
+	private void setGroupTabboxVisibility() {
+		boolean isGroupTabVisible = false;
+		if(tabbox.getChildren() != null && tabbox.getChildren().size() > 0) {
+			isGroupTabVisible = form.isVisible();
+		}
+		tabbox.setVisible(isGroupTabVisible);
 	}
 }

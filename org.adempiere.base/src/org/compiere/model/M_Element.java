@@ -142,13 +142,6 @@ public class M_Element extends X_AD_Element
 	public M_Element (Properties ctx, int AD_Element_ID, String trxName)
 	{
 		super (ctx, AD_Element_ID, trxName);
-		if (AD_Element_ID == 0)
-		{
-		//	setColumnName (null);
-		//	setEntityType (null);	// U
-		//	setName (null);
-		//	setPrintName (null);
-		}	
 	}	//	M_Element
 
 	/**
@@ -296,9 +289,6 @@ public class M_Element extends X_AD_Element
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
 				if (log.isLoggable(Level.FINE)) log.fine("Fields updated #" + no);
 				
-				// Info Column - update Name, Description, Help - doesn't have IsCentrallyMaintained currently
-				// no = DB.executeUpdate(sql.toString(), get_TrxName());
-				// log.fine("InfoColumn updated #" + no);
 			}
 			
 			if (   is_ValueChanged(M_Element.COLUMNNAME_PrintName)

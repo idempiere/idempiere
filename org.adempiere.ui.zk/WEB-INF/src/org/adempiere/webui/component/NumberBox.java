@@ -137,6 +137,8 @@ public class NumberBox extends Div
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (btn.getPopup() != null) {
+					// Fill the calculator with the actual value of the field
+					// TODO: this could be made a user preference
 			        String curValue = "";
 					if (decimalBox.getValue() != null) {
 						curValue = decimalBox.getValue().toString();
@@ -146,6 +148,9 @@ public class NumberBox extends Div
 					        String separator = Character.toString(separatorChar);
 					        curValue = curValue.replace(".", separator);
 				        }
+						if ("0".equals(curValue)) {
+							curValue = "";
+						}
 					}
 					String txtCalcId = txtCalc.getId();
 					Clients.evalJavaScript("calc.append('" + txtCalcId + "', '" + curValue + "')");

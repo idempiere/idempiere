@@ -81,7 +81,6 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 			if (rs.next())
 			{
 				int M_AttributeSet_ID = rs.getInt(1);
-			//	M_AttributeSetInstance_ID = rs.getInt(2);	//	needed ?
 				//
 				retValue = new MAttributeSetInstance (ctx, 0, M_AttributeSet_ID, null);
 			}

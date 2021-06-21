@@ -39,6 +39,9 @@ public class PoExporter {
 
 	private TransformerHandler transformerHandler;
 
+	public static final String POEXPORTER_BLOB_TYPE_STRING = "string";
+	public static final String POEXPORTER_BLOB_TYPE_BYTEARRAY = "byte[]";
+
 	private void addTextElement(String qName, String text, AttributesImpl atts) {
 		try {
 			transformerHandler.startElement("", "", qName, atts);
@@ -337,15 +340,15 @@ public class PoExporter {
 		
 		PackOut packOut = ctx.packOut;
 		byte[] data = null;
-		String dataType = null;
+		String dataType = null; // see PoFiller.isBlobOnPackinFile
 		String fileName = null;
 		try {
 			if (value instanceof String) {
 				data = ((String)value).getBytes("UTF-8");
-				dataType = "string";
+				dataType = POEXPORTER_BLOB_TYPE_STRING;
 			} else {
 				data = (byte[]) value;
-				dataType = "byte[]";
+				dataType = POEXPORTER_BLOB_TYPE_BYTEARRAY;
 			}
 
 			fileName = packOut.writeBlob(data);

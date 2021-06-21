@@ -43,6 +43,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.expression.logic.LogicEvaluator;
 
 /**
  *	Persistent Column Model
@@ -545,6 +546,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			setSeqNoSelection(next);
 		}
 
+		//validate readonly logic expression
+		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getReadOnlyLogic());
+			}
+		}
 		return true;
 	}	//	beforeSave
 	

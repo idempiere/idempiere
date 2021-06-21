@@ -112,7 +112,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5086068543834849233L;
+	private static final long serialVersionUID = 6119615577891555600L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -1364,7 +1364,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!isDetail())
 			return true;
 		//	Same link column value
-		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, this.getParentTabNo(), getLinkColumnName());
+		// IDEMPIERE-4799 Fix Check Parent Column name
+		String columnName = Util.isEmpty(m_parentColumnName) ? getLinkColumnName() : m_parentColumnName;
+		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, this.getParentTabNo(), columnName);
 		return m_linkValue.equals(value);
 	}	//	isCurrent
 
@@ -2852,6 +2854,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private boolean m_updateWindowContext = true;
 
+	// Cached parent Tab No
+	private int m_parentTabNo = -1;
+
 	/**
 	 *
 	 * @return list of active call out for this tab
@@ -3321,11 +3326,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	private int getParentTabNo()
 	{
+		if (m_parentTabNo >= 0)
+			return m_parentTabNo;
 		int tabNo = m_vo.TabNo;
 		int currentLevel = m_vo.TabLevel;
 		int parentLevel = currentLevel-1;
 		if (parentLevel < 0)
-			return tabNo;
+			return (m_parentTabNo = tabNo);
 		while (parentLevel != currentLevel)
 		{
 			tabNo--;
@@ -3333,7 +3340,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (tabNo == 0)
 				break;
 		}
-		return tabNo;
+		return (m_parentTabNo = tabNo);
 	}
 
 	public GridTab getParentTab()

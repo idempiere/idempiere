@@ -97,7 +97,6 @@ public class MAssetChange extends X_A_Asset_Change
 	 */
 	public static MAssetChange createAndSave(Properties ctx, String changeType, PO[] pos, String trxName) {
 		return null;
-		//~ return create(ctx, changeType, pos, true, trxName);
 	}
 	
 	public static MAssetChange create(Properties ctx, String changeType, PO[] pos, boolean save, String trxName) {
@@ -124,23 +123,6 @@ public class MAssetChange extends X_A_Asset_Change
 		if (po == null) {
 			return;
 		}
-		/* arhipac: teo_sarca: TODO need to integrate
-		for(int idx = 0; idx < po.get_ColumnCount_P(); idx++) {
-			//~ if(!po.is_ValueChanged(idx)) {
-				//~ continue;
-			//~ }
-			String colName = po.get_ColumnName_P(idx);
-			int idx2 = get_ColumnIndex(colName);
-			if(idx2 < 0) {
-				if(CLogMgt.isLevelFine()) log.fine("Setting " + colName + ": SKIP (idx2 < 0)");
-				continue;
-			}
-			
-			Object value = po.get_Value(idx2);
-			set_Value(colName, value);
-			if(CLogMgt.isLevelFine()) log.fine("Setting " + colName + "=" + value + " (from " + po.getClass() + ", idx=" + idx + ", idx2=" + idx2 + ")");
-		}
-		*/
 		//
 		if (log.isLoggable(Level.FINE)) log.fine("Leaving: po=" + po);
 	}

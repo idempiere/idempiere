@@ -269,7 +269,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 				getAD_Client_ID(), getAD_Org_ID());
 		if (m_unique < 0 || m_unique > 4)
 			m_unique = 0;
-		if (m_uniqueName != null) { // && m_uniqueName.equals(".")) {
+		if (m_uniqueName != null) { 
 			// default
 			m_uniqueName = null;
 			makeUnique(address);
@@ -286,7 +286,6 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 				if (location.getC_BPartner_Location_ID() == get_ID())
 					continue;
 				if (m_uniqueName.equals(location.getName())) {
-					// m_uniqueName = null;
 					m_unique++;
 					makeUnique(address);
 					unique = false;

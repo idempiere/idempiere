@@ -15,6 +15,7 @@ package org.adempiere.impexp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -23,8 +24,6 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFHeader;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.Header;
@@ -141,11 +140,11 @@ public abstract class AbstractXLSXExporter
 	/** Logger */
 	protected final CLogger					log				= CLogger.getCLogger(getClass());
 	//
-	private XSSFWorkbook					m_workbook;
+	protected XSSFWorkbook					m_workbook;
 	private XSSFDataFormat					m_dataFormat;
 	private XSSFFont						m_fontHeader	= null;
 	private XSSFFont						m_fontDefault	= null;
-	private Language						m_lang			= null;
+	protected Language						m_lang			= null;
 	private int								m_sheetCount	= 0;
 	//
 	private int								m_colSplit		= 1;
@@ -155,6 +154,7 @@ public abstract class AbstractXLSXExporter
 	private HashMap<String, XSSFCellStyle>	m_styles		= new HashMap<String, XSSFCellStyle>();
 
 	protected Boolean[]						colSuppressRepeats;
+	private int noOfParameter = 0;
 
 	public AbstractXLSXExporter()
 	{
@@ -269,7 +269,6 @@ public abstract class AbstractXLSXExporter
 		XSSFCellStyle cs = m_styles.get(key);
 		if (cs == null)
 		{
-			boolean isHighlightNegativeNumbers = true;
 			cs = m_workbook.createCellStyle();
 			XSSFFont font = getFont(false);
 			cs.setFont(font);
@@ -279,21 +278,29 @@ public abstract class AbstractXLSXExporter
 			cs.setBorderRight(BorderStyle.THIN);
 			cs.setBorderBottom(BorderStyle.THIN);
 			//
-			if (DisplayType.isDate(displayType))
-			{
-				cs.setDataFormat(m_dataFormat.getFormat(DisplayType.getDateFormat(getLanguage()).toPattern()));
-			}
-			else if (DisplayType.isNumeric(displayType))
-			{
-				DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
-				String format = getFormatString(df, isHighlightNegativeNumbers);
-				cs.setDataFormat(m_dataFormat.getFormat(format));
-			}
+			String cellFormat = getCellFormat(row, col);
+			if (cellFormat != null)
+				cs.setDataFormat(m_dataFormat.getFormat(cellFormat));
 			m_styles.put(key, cs);
 		}
 		return cs;
 	}
 
+	protected String getCellFormat(int row, int col) {
+		boolean isHighlightNegativeNumbers = true;
+		int displayType = getDisplayType(row, col);
+		String cellFormat = null;
+		
+		if (DisplayType.isDate(displayType)) {
+			cellFormat = DisplayType.getDateFormat(getLanguage()).toPattern();
+		} else if (DisplayType.isNumeric(displayType)) {
+			DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
+			cellFormat = getFormatString(df, isHighlightNegativeNumbers);
+		}
+		
+		return cellFormat;
+	}
+	
 	private XSSFCellStyle getHeaderStyle(int col)
 	{
 		String key = "header-" + col;
@@ -307,7 +314,7 @@ public abstract class AbstractXLSXExporter
 			cs_header.setBorderTop(BorderStyle.MEDIUM);
 			cs_header.setBorderRight(BorderStyle.MEDIUM);
 			cs_header.setBorderBottom(BorderStyle.MEDIUM);
-			cs_header.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
+			cs_header.setDataFormat(m_workbook.createDataFormat().getFormat("text"));
 			cs_header.setWrapText(true);
 			m_styles.put(key, cs_header);
 		}
@@ -328,7 +335,7 @@ public abstract class AbstractXLSXExporter
 			return;
 		//
 		fixColumnWidth(prevSheet, colCount);
-		if (m_colSplit >= 0 || m_rowSplit >= 0)
+		if ((m_colSplit >= 0 || m_rowSplit >= 0) && !isForm())
 			prevSheet.createFreezePane(m_colSplit >= 0 ? m_colSplit : 0, m_rowSplit >= 0 ? m_rowSplit : 0);
 		if (!Util.isEmpty(prevSheetName, true) && m_sheetCount > 0)
 		{
@@ -349,7 +356,11 @@ public abstract class AbstractXLSXExporter
 		XSSFSheet sheet = m_workbook.createSheet();
 		formatPage(sheet);
 		createHeaderFooter(sheet);
-		createTableHeader(sheet);
+		createParameter(sheet);
+		if (!isForm())
+		{
+			createTableHeader(sheet);
+		}
 		m_sheetCount++;
 		//
 		return sheet;
@@ -357,9 +368,14 @@ public abstract class AbstractXLSXExporter
 
 	private void createTableHeader(XSSFSheet sheet)
 	{
+		createTableHeader(sheet, Math.max(noOfParameter, 0));
+	}
+	
+	private void createTableHeader(XSSFSheet sheet, int headerRowNum)
+	{
 		int colnumMax = 0;
 
-		XSSFRow row = sheet.createRow(0);
+		XSSFRow row = sheet.createRow(headerRowNum);
 		// for all columns
 		int colnum = 0;
 		for (int col = 0; col < getColumnCount(); col++)
@@ -384,7 +400,9 @@ public abstract class AbstractXLSXExporter
 	{
 		// Sheet Header
 		Header header = sheet.getHeader();
-		header.setRight(HSSFHeader.page() + " / " + HSSFHeader.numPages());
+		//&P == current page number
+	    //&N == page numbers
+		header.setRight("&P / &N");
 		// Sheet Footer
 		Footer footer = sheet.getFooter();
 		footer.setLeft(Env.getStandardReportFooterTrademarkText());
@@ -428,9 +446,19 @@ public abstract class AbstractXLSXExporter
 	 * @param out
 	 * @throws Exception
 	 */
-	private void export(OutputStream out) throws Exception
+	protected void export(OutputStream out) throws Exception
 	{
-		XSSFSheet sheet = createTableSheet();
+		XSSFSheet sheet = null;
+		if (out != null) 
+		{
+			sheet = createTableSheet();
+		}
+		else  
+		{
+			m_dataFormat = m_workbook.createDataFormat();
+			sheet = m_workbook.getSheetAt(0);
+			createTableHeader(sheet, sheet.getLastRowNum()+2);
+		}
 		String sheetName = null;
 		//
 		int colnumMax = 0;
@@ -443,7 +471,13 @@ public abstract class AbstractXLSXExporter
 			preValues = new Object[colSuppressRepeats.length];
 		}
 
-		for (int xls_rownum = 1; rownum < lastRowNum; rownum++, xls_rownum++)
+		int initxls_rownum = 0;
+		if (out != null)
+			initxls_rownum = Math.max(noOfParameter+1, 1);
+		else 
+			initxls_rownum = Math.max(noOfParameter+1, sheet.getLastRowNum()+1);
+		
+		for (int xls_rownum = initxls_rownum; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
 			if (!isCurrentRowOnly())
 				setCurrentRow(rownum);
@@ -461,10 +495,35 @@ public abstract class AbstractXLSXExporter
 				if (isColumnPrinted(col))
 				{
 					printColIndex++;
-					XSSFCell cell = row.createCell(colnum);
-
+					XSSFCell cell = null;
 					// line row
 					Object obj = getValueAt(rownum, col);
+					if (isForm())
+					{
+						if (isVisible(rownum, col) && (!isSuppressNull(col) || (obj != null && !Util.isEmpty(obj.toString(), true))))
+						{
+							row = getFormRow(sheet, col);
+							cell = getFormCell(row, col);
+							String label = fixString(getHeaderName(col));
+							if (!Util.isEmpty(label, true))
+							{
+								cell.setCellValue(new XSSFRichTextString(label));
+								int index = cell.getColumnIndex()+1;
+								cell = row.getCell(index);
+								if (cell == null)
+									cell = row.createCell(index);
+							}
+						}
+						else if (isSetFormRowPosition(col))
+						{
+							row = getFormRow(sheet, col);
+						}
+					}
+					else
+					{
+						cell = row.createCell(colnum);
+					}
+					
 					int displayType = getDisplayType(rownum, col);
 					if (obj == null || !isDisplayed(rownum, col))
 					{
@@ -478,9 +537,17 @@ public abstract class AbstractXLSXExporter
 					{
 						// suppress
 					}
+					else if (!isVisible(rownum, col)) 
+					{
+						;
+					}
 					else if (DisplayType.isDate(displayType))
 					{
-						Timestamp value = (Timestamp) obj;
+						Timestamp value = null;
+						if (obj instanceof Date)
+							value = new Timestamp(((Date)obj).getTime());
+						else
+							value = (Timestamp)obj;
 						cell.setCellValue(value);
 					}
 					else if (DisplayType.isNumeric(displayType))
@@ -507,8 +574,13 @@ public abstract class AbstractXLSXExporter
 						cell.setCellValue(new XSSFRichTextString(value));
 					}
 					//
-					XSSFCellStyle style = getStyle(rownum, col);
-					cell.setCellStyle(style);
+					if (cell != null) 
+					{
+						XSSFCellStyle style = getStyle(rownum, col);
+						if (isForm())
+							style.setWrapText(true);
+						cell.setCellStyle(style);
+					}
 					// Page break
 					if (isPageBreak(rownum, col))
 					{
@@ -531,7 +603,10 @@ public abstract class AbstractXLSXExporter
 				isPageBreak = false;
 			}
 		} // for all rows
-		closeTableSheet(sheet, sheetName, colnumMax);
+		if (out == null)
+			fixColumnWidth(sheet, colnumMax);
+		else
+			closeTableSheet(sheet, sheetName, colnumMax);
 		//
 
 		if (out != null)
@@ -585,5 +660,77 @@ public abstract class AbstractXLSXExporter
 		m_lang = language;
 		m_workbook = workbook;
 		export(null);
+	}
+	
+	/**
+	 * @return true if it is form layout
+	 */
+	protected boolean isForm()
+	{
+		return false;
+	}
+	
+	protected int getNoOfParameter()
+	{
+		return noOfParameter;
+	}
+
+	protected void setNoOfParameter(int noOfParameter)
+	{
+		this.noOfParameter = noOfParameter;
+	}
+		
+	protected void createParameter(XSSFSheet sheet)
+	{
+		
+	}
+	
+	/**
+	 * 
+	 * @param row
+	 * @param col
+	 * @return true if column is visible
+	 */
+	protected boolean isVisible(int row, int col)
+	{
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param col
+	 * @return true if column should be hidden when it is null
+	 */
+	protected boolean isSuppressNull(int col) {
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param col
+	 * @return true if column is use to set new row position
+	 */
+	protected boolean isSetFormRowPosition(int col) {
+		return false;
+	}
+	
+	/**
+	 * get cell for column. use for form layout
+	 * @param row
+	 * @param colnum
+	 * @return cell for column
+	 */
+	protected XSSFCell getFormCell(XSSFRow row, int colnum) {
+		return null;
+	}
+
+	/**
+	 * get row for column. use for form layout
+	 * @param sheet
+	 * @param colnum
+	 * @return row for column
+	 */
+	protected XSSFRow getFormRow(XSSFSheet sheet, int colnum) {
+		return null;
 	}
 }

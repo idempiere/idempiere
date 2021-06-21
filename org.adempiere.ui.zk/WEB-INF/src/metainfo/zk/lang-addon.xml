@@ -48,7 +48,7 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript-module name="jawwa.atmosphere" version="202102091500"/>
 	<javascript-module name="adempiere.local.storage" version="202011151100"/>
 	<javascript-moudle name="html2canvas" version="1.0.0.rc7"/>
-	<javascript-module name="org.idempiere.commons" version="202012030330"/>
+	<javascript-module name="org.idempiere.commons" version="202105201416"/>
 	<javascript-module name="jquery.maskedinput" version="1.4.1" />
 	<javascript-module name="photobooth"	version="0.7-rsd3" />
 	<javascript-module name="chosenbox" version="202012041500"/>

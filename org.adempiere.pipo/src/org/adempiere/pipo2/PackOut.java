@@ -85,6 +85,8 @@ public class PackOut
 
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
 
+	public static final String PACKOUT_BLOB_FILE_EXTENSION = ".dat";
+
 	public static void addTextElement(TransformerHandler handler, String qName, String text, AttributesImpl atts) throws SAXException {
 		handler.startElement("", "", qName, atts);
 		append(handler, text);
@@ -381,7 +383,7 @@ public class PackOut
 	 */
 	public String writeBlob(byte[] data) throws IOException {
 		blobCount++;
-		String fileName = blobCount + ".dat";
+		String fileName = blobCount + PACKOUT_BLOB_FILE_EXTENSION;
 		File path = new File(packageDirectory+File.separator+"blobs"+File.separator);
 		path.mkdirs();
 		File file = new File(path, fileName);

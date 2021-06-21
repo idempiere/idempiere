@@ -36,6 +36,7 @@
 		<module>org.idempiere.webservices</module>
 		<module>org.idempiere.webservices-feature</module>
 		<module>org.idempiere.zk.extra</module>
+		<module>org.idempiere.keikai</module>
 		<module>org.adempiere.report.jasper-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>

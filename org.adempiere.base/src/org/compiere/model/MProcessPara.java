@@ -23,8 +23,10 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.expression.logic.LogicEvaluator;
 
 
 /**
@@ -333,6 +335,18 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			setHelp (element.getHelp());
 		}
 
+		//validate logic expression
+		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getReadOnlyLogic());
+			}
+		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_DisplayLogic)) {
+			if (isActive() && !Util.isEmpty(getDisplayLogic(), true) && !getDisplayLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getDisplayLogic());
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
