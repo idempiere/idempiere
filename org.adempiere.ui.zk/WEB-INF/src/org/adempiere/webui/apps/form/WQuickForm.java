@@ -55,7 +55,7 @@ import org.zkoss.zul.Columns;
  * @author Logilite Technologies
  * @since Nov 03, 2017
  */
-public class WQuickForm extends Window implements IQuickForm // EventListener <Event>, DataStatusListener
+public class WQuickForm extends Window implements IQuickForm
 {
 	/**
 	 * 
