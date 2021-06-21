@@ -27,19 +27,43 @@ import org.zkoss.zk.ui.event.EventListener;
  */
 public interface IQuickForm extends EventListener <Event>, DataStatusListener
 {
+	/**
+	 * Close dialog without saving
+	 */
 	public void onCancel();
 
+	/**
+	 * Unsort grid view
+	 */
 	public void onUnSort();
 
+	/**
+	 * Show grid view customization dialog for quick form panel
+	 */
 	public void onCustomize();
 
+	/**
+	 * Ignore user changes on active row.
+	 */
 	public void onIgnore();
 
+    /**
+     * Delete selected records. If no record is selected delete current row.
+     */
 	public void onDelete();
 
+    /**
+     * Save active record.
+     */
 	public void onSave();
 
+	/**
+	 * Refresh all data
+	 */
 	public void onRefresh();
 
+	/**
+	 * Dispose
+	 */
 	public void dispose();
 }
