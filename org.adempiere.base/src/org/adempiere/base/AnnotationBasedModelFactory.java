@@ -1,6 +1,12 @@
 package org.adempiere.base;
 
 import org.atteo.classindex.ClassIndex;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * Translates table names into model classes having the {@link Model} annotation. Relies on
@@ -9,7 +15,17 @@ import org.atteo.classindex.ClassIndex;
  * discovery using SPI is preferred over reflection-based methods.
  * @author Saulo Gil
  */
-public class AnnotationBasedModelFactory extends DefaultModelFactory {
+@Component(scope = ServiceScope.BUNDLE)
+public class AnnotationBasedModelFactory extends DefaultModelFactory implements IModelFactory
+{
+
+	private Bundle usingBundle;
+
+	@Activate
+	void activate(ComponentContext context)
+	{
+		this.usingBundle = context.getUsingBundle();
+	}
 
 	@Override
 	public Class<?> getClass(String tableName) 
@@ -26,7 +42,8 @@ public class AnnotationBasedModelFactory extends DefaultModelFactory {
 		}
 
 		// scan annotations
-		for(Class<?> clazz : ClassIndex.getAnnotated(Model.class))
+		BundleWiring wiring = usingBundle.adapt(BundleWiring.class);
+		for(Class<?> clazz : ClassIndex.getAnnotated(Model.class, wiring.getClassLoader()))
 		{
 			Model ma = clazz.getAnnotation(Model.class);
 			if(ma.table().equalsIgnoreCase(tableName)) 
