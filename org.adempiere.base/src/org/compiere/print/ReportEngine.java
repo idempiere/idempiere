@@ -741,11 +741,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							
 				doc.output(w);
 				
-				w.println("<div class='"+cssPrefix+"-flex-container'>");
-				String paraWrapId = null;
 				if (parameterTable != null) {
-					paraWrapId = cssPrefix + "-para-table-wrap";
-					w.println("<div id='" + paraWrapId + "'>");
 					parameterTable.output(w);
 					
 					tr tr = new tr();
@@ -782,21 +778,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						tr.output(w);
 					}
 					
-					w.println();					
+					w.println();
 					w.println("</table>");
-					w.println("</div>");
 				}
 				
-				StringBuilder tableWrapDiv = new StringBuilder();
-				tableWrapDiv.append("<div class='").append(cssPrefix).append("-table-wrap' ");
-				if (paraWrapId != null) {
-					tableWrapDiv.append("onscroll=\"if (this.scrollTop > 0) document.getElementById('")
-						.append(paraWrapId).append("').style.display='none'; ")
-						.append("else document.getElementById('").append(paraWrapId).append("').style.display='block';\"");
-				}
-				tableWrapDiv.append(" >");
-				
-				w.println(tableWrapDiv.toString());
 				table.output(w);
 			}
 			
@@ -989,8 +974,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			w.println("</table>");
 			if (!onlyTable)
 			{
-				w.println("</div>");
-				w.println("</div>");
 				w.println("</body>");
 				w.println("</html>");
 			}
