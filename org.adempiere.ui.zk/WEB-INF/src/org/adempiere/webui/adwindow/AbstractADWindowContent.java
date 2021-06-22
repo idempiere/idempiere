@@ -3753,6 +3753,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 	
 	/**
+	 * @param statusBar
+	 */
+	public void setStatusBarQF(StatusBar statusBar)
+	{
+		statusBarQF = statusBar;
+	}	
+	
+	/**
 	 * Implementation to work key listener for the current open Quick Form.
 	 */
 	QuickGridView currQGV = null;
