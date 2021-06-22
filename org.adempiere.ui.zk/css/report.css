@@ -5,8 +5,7 @@
 	border-width: 1px;
 	border-color: #BBBBBB;
 	border-style: solid;
-	border-collapse: separate;
-  	border-spacing: 0;
+	border-collapse: collapse;
 	width: 90%;
 	background-color: #EBF1EF;	
 	border-width: 0px;
@@ -69,22 +68,3 @@
 	border-width: 0px 0px 0px 0px;
 }
 
-div.rp-flex-container {
-	display: flex; 
-	flex-direction: column; 
-	height: 100%;
-}
-
-#rp-para-table-wrap {
-	flex-grow: 0;
-}
-
-div.rp-table-wrap {
-	flex-grow: 1;
-	overflow: auto;
-}
-
-div.rp-table-wrap > table > thead > tr > th {
-	position: sticky;
-	top: 0;
-}
