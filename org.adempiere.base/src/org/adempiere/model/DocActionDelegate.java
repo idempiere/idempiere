@@ -50,9 +50,9 @@ import org.compiere.util.Util;
  * @author hengsin
  *
  */
-public class DocActionDelegate implements DocAction {
+public class DocActionDelegate<T extends PO> implements DocAction {
 
-	private PO po;
+	private T po;
 	/**	Process Message 			*/
 	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
@@ -61,7 +61,7 @@ public class DocActionDelegate implements DocAction {
 	/**	Logger							*/
 	protected transient CLogger	log = CLogger.getCLogger (getClass());
 	
-	public DocActionDelegate(PO po) {
+	public DocActionDelegate(T po) {
 		this.po = po;
 	}
 

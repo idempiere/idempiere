@@ -45,7 +45,7 @@ public class GenericPO extends PO implements DocAction {
 	 */
 	private static final long serialVersionUID = 3180937588404433030L;
 	
-	private DocActionDelegate docActionDelegate = new DocActionDelegate(this);
+	private DocActionDelegate<GenericPO> docActionDelegate = new DocActionDelegate<>(this);
 	
 	/**
 	 * @param tableName
