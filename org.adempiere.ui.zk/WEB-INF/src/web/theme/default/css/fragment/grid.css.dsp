@@ -95,10 +95,10 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 	border: none !important;
 	background-color: transparent !important;
 }
-.grid-layout tr.z-row-over>td.z-row-inner, .grid-layout tr.z-row-over>.z-cell {
+.grid-layout tr.z-row:hover>td.z-row-inner, .grid-layout tr.z-row:hover>.z-cell {
 	border: none !important;
 }
-.grid-layout tr.z-row-over>td.z-row-inner, .grid-layout tr.z-row-over>.z-cell {
+.grid-layout tr.z-row:hover>td.z-row-inner, .grid-layout tr.z-row:hover>.z-cell {
 	background-image: none !important;
 }
 
