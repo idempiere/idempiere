@@ -53,6 +53,8 @@ public class CalloutEngine implements Callout
 	protected CLogger		log = CLogger.getCLogger(getClass());
 	private GridTab m_mTab;
 	private GridField m_mField;
+	protected String[] additionalArgs;
+	public static final String ARG_SEPARATOR = ",";
 
 	/**
 	 *	Start Callout.
@@ -133,12 +135,22 @@ public class CalloutEngine implements Callout
 	 *	Conversion Rules.
 	 *	Convert a String
 	 *
-	 *	@param methodName   method name
+	 *	@param methodName   method name and additional arguments (in brackets, seperated by commas)
 	 *  @param value    the value
 	 *	@return converted String or Null if no method found
 	 */
-	public String convert (String methodName, String value)
+	public String convert (String methodAndArgs, String value)
 	{
+		String methodName;
+		//find '(' and ')'
+		if(methodAndArgs.contains("(") && methodAndArgs.substring(methodAndArgs.indexOf("(")).contains(")")) {
+			methodName = methodAndArgs.substring(0, methodAndArgs.indexOf('('));
+			additionalArgs = methodAndArgs.substring(methodAndArgs.indexOf("(")+1, methodAndArgs.indexOf(")"))
+					.split(ARG_SEPARATOR); //Everything between the brackets, seperated by commas, is considered additional arguments
+		} else {
+			methodName = methodAndArgs;
+		}
+		
 		if (methodName == null || methodName.length() == 0)
 			throw new IllegalArgumentException ("No Method Name");
 		//

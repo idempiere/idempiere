@@ -30,7 +30,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210323L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat_Row (Properties ctx, int AD_ImpFormat_Row_ID, String trxName)
@@ -301,6 +301,23 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Import prefix.
+		@param ImportPrefix 
+		This prefix will be added in front of import string if they are not empty
+	  */
+	public void setImportPrefix (String ImportPrefix)
+	{
+		set_Value (COLUMNNAME_ImportPrefix, ImportPrefix);
+	}
+
+	/** Get Import prefix.
+		@return This prefix will be added in front of import string if they are not empty
+	  */
+	public String getImportPrefix () 
+	{
+		return (String)get_Value(COLUMNNAME_ImportPrefix);
 	}
 
 	/** Set Name.
