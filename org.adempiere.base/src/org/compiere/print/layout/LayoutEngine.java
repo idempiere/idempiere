@@ -1267,7 +1267,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		int AD_Column_ID = item.getAD_Column_ID();
 		if (log.isLoggable(Level.INFO)) log.info(format + " - Item=" + item.getName() + " (" + AD_Column_ID + ")");
 		//
-		Object obj = data.getNode(Integer.valueOf(AD_Column_ID));
+		Object obj = data.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 		//	Object obj = data.getNode(item.getColumnName());	//	slower
 		if (obj == null)
 		{
@@ -1398,7 +1398,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		String FieldAlignmentType, boolean isForm)
 	{
 		//	Get Data
-		Object obj = m_data.getNode(Integer.valueOf(item.getAD_Column_ID()));
+		Object obj = m_data.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 		if (obj == null)
 			return null;
 		else if (obj instanceof PrintDataElement)
@@ -1514,7 +1514,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	 */
 	private PrintElement createImageElement (MPrintFormatItem item, PrintData printData)
 	{
-		Object obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID())); 
+		Object obj = printData.getNodeByPrintFormatItem(item); 
 		if (obj == null)
 			return null;
 		else if (obj instanceof PrintDataElement)
@@ -1553,7 +1553,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	private PrintElement createBarcodeElement (MPrintFormatItem item, PrintData printData)
 	{
 		//	Get Data
-		Object obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
+		Object obj = printData.getNodeByPrintFormatItem(item);
 		if (obj == null)
 			return null;
 		else if (obj instanceof PrintDataElement)
@@ -1816,14 +1816,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					}
 					else if (item.isTypeField() || item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
 					{
-						Object obj = null;
-						if (item.getAD_Column_ID() > 0) // teo_sarca, [ 1673542 ]
-							obj = printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
-						/** START DEVCOFFEE: Script print format type **/
-						if (item.getPrintFormatType().equals(MPrintFormatItem.PRINTFORMATTYPE_Script))
-						{
-							obj = printData.getNode(item.getName());
-						}
+						Object obj = printData.getNodeByPrintFormatItem(item);
 						if (obj == null)
 							;
 						else if (obj instanceof PrintDataElement)

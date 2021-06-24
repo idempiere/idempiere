@@ -39,14 +39,14 @@ public class PrintDataGroup
 	/**	Column-Function Delimiter		*/
 	static public final String	DELIMITER = "~";
 	/**	Grand Total Indicator			*/
-	static public final String 	TOTAL = "=TOTAL=";
+	static public final int 	TOTAL = -1;
 	/**	NULL substitute value			*/
 	static private final Object	NULL = new String();
 
 	/**	List of group columns			*/
-	private ArrayList<String>		m_groups = new ArrayList<String>();
+	private ArrayList<Integer>		m_groups = new ArrayList<Integer>();
 	/** Map of group column & value		*/
-	private HashMap<String,Object> 	m_groupMap = new HashMap<String,Object>();
+	private HashMap<Integer,Object> 	m_groupMap = new HashMap<Integer,Object>();
 	/**	List of column_function			*/
 	private ArrayList<String>		m_functions = new ArrayList<String>();
 	/** Map of group_function column & function	*/
@@ -55,11 +55,11 @@ public class PrintDataGroup
 	
 	/**************************************************************************
 	 * 	Add Group Column
-	 * 	@param groupColumnName group column
+	 * 	@param AD_PrintFormatItem_ID group column
 	 */
-	public void addGroupColumn (String groupColumnName)
+	public void addGroupColumn (int AD_PrintFormatItem_ID)
 	{
-		m_groups.add(groupColumnName);
+		m_groups.add(AD_PrintFormatItem_ID);
 	}	//	addGroup
 
 	/**
@@ -74,44 +74,37 @@ public class PrintDataGroup
 
 	/**
 	 * 	Column has a function
-	 * 	@param columnName column name or TOTAL
+	 * 	@param AD_PrintFormatItem_ID column or TOTAL
 	 * 	@return true if column has function
 	 */
-	public boolean isGroupColumn (String columnName)
+	public boolean isGroupColumn (int AD_PrintFormatItem_ID)
 	{
-		if (columnName == null || m_groups.size() == 0)
-			return false;
-		for (int i = 0; i < m_groups.size(); i++)
-		{
-			if (columnName.equals(m_groups.get(i)))
-				return true;
-		}
-		return false;
+		return m_groups.contains(AD_PrintFormatItem_ID);
 	}	//	isGroupColumn
 
 	/**
 	 * 	Check for Group Change
-	 * 	@param groupColumnName column name
+	 * 	@param AD_PrintFormatItem_ID group column
 	 * 	@param value column value
 	 * 	@return null if no group change otherwise old value
 	 */
-	public Object groupChange (String groupColumnName, Object value, boolean force)
+	public Object groupChange (int AD_PrintFormatItem_ID, Object value, boolean force)
 	{
-		if (!isGroupColumn(groupColumnName))
+		if (!isGroupColumn(AD_PrintFormatItem_ID))
 			return null;
 		Object newValue = value;
 		if (newValue == null)
 			newValue = NULL;
 		//
-		if (m_groupMap.containsKey(groupColumnName))
+		if (m_groupMap.containsKey(AD_PrintFormatItem_ID))
 		{
-			Object oldValue = m_groupMap.get(groupColumnName);
+			Object oldValue = m_groupMap.get(AD_PrintFormatItem_ID);
 			if (newValue.equals(oldValue) && !force )
 				return null;
-			m_groupMap.put(groupColumnName, newValue);
+			m_groupMap.put(AD_PrintFormatItem_ID, newValue);
 			return oldValue;
 		}
-		m_groupMap.put(groupColumnName, newValue);
+		m_groupMap.put(AD_PrintFormatItem_ID, newValue);
 		return null;
 	}	//	groupChange
 
@@ -214,8 +207,8 @@ public class PrintDataGroup
 		//	Group Breaks
 		for (int i = 0; i < m_groups.size(); i++)
 		{
-			String groupColumnName = (String)m_groups.get(i);
-			String key = groupColumnName + DELIMITER + functionColumnName;
+			int AD_PrintFormatItem_ID = m_groups.get(i);
+			String key = AD_PrintFormatItem_ID + DELIMITER + functionColumnName;
 			PrintDataFunction pdf = (PrintDataFunction)m_groupFunction.get(key);
 			if (pdf == null)
 				pdf = new PrintDataFunction();
@@ -226,15 +219,15 @@ public class PrintDataGroup
 
 	/**
 	 * 	Get Value
-	 * 	@param groupColumnName group column name (or TOTAL)
+	 * 	@param AD_PrintFormatItem_ID group column (or TOTAL)
 	 * 	@param functionColumnName function column name
 	 * 	@param function function
 	 * 	@return value
 	 */
-	public BigDecimal getValue (String groupColumnName, String functionColumnName,
+	public BigDecimal getValue (int AD_PrintFormatItem_ID, String functionColumnName,
 		char function)
 	{
-		String key = groupColumnName + DELIMITER + functionColumnName;
+		String key = AD_PrintFormatItem_ID + DELIMITER + functionColumnName;
 		PrintDataFunction pdf = (PrintDataFunction)m_groupFunction.get(key);
 		if (pdf == null)
 			return null;
@@ -280,7 +273,7 @@ public class PrintDataGroup
 		}
 		if (withData)
 		{
-			Iterator<String> it = m_groupMap.keySet().iterator();
+			Iterator<Integer> it = m_groupMap.keySet().iterator();
 			while(it.hasNext())
 			{
 				Object key = it.next();
