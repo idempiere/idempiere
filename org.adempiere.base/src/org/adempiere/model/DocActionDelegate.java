@@ -50,7 +50,7 @@ import org.compiere.util.Util;
  * @author hengsin
  *
  */
-public class DocActionDelegate<T extends PO> implements DocAction {
+public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 
 	private T po;
 	/**	Process Message 			*/
@@ -80,7 +80,7 @@ public class DocActionDelegate<T extends PO> implements DocAction {
 	@Override
 	public boolean processIt(String action) {
 		m_processMsg = null;
-		DocumentEngine engine = new DocumentEngine ((DocAction)po, getDocStatus());
+		DocumentEngine engine = new DocumentEngine (po, getDocStatus());
 		return engine.processIt (action, getDocAction());
 	}
 
