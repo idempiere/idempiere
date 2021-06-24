@@ -32,6 +32,7 @@ import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MCashLine;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
@@ -1856,6 +1857,11 @@ class Doc_AllocationTax
 				return false;
 			}
 
+			int doctypeid = -1; // ensure standard behavior
+			int doctypecm =  0;
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, factAcct.getRecord_ID(), line.getPO().get_TrxName());
+			if(doc!=null)
+				doctypeid = doc.getC_DocType_ID();
 
 //			Discount Amount
 			if (m_DiscountAmt.signum() != 0)
@@ -1869,16 +1875,33 @@ class Doc_AllocationTax
 					{
 						//for sales actions
 						if (m_IsSOTrx) {
-							fact.createLine (line, m_DiscountAccount,
-								as.getC_Currency_ID(), amount, null);
-							fact.createLine (line, taxAcct,
-								as.getC_Currency_ID(), null, amount);
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, m_DiscountAccount,
+										as.getC_Currency_ID(), amount.negate(), null);
+								fact.createLine (line, taxAcct,
+										as.getC_Currency_ID(), null, amount.negate());
+							}else {
+
+								fact.createLine (line, m_DiscountAccount,
+										as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, taxAcct,
+										as.getC_Currency_ID(), null, amount);
+							}
 						} else {
 						//for purchase actions
-							fact.createLine (line, m_DiscountAccount,
-								as.getC_Currency_ID(), amount.negate(), null);
-							fact.createLine (line, taxAcct,
-								as.getC_Currency_ID(), null, amount.negate());
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, m_DiscountAccount,
+										as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, taxAcct,
+										as.getC_Currency_ID(), null, amount);
+							} else {
+								fact.createLine (line, m_DiscountAccount,
+										as.getC_Currency_ID(), amount.negate(), null);
+								fact.createLine (line, taxAcct,
+										as.getC_Currency_ID(), null, amount.negate());
+							}
 						}
 
 					}
@@ -1892,15 +1915,35 @@ class Doc_AllocationTax
 					{
 //						for sales actions
 						if (m_IsSOTrx) {
-							fact.createLine (line, taxAcct,
-								as.getC_Currency_ID(), amount, null);
-							fact.createLine (line, m_DiscountAccount,
-								as.getC_Currency_ID(), null, amount);
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, taxAcct,
+										as.getC_Currency_ID(), amount.negate(), null);
+								fact.createLine (line, m_DiscountAccount,
+									as.getC_Currency_ID(), null, amount.negate());
+							}else {
+
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, m_DiscountAccount,
+									as.getC_Currency_ID(), null, amount);
+							}
+
 						} else {
-							fact.createLine (line, taxAcct,
-								as.getC_Currency_ID(), amount.negate(), null);
-							fact.createLine (line, m_DiscountAccount,
-								as.getC_Currency_ID(), null, amount.negate());
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, m_DiscountAccount,
+									as.getC_Currency_ID(), null, amount);
+							}else {
+
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), amount.negate(), null);
+								fact.createLine (line, m_DiscountAccount,
+									as.getC_Currency_ID(), null, amount.negate());
+							}
+
 						}
 					}
 				}
@@ -1917,15 +1960,31 @@ class Doc_AllocationTax
 					if (amount.signum() != 0)
 					{
 						if (m_IsSOTrx) {
-							fact.createLine (line, m_WriteOffAccount,
-									as.getC_Currency_ID(), amount, null);
-							fact.createLine (line, taxAcct,
-									as.getC_Currency_ID(), null, amount);
-						} else {
-							fact.createLine (line, m_WriteOffAccount,
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, m_WriteOffAccount,
 									as.getC_Currency_ID(), amount.negate(), null);
-							fact.createLine (line, taxAcct,
+								fact.createLine (line, taxAcct,
 									as.getC_Currency_ID(), null, amount.negate());
+							} else {
+								fact.createLine (line, m_WriteOffAccount,
+									as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), null, amount);
+							}
+						} else {
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, m_WriteOffAccount,
+									as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), null, amount);
+							} else {
+								fact.createLine (line, m_WriteOffAccount,
+									as.getC_Currency_ID(), amount.negate(), null);
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), null, amount.negate());
+							}
 						}
 					}
 				}
@@ -1937,15 +1996,31 @@ class Doc_AllocationTax
 					if (amount.signum() != 0)
 					{
 						if(m_IsSOTrx) {
-							fact.createLine (line, taxAcct,
-									as.getC_Currency_ID(), amount, null);
-							fact.createLine (line, m_WriteOffAccount,
-									as.getC_Currency_ID(), null, amount);
-						} else {
-							fact.createLine (line, taxAcct,
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, taxAcct,
 									as.getC_Currency_ID(), amount.negate(), null);
-							fact.createLine (line, m_WriteOffAccount,
+								fact.createLine (line, m_WriteOffAccount,
 									as.getC_Currency_ID(), null, amount.negate());
+							} else {
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, m_WriteOffAccount,
+									as.getC_Currency_ID(), null, amount);
+							}
+						} else {
+							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
+							if(doctypeid==doctypecm) {
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), amount, null);
+								fact.createLine (line, m_WriteOffAccount,
+									as.getC_Currency_ID(), null, amount);
+							} else {
+								fact.createLine (line, taxAcct,
+									as.getC_Currency_ID(), amount.negate(), null);
+								fact.createLine (line, m_WriteOffAccount,
+									as.getC_Currency_ID(), null, amount.negate());
+							}
 						}
 					}
 				}
