@@ -109,6 +109,8 @@ public class MTableIndex extends X_AD_TableIndex {
 	
 	/** Index Create DDL	*/
 	private String			m_ddl = null;
+
+	private String 			m_whereClause = "";
 	
 	/**
 	 * Get index columns
@@ -117,10 +119,31 @@ public class MTableIndex extends X_AD_TableIndex {
 	 */
 	public MIndexColumn[] getColumns(boolean reload)
 	{
-		if (m_columns != null && !reload)
+		String whereClause = MIndexColumn.COLUMNNAME_AD_TableIndex_ID + "=?";
+		return getColumns(reload, whereClause);
+	}
+	
+	/**
+	 * Get index columns
+	 * @param reload reload data
+	 * @param activeOnly return active records only
+	 * @return array of index column
+	 */
+	public MIndexColumn[] getColumns(boolean reload, boolean activeOnly)
+	{
+		StringBuilder whereClause = new StringBuilder(MIndexColumn.COLUMNNAME_AD_TableIndex_ID).append("=?");
+		if(activeOnly)
+			whereClause.append(" AND IsActive='Y'");
+		return getColumns(reload, whereClause.toString());
+	}	
+	
+	private MIndexColumn[] getColumns(boolean reload, String whereClause)
+	{
+		if (m_columns != null && !reload && m_whereClause.equalsIgnoreCase(whereClause) )
 			return m_columns;
 		
-		Query query = new Query(getCtx(), MIndexColumn.Table_Name, MIndexColumn.COLUMNNAME_AD_TableIndex_ID + "=?", get_TrxName());
+		m_whereClause = whereClause;
+		Query query = new Query(getCtx(), MIndexColumn.Table_Name, whereClause, get_TrxName());
 		query.setParameters(getAD_TableIndex_ID());
 		query.setOrderBy(MIndexColumn.COLUMNNAME_SeqNo);
 		List<MIndexColumn> list = query.<MIndexColumn>list();
@@ -149,41 +172,21 @@ public class MTableIndex extends X_AD_TableIndex {
 		StringBuilder sql = null;
 		if (!isCreateConstraint())
 		{
-			sql = new StringBuilder("CREATE ");
+			sql = new StringBuilder("CREATE");
 			if (isUnique())
-				sql.append ("UNIQUE ");
-			sql.append("INDEX ").append (getName())
+				sql.append (" UNIQUE");
+			sql.append(" INDEX ").append (getName())
 				.append(" ON ").append(getTableName())
-				.append(" (");
-			//
-			getColumns(false);
-			for (int i = 0; i < m_columns.length; i++)
-			{
-				MIndexColumn ic = m_columns[i];
-				if (i > 0)
-					sql.append(",");
-				sql.append (ic.getColumnName());
-			}
-			
-			sql.append(")");
+				.append(createColumnList());
 		}
 		else if (isUnique())
 		{
 			sql = new StringBuilder("ALTER TABLE ").append(getTableName()).append(" ADD CONSTRAINT ").append(getName());
 			if (isKey())
-				sql.append(" PRIMARY KEY (");
+				sql.append(" PRIMARY KEY");
 			else
-				sql.append(" UNIQUE (");
-			getColumns(false);
-			for (int i = 0; i < m_columns.length; i++)
-			{
-				MIndexColumn ic = m_columns[i];
-				if (i > 0)
-					sql.append(",");
-				sql.append(ic.getColumnName());
-			}
-			
-			sql.append(")");
+				sql.append(" UNIQUE");
+			sql.append(createColumnList());
 		}
 		else
 		{
@@ -192,6 +195,22 @@ public class MTableIndex extends X_AD_TableIndex {
 			throw new AdempiereException(errMsg);
 		}
 			
+		return sql.toString();
+	}
+
+	private String createColumnList() {
+		getColumns(false, true);
+		if (m_columns.length <= 0)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "NoIndexColumnsSpecified"));
+		StringBuilder sql = new StringBuilder(" (");
+		for (int i = 0; i < m_columns.length; i++)
+		{
+			MIndexColumn ic = m_columns[i];
+			if (i > 0)
+				sql.append(",");
+			sql.append(ic.getColumnName());
+		}
+		sql.append(")");
 		return sql.toString();
 	}
 
