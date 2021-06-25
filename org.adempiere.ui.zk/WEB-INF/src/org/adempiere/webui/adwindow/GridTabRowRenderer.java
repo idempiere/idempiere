@@ -196,13 +196,31 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Check existence of readonly editor and return display text
+	 * @param value
+	 * @param gridField
+	 * @param rowIndex
+	 * @return display text
+	 */
+	protected String getDisplayTextWithEditorCheck(Object value, GridField gridField, int rowIndex) {
+		WEditor readOnlyEditor = readOnlyEditors.get(gridField);
+		if (readOnlyEditor == null) {
+			readOnlyEditor = WebEditorFactory.getEditor(gridField, true, readOnlyEditorConfiguration);
+			if (readOnlyEditor != null) {
+				readOnlyEditors.put(gridField, readOnlyEditor);
+			}
+		}
+		return getDisplayText(value, gridField, rowIndex);
+	}
+	
+	/**
 	 * call {@link #getDisplayText(Object, GridField, int, boolean)} with isForceGetValue = false
 	 * @param value
 	 * @param gridField
 	 * @param rowIndex
-	 * @return
+	 * @return display text
 	 */
-	private String getDisplayText(Object value, GridField gridField, int rowIndex){
+	public String getDisplayText(Object value, GridField gridField, int rowIndex){
 		return getDisplayText(value, gridField, rowIndex, false);
 	}
 	
@@ -212,7 +230,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @param gridField
 	 * @param rowIndex
 	 * @param isForceGetValue
-	 * @return
+	 * @return display text
 	 */
 	private String getDisplayText(Object value, GridField gridField, int rowIndex, boolean isForceGetValue)
 	{
@@ -431,7 +449,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				columnCount = gridPanelFields.length;
 				gridTabFields = gridTab.getFields();
 				isGridViewCustomized = gridTabFields.length != gridPanelFields.length;
-			}	
+			}
+			gridPanel.autoHideEmptyColumns();
 		}
 		
 		if (grid == null)
