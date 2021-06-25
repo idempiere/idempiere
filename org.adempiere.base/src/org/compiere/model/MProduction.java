@@ -337,6 +337,7 @@ public class MProduction extends X_M_Production implements DocAction {
 						MProductionLine BOMLine = null;
 						int prevLoc = -1;
 						int previousAttribSet = -1;
+						int prevAsi = -1;
 						// Create lines from storage until qty is reached
 						for (int sl = 0; sl < storages.length; sl++) {
 
@@ -352,7 +353,7 @@ public class MProduction extends X_M_Production implements DocAction {
 										get_TrxName()).getM_AttributeSet_ID();
 
 								// roll up costing attributes if in the same locator
-								if (locAttribSet == 0 && previousAttribSet == 0
+								if (((locAttribSet == 0 && previousAttribSet == 0) || (slASI == prevAsi))
 										&& prevLoc == loc) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(lineQty));
@@ -377,6 +378,7 @@ public class MProduction extends X_M_Production implements DocAction {
 								}
 								prevLoc = loc;
 								previousAttribSet = locAttribSet;
+								prevAsi = slASI;
 								// enough ?
 								BOMMovementQty = BOMMovementQty.subtract(lineQty);
 								if (BOMMovementQty.signum() == 0)
