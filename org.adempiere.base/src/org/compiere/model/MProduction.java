@@ -254,8 +254,6 @@ public class MProduction extends X_M_Production implements DocAction {
 		
 		int M_Warehouse_ID = finishedLocator.getM_Warehouse_ID();
 		
-		int asi = 0;
-
 		// products used in production
 		String sql = "SELECT M_ProductBom_ID, BOMQty" + " FROM M_Product_BOM"
 				+ " WHERE M_Product_ID=" + finishedProduct.getM_Product_ID() + " ORDER BY Line";
@@ -339,6 +337,7 @@ public class MProduction extends X_M_Production implements DocAction {
 						MProductionLine BOMLine = null;
 						int prevLoc = -1;
 						int previousAttribSet = -1;
+						int prevAsi = -1;
 						// Create lines from storage until qty is reached
 						for (int sl = 0; sl < storages.length; sl++) {
 
@@ -350,11 +349,11 @@ public class MProduction extends X_M_Production implements DocAction {
 
 								int loc = storages[sl].getM_Locator_ID();
 								int slASI = storages[sl].getM_AttributeSetInstance_ID();
-								int locAttribSet = new MAttributeSetInstance(getCtx(), asi,
+								int locAttribSet = new MAttributeSetInstance(getCtx(), slASI,
 										get_TrxName()).getM_AttributeSet_ID();
 
 								// roll up costing attributes if in the same locator
-								if (locAttribSet == 0 && previousAttribSet == 0
+								if (((locAttribSet == 0 && previousAttribSet == 0) || (slASI == prevAsi))
 										&& prevLoc == loc) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(lineQty));
@@ -379,6 +378,7 @@ public class MProduction extends X_M_Production implements DocAction {
 								}
 								prevLoc = loc;
 								previousAttribSet = locAttribSet;
+								prevAsi = slASI;
 								// enough ?
 								BOMMovementQty = BOMMovementQty.subtract(lineQty);
 								if (BOMMovementQty.signum() == 0)
