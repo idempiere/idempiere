@@ -119,8 +119,7 @@ public class MTableIndex extends X_AD_TableIndex {
 	 */
 	public MIndexColumn[] getColumns(boolean reload)
 	{
-		String whereClause = MIndexColumn.COLUMNNAME_AD_TableIndex_ID + "=?";
-		return getColumns(reload, whereClause);
+		return getColumns(reload, false);
 	}
 	
 	/**
@@ -131,14 +130,11 @@ public class MTableIndex extends X_AD_TableIndex {
 	 */
 	public MIndexColumn[] getColumns(boolean reload, boolean activeOnly)
 	{
-		StringBuilder whereClause = new StringBuilder(MIndexColumn.COLUMNNAME_AD_TableIndex_ID).append("=?");
+		StringBuilder where = new StringBuilder(MIndexColumn.COLUMNNAME_AD_TableIndex_ID).append("=?");
 		if(activeOnly)
-			whereClause.append(" AND IsActive='Y'");
-		return getColumns(reload, whereClause.toString());
-	}	
-	
-	private MIndexColumn[] getColumns(boolean reload, String whereClause)
-	{
+			where.append(" AND IsActive='Y'");
+		String whereClause = where.toString();
+		
 		if (m_columns != null && !reload && m_whereClause.equalsIgnoreCase(whereClause) )
 			return m_columns;
 		
@@ -202,16 +198,16 @@ public class MTableIndex extends X_AD_TableIndex {
 		getColumns(false, true);
 		if (m_columns.length <= 0)
 			throw new AdempiereException(Msg.getMsg(getCtx(), "NoIndexColumnsSpecified"));
-		StringBuilder sql = new StringBuilder(" (");
+		StringBuilder columnList = new StringBuilder(" (");
 		for (int i = 0; i < m_columns.length; i++)
 		{
 			MIndexColumn ic = m_columns[i];
 			if (i > 0)
-				sql.append(",");
-			sql.append(ic.getColumnName());
+				columnList.append(",");
+			columnList.append(ic.getColumnName());
 		}
-		sql.append(")");
-		return sql.toString();
+		columnList.append(")");
+		return columnList.toString();
 	}
 
 	/**
