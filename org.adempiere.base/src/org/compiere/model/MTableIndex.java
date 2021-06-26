@@ -168,10 +168,10 @@ public class MTableIndex extends X_AD_TableIndex {
 		StringBuilder sql = null;
 		if (!isCreateConstraint())
 		{
-			sql = new StringBuilder("CREATE");
+			sql = new StringBuilder("CREATE ");
 			if (isUnique())
-				sql.append (" UNIQUE");
-			sql.append(" INDEX ").append (getName())
+				sql.append ("UNIQUE ");
+			sql.append("INDEX ").append (getName())
 				.append(" ON ").append(getTableName())
 				.append(createColumnList());
 		}
