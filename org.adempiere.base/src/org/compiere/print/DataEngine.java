@@ -357,19 +357,19 @@ public class DataEngine
 				if ("Y".equals(rs.getString(11)))
 					m_group.addGroupColumn(AD_PrintFormatItem_ID);
 				if ("Y".equals(rs.getString(12)))
-					m_group.addFunction(ColumnName, PrintDataFunction.F_SUM);
+					m_group.addFunction(AD_PrintFormatItem_ID, PrintDataFunction.F_SUM);
 				if ("Y".equals(rs.getString(13)))
-					m_group.addFunction(ColumnName, PrintDataFunction.F_MEAN);
+					m_group.addFunction(AD_PrintFormatItem_ID, PrintDataFunction.F_MEAN);
 				if ("Y".equals(rs.getString(14)))
-					m_group.addFunction(ColumnName, PrintDataFunction.F_COUNT);
+					m_group.addFunction(AD_PrintFormatItem_ID, PrintDataFunction.F_COUNT);
 				if ("Y".equals(rs.getString(18)))	//	IsMinCalc
-					m_group.addFunction(ColumnName, PrintDataFunction.F_MIN);
+					m_group.addFunction(AD_PrintFormatItem_ID, PrintDataFunction.F_MIN);
 				if ("Y".equals(rs.getString(19)))	//	IsMaxCalc
-					m_group.addFunction(ColumnName, PrintDataFunction.F_MAX);
+					m_group.addFunction(AD_PrintFormatItem_ID, PrintDataFunction.F_MAX);
 				if ("Y".equals(rs.getString(22)))	//	IsVarianceCalc
-					m_group.addFunction(ColumnName, PrintDataFunction.F_VARIANCE);
+					m_group.addFunction(AD_PrintFormatItem_ID, PrintDataFunction.F_VARIANCE);
 				if ("Y".equals(rs.getString(23)))	//	IsDeviationCalc
-					m_group.addFunction(ColumnName, PrintDataFunction.F_DEVIATION);
+					m_group.addFunction(AD_PrintFormatItem_ID, PrintDataFunction.F_DEVIATION);
 				if ("Y".equals(rs.getString(20)))	//	isRunningTotal
 					//	RunningTotalLines only once - use max
 					m_runningTotalLines = Math.max(m_runningTotalLines, rs.getInt(21));	
@@ -944,7 +944,7 @@ public class DataEngine
 						PrintDataColumn group_pdc = changedGroups.get(j);
 						Object value = changedValues.get(j);
 						
-							char[] functions = m_group.getFunctions(group_pdc.getColumnName());
+							char[] functions = m_group.getFunctions(group_pdc.getAD_PrintFormatItem_ID());
 							for (int f = 0; f < functions.length; f++)
 							{
 								printRunningTotal(pd, levelNo, rowNo++);
@@ -965,11 +965,11 @@ public class DataEngine
 										pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 											valueString, DisplayType.String, false, pdc.isPageBreak(), pdc.getFormatPattern()));
 									}
-									else if (m_group.isFunctionColumn(pdc.getColumnName(), functions[f]))
+									else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
 									{
 										pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 											m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
-												pdc.getColumnName(), functions[f]), 
+												pdc.getAD_PrintFormatItem_ID(), functions[f]), 
 											PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), 
 												false, pdc.isPageBreak(), pdc.getFormatPattern()));
 									}
@@ -979,7 +979,7 @@ public class DataEngine
 							for (int c = 0; c < pd.getColumnInfo().length; c++)
 							{
 								pdc = pd.getColumnInfo()[c];
-								m_group.reset(group_pdc.getColumnName(), pdc.getColumnName());
+								m_group.reset(group_pdc.getAD_PrintFormatItem_ID(), pdc.getAD_PrintFormatItem_ID());
 							}
 						}	//	Group change
 				}	//	group change
@@ -1132,7 +1132,7 @@ public class DataEngine
 						/** Report Summary FR [ 2011569 ]**/ 
 						if(!m_summary)
 							pd.addNode(pde);
-						m_group.addValue(pde.getColumnName(), pde.getFunctionValue());
+						m_group.addValue(pde.getAD_PrintFormatItem_ID(), pde.getFunctionValue());
 					}
 				}	//	for all columns
 
@@ -1161,7 +1161,7 @@ public class DataEngine
 				Object value = m_group.groupChange(group_pdc.getAD_PrintFormatItem_ID(), new Object(), false);
 				if (value != null)	//	Group change
 				{
-					char[] functions = m_group.getFunctions(group_pdc.getColumnName());
+					char[] functions = m_group.getFunctions(group_pdc.getAD_PrintFormatItem_ID());
 					for (int f = 0; f < functions.length; f++)
 					{
 						printRunningTotal(pd, levelNo, rowNo++);
@@ -1180,11 +1180,11 @@ public class DataEngine
 								pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 									valueString, DisplayType.String, pdc.getFormatPattern()));
 							}
-							else if (m_group.isFunctionColumn(pdc.getColumnName(), functions[f]))
+							else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
 							{
 								pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 									m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
-										pdc.getColumnName(), functions[f]),
+										pdc.getAD_PrintFormatItem_ID(), functions[f]),
 									PrintDataFunction.getFunctionDisplayType(functions[f],
 											pdc.getDisplayType()),pdc.getFormatPattern()));
 							}
@@ -1198,7 +1198,7 @@ public class DataEngine
 		//	Add Total Lines
 		if (m_group.isGroupColumn(PrintDataGroup.TOTAL))
 		{
-			char[] functions = m_group.getFunctions(Integer.toString(PrintDataGroup.TOTAL));
+			char[] functions = m_group.getFunctions(PrintDataGroup.TOTAL);
 			for (int f = 0; f < functions.length; f++)
 			{
 				printRunningTotal(pd, levelNo, rowNo++);
@@ -1217,11 +1217,11 @@ public class DataEngine
 						pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), name.trim(),
 								DisplayType.String, pdc.getFormatPattern()));
 					}
-					else if (m_group.isFunctionColumn(pdc.getColumnName(), functions[f]))
+					else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
 					{
 						pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 							m_group.getValue(PrintDataGroup.TOTAL, 
-								pdc.getColumnName(), functions[f]),
+								pdc.getAD_PrintFormatItem_ID(), functions[f]),
 							PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), pdc.getFormatPattern()));
 					}
 				}	//	for all columns
@@ -1277,10 +1277,10 @@ public class DataEngine
 					pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 						title, DisplayType.String, false, rt==0, pdc.getFormatPattern()));		//	page break
 				}
-				else if (m_group.isFunctionColumn(pdc.getColumnName(), PrintDataFunction.F_SUM))
+				else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), PrintDataFunction.F_SUM))
 				{
 					pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
-						m_group.getValue(PrintDataGroup.TOTAL, pdc.getColumnName(), PrintDataFunction.F_SUM),
+						m_group.getValue(PrintDataGroup.TOTAL, pdc.getAD_PrintFormatItem_ID(), PrintDataFunction.F_SUM),
 						PrintDataFunction.getFunctionDisplayType(PrintDataFunction.F_SUM,
 								pdc.getDisplayType()), false, false, pdc.getFormatPattern()));
 				}
