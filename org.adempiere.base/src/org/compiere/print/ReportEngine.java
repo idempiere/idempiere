@@ -67,6 +67,7 @@ import org.adempiere.print.export.PrintDataXLSXExporter;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.script;
+import org.apache.ecs.xhtml.style;
 import org.apache.ecs.xhtml.table;
 import org.apache.ecs.xhtml.tbody;
 import org.apache.ecs.xhtml.td;
@@ -796,6 +797,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			}
 
 			int printColIndex = -1;
+			HashMap<Integer, th> suppressMap = new HashMap<>();
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
 			{
@@ -844,6 +846,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									}
 								}
 							}
+							if (item.isSuppressNull()) 
+							{
+								suppressMap.put(printColIndex, th);
+								th.setID("report-th-"+printColIndex);
+							}
 						}
 						else
 						{
@@ -855,6 +862,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
 								}
+								if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
+									suppressMap.remove(printColIndex);
 							}
 							else if (obj instanceof PrintDataElement)
 							{
@@ -870,6 +879,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									}
 								}
 
+								if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
+									suppressMap.remove(printColIndex);
+								
 								if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
 								{
 									boolean isZoom = false;
@@ -963,6 +975,21 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			w.println();
 			w.println("</tbody>");
 			w.println("</table>");
+			if (suppressMap.size() > 0) 
+			{
+				StringBuilder st = new StringBuilder();
+				for(th t : suppressMap.values()) 
+				{
+					if (st.length() > 0)
+						st.append(",");
+					st.append("#").append(t.getAttribute("id"));
+				}
+				st.append(" {\n\t\tdisplay:none;\n\t}");
+				style styleTag = new style();
+				styleTag.addElement(st.toString());
+				styleTag.output(w);
+				w.println();
+			}
 			if (!onlyTable)
 			{
 				w.println("</body>");
