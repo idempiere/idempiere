@@ -43,6 +43,7 @@ public class PrintDataElement implements Serializable
 
 	/**
 	 *	Print Data Element Constructor
+	 *  @param AD_PrintFormatItem_ID
 	 *  @param columnName name
 	 *  @param value display value
 	 *  @param displayType optional displayType
@@ -50,10 +51,11 @@ public class PrintDataElement implements Serializable
 	 *  @param isPageBreak if true force page break
 	 *  @param foreignColumnName name foreign
 	 */
-	public PrintDataElement (String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format, String foreignColumnName)
+	public PrintDataElement (int AD_PrintFormatItem_ID, String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format, String foreignColumnName)
 	{
 		if (columnName == null)
 			throw new IllegalArgumentException("PrintDataElement - Name cannot be null");
+		m_AD_PrintFormatItem_ID = AD_PrintFormatItem_ID;
 		m_columnName = columnName;
 		m_value = value;
 		m_displayType = displayType;
@@ -63,28 +65,30 @@ public class PrintDataElement implements Serializable
 		m_foreignColumnName = foreignColumnName;
 	}	//	PrintDataElement
 
-	public PrintDataElement(String columnName, Serializable value, int displayType, String pattern, String foreignColumnName)
+	public PrintDataElement(int AD_PrintFormatItem_ID, String columnName, Serializable value, int displayType, String pattern, String foreignColumnName)
 	{
-		this (columnName, value, displayType, false, false, pattern, foreignColumnName);
+		this (AD_PrintFormatItem_ID, columnName, value, displayType, false, false, pattern, foreignColumnName);
 	}	//	PrintDataElement
 	
 	/**
 	 *	Print Data Element Constructor
+	 *  @param AD_PrintFormatItem_ID
 	 *  @param columnName name
 	 *  @param value display value
 	 *  @param pattern Number/date format pattern
 	 *  @param displayType optional displayType
 	 */
-	public PrintDataElement(String columnName, Serializable value, int displayType, String pattern)
+	public PrintDataElement(int AD_PrintFormatItem_ID, String columnName, Serializable value, int displayType, String pattern)
 	{
-		this (columnName, value, displayType, false, false, pattern, null);
+		this (AD_PrintFormatItem_ID, columnName, value, displayType, false, false, pattern, null);
 	}	//	PrintDataElement
 
-	public PrintDataElement (String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format)
+	public PrintDataElement (int AD_PrintFormatItem_ID, String columnName, Serializable value, int displayType, boolean isPKey, boolean isPageBreak, String format)
 	{
-		this(columnName, value, displayType, isPKey, isPageBreak, format, null);
+		this(AD_PrintFormatItem_ID, columnName, value, displayType, isPKey, isPageBreak, format, null);
 	}
 
+	private int m_AD_PrintFormatItem_ID;
 	/**	Data Name			*/
 	private String 		m_columnName;
 	/** Data Value			*/
@@ -107,8 +111,18 @@ public class PrintDataElement implements Serializable
 	public static final String	XML_ATTRIBUTE_NAME = "name";
 	/**	XML Attribute Key			*/
 	public static final String	XML_ATTRIBUTE_KEY = "key";
-
-
+	/**	XML Attribute PrintFormatItem Id			*/
+	public static final String	XML_ATTRIBUTE_PRINTFORMATITEM_ID = "printformatitem-id";
+	
+	/**
+	 * 
+	 * @return AD_PrintFormatItem_ID
+	 */
+	public int getAD_PrintFormatItem_ID()
+	{
+		return m_AD_PrintFormatItem_ID;
+	}
+	
 	/**
 	 * 	Get Name
 	 * 	@return name
