@@ -27,6 +27,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -44,7 +45,7 @@ public class MRefList extends X_AD_Ref_List
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3612793187620297377L;
+	private static final long serialVersionUID = 2342762307330992884L;
 
 	/**
 	 * 	Get Reference List 
@@ -210,45 +211,45 @@ public class MRefList extends X_AD_Ref_List
 	 */
 	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional)
 	{
+		return getList(ctx, AD_Reference_ID, optional, "");
+	} // getList
+
+	/**
+	 * Get Reference List (translated)
+	 * @param ctx context
+	 * @param AD_Reference_ID reference
+	 * @param optional if true add "",""
+	 * @param orderBy N-Name, V-Value, D-Default (IsOrderByValue)
+	 * @return List or null
+	 */
+	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String orderBy) {
+
+		if (orderBy.equals("D")) // if set to default, we look what is defined on the reference itself
+			orderBy = DB.getSQLValueStringEx(null, "SELECT IsOrderByValue FROM AD_Reference WHERE AD_Reference_ID = ?", AD_Reference_ID).equals("Y") ? "V" : "N";
+
+		if (Util.isEmpty(orderBy) || orderBy.equals("N"))
+			orderBy = "Name";
+		else if (orderBy.equals("V"))
+			orderBy = "Value";
+
 		String ad_language = Env.getAD_Language(ctx);
 		boolean isBaseLanguage = Env.isBaseLanguage(ad_language, "AD_Ref_List");
-		String sql = isBaseLanguage ?
-			"SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? AND IsActive='Y' ORDER BY Name"
-			:
-			"SELECT r.Value, t.Name FROM AD_Ref_List_Trl t"
-			+ " INNER JOIN AD_Ref_List r ON (r.AD_Ref_List_ID=t.AD_Ref_List_ID)"
-			+ " WHERE r.AD_Reference_ID=? AND t.AD_Language=? AND r.IsActive='Y'"
-			+ " ORDER BY t.Name"
-		;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		ArrayList<ValueNamePair> list = new ArrayList<ValueNamePair>();
-		if (optional)
-			list.add(new ValueNamePair("", ""));
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Reference_ID);
-			if (!isBaseLanguage)
-				pstmt.setString(2, ad_language);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-				list.add(new ValueNamePair(rs.getString(1), rs.getString(2)));
-		}
-		catch (SQLException e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		ValueNamePair[] retValue = new ValueNamePair[list.size()];
-		list.toArray(retValue);
-		return retValue;		
-	}	//	getList
 
+		StringBuilder sql = isBaseLanguage ? new StringBuilder("SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? AND IsActive='Y' ORDER BY ").append(orderBy)
+				:
+		new StringBuilder("SELECT r.Value, t.Name FROM AD_Ref_List_Trl t")
+		.append(" INNER JOIN AD_Ref_List r ON (r.AD_Ref_List_ID=t.AD_Ref_List_ID)")
+		.append(" WHERE r.AD_Reference_ID=? AND t.AD_Language=?	AND r.IsActive='Y'")
+		.append(" ORDER BY ").append(orderBy.equals("Name") ? "t." : "r.").append(orderBy);
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(AD_Reference_ID);
+		if (!isBaseLanguage)
+			params.add(ad_language);
+
+		return DB.getValueNamePairs(sql.toString(), optional, params);
+
+	}	//	getList
 
 	/**	Logger							*/
 	private static CLogger		s_log = CLogger.getCLogger (MRefList.class);
