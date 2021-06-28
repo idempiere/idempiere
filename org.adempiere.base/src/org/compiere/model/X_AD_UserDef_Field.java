@@ -30,7 +30,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210611L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 			setAD_UserDef_Field_ID (0);
 			setAD_UserDef_Tab_ID (0);
 			setSeqNo (0);
+// 0
+			setSeqNoGrid (0);
 // 0
         } */
     }
@@ -789,6 +791,23 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	public int getSeqNo () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Grid Sequence No.
+		@param SeqNoGrid Grid Sequence No	  */
+	public void setSeqNoGrid (int SeqNoGrid)
+	{
+		set_Value (COLUMNNAME_SeqNoGrid, Integer.valueOf(SeqNoGrid));
+	}
+
+	/** Get Grid Sequence No.
+		@return Grid Sequence No	  */
+	public int getSeqNoGrid () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNoGrid);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
