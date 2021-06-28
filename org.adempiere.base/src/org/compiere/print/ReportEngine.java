@@ -849,16 +849,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						{
 							td td = new td();
 							tr.addElement(td);
-							Object obj = null;
-							/** START DEVCOFFEE: script column **/
-							if (item.isTypeScript())
-							{
-								obj = m_printData.getNode(item.getName());
-							}
-							else
-							{
-								obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
-							}
+							Object obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							if (obj == null || !isDisplayPFItem(item)){
 								td.addElement("&nbsp;");
 								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
@@ -1074,13 +1065,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						else
 						{
 							printColIndex++;
-							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
+							Object obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							String data = "";
-							/** START DEVCOFFEE: script column **/
-							if (item.isTypeScript())
-							{
-								obj = m_printData.getNode(item.getName());
-							}
 							if (obj == null || !isDisplayPFItem(item)){
 								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
 									preValues[printColIndex] = null;
