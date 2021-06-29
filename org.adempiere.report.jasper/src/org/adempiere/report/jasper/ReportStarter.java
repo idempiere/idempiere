@@ -658,15 +658,17 @@ public class ReportStarter implements ProcessCall, ClientProcess
             } else {
                 resFile = getFileResourceFile(resourcePath, bundleName, currLang);
             }
-            if (resFile!=null) {
+            
+            PropertyResourceBundle res = null;
+            if (resFile!=null) {            	
                 try {
-                    PropertyResourceBundle res = new PropertyResourceBundle( new FileInputStream(resFile));
-                    params.put("RESOURCE", res);
-                    params.put(JRParameter.REPORT_RESOURCE_BUNDLE, res);
+                    res = new PropertyResourceBundle( new FileInputStream(resFile));
+                    params.put("RESOURCE", res);                    
                 } catch (IOException e) {
                     ;
                 }
             }
+            params.put(JRParameter.REPORT_RESOURCE_BUNDLE, new MsgResourceBundle(res));
 
             Connection conn = null;
             JRSwapFileVirtualizer virtualizer = null;
