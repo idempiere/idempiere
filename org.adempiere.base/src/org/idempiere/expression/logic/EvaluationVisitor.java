@@ -25,6 +25,8 @@
 package org.idempiere.expression.logic;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.compiere.util.Evaluatee;
@@ -88,18 +90,35 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 		return super.visit(ctx.expression());
 	}
 
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Override
 	public Object visitComparatorExpression(SimpleBooleanParser.ComparatorExpressionContext ctx) {
 		if (ctx.op.EQ() != null) {
 			return isEqual(ctx);
 		} else if (ctx.op.LE() != null) {
-			return asBigDecimal(ctx.left).compareTo(asBigDecimal(ctx.right)) <= 0;
+			Comparable leftValue = asComparable(ctx.left); 
+			Comparable rightValue = asComparable(ctx.right);
+			if (leftValue == null || rightValue == null)
+				return Boolean.FALSE;
+			return leftValue.compareTo(rightValue) <= 0;
 		} else if (ctx.op.GE() != null) {
-			return asBigDecimal(ctx.left).compareTo(asBigDecimal(ctx.right)) >= 0;
+			Comparable leftValue = asComparable(ctx.left); 
+			Comparable rightValue = asComparable(ctx.right);
+			if (leftValue == null || rightValue == null)
+				return Boolean.FALSE;
+			return leftValue.compareTo(rightValue) >= 0;
 		} else if (ctx.op.LT() != null) {
-			return asBigDecimal(ctx.left).compareTo(asBigDecimal(ctx.right)) < 0;
+			Comparable leftValue = asComparable(ctx.left); 
+			Comparable rightValue = asComparable(ctx.right);
+			if (leftValue == null || rightValue == null)
+				return Boolean.FALSE;
+			return leftValue.compareTo(rightValue) < 0;
 		} else if (ctx.op.GT() != null) {
-			return asBigDecimal(ctx.left).compareTo(asBigDecimal(ctx.right)) > 0;
+			Comparable leftValue = asComparable(ctx.left); 
+			Comparable rightValue = asComparable(ctx.right);
+			if (leftValue == null || rightValue == null)
+				return Boolean.FALSE;
+			return leftValue.compareTo(rightValue) > 0;
 		} else if (ctx.op.NE() != null) {
 			return !(isEqual(ctx));
 		} else if (ctx.op.RE() != null) {
@@ -215,13 +234,35 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 		return (boolean) visit(ctx);
 	}
 
-	private BigDecimal asBigDecimal(SimpleBooleanParser.ExpressionContext ctx) {
+	private static final Pattern jdbcTimestampPattern = Pattern.compile(".*[-].*[-].*[:].*[:].*");
+	
+	@SuppressWarnings("rawtypes")
+	private Comparable asComparable(SimpleBooleanParser.ExpressionContext ctx) {
 		Object value = visit(ctx);
-		if (value instanceof String)
-			return new BigDecimal((String)value);
-		else if (value instanceof BigDecimal)
+		if (value instanceof String) {
+			String s = (String) value;
+			if (Util.isEmpty(s, true))
+				return null;
+			 
+		    Matcher matcher = jdbcTimestampPattern.matcher(s);
+			if (matcher.matches()) {
+				try {
+					return Timestamp.valueOf(s);
+				} catch (Exception e) {}
+			}
+			try {
+				return new BigDecimal(s);
+			} catch (Exception e) {}
+		} else if (value instanceof BigDecimal) {
 			return (BigDecimal)value;
+		} else if (value instanceof Timestamp) {
+			return (Timestamp)value;
+		} 
+		
+		//fall back to comparable and string
+		if (value instanceof Comparable)
+			return (Comparable)value;
 		else
-			return new BigDecimal(value.toString());
+			return value.toString();
 	}
 }
