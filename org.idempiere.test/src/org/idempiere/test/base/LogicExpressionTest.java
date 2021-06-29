@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.LegacyLogicEvaluator;
+import org.compiere.util.TimeUtil;
 import org.idempiere.expression.logic.LogicEvaluator;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -490,6 +492,32 @@ public class LogicExpressionTest  extends AbstractTestCase {
 			}
 		}
 		assertTrue(exceptions.isEmpty(), "Found " + exceptions.size() + " logic expression with invalid syntax in AD");
+	}
+	
+	@Test
+	public void testDateExpression() {
+		String expr = "@DateAcct@<@DateOrdered@";
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		
+		Env.setContext(Env.getCtx(), "DateAcct", (Timestamp)null);
+		Env.setContext(Env.getCtx(), "DateOrdered", (Timestamp)null);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "DateAcct", today);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "DateOrdered", today);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "DateAcct", TimeUtil.addDays(today, -1));
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		Env.setContext(Env.getCtx(), "DateAcct", (Timestamp)null);
+		Env.setContext(Env.getCtx(), "DateOrdered", (Timestamp)null);
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "DateAcct", today);
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "DateOrdered", today);
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "DateAcct", TimeUtil.addDays(today, -1));
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
 	
 	private static class ContextEvaluatee implements Evaluatee {
