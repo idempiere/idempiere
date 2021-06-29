@@ -265,14 +265,16 @@ public class Extensions {
 	/**
 	 *
 	 * @param AD_Window_ID 
-	 * @return IQuickEntryFactory instance or null if AD_Window_ID not found
+	 * @return IQuickEntryFactory instance or null if AdWindowID not found
 	 */
-	private static IQuickEntryFactory getQuickEntryService(Integer AdWindowID) {
+	public static AbstractWQuickEntry getQuickEntry(Integer AdWindowID) {
 		IServiceReferenceHolder<IQuickEntryFactory> cache = s_quickEntryFactoryCache.get(AdWindowID);
 		if (cache != null) {
 			IQuickEntryFactory service = cache.getService();
 			if (service != null) {
-				return service;
+				AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(AdWindowID);
+				if (quickEntry != null)
+					return quickEntry;
 			}
 			s_quickEntryFactoryCache.remove(AdWindowID);
 		}
@@ -281,45 +283,50 @@ public class Extensions {
 			for(IServiceReferenceHolder<IQuickEntryFactory> factory : factories) {
 				IQuickEntryFactory service = factory.getService();
 				if (service != null) {
-					s_quickEntryFactoryCache.put(AdWindowID, factory);
-					return service;
+					AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(AdWindowID);
+					if (quickEntry != null) {
+						s_quickEntryFactoryCache.put(AdWindowID, factory);
+						return quickEntry;
+					}
 				}
 			}
 		}
-		return null;		
-	}
-	
-	/**
-	 *
-	 * @param AD_Window_ID 
-	 * @return IQuickEntry instance or null if AD_Window_ID not found
-	 */
-	public static AbstractWQuickEntry getQuickEntry(int AD_Window_ID) {
-		IQuickEntryFactory service = getQuickEntryService(AD_Window_ID);
-		if (service != null) {
-			AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(AD_Window_ID);
-			if (quickEntry != null)
-				return quickEntry;
-		}
 		return null;
-	}
+	}	
 	
 	/**
 	 *
 	 * @param WindowNo 
 	 * @param AD_Window_ID 
 	 * @param TabNo 
-	 * @return IQuickEntry instance or null if AD_Window_ID not found
+	 * @return IQuickEntry instance or null if AdWindowID not found
 	 */
-	public static AbstractWQuickEntry getQuickEntry(int WindowNo, int TabNo, int AD_Window_ID) {
-		IQuickEntryFactory service = getQuickEntryService(AD_Window_ID);
-		if (service != null) {
-			AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(WindowNo, TabNo, AD_Window_ID);
-			if (quickEntry != null)
-				return quickEntry;
+	public static AbstractWQuickEntry getQuickEntry(int WindowNo, int TabNo, int AdWindowID) {
+		IServiceReferenceHolder<IQuickEntryFactory> cache = s_quickEntryFactoryCache.get(AdWindowID);
+		if (cache != null) {
+			IQuickEntryFactory service = cache.getService();
+			if (service != null) {
+				AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(WindowNo, TabNo, AdWindowID);
+				if (quickEntry != null)
+					return quickEntry;
+			}
+			s_quickEntryFactoryCache.remove(AdWindowID);
+		}
+		List<IServiceReferenceHolder<IQuickEntryFactory>> factories = Service.locator().list(IQuickEntryFactory.class).getServiceReferences();
+		if (factories != null) {
+			for(IServiceReferenceHolder<IQuickEntryFactory> factory : factories) {
+				IQuickEntryFactory service = factory.getService();
+				if (service != null) {
+					AbstractWQuickEntry quickEntry = service.newQuickEntryInstance(WindowNo, TabNo, AdWindowID);
+					if (quickEntry != null) {
+						s_quickEntryFactoryCache.put(AdWindowID, factory);
+						return quickEntry;
+					}
+				}
+			}
 		}
 		return null;
-	}
+	}	
 	
 	private static final CCache<String, IServiceReferenceHolder<IMediaViewProvider>> s_mediaViewProviderCache = new CCache<>("_IMediaViewProvider_Cache", "IMediaViewProvider", 100, false);
 	

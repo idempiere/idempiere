@@ -507,6 +507,15 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getSeqNo();
 
+    /** Column name SeqNoGrid */
+    public static final String COLUMNNAME_SeqNoGrid = "SeqNoGrid";
+
+	/** Set Grid Sequence No	  */
+	public void setSeqNoGrid (int SeqNoGrid);
+
+	/** Get Grid Sequence No	  */
+	public int getSeqNoGrid();
+
     /** Column name SortNo */
     public static final String COLUMNNAME_SortNo = "SortNo";
 
