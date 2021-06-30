@@ -1401,6 +1401,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (value != newTabpanel)
 			{
 				newTabpanel.query();
+				if (newTabpanel instanceof ADTabpanel)
+				{
+					ADTabpanel adtabpanel = (ADTabpanel) newTabpanel;
+					Events.echoEvent(ADTabpanel.ON_POST_INIT_EVENT, adtabpanel, null);
+				}			
 			}
 			else 
 			{
