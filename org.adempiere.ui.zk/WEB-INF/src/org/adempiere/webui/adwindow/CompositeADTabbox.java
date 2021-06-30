@@ -1092,6 +1092,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 						adtab.getGridTab().setCurrentRow(currentRow, true);
 					break;
 				}
+				
+				if(!adtab.getGridTab().isOpen())
+					onActivateDetail(adtab);
 			}
 		}		
 	}	
