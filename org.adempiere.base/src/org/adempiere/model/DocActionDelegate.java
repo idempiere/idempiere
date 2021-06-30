@@ -158,6 +158,11 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 				return status;
 		}
 
+		if (   po.columnExists(DOC_COLUMNNAME_C_DocTypeTarget_ID)
+			&& po.columnExists(DOC_COLUMNNAME_C_DocType_ID)) {
+			po.set_ValueOfColumn(DOC_COLUMNNAME_C_DocType_ID, po.get_ValueAsInt(DOC_COLUMNNAME_C_DocTypeTarget_ID));
+		}
+
 		// Set the definite document number after completed (if needed)
 		setDefiniteDocumentNo();
 
@@ -222,10 +227,12 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 			} else {
 				date = TimeUtil.getDay(0);
 			}
-			try {
-				MPeriod.testPeriodOpen(getCtx(), date, doctype, getAD_Org_ID());
-			} catch (PeriodClosedException e) {
-				accrual = true;
+			if (doctype >= 0) {
+				try {
+					MPeriod.testPeriodOpen(getCtx(), date, doctype, getAD_Org_ID());
+				} catch (PeriodClosedException e) {
+					accrual = true;
+				}
 			}
 
 			if (accrual)
@@ -505,6 +512,9 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		if (po.columnExists(DOC_COLUMNNAME_DateTrx)) {
 			datetrx = (Timestamp) po.get_Value(DOC_COLUMNNAME_DateTrx);
 		}
+		if (datetrx == null) {
+			datetrx = TimeUtil.getDay(0);
+		}
 		if (doctype >= 0) {
 			MPeriod.testPeriodOpen(getCtx(), (dateacct != null ? dateacct : datetrx), doctype, getAD_Org_ID());
 			MDocType dt = MDocType.get(doctype);
@@ -512,7 +522,7 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 				if (po.columnExists(DOC_COLUMNNAME_DateTrx)) {
 					po.set_ValueOfColumn(DOC_COLUMNNAME_DateTrx, TimeUtil.getDay(0));
 				}
-				if (dateacct.before(datetrx)) {
+				if (dateacct != null && dateacct.before(datetrx)) {
 					po.set_ValueOfColumn(DOC_COLUMNNAME_DateAcct, datetrx);
 					MPeriod.testPeriodOpen(getCtx(), datetrx, doctype, getAD_Org_ID());
 				}
