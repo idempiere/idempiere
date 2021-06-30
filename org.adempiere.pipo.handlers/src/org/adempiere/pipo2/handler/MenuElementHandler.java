@@ -114,11 +114,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 			int AD_Tree_ID = getDefaultMenuTreeId();
 
 			final String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=? AND SeqNo>=? AND AD_Tree_ID=?";
-			DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
 
 			final String sql1 = "SELECT COUNT(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
 			int countRecords = DB.getSQLValueEx(getTrxName(ctx), sql1, AD_Tree_ID, mMenu.getAD_Menu_ID());
 			if (countRecords > 0) {
+				int oldseqNo = 0;
 				final String sql2 = "SELECT * FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -152,7 +152,9 @@ public class MenuElementHandler extends AbstractElementHandler {
 							backup.setColValue(colValue);
 							backup.saveEx();
 						}
-	
+						oldseqNo = rs.getInt("SeqNo");
+						if (rs.wasNull())
+							oldseqNo = seqNo;
 					}
 	
 				} catch (Exception e) {
@@ -160,10 +162,12 @@ public class MenuElementHandler extends AbstractElementHandler {
 				} finally {
 					DB.close(rs, pstmt);
 				}
-	
+				if (seqNo != oldseqNo)
+					DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
 				final String updateSQL = "UPDATE AD_TREENODEMM SET Parent_ID=?, SeqNo=? WHERE AD_Tree_ID=? AND Node_ID=?";
 				DB.executeUpdateEx(updateSQL, new Object[] {parentId, seqNo, AD_Tree_ID, mMenu.getAD_Menu_ID()}, getTrxName(ctx));
 			} else {
+				DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
 				final String insertSQL = "INSERT INTO AD_TREENODEMM (AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy,Parent_ID, SeqNo, AD_Tree_ID, Node_ID, AD_TREENODEMM_UU) VALUES(0,0,0,0,?,?,?,?,?)";
 				DB.executeUpdateEx(insertSQL, new Object[] {parentId, seqNo, AD_Tree_ID, mMenu.getAD_Menu_ID(), UUID.randomUUID().toString()}, getTrxName(ctx));
 			}
