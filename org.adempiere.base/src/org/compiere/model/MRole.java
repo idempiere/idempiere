@@ -508,7 +508,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ " LEFT JOIN AD_Window_Access wa ON "
 			+ "(wa.AD_Role_ID=" + getAD_Role_ID()
 			+ " AND w.AD_Window_ID = wa.AD_Window_ID) "
-			+ "WHERE wa.AD_Window_ID IS NULL AND t.SeqNo=(SELECT MIN(SeqNo) FROM AD_Tab xt "	// only check first tab
+			+ "WHERE w.IsActive = 'Y' AND wa.AD_Window_ID IS NULL AND t.SeqNo=(SELECT MIN(SeqNo) FROM AD_Tab xt "	// only check first tab
 				+ "WHERE xt.AD_Window_ID=w.AD_Window_ID)"
 			+ "AND tt.AccessLevel IN ";
 		
@@ -519,7 +519,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ "FROM AD_Process p LEFT JOIN AD_Process_Access pa ON "
 			+ "(pa.AD_Role_ID=" + getAD_Role_ID()
 			+ " AND p.AD_Process_ID = pa.AD_Process_ID) "
-			+ "WHERE pa.AD_Process_ID IS NULL AND AccessLevel IN ";
+			+ "WHERE p.IsActive = 'Y' AND pa.AD_Process_ID IS NULL AND AccessLevel IN ";
 
 		String sqlForm = "INSERT INTO AD_Form_Access "
 			+ "(AD_Form_ID, AD_Role_ID," 
@@ -528,7 +528,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ "FROM AD_Form f LEFT JOIN AD_Form_Access fa ON "
 			+ "(fa.AD_Role_ID=" + getAD_Role_ID()
 			+ " AND f.AD_Form_ID = fa.AD_Form_ID) "
-			+ "WHERE fa.AD_Form_ID IS NULL AND AccessLevel IN ";
+			+ "WHERE f.IsActive = 'Y' AND fa.AD_Form_ID IS NULL AND AccessLevel IN ";
 
 		String sqlWorkflow = "INSERT INTO AD_WorkFlow_Access "
 			+ "(AD_WorkFlow_ID, AD_Role_ID,"
@@ -537,7 +537,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ "FROM AD_WorkFlow w LEFT JOIN AD_WorkFlow_Access wa ON "
 			+ "(wa.AD_Role_ID=" + getAD_Role_ID()
 			+ " AND w.AD_WorkFlow_ID = wa.AD_WorkFlow_ID) "
-			+ "WHERE w.AD_Client_ID IN (0," + getAD_Client_ID() + ") AND wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN ";
+			+ "WHERE w.IsActive = 'Y' AND w.AD_Client_ID IN (0," + getAD_Client_ID() + ") AND wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN ";
 
 		String sqlDocAction = "INSERT INTO AD_Document_Action_Access "
 			+ "(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"
@@ -554,7 +554,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ ") LEFT JOIN AD_Document_Action_Access da ON "
 			+ "(da.AD_Role_ID=" + getAD_Role_ID()
 			+ " AND da.C_DocType_ID=doctype.C_DocType_ID AND da.AD_Ref_List_ID=action.AD_Ref_List_ID) "
-			+ "WHERE (da.C_DocType_ID IS NULL AND da.AD_Ref_List_ID IS NULL)) ";
+			+ "WHERE doctype.IsActive = 'Y' AND  (da.C_DocType_ID IS NULL AND da.AD_Ref_List_ID IS NULL)) ";
 
 		String sqlInfo = "INSERT INTO AD_InfoWindow_Access "
 				+ "(AD_InfoWindow_ID, AD_Role_ID,"
@@ -566,7 +566,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				+ "(ia.AD_Role_ID=" + getAD_Role_ID()
 				+ " AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) "
 				+ " INNER JOIN AD_Table tt ON (i.AD_Table_ID=tt.AD_Table_ID) "
-				+ "WHERE i.AD_Client_ID IN (0," + getAD_Client_ID() + ") AND ia.AD_InfoWindow_ID IS NULL"
+				+ "WHERE i.IsActive = 'Y' AND i.AD_Client_ID IN (0," + getAD_Client_ID() + ") AND ia.AD_InfoWindow_ID IS NULL"
 				+ " AND tt.AccessLevel IN ";
 
 		/**
