@@ -102,6 +102,7 @@ public class MPackageExp extends X_AD_Package_Exp
 		List<MPackageExpDetail> list = new Query(getCtx(), MPackageExpDetail.Table_Name, where, get_TrxName())
 				.setParameters(getAD_Package_Exp_ID())
 				.setOrderBy(orderBy)
+				.setOnlyActiveRecords(true)
 				.list();
 		return list;
 	}
