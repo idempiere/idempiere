@@ -63,11 +63,15 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 		if (AD_User_ID < 0)
 			return new MDocumentStatus[0];
 
-		String whereClause = "AD_Client_ID IN (0,?) AND ((AD_User_ID IS NULL OR AD_User_ID=?) AND ( AD_Role_ID IS NULL OR AD_Role_ID=?))";
+		String whereClause = "PA_DocumentStatus.AD_Client_ID IN (0,?) AND ((dsa.AD_User_ID IS NULL OR dsa.AD_User_ID=?) "
+				+ "AND ( dsa.AD_Role_ID IS NULL OR dsa.AD_Role_ID=?))";
+		String joinClause = "LEFT JOIN PA_DocumentStatusAccess dsa ON PA_DocumentStatus.PA_DocumentStatus_ID = dsa.PA_DocumentStatus_ID "
+				+ "AND dsa.IsActive = 'Y'";
 
 		List<MDocumentStatus> list = new Query(ctx, MDocumentStatus.Table_Name, whereClause, null)
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MDocumentStatus.COLUMNNAME_SeqNo)
+				.addJoinClause(joinClause)
 				.setParameters(Env.getAD_Client_ID(ctx), AD_User_ID, AD_Role_ID)
 				.list();
 
