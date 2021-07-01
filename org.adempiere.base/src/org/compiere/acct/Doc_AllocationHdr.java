@@ -1857,11 +1857,9 @@ class Doc_AllocationTax
 				return false;
 			}
 
-			int doctypeid = -1; // ensure standard behavior
-			int doctypecm =  0;
 			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, factAcct.getRecord_ID(), line.getPO().get_TrxName());
-			if(doc!=null)
-				doctypeid = doc.getC_DocType_ID();
+			MDocType dt = new MDocType(Env.getCtx(), (doc!=null)?doc.getC_DocType_ID():-1, line.getPO().get_TrxName());
+			String docBaseType=(dt.getC_DocType_ID()>0)?dt.getDocBaseType():"";
 
 //			Discount Amount
 			if (m_DiscountAmt.signum() != 0)
@@ -1871,12 +1869,12 @@ class Doc_AllocationTax
 				{
 					BigDecimal amount = calcAmount(factAcct.getAmtSourceDr(),
 						total, m_DiscountAmt, precision);
+
 					if (amount.signum() != 0)
 					{
 						//for sales actions
 						if (m_IsSOTrx) {
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, m_DiscountAccount,
 										as.getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, taxAcct,
@@ -1890,8 +1888,7 @@ class Doc_AllocationTax
 							}
 						} else {
 						//for purchase actions
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, m_DiscountAccount,
 										as.getC_Currency_ID(), amount, null);
 								fact.createLine (line, taxAcct,
@@ -1903,7 +1900,6 @@ class Doc_AllocationTax
 										as.getC_Currency_ID(), null, amount.negate());
 							}
 						}
-
 					}
 				}
 				//	Original Tax is CR - need to correct it DR
@@ -1915,8 +1911,7 @@ class Doc_AllocationTax
 					{
 //						for sales actions
 						if (m_IsSOTrx) {
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, taxAcct,
 										as.getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, m_DiscountAccount,
@@ -1930,8 +1925,7 @@ class Doc_AllocationTax
 							}
 
 						} else {
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, taxAcct,
 									as.getC_Currency_ID(), amount, null);
 								fact.createLine (line, m_DiscountAccount,
@@ -1960,8 +1954,7 @@ class Doc_AllocationTax
 					if (amount.signum() != 0)
 					{
 						if (m_IsSOTrx) {
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, m_WriteOffAccount,
 									as.getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, taxAcct,
@@ -1973,8 +1966,7 @@ class Doc_AllocationTax
 									as.getC_Currency_ID(), null, amount);
 							}
 						} else {
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, m_WriteOffAccount,
 									as.getC_Currency_ID(), amount, null);
 								fact.createLine (line, taxAcct,
@@ -1996,8 +1988,7 @@ class Doc_AllocationTax
 					if (amount.signum() != 0)
 					{
 						if(m_IsSOTrx) {
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, taxAcct,
 									as.getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, m_WriteOffAccount,
@@ -2009,8 +2000,7 @@ class Doc_AllocationTax
 									as.getC_Currency_ID(), null, amount);
 							}
 						} else {
-							doctypecm = MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo);
-							if(doctypeid==doctypecm) {
+							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, taxAcct,
 									as.getC_Currency_ID(), amount, null);
 								fact.createLine (line, m_WriteOffAccount,
@@ -2025,7 +2015,6 @@ class Doc_AllocationTax
 					}
 				}
 			}	//	WriteOff
-
 		}	//	for all lines
 		return true;
 	}	//	createEntries

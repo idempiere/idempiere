@@ -1957,18 +1957,19 @@ public class AllocationTest extends AbstractTestCase {
 
 		if(isAR) {
 			if(isCreditMemo) {
-				invoice.setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo));
+				invoice.setC_DocType_ID(118); //AR Credit Memo
 				invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARCreditMemo);
+
 			} else {
-				invoice.setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_ARInvoice));
+				invoice.setC_DocType_ID(116); //AR Invoice
 				invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
 			}
 		} else {
 			if(isCreditMemo) {
-				invoice.setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_APCreditMemo));
+				invoice.setC_DocType_ID(124); //AP CreditMemo
 				invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APCreditMemo);
 			} else {
-				invoice.setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_APInvoice));
+				invoice.setC_DocType_ID(123); //AP Invoice
 				invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
 			}
 		}
