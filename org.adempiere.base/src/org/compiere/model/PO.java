@@ -112,7 +112,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7231417421289556724L;
+	private static final long serialVersionUID = 571979727987834997L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -5111,6 +5111,28 @@ public abstract class PO
 		}
 		fks_cache.put(get_Table_ID(), retValue);
 		return retValue;
+	}
+
+	/**
+	 * Verify if a column exists
+	 * @param columnName
+	 * @param throwException - must throw an exception when the column doesn't exist
+	 * @return
+	 */
+	public boolean columnExists(String columnName, boolean throwException) {
+		int idx = get_ColumnIndex(columnName);
+		if (idx < 0 && throwException)
+			throw new AdempiereException("Column " + get_TableName() +"." + columnName + " not found");
+		return (idx >= 0);
+	}
+
+	/**
+	 * Verify if a column exists
+	 * @param columnName
+	 * @return boolean
+	 */
+	public boolean columnExists(String columnName) {
+		return columnExists(columnName, false);
 	}
 
 }   //  PO
