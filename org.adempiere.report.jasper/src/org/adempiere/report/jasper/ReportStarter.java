@@ -658,15 +658,17 @@ public class ReportStarter implements ProcessCall, ClientProcess
             } else {
                 resFile = getFileResourceFile(resourcePath, bundleName, currLang);
             }
-            if (resFile!=null) {
+            
+            PropertyResourceBundle res = null;
+            if (resFile!=null) {            	
                 try {
-                    PropertyResourceBundle res = new PropertyResourceBundle( new FileInputStream(resFile));
-                    params.put("RESOURCE", res);
-                    params.put(JRParameter.REPORT_RESOURCE_BUNDLE, res);
+                    res = new PropertyResourceBundle( new FileInputStream(resFile));
+                    params.put("RESOURCE", res);                    
                 } catch (IOException e) {
                     ;
                 }
             }
+            params.put(JRParameter.REPORT_RESOURCE_BUNDLE, new MsgResourceBundle(res));
 
             Connection conn = null;
             JRSwapFileVirtualizer virtualizer = null;
@@ -1478,43 +1480,11 @@ public class ReportStarter implements ProcessCall, ClientProcess
      */
     public ReportData getReportData (ProcessInfo pi, String trxName)
     {
-    	log.info("");
-        String sql = "SELECT pr.JasperReport, pr.IsDirectPrint "
-        		   + "FROM AD_Process pr, AD_PInstance pi "
-                   + "WHERE pr.AD_Process_ID = pi.AD_Process_ID "
-                   + " AND pi.AD_PInstance_ID=?";
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try
-        {
-            pstmt = DB.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, trxName);
-            pstmt.setInt(1, pi.getAD_PInstance_ID());
-            rs = pstmt.executeQuery();
-            String path = null;
-            boolean	directPrint = false;
-            boolean isPrintPreview = pi.isPrintPreview();
-            if (rs.next()) {
-                path = rs.getString(1);
-
-				if ("Y".equalsIgnoreCase(rs.getString(2)) && !Ini.isPropertyBool(Ini.P_PRINTPREVIEW)
-						&& !isPrintPreview )
-					directPrint = true;
-            } else {
-                log.severe("data not found; sql = "+sql);
-				return null;
-            }
-
-            return new ReportData( path, directPrint);
-        }
-        catch (SQLException e)
-        {
-        	throw new DBException(e, sql);
-        }
-        finally
-        {
-            DB.close(rs, pstmt);
-            rs = null; pstmt = null;
-        }
+    	MProcess process = MProcess.get(pi.getAD_Process_ID());
+    	String path = process.getJasperReport();
+    	boolean isPrintPreview = pi.isPrintPreview();
+    	boolean	directPrint = (process.isDirectPrint() && !Ini.isPropertyBool(Ini.P_PRINTPREVIEW) && !isPrintPreview);
+    	return new ReportData( path, directPrint);    	
     }
 
     static class ReportData {

@@ -18,6 +18,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.DB;
@@ -32,12 +33,11 @@ import org.compiere.util.DB;
  * 			<li>BF [ 1826273 ] Error when creating MPackageExp
  */
 public class MPackageExp extends X_AD_Package_Exp
-{	
-	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8923634972273479831L;
+	private static final long serialVersionUID = -6295261491885604619L;
 
 	/**
 	 * 	MPackageExp
@@ -75,5 +75,36 @@ public class MPackageExp extends X_AD_Package_Exp
 		return false;
 	 return true;
 	}	//	afterDelete
-	
+
+	/**
+	 * @param from the source MPackageExp to copy the details
+	 * @return
+	 */
+	public int copyDetailsFrom(MPackageExp from) {
+		int count = 0;
+		for (MPackageExpDetail fromDetail : from.getDetails()) {
+			MPackageExpDetail toDetail = new MPackageExpDetail(getCtx(), 0, get_TrxName());
+			PO.copyValues(fromDetail, toDetail, getAD_Client_ID(), getAD_Org_ID());
+			toDetail.setAD_Package_Exp_ID(getAD_Package_Exp_ID());
+			toDetail.saveEx();
+			count++;
+		}
+		return count;
+	}	//	copyDetailsFrom
+
+	/**
+	 * Get the details of a packout definition
+	 * @return array of details
+	 */
+	private List<MPackageExpDetail> getDetails() {
+		final String where = "AD_Package_Exp_ID=?";
+		final String orderBy = "Line, AD_Package_Exp_ID";
+		List<MPackageExpDetail> list = new Query(getCtx(), MPackageExpDetail.Table_Name, where, get_TrxName())
+				.setParameters(getAD_Package_Exp_ID())
+				.setOrderBy(orderBy)
+				.setOnlyActiveRecords(true)
+				.list();
+		return list;
+	}
+
 }	//	MPackageExp

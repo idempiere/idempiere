@@ -170,6 +170,8 @@ public class GridFieldVO implements Serializable, Cloneable
 				//IDEMPIERE-1120 Implement Field SeqNo customization
 				if (userDef.getSeqNo() > 0)
 				    vo.SeqNo = userDef.getSeqNo();
+				if (userDef.getSeqNoGrid() > 0)
+					vo.SeqNoGrid = userDef.getSeqNoGrid();
 				if (userDef.getAD_Val_Rule_ID() > 0)
 					vo.ValidationCode  = MValRule.get(vo.ctx, userDef.getAD_Val_Rule_ID()).getCode();
 				if (userDef.getAD_Val_Rule_Lookup_ID() > 0)
