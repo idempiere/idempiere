@@ -704,12 +704,7 @@ public class MCostDetail extends X_M_CostDetail
 		super (ctx, M_CostDetail_ID, trxName);
 		if (M_CostDetail_ID == 0)
 		{
-		//	setC_AcctSchema_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID (0);
-		//	setC_OrderLine_ID (0);
-		//	setM_InOutLine_ID(0);
-		//	setC_InvoiceLine_ID (0);
 			setProcessed (false);
 			setAmt (Env.ZERO);
 			setQty (Env.ZERO);
@@ -1000,10 +995,6 @@ public class MCostDetail extends X_M_CostDetail
 		
 		DB.getDatabase().forUpdate(cost, 120);
 		
-	//	if (cost == null)
-	//		cost = new MCost(product, M_ASI_ID, 
-	//			as, Org_ID, ce.getM_CostElement_ID());
-		
 		//save history for m_cost
 		X_M_CostHistory history = new X_M_CostHistory(getCtx(), 0, get_TrxName());
 		history.setM_AttributeSetInstance_ID(cost.getM_AttributeSetInstance_ID());
@@ -1048,18 +1039,6 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal price = amt;
 		if (qty.signum() != 0)
 			price = amt.divide(qty, precision, RoundingMode.HALF_UP);
-		
-		/** All Costing Methods
-		if (ce.isAverageInvoice())
-		else if (ce.isAveragePO())
-		else if (ce.isFifo())
-		else if (ce.isLifo())
-		else if (ce.isLastInvoice())
-		else if (ce.isLastPOPrice())
-		else if (ce.isStandardCosting())
-		else if (ce.isUserDefined())
-		else if (!ce.isCostingMethod())
-		**/
 		
 		//	*** Purchase Order Detail Record ***
 		if (getC_OrderLine_ID() != 0)
@@ -1112,8 +1091,6 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (log.isLoggable(Level.FINER)) log.finer("PO - " + ce + " - " + cost);
 			}
-		//	else
-		//		log.warning("PO - " + ce + " - " + cost);
 		}
 		
 		//	*** AP Invoice Detail Record ***
@@ -1185,8 +1162,6 @@ public class MCostDetail extends X_M_CostDetail
 				cost.add(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - UserDef - " + cost);
 			}			
-		//	else
-		//		log.warning("Inv - " + ce + " - " + cost);
 		}
 		else if (getM_InOutLine_ID() != 0 && costAdjustment)
 		{
