@@ -775,6 +775,13 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 					if (!Util.isEmpty(display, true)) {
 						hideColumn = false;
 						break;
+					} else if (gridTab.getCurrentRow() == rowIndex && gridTab.isNew()) {
+						if (gridField[index].isEditable(false) && (gridField[index].isMandatory(false) || !Util.isEmpty(gridField[index].getVO().MandatoryLogic) 
+							|| !Util.isEmpty(gridField[index].getVO().DisplayLogic)
+							|| !Util.isEmpty(gridField[index].getVO().ReadOnlyLogic))) {
+							hideColumn = false;
+							break;
+						}
 					}
 				}
 			}

@@ -181,11 +181,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		super (ctx, AD_Column_ID, trxName);
 		if (AD_Column_ID == 0)
 		{
-		//	setAD_Element_ID (0);
-		//	setAD_Reference_ID (0);
-		//	setColumnName (null);
-		//	setName (null);
-		//	setEntityType (null);	// U
 			setIsAlwaysUpdateable (false);	// N
 			setIsEncrypted (false);
 			setIsIdentifier (false);
@@ -381,22 +376,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
-		/* IDEMPIERE-3509, IDEMPIERE-3902
-		 * removing this validation
-		 * it affects adversely PackIn process that can create the table later
-		if ( displayType == DisplayType.TableDir ||
-			(displayType == DisplayType.Search && getAD_Reference_Value_ID() <= 0))
-		{
-			// verify the foreign table exists
-			String foreignTableName = getReferenceTableName();
-			MTable foreignTable = MTable.get(getCtx(), foreignTableName);
-			if (foreignTable == null || foreignTable.getAD_Table_ID() <= 0) {
-				log.saveError("Error", Msg.getMsg(getCtx(), "NotReferenceTable", new Object[] {getColumnName()}));
-				return false;
-			}
-		}
-		*/
-
 		if (displayType == DisplayType.Table && getAD_Reference_Value_ID() <= 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Reference_Value_ID"));
@@ -424,13 +403,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			} catch (Exception e){}
 		}
 		
-		/** Views are not updateable
-		UPDATE AD_Column c
-		SET IsUpdateable='N', IsAlwaysUpdateable='N'
-		WHERE AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE IsView='Y')
-		**/
-		
-		/* Diego Ruiz - globalqss - BF [1651899] - AD_Column: Avoid dup. SeqNo for IsIdentifier='Y' */
 		if (isIdentifier())
 		{
 			int cnt = DB.getSQLValue(get_TrxName(),"SELECT COUNT(*) FROM AD_Column "+
@@ -566,28 +538,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (!success)
 			return success;
 
-		/* Fields must inherit translation from element, not from column
-		 * changing it here is useless as SynchronizeTerminology get trl from column */
-		/*
-		//	Update Fields
-		if (!newRecord)
-		{
-			if (   is_ValueChanged(MColumn.COLUMNNAME_Name)
-				|| is_ValueChanged(MColumn.COLUMNNAME_Description)
-				|| is_ValueChanged(MColumn.COLUMNNAME_Help)
-				) {
-				StringBuilder sql = new StringBuilder("UPDATE AD_Field SET Name=")
-					.append(DB.TO_STRING(getName()))
-					.append(", Description=").append(DB.TO_STRING(getDescription()))
-					.append(", Help=").append(DB.TO_STRING(getHelp()))
-					.append(" WHERE AD_Column_ID=").append(get_ID())
-					.append(" AND IsCentrallyMaintained='Y'");
-				int no = DB.executeUpdate(sql.toString(), get_TrxName());
-				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Fields updated #" + no);
-			}
-		}
-		*/
-
 		if ((newRecord || is_ValueChanged(COLUMNNAME_ColumnName))
 			&& (   "EntityType".equals(getColumnName())
 				|| "EntityType".equals(get_ValueOld(COLUMNNAME_ColumnName).toString()))) {
@@ -652,37 +602,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		int dt = getAD_Reference_ID();
 		return DisplayType.getSQLDataType (dt, columnName, getFieldLength());
 	}	//	getSQLDataType
-	
-	/**
-	 * 	Get SQL Data Type
-	 *	@return e.g. NVARCHAR2(60)
-	 */
-	/*
-	private String getSQLDataType()
-	{
-		int dt = getAD_Reference_ID();
-		if (DisplayType.isID(dt) || dt == DisplayType.Integer)
-			return "NUMBER(10)";
-		if (DisplayType.isDate(dt))
-			return "DATE";
-		if (DisplayType.isNumeric(dt))
-			return "NUMBER";
-		if (dt == DisplayType.Binary)
-			return "BLOB";
-		if (dt == DisplayType.TextLong)
-			return "CLOB";
-		if (dt == DisplayType.YesNo)
-			return "CHAR(1)";
-		if (dt == DisplayType.List)
-			return "NVARCHAR2(" + getFieldLength() + ")";
-		if (dt == DisplayType.Button)
-			return "CHAR(" + getFieldLength() + ")";
-		else if (!DisplayType.isText(dt))
-			log.severe("Unhandled Data Type = " + dt);
-			
-		return "NVARCHAR2(" + getFieldLength() + ")";
-	}	//	getSQLDataType
-	*/
 	
 	/**
 	 * 	Get Table Constraint

@@ -61,7 +61,6 @@ public final class MConversionRateUtil
 
 		// Currency To
 		int C_Currency_ID_To = MClient.get(model.getCtx(), AD_Client_ID).getAcctSchema().getC_Currency_ID();
-		//~ model.set_AttrValue("C_Currency_ID_To", Integer.valueOf(C_Currency_ID_To));
 		
 		// Get Rate
 		BigDecimal rate = SetGetUtil.get_AttrValueAsBigDecimal(model, "CurrencyRate");

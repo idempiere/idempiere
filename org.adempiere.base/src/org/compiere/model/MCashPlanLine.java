@@ -47,17 +47,6 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	public MCashPlanLine (Properties ctx, int C_CashPlanLine_ID, String trxName)
 	{
 	      super (ctx, C_CashPlanLine_ID, trxName);
-	      /** if (C_CashPlanLine_ID == 0)
-	        {
-				setC_CashPlan_ID (0);
-				setC_CashPlanLine_ID (0);
-				setDateTrx (new Timestamp(System.currentTimeMillis()));
-				setLine (0);
-	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CashPlanLine WHERE C_CashPlanLine_ID=@C_CashPlanLine_ID@
-				setProcessed (false);
-				setQtyEntered (Env.ZERO);
-	// 1
-	        } */
 	}	//	MCashPlanLine
 
 	/**
