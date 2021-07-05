@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -3312,6 +3313,27 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		Clients.response(new AuScript(script.toString()));
 	}
 
+	/**
+	 * 
+	 * @return true if window is block by mask or highlighted window
+	 */
+	public boolean isBlock() {
+		if (mask != null && mask.getParent() != null) {
+			return true;
+		}
+		if (getComponent() != null && getComponent().getPage() != null) {
+			Collection<Component> roots = getComponent().getPage().getRoots();
+			for(Component comp : roots) {
+				if (comp instanceof org.zkoss.zul.Window) {
+					org.zkoss.zul.Window wnd = (org.zkoss.zul.Window) comp;
+					if (wnd.isVisible() && wnd.inHighlighted())
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,
 			boolean isProcessMandatory) {

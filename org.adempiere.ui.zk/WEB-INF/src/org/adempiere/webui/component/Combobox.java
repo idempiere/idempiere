@@ -20,9 +20,11 @@ package org.adempiere.webui.component;
 import java.util.List;
 
 import org.adempiere.webui.AdempiereIdGenerator;
+import org.adempiere.webui.LayoutUtils;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Comboitem;
 
@@ -37,11 +39,24 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     public Combobox() {
 		super();
 		override();
+		init();
 	}
 
 	public Combobox(String value) throws WrongValueException {
 		super(value);
 		override();
+		init();
+	}
+
+	private void init() {
+		this.setCtrlKeys("^#down");
+		this.addEventListener(Events.ON_CTRL_KEY, e -> {
+			if (this.isEnabled() && LayoutUtils.isReallyVisible(this)) {
+				if (!isOpen())
+					this.setOpen(true);
+				e.stopPropagation();
+			}
+		});
 	}
 
 	private void override() {
