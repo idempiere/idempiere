@@ -2058,7 +2058,7 @@ public final class Env
 	/**	New Line 		 */
 	public static final String	NL = System.getProperty("line.separator");
 	/* Prefix for predefined context variables coming from menu or window definition */
-	private static final String PREFIX_PREDEFINED_VARIABLE = "+";
+	public static final String PREFIX_PREDEFINED_VARIABLE = "+";
 
 
 	/**

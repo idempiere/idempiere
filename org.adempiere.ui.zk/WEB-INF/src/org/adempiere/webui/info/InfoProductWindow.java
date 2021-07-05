@@ -443,9 +443,15 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected void initParameters() {
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
-		int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
-		
-		int M_PriceList_Version_ID = findPLV (M_PriceList_ID);
+
+		String usePriceList=Env.getContext(Env.getCtx(), p_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE+"UsePriceListInProductInfo");
+		int M_PriceList_Version_ID = 0;
+		if ("Y".equalsIgnoreCase(usePriceList))
+		{
+			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
+
+			M_PriceList_Version_ID = findPLV(M_PriceList_ID);
+		}
 		//	Set Warehouse
 		if (M_Warehouse_ID == 0)
 			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), "#M_Warehouse_ID");
