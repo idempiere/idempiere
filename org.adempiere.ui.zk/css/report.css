@@ -88,3 +88,15 @@ div.rp-table-wrap > table > thead > tr > th {
 	position: sticky;
 	top: 0;
 }
+
+@media print {
+	div.rp-flex-container {
+		height: auto;
+	}
+	div.rp-table-wrap {
+		overflow: visible;
+	}
+	div.rp-table-wrap > table > thead > tr > th {
+		position: relative;
+	}
+}
