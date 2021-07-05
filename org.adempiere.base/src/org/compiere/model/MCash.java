@@ -150,7 +150,6 @@ public class MCash extends X_C_Cash implements DocAction
 		super (ctx, C_Cash_ID, trxName);
 		if (C_Cash_ID == 0)
 		{
-		//	setC_CashBook_ID (0);		//	FK
 			setBeginningBalance (Env.ZERO);
 			setEndingBalance (Env.ZERO);
 			setStatementDifference(Env.ZERO);
@@ -286,10 +285,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	/**
@@ -397,7 +393,6 @@ public class MCash extends X_C_Cash implements DocAction
 			}
 		}
 		setStatementDifference(difference);
-	//	setEndingBalance(getBeginningBalance().add(getStatementDifference()));
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
