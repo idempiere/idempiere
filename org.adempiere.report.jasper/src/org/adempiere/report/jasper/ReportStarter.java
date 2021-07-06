@@ -608,6 +608,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
         			params.get("CURRENT_LANG").toString();
         		currLang = Language.getLanguage(langInfo);
         	}
+        	params.put("COLUMN_LOOKUP", new ColumnLookup(currLang));
+        	
         	String printerName = null;
         	MPrintFormat printFormat = null;
         	PrintInfo printInfo = null;
