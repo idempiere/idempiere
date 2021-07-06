@@ -53,6 +53,7 @@ import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
 import org.adempiere.webui.apps.form.WQuickForm;
+import org.adempiere.webui.component.DesktopTabpanel;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Window;
@@ -3318,9 +3319,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @return true if window is block by mask or highlighted window
 	 */
 	public boolean isBlock() {
+		//check blocking by local mask
 		if (mask != null && mask.getParent() != null) {
 			return true;
 		}
+		
+		//check blocking by highlighted window
 		if (getComponent() != null && getComponent().getPage() != null) {
 			Collection<Component> roots = getComponent().getPage().getRoots();
 			for(Component comp : roots) {
@@ -3329,6 +3333,26 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					if (wnd.isVisible() && wnd.inHighlighted())
 						return true;
 				}
+			}
+		}
+		
+		//check blocking by mask from ISupportMask (window, tabpanel)
+		if (getComponent() != null) {
+			Component p = getComponent().getParent();
+			while (p != null) {
+				if (p instanceof Mask) {
+					if (p.isVisible()) {
+						return true;
+					}
+				} else if (p instanceof DesktopTabpanel) {
+					for(Component c : p.getChildren()) {
+						if (c instanceof Mask) {
+							if (c.isVisible())
+								return true;
+						}
+					}
+				}
+				p = p.getParent();
 			}
 		}
 		return false;
