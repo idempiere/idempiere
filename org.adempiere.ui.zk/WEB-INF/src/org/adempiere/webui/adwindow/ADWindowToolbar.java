@@ -723,6 +723,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     }
 
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
+		if (windowContent != null && windowContent.isBlock())
+			return;
+		
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{

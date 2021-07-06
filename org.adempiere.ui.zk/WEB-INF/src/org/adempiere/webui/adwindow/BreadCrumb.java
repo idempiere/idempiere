@@ -329,6 +329,9 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			if (windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
 				return;
 
+			if (windowContent != null && windowContent.isBlock())
+				return;
+			
 			KeyEvent keyEvent = (KeyEvent) event;
 			if (keyEvent.isAltKey()) {
 				if (keyEvent.getKeyCode() == KeyEvent.LEFT) {

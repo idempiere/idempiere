@@ -30,6 +30,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -201,6 +202,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		}
 	}
 	
+	@Override
+	public void focus() {
+		btnOk.focus();
+	}
+
 	/**
 	 * after run a process, call this function to show result in a dialog 
 	 * @param pi
@@ -211,12 +217,13 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 */
 	public static void showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
 		ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(Env.getCtx(), windowNo),AEnv.getDialogHeader(Env.getCtx(), windowNo), pi, needFillLogFromDb);
-		final ISupportMask supportMask = LayoutUtils.showWindowWithMask(dialog, comp, LayoutUtils.OVERLAP_PARENT);;
+		final ISupportMask supportMask = LayoutUtils.showWindowWithMask(dialog, comp, LayoutUtils.OVERLAP_PARENT);
 		dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				supportMask.hideMask();
 			}
-		});
+		});		
+		Executions.schedule(comp.getDesktop(), e -> dialog.btnOk.focus(), new Event("onPostShowProcessInfoDialog"));		
 	}
 }
