@@ -1194,7 +1194,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         //  0 = Columns
         ArrayList<ValueNamePair> items = new ArrayList<ValueNamePair>();
-        items.add(new ValueNamePair("", ""));
+        items.add(new ValueNamePair("", " "));
         for (int c = 0; c < m_findFields.length; c++)
         {
             GridField field = m_findFields[c];
@@ -1251,8 +1251,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         listColumn.setModel(columnListModel);
         if (!isFilterColumnList()) {
-	        String script = "var id='#'+this.uuid+'-pp .z-comboitem-selected';var selected=zk($(id));if(selected.jq.length==1)selected.scrollIntoView();";
-	        listColumn.setWidgetListener("onKeyUp", script);
+	        listColumn.addScrollSelectedIntoViewListener();
         }
         Events.sendEvent("onInitRender", listColumn, null);
         if(fields == null)
@@ -1459,7 +1458,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	if (listbox.getId().equals(listColumn.getId()))
                 	{
                 		Comboitem column = listColumn.getSelectedItem();
-                		if (column != null && column.getValue().toString().length() > 0)
+                		ValueNamePair selected = column.getValue();
+                		if (column != null && selected.getValue().length() > 0)
                 		{
                 			addOperators(column, listOperator);
                 		}

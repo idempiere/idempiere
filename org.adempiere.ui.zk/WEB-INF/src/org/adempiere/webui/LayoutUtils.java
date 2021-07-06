@@ -304,6 +304,12 @@ public final class LayoutUtils {
 	protected static void showWindowWithMask(Window window, ISupportMask mask){
 		mask.showMask();
 		mask.getMaskComponent().appendChild(window);
+		
+		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		script.append(mask.getMaskComponent().getUuid()).append("');");
+		script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+		Clients.response(new AuScript(script.toString()));
+		
 		LayoutUtils.openOverlappedWindow(mask.getMaskComponent(), window, "middle_center");
 	}
 	

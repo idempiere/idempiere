@@ -187,4 +187,12 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     	AuScript response = new AuScript(script);
     	Clients.response(response);
     }
+    
+    /**
+     * add widget listener to auto scroll selected item to view (i.e make visible)
+     */
+    public void addScrollSelectedIntoViewListener() {
+    	String script = "var id='#'+this.uuid+'-pp .z-comboitem-selected';var selected=zk($(id));if(selected.jq.length==1)selected.scrollIntoView();";
+        setWidgetListener("onKeyUp", script);
+    }
 }
