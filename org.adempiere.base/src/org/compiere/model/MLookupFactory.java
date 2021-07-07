@@ -292,8 +292,9 @@ public class MLookupFactory
 			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
 			return retValue.cloneIt();
 		}
+
+		boolean orderByValue = MReference.get(AD_Reference_Value_ID).isOrderByValue();
 		
-		String byValue = DB.getSQLValueString(null, "SELECT IsOrderByValue FROM AD_Reference WHERE AD_Reference_ID = ? ", AD_Reference_Value_ID);
 		StringBuilder realSQL = new StringBuilder ("SELECT NULL, AD_Ref_List.Value,");
 		MClient client = MClient.get(Env.getCtx());
 		StringBuilder AspFilter = new StringBuilder();
@@ -322,7 +323,7 @@ public class MLookupFactory
 		String directSql = realSQL.toString() + " AND AD_Ref_List.Value=?";
 				
 		realSQL.append(AspFilter.toString());
-		if ("Y".equals(byValue))
+		if (orderByValue)
 			realSQL.append(" ORDER BY 2");
 		else
 			realSQL.append(" ORDER BY 3"); // sort by name/translated name - teo_sarca, [ 1672820 ]

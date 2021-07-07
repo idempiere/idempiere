@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -224,31 +223,44 @@ public class MRefList extends X_AD_Ref_List
 	 */
 	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String orderBy) {
 
-		if (orderBy.equals("D")) // if set to default, we look what is defined on the reference itself
-			orderBy = DB.getSQLValueStringEx(null, "SELECT IsOrderByValue FROM AD_Reference WHERE AD_Reference_ID = ?", AD_Reference_ID).equals("Y") ? "V" : "N";
+		String language = Env.getAD_Language(ctx);
+		boolean orderByValue = MReference.get(AD_Reference_ID).isOrderByValue();
+		if (Util.isEmpty(orderBy) || "N".equals(orderBy))
+			orderByValue = false;
+		else if ("V".equals(orderBy))
+			orderByValue = true;
+		StringBuilder sql = new StringBuilder ("SELECT AD_Ref_List.Value,");
+		MClient client = MClient.get(Env.getCtx());
+		StringBuilder AspFilter = new StringBuilder();
+		if ( client.isUseASP() ) {
+			AspFilter.append(" AND AD_Ref_List.AD_Ref_List_ID NOT IN ( ")
+			.append(" SELECT li.AD_Ref_List_ID")
+			.append(" FROM ASP_Ref_List li")
+			.append(" INNER JOIN ASP_Level l ON ( li.ASP_Level_ID = l.ASP_Level_ID)")
+			.append(" INNER JOIN ASP_ClientLevel cl on (l.ASP_Level_ID = cl.ASP_Level_ID)")
+			.append(" INNER JOIN AD_Client c on (cl.AD_Client_ID = c.AD_Client_ID)")
+			.append(" WHERE li.AD_Reference_ID=").append(AD_Reference_ID)
+			.append(" AND li.IsActive='Y'")
+			.append(" AND c.AD_Client_ID=").append(client.getAD_Client_ID())
+			.append(" AND li.ASP_Status='H')");
+		}
 
-		if (Util.isEmpty(orderBy) || orderBy.equals("N"))
-			orderBy = "Name";
-		else if (orderBy.equals("V"))
-			orderBy = "Value";
+		if (Env.isBaseLanguage(language, "AD_Ref_List"))
+			sql.append("AD_Ref_List.Name,AD_Ref_List.IsActive FROM AD_Ref_List ");
+		else
+			sql.append("trl.Name, AD_Ref_List.IsActive ")
+			.append("FROM AD_Ref_List INNER JOIN AD_Ref_List_Trl trl ")
+			.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
+			.append(language).append("')");
+		sql.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_ID);
 
-		String ad_language = Env.getAD_Language(ctx);
-		boolean isBaseLanguage = Env.isBaseLanguage(ad_language, "AD_Ref_List");
+		sql.append(AspFilter.toString());
+		if (orderByValue)
+			sql.append(" ORDER BY 1");
+		else
+			sql.append(" ORDER BY 2");
 
-		StringBuilder sql = isBaseLanguage ? new StringBuilder("SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? AND IsActive='Y' ORDER BY ").append(orderBy)
-				:
-		new StringBuilder("SELECT r.Value, t.Name FROM AD_Ref_List_Trl t")
-		.append(" INNER JOIN AD_Ref_List r ON (r.AD_Ref_List_ID=t.AD_Ref_List_ID)")
-		.append(" WHERE r.AD_Reference_ID=? AND t.AD_Language=?	AND r.IsActive='Y'")
-		.append(" ORDER BY ").append(orderBy.equals("Name") ? "t." : "r.").append(orderBy);
-
-		ArrayList<Object> params = new ArrayList<Object>();
-		params.add(AD_Reference_ID);
-		if (!isBaseLanguage)
-			params.add(ad_language);
-
-		return DB.getValueNamePairs(sql.toString(), optional, params);
-
+		return DB.getValueNamePairs(sql.toString(), optional, null);
 	}	//	getList
 
 	/**	Logger							*/
