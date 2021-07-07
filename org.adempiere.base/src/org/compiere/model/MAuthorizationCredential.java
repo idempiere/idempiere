@@ -108,6 +108,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 			}
 			MPInstanceLog pilog = pinstance.addLog(null, 0, null, null, MAuthorizationAccount.Table_ID, 0);
 			msg = processToken(Env.getCtx(), code, paramScope.getP_String(), pilog);
+			pilog.saveEx();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			msg = Msg.getMsg(getCtx(), "Error") + ex.getLocalizedMessage();
@@ -122,7 +123,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	 * @param ctx
 	 * @param code
 	 * @param paramScope
-	 * @param pilog
+	 * @param pilog       MPInstanceLog to set the log message and record_ID, it is not saved, the caller must save it
 	 * @return String message indicating success
 	 */
 	public String processToken(Properties ctx, String code, String paramScope, MPInstanceLog pilog) {
@@ -198,7 +199,6 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 				String logmsg = Msg.parseTranslation(ctx, (newAccount ? "@Created@" : "@Updated@") + " @AD_AuthorizationAccount_ID@ for ") + account.getEMail();
 				pilog.setP_Msg(logmsg);
 				pilog.setRecord_ID(account.getAD_AuthorizationAccount_ID());
-				pilog.saveEx();
 			}
 			account.syncOthers();
 			if (newAccount)
