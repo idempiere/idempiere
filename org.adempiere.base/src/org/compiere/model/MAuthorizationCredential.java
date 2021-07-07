@@ -108,7 +108,6 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 			}
 			MPInstanceLog pilog = pinstance.addLog(null, 0, null, null, MAuthorizationAccount.Table_ID, 0);
 			msg = processToken(Env.getCtx(), code, paramScope.getP_String(), pilog);
-			pilog.saveEx();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			msg = Msg.getMsg(getCtx(), "Error") + ex.getLocalizedMessage();
@@ -199,6 +198,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 				String logmsg = Msg.parseTranslation(ctx, (newAccount ? "@Created@" : "@Updated@") + " @AD_AuthorizationAccount_ID@ for ") + account.getEMail();
 				pilog.setP_Msg(logmsg);
 				pilog.setRecord_ID(account.getAD_AuthorizationAccount_ID());
+				pilog.saveEx();
 			}
 			account.syncOthers();
 			if (newAccount)
