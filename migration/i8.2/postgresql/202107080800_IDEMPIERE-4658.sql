@@ -29,15 +29,15 @@ For customizations, copy the entity and select "User"!',200134,50,18,389,'N',0,'
 ;
 
 -- Jul 8, 2021, 8:24:00 AM CEST
-INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,Placeholder,IsAutocomplete) VALUES (200359,0,0,'Y',TO_TIMESTAMP('2021-07-08 08:23:59','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-08 08:23:59','YYYY-MM-DD HH24:MI:SS'),0,'Length of Value Column',200134,60,11,'N',0,'N','ValueLength','N','D','890ece13-6f2c-4757-b175-63b1358fd89f','N','Leave empty is not needed','N')
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,Placeholder,IsAutocomplete) VALUES (200359,0,0,'Y',TO_TIMESTAMP('2021-07-08 08:23:59','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-08 08:23:59','YYYY-MM-DD HH24:MI:SS'),0,'Length of Value Column',200134,60,11,'N',0,'N','ValueLength','N','D','890ece13-6f2c-4757-b175-63b1358fd89f','N','Leave empty if not needed','N')
 ;
 
 -- Jul 8, 2021, 8:24:11 AM CEST
-INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,Placeholder,IsAutocomplete) VALUES (200360,0,0,'Y',TO_TIMESTAMP('2021-07-08 08:24:11','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-08 08:24:11','YYYY-MM-DD HH24:MI:SS'),0,'Length of Name Column',200134,70,11,'N',0,'N','NameLength','N','D','65bd630e-40b1-40ec-8e19-49da03fe239f','N','Leave empty is not needed','N')
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,Placeholder,IsAutocomplete) VALUES (200360,0,0,'Y',TO_TIMESTAMP('2021-07-08 08:24:11','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-08 08:24:11','YYYY-MM-DD HH24:MI:SS'),0,'Length of Name Column',200134,70,11,'N',0,'N','NameLength','N','D','65bd630e-40b1-40ec-8e19-49da03fe239f','N','Leave empty if not needed','N')
 ;
 
 -- Jul 8, 2021, 8:24:33 AM CEST
-INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200361,0,0,'Y',TO_TIMESTAMP('2021-07-08 08:24:32','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-08 08:24:32','YYYY-MM-DD HH24:MI:SS'),0,'Create KeyColumn',200134,80,20,'N',0,'N','Y','IsCreateKeyColumn','N','D','372a15e7-cc49-41cc-811d-cac11e446057','N','N')
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete,ReadOnlyLogic) VALUES (200361,0,0,'Y',TO_TIMESTAMP('2021-07-08 08:24:32','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-08 08:24:32','YYYY-MM-DD HH24:MI:SS'),0,'Create KeyColumn',200134,80,20,'N',0,'N','Y','IsCreateKeyColumn','N','D','372a15e7-cc49-41cc-811d-cac11e446057','N','N', '1=1')
 ;
 
 -- Jul 8, 2021, 8:24:48 AM CEST
@@ -196,5 +196,5 @@ UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=34, Updated=statement_timestamp() 
 UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=35, Updated=statement_timestamp() WHERE AD_Tree_ID=10 AND Node_ID=50001
 ;
 
-SELECT register_migration_script('202107080800_IDEMPIERE-4628.sql') FROM dual
+SELECT register_migration_script('202107080800_IDEMPIERE-4858.sql') FROM dual
 ;
