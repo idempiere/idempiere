@@ -24,6 +24,8 @@
  **********************************************************************/
 package org.idempiere.process;
 
+import static org.compiere.model.SystemIDs.REFERENCE_AD_LANGUAGE;
+import static org.compiere.model.SystemIDs.REFERENCE_AD_USER;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
@@ -31,7 +33,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_NUMBER;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
-import static org.tgi.model.SystemIDs_Tgi.REFERENCE_DOCUMENTSTATUS;
+import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTSTATUS;
 
 import java.util.logging.Level;
 
@@ -44,7 +46,6 @@ import org.compiere.model.X_AD_Workflow;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
@@ -67,6 +68,18 @@ public class CreateTable extends SvrProcess {
 	private int 	p_nameLength = 0;	
 	private boolean p_isCreateWorkflow = false;
 	private boolean p_isCreateKeyColumn = false;
+
+	final private static int length0 = 0;
+	final private static int length1 = 1;
+	final private static int length2 = 2;
+	final private static int length6 = 6;
+	final private static int length7 = 7;
+	final private static int length20 = 20;
+	final private static int length22 = 22;
+	final private static int length30 = 30;
+	final private static int length36 = 36;
+	final private static int wfTransition10 = 10;
+	final private static int wfTransition100 = 100;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -119,7 +132,10 @@ public class CreateTable extends SvrProcess {
 	protected String doIt() {
 
 		if (p_tableName.length() > 25 && p_isCreateTranslationTable)
-			throw new AdempiereUserError("Lenght of TableName is too long (max is 25) : " + p_tableName.length());
+			return ("@Error@ Length of TableName is too long (max is 25) : " + p_tableName.length());
+		
+		if (!p_isCreateKeyColumn && p_isCreateTranslationTable)
+			return ("@Error@ Main table must have a key column if you want to handle translations");
 
 		if (Util.isEmpty(p_name))
 			p_name = p_tableName;
@@ -139,35 +155,35 @@ public class CreateTable extends SvrProcess {
 		}
 
 		if (p_valueLength > 0)
-			createAndSynchronizeColumn(table, "Value");
+			createColumn(table, "Value");
 		if (p_nameLength > 0)
-			createAndSynchronizeColumn(table, "Name");
+			createColumn(table, "Name");
 
 		if (p_isCreateWorkflow) {
-			createAndSynchronizeColumn(table, "C_Currency_ID"); 
-			createAndSynchronizeColumn(table, "DateAcct");
-			createAndSynchronizeColumn(table, "DocAction"); 
-			createAndSynchronizeColumn(table, "DocStatus"); 
-			createAndSynchronizeColumn(table, "DocumentNo"); 
-			createAndSynchronizeColumn(table, "Processed"); 
-			createAndSynchronizeColumn(table, "ProcessedOn"); 
-			createAndSynchronizeColumn(table, "Processing"); 
+			createColumn(table, "C_Currency_ID"); 
+			createColumn(table, "DateAcct");
+			createColumn(table, "DocAction"); 
+			createColumn(table, "DocStatus"); 
+			createColumn(table, "DocumentNo"); 
+			createColumn(table, "Processed"); 
+			createColumn(table, "ProcessedOn"); 
+			createColumn(table, "Processing"); 
 		}
 
-		if (p_isCreateKeyColumn) {
-			createAndSynchronizeColumn(table, elementUU.getColumnName());
-			createAndSynchronizeColumn(table, elementID.getColumnName());
-		}
+		if (p_isCreateKeyColumn)
+			createColumn(table, elementID.getColumnName());
+
+		createColumn(table, elementUU.getColumnName());
 
 		log(table);
 
 		if (p_isCreateTranslationTable) {
 			MTable tableTrl = createTable(true);
-			createAndSynchronizeColumn(tableTrl, "AD_Language"); 
-			createAndSynchronizeColumn(tableTrl, "IsTranslated"); 
+			createColumn(tableTrl, "AD_Language"); 
+			createColumn(tableTrl, "IsTranslated"); 
 
 			if (p_nameLength > 0)
-				createAndSynchronizeColumn(tableTrl, "Name"); 
+				createColumn(tableTrl, "Name"); 
 
 			if (p_isCreateKeyColumn) {
 
@@ -176,8 +192,8 @@ public class CreateTable extends SvrProcess {
 					elementTrlUU = new M_Element(getCtx(), tableTrl.getTableName() + "_UU", p_entityType, get_TrxName());
 					elementTrlUU.saveEx();
 				}
-				createAndSynchronizeColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
-				createAndSynchronizeColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
+				createColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
+				createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
 			}
 			log(tableTrl);
 		}
@@ -197,21 +213,23 @@ public class CreateTable extends SvrProcess {
 			table.setDescription(p_description + (trl ? " Trl" : ""));
 		table.setEntityType(p_entityType);
 		table.setAccessLevel(p_accessLevel);
+		table.setIsDeleteable(trl ? false : true);
+		table.setIsChangeLog(true);
 		table.saveEx();
 
 		// Mandatory columns
-		createAndSynchronizeColumn(table, "AD_Client_ID"); 
-		createAndSynchronizeColumn(table, "AD_Org_ID"); 
-		createAndSynchronizeColumn(table, "Created"); 
-		createAndSynchronizeColumn(table, "CreatedBy"); 
-		createAndSynchronizeColumn(table, "IsActive"); 
-		createAndSynchronizeColumn(table, "Updated"); 
-		createAndSynchronizeColumn(table, "UpdatedBy");
+		createColumn(table, "AD_Client_ID"); 
+		createColumn(table, "AD_Org_ID"); 
+		createColumn(table, "Created"); 
+		createColumn(table, "CreatedBy"); 
+		createColumn(table, "IsActive"); 
+		createColumn(table, "Updated"); 
+		createColumn(table, "UpdatedBy");
 
 		return table;
 	}
 
-	void createAndSynchronizeColumn(MTable table, String columnName) {
+	void createColumn(MTable table, String columnName) {
 		MColumn column = new MColumn(table);
 
 		M_Element element = M_Element.get(getCtx(), columnName, get_TrxName());
@@ -230,7 +248,7 @@ public class CreateTable extends SvrProcess {
 			column.setReadOnlyLogic("1=1");
 		}
 		else if (columnName.equals("AD_Org_ID")) {
-			column.setAD_Reference_ID(19);
+			column.setAD_Reference_ID(DisplayType.TableDir);
 			column.setDefaultValue("@AD_Org_ID@");
 			column.setIsMandatory(true);
 			column.setIsUpdateable(false);
@@ -242,7 +260,7 @@ public class CreateTable extends SvrProcess {
 		}
 		else if (columnName.equals("CreatedBy") || columnName.equals("UpdatedBy")) {
 			column.setAD_Reference_ID(DisplayType.Search);
-			column.setAD_Reference_Value_ID(110);
+			column.setAD_Reference_Value_ID(REFERENCE_AD_USER);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(false);
 		}
@@ -250,17 +268,17 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_ID(DisplayType.YesNo);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(1);
+			column.setFieldLength(length1);
 			column.setDefaultValue("N");
 			if (columnName.equals("IsActive"))
 				column.setDefaultValue("Y");
 		}
 		else if (columnName.equals("AD_Language")) { 
 			column.setAD_Reference_ID(DisplayType.Table);
-			column.setAD_Reference_Value_ID(106); // AD_Language
+			column.setAD_Reference_Value_ID(REFERENCE_AD_LANGUAGE);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(false);
-			column.setFieldLength(6);
+			column.setFieldLength(length6);
 			column.setIsParent(true);
 		}
 		else if (columnName.equals("Value") || columnName.equals("Name") || columnName.equals("DocumentNo")) {
@@ -269,7 +287,7 @@ public class CreateTable extends SvrProcess {
 			column.setIsUpdateable(true);
 			column.setIsSelectionColumn(true);
 
-			int length = 0;
+			int length = length0;
 			if (columnName.equals("Value"))
 				length = p_valueLength;
 			else if (columnName.equals("Name")) {
@@ -279,21 +297,21 @@ public class CreateTable extends SvrProcess {
 					column.setIsTranslated(true);
 			}
 			else if (columnName.equals("DocumentNo"))
-				length = 30;
+				length = length30;
 			column.setFieldLength(length);
 		}
 		else if (columnName.equals("C_Currency_ID")) {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLEDIR);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(22);
+			column.setFieldLength(length22);
 			column.setDefaultValue("@C_Currency_ID@");
 		}
 		else if (columnName.equals("DateAcct")) { 
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_DATE);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(7);
+			column.setFieldLength(length7);
 			column.setDefaultValue("@#Date@");
 		}
 		else if (columnName.equals("DocAction")) { 
@@ -312,7 +330,7 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_Value_ID(REFERENCE_DOCUMENTACTION);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(2);
+			column.setFieldLength(length2);
 			column.setDefaultValue(DocAction.ACTION_Complete);
 			column.setAD_Process_ID(process.getAD_Process_ID());
 			column.setIsToolbarButton(MColumn.ISTOOLBARBUTTON_Window);
@@ -321,23 +339,23 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_LIST);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(2);
+			column.setFieldLength(length2);
 			column.setAD_Reference_Value_ID(REFERENCE_DOCUMENTSTATUS);
 			column.setDefaultValue(DocAction.STATUS_Drafted);
 		}
 		else if (columnName.equals("ProcessedOn")) { 
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_NUMBER);
-			column.setFieldLength(20);
+			column.setFieldLength(length20);
 		}
 		else if (element.getName().equalsIgnoreCase(table.getTableName() + "_ID")) { // key column
 			column.setIsKey(true);
 			column.setAD_Reference_ID(DisplayType.ID);	// ID
 			column.setIsMandatory(true);
-			column.setFieldLength(22);			
+			column.setFieldLength(length22);
 		}
 		else if (element.getName().equalsIgnoreCase(table.getTableName() + "_UU")) { // UUID column
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
-			column.setFieldLength(36);
+			column.setFieldLength(length36);
 		}
 		else if (element.getName().equalsIgnoreCase((table.getTableName().substring(0, table.getTableName().length()-4)) + "_ID")) { // ID of parent table (for translation tables)
 			column.setAD_Reference_ID(DisplayType.Search);
@@ -355,7 +373,7 @@ public class CreateTable extends SvrProcess {
 		wf.setWorkflowType(X_AD_Workflow.WORKFLOWTYPE_DocumentProcess);
 		wf.setAD_Table_ID(table.getAD_Table_ID());
 		wf.setEntityType(p_entityType);
-		wf.setAuthor("osef");
+		wf.setAuthor("iDempiere");
 		wf.saveEx();
 
 		// Nodes
@@ -365,9 +383,9 @@ public class CreateTable extends SvrProcess {
 		MWFNode start = createWorkflowNode(wf, "Start", X_AD_WF_Node.ACTION_WaitSleep, null);
 
 		// Transitions
-		createWorkflowNodeNext(start, docPrepare.getAD_WF_Node_ID(), 10, "(Standard Approval)", true);
-		createWorkflowNodeNext(start, docAuto.getAD_WF_Node_ID(), 100, "(Standard Transition)", false);
-		createWorkflowNodeNext(docPrepare, docComplete.getAD_WF_Node_ID(), 100, "(Standard Transition)", false);
+		createWorkflowNodeNext(start, docPrepare.getAD_WF_Node_ID(), wfTransition10, "(Standard Approval)", true);
+		createWorkflowNodeNext(start, docAuto.getAD_WF_Node_ID(), wfTransition100, "(Standard Transition)", false);
+		createWorkflowNodeNext(docPrepare, docComplete.getAD_WF_Node_ID(), wfTransition100, "(Standard Transition)", false);
 
 		wf.setAD_WF_Node_ID(start.getAD_WF_Node_ID());
 		wf.saveEx();

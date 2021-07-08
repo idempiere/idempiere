@@ -146,6 +146,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_YES_NO = 20;
 
 	public final static int REFERENCE_ACCOUNT = 175;
+	public final static int REFERENCE_AD_LANGUAGE = 106;
 	public final static int REFERENCE_AD_USER = 110;
 	public final static int REFERENCE_ASSIGNMENT = 200181;
 	public final static int REFERENCE_CHART = 200183;
