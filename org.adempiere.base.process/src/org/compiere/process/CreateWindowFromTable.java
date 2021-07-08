@@ -180,6 +180,10 @@ public class CreateWindowFromTable extends SvrProcess
 			tab.setAD_Table_ID(p_AD_Table_ID);
 			tab.setTabLevel(p_TabLevel);
 			tab.setIsSingleRow(true); //Default
+			if (table.getTableName().toLowerCase().endsWith("_trl")) {
+				tab.setIsTranslationTab(true);
+				tab.setIsInsertRecord(false);
+			}
 			
 			//Set order by
 			if (table.columnExistsInDB("Value"))
