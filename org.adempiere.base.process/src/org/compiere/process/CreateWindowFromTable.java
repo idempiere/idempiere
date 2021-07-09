@@ -180,7 +180,7 @@ public class CreateWindowFromTable extends SvrProcess
 			tab.setAD_Table_ID(p_AD_Table_ID);
 			tab.setTabLevel(p_TabLevel);
 			tab.setIsSingleRow(true); //Default
-			
+
 			//Set order by
 			if (table.columnExistsInDB("Value"))
 				tab.setOrderByClause(table.getTableName() + ".Value");
@@ -188,6 +188,13 @@ public class CreateWindowFromTable extends SvrProcess
 				tab.setOrderByClause(table.getTableName() + ".Name");
 			else 
 				tab.setOrderByClause(table.getTableName() + ".Created DESC");
+
+			if (table.getTableName().toLowerCase().endsWith("_trl")) {
+				tab.setIsTranslationTab(true);
+				tab.setIsInsertRecord(false);
+				if (table.columnExistsInDB("AD_Language"))
+					tab.setOrderByClause(table.getTableName() + ".AD_Language");
+			}
 
 			tab.saveEx();
 			addLog(tab.getAD_Tab_ID(), null, null, "@AD_Tab_ID@: " + tab.getName(), 
