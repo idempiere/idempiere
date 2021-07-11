@@ -69,12 +69,13 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstanceLog;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserDefProc;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
-import org.compiere.model.MReportView;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -108,7 +109,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9220870163215609274L;
+	private static final long serialVersionUID = -7374210834757533221L;
 
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -128,6 +129,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private BusyDialog progressWindow;	
 	
 	private String		    m_Name = null;
+	private String		    m_Description = null;
+	private String		    m_Help = null;
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private String initialMessage;
 	
@@ -189,19 +192,27 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			if (rs.next())
 			{
 				m_Name = rs.getString(1);
+				m_Description = rs.getString(2);
+				m_Help = rs.getString(3);
 				m_ShowHelp = rs.getString(5);
-				//
+
+				// User Customization
+				MUserDefProc userDef = MUserDefProc.getBestMatch(ctx, AD_Process_ID);
+				if (userDef != null) {
+					if (userDef.getName() != null)
+						m_Name = userDef.getName();
+					if (userDef.getDescription() != null)
+						m_Description = userDef.getDescription();
+					if (userDef.getHelp() != null)
+						m_Help = userDef.getHelp();
+				}
+
 				buildMsg.append("<b>");
-				String s = rs.getString(2);		//	Description
-				if (rs.wasNull())
-					buildMsg.append(Msg.getMsg(m_ctx, "StartProcess?"));
-				else
-					buildMsg.append(s);
+				buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
 				buildMsg.append("</b>");
 
-				s = rs.getString(3);			//	Help
-				if (!rs.wasNull())
-					buildMsg.append("<p>").append(s).append("</p>");
+				if (!Util.isEmpty(m_Help))
+					buildMsg.append("<p>").append(m_Help).append("</p>");
 				m_AD_Process_UU = rs.getString(6);
 			}
 			
