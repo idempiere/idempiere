@@ -161,6 +161,15 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Tab_ID();
 
+    /** Column name AD_Tab_UU */
+    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
+
+	/** Set AD_Tab_UU	  */
+	public void setAD_Tab_UU (String AD_Tab_UU);
+
+	/** Get AD_Tab_UU	  */
+	public String getAD_Tab_UU();
+
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
@@ -176,14 +185,18 @@ public interface I_AD_Tab
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
-    /** Column name AD_Tab_UU */
-    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
+    /** Column name AD_TabType */
+    public static final String COLUMNNAME_AD_TabType = "AD_TabType";
 
-	/** Set AD_Tab_UU	  */
-	public void setAD_Tab_UU (String AD_Tab_UU);
+	/** Set Tab Type.
+	  * Defines Tab Type
+	  */
+	public void setAD_TabType (String AD_TabType);
 
-	/** Get AD_Tab_UU	  */
-	public String getAD_Tab_UU();
+	/** Get Tab Type.
+	  * Defines Tab Type
+	  */
+	public String getAD_TabType();
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
