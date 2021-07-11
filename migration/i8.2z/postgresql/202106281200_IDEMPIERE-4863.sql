@@ -1,34 +1,34 @@
--- Table: adempiere.ad_wlistbox_customization
+-- Table: adempiere.AD_Wlistbox_Customization
 
-CREATE TABLE adempiere.ad_wlistbox_customization
+CREATE TABLE adempiere.AD_Wlistbox_Customization
 (
-    ad_client_id numeric(10,0) NOT NULL,
-    ad_org_id numeric(10,0) NOT NULL,
-    ad_wlistbox_customization_id numeric(10,0) NOT NULL DEFAULT NULL::numeric,
-    wlistboxname varchar(60) NOT NULL,
-    ad_user_id numeric(10,0) NOT NULL,
-    created timestamp without time zone NOT NULL DEFAULT statement_timestamp(),
-    createdby numeric(10,0) NOT NULL,
-    custom character varying(2000) COLLATE pg_catalog."default" NOT NULL,
-    isactive character(1) COLLATE pg_catalog."default" NOT NULL,
-    updated timestamp without time zone NOT NULL DEFAULT statement_timestamp(),
-    updatedby numeric(10,0) NOT NULL,
-    ad_wlistbox_customization_uu character varying(36) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
-    CONSTRAINT ad_wlistbox_customization_key PRIMARY KEY (ad_wlistbox_customization_id),
-
-    CONSTRAINT aduser_adwlistboxcustomization FOREIGN KEY (ad_user_id)
-        REFERENCES adempiere.ad_user (ad_user_id) MATCH SIMPLE
+    AD_Client_ID numeric(10,0) NOT NULL,
+    AD_Org_ID numeric(10,0) NOT NULL,
+    AD_Wlistbox_Customization_ID numeric(10,0) NOT NULL DEFAULT NULL::numeric,
+    WlistboxName varchar(60) NOT NULL,
+    AD_User_ID numeric(10,0) NOT NULL,
+    Created timestamp without time zone NOT NULL DEFAULT statement_timestamp(),
+    CreatedBy numeric(10,0) NOT NULL,
+    Custom character varying(2000) COLLATE pg_catalog."default" NOT NULL,
+    IsActive character(1) COLLATE pg_catalog."default" NOT NULL,
+    Updated timestamp without time zone NOT NULL DEFAULT statement_timestamp(),
+    UpdatedBy numeric(10,0) NOT NULL,
+    AD_Wlistbox_Customization_UU character varying(36) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
+    CONSTRAINT AD_Wlistbox_Customization_key PRIMARY KEY (AD_Wlistbox_Customization_ID),
+    CONSTRAINT WlistboxName_UU UNIQUE (AD_Client_ID,AD_Org_ID,WlistboxName),
+    CONSTRAINT AD_User_AD_WlistboxCustomization FOREIGN KEY (AD_User_ID)
+        REFERENCES adempiere.AD_User (AD_User_ID) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
         DEFERRABLE INITIALLY DEFERRED,
-    CONSTRAINT ad_wlistbox_customization_isactive_check CHECK (isactive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))
+    CONSTRAINT AD_Wlistbox_Customization_IsActive_check CHECK (IsActive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))
 )
 WITH (
     OIDS = FALSE
 )
 TABLESPACE pg_default;
 
-ALTER TABLE adempiere.ad_wlistbox_customization
+ALTER TABLE adempiere.AD_Wlistbox_Customization
     OWNER to adempiere;
 -- Index: ad_info_customization_uu_idx
 

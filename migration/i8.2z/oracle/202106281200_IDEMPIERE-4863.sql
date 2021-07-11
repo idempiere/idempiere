@@ -1,20 +1,22 @@
--- Table: ad_wlistbox_customization
+-- Table: AD_Wlistbox_Customization
 
-CREATE TABLE ad_wlistbox_customization
+CREATE TABLE AD_Wlistbox_Customization
 (
-    ad_client_id 					NUMBER(10) NOT NULL,
-    ad_org_id 						NUMBER(10) NOT NULL,
-    ad_wlistbox_customization_id 	NUMBER(10) NOT NULL, 
-    wlistboxname 					VARCHAR(60) NOT NULL,
-    ad_user_id 						NUMBER(10) NOT NULL,
-    created 						DATE DEFAULT SYSDATE,
-    createdby 						NUMBER(10) NOT NULL,
-    custom 							CHARACTER VARYING(2000) NOT NULL,
-    isactive 						CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, 
-    updated 						DATE DEFAULT SYSDATE,
-    updatedby 						NUMBER(10) NOT NULL,
-    ad_wlistbox_customization_uu 	VARCHAR2(36 CHAR) DEFAULT NULL,
-	CONSTRAINT ad_wlistbox_customization_Key PRIMARY KEY (ad_wlistbox_customization_id)	
+    AD_Client_ID 					NUMBER(10) NOT NULL,
+    AD_Org_ID 						NUMBER(10) NOT NULL,
+    AD_Wlistbox_Customization_ID 	NUMBER(10) NOT NULL, 
+    WlistboxName 					VARCHAR(60) NOT NULL,
+    AD_User_ID 						NUMBER(10) NOT NULL,
+    Created 						DATE DEFAULT SYSDATE,
+    CreatedBy 						NUMBER(10) NOT NULL,
+    Custom 							CHARACTER VARYING(2000) NOT NULL,
+    IsActive 						CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, 
+    Updated 						DATE DEFAULT SYSDATE,
+    UpdatedBy 						NUMBER(10) NOT NULL,
+    AD_Wlistbox_Customization_UU 	VARCHAR2(36 CHAR) DEFAULT NULL,
+	CONSTRAINT AD_Wlistbox_Customization_Key PRIMARY KEY (AD_Wlistbox_Customization_ID),
+	CONSTRAINT WlistboxName_UU UNIQUE (AD_Client_ID,AD_Org_ID,WlistboxName),
+	CONSTRAINT AD_User_AD_WlistboxCustomization FOREIGN KEY (AD_User_ID) REFERENCES AD_user(AD_User_ID) DEFERRABLE INITIALLY DEFERRED	
 );
 
 
