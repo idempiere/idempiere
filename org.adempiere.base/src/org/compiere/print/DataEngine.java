@@ -1079,7 +1079,8 @@ public class DataEngine
 											value = parseVariable(display, pdc, pd);
 											Interpreter bsh = new Interpreter ();
 											try {
-												display = bsh.eval(display).toString();
+												value = bsh.eval(value.toString());
+												
 											} catch (EvalError e) {
 												log.severe(e.getMessage());
 											}
