@@ -85,26 +85,29 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 								|| column.getAD_Reference_ID()==DisplayType.ChosenMultipleSelectionTable) && (key instanceof String)) {
 							return getMultiLookupDisplay(column, (String) key);
 						} else if (DisplayType.Location == column.getAD_Reference_ID() && (key instanceof Number)) {
-							MLocation loc = MLocation.get(((Number)key).intValue());
-							return loc.toStringCR();									
+							return getLocation((Number) key);									
 						} else if (DisplayType.Image == column.getAD_Reference_ID() && (key instanceof Number)) {
 							return getImage(((Number)key).intValue());
 						} else if (DisplayType.YesNo == column.getAD_Reference_ID() && (key instanceof String)) {
 							String value = (String) key;
 							return getYesNoText(value);
 						} else if (DisplayType.Account == column.getAD_Reference_ID() && (key instanceof Number)) {
-							MAccount account = MAccount.get(((Number)key).intValue());
-							return account != null ? account.getCombination() : "";
+							return getAccountCombination((Number) key);
 						} else if (DisplayType.Locator == column.getAD_Reference_ID() && (key instanceof Number)) {
-							MLocator locator = MLocator.get(((Number)key).intValue());
-							return locator != null ? locator.toString() : "";
+							return getLocator((Number) key);
 						} else if (DisplayType.PAttribute == column.getAD_Reference_ID() && (key instanceof Number)) {
-							MAttributeSetInstance asi = new MAttributeSetInstance (Env.getCtx(), ((Number)key).intValue(), null);
-							if (asi.getM_AttributeSetInstance_ID() > 0)
-								return asi.getDescription();
+							return getAttributeSetInstance((Number) key);
 						}
 					}
 				}
+			} else if (t.equalsIgnoreCase("location") && (key instanceof Number)) {
+				return getLocation((Number) key);
+			} else if (t.equalsIgnoreCase("account") && (key instanceof Number)) {
+				return getAccountCombination((Number) key);
+			} else if (t.equalsIgnoreCase("locator") && (key instanceof Number)) {
+				return getLocator((Number) key);
+			} else if (t.equalsIgnoreCase("asi") && (key instanceof Number)) {
+				return getAttributeSetInstance((Number) key);
 			} else if (t.equalsIgnoreCase("AmtInWords")) {
 				if (key instanceof String) {
 					return Msg.getAmtInWords(language, (String) key);
@@ -133,6 +136,29 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 			}
 		}
 		return "";
+	}
+
+	private Object getAttributeSetInstance(Number key) {
+		MAttributeSetInstance asi = new MAttributeSetInstance (Env.getCtx(), key.intValue(), null);
+		if (asi.getM_AttributeSetInstance_ID() > 0)
+			return asi.getDescription();
+		else
+			return "";
+	}
+
+	private Object getLocator(Number key) {
+		MLocator locator = MLocator.get(key.intValue());
+		return locator != null ? locator.toString() : "";
+	}
+
+	private Object getAccountCombination(Number key) {
+		MAccount account = MAccount.get(key.intValue());
+		return account != null ? account.getCombination() : "";
+	}
+
+	private Object getLocation(Number key) {
+		MLocation loc = MLocation.get(key.intValue());
+		return loc.toStringCR();
 	}
 
 	private Object getChartImage(int id, int width, int height) {
