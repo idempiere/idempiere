@@ -119,15 +119,14 @@ public class InOutGenerate extends SvrProcess
                 p_DateShipped = (Timestamp)para[i].getParameter();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
-			
-			//  juddm - added ability to specify a shipment date from Generate Shipments
-			if (p_DateShipped == null) {
-				m_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
-				if (m_movementDate == null)
-					m_movementDate = new Timestamp(System.currentTimeMillis());
-			} else
-				m_movementDate = p_DateShipped;
 		}
+		//  juddm - added ability to specify a shipment date from Generate Shipments
+		if (p_DateShipped == null) {
+			m_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
+			if (m_movementDate == null)
+				m_movementDate = new Timestamp(System.currentTimeMillis());
+		} else
+			m_movementDate = p_DateShipped;
 	}	//	prepare
 
 	/**
@@ -493,16 +492,14 @@ public class InOutGenerate extends SvrProcess
 			int M_Locator_ID = storage.getM_Locator_ID();
 			//
 			MInOutLine line = null;
-			if (orderLine.getM_AttributeSetInstance_ID() == 0)      //      find line with Locator
+			int olAsiID = orderLine.getM_AttributeSetInstance_ID();
+			for (int ll = 0; ll < list.size(); ll++)
 			{
-				for (int ll = 0; ll < list.size(); ll++)
+				MInOutLine test = (MInOutLine)list.get(ll);
+				if (test.getM_Locator_ID() == M_Locator_ID && test.getM_AttributeSetInstance_ID() == olAsiID)
 				{
-					MInOutLine test = (MInOutLine)list.get(ll);
-					if (test.getM_Locator_ID() == M_Locator_ID && test.getM_AttributeSetInstance_ID() == 0)
-					{
-						line = test;
-						break;
-					}
+					line = test;
+					break;
 				}
 			}
 			if (line == null)	//	new line
