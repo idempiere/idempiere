@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import com.google.common.net.MediaType;
 
 /**
  * 	Mime - Content type map.
@@ -760,6 +761,7 @@ public class MimeType
 	//	{ ".xlm", "application/x-excel"}, 
 	//	{ ".xls", "application/excel"},
 		{ ".xls", "application/vnd.ms-excel"},
+		{ ".xlsx", MediaType.OOXML_SHEET.toString()},
 	//	{ ".xls", "application/x-excel"}, 
 	//	{ ".xls", "application/x-msexcel"},
 	//	{ ".xlt", "application/excel"}, 
