@@ -117,6 +117,27 @@ public class ColumnInfo
 		setKeyPairColSQL(keyPairColSQL);
 	}   //  ColumnInfo
 
+	/**
+	 *  Create Info Column
+	 *
+	 *  @param colHeader Column Header
+	 *  @param colSQL    SQL select code for column
+	 *  @param colClass  class of column - determines display
+	 *  @param readOnly  column is read only
+	 *  @param columnName Column Name
+	 */
+	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, boolean readOnly, String columnName)
+	{
+		setColHeader(colHeader);
+		setColSQL(colSQL);
+		setColClass(colClass);
+		setReadOnly(readOnly);
+		setColumnName(columnName);
+	}   //  ColumnInfo	
+	
+	
+	
+	
 
 	private String      m_colHeader;
 	private String      m_columnName;
