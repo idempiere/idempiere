@@ -135,8 +135,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5041961608373943362L;
-
+	private static final long serialVersionUID = 1180753002653812499L;
+	
 	protected Grid parameterGrid;
 	private Borderlayout layout;
 	private Vbox southBody;
