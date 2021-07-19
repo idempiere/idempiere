@@ -249,6 +249,15 @@ public interface I_AD_PrintFormat
 	  */
 	public String getDescription();
 
+    /** Column name FileNamePattern */
+    public static final String COLUMNNAME_FileNamePattern = "FileNamePattern";
+
+	/** Set File Name Pattern	  */
+	public void setFileNamePattern (String FileNamePattern);
+
+	/** Get File Name Pattern	  */
+	public String getFileNamePattern();
+
     /** Column name FooterMargin */
     public static final String COLUMNNAME_FooterMargin = "FooterMargin";
 

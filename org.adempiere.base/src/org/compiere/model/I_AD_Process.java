@@ -41,19 +41,6 @@ public interface I_AD_Process
 
     /** Load Meta Data */
 
-    /** Column name AccessLevel */
-    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
-
-	/** Set Data Access Level.
-	  * Access Level required
-	  */
-	public void setAccessLevel (String AccessLevel);
-
-	/** Get Data Access Level.
-	  * Access Level required
-	  */
-	public String getAccessLevel();
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -168,6 +155,19 @@ public interface I_AD_Process
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
+    /** Column name AccessLevel */
+    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
+
+	/** Set Data Access Level.
+	  * Access Level required
+	  */
+	public void setAccessLevel (String AccessLevel);
+
+	/** Get Data Access Level.
+	  * Access Level required
+	  */
+	public String getAccessLevel();
+
     /** Column name AllowMultipleExecution */
     public static final String COLUMNNAME_AllowMultipleExecution = "AllowMultipleExecution";
 
@@ -263,6 +263,15 @@ public interface I_AD_Process
 	  * Execution Type defines whether the report/process will always run in background or foreground. 
 	  */
 	public String getExecutionType();
+
+    /** Column name FileNamePattern */
+    public static final String COLUMNNAME_FileNamePattern = "FileNamePattern";
+
+	/** Set File Name Pattern	  */
+	public void setFileNamePattern (String FileNamePattern);
+
+	/** Get File Name Pattern	  */
+	public String getFileNamePattern();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
