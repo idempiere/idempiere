@@ -607,8 +607,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         		String langInfo = params.get("AD_Language") != null ? params.get("AD_Language").toString() : 
         			params.get("CURRENT_LANG").toString();
         		currLang = Language.getLanguage(langInfo);
-        	}
-        	params.put("COLUMN_LOOKUP", new ColumnLookup(currLang));
+        	}        	
         	
         	String printerName = null;
         	MPrintFormat printFormat = null;
@@ -643,6 +642,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 
            	params.put("CURRENT_LANG", currLang.getAD_Language());
            	params.put(JRParameter.REPORT_LOCALE, currLang.getLocale());
+           	params.put("COLUMN_LOOKUP", new ColumnLookup(currLang));
 
             // Resources
             File resFile = null;
@@ -670,7 +670,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
                     ;
                 }
             }
-            params.put(JRParameter.REPORT_RESOURCE_BUNDLE, new MsgResourceBundle(res));
+            params.put(JRParameter.REPORT_RESOURCE_BUNDLE, new MsgResourceBundle(res, currLang.getLocale(), currLang.getAD_Language(), Env.isSOTrx(Env.getCtx())));
 
             Connection conn = null;
             JRSwapFileVirtualizer virtualizer = null;
