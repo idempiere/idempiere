@@ -75,7 +75,7 @@ public class BroadcastMsgUtil
 
 				for (int userID : userIDs) {
 					MUser user = MUser.get(Env.getCtx(), userID);
-					if (! user.isActive())
+					if (! user.isActive() || (Env.getAD_Client_ID(Env.getCtx()) !=0 && Env.getAD_Client_ID(Env.getCtx()) != user.getAD_Client_ID()))
 							continue;
 					MNote note = new MNote(Env.getCtx(), 0, trxName);
 					note.setClientOrg(user.getAD_Client_ID(), 0);
