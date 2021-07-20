@@ -215,7 +215,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 * @param needFillLogFromDb if ProcessInfoUtil.setLogFromDB(pi) is called by outer function, 
 	 * just pass false, other pass true to avoid duplicate message 
 	 */
-	public static void showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
+	public static ProcessInfoDialog showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
 		ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(Env.getCtx(), windowNo),AEnv.getDialogHeader(Env.getCtx(), windowNo), pi, needFillLogFromDb);
 		final ISupportMask supportMask = LayoutUtils.showWindowWithMask(dialog, comp, LayoutUtils.OVERLAP_PARENT);
 		dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -224,6 +224,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				supportMask.hideMask();
 			}
 		});		
-		Executions.schedule(comp.getDesktop(), e -> dialog.btnOk.focus(), new Event("onPostShowProcessInfoDialog"));		
+		Executions.schedule(comp.getDesktop(), e -> dialog.btnOk.focus(), new Event("onPostShowProcessInfoDialog"));
+		return dialog;
 	}
 }

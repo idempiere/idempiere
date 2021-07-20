@@ -1356,4 +1356,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 		});
 	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (getParameterPanel() != null) {
+			if (getParameterPanel().focusToFirstEditor())
+				return;
+		}
+		if (bOK != null)
+			bOK.focus();
+	}		
 }
