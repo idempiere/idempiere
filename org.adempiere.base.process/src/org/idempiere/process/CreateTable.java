@@ -63,12 +63,12 @@ public class CreateTable extends SvrProcess {
 	private String	p_description = "";
 	private String	p_accessLevel = "";
 	private String	p_entityType = "";
-	private boolean p_isCreateTranslationTable = false;
-	private int 	p_valueLength = 0;
-	private int 	p_nameLength = 0;	
-	private boolean p_isCreateWorkflow = false;
 	private boolean p_isCreateKeyColumn = false;
-
+	private boolean p_isCreateWorkflow = false;
+	private boolean p_isCreateTranslationTable = false;
+	private boolean p_isCreateColValue = false;
+	private boolean p_isCreateColName = false;
+	
 	final private static int LENGTH0 = 0;
 	final private static int LENGTH1 = 1;
 	final private static int LENGTH2 = 2;
@@ -78,6 +78,8 @@ public class CreateTable extends SvrProcess {
 	final private static int LENGTH22 = 22;
 	final private static int LENGTH30 = 30;
 	final private static int LENGTH36 = 36;
+	final private static int LENGTH40 = 40;
+	final private static int LENGTH60 = 60;
 	final private static int WFTRANSITION10 = 10;
 	final private static int WFTRANSITION100 = 100;
 
@@ -106,11 +108,11 @@ public class CreateTable extends SvrProcess {
 			case "IsCreateTranslationTable":
 				p_isCreateTranslationTable = para.getParameterAsBoolean();
 				break;
-			case "ValueLength":
-				p_valueLength = para.getParameterAsInt();
+			case "IsCreateColValue":
+				p_isCreateColValue = para.getParameterAsBoolean();
 				break;
-			case "NameLength":
-				p_nameLength = para.getParameterAsInt();
+			case "IsCreateColName":
+				p_isCreateColName = para.getParameterAsBoolean();
 				break;
 			case "IsCreateWorkflow":
 				p_isCreateWorkflow = para.getParameterAsBoolean();
@@ -142,6 +144,12 @@ public class CreateTable extends SvrProcess {
 		M_Element elementID = M_Element.get(getCtx(), p_tableName + "_ID");
 		if (elementID == null && p_isCreateKeyColumn) { // Create Element <TableName> + _ID
 			elementID = new M_Element(getCtx(), p_tableName + "_ID", p_entityType, get_TrxName());
+			if (!Util.isEmpty(p_name)) {
+				elementID.setName(p_name);
+				elementID.setPrintName(p_name);
+			}
+			if (!Util.isEmpty(p_description))
+				elementID.setDescription(p_description);
 			elementID.saveEx();
 		}
 
@@ -151,9 +159,9 @@ public class CreateTable extends SvrProcess {
 			elementUU.saveEx();
 		}
 
-		if (p_valueLength > 0)
+		if (p_isCreateColValue)
 			createColumn(table, "Value");
-		if (p_nameLength > 0)
+		if (p_isCreateColName)
 			createColumn(table, "Name");
 
 		if (p_isCreateWorkflow) {
@@ -179,7 +187,7 @@ public class CreateTable extends SvrProcess {
 			createColumn(tableTrl, "AD_Language"); 
 			createColumn(tableTrl, "IsTranslated"); 
 
-			if (p_nameLength > 0)
+			if (p_isCreateColName)
 				createColumn(tableTrl, "Name"); 
 
 			if (p_isCreateKeyColumn) {
@@ -286,9 +294,9 @@ public class CreateTable extends SvrProcess {
 
 			int length = LENGTH0;
 			if (columnName.equals("Value"))
-				length = p_valueLength;
+				length = LENGTH40;
 			else if (columnName.equals("Name")) {
-				length = p_nameLength;
+				length = LENGTH60;
 				column.setIsIdentifier(true);
 				if (p_isCreateTranslationTable && !table.getTableName().toUpperCase().endsWith("_TRL"))
 					column.setIsTranslated(true);
@@ -344,17 +352,17 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_NUMBER);
 			column.setFieldLength(LENGTH20);
 		}
-		else if (element.getName().equalsIgnoreCase(table.getTableName() + "_ID")) { // key column
+		else if (element.getColumnName().equalsIgnoreCase(table.getTableName() + "_ID")) { // key column
 			column.setIsKey(true);
 			column.setAD_Reference_ID(DisplayType.ID);	// ID
 			column.setIsMandatory(true);
 			column.setFieldLength(LENGTH22);
 		}
-		else if (element.getName().equalsIgnoreCase(table.getTableName() + "_UU")) { // UUID column
+		else if (element.getColumnName().equalsIgnoreCase(table.getTableName() + "_UU")) { // UUID column
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
 			column.setFieldLength(LENGTH36);
 		}
-		else if (element.getName().equalsIgnoreCase((table.getTableName().substring(0, table.getTableName().length()-4)) + "_ID")) { // ID of parent table (for translation tables)
+		else if (element.getColumnName().equalsIgnoreCase((table.getTableName().substring(0, table.getTableName().length()-4)) + "_ID")) { // ID of parent table (for translation tables)
 			column.setAD_Reference_ID(DisplayType.Search);
 			column.setIsParent(true);
 			column.setIsMandatory(true);
