@@ -520,6 +520,29 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
 	
+	@Test
+	public void testNumericExpression() {
+		String expr = "@QtyReserved@=0";
+		
+		Env.setContext(Env.getCtx(), "QtyReserved", (String)null);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "QtyReserved", 1);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "QtyReserved", 0);
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "QtyReserved", "0.00");
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		Env.setContext(Env.getCtx(), "QtyReserved", (String)null);
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "QtyReserved", 1);
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "QtyReserved", 0);
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "QtyReserved", "0.00");
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+	
 	private static class ContextEvaluatee implements Evaluatee {
 
 		@Override

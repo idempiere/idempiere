@@ -134,32 +134,20 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 		return Pattern.matches(right, left);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Boolean isEqual(SimpleBooleanParser.ComparatorExpressionContext ctx) {
-		Object left = this.visit(ctx.left);
-		Object right = this.visit(ctx.right);
+		Comparable left = asComparable(ctx.left);
+		Comparable right = asComparable(ctx.right);
+		if (left == null || right == null)
+			return Boolean.FALSE;
 		if (left instanceof String && right instanceof String && !(ctx.right.getText().startsWith("'") && !(ctx.right.getText().startsWith("\"")))) {
 			String rightText = (String) right;
 			if (rightText.indexOf(",") > 0) {
 				return isIn((String)left, rightText);
 			}
 		}
-		if (left instanceof BigDecimal && right instanceof BigDecimal) {
-			return ((BigDecimal)left).compareTo((BigDecimal) right) == 0;
-		} else {
-			String leftStr = left.toString();
-			if (left instanceof BigDecimal) {
-				if (((BigDecimal)left).stripTrailingZeros().scale() <= 0) {
-					leftStr = Integer.toString(((BigDecimal)left).intValue());
-				}
-			}
-			String rightStr = right.toString();
-			if (right instanceof BigDecimal) {
-				if (((BigDecimal)right).stripTrailingZeros().scale() <= 0) {
-					rightStr = Integer.toString(((BigDecimal)right).intValue());
-				}
-			}
-			return leftStr.equals(rightStr);
-		}
+		
+		return left.compareTo(right) == 0;		
 	}
 
 	private Boolean isIn(String left, String rightText) {
