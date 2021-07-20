@@ -199,5 +199,77 @@ UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=34, Updated=getDate() WHERE AD_Tre
 UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=35, Updated=getDate() WHERE AD_Tree_ID=10 AND Node_ID=50001
 ;
 
+-- Jul 20, 2021, 3:24:57 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200364,0,0,'Y',TO_DATE('2021-07-20 15:24:57','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:24:57','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''Description'' column',200134,110,20,'N',0,'N','N','IsCreateColDescription','N','D','7e942d0b-47fd-4442-8d29-48b4587adf42','N','N')
+;
+
+-- Jul 20, 2021, 3:25:11 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200365,0,0,'Y',TO_DATE('2021-07-20 15:25:11','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:25:11','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''Help'' column',200134,120,20,'N',0,'N','N','IsCreateColHelp','N','D','c4fcfdef-5363-4bcd-8de7-716242a0ea9b','N','N')
+;
+
+-- Jul 20, 2021, 3:25:23 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200366,0,0,'Y',TO_DATE('2021-07-20 15:25:22','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:25:22','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''DocumentNo'' column',200134,130,20,'N',0,'N','N','IsCreateColDocumentNo','N','D','545b1499-3d88-4f28-a919-aa4de11c7f5b','N','N')
+;
+
+-- Jul 20, 2021, 3:25:35 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200367,0,0,'Y',TO_DATE('2021-07-20 15:25:35','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:25:35','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''DocAction'' column',200134,140,20,'N',0,'N','N','IsCreateColDocAction','N','D','c71da134-4b3c-4ddd-91bc-2d235a6973cc','N','N')
+;
+
+-- Jul 20, 2021, 3:25:45 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200368,0,0,'Y',TO_DATE('2021-07-20 15:25:44','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:25:44','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''DocStatus'' column',200134,150,20,'N',0,'N','N','IsCreateColDocStatus','N','D','fa6f4c61-6cad-46b6-a11b-14fbab2eb39d','N','N')
+;
+
+-- Jul 20, 2021, 3:25:53 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200369,0,0,'Y',TO_DATE('2021-07-20 15:25:53','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:25:53','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''Processed'' column',200134,160,20,'N',0,'N','N','IsCreateColProcessed','N','D','9859451e-5c4e-4e0f-a663-d5f8463dc8c6','N','N')
+;
+
+-- Jul 20, 2021, 3:26:02 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200370,0,0,'Y',TO_DATE('2021-07-20 15:26:02','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:26:02','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''ProcessedOn'' column',200134,170,20,'N',0,'N','N','IsCreateColProcessedOn','N','D','1819ed86-c467-4052-b84b-cbbd46e3bb18','N','N')
+;
+
+-- Jul 20, 2021, 3:26:11 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200371,0,0,'Y',TO_DATE('2021-07-20 15:26:11','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:26:11','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''Processing'' column',200134,180,20,'N',0,'N','N','IsCreateColProcessing','N','D','f9f26c01-30de-4eab-b2f9-f19975b4278b','N','N')
+;
+
+-- Jul 20, 2021, 3:26:22 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200372,0,0,'Y',TO_DATE('2021-07-20 15:26:21','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:26:21','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''C_DocTypeTarget_ID'' column',200134,190,20,'N',0,'N','N','IsCreateColC_DocTypeTarget_ID','N','D','51a57984-1a2b-4e18-b36a-8cc8fe300dea','N','N')
+;
+
+-- Jul 20, 2021, 3:26:30 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200373,0,0,'Y',TO_DATE('2021-07-20 15:26:30','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:26:30','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''C_DocType_ID'' column',200134,200,20,'N',0,'N','N','IsCreateColC_DocType_ID','N','U','ce0b0d61-db59-4595-8d10-1a399d93f708','N','N')
+;
+
+-- Jul 20, 2021, 3:26:32 PM CEST
+UPDATE AD_Process_Para SET EntityType='D',Updated=TO_DATE('2021-07-20 15:26:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200373
+;
+
+-- Jul 20, 2021, 3:26:39 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200374,0,0,'Y',TO_DATE('2021-07-20 15:26:39','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:26:39','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''C_Currency_ID'' column',200134,210,20,'N',0,'N','N','IsCreateColC_Currency_ID','N','D','104e29c4-06d9-4926-b887-f2321ae1bed7','N','N')
+;
+
+-- Jul 20, 2021, 3:26:47 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200375,0,0,'Y',TO_DATE('2021-07-20 15:26:47','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:26:47','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''DateTrx'' column',200134,220,20,'N',0,'N','N','IsCreateColDateTrx','N','D','8e93af3c-c5f7-42b4-b8bc-6436421f8ed8','N','N')
+;
+
+-- Jul 20, 2021, 3:26:55 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200376,0,0,'Y',TO_DATE('2021-07-20 15:26:55','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:26:55','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''DateAcct'' column',200134,230,20,'N',0,'N','N','IsCreateColDateAcct','N','D','a27f9a81-194f-457e-a535-7c7d6ba58473','N','N')
+;
+
+-- Jul 20, 2021, 3:27:04 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200377,0,0,'Y',TO_DATE('2021-07-20 15:27:04','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:27:04','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''Posted'' column',200134,240,20,'N',0,'N','N','IsCreateColPosted','N','D','790453eb-7c27-45de-a6cd-96b56fcc37bb','N','N')
+;
+
+-- Jul 20, 2021, 3:27:14 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200378,0,0,'Y',TO_DATE('2021-07-20 15:27:14','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:27:14','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''IsApproved'' column',200134,250,20,'N',0,'N','N','IsCreateColIsApproved','N','D','9410f400-7785-43c2-9a7b-1eb676c42295','N','N')
+;
+
+-- Jul 20, 2021, 3:27:24 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200379,0,0,'Y',TO_DATE('2021-07-20 15:27:23','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:27:23','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''SalesRep_ID'' column',200134,260,20,'N',0,'N','N','IsCreateColSalesRep_ID','N','D','561fca18-19e0-44f8-b530-bc3a2e3adedf','N','N')
+;
+
+-- Jul 20, 2021, 3:27:34 PM CEST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200380,0,0,'Y',TO_DATE('2021-07-20 15:27:34','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:27:34','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''AD_User_ID'' column',200134,270,20,'N',0,'N','N','IsCreateColAD_User_ID','N','D','017601cc-3f7b-4492-8b9f-b71c632224dd','N','N')
+;
+
 SELECT register_migration_script('202107080800_IDEMPIERE-4858.sql') FROM dual
 ;

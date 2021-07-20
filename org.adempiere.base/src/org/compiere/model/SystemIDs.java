@@ -148,7 +148,9 @@ public class SystemIDs
 	public final static int REFERENCE_ACCOUNT = 175;
 	public final static int REFERENCE_AD_LANGUAGE = 106;
 	public final static int REFERENCE_AD_USER = 110;
+	public final static int REFERENCE_AD_USER_SALESREP = 190;
 	public final static int REFERENCE_ASSIGNMENT = 200181;
+	public final static int REFERENCE_C_DOCTYPE = 170;
 	public final static int REFERENCE_CHART = 200183;
 	public final static int REFERENCE_DOCUMENTACTION = 135;
 	public final static int REFERENCE_DOCUMENTSTATUS = 131;
