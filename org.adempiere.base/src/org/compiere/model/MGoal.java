@@ -266,9 +266,6 @@ public class MGoal extends X_PA_Goal
 		super (ctx, PA_Goal_ID, trxName);
 		if (PA_Goal_ID == 0)
 		{
-		//	setName (null);
-		//	setAD_User_ID (0);
-		//	setPA_ColorSchema_ID (0);
 			setSeqNo (0);
 			setIsSummary (false);
 			setMeasureScope (MEASUREDISPLAY_Year);
@@ -536,9 +533,6 @@ public class MGoal extends X_PA_Goal
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-	//	if (getMultiplier(this) == null)	//	error
-	//		setMeasureDisplay(getMeasureScope());
-		
 		//	Measure required if nor Summary
 		if (!isSummary() && getPA_Measure_ID() == 0)
 		{

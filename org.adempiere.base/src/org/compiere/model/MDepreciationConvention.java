@@ -30,9 +30,6 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 	public MDepreciationConvention(Properties ctx, int A_Depreciation_Convention_ID, String trxName)
 	{
 		super (ctx, A_Depreciation_Convention_ID, trxName);
-		//~ if (A_Depreciation_Convention_ID == 0)
-		//~ {
-		//~ }
 	}	//	MDepreciationConvention
 
 	/**
@@ -78,8 +75,6 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 	
 	/**		Cache									*/
 	private static ImmutableIntPOCache<Integer,MDepreciationConvention> s_cache = new ImmutableIntPOCache<Integer,MDepreciationConvention>(Table_Name, 5);
-	//~ /**		Static logger							*/
-	//~ private static Logger s_log = CLogger.getCLogger(MDepreciationConvention.class);
 	
 	/**
 	 * Get MDepreciationConvention from cache (immutable)
