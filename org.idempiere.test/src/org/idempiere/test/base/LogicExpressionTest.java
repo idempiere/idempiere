@@ -543,6 +543,28 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
 	
+	@Test
+	public void testEmptyStringExpression() {
+		String expr = "@ColumnSQL@=''";
+		Env.setContext(Env.getCtx(), "ColumnSQL", (String)null);
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		Env.setContext(Env.getCtx(), "ColumnSQL", (String)null);
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		expr = "@ColumnSQL@!''";
+		
+		Env.setContext(Env.getCtx(), "ColumnSQL", (String)null);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "ColumnSQL", "now()");
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		Env.setContext(Env.getCtx(), "ColumnSQL", (String)null);
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "ColumnSQL", "now()");
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+	
 	private static class ContextEvaluatee implements Evaluatee {
 
 		@Override

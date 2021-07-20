@@ -138,6 +138,8 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 	private Boolean isEqual(SimpleBooleanParser.ComparatorExpressionContext ctx) {
 		Comparable left = asComparable(ctx.left);
 		Comparable right = asComparable(ctx.right);
+		if (left == null && right == null)
+			return Boolean.TRUE;
 		if (left == null || right == null)
 			return Boolean.FALSE;
 		if (left instanceof String && right instanceof String && !(ctx.right.getText().startsWith("'") && !(ctx.right.getText().startsWith("\"")))) {
