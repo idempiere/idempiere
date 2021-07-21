@@ -50,7 +50,6 @@ Import-Package: com.google.common.annotations;version="30.1.1",
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.jetty.websocket.jsr356;version="9.4.12",
  org.eclipse.jetty.websocket.jsr356.server;version="9.4.12",
- org.idempiere.process,
  org.jfree.chart,
  org.jfree.chart.encoders,
  org.jfree.chart.entity,
@@ -181,7 +180,8 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  com.itextpdf;bundle-version="0.0.0",
  org.atmosphere.runtime;bundle-version="0.0.0",
  zkwebfragment,
- com.sun.activation.jakarta.activation;bundle-version="1.2.1"
+ com.sun.activation.jakarta.activation;bundle-version="1.2.1",
+ org.adempiere.base.process
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui

@@ -199,6 +199,46 @@ UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=34, Updated=getDate() WHERE AD_Tre
 UPDATE AD_TreeNodeMM SET Parent_ID=153, SeqNo=35, Updated=getDate() WHERE AD_Tree_ID=10 AND Node_ID=50001
 ;
 
+-- Jul 20, 2021, 2:55:13 PM CEST
+UPDATE AD_Process_Para SET DefaultValue='@SQL=select get_sysconfig(''DEFAULT_ENTITYTYPE'',''U'',0,0) from dual',Updated=TO_DATE('2021-07-20 14:55:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200358
+;
+
+-- Jul 20, 2021, 2:56:00 PM CEST
+UPDATE AD_Process_Para SET Name='Create a ''Value'' column', AD_Reference_ID=20, IsMandatory='Y', DefaultValue='N', ColumnName='IsCreateColValue', Placeholder=NULL,Updated=TO_DATE('2021-07-20 14:56:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200359
+;
+
+-- Jul 20, 2021, 2:56:18 PM CEST
+UPDATE AD_Process_Para SET Name='Create a ''Name'' column', AD_Reference_ID=20, DefaultValue='N', ColumnName='IsCreateColName', Placeholder=NULL,Updated=TO_DATE('2021-07-20 14:56:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200360
+;
+
+-- Jul 20, 2021, 2:56:42 PM CEST
+UPDATE AD_Process_Para SET SeqNo=999,Updated=TO_DATE('2021-07-20 14:56:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200359
+;
+
+-- Jul 20, 2021, 2:56:46 PM CEST
+UPDATE AD_Process_Para SET SeqNo=9999,Updated=TO_DATE('2021-07-20 14:56:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200360
+;
+
+-- Jul 20, 2021, 2:56:50 PM CEST
+UPDATE AD_Process_Para SET SeqNo=60,Updated=TO_DATE('2021-07-20 14:56:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200361
+;
+
+-- Jul 20, 2021, 2:56:52 PM CEST
+UPDATE AD_Process_Para SET SeqNo=70,Updated=TO_DATE('2021-07-20 14:56:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200362
+;
+
+-- Jul 20, 2021, 2:56:55 PM CEST
+UPDATE AD_Process_Para SET SeqNo=80,Updated=TO_DATE('2021-07-20 14:56:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200363
+;
+
+-- Jul 20, 2021, 2:56:57 PM CEST
+UPDATE AD_Process_Para SET SeqNo=90,Updated=TO_DATE('2021-07-20 14:56:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200359
+;
+
+-- Jul 20, 2021, 2:56:59 PM CEST
+UPDATE AD_Process_Para SET SeqNo=100,Updated=TO_DATE('2021-07-20 14:56:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=200360
+;
+
 -- Jul 20, 2021, 3:24:57 PM CEST
 INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Process_Para_UU,IsEncrypted,IsAutocomplete) VALUES (200364,0,0,'Y',TO_DATE('2021-07-20 15:24:57','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 15:24:57','YYYY-MM-DD HH24:MI:SS'),0,'Create a ''Description'' column',200134,110,20,'N',0,'N','N','IsCreateColDescription','N','D','7e942d0b-47fd-4442-8d29-48b4587adf42','N','N')
 ;
