@@ -81,31 +81,33 @@ public class CreateTable extends SvrProcess {
 	private boolean p_isCreateColProcessed = false;
 	private boolean p_isCreateColProcessedOn = false;
 	private boolean p_isCreateColProcessing = false;
-	private boolean p_isCreateColDocTypeTargetID = false;
-	private boolean p_isCreateColDocTypeID = false;
-	private boolean p_isCreateColCurrencyID = false;
+	private boolean p_isCreateColC_DocTypeTarget_ID = false;
+	private boolean p_isCreateColC_DocType_ID = false;
+	private boolean p_isCreateColC_Currency_ID = false;
 	private boolean p_isCreateColDateTrx = false;
 	private boolean p_isCreateColDateAcct = false;
 	private boolean p_isCreateColPosted = false;
 	private boolean p_isCreateColIsApproved = false;
 	private boolean p_isCreateColSalesRepID = false;
-	private boolean p_isCreateColUserID = false;
+	private boolean p_isCreateColAD_User_ID = false;
 
-	final private static int LENGTH0 = 0;
-	final private static int LENGTH1 = 1;
-	final private static int LENGTH2 = 2;
-	final private static int LENGTH6 = 6;
-	final private static int LENGTH7 = 7;
-	final private static int LENGTH20 = 20;
-	final private static int LENGTH22 = 22;
-	final private static int LENGTH30 = 30;
-	final private static int LENGTH36 = 36;
-	final private static int LENGTH40 = 40;
-	final private static int LENGTH60 = 60;
-	final private static int WFTRANSITION10 = 10;
-	final private static int WFTRANSITION100 = 100;
+	final private static int LENGTH_0 = 0;
+	final private static int LENGTH_1 = 1;
+	final private static int LENGTH_2 = 2;
+	final private static int LENGTH_6 = 6;
+	final private static int LENGTH_7 = 7;
+	final private static int LENGTH_20 = 20;
+	final private static int LENGTH_22 = 22;
+	final private static int LENGTH_30 = 30;
+	final private static int LENGTH_36 = 36;
+	final private static int LENGTH_40 = 40;
+	final private static int LENGTH_60 = 60;
+	final private static int LENGTH_255 = 255;
+	final private static int LENGTH_2000 = 2000;
+	final private static int WF_TRANSITION_10 = 10;
+	final private static int WF_TRANSITION_100 = 100;
 
-	public static final String[] WORKFLOW_COLUMNS = {"C_Currency_ID", "DateAcct", "DocAction", "DocStatus", "DocumentNo", "Processed", "ProcessedOn", "Processing"};
+	public static final String[] WORKFLOW_COLUMNS = {"DocAction", "DocStatus", "Processed", "ProcessedOn", "Processing"};
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -169,13 +171,13 @@ public class CreateTable extends SvrProcess {
 				p_isCreateColProcessing = para.getParameterAsBoolean();
 				break;
 			case "IsCreateColC_DocTypeTarget_ID":
-				p_isCreateColDocTypeTargetID = para.getParameterAsBoolean();
+				p_isCreateColC_DocTypeTarget_ID = para.getParameterAsBoolean();
 				break;
 			case "IsCreateColC_DocType_ID":
-				p_isCreateColDocTypeID = para.getParameterAsBoolean();
+				p_isCreateColC_DocType_ID = para.getParameterAsBoolean();
 				break;
 			case "IsCreateColC_Currency_ID":
-				p_isCreateColCurrencyID = para.getParameterAsBoolean();
+				p_isCreateColC_Currency_ID = para.getParameterAsBoolean();
 				break;
 			case "IsCreateColDateTrx":
 				p_isCreateColDateTrx = para.getParameterAsBoolean();
@@ -193,7 +195,7 @@ public class CreateTable extends SvrProcess {
 				p_isCreateColSalesRepID = para.getParameterAsBoolean();
 				break;
 			case "IsCreateColAD_User_ID":
-				p_isCreateColUserID = para.getParameterAsBoolean();
+				p_isCreateColAD_User_ID = para.getParameterAsBoolean();
 				break;
 
 			default:
@@ -216,17 +218,19 @@ public class CreateTable extends SvrProcess {
 			p_name = p_tableName;
 
 		MTable table = createTable(false);
+		log(table);
 
-		M_Element elementID = M_Element.get(getCtx(), p_tableName + "_ID");
-		if (elementID == null && p_isCreateKeyColumn) { // Create Element <TableName> + _ID
-			elementID = new M_Element(getCtx(), p_tableName + "_ID", p_entityType, get_TrxName());
-			if (!Util.isEmpty(p_name)) {
+		M_Element elementID = null;
+		if (p_isCreateKeyColumn) {
+			elementID = M_Element.get(getCtx(), p_tableName + "_ID");
+			if (elementID == null) { // Create Element <TableName> + _ID
+				elementID = new M_Element(getCtx(), p_tableName + "_ID", p_entityType, get_TrxName());
 				elementID.setName(p_name);
 				elementID.setPrintName(p_name);
-			}
-			if (!Util.isEmpty(p_description))
 				elementID.setDescription(p_description);
-			elementID.saveEx();
+				elementID.saveEx();
+			}
+			createColumn(table, elementID.getColumnName());
 		}
 
 		M_Element elementUU = M_Element.get(getCtx(), p_tableName + "_UU");
@@ -234,6 +238,7 @@ public class CreateTable extends SvrProcess {
 			elementUU = new M_Element(getCtx(), p_tableName + "_UU", p_entityType, get_TrxName());
 			elementUU.saveEx();
 		}
+		createColumn(table, elementUU.getColumnName());
 
 		if (p_isCreateColValue)
 			createColumn(table, "Value");
@@ -244,54 +249,54 @@ public class CreateTable extends SvrProcess {
 		if (p_isCreateColHelp)
 			createColumn(table, "Help");
 
-		if (p_isCreateWorkflow) {
-			for (String column : WORKFLOW_COLUMNS)
-				createColumn(table, column);	
-		}
-		else {
-			if (p_isCreateColCurrencyID)
-				createColumn(table, "C_Currency_ID");
-			if (p_isCreateColDateAcct)
-				createColumn(table, "DateAcct");
-			if (p_isCreateColDocAction)
-				createColumn(table, "DocAction");
-			if (p_isCreateColDocStatus)
-				createColumn(table, "DocStatus");
-			if (p_isCreateColDocumentNo)
-				createColumn(table, "DocumentNo");
-			if (p_isCreateColProcessed)
-				createColumn(table, "Processed");
-			if (p_isCreateColProcessedOn)
-				createColumn(table, "ProcessedOn");
-			if (p_isCreateColProcessing)
-				createColumn(table, "Processing");
-		}
-
 		// Optional columns
-		if (p_isCreateColDocTypeTargetID)
-			createColumn(table, "C_DocTypeTarget_ID");
-		if (p_isCreateColDocTypeID)
-			createColumn(table, "C_DocType_ID");
 		if (p_isCreateColDateTrx)
 			createColumn(table, "DateTrx");
-		if (p_isCreateColPosted)
-			createColumn(table, "Posted");
-		if (p_isCreateColIsApproved)
-			createColumn(table, "IsApproved");
+		if (p_isCreateColDateAcct)
+			createColumn(table, "DateAcct");
+		if (p_isCreateColC_DocTypeTarget_ID)
+			createColumn(table, "C_DocTypeTarget_ID");
+		if (p_isCreateColC_DocType_ID)
+			createColumn(table, "C_DocType_ID");
+		if (p_isCreateColDocumentNo)
+			createColumn(table, "DocumentNo");
 		if (p_isCreateColSalesRepID)
 			createColumn(table, "SalesRep_ID");
-		if (p_isCreateColUserID)
+		if (p_isCreateColAD_User_ID)
 			createColumn(table, "AD_User_ID");
+		if (p_isCreateColC_Currency_ID)
+			createColumn(table, "C_Currency_ID");
+		if (p_isCreateColIsApproved)
+			createColumn(table, "IsApproved");
+		if (p_isCreateColPosted)
+			createColumn(table, "Posted");
 
-		if (p_isCreateKeyColumn)
-			createColumn(table, elementID.getColumnName());
-
-		createColumn(table, elementUU.getColumnName());
-
-		log(table);
+		// Mandatory workflow columns
+		if (p_isCreateColDocAction || p_isCreateWorkflow)
+			createColumn(table, "DocAction");
+		if (p_isCreateColDocStatus || p_isCreateWorkflow)
+			createColumn(table, "DocStatus");
+		if (p_isCreateColProcessed || p_isCreateWorkflow)
+			createColumn(table, "Processed");
+		if (p_isCreateColProcessedOn || p_isCreateWorkflow)
+			createColumn(table, "ProcessedOn");
+		if (p_isCreateColProcessing || p_isCreateWorkflow)
+			createColumn(table, "Processing");
 
 		if (p_isCreateTranslationTable) {
 			MTable tableTrl = createTable(true);
+			log(tableTrl);
+
+			if (elementID != null)
+				createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
+
+			M_Element elementTrlUU = M_Element.get(getCtx(), tableTrl.getTableName() + "_UU");
+			if (elementTrlUU == null) {
+				elementTrlUU = new M_Element(getCtx(), tableTrl.getTableName() + "_UU", p_entityType, get_TrxName());
+				elementTrlUU.saveEx();
+			}
+			createColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
+
 			createColumn(tableTrl, "AD_Language"); 
 			createColumn(tableTrl, "IsTranslated"); 
 
@@ -302,17 +307,6 @@ public class CreateTable extends SvrProcess {
 			if (p_isCreateColHelp)
 				createColumn(tableTrl, "Help");
 
-			if (p_isCreateKeyColumn) {
-
-				M_Element elementTrlUU = M_Element.get(getCtx(), tableTrl.getTableName() + "_UU");
-				if (elementTrlUU == null) {
-					elementTrlUU = new M_Element(getCtx(), tableTrl.getTableName() + "_UU", p_entityType, get_TrxName());
-					elementTrlUU.saveEx();
-				}
-				createColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
-				createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
-			}
-			log(tableTrl);
 		}
 
 		return "@ProcessOK@";
@@ -339,9 +333,9 @@ public class CreateTable extends SvrProcess {
 		createColumn(table, "AD_Org_ID"); 
 		createColumn(table, "Created"); 
 		createColumn(table, "CreatedBy"); 
-		createColumn(table, "IsActive"); 
 		createColumn(table, "Updated"); 
 		createColumn(table, "UpdatedBy");
+		createColumn(table, "IsActive"); 
 
 		return table;
 	}
@@ -385,7 +379,7 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_ID(DisplayType.YesNo);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH1);
+			column.setFieldLength(LENGTH_1);
 			column.setDefaultValue("N");
 			if (columnName.equals("IsActive"))
 				column.setDefaultValue("Y");
@@ -395,40 +389,52 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_Value_ID(REFERENCE_AD_LANGUAGE);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(false);
-			column.setFieldLength(LENGTH6);
+			column.setFieldLength(LENGTH_6);
 			column.setIsParent(true);
 		}
 		else if (columnName.equals("Value") || columnName.equals("Name") || columnName.equals("DocumentNo")) {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
-			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setIsSelectionColumn(true);
 
-			int length = LENGTH0;
+			int length = LENGTH_0;
 			if (columnName.equals("Value"))
-				length = LENGTH40;
+				length = LENGTH_40;
 			else if (columnName.equals("Name")) {
-				length = LENGTH60;
+				length = LENGTH_60;
+				column.setIsMandatory(true);
 				column.setIsIdentifier(true);
 				if (p_isCreateTranslationTable && !table.getTableName().toUpperCase().endsWith("_TRL"))
 					column.setIsTranslated(true);
 			}
 			else if (columnName.equals("DocumentNo"))
-				length = LENGTH30;
+				length = LENGTH_30;
 			column.setFieldLength(length);
+		}
+		else if (columnName.equals("Description") || columnName.equals("Help")) {
+			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
+			column.setIsUpdateable(true);
+			int length = LENGTH_0;
+			if (columnName.equals("Description"))
+				length = LENGTH_255;
+			else if (columnName.equals("Help"))
+				length = LENGTH_2000;
+			column.setFieldLength(length);
+			if (p_isCreateTranslationTable && !table.getTableName().toUpperCase().endsWith("_TRL"))
+				column.setIsTranslated(true);
 		}
 		else if (columnName.equals("C_Currency_ID")) {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLEDIR);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH22);
+			column.setFieldLength(LENGTH_22);
 			column.setDefaultValue("@C_Currency_ID@");
 		}
 		else if (columnName.equals("DateAcct") || columnName.equals("DateTrx")) { 
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_DATE);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH7);
+			column.setFieldLength(LENGTH_7);
 			column.setDefaultValue("@#Date@");
 		}
 		else if (columnName.equals("DocAction")) { 
@@ -447,7 +453,7 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_Value_ID(REFERENCE_DOCUMENTACTION);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH2);
+			column.setFieldLength(LENGTH_2);
 			column.setDefaultValue(DocAction.ACTION_Complete);
 			column.setAD_Process_ID(process.getAD_Process_ID());
 			column.setIsToolbarButton(MColumn.ISTOOLBARBUTTON_Window);
@@ -456,32 +462,32 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_LIST);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH2);
+			column.setFieldLength(LENGTH_2);
 			column.setAD_Reference_Value_ID(REFERENCE_DOCUMENTSTATUS);
 			column.setDefaultValue(DocAction.STATUS_Drafted);
 		}
 		else if (columnName.equals("ProcessedOn")) { 
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_NUMBER);
-			column.setFieldLength(LENGTH20);
+			column.setFieldLength(LENGTH_20);
 		}
 		else if (columnName.equals("C_DocType_ID")) {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLEDIR);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH22);
+			column.setFieldLength(LENGTH_22);
 		}
 		else if (columnName.equals("C_DocTypeTarget_ID")) {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLE);
 			column.setAD_Reference_Value_ID(REFERENCE_C_DOCTYPE);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH22);
+			column.setFieldLength(LENGTH_22);
 		}
 		else if (columnName.equals("Posted")) {
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_BUTTON);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
-			column.setFieldLength(LENGTH1);
+			column.setFieldLength(LENGTH_1);
 			column.setAD_Reference_Value_ID(REFERENCE_POSTED);
 			column.setDefaultValue(Doc.STATUS_NotPosted);
 			column.setIsToolbarButton(MColumn.ISTOOLBARBUTTON_Window);
@@ -499,11 +505,11 @@ public class CreateTable extends SvrProcess {
 			column.setIsKey(true);
 			column.setAD_Reference_ID(DisplayType.ID);	// ID
 			column.setIsMandatory(true);
-			column.setFieldLength(LENGTH22);
+			column.setFieldLength(LENGTH_22);
 		}
 		else if (element.getColumnName().equalsIgnoreCase(table.getTableName() + "_UU")) { // UUID column
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
-			column.setFieldLength(LENGTH36);
+			column.setFieldLength(LENGTH_36);
 		}
 		else if (element.getColumnName().equalsIgnoreCase((table.getTableName().substring(0, table.getTableName().length()-4)) + "_ID")) { // ID of parent table (for translation tables)
 			column.setAD_Reference_ID(DisplayType.Search);
@@ -531,9 +537,9 @@ public class CreateTable extends SvrProcess {
 		MWFNode start = createWorkflowNode(wf, "Start", X_AD_WF_Node.ACTION_WaitSleep, null);
 
 		// Transitions
-		createWorkflowNodeNext(start, docPrepare.getAD_WF_Node_ID(), WFTRANSITION10, "(Standard Approval)", true);
-		createWorkflowNodeNext(start, docAuto.getAD_WF_Node_ID(), WFTRANSITION100, "(Standard Transition)", false);
-		createWorkflowNodeNext(docPrepare, docComplete.getAD_WF_Node_ID(), WFTRANSITION100, "(Standard Transition)", false);
+		createWorkflowNodeNext(start, docPrepare.getAD_WF_Node_ID(), WF_TRANSITION_10, "(Standard Approval)", true);
+		createWorkflowNodeNext(start, docAuto.getAD_WF_Node_ID(), WF_TRANSITION_100, "(Standard Transition)", false);
+		createWorkflowNodeNext(docPrepare, docComplete.getAD_WF_Node_ID(), WF_TRANSITION_100, "(Standard Transition)", false);
 
 		wf.setAD_WF_Node_ID(start.getAD_WF_Node_ID());
 		wf.saveEx();
