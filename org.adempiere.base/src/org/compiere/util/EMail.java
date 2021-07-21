@@ -48,6 +48,7 @@ import javax.mail.internet.MimeMultipart;
 
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
+import org.compiere.model.MSMTP;
 import org.compiere.model.MSysConfig;
 
 import com.sun.mail.smtp.SMTPMessage;
@@ -239,12 +240,26 @@ public final class EMail implements Serializable
 	/**	Logger							*/
 	protected transient static CLogger		log = CLogger.getCLogger (EMail.class);
 
+	/** Set it to true if you need to use the SMTP defined at tenant level - otherwise will try to use a SMTP from AD_SMTP table */
+	private boolean m_forceUseTenantSmtp = false; 
+
 	/**
 	 *	Send Mail direct
 	 *	@return OK or error message
 	 */
 	public String send ()
 	{
+		if (!m_forceUseTenantSmtp) {
+			String from = getFrom().getAddress();
+			int smtpID = MSMTP.getSmtpID(Env.getAD_Client_ID(m_ctx), from, null);
+			if (smtpID > 0) {
+				MSMTP smtp = new MSMTP(m_ctx, smtpID, null);
+				setSmtpHost(smtp.getSMTPHost());
+				setSmtpPort(smtp.getSMTPPort());
+				setSecureSmtp(smtp.isSecureSMTP());
+			}
+		}
+
 		if (log.isLoggable(Level.INFO)){
 			log.info("(" + m_smtpHost + ") " + m_from + " -> " + m_to);
 			log.info("(m_auth) " + m_auth);
@@ -1268,4 +1283,7 @@ public final class EMail implements Serializable
 		return ia;
 	}
 
+	public void setForTenantSmtp(boolean forceTenantSmtp) {
+		m_forceUseTenantSmtp = forceTenantSmtp;	
+	}
 }	//	EMail
