@@ -20,6 +20,7 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
+ * - Carlos Ruiz                                                       *
  * - Nicolas Micoud (TGI)                                              *
  **********************************************************************/
 package org.idempiere.process;
@@ -41,11 +42,13 @@ import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
 
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.acct.Doc;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.process.DocAction;
@@ -58,7 +61,8 @@ import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWorkflow;
 
 /**
- *	IDEMPIERE-4858 - CreateTable process
+ *	IDEMPIERE-4858 - Create/Complete Table process
+ * 	@author 	Carlos Ruiz
  * 	@author 	Nicolas Micoud - TGI
  */
 public class CreateTable extends SvrProcess {
@@ -90,6 +94,7 @@ public class CreateTable extends SvrProcess {
 	private boolean p_isCreateColIsApproved = false;
 	private boolean p_isCreateColSalesRepID = false;
 	private boolean p_isCreateColAD_User_ID = false;
+	private int p_record_ID = 0;
 
 	final private static int LENGTH_0 = 0;
 	final private static int LENGTH_1 = 1;
@@ -199,9 +204,10 @@ public class CreateTable extends SvrProcess {
 				break;
 
 			default:
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
 			}
 		}
+		p_record_ID = getRecord_ID();
 	}	//	prepare
 
 	/**
@@ -218,7 +224,6 @@ public class CreateTable extends SvrProcess {
 			p_name = p_tableName;
 
 		MTable table = createTable(false);
-		log(table);
 
 		M_Element elementID = null;
 		if (p_isCreateKeyColumn) {
@@ -283,9 +288,28 @@ public class CreateTable extends SvrProcess {
 		if (p_isCreateColProcessing || p_isCreateWorkflow)
 			createColumn(table, "Processing");
 
+		if (p_isCreateWorkflow) {
+			MWorkflow wf = createWorkflow(table);
+
+			MProcess process = new Query(getCtx(), MProcess.Table_Name, "AD_Workflow_ID=?", get_TrxName())
+					.setParameters(wf.getAD_Workflow_ID())
+					.first();
+			if (process == null) {
+				process = new MProcess(getCtx(), 0, get_TrxName());
+				process.setValue(p_tableName + " Process");
+				process.setName("Process " + p_name);
+				process.setEntityType(p_entityType);
+				process.setAccessLevel(p_accessLevel);
+				process.setAD_Workflow_ID(wf.getAD_Workflow_ID());
+				process.saveEx();
+			}
+			MColumn colDocAction = getColumn(table, "DocAction");
+			colDocAction.setAD_Process_ID(process.getAD_Process_ID());
+			colDocAction.saveEx();
+		}
+
 		if (p_isCreateTranslationTable) {
 			MTable tableTrl = createTable(true);
-			log(tableTrl);
 
 			if (elementID != null)
 				createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
@@ -312,21 +336,56 @@ public class CreateTable extends SvrProcess {
 		return "@ProcessOK@";
 	}
 
-	void log(MTable table) {
+	/**
+	 * Get a column based on tableID and columnName - read from DB not cache
+	 * @param table
+	 * @param columnName
+	 * @return MColumn or null if it doesn't exist
+	 */
+	private MColumn getColumn(MTable table, String columnName) {
+		return new Query(getCtx(), MColumn.Table_Name, "AD_Table_ID=? AND UPPER(ColumnName)=UPPER(?)", get_TrxName())
+				.setParameters(table.getAD_Table_ID(), columnName)
+				.first();
+	}
+
+	/**
+	 * Log information about the table
+	 * @param table
+	 */
+	private void log(MTable table) {
 		addLog(table.getAD_Table_ID(), null, null, table.getTableName(), MTable.Table_ID, table.getAD_Table_ID());
 	}
 
+	/**
+	 * Create table and 7 mandatory columns if not exists
+	 * @param trl - if the table to create is translation
+	 * @return MTable
+	 */
 	private MTable createTable(boolean trl) {
-		MTable table = new MTable(getCtx(), 0, get_TrxName());
-		table.setTableName(p_tableName + (trl ? "_Trl" : ""));
-		table.setName(p_name + (trl ? " Trl" : ""));
-		if (!Util.isEmpty(p_description))
-			table.setDescription(p_description + (trl ? " Trl" : ""));
-		table.setEntityType(p_entityType);
-		table.setAccessLevel(p_accessLevel);
-		table.setIsDeleteable(trl ? false : true);
-		table.setIsChangeLog(true);
-		table.saveEx();
+		String tableName = p_tableName + (trl ? "_Trl" : "");
+		MTable table = new Query(getCtx(), MTable.Table_Name, "UPPER(TableName)=UPPER(?)", get_TrxName())
+				.setParameters(tableName)
+				.first();
+		if (table == null) {
+			String name = p_name + (trl ? " Trl" : "");
+			String description = null;
+			if (!Util.isEmpty(p_description))
+				description = p_description + (trl ? " Trl" : "");
+			table = new MTable(getCtx(), 0, get_TrxName());
+			table.setTableName(tableName);
+			table.setName(name);
+			table.setDescription(description);
+			table.setEntityType(p_entityType);
+			table.setAccessLevel(p_accessLevel);
+			table.setIsDeleteable(trl ? false : true);
+			table.setIsChangeLog(true);
+			table.saveEx();
+			log(table);
+		} else {
+			if (p_record_ID == 0 && !trl) {
+				throw new AdempiereException("Table " + p_tableName + " already exists");
+			}
+		}
 
 		// Mandatory columns
 		createColumn(table, "AD_Client_ID"); 
@@ -340,7 +399,15 @@ public class CreateTable extends SvrProcess {
 		return table;
 	}
 
-	void createColumn(MTable table, String columnName) {
+	/**
+	 * Create a column if it doesn't exist
+	 * @param table
+	 * @param columnName
+	 */
+	private void createColumn(MTable table, String columnName) {
+		if (getColumn(table, columnName) != null)
+			return;
+
 		MColumn column = new MColumn(table);
 
 		M_Element element = M_Element.get(getCtx(), columnName, get_TrxName());
@@ -438,24 +505,12 @@ public class CreateTable extends SvrProcess {
 			column.setDefaultValue("@#Date@");
 		}
 		else if (columnName.equals("DocAction")) { 
-
-			MWorkflow wf = createWorkflow(table);
-
-			MProcess process = new MProcess(getCtx(), 0, get_TrxName());
-			process.setValue(p_tableName + " Process");
-			process.setName("Process " + p_name);
-			process.setEntityType(p_entityType);
-			process.setAccessLevel(p_accessLevel);
-			process.setAD_Workflow_ID(wf.getAD_Workflow_ID());
-			process.saveEx();
-
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_BUTTON);
 			column.setAD_Reference_Value_ID(REFERENCE_DOCUMENTACTION);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_2);
 			column.setDefaultValue(DocAction.ACTION_Complete);
-			column.setAD_Process_ID(process.getAD_Process_ID());
 			column.setIsToolbarButton(MColumn.ISTOOLBARBUTTON_Window);
 		}
 		else if (columnName.equals("DocStatus")) {
@@ -520,8 +575,19 @@ public class CreateTable extends SvrProcess {
 		column.saveEx();
 	}
 
-	MWorkflow createWorkflow(MTable table) {
-		MWorkflow wf = new MWorkflow(getCtx(), 0, get_TrxName());
+	/**
+	 * Create a workflow if it doesn't exist
+	 * @param table
+	 * @return MWorkflow
+	 */
+	private MWorkflow createWorkflow(MTable table) {
+		MWorkflow wf = new Query(getCtx(), MWorkflow.Table_Name, "WorkflowType=? AND AD_Table_ID=?", get_TrxName())
+				.setParameters(X_AD_Workflow.WORKFLOWTYPE_DocumentProcess, table.getAD_Table_ID())
+				.first();
+		if (wf != null)
+			return wf;
+
+		wf = new MWorkflow(getCtx(), 0, get_TrxName());
 		wf.setValue("Process_" + p_tableName);
 		wf.setName("Process_" + p_tableName);
 		wf.setWorkflowType(X_AD_Workflow.WORKFLOWTYPE_DocumentProcess);
@@ -546,7 +612,15 @@ public class CreateTable extends SvrProcess {
 		return wf;
 	}
 
-	MWFNode createWorkflowNode(MWorkflow wf, String name, String action, String docAction) {
+	/**
+	 * Create a workflow node
+	 * @param wf
+	 * @param name
+	 * @param action
+	 * @param docAction
+	 * @return MWFNode
+	 */
+	private MWFNode createWorkflowNode(MWorkflow wf, String name, String action, String docAction) {
 		MWFNode wfn = new MWFNode(wf, "(" + name + ")", "(" + name + ")");
 		wfn.setDescription("(Standard Node)");
 		wfn.setEntityType(p_entityType);
@@ -556,7 +630,15 @@ public class CreateTable extends SvrProcess {
 		return wfn;
 	}
 
-	void createWorkflowNodeNext(MWFNode wfn, int nodeNextID, int seq, String description, boolean isStdUserWF) {
+	/**
+	 * Create a workflow transition
+	 * @param wfn
+	 * @param nodeNextID
+	 * @param seq
+	 * @param description
+	 * @param isStdUserWF
+	 */
+	private void createWorkflowNodeNext(MWFNode wfn, int nodeNextID, int seq, String description, boolean isStdUserWF) {
 		MWFNodeNext wfnn = new MWFNodeNext(wfn, nodeNextID);
 		wfnn.setSeqNo(seq);
 		wfnn.setDescription(description);

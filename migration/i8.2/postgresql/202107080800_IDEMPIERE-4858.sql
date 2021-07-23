@@ -320,5 +320,37 @@ UPDATE AD_Process_Para SET ReadOnlyLogic='@IsCreateWorkflow@=Y',Updated=TO_TIMES
 UPDATE AD_Process_Para SET ReadOnlyLogic='@IsCreateWorkflow@=Y',Updated=TO_TIMESTAMP('2021-07-21 16:31:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200371
 ;
 
+-- Jul 21, 2021, 5:21:47 PM CEST
+INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,AD_ToolBarButton_UU,"action",AD_Tab_ID,AD_Process_ID,DisplayLogic,SeqNo,EntityType) VALUES (0,0,TO_TIMESTAMP('2021-07-21 17:21:47','YYYY-MM-DD HH24:MI:SS'),100,'Create Table','Y',200114,'Create Table',TO_TIMESTAMP('2021-07-21 17:21:47','YYYY-MM-DD HH24:MI:SS'),100,'N','f9537ff0-2389-47d6-afa3-0d864a34eb8d','W',100,200134,'@IsView@=N',30,'D')
+;
+
+-- Jul 21, 2021, 5:23:36 PM CEST
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_TIMESTAMP('2021-07-21 17:23:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200354
+;
+
+-- Jul 21, 2021, 5:23:59 PM CEST
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_TIMESTAMP('2021-07-21 17:23:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200355
+;
+
+-- Jul 21, 2021, 5:24:09 PM CEST
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_TIMESTAMP('2021-07-21 17:24:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200356
+;
+
+-- Jul 21, 2021, 5:24:13 PM CEST
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_TIMESTAMP('2021-07-21 17:24:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200355
+;
+
+-- Jul 21, 2021, 5:24:24 PM CEST
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_TIMESTAMP('2021-07-21 17:24:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200357
+;
+
+-- Jul 21, 2021, 7:10:05 PM CEST
+UPDATE AD_Process SET Name='Create/Complete Table',Updated=TO_TIMESTAMP('2021-07-21 19:10:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=200134
+;
+
+-- Jul 21, 2021, 7:10:05 PM CEST
+UPDATE AD_Menu SET Name='Create/Complete Table', Description=NULL, IsActive='Y',Updated=TO_TIMESTAMP('2021-07-21 19:10:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=200194
+;
+
 SELECT register_migration_script('202107080800_IDEMPIERE-4858.sql') FROM dual
 ;
