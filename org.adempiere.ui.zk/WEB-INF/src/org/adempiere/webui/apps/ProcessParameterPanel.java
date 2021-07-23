@@ -21,7 +21,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.webui.Extensions;
@@ -31,6 +33,7 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
+import org.adempiere.webui.component.Group;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
@@ -55,6 +58,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -67,8 +71,10 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
@@ -126,7 +132,7 @@ public class ProcessParameterPanel extends Panel implements
 	private int m_WindowNo;
 	private ProcessInfo m_processInfo;
 	// AD_Window of window below this dialog in case show parameter dialog panel
-	private int			m_AD_Window_ID = 0;
+	private int			m_AD_Window_ID = 0;	
 	// infoWindowID of infoWindow below this dialog in case call process from infoWindow
 	private int 		m_InfoWindowID = 0;
 	/** Logger */
@@ -141,6 +147,11 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
 	//
 	private Grid centerPanel = null;
+	private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
+    private Map<String, List<org.zkoss.zul.Row>> fieldGroupHeaders = new HashMap<String, List<org.zkoss.zul.Row>>();
+	private ArrayList<Row> rowList;
+	private List<Group> allCollapsibleGroups = new ArrayList<Group>();
+	private Group currentGroup;
 
 	/**
 	 * Dispose
@@ -210,9 +221,11 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2, p.isAutoComplete, "
-					+ "'' AS ValidationCodeLookup "
+					+ "'' AS ValidationCodeLookup, "
+					+ "fg.Name AS FieldGroup, fg.FieldGroupType "
 					+ "FROM AD_Process_Para p"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
+					+ " LEFT OUTER JOIN AD_FieldGroup fg ON (p.AD_FieldGroup_ID=fg.AD_FieldGroup_ID) "
 					+ "WHERE p.AD_Process_ID=?" // 1
 					+ " AND p.IsActive='Y' " + ASPFilter + " ORDER BY SeqNo";
 		else
@@ -222,10 +235,13 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2, p.isAutoComplete, "
-					+ "'' AS ValidationCodeLookup "
+					+ "'' AS ValidationCodeLookup, "
+					+ "fgt.Name AS FieldGroup, fg.FieldGroupType "
 					+ "FROM AD_Process_Para p"
 					+ " INNER JOIN AD_Process_Para_Trl t ON (p.AD_Process_Para_ID=t.AD_Process_Para_ID)"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
+					+ " LEFT OUTER JOIN AD_FieldGroup fg ON (p.AD_FieldGroup_ID=fg.AD_FieldGroup_ID) "
+					+ " LEFT OUTER JOIN AD_FieldGroup_Trl fgt ON (p.AD_FieldGroup_ID=fgt.AD_FieldGroup_ID AND fgt.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "') "
 					+ "WHERE p.AD_Process_ID=?" // 1
 					+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx())
 					+ "'" + " AND p.IsActive='Y' " + ASPFilter
@@ -233,7 +249,9 @@ public class ProcessParameterPanel extends Panel implements
 
 		// Create Fields
 		boolean hasFields = false;
+		String currentFieldGroup = null;
 		Rows rows = new Rows();
+		Row row = new Row();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -252,7 +270,68 @@ public class ProcessParameterPanel extends Panel implements
 
 			for (int i = 0; i < listVO.size(); i++)
 			{
-				createField(listVO.get(i), rows);
+				GridFieldVO voF = listVO.get(i);
+				GridField field = new GridField(voF);
+				m_mFields.add(field); // add to Fields
+				
+				String fieldGroup = field.getFieldGroup();
+	        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
+	        	{
+	        		currentFieldGroup = fieldGroup;
+	        		
+	        		row.setGroup(currentGroup);
+	        		rows.appendChild(row);
+	                if (rowList != null)
+	        			rowList.add(row);
+
+	        		List<org.zkoss.zul.Row> headerRows = new ArrayList<org.zkoss.zul.Row>();
+	        		fieldGroupHeaders.put(fieldGroup, headerRows);
+
+	        		rowList = new ArrayList<Row>();
+	        		fieldGroupContents.put(fieldGroup, rowList);
+
+	        		if (X_AD_FieldGroup.FIELDGROUPTYPE_Label.equals(field.getFieldGroupType()))
+	        		{
+	        			row = new Row();
+	        			Label groupLabel = new Label(fieldGroup);
+	        			row.appendCellChild(groupLabel, 3);
+	        			rows.appendChild(row);
+	        			headerRows.add(row);
+
+	        			row = new Row();
+	        			Separator separator = new Separator();
+	        			separator.setBar(true);
+	        			row.appendCellChild(separator, 3);
+	        			rows.appendChild(row);
+	        			headerRows.add(row);
+	        			currentGroup = null;
+	        		}
+	        		else
+	        		{
+	        			Group rowg = new Group(fieldGroup);
+	        			Cell cell = (Cell) rowg.getFirstChild();
+	        			cell.setSclass("z-group-inner");
+	        			cell.setColspan(3);
+	        			
+	    				allCollapsibleGroups.add(rowg);
+	        			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
+	        			{
+	        				rowg.setOpen(false);
+	        			}
+	        			currentGroup = rowg;
+	        			rows.appendChild(rowg);
+	        			headerRows.add(rowg);
+	        		}
+	        		row = new Row();
+	        	}
+				
+        		row = new Row();
+				createField(voF, field, row);
+				
+				row.setGroup(currentGroup);
+        		rows.appendChild(row);
+                if (rowList != null)
+        			rowList.add(row);
 				if (log.isLoggable(Level.INFO)) log.info(listVO.get(i).ColumnName + listVO.get(i).SeqNo);
 			}
 
@@ -289,13 +368,10 @@ public class ProcessParameterPanel extends Panel implements
 	 * used to retrieve the value (no data binding)
 	 * 
 	 * @param voF GridFieldVO
+	 * @param mField
+	 * @param row
 	 */
-	private void createField(GridFieldVO voF, Rows rows) {
-		GridField mField = new GridField(voF);
-		m_mFields.add(mField); // add to Fields
-
-		Row row = new Row();
-
+	private void createField(GridFieldVO voF, GridField mField, Row row) {
 		// The Editor
 		WEditor editor = WebEditorFactory.getEditor(mField, false);
 		editor.setProcessParameter(true);
@@ -388,7 +464,6 @@ public class ProcessParameterPanel extends Panel implements
 			m_wEditors2.add(null);
 			m_separators.add(null);
 		}
-		rows.appendChild(row);
 	} // createField
 
 	private void setEditorPlaceHolder(WEditor editor, String msg) {
