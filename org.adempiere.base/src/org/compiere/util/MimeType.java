@@ -218,6 +218,7 @@ public class MimeType
 		{ ".csh", "text/x-script.csh"},
 	//	{ ".css", "application/x-pointplus"}, 
 		{ ".css", "text/css"},
+		{ ".csv", MediaType.CSV_UTF_8.toString()},
 		{ ".cvs", "application/vnd.ms-excel"},
 		{ ".cxx", "text/plain"},
 		

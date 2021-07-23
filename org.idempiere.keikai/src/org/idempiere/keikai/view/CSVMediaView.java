@@ -27,6 +27,8 @@ package org.idempiere.keikai.view;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 import org.idempiere.ui.zk.media.IMediaView;
@@ -83,7 +85,12 @@ public class CSVMediaView implements IMediaView {
 			Book book = importer.imports(bais, media.getName());
 			spreadsheet.setBook(book);
 			Sheet sheet = book.getSheetAt(0);
-			ICsvListReader csvListReader = new CsvListReader(media.getReaderData(), CsvPreference.STANDARD_PREFERENCE);
+			Reader reader;
+			if (media.isBinary())
+				reader = new InputStreamReader(new ByteArrayInputStream(media.getByteData()));
+			else
+				reader = media.getReaderData();
+			ICsvListReader csvListReader = new CsvListReader(reader, CsvPreference.STANDARD_PREFERENCE);
 			List<String> headers = csvListReader.read();
 			if (headers != null) {
 				for(int i = 0; i < headers.size(); i++) {
