@@ -336,15 +336,15 @@ UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_DATE('2021-
 ;
 
 -- Jul 21, 2021, 5:24:09 PM CEST
-UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_DATE('2021-07-21 17:24:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200356
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',DefaultValue='@Description@',Updated=TO_DATE('2021-07-21 17:24:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200356
 ;
 
 -- Jul 21, 2021, 5:24:13 PM CEST
-UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_DATE('2021-07-21 17:24:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200355
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',DefaultValue='@Name@',Updated=TO_DATE('2021-07-21 17:24:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200355
 ;
 
 -- Jul 21, 2021, 5:24:24 PM CEST
-UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_DATE('2021-07-21 17:24:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200357
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',DefaultValue='@AccessLevel@',Updated=TO_DATE('2021-07-21 17:24:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200357
 ;
 
 -- Jul 21, 2021, 7:10:05 PM CEST
