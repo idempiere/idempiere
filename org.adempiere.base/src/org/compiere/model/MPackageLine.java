@@ -45,8 +45,6 @@ public class MPackageLine extends X_M_PackageLine
 		super (ctx, M_PackageLine_ID, trxName);
 		if (M_PackageLine_ID == 0)
 		{
-		//	setM_Package_ID (0);
-		//	setM_InOutLine_ID (0);
 			setQty (Env.ZERO);
 		}
 	}	//	MPackageLine
