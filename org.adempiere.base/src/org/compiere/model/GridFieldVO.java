@@ -430,6 +430,9 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.Placeholder = rs.getString("Placeholder");
 			vo.Placeholder2 = rs.getString("Placeholder2");
 			vo.IsAutocomplete = "Y".equals(rs.getString("IsAutoComplete"));
+			//
+			vo.FieldGroup = rs.getString("FieldGroup");
+			vo.FieldGroupType = rs.getString("FieldGroupType");
 		}
 		catch (SQLException e)
 		{
@@ -477,6 +480,11 @@ public class GridFieldVO implements Serializable, Cloneable
 					vo.ValueMax = userDef.getValueMax();
 				if (userDef.getIsMandatory()!= null)
 					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
+				if (userDef.getAD_FieldGroup_ID() > 0) {
+					X_AD_FieldGroup fg = new X_AD_FieldGroup(Env.getCtx(), userDef.getAD_FieldGroup_ID(), null);
+					vo.FieldGroup = fg.get_Translation(X_AD_FieldGroup.COLUMNNAME_Name);
+					vo.FieldGroupType = fg.getFieldGroupType();
+				}
 			}
 		}
 		//fim devCoffee - 3858
