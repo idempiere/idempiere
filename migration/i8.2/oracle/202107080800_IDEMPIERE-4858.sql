@@ -328,7 +328,7 @@ INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Component
 ;
 
 -- Jul 21, 2021, 5:23:36 PM CEST
-UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',Updated=TO_DATE('2021-07-21 17:23:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200354
+UPDATE AD_Process_Para SET DisplayLogic='@AD_Table_ID@=0',DefaultValue='@TableName@',Updated=TO_DATE('2021-07-21 17:23:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200354
 ;
 
 -- Jul 21, 2021, 5:23:59 PM CEST
