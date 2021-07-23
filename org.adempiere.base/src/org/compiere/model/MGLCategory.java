@@ -154,7 +154,6 @@ public class MGLCategory extends X_GL_Category implements ImmutablePOSupport
 		super (ctx, GL_Category_ID, trxName);
 		if (GL_Category_ID == 0)
 		{
-		//	setName (null);
 			setCategoryType (CATEGORYTYPE_Manual);
 			setIsDefault (false);
 		}

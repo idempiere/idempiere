@@ -181,7 +181,6 @@ implements DocAction
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
-	//	setProcessing(false);
 		return true;
 	}	//	unlockIt
 	

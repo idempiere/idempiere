@@ -45,9 +45,6 @@ public class MElement extends X_C_Element
 		super(ctx, C_Element_ID, trxName);
 		if (C_Element_ID == 0)
 		{
-		//	setName (null);
-		//	setAD_Tree_ID (0);
-		//	setElementType (null);	// A
 			setIsBalancing (false);
 			setIsNaturalAccount (false);
 		}

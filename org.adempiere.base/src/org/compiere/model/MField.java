@@ -83,9 +83,6 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		super (ctx, AD_Field_ID, trxName);
 		if (AD_Field_ID == 0)
 		{
-		//	setAD_Tab_ID (0);	//	parent
-		//	setAD_Column_ID (0);
-		//	setName (null);
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setIsCentrallyMaintained (true);	// Y
 			setIsDisplayed (true);	// Y
@@ -95,7 +92,6 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			setIsHeading (false);
 			setIsReadOnly (false);
 			setIsSameLine (false);
-		//	setObscureType(OBSCURETYPE_ObscureDigitsButLast4);
 		}	
 	}	//	MField
 

@@ -202,7 +202,6 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 		m_actualQty = Env.ZERO;
 		m_actualMin = Env.ZERO;
 		m_actualAllocation = Env.ZERO;
-	//	m_lastDifference = Env.ZERO;
 		m_maxAllocation = Env.ZERO;
 		
 	}	//	resetCalculations
