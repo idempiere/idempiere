@@ -222,7 +222,7 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2, p.isAutoComplete, "
 					+ "'' AS ValidationCodeLookup, "
-					+ "fg.Name AS FieldGroup, fg.FieldGroupType "
+					+ "fg.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault "
 					+ "FROM AD_Process_Para p"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
 					+ " LEFT OUTER JOIN AD_FieldGroup fg ON (p.AD_FieldGroup_ID=fg.AD_FieldGroup_ID) "
@@ -236,7 +236,7 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2, p.isAutoComplete, "
 					+ "'' AS ValidationCodeLookup, "
-					+ "fgt.Name AS FieldGroup, fg.FieldGroupType "
+					+ "fgt.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault "
 					+ "FROM AD_Process_Para p"
 					+ " INNER JOIN AD_Process_Para_Trl t ON (p.AD_Process_Para_ID=t.AD_Process_Para_ID)"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
@@ -259,6 +259,7 @@ public class ProcessParameterPanel extends Panel implements
 			pstmt.setInt(1, m_processInfo.getAD_Process_ID());
 			rs = pstmt.executeQuery();
 			ArrayList<GridFieldVO> listVO = new ArrayList<GridFieldVO>();
+			List<Group>toCollapsed = new ArrayList<Group>();
 			while (rs.next()) {
 				hasFields = true;
 
@@ -316,7 +317,7 @@ public class ProcessParameterPanel extends Panel implements
 	    				allCollapsibleGroups.add(rowg);
 	        			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
 	        			{
-	        				rowg.setOpen(false);
+	        				toCollapsed.add(rowg);	        				
 	        			}
 	        			currentGroup = rowg;
 	        			rows.appendChild(rowg);
@@ -334,6 +335,8 @@ public class ProcessParameterPanel extends Panel implements
         			rowList.add(row);
 				if (log.isLoggable(Level.INFO)) log.info(listVO.get(i).ColumnName + listVO.get(i).SeqNo);
 			}
+			if (toCollapsed.size() > 0)
+				toCollapsed.stream().forEach(g -> g.setOpen(false));
 
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, sql, e);

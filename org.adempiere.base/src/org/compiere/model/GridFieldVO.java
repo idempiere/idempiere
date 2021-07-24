@@ -433,6 +433,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			//
 			vo.FieldGroup = rs.getString("FieldGroup");
 			vo.FieldGroupType = rs.getString("FieldGroupType");
+			vo.IsCollapsedByDefault = "Y".equals(rs.getString("IsCollapsedByDefault"));
 		}
 		catch (SQLException e)
 		{
