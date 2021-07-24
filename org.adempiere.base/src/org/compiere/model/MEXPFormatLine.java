@@ -103,8 +103,6 @@ public class MEXPFormatLine extends X_EXP_FormatLine implements ImmutablePOSuppo
 	StringBuilder sql = new StringBuilder("SELECT * ")
 		.append(" FROM ").append(X_EXP_FormatLine.Table_Name)
 		.append(" WHERE ").append(X_EXP_Format.COLUMNNAME_Value).append("=?")
-		//.append(" AND IsActive = ?")
-		//.append(" AND AD_Client_ID = ?")
 		.append(" AND ").append(X_EXP_Format.COLUMNNAME_EXP_Format_ID).append(" = ?")
 	;
 	PreparedStatement pstmt = null;
