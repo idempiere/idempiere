@@ -1904,7 +1904,6 @@ public class MInOut extends X_M_InOut implements DocAction
 		if (product != null
 				&& line.getM_Locator_ID() == 0)
 		{
-			//MWarehouse w = MWarehouse.get(getCtx(), getM_Warehouse_ID());
 			line.setM_Warehouse_ID(getM_Warehouse_ID());
 			line.setM_Locator_ID(inTrx ? Env.ZERO : line.getMovementQty());	//	default Locator
 			needSave = true;

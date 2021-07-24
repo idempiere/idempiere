@@ -121,9 +121,6 @@ public class MPackage extends X_M_Package
 		super (ctx, M_Package_ID, trxName);
 		if (M_Package_ID == 0)
 		{
-		//	setM_Shipper_ID (0);
-		//	setDocumentNo (null);
-		//	setM_InOut_ID (0);
 			setShipDate (new Timestamp(System.currentTimeMillis()));
 			
 			MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
@@ -577,7 +574,6 @@ public class MPackage extends X_M_Package
 		st.setSalesRep_ID(ioOut.getSalesRep_ID());
 		st.setShipDate(getShipDate());
 		st.setShipperAccount(getShipperAccount());
-//		st.setShippingRespMessage(ShippingRespMessage);
 		st.setSurcharges(getSurcharges());
 		st.setTrackingInfo(getTrackingInfo());
 		st.setTrackingNo(getTrackingNo());

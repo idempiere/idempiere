@@ -45,7 +45,6 @@ public class MPaySchedule extends X_C_PaySchedule
 		super(ctx, C_PaySchedule_ID, trxName);
 		if (C_PaySchedule_ID == 0)
 		{
-		//	setC_PaymentTerm_ID (0);	//	Parent
 			setPercentage (Env.ZERO);
 			setDiscount (Env.ZERO);
 			setDiscountDays (0);
