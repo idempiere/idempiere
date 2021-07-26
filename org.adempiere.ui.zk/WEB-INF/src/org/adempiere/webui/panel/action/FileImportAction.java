@@ -217,6 +217,7 @@ public class FileImportAction implements EventListener<Event>
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
+			winImportFile.addEventListener(Events.ON_CANCEL, e -> onCancel());
 		}
 		
 		panel.getComponent().getParent().appendChild(winImportFile);
@@ -233,7 +234,7 @@ public class FileImportAction implements EventListener<Event>
 			UploadEvent ue = (UploadEvent) event;
 			processUploadMedia(ue.getMedia());
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
-			winImportFile.onClose();
+			onCancel();
 		} else if (event.getTarget() == fCharset) {
 			if (m_file_istream != null) {
 				m_file_istream.close();
@@ -252,6 +253,10 @@ public class FileImportAction implements EventListener<Event>
 		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
 			panel.hideBusyMask();
 		}
+	}
+
+	private void onCancel() {
+		winImportFile.onClose();
 	}
 
 	private void processUploadMedia(Media media) {
@@ -327,7 +332,7 @@ public class FileImportAction implements EventListener<Event>
 			
 			String iMode = (String) fImportMode.getValue();
 			File outFile = importer.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
-			winImportFile.onClose();
+			onCancel();
 			winImportFile = null;
 
 			AMedia media = null;
@@ -338,7 +343,7 @@ public class FileImportAction implements EventListener<Event>
 			throw new AdempiereException(e);
 		} finally {
 			if (winImportFile != null)
-				winImportFile.onClose();
+				onCancel();
 		}
 	}
 }

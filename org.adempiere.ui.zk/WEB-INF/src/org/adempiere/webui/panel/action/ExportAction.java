@@ -167,6 +167,7 @@ public class ExportAction implements EventListener<Event>
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
+			winExportFile.addEventListener(Events.ON_CANCEL, e -> onCancel());
 		}
 		displayExportTabSelection();
 		panel.getComponent().getParent().appendChild(winExportFile);
@@ -230,7 +231,7 @@ public class ExportAction implements EventListener<Event>
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if(event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
-			winExportFile.onClose();
+			onCancel();
 		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK))
 			exportFile();
 		else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
@@ -259,8 +260,12 @@ public class ExportAction implements EventListener<Event>
 			}
 		}else if (event.getName().equals("onExporterException")){
 			FDialog.error(0, winExportFile, "FileInvalidExtension");
-			winExportFile.onClose();
+			onCancel();
 		}
+	}
+
+	private void onCancel() {
+		winExportFile.onClose();
 	}
 	
 	/**
@@ -331,7 +336,7 @@ public class ExportAction implements EventListener<Event>
 			
 			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly,file,indxDetailSelected);
 
-			winExportFile.onClose();
+			onCancel();
 			winExportFile = null;
 			AMedia media = null;
 			media = new AMedia(exporter.getSuggestedFileName(panel.getActiveGridTab()), null, exporter.getContentType(), file, true);
@@ -340,7 +345,7 @@ public class ExportAction implements EventListener<Event>
 			throw new AdempiereException(e);
 		} finally {
 			if (winExportFile != null)
-				winExportFile.onClose();
+				onCancel();
 		}
 	}
 }
