@@ -204,21 +204,8 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				final File file = new File(filePath);
 				if (file.exists()) {
-					// read files into byte[]
-					final byte[] dataEntry = new byte[(int) file.length()];
-					try {
-						final FileInputStream fileInputStream = new FileInputStream(file);
-						fileInputStream.read(dataEntry);
-						fileInputStream.close();
-					} catch (FileNotFoundException e) {
-						log.severe("File Not Found.");
-						e.printStackTrace();
-					} catch (IOException e1) {
-						log.severe("Error Reading The File.");
-						e1.printStackTrace();
-					}
-					final MAttachmentEntry entry = new MAttachmentEntry(file.getName(),
-							dataEntry, attach.m_items.size() + 1);
+					// file data read delayed
+					final MAttachmentEntry entry = new MAttachmentEntry(attach, file.getName(), attach.m_items.size() + 1, file);
 					attach.m_items.add(entry);
 				} else {
 					log.severe("file not found: " + file.getAbsolutePath());
@@ -307,6 +294,37 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			log.fine(attachmentPathRoot);
 		}
 		return attachmentPathRoot;
+	}
+
+	/**
+	 * Load the attachment entry
+	 */
+	@Override
+	public boolean loadLOBDataEntry(MAttachmentEntry entry, MStorageProvider prov) {
+		// read files into byte[]
+		File file = (File) entry.getExtraObj();
+		final byte[] dataEntry = new byte[(int) file.length()];
+		FileInputStream fileInputStream = null;
+		try {
+			fileInputStream = new FileInputStream(file);
+			fileInputStream.read(dataEntry);
+		} catch (FileNotFoundException e) {
+			log.severe("File Not Found.");
+			e.printStackTrace();
+			return false;
+		} catch (IOException e1) {
+			log.severe("Error Reading The File.");
+			e1.printStackTrace();
+			return false;
+		} finally {
+			if (fileInputStream != null) {
+				try {
+					fileInputStream.close();
+				} catch (IOException e) {}
+			}
+		}
+		entry.setData(dataEntry);
+		return true;
 	}
 
 }

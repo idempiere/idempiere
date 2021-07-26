@@ -28,5 +28,17 @@ public interface IAttachmentStore {
 	public boolean delete(MAttachment attach, MStorageProvider prov);
 
 	public boolean deleteEntry(MAttachment mAttachment, MStorageProvider provider, int index);
+	
+    /**
+     * This method is required just if delayed load is implemented
+     * The data for all entries can be read completely in loadLOBData, or it can be read here for a specific entry on request
+     * Creating default method to avoid breaking current implementations
+     * @param entry
+     * @param prov
+     * @return boolean
+     */
+    default public boolean loadLOBDataEntry(MAttachmentEntry entry, MStorageProvider prov) {
+    	return false;
+    }
 
 }
