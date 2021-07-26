@@ -49,8 +49,6 @@ public class MProcessAccess extends X_AD_Process_Access
 			throw new IllegalArgumentException("Multi-Key");
 		else
 		{
-		//	setAD_Process_ID (0);
-		//	setAD_Role_ID (0);
 			setIsReadWrite (true);
 		}
 	}	//	MProcessAccess

@@ -48,13 +48,6 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	public MPriceListVersion(Properties ctx, int M_PriceList_Version_ID, String trxName)
 	{
 		super(ctx, M_PriceList_Version_ID, trxName);
-		if (M_PriceList_Version_ID == 0)
-		{
-		//	setName (null);	// @#Date@
-		//	setM_PriceList_ID (0);
-		//	setValidFrom (TimeUtil.getDay(null));	// @#Date@
-		//	setM_DiscountSchema_ID (0);
-		}
 	}	//	MPriceListVersion
 
 	/**
