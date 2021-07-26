@@ -340,7 +340,7 @@ public class CSVImportAction implements EventListener<Event>
 			String iMode = (String)importItem.getValue();
 			m_file_istream = theTemplate.validateFile(m_file_istream);
 			File outFile = theCSVImporter.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
-			onCancel();
+			winImportFile.onClose();
 			winImportFile = null;
 
 			AMedia media = null;
@@ -364,7 +364,7 @@ public class CSVImportAction implements EventListener<Event>
 			throw new AdempiereException(e);
 		} finally {
 			if (winImportFile != null)
-				onCancel();
+				winImportFile.onClose();
 		}
 	}
 

@@ -152,19 +152,23 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 		LayoutUtils.addSclass("dialog-footer", confirmPanel);						
 		confirmPanel.addActionListener(this);
 		
-		addEventListener(Events.ON_CANCEL, e -> onClose());
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 		this.setVflex("min");
 	}
 
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if(event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
-			onClose();
+			onCancel();
 		} else if(event.getTarget().getId().equals(ConfirmPanel.A_OK)) {			
 			uploadFile();
 		} else if (event.getTarget() == cboType) {
 			onOutputTypeSelectionChanged();
 		}
+	}
+
+	private void onCancel() {
+		onClose();
 	}
 
 	private void onOutputTypeSelectionChanged() {

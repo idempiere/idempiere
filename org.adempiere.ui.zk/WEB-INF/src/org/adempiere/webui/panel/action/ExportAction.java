@@ -260,7 +260,7 @@ public class ExportAction implements EventListener<Event>
 			}
 		}else if (event.getName().equals("onExporterException")){
 			FDialog.error(0, winExportFile, "FileInvalidExtension");
-			onCancel();
+			winExportFile.onClose();
 		}
 	}
 
@@ -336,7 +336,7 @@ public class ExportAction implements EventListener<Event>
 			
 			exporter.export(panel.getActiveGridTab(), childs, currentRowOnly,file,indxDetailSelected);
 
-			onCancel();
+			winExportFile.onClose();
 			winExportFile = null;
 			AMedia media = null;
 			media = new AMedia(exporter.getSuggestedFileName(panel.getActiveGridTab()), null, exporter.getContentType(), file, true);
@@ -345,7 +345,7 @@ public class ExportAction implements EventListener<Event>
 			throw new AdempiereException(e);
 		} finally {
 			if (winExportFile != null)
-				onCancel();
+				winExportFile.onClose();
 		}
 	}
 }

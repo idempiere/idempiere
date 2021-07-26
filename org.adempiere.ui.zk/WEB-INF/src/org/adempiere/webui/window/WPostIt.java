@@ -182,7 +182,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 				m_postIt.setText(textBox.getText());
 				m_postIt.saveEx();
 			}
-			onCancel();
+			detach();
 		} else if (event.getName().equals(Events.ON_SELECT)) {
 			if (editable) {
 				if (tabbox.getSelectedIndex() == 0) {

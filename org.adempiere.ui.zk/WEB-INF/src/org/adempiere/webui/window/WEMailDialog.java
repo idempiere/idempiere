@@ -175,6 +175,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		set(from, to, subject, message);
 		setAttachment(attachment);
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	commonInit
 
 
@@ -522,9 +523,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 */
 	public void onEvent(Event event) throws Exception {		
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
-			onClose();
-				
-		//	Send
+			onCancel();
 		else if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
 			Clients.clearBusy();
@@ -588,6 +587,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		}
 		else if (event.getTarget() == bAddDefaultMailText) // Insert the mail text at cursor (light side) ? or at the end (dark side) :D
 			addMailText();
+	}
+
+	private void onCancel() {
+		onClose();
 	}
 
 	/**

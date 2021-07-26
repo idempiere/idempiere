@@ -332,7 +332,7 @@ public class FileImportAction implements EventListener<Event>
 			
 			String iMode = (String) fImportMode.getValue();
 			File outFile = importer.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
-			onCancel();
+			winImportFile.onClose();
 			winImportFile = null;
 
 			AMedia media = null;
@@ -343,7 +343,7 @@ public class FileImportAction implements EventListener<Event>
 			throw new AdempiereException(e);
 		} finally {
 			if (winImportFile != null)
-				onCancel();
+				winImportFile.onClose();
 		}
 	}
 }
