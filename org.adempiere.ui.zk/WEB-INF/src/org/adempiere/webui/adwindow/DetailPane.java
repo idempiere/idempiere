@@ -456,13 +456,15 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 						String labelKey = actionId + ".label";
 						String tooltipKey = actionId + ".tooltip";
-						String label = Msg.getMsg(Env.getCtx(), labelKey);
-						String tooltiptext = Msg.getMsg(Env.getCtx(), tooltipKey);
+						String label = Msg.getMsg(Env.getCtx(), labelKey, true);
+						String tooltiptext = Msg.getMsg(Env.getCtx(), labelKey, false);
+						if (Util.isEmpty(tooltiptext, true))
+							tooltiptext = Msg.getMsg(Env.getCtx(), tooltipKey, true);
 						if ( labelKey.equals(label) ) {
 							label = toolbarButton.getName();
 						}
-						if ( tooltipKey.equals(tooltiptext) ) {
-							tooltipKey = null;
+						if ( tooltipKey.equals(tooltiptext) || labelKey.equals(tooltiptext)) {
+							tooltiptext = label;
 						}
 						ToolBarButton btn = new ToolBarButton();
 						btn.setName("Btn"+toolbarButton.getComponentName());
