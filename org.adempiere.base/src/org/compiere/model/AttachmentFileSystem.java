@@ -17,7 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -205,7 +204,8 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				final File file = new File(filePath);
 				if (file.exists()) {
 					// file data read delayed
-					final MAttachmentEntry entry = new MAttachmentEntry(attach, file.getName(), attach.m_items.size() + 1, file);
+					IAttachmentLazyDataSource ds = new AttachmentFileLazyDataSource(file);
+					final MAttachmentEntry entry = new MAttachmentEntry(file.getName(), attach.m_items.size() + 1, ds);
 					attach.m_items.add(entry);
 				} else {
 					log.severe("file not found: " + file.getAbsolutePath());
@@ -294,37 +294,6 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			log.fine(attachmentPathRoot);
 		}
 		return attachmentPathRoot;
-	}
-
-	/**
-	 * Load the attachment entry
-	 */
-	@Override
-	public boolean loadLOBDataEntry(MAttachmentEntry entry, MStorageProvider prov) {
-		// read files into byte[]
-		File file = (File) entry.getExtraObj();
-		final byte[] dataEntry = new byte[(int) file.length()];
-		FileInputStream fileInputStream = null;
-		try {
-			fileInputStream = new FileInputStream(file);
-			fileInputStream.read(dataEntry);
-		} catch (FileNotFoundException e) {
-			log.severe("File Not Found.");
-			e.printStackTrace();
-			return false;
-		} catch (IOException e1) {
-			log.severe("Error Reading The File.");
-			e1.printStackTrace();
-			return false;
-		} finally {
-			if (fileInputStream != null) {
-				try {
-					fileInputStream.close();
-				} catch (IOException e) {}
-			}
-		}
-		entry.setData(dataEntry);
-		return true;
 	}
 
 }

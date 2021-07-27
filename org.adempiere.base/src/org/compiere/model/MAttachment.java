@@ -58,7 +58,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8395852207955864303L;
+	private static final long serialVersionUID = -1685512419870004665L;
 
 	/**
 	 * 
@@ -710,14 +710,6 @@ public class MAttachment extends X_AD_Attachment
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;
 		setAD_StorageProvider_ID(p.getAD_StorageProvider_ID());
-	}
-
-	/**
-	 * Get the storage provider
-	 * @return
-	 */
-	public MStorageProvider getStorageProvider() {
-		return provider;
 	}
 
 }	//	MAttachment

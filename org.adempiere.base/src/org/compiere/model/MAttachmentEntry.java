@@ -60,21 +60,19 @@ public class MAttachmentEntry
 	{
 		this (name, data, 0);
 	}	//	MAttachmentItem
-
+	
 	/**
 	 * Constructor for delayed load
-	 * If you use this constructor, it is required that your storage provider implements the method loadLOBDataEntry for delayed load
 	 * @param parent
 	 * @param name
 	 * @param index
-	 * @param extraObj
+	 * @param lazy data source
 	 */
-	public MAttachmentEntry (MAttachment parent, String name, int index, Object extraObj) {
+	public MAttachmentEntry (String name, int index, IAttachmentLazyDataSource ds) {
 		super ();
 		setName (name);
 		setIndex(index);
-		setParent(parent);
-		setExtraObj(extraObj);
+		setLazyDataSource(ds);
 	}
 
 	/**
@@ -107,40 +105,19 @@ public class MAttachmentEntry
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
 
-	/** Extra Object, usage defined by every AttachmentStore */
-	private Object m_extraOjb;
-
-	/** The attachment parent */
-	private MAttachment m_attachment;
+	/** Lazy Data Source */
+	private IAttachmentLazyDataSource m_ds = null;
 
 	/**
 	 * @return Returns the data.
 	 */
 	public byte[] getData ()
 	{
-		if (! m_isDataSet) {
-			m_isDataSet = true;
-			if (m_attachment != null) {
-				MStorageProvider provider = m_attachment.getStorageProvider();
-				if (provider != null) {
-					IAttachmentStore prov = provider.getAttachmentStore();
-					if (prov != null) {
-						if (!prov.loadLOBDataEntry(this, provider)) {
-							log.severe("Data could not be set for entry " + this);
-						}
-					} else {
-						log.severe("No attachment store found for " + this);
-					}
-				} else {
-					log.severe("No storage provider set for " + this);
-				}
-			} else {
-				log.severe("No attachment set for entry " + this);
-			}
+		if (! m_isDataSet && m_ds != null) {
+			setData(m_ds.getData());
 		}
 		return m_data;
 	}
-
 	/**
 	 * @param data The data to set.
 	 */
@@ -170,7 +147,7 @@ public class MAttachmentEntry
 	
 	/**
 	 * 	Get Attachment Index
-	 *	@return timestamp
+	 *	@return int index
 	 */
 	public int getIndex()
 	{
@@ -360,35 +337,19 @@ public class MAttachmentEntry
 	}
 
 	/**
-	 * Set the extra object - usage defined by the attachment store
+	 * Set the lazy data source
 	 * @param obj
 	 */
-	public void setExtraObj(Object obj) {
-		m_extraOjb = obj;
+	public void setLazyDataSource(IAttachmentLazyDataSource ds) {
+		m_ds = ds;
 	}
 
 	/**
-	 * Get the extra object
+	 * Get the lazy data source
 	 * @return
 	 */
-	public Object getExtraObj() {
-		return m_extraOjb;
-	}
-
-	/**
-	 * Set the attachment parent
-	 * @param attach
-	 */
-	public void setParent(MAttachment attach) {
-		m_attachment = attach;
-	}
-
-	/**
-	 * Get the attachment parent
-	 * @return
-	 */
-	public MAttachment getParent() {
-		return m_attachment;
+	public IAttachmentLazyDataSource getLazyDataSource() {
+		return m_ds;
 	}
 
 }	//	MAttachmentItem
