@@ -444,6 +444,8 @@ public class NumberBox extends Div
 
         popup.appendChild(vbox);
         popup.setWidgetListener("onOpen", "calc.clearAll('" + txtCalcId + "')");
+        
+        popup.addEventListener(Events.ON_CANCEL, e -> popup.close());        
         return popup;
     }
 

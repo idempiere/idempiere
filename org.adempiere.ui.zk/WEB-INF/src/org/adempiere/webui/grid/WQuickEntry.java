@@ -171,6 +171,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		ZKUpdateUtil.setWidth(centerPanel, "100%");
 
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 		
 		if (ClientInfo.isMobile())
 		{
@@ -525,8 +526,12 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 
 		//	Cancel pressed
 		else if (e.getTarget() == confirmPanel.getButton("Cancel"))
-			this.detach();
+			onCancel();
 
+	}
+
+	private void onCancel() {
+		this.detach();
 	}
 
 	@Override

@@ -44,6 +44,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -126,7 +127,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 
 	private Borderlayout 	mainPanel = new Borderlayout();
 	private Textbox			newText = new Textbox();
-	private ConfirmPanel	confirmPanel = new ConfirmPanel(false);
+	private ConfirmPanel	confirmPanel = new ConfirmPanel(true);
 	private Tree			messageTree = new Tree();
 	private Button addButton;
 	private Map<Integer, Component> entryMap = new HashMap<Integer, Component>();
@@ -198,6 +199,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 			orientation = ClientInfo.get().orientation;
 			ClientInfo.onClientInfo(this, this::onClientInfo);
 		}
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
 	protected void onClientInfo()
@@ -389,6 +391,13 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	}	//	actionPerformed
 
 	public void onEvent(Event event) throws Exception {
-		actionPerformed(event);
+		if (event.getTarget() == confirmPanel.getOKButton())
+			actionPerformed(event);
+		else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
+			onCancel();
+	}
+
+	private void onCancel() {
+		this.detach();
 	}
 }	//	WChat

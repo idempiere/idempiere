@@ -40,6 +40,7 @@ import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
@@ -119,14 +120,19 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 		vb.appendChild(confirmPanel);
 		LayoutUtils.addSclass("dialog-footer", confirmPanel);
 		confirmPanel.addActionListener(this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if(event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
-			onClose();
+			onCancel();
 		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK))			
 			exportFile();
+	}
+
+	private void onCancel() {
+		onClose();
 	}
 
 	private void exportFile()

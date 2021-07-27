@@ -236,7 +236,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		}
 		
 		fieldResourceType.setMold("select");
-		fieldResource.setMold("select");				
+		fieldResource.setMold("select");
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	jbInit
 
 	/**
@@ -465,8 +466,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			m_cancel = false;
 			dispose();
 		} else if (event.getTarget().getId().equals("Cancel")) {
-			m_cancel = true;
-			dispose();
+			onCancel();
 		//
 		} else if (event.getTarget() == fieldResourceType)
 		{
@@ -479,6 +479,11 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		else if (event.getTarget() == fieldResource)
 			displayCalendar();
 		//
+	}
+
+	private void onCancel() {
+		m_cancel = true;
+		dispose();
 	}
 	
 	private void doEdit(CalendarsEvent event) {

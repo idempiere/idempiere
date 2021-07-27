@@ -169,6 +169,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		south.setParent(mainLayout);
 		south.appendChild(confirmPanel);
 		confirmPanel.addActionListener(this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	jbInit
 
 	/**	Table Column Layout Info			*/
@@ -309,9 +310,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			detach();
 		else if (e.getTarget().getId().equals("Cancel"))
 		{
-			m_M_AttributeSetInstance_ID = -1;
-			m_M_AttributeSetInstanceName = null;
-			detach();
+			onCancel();
 		}
 		else if (e.getTarget() == showAll)
 		{
@@ -322,6 +321,12 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			enableButtons();
 		}
 	}	//	actionPerformed
+
+	private void onCancel() {
+		m_M_AttributeSetInstance_ID = -1;
+		m_M_AttributeSetInstanceName = null;
+		detach();
+	}
  
 	/**
 	 * 	Enable/Set Buttons and set ID
