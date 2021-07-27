@@ -137,11 +137,13 @@ public class WPrintFormatEditorForm extends Window
 	public void init() throws Exception {
 		setSizable(false);
 		setClosable(true);
-		setMaximizable(true);
-		setMaximized(true);
+		setMaximizable(false);
+		setMinimizable(false);
 		appendChild(mainLayout);
 		LayoutUtils.addSclass("tab-editor-form-content", mainLayout);
 		setBorder("normal");
+		setHeight("100%");
+		setWidth("100%");
 
 		confirmPanel.addActionListener(Events.ON_CLICK, e -> pfe.onConfirmPanelClick(e));
 		addEventListener(Events.ON_CANCEL, e -> pfe.onCancel());
