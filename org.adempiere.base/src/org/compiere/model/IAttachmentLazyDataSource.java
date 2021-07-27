@@ -33,6 +33,11 @@ package org.compiere.model;
  */
 public interface IAttachmentLazyDataSource {
 
+	/**
+	 * Return a byte array containing the data from the Attachment Entry
+	 * Usually the implementing class must have a constructor with the variable(s) required for loading later the data
+	 * @return
+	 */
 	public byte[] getData();
 
 }

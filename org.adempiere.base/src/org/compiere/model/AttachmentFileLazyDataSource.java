@@ -44,10 +44,18 @@ public class AttachmentFileLazyDataSource implements IAttachmentLazyDataSource {
 
 	private File m_file;
 
+	/**
+	 * Constructor for lazy load - keep the file information
+	 * @param file
+	 */
 	public AttachmentFileLazyDataSource(File file) {
 		m_file = file;
 	}
 
+	/**
+	 * Return a byte array containing the data from the File
+	 * @return
+	 */
 	@Override
 	public byte[] getData() {
 		// read files into byte[]
