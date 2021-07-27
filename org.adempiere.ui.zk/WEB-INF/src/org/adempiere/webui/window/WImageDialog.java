@@ -424,5 +424,14 @@ public class WImageDialog extends Window implements EventListener<Event>
 	 */
 	public void setDefaultNameForCaptureImage(String defaultNameForCaptureImage) {
 		this.defaultNameForCaptureImage = defaultNameForCaptureImage;
+	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (fileButton != null)
+			fileButton.focus();
 	}	
+	
+	
 }   //  WImageDialog

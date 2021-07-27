@@ -390,6 +390,10 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	public Object getData() {
 		return m_data;
 	}
-	
-	
+
+	@Override
+	public void focus() {
+		super.focus();
+		bLoad.focus();
+	}		
 }

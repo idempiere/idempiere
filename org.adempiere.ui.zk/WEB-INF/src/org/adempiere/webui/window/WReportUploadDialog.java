@@ -306,4 +306,13 @@ public class WReportUploadDialog extends Window implements EventListener<Event> 
 			FDialog.error(-1, this, "Error", e.getMessage(), this.getTitle());
 		}
 	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (cboType != null)
+			cboType.focus();
+	}
+	
+	
 }

@@ -230,6 +230,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    		{
    			win.setPage(page);
    			win.doModal();
+   			win.focus();
    		}
    		else 
    		{
@@ -281,6 +282,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    		
    		win.setPage(page);
    		win.doPopup();
+   		win.focus();
    	}
    	
    	/**
@@ -297,6 +299,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		
 		win.setPage(page);
    		win.doOverlapped();
+   		win.focus();
    	}
 	
 	/**
@@ -313,6 +316,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		
 		win.setPage(page);
    		win.doHighlighted();
+   		win.focus();
    	}   	
 
     protected List<Object> getWindows(){
