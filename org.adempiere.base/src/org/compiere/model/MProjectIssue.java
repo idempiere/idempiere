@@ -53,11 +53,6 @@ public class MProjectIssue extends X_C_ProjectIssue
 		super (ctx, C_ProjectIssue_ID, trxName);
 		if (C_ProjectIssue_ID == 0)
 		{
-		//	setC_Project_ID (0);
-		//	setLine (0);
-		//	setM_Locator_ID (0);
-		//	setM_Product_ID (0);
-		//	setMovementDate (new Timestamp(System.currentTimeMillis()));
 			setMovementQty (Env.ZERO);
 			setPosted (false);
 			setProcessed (false);
@@ -86,9 +81,6 @@ public class MProjectIssue extends X_C_ProjectIssue
 		setC_Project_ID (project.getC_Project_ID());	//	Parent
 		setLine (getNextLine());
 		m_parent = project;
-		//
-	//	setM_Locator_ID (0);
-	//	setM_Product_ID (0);
 		//
 		setMovementDate (new Timestamp(System.currentTimeMillis()));
 		setMovementQty (Env.ZERO);
