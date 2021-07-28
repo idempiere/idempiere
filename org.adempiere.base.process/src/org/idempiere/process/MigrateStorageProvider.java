@@ -35,6 +35,7 @@ import org.compiere.model.IAttachmentStore;
 import org.compiere.model.IImageStore;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
@@ -245,7 +246,9 @@ public class MigrateStorageProvider extends SvrProcess {
 			}
 			MAttachment attachment = new MAttachment(getCtx(), attachId, get_TrxName());
 			int oldProviderId = attachment.getAD_StorageProvider_ID();
-			attachment.getEntries();
+			for (MAttachmentEntry entry : attachment.getEntries()) {
+				entry.getData(); // force load in case old provider is delayed 
+			}
 			attachment.setStorageProvider(newProvider);
 			attachment.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 			// create file on the new storage provider
