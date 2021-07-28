@@ -119,7 +119,21 @@ public class WPrintFormatEditorForm extends Window
 	protected WEditor arcDiameter = null;
 	protected WEditor printAreaType = null;
 	protected WEditor editorTestValue = null;
-	protected WEditor belowColumn = null;
+	protected WEditor editorBelowColumn = null;
+	protected WEditor editorFormatPattern = null;
+	protected WEditor editorScript = null;
+	protected WEditor editorIsOrderBy = null;
+	protected WEditor editorSortNo = null;
+	protected WEditor editorIsGroupBy = null;
+	protected WEditor editorIsAveraged = null;
+	protected WEditor editorIsCounted = null;
+	protected WEditor editorIsDeviationCalc = null;
+	protected WEditor editorIsMaxCalc = null;
+	protected WEditor editorIsMinCalc = null;
+	protected WEditor editorIsSummarized = null;
+	protected WEditor editorIsVarianceCalc = null;
+	protected WEditor editorIsRunningTotal = null;
+	protected WEditor editorRunningTotalLines = null;
 	
 	/**
 	 * 
@@ -135,15 +149,15 @@ public class WPrintFormatEditorForm extends Window
 	 * @throws Exception
 	 */
 	public void init() throws Exception {
-		setSizable(false);
+		setSizable(true);
 		setClosable(true);
-		setMaximizable(false);
-		setMinimizable(false);
+		setMaximizable(true);
+		setMaximized(true);
 		appendChild(mainLayout);
 		LayoutUtils.addSclass("tab-editor-form-content", mainLayout);
 		setBorder("normal");
-		setHeight("100%");
-		setWidth("100%");
+		setHeight("80%");
+		setWidth("80%");
 
 		confirmPanel.addActionListener(Events.ON_CLICK, e -> pfe.onConfirmPanelClick(e));
 		addEventListener(Events.ON_CANCEL, e -> pfe.onCancel());
@@ -272,6 +286,7 @@ public class WPrintFormatEditorForm extends Window
 		editorName = new WStringEditor(MPrintFormatItem.COLUMNNAME_Name, false,
 				false, false, 0, 0, null, null);
 		editorName.fillHorizontal();
+		editorName.addValueChangeListener(pfe);
 		row.appendChild(labelName.rightAlign());
 		row.appendChild(editorName.getComponent());
 		row.setGroup(group);
@@ -283,6 +298,7 @@ public class WPrintFormatEditorForm extends Window
 		editorPrintName = new WStringEditor(MPrintFormatItem.COLUMNNAME_PrintName, false,
 				false, false, 0, 0, null, null);
 		editorPrintName.fillHorizontal();
+		editorPrintName.addValueChangeListener(pfe);
 		row.appendChild(labelPrintName.rightAlign());
 		row.appendChild(editorPrintName.getComponent());
 		row.setGroup(group);
@@ -304,6 +320,7 @@ public class WPrintFormatEditorForm extends Window
 				MPrintFormatItem.COLUMNNAME_SeqNo));
 		editorSeqNo = new WNumberEditor(MPrintFormatItem.COLUMNNAME_SeqNo,
 				false, false, false, DisplayType.Integer, labelSeqNo.getValue());
+		editorSeqNo.addValueChangeListener(pfe);
 		editorSeqNo.fillHorizontal();
 		row.appendChild(labelSeqNo.rightAlign());
 		row.appendChild(editorSeqNo.getComponent());
@@ -315,6 +332,7 @@ public class WPrintFormatEditorForm extends Window
 				MPrintFormatItem.COLUMNNAME_ImageURL));
 		imageUrl = new WStringEditor(MPrintFormatItem.COLUMNNAME_ImageURL, false,
 				false, false, 0, 0, null, null);
+		imageUrl.addValueChangeListener(pfe);
 		ZKUpdateUtil.setHflex((HtmlBasedComponent) imageUrl.getComponent(), "1");
 		row.appendChild(imgURL.rightAlign());
 		row.appendChild(imageUrl.getComponent());
@@ -491,10 +509,10 @@ public class WPrintFormatEditorForm extends Window
 		row = new Row();
 		row.appendChild(new Label(Msg.getElement(Env.getCtx(),
 						MPrintFormatItem.COLUMNNAME_BelowColumn)));
-		belowColumn = new WNumberEditor(MPrintFormatItem.COLUMNNAME_BelowColumn,
+		editorBelowColumn = new WNumberEditor(MPrintFormatItem.COLUMNNAME_BelowColumn,
 				false, false, true, DisplayType.Integer, "");
-		row.appendChild(belowColumn.getComponent());
-		belowColumn.addValueChangeListener(pfe);
+		row.appendChild(editorBelowColumn.getComponent());
+		editorBelowColumn.addValueChangeListener(pfe);
 		row.setGroup(group);
 		rows.appendChild(row);
 		
@@ -660,6 +678,174 @@ public class WPrintFormatEditorForm extends Window
 		row.setGroup(group);
 		rows.appendChild(row);
 
+		row = new Row();
+		label = new Label(Msg.getElement(Env.getCtx(),
+				MPrintFormatItem.COLUMNNAME_FormatPattern));
+		editorFormatPattern = new WStringEditor(MPrintFormatItem.COLUMNNAME_FormatPattern, false,
+				false, false, 0, 0, null, null);
+		editorFormatPattern.fillHorizontal();
+		editorFormatPattern.addValueChangeListener(pfe);
+		row.appendChild(label.rightAlign());
+		row.appendChild(editorFormatPattern.getComponent());
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		label = new Label(Msg.getElement(Env.getCtx(),
+				MPrintFormatItem.COLUMNNAME_Script));
+		editorScript = new WStringEditor(MPrintFormatItem.COLUMNNAME_Script, false,
+				false, false, 0, 0, null, null);
+		editorScript.fillHorizontal();
+		editorScript.addValueChangeListener(pfe);
+		row.appendChild(label.rightAlign());
+		row.appendChild(editorScript.getComponent());
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsOrderBy)));
+		editorIsOrderBy = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsOrderBy, "", null,
+				false, false, true);
+		row.appendChild(editorIsOrderBy.getComponent());
+		editorIsOrderBy.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		label = new Label(Msg.getElement(Env.getCtx(),
+				MPrintFormatItem.COLUMNNAME_SortNo));
+		editorSortNo = new WNumberEditor(MPrintFormatItem.COLUMNNAME_SortNo,
+				false, false, false, DisplayType.Integer, labelSeqNo.getValue());
+		editorSortNo.fillHorizontal();
+		editorSortNo.addValueChangeListener(pfe);
+		row.appendChild(label.rightAlign());
+		row.appendChild(editorSortNo.getComponent());
+		row.setGroup(group);
+		rows.appendChild(row);		
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsGroupBy)));
+		editorIsGroupBy = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsGroupBy, "", null,
+				false, false, true);
+		row.appendChild(editorIsGroupBy.getComponent());
+		editorIsGroupBy.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsAveraged)));
+		editorIsAveraged = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsAveraged, "", null,
+				false, false, true);
+		row.appendChild(editorIsAveraged.getComponent());
+		editorIsAveraged.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsCounted)));
+		editorIsCounted = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsCounted, "", null,
+				false, false, true);
+		row.appendChild(editorIsCounted.getComponent());
+		editorIsCounted.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsDeviationCalc)));
+		editorIsDeviationCalc = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsDeviationCalc, "", null,
+				false, false, true);
+		row.appendChild(editorIsDeviationCalc.getComponent());
+		editorIsDeviationCalc.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsMaxCalc)));
+		editorIsMaxCalc = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsMaxCalc, "", null,
+				false, false, true);
+		row.appendChild(editorIsMaxCalc.getComponent());
+		editorIsMaxCalc.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsMinCalc)));
+		editorIsMinCalc = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsMinCalc, "", null,
+				false, false, true);
+		row.appendChild(editorIsMinCalc.getComponent());
+		editorIsMinCalc.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsSummarized)));
+		editorIsSummarized = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsSummarized, "", null,
+				false, false, true);
+		row.appendChild(editorIsSummarized.getComponent());
+		editorIsSummarized.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsVarianceCalc)));
+		editorIsVarianceCalc = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsVarianceCalc, "", null,
+				false, false, true);
+		row.appendChild(editorIsVarianceCalc.getComponent());
+		editorIsVarianceCalc.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsRunningTotal)));
+		editorIsRunningTotal = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsRunningTotal, "", null,
+				false, false, true);
+		row.appendChild(editorIsRunningTotal.getComponent());
+		editorIsRunningTotal.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+		
+		row = new Row();
+		label = new Label(Msg.getElement(Env.getCtx(),
+				MPrintFormatItem.COLUMNNAME_RunningTotalLines));
+		editorRunningTotalLines = new WNumberEditor(MPrintFormatItem.COLUMNNAME_RunningTotalLines,
+				false, false, false, DisplayType.Integer, labelSeqNo.getValue());
+		editorRunningTotalLines.fillHorizontal();
+		editorRunningTotalLines.addValueChangeListener(pfe);
+		row.appendChild(label.rightAlign());
+		row.appendChild(editorRunningTotalLines.getComponent());
+		row.setGroup(group);
+		rows.appendChild(row);
+		
 		row = new Row();
 		Separator esep = new Separator("horizontal");
 		esep.setSpacing("10px");
