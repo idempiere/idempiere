@@ -181,9 +181,10 @@ public class WBinaryEditor extends WEditor
 				content.getComponent().getParent().appendChild(dialog);
 				content.showBusyMask(dialog);
 				LayoutUtils.openOverlappedWindow(content.getComponent().getParent(), dialog, "middle_center");
+				dialog.focus();
 			} else {
 				AEnv.showWindow(dialog);
-			}
+			}			
 		}
 	}
 }

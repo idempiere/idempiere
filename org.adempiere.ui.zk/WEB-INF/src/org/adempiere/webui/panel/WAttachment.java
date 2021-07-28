@@ -372,6 +372,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			orientation = ClientInfo.get().orientation;
 			ClientInfo.onClientInfo(this, this::onClientInfo);
 		}
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
 	protected void onClientInfo()
@@ -621,8 +622,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				dispose();
 			}
 		} else if (e.getTarget() == bCancel) {
-			//	Cancel
-			dispose();
+			onCancel();
 		} else if (e.getTarget() == bDeleteAll) {
 			//	Delete Attachment
 			deleteAttachment();
@@ -643,6 +643,11 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 
 	}	//	onEvent
+
+	private void onCancel() {
+		//	Cancel
+		dispose();
+	}
 
 	private void processUploadMedia(Media media) {
 		if (media != null && media.getByteData().length>0)

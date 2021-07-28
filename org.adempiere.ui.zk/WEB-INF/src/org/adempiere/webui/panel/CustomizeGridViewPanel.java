@@ -293,16 +293,14 @@ public class CustomizeGridViewPanel extends Panel
 			public void onEvent(Event event) throws Exception {
 				if (event.getTarget().equals(
 						confirmPanel.getButton(ConfirmPanel.A_OK))) {
-					saveData();
+					onOk();
 				} else if (event.getTarget().equals(
 						confirmPanel.getButton(ConfirmPanel.A_CANCEL))) {
-					getParent().detach();
+					onCancel();
 				} else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_RESET))) {
-					tableSeqs.clear();
-					loadData();
+					onReset();
 				}
-			}
-
+			}			
 		};
 
 		confirmPanel.addActionListener(onClickListener);
@@ -313,6 +311,28 @@ public class CustomizeGridViewPanel extends Panel
 		this.appendChild(layout);
 		
 	}	//	init
+	
+	/**
+	 * reset form
+	 */
+	public void onReset() {
+		tableSeqs.clear();
+		loadData();
+	}
+
+	/**
+	 * save changes
+	 */
+	public void onOk() {
+		saveData();
+	}
+
+	/**
+	 * cancel form
+	 */
+	public void onCancel() {
+		getParent().detach();
+	}
 	
 	public void loadData()
 	{

@@ -50,8 +50,6 @@ public class MProjectLine extends X_C_ProjectLine
 		super (ctx, C_ProjectLine_ID, trxName);
 		if (C_ProjectLine_ID == 0)
 		{
-		//  setC_Project_ID (0);
-		//	setC_ProjectLine_ID (0);
 			setLine (0);
 			setIsPrinted(true);
 			setProcessed(false);

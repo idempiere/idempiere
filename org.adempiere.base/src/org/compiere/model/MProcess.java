@@ -170,8 +170,6 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		super (ctx, AD_Process_ID, trxName);
 		if (AD_Process_ID == 0)
 		{
-		//	setValue (null);
-		//	setName (null);
 			setIsReport (false);
 			setAccessLevel (ACCESSLEVEL_All);
 			setEntityType (ENTITYTYPE_UserMaintained);

@@ -210,6 +210,15 @@ public class TabCreateFields extends SvrProcess
 					field.setDisplayLogic("@$Element_U2@=Y");
 				}  
 
+				// set read-only for usual known-fields
+				if (   column.getColumnName().equalsIgnoreCase("IsApproved")
+					|| column.getColumnName().equalsIgnoreCase("DocStatus")
+					|| column.getColumnName().equalsIgnoreCase("Processed")
+					|| column.getColumnName().equalsIgnoreCase("ProcessedOn")
+					|| column.getColumnName().equalsIgnoreCase("Processing")) {
+					field.setIsReadOnly(true);
+				}
+
 				if (field.save())
 				{
 					addLog(0, null, null, column.getName());

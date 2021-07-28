@@ -50,9 +50,6 @@ public class MProjectTypePhase extends X_C_Phase
 		super (ctx, C_Phase_ID, trxName);
 		if (C_Phase_ID == 0)
 		{
-		//	setC_Phase_ID (0);			//	PK
-		//	setC_ProjectType_ID (0);	//	Parent
-		//	setName (null);
 			setSeqNo (0);
 			setStandardQty (Env.ZERO);
 		}

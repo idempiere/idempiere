@@ -51,14 +51,10 @@ public class MProjectPhase extends X_C_ProjectPhase
 		super (ctx, C_ProjectPhase_ID, trxName);
 		if (C_ProjectPhase_ID == 0)
 		{
-		//	setC_ProjectPhase_ID (0);	//	PK
-		//	setC_Project_ID (0);		//	Parent
-		//	setC_Phase_ID (0);			//	FK
 			setCommittedAmt (Env.ZERO);
 			setIsCommitCeiling (false);
 			setIsComplete (false);
 			setSeqNo (0);
-		//	setName (null);
 			setQty (Env.ZERO);
 		}
 	}	//	MProjectPhase

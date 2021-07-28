@@ -71,8 +71,6 @@ public class MPInstance extends X_AD_PInstance
 		//	New Process
 		if (AD_PInstance_ID == 0)
 		{
-		//	setAD_Process_ID (0);	//	parent
-		//	setRecord_ID (0);
 			setIsProcessing (false);
 		}
 	}	//	MPInstance
@@ -249,7 +247,6 @@ public class MPInstance extends X_AD_PInstance
 			P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID);
 		m_log.add(logEntry);
 		//	save it to DB ?
-	//	log.saveEx();
 		return logEntry;
 	}	//	addLog
 
