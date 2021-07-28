@@ -278,7 +278,21 @@ public class WPrintFormatEditor implements ValueChangeListener {
 		editorMap.put(MPrintFormatItem.COLUMNNAME_PrintAreaType, printFormatForm.printAreaType);
 
 		editorMap.put(MPrintFormatItem.COLUMNNAME_PrintName, printFormatForm.editorPrintName);
-		editorMap.put(MPrintFormatItem.COLUMNNAME_BelowColumn, printFormatForm.belowColumn);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_BelowColumn, printFormatForm.editorBelowColumn);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_FormatPattern, printFormatForm.editorFormatPattern);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_Script, printFormatForm.editorScript);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsOrderBy, printFormatForm.editorIsOrderBy);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_SortNo, printFormatForm.editorSortNo);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsGroupBy, printFormatForm.editorIsGroupBy);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsAveraged, printFormatForm.editorIsAveraged);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsCounted, printFormatForm.editorIsCounted);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsDeviationCalc, printFormatForm.editorIsDeviationCalc);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsMaxCalc, printFormatForm.editorIsMaxCalc);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsMinCalc, printFormatForm.editorIsMinCalc);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsSummarized, printFormatForm.editorIsSummarized);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsVarianceCalc, printFormatForm.editorIsVarianceCalc);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsRunningTotal, printFormatForm.editorIsRunningTotal);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_RunningTotalLines, printFormatForm.editorRunningTotalLines);
 	}
 
 	private void validateProperties(final MPrintFormatItem pfItem) {
