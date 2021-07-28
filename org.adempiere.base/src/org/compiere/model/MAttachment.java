@@ -318,6 +318,7 @@ public class MAttachment extends X_AD_Attachment
 		boolean retValue = false;
 		if (item == null)
 			return false;
+		item.getData(); // in case of lazy load enforce reading
 		if (m_items == null)
 			loadLOBData();
 		for (int i = 0; i < m_items.size(); i++) {

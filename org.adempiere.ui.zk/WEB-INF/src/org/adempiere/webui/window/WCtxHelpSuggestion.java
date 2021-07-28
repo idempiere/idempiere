@@ -30,6 +30,7 @@ import org.compiere.wf.MWorkflow;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
@@ -157,6 +158,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		} else {
 			setTitle(Msg.getElement(Env.getCtx(), "AD_CtxHelpSuggestion_ID"));
 		}
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	@Override
@@ -164,8 +166,12 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK)) {
 			onSave();
 		} else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL)) {
-			this.detach();
+			onCancel();
 		}		
+	}
+
+	private void onCancel() {
+		this.detach();
 	}
 
 	private void onSave() {

@@ -49,9 +49,6 @@ public class MDistributionLine extends X_GL_DistributionLine
 		super (ctx, GL_DistributionLine_ID, trxName);
 		if (GL_DistributionLine_ID == 0)
 		{
-		//	setGL_Distribution_ID (0);		//	Parent
-		//	setLine (0);
-			//
 			setOverwriteAcct (false);
 			setOverwriteActivity (false);
 			setOverwriteBPartner (false);

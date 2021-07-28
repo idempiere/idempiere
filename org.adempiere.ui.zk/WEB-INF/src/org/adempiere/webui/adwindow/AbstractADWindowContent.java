@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,7 @@ import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.form.WCreateFromFactory;
 import org.adempiere.webui.apps.form.WCreateFromWindow;
 import org.adempiere.webui.apps.form.WQuickForm;
+import org.adempiere.webui.component.DesktopTabpanel;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Window;
@@ -1401,6 +1403,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (value != newTabpanel)
 			{
 				newTabpanel.query();
+				if (newTabpanel instanceof ADTabpanel)
+				{
+					ADTabpanel adtabpanel = (ADTabpanel) newTabpanel;
+					Events.echoEvent(ADTabpanel.ON_POST_INIT_EVENT, adtabpanel, null);
+				}			
 			}
 			else 
 			{
@@ -3307,6 +3314,50 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		Clients.response(new AuScript(script.toString()));
 	}
 
+	/**
+	 * 
+	 * @return true if window is block by mask or highlighted window
+	 */
+	public boolean isBlock() {
+		//check blocking by local mask
+		if (mask != null && mask.getParent() != null) {
+			return true;
+		}
+		
+		//check blocking by highlighted window
+		if (getComponent() != null && getComponent().getPage() != null) {
+			Collection<Component> roots = getComponent().getPage().getRoots();
+			for(Component comp : roots) {
+				if (comp instanceof org.zkoss.zul.Window) {
+					org.zkoss.zul.Window wnd = (org.zkoss.zul.Window) comp;
+					if (wnd.isVisible() && wnd.inHighlighted())
+						return true;
+				}
+			}
+		}
+		
+		//check blocking by mask from ISupportMask (window, tabpanel)
+		if (getComponent() != null) {
+			Component p = getComponent().getParent();
+			while (p != null) {
+				if (p instanceof Mask) {
+					if (p.isVisible()) {
+						return true;
+					}
+				} else if (p instanceof DesktopTabpanel) {
+					for(Component c : p.getChildren()) {
+						if (c instanceof Mask) {
+							if (c.isVisible())
+								return true;
+						}
+					}
+				}
+				p = p.getParent();
+			}
+		}
+		return false;
+	}
+	
 	public void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,
 			boolean isProcessMandatory) {
@@ -3435,7 +3486,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					showBusyMask(dialog);
 					LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
 				}
-				dialog.focus();
+				Executions.schedule(getComponent().getDesktop(), e -> dialog.focus(), new Event("onPostShowProcessModalDialog"));
 			}
 			if (adTabbox.getSelectedGridTab().isQuickForm()) {
 				adTabbox.getSelectedGridTab().dataRefreshAll(false, false);
@@ -3602,7 +3653,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		
 		
 		if (m_logs != null && m_logs.length > 0) {
-			ProcessInfoDialog.showProcessInfo(pi, curWindowNo, getComponent(), false);
+			ProcessInfoDialog dialog = ProcessInfoDialog.showProcessInfo(pi, curWindowNo, getComponent(), false);
+			dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, e -> focusToActivePanel());
 		}
 		
 	}

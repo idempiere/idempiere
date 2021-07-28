@@ -19,12 +19,10 @@ package org.adempiere.webui.apps;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -74,12 +72,7 @@ import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfImportedPage;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfWriter;
 
 /**
  *  ZK Application Environment and utilities
@@ -615,44 +608,7 @@ public final class AEnv
      */
     public static void mergePdf(List<File> pdfList, File outFile) throws IOException,
 			DocumentException, FileNotFoundException {
-		Document document = null;
-		PdfWriter copy = null;
-		
-		List<PdfReader> pdfReaders = new ArrayList<PdfReader>();
-		
-		try
-		{		
-			for (File f : pdfList)
-			{
-				PdfReader reader = new PdfReader(f.getAbsolutePath());
-				
-				pdfReaders.add(reader);
-				
-				if (document == null)
-				{
-					document = new Document(reader.getPageSizeWithRotation(1));
-					copy = PdfWriter.getInstance(document, new FileOutputStream(outFile));
-					document.open();
-				}
-				int pages = reader.getNumberOfPages();
-				PdfContentByte cb = copy.getDirectContent();
-				for (int i = 1; i <= pages; i++) {
-					document.newPage();
-					copy.newPage();
-					PdfImportedPage page = copy.getImportedPage(reader, i);
-					cb.addTemplate(page, 0, 0);
-					copy.releaseTemplate(page);
-				}
-			}
-			document.close();
-		}
-		finally
-		{
-			for(PdfReader reader:pdfReaders)
-			{
-				reader.close();
-			}
-		}
+		Util.mergePdf(pdfList, outFile);
    }
 
     /**

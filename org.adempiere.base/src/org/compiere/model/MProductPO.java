@@ -68,9 +68,6 @@ public class MProductPO extends X_M_Product_PO
 			throw new IllegalArgumentException("Multi-Key");
 		else
 		{
-		//	setM_Product_ID (0);	// @M_Product_ID@
-		//	setC_BPartner_ID (0);	// 0
-		//	setVendorProductNo (null);	// @Value@
 			setIsCurrentVendor (true);	// Y
 		}
 	}	//	MProduct_PO

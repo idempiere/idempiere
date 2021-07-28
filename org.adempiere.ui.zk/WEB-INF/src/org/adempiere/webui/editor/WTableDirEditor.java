@@ -71,9 +71,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.sys.SessionCtrl;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Menuitem;
@@ -199,12 +197,13 @@ ContextMenuListener, IZoomableEditor
     {
     	ZKUpdateUtil.setWidth(getComponent(), "200px"); 
         getComponent().setAutocomplete(true);
-        getComponent().setAutodrop(true);
+        getComponent().setAutodrop(false);
+        getComponent().setInstantSelect(false);
     	getComponent().addEventListener(Events.ON_BLUR, this);
         if (getComponent() instanceof EditorAutoComplete) {
         	;
         } else {
-        	getComponent().addEventListener(Events.ON_CHANGING, this);
+        	getComponent().addScrollSelectedIntoViewListener();
         }
 
         boolean zoom= false;
@@ -428,7 +427,7 @@ ContextMenuListener, IZoomableEditor
 	                if (obj instanceof KeyNamePair)
 	                {
 	                    KeyNamePair lookupKNPair = (KeyNamePair) obj;
-	                    getComponent().appendItem(lookupKNPair.getName(), lookupKNPair.getKey());
+	                    getComponent().appendItem(lookupKNPair.getName().length()==0 ? " " : lookupKNPair.getName(), lookupKNPair.getKey());
 	                    if (!found && oldValue != null && oldValue instanceof Integer &&
 	                    	lookupKNPair.getKey() == (Integer)oldValue)
 	                    {
@@ -438,7 +437,7 @@ ContextMenuListener, IZoomableEditor
 	                else if (obj instanceof ValueNamePair)
 	                {
 	                    ValueNamePair lookupKNPair = (ValueNamePair) obj;
-	                    getComponent().appendItem(lookupKNPair.getName(), lookupKNPair.getValue());
+	                    getComponent().appendItem(lookupKNPair.getName().length()==0 ? " " : lookupKNPair.getName(), lookupKNPair.getValue());
 	                    if (!found && oldValue != null && lookupKNPair.getValue().equals(oldValue.toString()))
 		                {
 	                    	found = true;
@@ -447,7 +446,7 @@ ContextMenuListener, IZoomableEditor
 	                else if (obj instanceof MLocator)
 	                {
 	                	MLocator lookupKNPair = (MLocator) obj;
-	                    getComponent().appendItem(lookupKNPair.getValue(), lookupKNPair.getM_Locator_ID());
+	                    getComponent().appendItem(lookupKNPair.getValue().length()==0 ? " " : lookupKNPair.getValue(), lookupKNPair.getM_Locator_ID());
 	                    if (!found && oldValue != null && lookupKNPair.getM_Locator_ID() == (Integer) oldValue)
 		                {
 	                    	found = true;
@@ -554,7 +553,7 @@ ContextMenuListener, IZoomableEditor
     		else 
     		{
     			//on select not fire for empty label item
-    			if (item.getLabel().equals(""))
+    			if (Util.isEmpty(item.getLabel(),true))
     			{
     				Object newValue = getValue();
     				if (isValueChange(newValue)) {
@@ -571,8 +570,6 @@ ContextMenuListener, IZoomableEditor
     				}
     			}
     		}
-    	} else if (event.getName().equals(Events.ON_CHANGING)) {
-    		onChanging((InputEvent) event);
     	} else if (event.getName().equals("onPostSelect")) {
     		if (getComponent().isOpen()) {
 	    		getComponent().select();
@@ -581,24 +578,6 @@ ContextMenuListener, IZoomableEditor
     		}
     	} 
     }
-
-    private void onChanging(InputEvent event) {
-		String v = event.getValue();
-		if (!Util.isEmpty(v)) {
-			v = v.toLowerCase();
-			int count = getComponent().getItemCount();
-			for(int i = 0; i < count; i++) {
-				Comboitem item = getComponent().getItemAtIndex(i);
-				if(item.getLabel() != null && item.getLabel().toLowerCase().startsWith(v)) {
-					Clients.scrollIntoView(item);
-					break;
-				}
-			}
-		} else if (getComponent().getItemCount() > 0) {
-			Comboitem item = getComponent().getItemAtIndex(0);
-			Clients.scrollIntoView(item);
-		}
-	}
 
 	private boolean isValueChange(Object newValue) {
 		return (oldValue == null && newValue != null) || (oldValue != null && newValue == null) 
@@ -675,7 +654,7 @@ ContextMenuListener, IZoomableEditor
 		{
 			if (value instanceof Integer)
 				Record_ID = ((Integer)value).intValue();
-			else if (value != null && "".compareTo(value.toString())!= 0)
+			else if (!Util.isEmpty(value.toString(),true))
 				Record_ID = Integer.parseInt(value.toString());
 		}
 
@@ -826,8 +805,7 @@ ContextMenuListener, IZoomableEditor
 		private WTableDirEditor editor;
 		private DesktopCleanup listener = null;
 
-		protected EditorCombobox() {
-			
+		protected EditorCombobox() {			
 		}
 		
 		@Override
@@ -885,7 +863,6 @@ ContextMenuListener, IZoomableEditor
 		private DesktopCleanup listener = null;
 
 		protected EditorAutoComplete() {
-			
 		}
 		
 		@Override
@@ -937,7 +914,7 @@ ContextMenuListener, IZoomableEditor
 		public void setValue(String value) 
 		{
 			setText(value);
-			if (Util.isEmpty(value)) {
+			if (Util.isEmpty(value,true)) {
 				refresh("");
 			}
 		}

@@ -149,8 +149,6 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);	// N
-		//	setName (null);
-		//	setC_TaxCategory_ID (0);
 		}
 	}	//	MCharge
 

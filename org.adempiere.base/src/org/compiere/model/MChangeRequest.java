@@ -46,7 +46,6 @@ public class MChangeRequest extends X_M_ChangeRequest
 		super (ctx, M_ChangeRequest_ID, trxName);
 		if (M_ChangeRequest_ID == 0)
 		{
-		//	setName (null);
 			setIsApproved(false);
 			setProcessed(false);
 		}
@@ -87,7 +86,6 @@ public class MChangeRequest extends X_M_ChangeRequest
 	 */
 	public MRequest[] getRequests()
 	{
-//		String sql = "SELECT * FROM R_Request WHERE M_ChangeRequest_ID=?";
 		return null;
 	}	//	getRequests
 	

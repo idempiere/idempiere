@@ -20,11 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -45,19 +49,23 @@ public class ColumnSync extends SvrProcess
 	/** The Column				*/
 	private int			p_AD_Column_ID = 0;
 
+	/* Date From */
+	private Timestamp p_DateFrom = null;
+
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
-	protected void prepare()
-	{
-		ProcessInfoParameter[] para = getParameter();
-		for (int i = 0; i < para.length; i++)
-		{
-			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;			
-			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+	@Override
+	protected void prepare() {
+		for (ProcessInfoParameter para : getParameter()) {
+			String name = para.getParameterName();
+			switch (name) {
+			case "DateFrom": p_DateFrom = para.getParameterAsTimestamp(); break;
+			default:
+				if (log.isLoggable(Level.INFO))
+					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				break;
+			}
 		}
 		p_AD_Column_ID = getRecord_ID();
 	}	//	prepare
@@ -72,13 +80,33 @@ public class ColumnSync extends SvrProcess
 		if (log.isLoggable(Level.INFO)) log.info("C_Column_ID=" + p_AD_Column_ID);
 		if (p_AD_Column_ID == 0)
 			throw new AdempiereUserError("@No@ @AD_Column_ID@");
-		MColumn column = new MColumn (getCtx(), p_AD_Column_ID, get_TrxName());
-		if (column.get_ID() == 0)
+
+		MColumn columnCalled = new MColumn (getCtx(), p_AD_Column_ID, get_TrxName());
+		if (columnCalled.get_ID() == 0)
 			throw new AdempiereUserError("@NotFound@ @AD_Column_ID@ " + p_AD_Column_ID);
-		
-		MTable table = new MTable(getCtx(), column.getAD_Table_ID(), get_TrxName());
+
+		MTable table = new MTable(getCtx(), columnCalled.getAD_Table_ID(), get_TrxName());
 		if (table.get_ID() == 0)
-			throw new AdempiereUserError("@NotFound@ @AD_Table_ID@ " + column.getAD_Table_ID());
+			throw new AdempiereUserError("@NotFound@ @AD_Table_ID@ " + columnCalled.getAD_Table_ID());
+
+		String whereClause;
+		List<Object> params = new ArrayList<Object>();
+		if (p_DateFrom == null) {
+			whereClause = "AD_Column_ID=?";
+			params.add(p_AD_Column_ID);
+		} else {
+			whereClause = "(AD_Column_ID=? OR (AD_Table_ID=? AND Updated>?))";
+			params.add(p_AD_Column_ID);
+			params.add(table.getAD_Table_ID());
+			params.add(p_DateFrom);
+		}
+
+		StringBuilder allSql = new StringBuilder();
+		List<MColumn> columns = new Query(getCtx(), MColumn.Table_Name, whereClause, get_TrxName())
+				.setParameters(params)
+				.list();
+
+	  for (MColumn column : columns) {
 		
 		//	Find Column in Database
 		Connection conn = null;
@@ -182,7 +210,10 @@ public class ColumnSync extends SvrProcess
 				msg.append(sql);
 				throw new AdempiereUserError (msg.toString());
 			}
-			return sql;
+			allSql.append(sql);
+			if (isNoTable)
+				break;
+			commitEx();
 		} finally {
 			DB.close(rs);
 			rs = null;
@@ -192,6 +223,8 @@ public class ColumnSync extends SvrProcess
 				} catch (Exception e) {}
 			}
 		}
+	  }
+	  return allSql.toString();
 	}	//	doIt
 	
 }	//	ColumnSync

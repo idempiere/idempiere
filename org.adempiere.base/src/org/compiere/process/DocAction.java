@@ -90,7 +90,37 @@ public interface DocAction
 
 	/** DocAction Ref_List values **/
 	public static final int AD_REFERENCE_ID = SystemIDs.REFERENCE_DOCUMENTACTION;
-	
+
+	/* Common Document columns */
+	/** Column name DocAction */
+	public static final String DOC_COLUMNNAME_DocAction = "DocAction";
+	/** Column name DocStatus */
+	public static final String DOC_COLUMNNAME_DocStatus = "DocStatus";
+	/** Column name Processing */
+	public static final String DOC_COLUMNNAME_Processing = "Processing";
+	/** Column name C_DocTypeTarget_ID */
+	public static final String DOC_COLUMNNAME_C_DocTypeTarget_ID = "C_DocTypeTarget_ID";
+	/** Column name C_DocType_ID */
+	public static final String DOC_COLUMNNAME_C_DocType_ID = "C_DocType_ID";
+	/** Column name DateAcct */
+	public static final String DOC_COLUMNNAME_DateAcct = "DateAcct";
+	/** Column name DateTrx */
+	public static final String DOC_COLUMNNAME_DateTrx = "DateTrx";
+	/** Column name IsApproved */
+	public static final String DOC_COLUMNNAME_IsApproved = "IsApproved";
+	/** Column name Processed */
+	public static final String DOC_COLUMNNAME_Processed = "Processed";
+	/** Column name DocumentNo */
+	public static final String DOC_COLUMNNAME_DocumentNo = "DocumentNo";
+	/** Column name Description */
+	public static final String DOC_COLUMNNAME_Description = "Description";
+	/** Column name SalesRep_ID */
+	public static final String DOC_COLUMNNAME_SalesRep_ID = "SalesRep_ID";
+	/** Column name AD_User_ID */
+	public static final String DOC_COLUMNNAME_AD_User_ID = "AD_User_ID";
+	/** Column name C_Currency_ID */
+	public static final String DOC_COLUMNNAME_C_Currency_ID = "C_Currency_ID";
+
 	/**
 	 * 	Set Doc Status
 	 *	@param newStatus new Status

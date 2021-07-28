@@ -111,8 +111,6 @@ public class MPaymentValidate
 	{
 		if (mm < 1 || mm > 12)
 			return "CreditCardExpMonth";
-	//	if (yy < 0 || yy > EXP_YEAR)
-	//		return "CreditCardExpYear";
 
 		//  Today's date
 		Calendar cal = Calendar.getInstance();
