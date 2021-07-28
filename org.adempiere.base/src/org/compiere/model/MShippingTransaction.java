@@ -320,37 +320,6 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		
 		PartyInfo partyInfo = null;
 		
-/*		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT CompanyName, ContactName, PhoneNumber, EMail, C_Location_ID ");
-		sql.append("FROM M_ShippingSenderInfo_V ");
-		sql.append("WHERE M_ShippingTransaction_ID = ?");
-		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString(), null);
-			pstmt.setInt(1, getM_ShippingTransaction_ID());
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-			{
-				partyInfo = new PartyInfo();
-				partyInfo.setCompanyName(rs.getString("CompanyName"));
-				partyInfo.setContactName(rs.getString("ContactName"));
-				partyInfo.setPhoneNumber(rs.getString("PhoneNumber"));
-				partyInfo.setEmail(rs.getString("EMail"));
-				partyInfo.setLocationId(rs.getInt("C_Location_ID"));
-			}
- 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-*/		
 		if (partyInfo == null)
 		{
 			MOrg sender = new MOrg(getCtx(), getAD_Org_ID(), get_TrxName());
@@ -376,38 +345,6 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			return recipientInfo;
 
 		PartyInfo partyInfo = null;
-		
-/*		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT CompanyName, ContactName, PhoneNumber, EMail, C_Location_ID ");
-		sql.append("FROM M_ShippingRecipientInfo_V ");
-		sql.append("WHERE M_ShippingTransaction_ID = ?");
-		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString(), null);
-			pstmt.setInt(1, getM_ShippingTransaction_ID());
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-			{
-				partyInfo = new PartyInfo();
-				partyInfo.setCompanyName(rs.getString("CompanyName"));
-				partyInfo.setContactName(rs.getString("ContactName"));
-				partyInfo.setPhoneNumber(rs.getString("PhoneNumber"));
-				partyInfo.setEmail(rs.getString("EMail"));
-				partyInfo.setLocationId(rs.getInt("C_Location_ID"));
-			}
- 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-*/		
 		if (partyInfo == null)
 		{
 			MBPartner recipient = new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());

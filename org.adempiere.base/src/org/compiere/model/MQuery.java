@@ -79,7 +79,6 @@ public class MQuery implements Serializable, Cloneable
 		if (rows < 1)
 			return reportQuery;
 
-		//	Msg.getMsg(Env.getCtx(), "Parameter")
 		boolean trl = !Env.isBaseLanguage(ctx, "AD_Process_Para");
 		if (!trl)
 			SQL = "SELECT ip.ParameterName,ip.P_String,ip.P_String_To,"			//	1..3

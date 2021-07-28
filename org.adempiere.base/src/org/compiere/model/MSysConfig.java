@@ -223,11 +223,6 @@ public class MSysConfig extends X_AD_SysConfig
 	public MSysConfig (Properties ctx, int AD_SysConfig_ID, String trxName)
 	{
 		super (ctx, AD_SysConfig_ID, trxName);
-		if (AD_SysConfig_ID == 0)
-		{
-		//	setName (null);
-		//  setValue (null);
-		}	
 	}	//	MSysConfig
 
 	/**
