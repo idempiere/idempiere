@@ -82,6 +82,7 @@ public class MAttachmentEntry
 	public MAttachmentEntry(MAttachmentEntry copy)
 	{
 		this.m_isDataSet = copy.m_isDataSet;
+		this.m_ds = copy.m_ds;
 		this.m_data = copy.m_data != null ? Arrays.copyOf(copy.m_data, copy.m_data.length) : null;
 		this.m_index = copy.m_index;
 		this.m_name = copy.m_name;
