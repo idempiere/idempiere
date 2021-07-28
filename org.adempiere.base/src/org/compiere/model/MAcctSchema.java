@@ -179,6 +179,22 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			s_schema.put(key, Arrays.stream(retValue).map(e -> {return new MAcctSchema(Env.getCtx(), e).markImmutable();}).toArray(MAcctSchema[]::new));
 		return retValue;
 	}   //  getClientAcctSchema
+	
+	public static MAcctSchema getSchemaByOrg(Properties ctx, int AD_Client_ID, int AD_Org_ID, String trxName)
+	{
+		MAcctSchema[] list=getClientAcctSchema ( ctx,  AD_Client_ID,  trxName);
+		MAcctSchema general_schema = null;
+		 
+		for (MAcctSchema schema: list)
+		{
+			if (schema.getAD_OrgOnly_ID()==AD_Org_ID)
+				return schema;
+			if (schema.getAD_OrgOnly_ID()==0)
+				general_schema=schema;
+		}
+		 
+		return general_schema;
+	}
 
 	/** Cache of Client AcctSchema Arrays		**/
 	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 120, false);	//  3 clients
