@@ -222,7 +222,7 @@ public class WPrintFormatEditor implements ValueChangeListener {
 		float x = 0;
 		float y = 0;
 
-		if (!(m_printFormat.isForm() && !m_printFormat.isStandardHeaderFooter())) {
+		if (!(m_printFormat.isForm() && !(m_printFormat.isStandardHeaderFooter() || m_printFormat.getAD_PrintHeaderFooter_ID() > 0))) {
 			pArea[AREA_CONTENT] = new PrintAreaBean(AREA_CONTENT, x, y);
 		} else {
 
@@ -609,7 +609,7 @@ public class WPrintFormatEditor implements ValueChangeListener {
 			fieldPosMap.put(pfItem, pos);			
 		}
 		
-		if (m_printFormat.isStandardHeaderFooter()) {
+		if (!m_printFormat.isStandardHeaderFooter() && m_printFormat.getAD_PrintHeaderFooter_ID() == 0) {
 			Absolutechildren line = new Absolutechildren();
 			ZKUpdateUtil.setHeight(line, "0px");
 			line.setId("headerMargin");
@@ -1170,7 +1170,7 @@ public class WPrintFormatEditor implements ValueChangeListener {
 					PrintFormatEditorUtil.setY(pfItem, diffY);
 				}
 				
-				if (m_printFormat.isStandardHeaderFooter()) {
+				if (m_printFormat.isStandardHeaderFooter() || m_printFormat.getAD_PrintHeaderFooter_ID() > 0) {
 					if (!pfItem.isRelativePosition())
 						PrintFormatEditorUtil.setY(pfItem, ptY - topRef);					
 					pfItem.setPrintAreaType(X_AD_PrintFormatItem.PRINTAREATYPE_Content);
