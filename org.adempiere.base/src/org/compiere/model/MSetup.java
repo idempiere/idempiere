@@ -87,7 +87,6 @@ public final class MSetup
 	private StringBuffer    m_info;
 	//
 	private String          m_clientName;
-//	private String          m_orgName;
 	//
 	private String          m_stdColumns = "AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy";
 	private String          m_stdValues;
@@ -1285,10 +1284,6 @@ public final class MSetup
 		sqlCmd = new StringBuilder ("UPDATE AD_ClientInfo SET ");
 		sqlCmd.append("C_BPartnerCashTrx_ID=").append(bp.getC_BPartner_ID());
 		sqlCmd.append(",M_ProductFreight_ID=").append(product.getM_Product_ID());
-//		sqlCmd.append("C_UOM_Volume_ID=");
-//		sqlCmd.append(",C_UOM_Weight_ID=");
-//		sqlCmd.append(",C_UOM_Length_ID=");
-//		sqlCmd.append(",C_UOM_Time_ID=");
 		sqlCmd.append(" WHERE AD_Client_ID=").append(getAD_Client_ID());
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)

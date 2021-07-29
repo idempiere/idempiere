@@ -49,13 +49,6 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 		super (ctx, C_RevenueRecognition_Plan_ID, trxName);
 		if (C_RevenueRecognition_Plan_ID == 0)
 		{
-		//	setC_AcctSchema_ID (0);
-		//	setC_Currency_ID (0);
-		//	setC_InvoiceLine_ID (0);
-		//	setC_RevenueRecognition_ID (0);
-		//	setC_RevenueRecognition_Plan_ID (0);
-		//	setP_Revenue_Acct (0);
-		//	setUnEarnedRevenue_Acct (0);
 			setTotalAmt (Env.ZERO);
 			setRecognizedAmt (Env.ZERO);
 		}	

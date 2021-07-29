@@ -126,7 +126,6 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		super (ctx, M_RequisitionLine_ID, trxName);
 		if (M_RequisitionLine_ID == 0)
 		{
-		//	setM_Requisition_ID (0);
 			setLine (0);	// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM M_RequisitionLine WHERE M_Requisition_ID=@M_Requisition_ID@
 			setLineNetAmt (Env.ZERO);
 			setPriceActual (Env.ZERO);
@@ -237,7 +236,6 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		IProductPricing pp = Core.getProductPricing();
 		pp.setRequisitionLine(this, get_TrxName());
 		pp.setM_PriceList_ID(M_PriceList_ID);
-	//	pp.setPriceDate(getDateOrdered());
 		//
 		setPriceActual (pp.getPriceStd());
 	}	//	setPrice

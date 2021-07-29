@@ -265,8 +265,6 @@ public class MSequence extends X_AD_Sequence
 			Thread.yield();		//	give it time
 		}
 
-
-		//if (s_log.isLoggable(Level.FINEST)) s_log.finest (retValue + " - Table=" + TableName + " [" + trx + "]");
 		return retValue;
 	}	//	getNextID
 
@@ -437,8 +435,7 @@ public class MSequence extends X_AD_Sequence
 				pstmt.setQueryTimeout(QUERY_TIME_OUT);
 			}
 			rs = pstmt.executeQuery();
-			//	s_log.fine("AC=" + conn.getAutoCommit() + " -Iso=" + conn.getTransactionIsolation()
-			//		+ " - Type=" + pstmt.getResultSetType() + " - Concur=" + pstmt.getResultSetConcurrency());
+
 			if (rs.next())
 			{
 				if (s_log.isLoggable(Level.FINE)) s_log.fine("AD_Sequence_ID="+AD_Sequence_ID);
@@ -812,8 +809,6 @@ public class MSequence extends X_AD_Sequence
 	/**	Start Number			*/
 	public static final int		INIT_NO = 1000000;	//	1M
 	/**	Start System Number		*/
-	// public static final int		INIT_SYS_NO = 100; // start number for Compiere
-	// public static final int		INIT_SYS_NO = 50000;   // start number for Adempiere
 	public static final int		INIT_SYS_NO = 200000;   // start number for iDempiere
 	/** Static Logger			*/
 	private static CLogger 		s_log = CLogger.getCLogger(MSequence.class);
@@ -830,8 +825,6 @@ public class MSequence extends X_AD_Sequence
 		super(ctx, AD_Sequence_ID, trxName);
 		if (AD_Sequence_ID == 0)
 		{
-		//	setName (null);
-			//
 			setIsTableID(false);
 			setStartNo (INIT_NO);
 			setCurrentNext (INIT_NO);
@@ -1003,34 +996,10 @@ public class MSequence extends X_AD_Sequence
 	 */
 	static public void main (String[] args)
 	{
-		// int id = getNextID_HTTP("AD_Column");
-		// if (true) return;
-
 		org.compiere.Adempiere.startup(true);
 		CLogMgt.setLevel(Level.SEVERE);
 		CLogMgt.setLoggerLevel(Level.SEVERE, null);
 		s_list = new Vector<Integer>(1000);
-
-		/**	Lock Test **
-		String trxName = "test";
-		System.out.println(DB.getDocumentNo(115, trxName));
-		System.out.println(DB.getDocumentNo(116, trxName));
-		System.out.println(DB.getDocumentNo(117, trxName));
-		System.out.println(DB.getDocumentNo(118, trxName));
-		System.out.println(DB.getDocumentNo(118, trxName));
-		System.out.println(DB.getDocumentNo(117, trxName));
-
-		trxName = "test1";
-		System.out.println(DB.getDocumentNo(115, trxName));	//	hangs here as supposed
-		System.out.println(DB.getDocumentNo(116, trxName));
-		System.out.println(DB.getDocumentNo(117, trxName));
-		System.out.println(DB.getDocumentNo(118, trxName));
-
-
-
-
-
-		/** **/
 
 		/** Time Test	*/
 		long time = System.currentTimeMillis();
@@ -1066,7 +1035,6 @@ public class MSequence extends X_AD_Sequence
 			{
 				if (last.compareTo(ia[i]) == 0)
 				{
-				//	System.out.println(i + ": " + ia[i]);
 					duplicates++;
 				}
 			}
@@ -1077,113 +1045,6 @@ public class MSequence extends X_AD_Sequence
 		System.out.println("Duplicates=" + duplicates);
 		System.out.println("Time (ms)=" + time + " - " + ((float)time/s_list.size()) + " each" );
 		System.out.println("-------------------------------------------");
-
-
-
-		/** **
-		try
-		{
-			int retValue = -1;
-			Connection conn = DB.getConnectionRW ();
-		//	DriverManager.registerDriver (new oracle.jdbc.driver.OracleDriver());
-		//	Connection conn = DriverManager.getConnection ("jdbc:oracle:thin:@//dev2:1521/dev2", "adempiere", "adempiere");
-
-			conn.setAutoCommit(false);
-			String sql = "SELECT CurrentNext, CurrentNextSys, IncrementNo "
-				+ "FROM AD_Sequence "
-				+ "WHERE Name='AD_Sequence' ";
-			sql += "FOR UPDATE";
-			//	creates ORA-00907: missing right parenthesis
-		//	sql += "FOR UPDATE OF CurrentNext, CurrentNextSys";
-
-
-			PreparedStatement pstmt = conn.prepareStatement(sql,
-				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-			ResultSet rs = pstmt.executeQuery();
-			System.out.println("AC=" + conn.getAutoCommit() + ", RO=" + conn.isReadOnly()
-				+ " - Isolation=" + conn.getTransactionIsolation() + "(" + Connection.TRANSACTION_READ_COMMITTED
-				+ ") - RSType=" + pstmt.getResultSetType() + "(" + ResultSet.TYPE_SCROLL_SENSITIVE
-				+ "), RSConcur=" + pstmt.getResultSetConcurrency() + "(" + ResultSet.CONCUR_UPDATABLE
-				+ ")");
-
-			if (rs.next())
-			{
-				int IncrementNo = rs.getInt(3);
-				retValue = rs.getInt(1);
-				rs.updateInt(1, retValue + IncrementNo);
-				rs.updateRow();
-			}
-			else
-				s_log.severe ("no record found");
-			rs.close();
-			pstmt.close();
-			conn.commit();
-			conn.close();
-			//
-			System.out.println("Next=" + retValue);
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace ();
-		}
-
-		System.exit(0);
-
-		/** **
-
-		int AD_Client_ID = 0;
-		int C_DocType_ID = 115;	//	GL
-		String TableName = "C_Invoice";
-		String trxName = "x";
-		Trx trx = Trx.get(trxName, true);
-
-		System.out.println ("none " + getNextID (0, "Test"));
-		System.out.println ("----------------------------------------------");
-		System.out.println ("trx1 " + getNextID (0, "Test"));
-		System.out.println ("trx2 " + getNextID (0, "Test"));
-	//	trx.rollback();
-		System.out.println ("trx3 " + getNextID (0, "Test"));
-	//	trx.commit();
-		System.out.println ("trx4 " + getNextID (0, "Test"));
-	//	trx.rollback();
-	//	trx.close();
-		System.out.println ("----------------------------------------------");
-		System.out.println ("none " + getNextID (0, "Test"));
-		System.out.println ("==============================================");
-
-
-		trx = Trx.get(trxName, true);
-		System.out.println ("none " + getDocumentNo(AD_Client_ID, TableName, null));
-		System.out.println ("----------------------------------------------");
-		System.out.println ("trx1 " + getDocumentNo(AD_Client_ID, TableName, trxName));
-		System.out.println ("trx2 " + getDocumentNo(AD_Client_ID, TableName, trxName));
-		trx.rollback();
-		System.out.println ("trx3 " + getDocumentNo(AD_Client_ID, TableName, trxName));
-		trx.commit();
-		System.out.println ("trx4 " + getDocumentNo(AD_Client_ID, TableName, trxName));
-		trx.rollback();
-		trx.close();
-		System.out.println ("----------------------------------------------");
-		System.out.println ("none " + getDocumentNo(AD_Client_ID, TableName, null));
-		System.out.println ("==============================================");
-
-
-		trx = Trx.get(trxName, true);
-		System.out.println ("none " + getDocumentNo(C_DocType_ID, null));
-		System.out.println ("----------------------------------------------");
-		System.out.println ("trx1 " + getDocumentNo(C_DocType_ID, trxName));
-		System.out.println ("trx2 " + getDocumentNo(C_DocType_ID, trxName));
-		trx.rollback();
-		System.out.println ("trx3 " + getDocumentNo(C_DocType_ID, trxName));
-		trx.commit();
-		System.out.println ("trx4 " + getDocumentNo(C_DocType_ID, trxName));
-		trx.rollback();
-		trx.close();
-		System.out.println ("----------------------------------------------");
-		System.out.println ("none " + getDocumentNo(C_DocType_ID, null));
-		System.out.println ("==============================================");
-		/** **/
 	}	//	main
 
 	/** Test		*/
@@ -1219,7 +1080,6 @@ public class MSequence extends X_AD_Sequence
 				{
 					int no = DB.getNextID(0, "Test", null);
 					s_list.add(Integer.valueOf(no));
-				//	System.out.println("#" + m_i + ": " + no);
 				}
 				catch (Exception e)
 				{
