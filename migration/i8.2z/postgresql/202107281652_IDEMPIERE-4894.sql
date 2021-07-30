@@ -6,10 +6,6 @@ INSERT INTO AD_Table (AccessLevel,AD_Client_ID,AD_Org_ID,AD_Table_ID,AD_Table_UU
 INSERT INTO AD_Sequence (AD_Client_ID,AD_Org_ID,AD_Sequence_ID,AD_Sequence_UU,Created,CreatedBy,CurrentNext,CurrentNextSys,Description,IncrementNo,IsActive,IsAudited,IsAutoSequence,IsTableID,Name,StartNewYear,StartNo,Updated,UpdatedBy) VALUES (0,0,200304,'55b3e131-60d2-46fa-9665-ba039f2f37ee',TO_TIMESTAMP('2021-07-28 17:00:10','YYYY-MM-DD HH24:MI:SS'),100,1000000,200000,'Table AD_PrintHeaderFooter',1,'Y','N','Y','Y','AD_PrintHeaderFooter','N',1000000,TO_TIMESTAMP('2021-07-28 17:00:10','YYYY-MM-DD HH24:MI:SS'),100)
 ;
 
--- July 28, 2021 5:00:11 PM SGT
-CREATE SEQUENCE AD_PRINTHEADERFOOTER_SQ INCREMENT 1 MINVALUE 1000000 MAXVALUE 2147483647 START 1000000
-;
-
 -- July 28, 2021 5:00:32 PM SGT
 INSERT INTO AD_TreeNode (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, AD_Tree_ID, Node_ID, Parent_ID, SeqNo, AD_TreeNode_UU) SELECT t.AD_Client_ID, 0, 'Y', statement_timestamp(), 100, statement_timestamp(), 100,t.AD_Tree_ID, 200003, 0, 999, Generate_UUID() FROM AD_Tree t WHERE t.AD_Client_ID=0 AND t.IsActive='Y' AND t.IsAllNodes='Y' AND t.TreeType='TL' AND t.AD_Table_ID=282 AND NOT EXISTS (SELECT * FROM AD_TreeNode e WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=200003)
 ;
