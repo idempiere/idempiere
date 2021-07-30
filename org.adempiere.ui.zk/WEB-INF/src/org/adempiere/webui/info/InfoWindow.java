@@ -261,6 +261,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 			
 			renderWindow();
+			prepareTable();
+			contentPanel.repaint();
 			
 			if (queryValue != null && queryValue.trim().length() > 0)
 			{
@@ -1368,6 +1370,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void renderFooter(South south) {		
 		southBody = new Vbox();
 		ZKUpdateUtil.setHflex(southBody, "1");
+		southBody.setClass("info");
 		south.appendChild(southBody);
 		southBody.appendChild(new Separator());
 		southBody.appendChild(confirmPanel);
@@ -1897,10 +1900,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		if (paging != null)
 			paging.setParent(null);
-		
 		layout.invalidate();
-		
-		contentPanel.getListHead().detach();
 	}
 	
 	@Override

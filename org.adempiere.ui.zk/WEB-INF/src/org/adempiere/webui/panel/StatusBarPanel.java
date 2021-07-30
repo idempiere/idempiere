@@ -37,10 +37,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Cell;
+import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.East;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.West;
+import org.zkoss.zul.Borderlayout;
 
 /**
  * This class is based on org.compiere.apps.StatusBar written by Jorg Janke.
@@ -75,8 +77,6 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 
 	private Div east;
 
-	private Div west;
-
 	private Div popup;
 
 	private Div popupContent;
@@ -93,52 +93,48 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
     	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "statusBar");
         statusDB = new Label("  ");
         statusLine = new Label();
-
-        Hbox hbox = new Hbox();
-        ZKUpdateUtil.setWidth(hbox, "100%");
-        ZKUpdateUtil.setHeight(hbox, "100%");
-        ZKUpdateUtil.setHflex(hbox, "1");
-        Cell leftCell = new Cell();
-        hbox.appendChild(leftCell);
-        Cell rightCell = new Cell();
-        hbox.appendChild(rightCell);
-        
-        ZKUpdateUtil.setWidth(leftCell, "50%");
-        ZKUpdateUtil.setWidth(rightCell, "50%");
-        
-        west = new Div();
-        west.setStyle("text-align: left; ");
         selectedLine = new Label();
-        west.appendChild(selectedLine);
         selectedLine.setVisible(false);
-        LayoutUtils.addSclass("status-selected", selectedLine);
-        
-        west.appendChild(statusLine);
-        Vbox vbox = new Vbox();
-        vbox.setPack("center");
-        LayoutUtils.addSclass("status", vbox);
-        vbox.appendChild(west);
-        leftCell.appendChild(vbox);
-
-        east = new Div();
-        ZKUpdateUtil.setWidth(east, "100%");
-        east.setStyle("text-align: right; ");
-        
         infoLine = new Label();
-    	east.appendChild(infoLine);
-    	infoLine.setVisible(false);
-        east.appendChild(statusDB);
+        infoLine.setVisible(false);
+
+        Borderlayout statusBar = new Borderlayout();
+        statusBar.setClass("statusBar");
+        ZKUpdateUtil.setWidth(statusBar, "100%");
+        ZKUpdateUtil.setHeight(statusBar, "24px");
+
+        West west = new West();
+        statusBar.appendChild(west);
+
+        Center center = new Center();
+        statusBar.appendChild(center);
+
+        East east = new East();
+        statusBar.appendChild(east);
+
+        Hbox selectedLineHbox = new Hbox();
+        selectedLineHbox.appendChild(selectedLine);
+        LayoutUtils.addSclass("status-selected", selectedLine);
+        selectedLine.setVisible(false);
+        west.appendChild(selectedLineHbox);
+        statusBar.appendChild(west);
+
+        Hbox statusLineHbox = new Hbox();
+        statusLineHbox.appendChild(statusLine);
+        center.appendChild(statusLineHbox);
+        statusBar.appendChild(center);
+
+        Hbox statusDbHbox = new Hbox();
+        statusDbHbox.appendChild(infoLine);
+        LayoutUtils.addSclass("status-info", infoLine);
+        statusDbHbox.appendChild(statusDB);
 
         LayoutUtils.addSclass("status-db", statusDB);
-        LayoutUtils.addSclass("status-info", infoLine);
-        vbox = new Vbox();
-        vbox.setAlign("stretch");
-        vbox.setPack("center");
-        LayoutUtils.addSclass("status", vbox);
-        vbox.appendChild(east);
-        rightCell.appendChild(vbox);
+        east.appendChild(statusDbHbox);
+        east.setStyle("text-align: left; ");
+        statusBar.appendChild(east);
 
-        this.appendChild(hbox);
+        this.appendChild(statusBar);
 
         statusDB.addEventListener(Events.ON_CLICK, this);
 
