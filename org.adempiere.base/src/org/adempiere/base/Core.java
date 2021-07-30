@@ -38,6 +38,7 @@ import org.adempiere.model.MShipperFacade;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.Callout;
+import org.compiere.model.I_AD_PrintHeaderFooter;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MBankAccountProcessor;
@@ -53,6 +54,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
+import org.compiere.util.Util;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.distributed.IMessageService;
@@ -60,6 +62,7 @@ import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
+import org.idempiere.print.IPrintHeaderFooter;
 import org.idempiere.process.IMappedProcessFactory;
 
 /**
@@ -96,6 +99,8 @@ public class Core {
 	public static final String ISHIPMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IShipmentProcessorFactory_Cache";
 
 	public static final String IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IPaymentProcessorFactory_Cache";
+	
+	public static final String IPRINT_HEADER_FOOTER_CACHE_TABLE_NAME = "_IIPrintHeaderFooterCache";
 
 	private final static CLogger s_log = CLogger.getCLogger(Core.class);
 
@@ -1002,6 +1007,42 @@ public class Core {
 		IServiceHolder<IUploadService> holder = Service.locator().locate(IUploadService.class, query);
 		if (holder != null) {
 			return holder.getService();
+		}
+		
+		return null;
+	}
+	
+	private final static CCache<String, IServiceReferenceHolder<IPrintHeaderFooter>> s_printHeaderFooterCache = new CCache<>(IPRINT_HEADER_FOOTER_CACHE_TABLE_NAME, "IPrintHeaderFooterFactory", 100, false);
+	
+	/**
+	 * Get print header/footer instance
+	 * @param print header/footer
+	 * @return print header/footer instance or null if not found
+	 */
+	public static IPrintHeaderFooter getPrintHeaderFooter(I_AD_PrintHeaderFooter printHeaderFooter) {
+		String componentName = printHeaderFooter.getSourceClassName();
+		if (Util.isEmpty(componentName, true)) {
+			s_log.log(Level.SEVERE, "Print Header/Footer source class not defined: " + printHeaderFooter);
+			return null;
+		}
+		
+		IServiceReferenceHolder<IPrintHeaderFooter> cache = s_printHeaderFooterCache.get(componentName);
+		if (cache != null) {
+			IPrintHeaderFooter service = cache.getService();
+			if (service != null) {
+				return service;
+			}
+			s_printHeaderFooterCache.remove(componentName);
+		}
+		
+		IServiceReferenceHolder<IPrintHeaderFooter> serviceReference = Service.locator()
+				.locate(IPrintHeaderFooter.class, componentName, null).getServiceReference();
+		if (serviceReference == null) 
+			return null;
+		IPrintHeaderFooter service = serviceReference.getService();
+		if (service != null) {
+			s_printHeaderFooterCache.put(componentName, serviceReference);
+			return service;
 		}
 		
 		return null;

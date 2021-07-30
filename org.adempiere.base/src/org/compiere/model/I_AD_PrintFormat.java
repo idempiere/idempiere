@@ -114,6 +114,17 @@ public interface I_AD_PrintFormat
 	/** Get AD_PrintFormat_UU	  */
 	public String getAD_PrintFormat_UU();
 
+    /** Column name AD_PrintHeaderFooter_ID */
+    public static final String COLUMNNAME_AD_PrintHeaderFooter_ID = "AD_PrintHeaderFooter_ID";
+
+	/** Set Print Header/Footer	  */
+	public void setAD_PrintHeaderFooter_ID (int AD_PrintHeaderFooter_ID);
+
+	/** Get Print Header/Footer	  */
+	public int getAD_PrintHeaderFooter_ID();
+
+	public org.compiere.model.I_AD_PrintHeaderFooter getAD_PrintHeaderFooter() throws RuntimeException;
+
     /** Column name AD_PrintPaper_ID */
     public static final String COLUMNNAME_AD_PrintPaper_ID = "AD_PrintPaper_ID";
 
@@ -188,28 +199,6 @@ public interface I_AD_PrintFormat
 	public int getAD_Window_ID();
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
-
-    /** Column name Args */
-    public static final String COLUMNNAME_Args = "Args";
-
-	/** Set Args	  */
-	public void setArgs (String Args);
-
-	/** Get Args	  */
-	public String getArgs();
-
-    /** Column name Classname */
-    public static final String COLUMNNAME_Classname = "Classname";
-
-	/** Set Classname.
-	  * Java Classname
-	  */
-	public void setClassname (String Classname);
-
-	/** Get Classname.
-	  * Java Classname
-	  */
-	public String getClassname();
 
     /** Column name CreateCopy */
     public static final String COLUMNNAME_CreateCopy = "CreateCopy";
