@@ -413,6 +413,11 @@ public class MWFProcess extends X_AD_WF_Process
 
 			queryMWFActivity.setParameters(params);
 			List<MWFActivity> parentActivitys = queryMWFActivity.list();
+
+			if (parentActivitys.isEmpty()) {
+				return false;
+			}
+
 			for (MWFActivity parentActivity : parentActivitys) {
 				totalActivities++;
 				if(!parentActivity.isProcessed())
