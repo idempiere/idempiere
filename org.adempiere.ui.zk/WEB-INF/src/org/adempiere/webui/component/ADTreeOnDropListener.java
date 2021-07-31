@@ -18,6 +18,8 @@ import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
+import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -147,6 +149,9 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		
 		//  insert
 		newParent = treeModel.addNode(newParent, movingNode, index);
+
+		MTreeNode mtnMovingNode = (MTreeNode) movingNode.getData();
+
 		
 		int path[] = treeModel.getPath(movingNode);
 		if (TreeUtils.isOnInitRenderPosted(tree) || tree.getTreechildren() == null)
@@ -170,6 +175,9 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			{
 				DefaultTreeNode<?> nd = (DefaultTreeNode<?>)oldParent.getChildAt(i);
 				MTreeNode md = (MTreeNode) nd.getData();
+				if (md.getNode_ID() == mtnMovingNode.getNode_ID()) {
+					updateMovingNodePO(oldMParent, mtnMovingNode, i, trx.getTrxName());
+				}
 				StringBuilder sql = new StringBuilder("UPDATE ");
 				sql.append(mTree.getNodeTableName())
 					.append(" SET Parent_ID=").append(oldMParent.getNode_ID())
@@ -187,6 +195,9 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 				{
 					DefaultTreeNode<?> nd = (DefaultTreeNode<?>)newParent.getChildAt(i);
 					MTreeNode md = (MTreeNode) nd.getData();
+					if (md.getNode_ID() == mtnMovingNode.getNode_ID()) {
+						updateMovingNodePO(newMParent, mtnMovingNode, i, trx.getTrxName());
+					}
 					StringBuilder sql = new StringBuilder("UPDATE ");
 					sql.append(mTree.getNodeTableName())
 						.append(" SET Parent_ID=").append(newMParent.getNode_ID())
@@ -211,6 +222,15 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			trx.close();
 			trx = null;
 		}
+	}
+	
+	private void updateMovingNodePO(MTreeNode mtnParentNode, MTreeNode mtnMovingNode, int NodeIndex, String trxName) {
+		StringBuilder whereClause = new StringBuilder("AD_Tree_ID=").append(mTree.getAD_Tree_ID())
+				.append(" AND Node_ID=").append(mtnMovingNode.getNode_ID());
+		PO mnPO = new Query(Env.getCtx(), mTree.getNodeTableName(), whereClause.toString(), trxName).first();
+		mnPO.set_ValueNoCheck("Parent_ID", mtnParentNode.getNode_ID());
+		mnPO.set_ValueNoCheck("SeqNo", NodeIndex);
+		mnPO.save(trxName);
 	}
 	
 	class MenuListener implements EventListener<Event> {
