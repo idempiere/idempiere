@@ -168,6 +168,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 		}		
 
 		tabbox.addEventListener(Events.ON_SELECT, this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 	 */
 	public void onEvent(Event event) throws Exception {
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
-			detach();
+			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
 				m_postIt.setText(textBox.getText());
@@ -199,6 +200,10 @@ public class WPostIt extends Window implements EventListener<Event>{
 				updateStatus(editor.getValue().length());
 			}
 		}		
+	}
+
+	private void onCancel() {
+		detach();
 	}
 
 	private void updateStatus(int newLength) {

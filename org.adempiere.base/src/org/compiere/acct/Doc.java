@@ -346,7 +346,7 @@ public abstract class Doc
 		p_Status = STATUS_Error;
 		m_as = as;
 		m_ctx = new Properties(m_as.getCtx());
-		m_ctx.setProperty("#AD_Client_ID", String.valueOf(m_as.getAD_Client_ID()));
+		m_ctx.setProperty(Env.AD_CLIENT_ID, String.valueOf(m_as.getAD_Client_ID()));
 
 		String className = clazz.getName();
 		className = className.substring(className.lastIndexOf('.')+1);

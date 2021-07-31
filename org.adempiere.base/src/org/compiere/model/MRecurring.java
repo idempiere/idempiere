@@ -42,12 +42,9 @@ public class MRecurring extends X_C_Recurring
 		super (ctx, C_Recurring_ID, trxName);
 		if (C_Recurring_ID == 0)
 		{
-		//	setC_Recurring_ID (0);		//	PK
 			setDateNextRun (new Timestamp(System.currentTimeMillis()));
 			setFrequencyType (FREQUENCYTYPE_Monthly);
 			setFrequency(1);
-		//	setName (null);
-		//	setRecurringType (null);
 			setRunsMax (1);
 			setRunsRemaining (0);
 		}

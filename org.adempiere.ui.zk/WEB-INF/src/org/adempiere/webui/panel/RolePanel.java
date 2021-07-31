@@ -26,8 +26,6 @@ package org.adempiere.webui.panel;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import javax.servlet.http.HttpSession;
-
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
@@ -52,15 +50,12 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
-import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Deferrable;
 import org.zkoss.zk.ui.event.Event;
@@ -85,7 +80,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4763398859555693370L;
+	private static final long serialVersionUID = -618446343598384819L;
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -131,7 +126,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         m_clientKNPairs = clientsKNPairs;
         
         if( m_clientKNPairs.length == 1  &&  !m_show ){
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) m_clientKNPairs[0].getID());
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
         	MUser user = MUser.get (m_ctx, m_userName);
         	m_userpreference=new UserPreference();
         	m_userpreference.loadPreference(user.get_ID());        	
@@ -569,15 +564,15 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     
     private void setUserID() {
     	if (lstClient.getSelectedItem() != null) {
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) lstClient.getSelectedItem().getValue());
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) lstClient.getSelectedItem().getValue());
     	} else {
-        	Env.setContext(m_ctx, "#AD_Client_ID", (String) null);
+        	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) null);
     	}
     	MUser user = MUser.get (m_ctx, m_userName);
     	if (user != null) {
-    		Env.setContext(m_ctx, "#AD_User_ID", user.getAD_User_ID() );
-    		Env.setContext(m_ctx, "#AD_User_Name", user.getName() );
-    		Env.setContext(m_ctx, "#SalesRep_ID", user.getAD_User_ID() );
+    		Env.setContext(m_ctx, Env.AD_USER_ID, user.getAD_User_ID() );
+    		Env.setContext(m_ctx, Env.AD_USER_NAME, user.getName() );
+    		Env.setContext(m_ctx, Env.SALESREP_ID, user.getAD_User_ID() );
     	}
     }
     
@@ -638,17 +633,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		Timestamp date = (Timestamp)lstDate.getValue();
 
 		String msg = login.loadPreferences(orgKNPair, warehouseKNPair, date, null);
-        if (Util.isEmpty(msg))
-        {
-
-            Session currSess = Executions.getCurrent().getDesktop().getSession();
-            HttpSession httpSess = (HttpSession) currSess.getNativeSession();
-            int timeout = MSysConfig.getIntValue(MSysConfig.ZK_SESSION_TIMEOUT_IN_SECONDS, -2, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
-            if (timeout != -2) // default to -2 meaning not set
-            	httpSess.setMaxInactiveInterval(timeout);
-
-            msg = login.validateLogin(orgKNPair);
-        }
         if (! Util.isEmpty(msg))
 		{
 			Env.getCtx().clear();
@@ -661,38 +645,29 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
             return;
 		}
 
-        // See if a popup should encourage user to change its password
-        if (!MUser.get(Env.getCtx()).isNoPasswordReset()) {
-            int notifyDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_PASSWORD_NOTIFY_DAY, 0);
-            int pwdAgeDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
-            if (notifyDay > 0 && pwdAgeDay > 0) {
-            	Timestamp limit = TimeUtil.addDays(MUser.get(Env.getCtx()).getDatePasswordChanged(), pwdAgeDay);
-            	Timestamp notifyAfter = TimeUtil.addDays(limit, -notifyDay);
-            	Timestamp now = TimeUtil.getDay(null);
+		// Elaine 2009/02/06 save preference to AD_Preference
+		UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
+		userPreference.setProperty(UserPreference.P_LANGUAGE, Env.getContext(m_ctx, UserPreference.LANGUAGE_NAME));
+		userPreference.setProperty(UserPreference.P_ROLE, (String) lstItemRole.getValue());
+		userPreference.setProperty(UserPreference.P_CLIENT, (String) lstItemClient.getValue());
+		userPreference.setProperty(UserPreference.P_ORG, (String) lstItemOrg.getValue());
+		userPreference.setProperty(UserPreference.P_WAREHOUSE,
+				lstItemWarehouse != null ? (String) lstItemWarehouse.getValue() : "0");
+		userPreference.savePreference();
 
-            	if (now.after(notifyAfter))
-            		FDialog.warn(0, null, "", Msg.getMsg(Env.getCtx(), "YourPasswordWillExpireInDays", new Object[] {TimeUtil.getDaysBetween(now, limit)}));
-            }
-        }
+		// force reload of default role when more than 1 client
+		if (lstClient.getChildren().size() > 1)
+			MRole.getDefault(m_ctx, true);
+		//
 
-        wndLogin.loginCompleted();
-
-        // Elaine 2009/02/06 save preference to AD_Preference
-        UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
-        userPreference.setProperty(UserPreference.P_LANGUAGE, Env.getContext(m_ctx, UserPreference.LANGUAGE_NAME));
-        userPreference.setProperty(UserPreference.P_ROLE, (String) lstItemRole.getValue());
-        userPreference.setProperty(UserPreference.P_CLIENT, (String) lstItemClient.getValue());
-        userPreference.setProperty(UserPreference.P_ORG, (String) lstItemOrg.getValue());
-        userPreference.setProperty(UserPreference.P_WAREHOUSE, lstItemWarehouse != null ? (String) lstItemWarehouse.getValue() : "0");
-        userPreference.savePreference();
-
-        //force reload of default role
-        MRole.getDefault(m_ctx, true);
-
-        //
+		wndLogin.validateMFA(orgKNPair);
     }
 
 	public boolean isDeferrable() {
 		return false;
+	}
+
+	public boolean show() {
+		return m_show;
 	}
 }

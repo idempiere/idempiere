@@ -90,7 +90,10 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			"DiscontinuedBy",
 			"DiscontinuedAt",
 			"ImageURL",
-			"DescriptionURL"
+			"DescriptionURL",
+			"CustomsTariffNumber",
+			"Group1",
+			"Group2"
 		};
 
 	/**
@@ -559,10 +562,12 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 						.append("SET (Value,Name,Description,DocumentNote,Help,")
 						.append("UPC,SKU,C_UOM_ID,M_Product_Category_ID,Classification,ProductType,")
 						.append("Volume,Weight,ShelfWidth,ShelfHeight,ShelfDepth,UnitsPerPallet,")
+						.append("CustomsTariffNumber,Group1,Group2,")
 						.append("Discontinued,DiscontinuedBy, DiscontinuedAt, Updated,UpdatedBy)= ")
 						.append("(SELECT Value,Name,Description,DocumentNote,Help,")
 						.append("UPC,SKU,C_UOM_ID,M_Product_Category_ID,Classification,ProductType,")
 						.append("Volume,Weight,ShelfWidth,ShelfHeight,ShelfDepth,UnitsPerPallet,")
+						.append("CustomsTariffNumber,Group1,Group2,")
 						.append("Discontinued,DiscontinuedBy, DiscontinuedAt, getDate(),UpdatedBy")
 						.append(" FROM I_Product WHERE I_Product_ID=").append(I_Product_ID).append(") ")
 						.append("WHERE M_Product_ID=").append(M_Product_ID);

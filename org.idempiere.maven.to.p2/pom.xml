@@ -11,6 +11,10 @@
 		<version>8.2.0-SNAPSHOT</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
+	<properties>
+		<tycho.version>1.7.0</tycho.version>
+	</properties>
+
 	<modules>
 		<module>org.idempiere.maven.to.p2</module>
 		<module>org.idempiere.webservice.client</module>

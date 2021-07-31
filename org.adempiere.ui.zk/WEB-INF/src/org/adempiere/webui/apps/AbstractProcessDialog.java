@@ -66,14 +66,16 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MNote;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstanceLog;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserDefProc;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
-import org.compiere.model.MReportView;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -107,7 +109,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9220870163215609274L;
+	private static final long serialVersionUID = -7374210834757533221L;
 
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -127,6 +129,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private BusyDialog progressWindow;	
 	
 	private String		    m_Name = null;
+	private String		    m_Description = null;
+	private String		    m_Help = null;
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private String initialMessage;
 	
@@ -188,19 +192,27 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			if (rs.next())
 			{
 				m_Name = rs.getString(1);
+				m_Description = rs.getString(2);
+				m_Help = rs.getString(3);
 				m_ShowHelp = rs.getString(5);
-				//
+
+				// User Customization
+				MUserDefProc userDef = MUserDefProc.getBestMatch(ctx, AD_Process_ID);
+				if (userDef != null) {
+					if (userDef.getName() != null)
+						m_Name = userDef.getName();
+					if (userDef.getDescription() != null)
+						m_Description = userDef.getDescription();
+					if (userDef.getHelp() != null)
+						m_Help = userDef.getHelp();
+				}
+
 				buildMsg.append("<b>");
-				String s = rs.getString(2);		//	Description
-				if (rs.wasNull())
-					buildMsg.append(Msg.getMsg(m_ctx, "StartProcess?"));
-				else
-					buildMsg.append(s);
+				buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
 				buildMsg.append("</b>");
 
-				s = rs.getString(3);			//	Help
-				if (!rs.wasNull())
-					buildMsg.append("<p>").append(s).append("</p>");
+				if (!Util.isEmpty(m_Help))
+					buildMsg.append("<p>").append(m_Help).append("</p>");
 				m_AD_Process_UU = rs.getString(6);
 			}
 			
@@ -501,7 +513,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected void querySaved() 
 	{
 		//user query
-		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"));
+		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID));
 		fSavedName.removeAllItems();
 		for (MPInstance instance : savedParams)
 		{
@@ -597,7 +609,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		final String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
 		return new Query(Env.getCtx(), MPInstance.Table_Name, where, null)
 				.setOnlyActiveRecords(true).setClient_ID()
-				.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"))
+				.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID))
 				.setOrderBy("Created DESC")
 				.first();
 	}
@@ -1167,13 +1179,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			super();
 			
 			m_ctx = new Properties();
-			Env.setContext(m_ctx, "#AD_Client_ID", ctx.getProperty("#AD_Client_ID"));
-			Env.setContext(m_ctx, "#AD_Org_ID", ctx.getProperty("#AD_Org_ID"));
-			Env.setContext(m_ctx, "#AD_Role_ID", ctx.getProperty("#AD_Role_ID"));
-			Env.setContext(m_ctx, "#M_Warehouse_ID", ctx.getProperty("#M_Warehouse_ID"));
-			Env.setContext(m_ctx, "#AD_Language", ctx.getProperty("#AD_Language"));
-			Env.setContext(m_ctx, "#AD_User_ID", ctx.getProperty("#AD_User_ID"));
-			Env.setContext(m_ctx, "#Date", ctx.getProperty("#Date"));
+			Env.setContext(m_ctx, Env.AD_CLIENT_ID, ctx.getProperty(Env.AD_CLIENT_ID));
+			Env.setContext(m_ctx, Env.AD_ORG_ID, ctx.getProperty(Env.AD_ORG_ID));
+			Env.setContext(m_ctx, Env.AD_ROLE_ID, ctx.getProperty(Env.AD_ROLE_ID));
+			Env.setContext(m_ctx, Env.M_WAREHOUSE_ID, ctx.getProperty(Env.M_WAREHOUSE_ID));
+			Env.setContext(m_ctx, Env.LANGUAGE, ctx.getProperty(Env.LANGUAGE));
+			Env.setContext(m_ctx, Env.AD_USER_ID, ctx.getProperty(Env.AD_USER_ID));
+			Env.setContext(m_ctx, Env.DATE, ctx.getProperty(Env.DATE));
 		}
 		
 		@Override
@@ -1260,6 +1272,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					}
 					if (attachment != null)
 						attachment.saveEx();
+					MPInstanceLog il = instance.addLog(null, 0, null, Msg.parseTranslation(m_ctx, "@Created@ @AD_Note_ID@ " + note.getAD_Note_ID()),
+							MNote.Table_ID, note.getAD_Note_ID());
+					il.saveEx();
 				}
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage());				
@@ -1341,4 +1356,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 		});
 	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (getParameterPanel() != null) {
+			if (getParameterPanel().focusToFirstEditor())
+				return;
+		}
+		if (bOK != null)
+			bOK.focus();
+	}		
 }

@@ -345,6 +345,15 @@ public final class ConfirmPanel extends Div
     }
     
     /**
+     * Add checkbox to center panel
+     * @param cb
+     */
+    public void addComponentsCenter(Checkbox cb){
+    	pnlBtnCenter.appendChild(cb);
+    	
+    }    
+    
+    /**
      * return button of the specified id
      * @param id button id
      * @return button or null if no button is found
@@ -529,8 +538,11 @@ public final class ConfirmPanel extends Div
         // IDEMPIERE-1334 start
         while (iter3.hasNext())
         {
-            Button button = (Button)iter3.next();
-            button.addEventListener(event, listener);
+        	Object element = iter3.next();
+        	if (element instanceof Button) 
+        	{
+	            ((Button)element).addEventListener(event, listener);
+        	}
         }
         // IDEMPIERE-1334 start
     }

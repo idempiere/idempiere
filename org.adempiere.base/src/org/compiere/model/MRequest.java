@@ -91,15 +91,11 @@ public class MRequest extends X_R_Request
 		if (R_Request_ID == 0)
 		{
 			setDueType (DUETYPE_Due);
-		//  setSalesRep_ID (0);
-		//	setDocumentNo (null);
 			setConfidentialType (CONFIDENTIALTYPE_PublicInformation);	// A
 			setConfidentialTypeEntry (CONFIDENTIALTYPEENTRY_PublicInformation);	// A
 			setProcessed (false);
 			setRequestAmt (Env.ZERO);
 			setPriorityUser (PRIORITY_Low);
-		//  setR_RequestType_ID (0);
-		//  setSummary (null);
 			setIsEscalated (false);
 			setIsSelfService (false);
 			setIsInvoiced (false);
@@ -683,16 +679,6 @@ public class MRequest extends X_R_Request
 	 */
 	public File createPDF ()
 	{
-		// globalqss - comment to solve bug [ 1688794 ] System is generating lots of temp files
-//		try
-//		{
-//			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
-//			return createPDF (temp);
-//		}
-//		catch (Exception e)
-//		{
-//			log.severe("Could not create PDF - " + e.getMessage());
-//		}
 		return null;
 	}	//	getPDF
 
@@ -703,10 +689,7 @@ public class MRequest extends X_R_Request
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 	
 	/**************************************************************************
@@ -785,51 +768,6 @@ public class MRequest extends X_R_Request
 		return true;
 	}	//	beforeSave
 
-	
-	
-	/**
-	 *  Check the ability to send email.
-	 *  @return AD_Message or null if no error
-	 */
-/*
- * TODO red1 - Never Used Locally - to check later
- 	private String checkEMail()
-	{
-		//  Mail Host
-		MClient client = MClient.get(getCtx());
-		if (client == null 
-			|| client.getSMTPHost() == null
-			|| client.getSMTPHost().length() == 0)
-			return "RequestActionEMailNoSMTP";
-
-		//  Mail To
-		MUser to = new MUser (getCtx(), getAD_User_ID(), get_TrxName());
-		if (to == null
-			|| to.getEMail() == null
-			|| to.getEMail().length() == 0)
-			return "RequestActionEMailNoTo";
-
-		//  Mail From real user
-		MUser from = MUser.get(getCtx(), Env.getAD_User_ID(getCtx()));
-		if (from == null 
-			|| from.getEMail() == null
-			|| from.getEMail().length() == 0)
-			return "RequestActionEMailNoFrom";
-		
-		//  Check that UI user is Request User
-//		int realSalesRep_ID = Env.getContextAsInt (getCtx(), "#AD_User_ID");
-//		if (realSalesRep_ID != getSalesRep_ID())
-//			setSalesRep_ID(realSalesRep_ID);
-
-		//  RequestActionEMailInfo - EMail from {0} to {1}
-//		Object[] args = new Object[] {emailFrom, emailTo};
-//		String msg = Msg.getMsg(getCtx(), "RequestActionEMailInfo", args);
-//		setLastResult(msg);
-		//
-		
-		return null;
-	}   //  checkEMail
-*/
 	/**
 	 * 	Set SalesRep_ID
 	 *	@param SalesRep_ID id
@@ -890,39 +828,6 @@ public class MRequest extends X_R_Request
 		
 		return success;
 	}	//	afterSave
-
-	/**
-	 * 	Send transfer Message
-	 */
-/*TODO - red1 Never used locally  - check later
- * 	private void sendTransferMessage ()  
-	{
-		//	Sender
-		int AD_User_ID = Env.getContextAsInt(p_ctx, "#AD_User_ID");
-		if (AD_User_ID == 0)
-			AD_User_ID = getUpdatedBy();
-		//	Old
-		Object oo = get_ValueOld("SalesRep_ID");
-		int oldSalesRep_ID = 0;
-		if (oo instanceof Integer)
-			oldSalesRep_ID = ((Integer)oo).intValue();
-
-		//  RequestActionTransfer - Request {0} was transfered by {1} from {2} to {3}
-		Object[] args = new Object[] {getDocumentNo(), 
-			MUser.getNameOfUser(AD_User_ID), 
-			MUser.getNameOfUser(oldSalesRep_ID),
-			MUser.getNameOfUser(getSalesRep_ID())
-			};
-		String subject = Msg.getMsg(getCtx(), "RequestActionTransfer", args);
-		String message = subject + "\n" + getSummary();
-		MClient client = MClient.get(getCtx());
-		MUser from = MUser.get (getCtx(), AD_User_ID);
-		MUser to = MUser.get (getCtx(), getSalesRep_ID());
-		//
-		client.sendEMail(from, to, subject, message, createPDF());
-	}	//	afterSaveTransfer
-*/
-	
 
 	/**
 	 * 	Get Mail Tag

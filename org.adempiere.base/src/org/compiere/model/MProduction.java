@@ -26,13 +26,12 @@ public class MProduction extends X_M_Production implements DocAction {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4650232602150964606L;
+	private static final long serialVersionUID = 6714776372370644208L;
 
 	/**
 	 * 
 	 */
 	/** Log								*/
-	@SuppressWarnings("unused")
 	protected static CLogger		m_log = CLogger.getCLogger (MProduction.class);
 	protected int lineno;
 	protected int count;
@@ -82,7 +81,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		setC_Activity_ID(project.getC_Activity_ID());
 		setC_ProjectPhase_ID(line.getC_ProjectPhase_ID());
 		setC_ProjectTask_ID(line.getC_ProjectTask_ID());
-		setMovementDate( Env.getContextAsDate(p_ctx, "#Date"));
+		setMovementDate( Env.getContextAsDate(p_ctx, Env.DATE));
 	}
 
 	@Override
@@ -255,19 +254,13 @@ public class MProduction extends X_M_Production implements DocAction {
 		
 		int M_Warehouse_ID = finishedLocator.getM_Warehouse_ID();
 		
-		int asi = 0;
-
 		// products used in production
 		String sql = "SELECT M_ProductBom_ID, BOMQty" + " FROM M_Product_BOM"
 				+ " WHERE M_Product_ID=" + finishedProduct.getM_Product_ID() + " ORDER BY Line";
+		
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());) {			
 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			pstmt = DB.prepareStatement(sql, get_TrxName());
-
-			rs = pstmt.executeQuery();
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				
 				lineno = lineno + 10;
@@ -344,6 +337,7 @@ public class MProduction extends X_M_Production implements DocAction {
 						MProductionLine BOMLine = null;
 						int prevLoc = -1;
 						int previousAttribSet = -1;
+						int prevAsi = -1;
 						// Create lines from storage until qty is reached
 						for (int sl = 0; sl < storages.length; sl++) {
 
@@ -355,11 +349,11 @@ public class MProduction extends X_M_Production implements DocAction {
 
 								int loc = storages[sl].getM_Locator_ID();
 								int slASI = storages[sl].getM_AttributeSetInstance_ID();
-								int locAttribSet = new MAttributeSetInstance(getCtx(), asi,
+								int locAttribSet = new MAttributeSetInstance(getCtx(), slASI,
 										get_TrxName()).getM_AttributeSet_ID();
 
 								// roll up costing attributes if in the same locator
-								if (locAttribSet == 0 && previousAttribSet == 0
+								if (((locAttribSet == 0 && previousAttribSet == 0) || (slASI == prevAsi))
 										&& prevLoc == loc) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(lineQty));
@@ -384,6 +378,7 @@ public class MProduction extends X_M_Production implements DocAction {
 								}
 								prevLoc = loc;
 								previousAttribSet = locAttribSet;
+								prevAsi = slASI;
 								// enough ?
 								BOMMovementQty = BOMMovementQty.subtract(lineQty);
 								if (BOMMovementQty.signum() == 0)
@@ -431,9 +426,6 @@ public class MProduction extends X_M_Production implements DocAction {
 			} // for all bom products
 		} catch (Exception e) {
 			throw new AdempiereException("Failed to create production lines", e);
-		}
-		finally {
-			DB.close(rs, pstmt);
 		}
 
 		return count;
@@ -704,7 +696,7 @@ public class MProduction extends X_M_Production implements DocAction {
 	}
 
 	protected MProduction reverse(boolean accrual) {
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
@@ -915,4 +907,17 @@ public class MProduction extends X_M_Production implements DocAction {
 		}
 		return true;
 	}
+
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isStatusComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isStatusComplete
+
 }

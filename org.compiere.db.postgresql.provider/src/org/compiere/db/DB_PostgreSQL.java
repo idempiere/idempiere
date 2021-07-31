@@ -1186,9 +1186,9 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			.append(columnName)
 			.append(",',')");
 		builder.append(" <@ "); //is contained by
-		builder.append("string_to_array('")
-			.append(csv)
-			.append("',',')");
+		builder.append("string_to_array(")
+			.append(DB.TO_STRING(csv))
+			.append(",',')");
 
 		return builder.toString();
 	}
@@ -1215,10 +1215,10 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		builder.append("string_to_array(")
 			.append(columnName)
 			.append(",',')");
-		builder.append(" && "); //is contained by
-		builder.append("string_to_array('")
-			.append(csv)
-			.append("',',')");
+		builder.append(" && "); //intersect
+		builder.append("string_to_array(")
+			.append(DB.TO_STRING(csv))
+			.append(",',')");
 
 		return builder.toString();
 	}
@@ -1422,4 +1422,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return sql.toString();
 	}	//	getSQLModify
 
+	@Override
+	public boolean isQueryTimeout(SQLException ex) {
+		//org.postgresql.util.PSQLException: ERROR: canceling statement due to user request | SQL Code: 0 | SQL State: 57014
+		return "57014".equals(ex.getSQLState());
+	}
+
+	
 }   //  DB_PostgreSQL

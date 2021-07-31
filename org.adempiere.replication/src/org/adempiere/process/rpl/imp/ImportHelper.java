@@ -172,7 +172,7 @@ public class ImportHelper {
 		
 		if(po != null)
 		{
-			 Env.setContext(po.getCtx(), "#AD_Client_ID", po.getAD_Client_ID());
+			 Env.setContext(po.getCtx(), Env.AD_CLIENT_ID, po.getAD_Client_ID());
 			 
 		    	if(MReplicationStrategy.REPLICATION_TABLE==ReplicationMode)
 		    	{    

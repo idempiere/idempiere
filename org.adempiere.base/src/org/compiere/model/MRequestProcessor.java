@@ -88,14 +88,10 @@ public class MRequestProcessor extends X_R_RequestProcessor
 		super (ctx, R_RequestProcessor_ID, trxName);
 		if (R_RequestProcessor_ID == 0)
 		{
-		//	setName (null);
-			//setFrequencyType (FREQUENCYTYPE_Day);
-			//setFrequency (0);
 			setKeepLogDays (7);
 			setOverdueAlertDays (0);
 			setOverdueAssignDays (0);
 			setRemindDays (0);
-		//	setSupervisor_ID (0);
 		}	
 	}	//	MRequestProcessor
 

@@ -119,10 +119,14 @@ public class WGadgets extends Window implements  EventListener<Event>{
 			 }
 			 else if (panel.getButton("Cancel").equals(event.getTarget()))
 			 {				
-			  	  this.detach();
+			  	  onCancel();
 			 }			
 		}
 		
+	}
+
+	private void onCancel() {
+		this.detach();
 	}
 	
 	public void init()
@@ -229,6 +233,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		vlayout.appendChild(panel);
 		this.appendChild(vlayout);
 		this.setBorder("normal");
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
 	

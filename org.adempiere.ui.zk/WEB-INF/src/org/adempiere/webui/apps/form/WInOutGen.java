@@ -166,7 +166,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		fWarehouse = new WTableDirEditor ("M_Warehouse_ID", true, false, true, orgL);
 		lWarehouse.setText(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 		fWarehouse.addValueChangeListener(this);
-		fWarehouse.setValue(Env.getContextAsInt(Env.getCtx(), "#M_Warehouse_ID"));
+		fWarehouse.setValue(Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID));
 		setM_Warehouse_ID(fWarehouse.getValue());
 		//      Document Action Prepared/ Completed
 		lDocAction.setText(Msg.translate(Env.getCtx(), "DocAction"));

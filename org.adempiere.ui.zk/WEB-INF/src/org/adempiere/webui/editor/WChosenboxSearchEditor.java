@@ -37,6 +37,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
@@ -70,7 +71,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	private InfoListSubModel	subModel = null;
 
 	private static final CLogger log = CLogger.getCLogger(WChosenboxSearchEditor.class);
-	private static final int MAX_AUTO_COMPLETE_ROWS = 50;
+	private static final int DEFAULT_MAX_AUTO_COMPLETE_ROWS = 500;
 	private boolean onselecting;
 
 	/**
@@ -593,7 +594,8 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		@Override
 		public ListModel<ValueNamePair> getSubModel(Object value, int nRows) {
 			subModel.setWhereClause(getWhereClause());
-			ListModel<ValueNamePair> model = subModel.getSubModel(value, MAX_AUTO_COMPLETE_ROWS);
+			int maxRows = MSysConfig.getIntValue(MSysConfig.ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS, DEFAULT_MAX_AUTO_COMPLETE_ROWS, Env.getAD_Client_ID(Env.getCtx()));
+			ListModel<ValueNamePair> model = subModel.getSubModel(value, maxRows);
 			getComponent().getChosenbox().setSubListModel(model);
 			return model;
 		}

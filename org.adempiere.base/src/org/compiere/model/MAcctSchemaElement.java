@@ -200,15 +200,8 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 		super (ctx, C_AcctSchema_Element_ID, trxName);
 		if (C_AcctSchema_Element_ID == 0)
 		{
-		//	setC_AcctSchema_Element_ID (0);
-		//	setC_AcctSchema_ID (0);
-		//	setC_Element_ID (0);
-		//	setElementType (null);
 			setIsBalanced (false);
 			setIsMandatory (false);
-		//	setName (null);
-		//	setOrg_ID (0);
-		//	setSeqNo (0);
 		}
 	}	//	MAcctSchemaElement
 
@@ -232,12 +225,6 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 		this (as.getCtx(), 0, as.get_TrxName());
 		setClientOrg(as);
 		setC_AcctSchema_ID (as.getC_AcctSchema_ID());
-		
-		//	setC_Element_ID (0);
-		//	setElementType (null);
-		//	setName (null);
-		//	setSeqNo (0);
-		
 	}	//	MAcctSchemaElement
 
 	/**

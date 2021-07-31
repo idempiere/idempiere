@@ -523,9 +523,6 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		super(ctx, C_PaySelectionCheck_ID, trxName);
 		if (C_PaySelectionCheck_ID == 0)
 		{
-		//	setC_PaySelection_ID (0);
-		//	setC_BPartner_ID (0);
-		//	setPaymentRule (null);
 			setPayAmt (Env.ZERO);
 			setDiscountAmt(Env.ZERO);
 			setWriteOffAmt(Env.ZERO);

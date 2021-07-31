@@ -121,7 +121,6 @@ public class MRegistration extends X_A_Registration
 		if (onlySelfService)
 			sql += " AND EXISTS (SELECT * FROM A_RegistrationAttribute ra WHERE rv.A_RegistrationAttribute_ID=ra.A_RegistrationAttribute_ID"
 				+ " AND ra.IsActive='Y' AND ra.IsSelfService='Y')";
-	//	sql += " ORDER BY A_RegistrationAttribute_ID";
 				
 		ArrayList<MRegistrationValue> list = new ArrayList<MRegistrationValue>();
 		PreparedStatement pstmt = null;

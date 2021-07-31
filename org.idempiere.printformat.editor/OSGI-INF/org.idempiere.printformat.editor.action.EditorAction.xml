@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.idempiere.printformat.editor.action.EditorAction">
+   <service>
+      <provide interface="org.adempiere.webui.action.IAction"/>
+   </service>
+   <implementation class="org.idempiere.printformat.editor.action.EditorAction"/>
+</scr:component>

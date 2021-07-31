@@ -87,7 +87,6 @@ public final class MSetup
 	private StringBuffer    m_info;
 	//
 	private String          m_clientName;
-//	private String          m_orgName;
 	//
 	private String          m_stdColumns = "AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy";
 	private String          m_stdValues;
@@ -159,7 +158,7 @@ public final class MSetup
 		}
 		int AD_Client_ID = m_client.getAD_Client_ID();
 		Env.setContext(m_ctx, m_WindowNo, "AD_Client_ID", AD_Client_ID);
-		Env.setContext(m_ctx, "#AD_Client_ID", AD_Client_ID);
+		Env.setContext(m_ctx, Env.AD_CLIENT_ID, AD_Client_ID);
 
 		//	Standard Values
 		m_stdValues = String.valueOf(AD_Client_ID) + ",0,'Y',getDate(),0,getDate(),0";
@@ -208,7 +207,7 @@ public final class MSetup
 			return false;
 		}
 		Env.setContext(m_ctx, m_WindowNo, "AD_Org_ID", getAD_Org_ID());
-		Env.setContext(m_ctx, "#AD_Org_ID", getAD_Org_ID());
+		Env.setContext(m_ctx, Env.AD_ORG_ID, getAD_Org_ID());
 		m_stdValuesOrg = AD_Client_ID + "," + getAD_Org_ID() + ",'Y',getDate(),0,getDate(),0";
 		//  Info
 		m_info.append(Msg.translate(m_lang, "AD_Org_ID")).append("=").append(name).append("\n");
@@ -1285,10 +1284,6 @@ public final class MSetup
 		sqlCmd = new StringBuilder ("UPDATE AD_ClientInfo SET ");
 		sqlCmd.append("C_BPartnerCashTrx_ID=").append(bp.getC_BPartner_ID());
 		sqlCmd.append(",M_ProductFreight_ID=").append(product.getM_Product_ID());
-//		sqlCmd.append("C_UOM_Volume_ID=");
-//		sqlCmd.append(",C_UOM_Weight_ID=");
-//		sqlCmd.append(",C_UOM_Length_ID=");
-//		sqlCmd.append(",C_UOM_Time_ID=");
 		sqlCmd.append(" WHERE AD_Client_ID=").append(getAD_Client_ID());
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)

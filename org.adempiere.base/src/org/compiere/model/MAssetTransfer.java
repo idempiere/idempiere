@@ -191,9 +191,6 @@ implements DocAction
 				return status;
 		}
 
-		// Set the definite document number after completed (if needed)
-		//setDefiniteDocumentNo();
-
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -210,10 +207,7 @@ implements DocAction
 		
 		@SuppressWarnings("unused")
 		MDepreciationWorkfile wk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());
-		/* commented out by @win, deprecating existing design
-		wk.buildDepreciation();
-		*/
-		
+
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)

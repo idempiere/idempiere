@@ -83,7 +83,7 @@ public class MSystem extends X_AD_System
 	}	//	get
 	
 	/** System - cached					*/
-	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1, true);
+	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1);
 	
 	/**************************************************************************
 	 * 	Default Constructor
@@ -448,15 +448,11 @@ public class MSystem extends X_AD_System
 	{
 		if (!CLogMgt.isLevelFine())
 			return;
-		//	OS
-	//	OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
-	//	log.fine(os.getName() + " " + os.getVersion() + " " + os.getArch() 
-	//		+ " Processors=" + os.getAvailableProcessors());
+
 		//	Runtime
 		@SuppressWarnings("unused")
 		RuntimeMXBean rt = ManagementFactory.getRuntimeMXBean();
-		// log.fine(rt.getName() + " (" + rt.getVmVersion() + ") Up=" + TimeUtil.formatElapsed(rt.getUptime()));
-		//	Memory
+		
 		if (CLogMgt.isLevelFiner())
 		{
 			List<MemoryPoolMXBean> list = ManagementFactory.getMemoryPoolMXBeans();
@@ -465,29 +461,16 @@ public class MSystem extends X_AD_System
 			{
 				@SuppressWarnings("unused")
 				MemoryPoolMXBean pool = (MemoryPoolMXBean)it.next();
-				/*
-				log.finer(pool.getName() + " " + pool.getType() 
-					+ ": " + new CMemoryUsage(pool.getUsage()));
-				*/
 			}
 		}
 		else
 		{
 			@SuppressWarnings("unused")
 			MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
-			// log.fine("VM: " + new CMemoryUsage(memory.getNonHeapMemoryUsage()));
-			// log.fine("Heap: " + new CMemoryUsage(memory.getHeapMemoryUsage()));
 		}
 		//	Thread
 		@SuppressWarnings("unused")
 		ThreadMXBean th = ManagementFactory.getThreadMXBean();
-		/*
-		log.fine("Threads=" + th.getThreadCount()
-			+ ", Peak=" + th.getPeakThreadCount()
-			+ ", Demons=" + th.getDaemonThreadCount()
-			+ ", Total=" + th.getTotalStartedThreadCount()
-		);
-		*/
 	}	//	info
 	
 	/*

@@ -13,10 +13,16 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 
 import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MTable;
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *
@@ -24,6 +30,7 @@ import org.compiere.model.MAcctSchema;
  *
  */
 public interface IDocFactory {
+	
 	/**
 	 *  Create Posting document
 	 *	@param as accounting schema
@@ -32,7 +39,27 @@ public interface IDocFactory {
 	 *  @param trxName transaction name
 	 *  @return Document or null
 	 */
-	public Doc getDocument(MAcctSchema as, int AD_Table_ID, int Record_ID, String trxName);
+	public default Doc getDocument(MAcctSchema as, int AD_Table_ID, int Record_ID, String trxName) {
+		String tableName = MTable.getTableName(Env.getCtx(), AD_Table_ID);
+		//
+		Doc doc = null;
+		StringBuilder sql = new StringBuilder("SELECT * FROM ")
+			.append(tableName)
+			.append(" WHERE ")
+			.append(tableName).append("_ID=? AND Processed='Y'");
+		try (PreparedStatement pstmt = DB.prepareStatement (sql.toString(), trxName);) {			
+			pstmt.setInt (1, Record_ID);
+			ResultSet rs = pstmt.executeQuery ();
+			if (rs.next ()) {
+				doc = getDocument(as, AD_Table_ID, rs, trxName);
+			}
+			else
+				CLogger.getCLogger(getClass()).severe("Not Found: " + tableName + "_ID=" + Record_ID);
+		} catch (Exception e) {
+			CLogger.getCLogger(getClass()).log (Level.SEVERE, sql.toString(), e);
+		}
+		return doc;
+	}
 
 	/**
 	 *  Create Posting document

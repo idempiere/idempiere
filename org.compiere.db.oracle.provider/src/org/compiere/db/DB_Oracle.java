@@ -1341,9 +1341,9 @@ public class DB_Oracle implements AdempiereDatabase
 			.append(columnName)
 			.append(")");
 		builder.append(" submultiset of ")
-			.append("toTableOfVarchar2('")
-			.append(csv)
-			.append("')");
+			.append("toTableOfVarchar2(")
+			.append(DB.TO_STRING(csv))
+			.append(")");
 		
 		return builder.toString();
 	}
@@ -1355,9 +1355,9 @@ public class DB_Oracle implements AdempiereDatabase
 			.append(columnName)
 			.append(")");
 		builder.append(" MULTISET INTERSECT ")
-			.append("toTableOfVarchar2('")
-			.append(csv)
-			.append("') IS NOT EMPTY");
+			.append("toTableOfVarchar2(")
+			.append(DB.TO_STRING(csv))
+			.append(") IS NOT EMPTY");
 		
 		return builder.toString();
 	}
@@ -1532,4 +1532,12 @@ public class DB_Oracle implements AdempiereDatabase
 		//
 		return sql.toString();
 	}	//	getSQLModify
+
+	@Override
+	public boolean isQueryTimeout(SQLException ex) {
+		//java.sql.SQLTimeoutException: ORA-01013: user requested cancel of current operation
+		return "72000".equals(ex.getSQLState()) && ex.getErrorCode() == 1013;
+	}
+	
+	
 }   //  DB_Oracle

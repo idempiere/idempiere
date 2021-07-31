@@ -216,13 +216,13 @@ public class InitialClientSetup extends SvrProcess
 		// Validate Uniqueness of client and users name
 		//	Unique Client Name
 		if (DB.executeUpdate("UPDATE AD_Client SET CreatedBy=0 WHERE Name=?", new Object[] {p_ClientName}, false, null) != 0)
-			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_ClientName);
+			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NotUnique@ @ClientName@ = " + p_ClientName));
 
 		//	Unique User Names
 		if (DB.executeUpdate("UPDATE AD_User SET CreatedBy=0 WHERE Name=?", new Object[] {p_AdminUserName}, false, null) != 0)
-			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_AdminUserName);
+			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NotUnique@ @AdminUserName@ = " + p_AdminUserName));
 		if (DB.executeUpdate("UPDATE AD_User SET CreatedBy=0 WHERE Name=?", new Object[] {p_NormalUserName}, false, null) != 0)
-			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_NormalUserName);
+			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NotUnique@ @NormalUserName@ = " + p_NormalUserName));
 
 		// City_ID overrides CityName if both used
 		if (p_C_City_ID > 0) {
@@ -279,13 +279,13 @@ public class InitialClientSetup extends SvrProcess
 				p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension, p_IsUseActivityDimension,
 				coaFile, p_UseDefaultCoA, p_InactivateDefaults)) {
 				ms.rollback();
-				throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "AccountSetupError")+ "@");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccountSetupError"));
 			}
 
 			//  Generate Entities
 			if (!ms.createEntities(p_C_Country_ID, p_CityName, p_C_Region_ID, p_C_Currency_ID, p_Postal, p_Address1)) {
 				ms.rollback();
-				throw new AdempiereException("@" +  Msg.getMsg(Env.getCtx(), "AccountSetupError") + "@");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccountSetupError"));
 			}
 			addLog(ms.getInfo());
 

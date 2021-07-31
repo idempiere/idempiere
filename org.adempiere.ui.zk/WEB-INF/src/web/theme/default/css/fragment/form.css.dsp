@@ -65,7 +65,7 @@
 }
 .status-db {
 	padding-top: 0;
-	pdding-bottom: 0;
+	padding-bottom: 0;
 	padding-left: 5px;
 	padding-right: 5px;
 	cursor: pointer;

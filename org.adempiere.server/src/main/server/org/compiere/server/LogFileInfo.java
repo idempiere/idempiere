@@ -28,6 +28,7 @@ package org.compiere.server;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.compiere.util.CLogFile;
@@ -62,6 +63,7 @@ public class LogFileInfo implements Serializable {
 		if (logDir != null && logDir.isDirectory())
 		{
 			File[] logs = logDir.listFiles();
+			Arrays.sort(logs);
 			for (int i = 0; i < logs.length; i++) 
 			{
 				// Skip if is not a file - teo_sarca [ 1726066 ]

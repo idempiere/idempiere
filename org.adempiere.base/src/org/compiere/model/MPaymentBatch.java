@@ -57,7 +57,6 @@ public class MPaymentBatch extends X_C_PaymentBatch
 		super(ctx, C_PaymentBatch_ID, trxName);
 		if (C_PaymentBatch_ID == 0)
 		{
-		//	setName (null);
 			setProcessed (false);
 			setProcessing (false);
 		}

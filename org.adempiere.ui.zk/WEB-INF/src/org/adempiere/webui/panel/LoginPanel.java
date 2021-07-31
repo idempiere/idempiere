@@ -56,6 +56,7 @@ import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -125,6 +126,9 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected ConfirmPanel pnlButtons; 
     protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
     protected String validLstLanguage = null;
+
+	/* Number of failures to calculate an incremental delay on every trial */
+	private int failures = 0;
     
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
@@ -592,6 +596,11 @@ public class LoginPanel extends Window implements EventListener<Event>
             }
         	logAuthFailure.log(x_Forward_IP, "/webui", userId, loginErrMsg);
 
+			// Incremental delay to avoid brute-force attack on testing codes
+			try {
+				Thread.sleep(failures * 2000);
+			} catch (InterruptedException e) {}
+			failures++;
         	Clients.clearBusy();
        		throw new WrongValueException(loginErrMsg);
         }
@@ -678,12 +687,18 @@ public class LoginPanel extends Window implements EventListener<Event>
 				.append(" AD_User.IsActive='Y'")
 				.append(" AND AD_User.SecurityQuestion IS NOT NULL")
 				.append(" AND AD_User.Answer IS NOT NULL");
-		
-		List<MUser> users = new Query(ctx, MUser.Table_Name, whereClause.toString(), null)
-			.setParameters(userId)
-			.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
-			.list();
-		
+
+		List<MUser> users;
+		try {
+			PO.setCrossTenantSafe();
+			users = new Query(ctx, MUser.Table_Name, whereClause.toString(), null)
+					.setParameters(userId)
+					.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+					.list();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+
 		wndLogin.resetPassword(userId, users.size() == 0);
 	}
 

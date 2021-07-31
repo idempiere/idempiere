@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Messagebox;
+import org.adempiere.webui.editor.WChosenboxListEditor;
+import org.adempiere.webui.editor.WChosenboxSearchEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WSearchEditor;
@@ -358,7 +360,6 @@ public class FDialog
     }
     
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo) {
-		@SuppressWarnings("unused")
 		final WEditor weditor;
 
 		switch (editorType) {
@@ -373,6 +374,13 @@ public class FDialog
 			break;
 		case DisplayType.Search:
 			weditor = new WSearchEditor(lookup, "", "", true, false, true);
+			break;
+		case DisplayType.ChosenMultipleSelectionSearch:
+			weditor = new WChosenboxSearchEditor(lookup, "", "", true, false, true);
+			break;
+		case DisplayType.ChosenMultipleSelectionList:
+		case DisplayType.ChosenMultipleSelectionTable:
+			weditor = new WChosenboxListEditor(lookup, "", "", true, false, true);
 			break;
 		default:
 			weditor = null;

@@ -271,18 +271,11 @@ public class MInfoWindow extends X_AD_InfoWindow
 		{
 			if (i != 0) // can also use if i>0
 				sql.append(",");
-			sql.append(mColumns[i].getSelectClause());//getColumnSQL());	//	Normal and Virtual Column
+			sql.append(mColumns[i].getSelectClause());	//	Normal and Virtual Column
 		}
-		sql.append(" FROM ").append(fromsql)//getTableName())
-		//.append(" WHERE ")
-		//.append(getWhereClause(false))
+		sql.append(" FROM ").append(fromsql)
 		.append(oclause);
-		//.append("ORDER BY SeqNo"); //.append(get_WhereClause(false));
 
-		//
-		//	int index = -1;
-		//if (CLogMgt.isLevelFinest())
-		//log.finest(getWhereClause(true));
 		log.info("Generated SQL -- getSql: "+ sql.toString());
 
 		return sql.toString();
@@ -299,7 +292,6 @@ public class MInfoWindow extends X_AD_InfoWindow
 					MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 
 			pstmt = DB.prepareStatement(countSql, null);
-			//	pstmt.setString(1, p_tableName);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -308,10 +300,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 		}
 		catch (SQLException e)
 		{
-			//ADialog.error(WindowNo, c, AD_Message)
-			//Env.getUi().showError(0, null, sql.toString() + "<br> " + e.getMessage());
 			log.log(Level.SEVERE, sql, e);
-			// String error = e.toString();
 			// show error to user and return: TODO
 			return false;
 		}

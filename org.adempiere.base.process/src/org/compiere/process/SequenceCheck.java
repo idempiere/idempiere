@@ -100,13 +100,10 @@ public class SequenceCheck extends SvrProcess
 			+ "FROM AD_Table t "
 			+ "WHERE IsActive='Y' AND IsView='N'"
 			+ " AND NOT EXISTS (SELECT * FROM AD_Sequence s "
-			+ "WHERE UPPER(s.Name)=UPPER(t.TableName) AND s.IsTableID='Y')";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, trxName);
-			rs = pstmt.executeQuery();
+			+ "WHERE UPPER(s.Name)=UPPER(t.TableName) AND s.IsTableID='Y')";		
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, trxName);)
+		{			
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String tableName = rs.getString(1);
@@ -127,11 +124,6 @@ public class SequenceCheck extends SvrProcess
 		{
 			s_log.log(Level.SEVERE, sql, e);
 			throw new AdempiereException(e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 		
 		//	Sync Table Name case
@@ -161,10 +153,9 @@ public class SequenceCheck extends SvrProcess
 			+ "WHERE t.IsActive='Y' AND t.IsView='N'"
 			+ " AND UPPER(s.Name)=UPPER(t.TableName) AND s.Name<>t.TableName";
 		//
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			rs = pstmt.executeQuery ();
+		try (PreparedStatement pstmt = DB.prepareStatement (sql, null);)
+		{			
+			ResultSet rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				String TableName = rs.getString(1);
@@ -177,11 +168,6 @@ public class SequenceCheck extends SvrProcess
 		{
 			s_log.log (Level.SEVERE, sql, e);
 			throw new AdempiereException(e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 	}	//	checkTableSequences
 	

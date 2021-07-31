@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -245,6 +246,16 @@ public class MScheduler extends X_AD_Scheduler
 	 */
 	public Integer[] getRecipientAD_User_IDs()
 	{
+		return getRecipientAD_User_IDs(false);
+	}
+	
+	/**
+	 * 	Get Recipient AD_User_IDs
+	 *  @param excludeUploadRecipient
+	 *	@return array of user IDs
+	 */
+	public Integer[] getRecipientAD_User_IDs(boolean excludeUploadRecipient)
+	{
 		TreeSet<Integer> list = new TreeSet<Integer>();
 		MSchedulerRecipient[] recipients = getRecipients(false);
 		for (int i = 0; i < recipients.length; i++)
@@ -254,7 +265,8 @@ public class MScheduler extends X_AD_Scheduler
 				continue;
 			if (recipient.getAD_User_ID() != 0)
 			{
-				list.add(recipient.getAD_User_ID());
+				if (!excludeUploadRecipient || !recipient.isUpload())
+					list.add(recipient.getAD_User_ID());
 			}
 			if (recipient.getAD_Role_ID() != 0)
 			{
@@ -372,4 +384,21 @@ public class MScheduler extends X_AD_Scheduler
 		return this;
 	}
 
+	/**
+	 * 
+	 * @return list of upload recipients
+	 */
+	public MSchedulerRecipient[] getUploadRecipients() {
+		List<MSchedulerRecipient> list = new ArrayList<>();
+		MSchedulerRecipient[] recipients = getRecipients(false);
+		for (int i = 0; i < recipients.length; i++) {
+			MSchedulerRecipient recipient = recipients[i];
+			if (!recipient.isActive())
+				continue;
+			if (recipient.getAD_User_ID() > 0 && recipient.isUpload() && recipient.getAD_AuthorizationAccount_ID() > 0) {
+				list.add(recipient);
+			}
+		}
+		return list.toArray(new MSchedulerRecipient[0]);
+	}
 }	//	MScheduler

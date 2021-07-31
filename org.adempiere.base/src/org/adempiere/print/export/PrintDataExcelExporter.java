@@ -100,9 +100,13 @@ extends AbstractExcelExporter
 		Object obj = null;
 
 		if (item.isTypeField() || item.isTypePrintFormat() && item.isImageField()) {
-			int AD_Column_ID = item.getAD_Column_ID();
-			if (AD_Column_ID > 0)
-				obj = m_printData.getNode(Integer.valueOf(AD_Column_ID));
+			obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
+		}
+
+		/** DEVCOFFEE: script column **/
+		if (item.isTypeScript())
+		{
+			obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 		}
 
 		if (obj != null && obj instanceof PrintDataElement) {

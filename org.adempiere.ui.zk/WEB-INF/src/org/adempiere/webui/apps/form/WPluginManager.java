@@ -35,7 +35,9 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ListboxFactory;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.WListbox;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.IDColumn;
@@ -43,6 +45,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -51,6 +54,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Vbox;
 
@@ -64,7 +68,7 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2038792517003449189L;
+	private static final long serialVersionUID = -5661912464378243252L;
 
 	/** Log. */
 	private static final CLogger log = CLogger.getCLogger(WPluginManager.class);
@@ -74,6 +78,8 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 	private Button pluginProcess;
 	private Vector<Vector<Object>> pluginData;
 	private Vector<String> pluginColumnNames;
+	private Textbox fFilter = new Textbox();
+	private Button btnRefresh = null;
 
 	private static final int PLUGIN_ACTION_NONE = 0;
 	private static final int PLUGIN_ACTION_STOP = 1;
@@ -95,6 +101,17 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		Vbox vbox = new Vbox();
 		ZKUpdateUtil.setHflex(vbox, "1");
 		ZKUpdateUtil.setVflex(vbox, "1");
+
+		fFilter.setPlaceholder(Msg.getMsg(ctx, "filter.by"));
+		fFilter.addEventListener(Events.ON_CHANGE, this);
+		btnRefresh = ButtonFactory.createNamedButton("Refresh");
+		btnRefresh.addEventListener(Events.ON_CLICK, this);
+
+		Hlayout hl = new Hlayout();
+		hl.setValign("middle");
+		hl.appendChild(fFilter);
+		hl.appendChild(btnRefresh);
+		vbox.appendChild(hl);
 
 		pluginColumnNames = new Vector<String>();
 		pluginColumnNames.add("");
@@ -244,8 +261,7 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 				// PLUGIN_ACTION_INSTALL not implemented yet
 			}
 		}
-		refreshPluginTable();
-		refreshActionList();
+		refreshAll();
 	}
 
 	private void refreshPluginTable() {
@@ -255,6 +271,10 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 
 		BundleContext bundleCtx = WebUIActivator.getBundleContext();
 		for (Bundle bundle : bundleCtx.getBundles()) {
+
+			if (!Util.isEmpty(fFilter.getValue()) && !bundle.getSymbolicName().toUpperCase().contains(fFilter.getValue().toUpperCase()))
+				continue;
+
 			Vector<Object> line = new Vector<Object>();
 			Integer bundl = Long.valueOf(bundle.getBundleId()).intValue(); // potential problem converting Long to
 			// Integer, but WListBox cannot order Long
@@ -270,11 +290,22 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		pluginsTable.setSelectedIndex(idx);
 	}
 
+	private void refreshAll() {
+		refreshPluginTable();
+		refreshActionList();
+	}
+
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_SELECT.equals(event.getName()) && event.getTarget() == pluginsTable)
 			refreshActionList();
 		else if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == pluginProcess)
 			processPlugin();
+		else if (Events.ON_CLICK.equals(event.getName()) && event.getTarget() == btnRefresh)
+			refreshAll();
+		else if (Events.ON_CHANGE.equals(event.getName()) && event.getTarget() == fFilter) {
+			pluginsTable.setSelectedIndex(-1);
+			refreshAll();
+		}
 	}
 
 }

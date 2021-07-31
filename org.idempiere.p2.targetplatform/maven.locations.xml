@@ -1,0 +1,186 @@
+<!-- location entries for maven artifacts. append to the end of the generated 
+	org.idempiere.p2.targetplatform.target target platform file -->
+<locations>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.google.http-client</groupId>
+		<artifactId>google-http-client-gson</artifactId>
+		<version>1.38.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.google.http-client</groupId>
+		<artifactId>google-http-client</artifactId>
+		<version>1.38.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.google.oauth-client</groupId>
+		<artifactId>google-oauth-client</artifactId>
+		<version>1.31.4</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>io.grpc</groupId>
+		<artifactId>grpc-context</artifactId>
+		<version>1.35.0</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>io.opencensus</groupId>
+		<artifactId>opencensus-contrib-http-util</artifactId>
+		<version>0.28.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>io.opencensus</groupId>
+		<artifactId>opencensus-api</artifactId>
+		<version>0.28.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>30.1.1-jre</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.google.guava</groupId>
+		<artifactId>failureaccess</artifactId>
+		<version>1.0.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.google.code.findbugs</groupId>
+		<artifactId>jsr305</artifactId>
+		<version>3.0.2</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-annotations</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-core</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-databind</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.dataformat</groupId>
+		<artifactId>jackson-dataformat-xml</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.datatype</groupId>
+		<artifactId>jackson-datatype-guava</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.datatype</groupId>
+		<artifactId>jackson-datatype-joda</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.datatype</groupId>
+		<artifactId>jackson-datatype-json-org</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.jaxrs</groupId>
+		<artifactId>jackson-jaxrs-base</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.jaxrs</groupId>
+		<artifactId>jackson-jaxrs-json-provider</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.jaxrs</groupId>
+		<artifactId>jackson-jaxrs-xml-provider</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.module</groupId>
+		<artifactId>jackson-module-jaxb-annotations</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.fasterxml.jackson.module</groupId>
+		<artifactId>jackson-module-jsonSchema</artifactId>
+		<version>2.12.3</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>20190722</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>javax.validation</groupId>
+		<artifactId>validation-api</artifactId>
+		<version>1.1.0.Final</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>dev.samstevens.totp</groupId>
+		<artifactId>totp</artifactId>
+		<version>1.7.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>com.google.zxing</groupId>
+		<artifactId>javase</artifactId>
+		<version>3.4.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate"
+		type="Maven">
+		<groupId>org.antlr</groupId>
+	    <artifactId>antlr4-runtime</artifactId>
+	    <version>4.9.2</version> 
+	</location>
+
+</locations>

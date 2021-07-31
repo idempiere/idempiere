@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
-<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-201101" sequenceNumber="1606184870">
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl --><target name="idempiere-210426" sequenceNumber="1619428882">
   <locations>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.sun.istack.commons-runtime" version="3.0.8"/>
       <unit id="com.sun.org.apache.xml.internal.resolver" version="20050927.0.0"/>
       <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.16"/>
@@ -23,7 +22,7 @@
       <unit id="org.jvnet.staxex.stax-ex" version="1.8.1"/>
       <repository location="https://idempiere.github.io/binary.file/p2.maven/org.idempiere.webservice.client-p2-R20190412"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="zcommon" version="9.5.0.1"/>
       <unit id="zel" version="9.5.0.1"/>
       <unit id="zhtml" version="9.5.0.1"/>
@@ -37,24 +36,12 @@
       <unit id="zweb-dsp" version="9.5.0.1"/>
       <repository location="https://idempiere.github.io/binary.file/p2.zk/9.5.0.1"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="bcmail" version="1.66.0"/>
       <unit id="bcpkix" version="1.66.0"/>
       <unit id="bcprov" version="1.66.0"/>
       <unit id="bctsp" version="1.46.0"/>
       <unit id="com.diffplug.osgi.extension.sun.misc" version="0.0.0"/>
-      <unit id="com.fasterxml.jackson.core.jackson-annotations" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.core.jackson-core" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.core.jackson-databind" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.dataformat.jackson-dataformat-xml" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-guava" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-joda" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.datatype.jackson-datatype-json-org" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-xml-provider" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.module.jackson-module-jaxb-annotations" version="2.10.1"/>
-      <unit id="com.fasterxml.jackson.module.jackson-module-jsonSchema" version="2.10.1"/>
       <unit id="com.fasterxml.woodstox.woodstox-core" version="6.0.1"/>
       <unit id="com.github.relaxng.Datatype" version="2011.1.0"/>
       <unit id="com.google.zxing.core" version="3.4.0"/>
@@ -86,8 +73,6 @@
       <unit id="javax.enterprise.cdi-api" version="2.0.0.SP1"/>
       <unit id="javax.interceptor-api" version="1.2.2"/>
       <unit id="javax.transaction-api" version="1.3.0"/>
-      <unit id="javax.validation.api" version="1.1.0.Final"/>
-      <unit id="javax.validation.api" version="2.0.1.Final"/>
       <unit id="javax.websocket-api" version="1.1.0"/>
       <unit id="joda-time" version="2.10.8"/>
       <unit id="json" version="20180813.0.0"/>
@@ -217,7 +202,7 @@
       <unit id="stax2-api" version="4.2.0"/>
       <repository location="https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201101"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="org.eclipse.osgi" version="3.16.0.v20200828-0759"/>
       <unit id="org.apache.commons.codec" version="1.13.0.v20200108-0001"/>
       <unit id="org.apache.commons.logging" version="1.2.0.v20180409-1502"/>
@@ -304,9 +289,8 @@
       <unit id="org.eclipse.jdt.junit5.runtime" version="1.0.1000.v20200720-0748"/>
       <repository location="https://download.eclipse.org/eclipse/updates/4.17"/>
     </location>
-    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+    <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.gson" version="2.8.2.v20180104-1110"/>
-      <unit id="com.google.guava" version="27.1.0.v20190517-1946"/>
       <unit id="javax.inject" version="1.0.0.v20091030"/>
       <unit id="javax.jms" version="1.1.0.v201205091237"/>
       <unit id="org.antlr.runtime" version="4.7.2.v20200218-0804"/>
@@ -343,5 +327,160 @@
       <unit id="org.apache.commons.math3" version="3.6.1.v20200817-1830"/>
       <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20200831200620/repository"/>
     </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.http-client</groupId>
+		  <artifactId>google-http-client-gson</artifactId>
+		  <version>1.38.1</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.http-client</groupId>
+		  <artifactId>google-http-client</artifactId>
+		  <version>1.38.1</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.oauth-client</groupId>
+		  <artifactId>google-oauth-client</artifactId>
+		  <version>1.31.4</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>io.grpc</groupId>
+		  <artifactId>grpc-context</artifactId>
+		  <version>1.35.0</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>io.opencensus</groupId>
+		  <artifactId>opencensus-contrib-http-util</artifactId>
+		  <version>0.28.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>io.opencensus</groupId>
+		  <artifactId>opencensus-api</artifactId>
+		  <version>0.28.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.guava</groupId>
+		  <artifactId>guava</artifactId>
+		  <version>30.1.1-jre</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.guava</groupId>
+		  <artifactId>failureaccess</artifactId>
+		  <version>1.0.1</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.code.findbugs</groupId>
+		  <artifactId>jsr305</artifactId>
+		  <version>3.0.2</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-annotations</artifactId>
+		  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-core</artifactId>
+		  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-databind</artifactId>
+		  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.dataformat</groupId>
+    	  <artifactId>jackson-dataformat-xml</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.datatype</groupId>
+    	  <artifactId>jackson-datatype-guava</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.datatype</groupId>
+    	  <artifactId>jackson-datatype-joda</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.datatype</groupId>
+    	  <artifactId>jackson-datatype-json-org</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.jaxrs</groupId>
+    	  <artifactId>jackson-jaxrs-base</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.jaxrs</groupId>
+    	  <artifactId>jackson-jaxrs-json-provider</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.jaxrs</groupId>
+    	  <artifactId>jackson-jaxrs-xml-provider</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.module</groupId>
+    	  <artifactId>jackson-module-jaxb-annotations</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.fasterxml.jackson.module</groupId>
+    	  <artifactId>jackson-module-jsonSchema</artifactId>
+    	  <version>2.12.3</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+	      <groupId>org.json</groupId>
+	      <artifactId>json</artifactId>
+	      <version>20190722</version>
+		  <type>jar</type>
+	  </location>
+ 	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>javax.validation</groupId>
+	      <artifactId>validation-api</artifactId>
+	      <version>1.1.0.Final</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>dev.samstevens.totp</groupId>
+		  <artifactId>totp</artifactId>
+		  <version>1.7.1</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>com.google.zxing</groupId>
+		  <artifactId>javase</artifactId>
+		  <version>3.4.1</version>
+		  <type>jar</type>
+	  </location>
+	  <location includeSource="true" missingManifest="generate" type="Maven">
+		  <groupId>org.antlr</groupId>
+		  <artifactId>antlr4-runtime</artifactId>
+		  <version>4.9.2</version>
+	  </location>
   </locations>
 </target>

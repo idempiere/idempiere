@@ -31,6 +31,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -50,7 +51,9 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4600747909096993053L;
+	private static final long serialVersionUID = -4648764346588157872L;
+
+	private static final CLogger logger = CLogger.getCLogger(ProcessInfo.class);
 
 	/**
 	 *  Constructor
@@ -920,6 +923,10 @@ public class ProcessInfo implements Serializable
 				.setOnlyActiveRecords(true)
 				.first();
 
+		if (lastServerSession == null) {
+			logger.severe("There is no 'Server' record in AD_Session, this can indicate that the server plugin didn't start correctly.  Please verify, this can affect scheduled processes, idempiereMonitor, etc.");
+			return null;
+		}
 		return lastServerSession.getCreated();
 	}
 

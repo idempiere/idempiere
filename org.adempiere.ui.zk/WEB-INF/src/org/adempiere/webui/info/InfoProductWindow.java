@@ -208,11 +208,26 @@ public class InfoProductWindow extends InfoWindow {
         m_sqlRelated = relatedTbl.prepareTable(s_layoutRelated, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");
         relatedTbl.setMultiSelection(false);
         relatedTbl.autoSize();
-//        relatedTbl.getModel().addTableModelListener(this);
 
         //Available to Promise Tab
+
+        //	Header
+
+        ColumnInfo[] s_LayoutAtp = new ColumnInfo[]{
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "Date"), "Date", Timestamp.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "QtyOnHand", Double.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"), "C_BPartner_ID", String.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOrdered"), "QtyOrdered", Double.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "QtyReserved", Double.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "M_Locator_ID"), "M_Locator_ID", String.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID"), "M_AttributeSetInstance_ID", String.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"), "DocumentNo", String.class),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "M_Warehouse_ID"), "M_Warehouse_ID", String.class)
+        };
+
         m_tableAtp = ListboxFactory.newDataTableAutoSize();
         m_tableAtp.setMultiSelection(false);
+        m_tableAtp.prepareTable(s_LayoutAtp, "", "", false, "");
 
         //IDEMPIERE-337
         ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
@@ -368,6 +383,11 @@ public class InfoProductWindow extends InfoWindow {
 				}
 			}
 		});
+		warehouseTbl.repaint();
+		substituteTbl.repaint();
+		relatedTbl.repaint();
+		productpriceTbl.repaint();
+		m_tableAtp.repaint();
 	}
 
 	protected void onPAttributeClick() {
@@ -443,12 +463,18 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected void initParameters() {
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
-		int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
-		
-		int M_PriceList_Version_ID = findPLV (M_PriceList_ID);
+
+		String usePriceList=Env.getContext(Env.getCtx(), p_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE+"UsePriceListInProductInfo");
+		int M_PriceList_Version_ID = 0;
+		if ("Y".equalsIgnoreCase(usePriceList))
+		{
+			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
+
+			M_PriceList_Version_ID = findPLV(M_PriceList_ID);
+		}
 		//	Set Warehouse
 		if (M_Warehouse_ID == 0)
-			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), "#M_Warehouse_ID");
+			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
 		if (M_Warehouse_ID != 0)
 			setWarehouse (M_Warehouse_ID);
 		// 	Set PriceList Version
@@ -644,18 +670,6 @@ public class InfoProductWindow extends InfoWindow {
 	 */
 	protected void initAtpTab (int  m_M_Warehouse_ID, int m_M_Product_ID)
 	{
-		//	Header
-		Vector<String> columnNames = new Vector<String>();
-		columnNames.add(Msg.translate(Env.getCtx(), "Date"));
-		columnNames.add(Msg.translate(Env.getCtx(), "QtyOnHand"));
-		columnNames.add(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
-		columnNames.add(Msg.translate(Env.getCtx(), "QtyOrdered"));
-		columnNames.add(Msg.translate(Env.getCtx(), "QtyReserved"));
-		columnNames.add(Msg.translate(Env.getCtx(), "M_Locator_ID"));
-		columnNames.add(Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID"));
-		columnNames.add(Msg.translate(Env.getCtx(), "DocumentNo"));
-		columnNames.add(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
-
 		//	Fill Storage Data
 		boolean showDetail = isShowDetailATP();
 		String sql = "SELECT s.QtyOnHand, s.QtyReserved, s.QtyOrdered,"
@@ -790,18 +804,8 @@ public class InfoProductWindow extends InfoWindow {
 
 		//  Table
 		ListModelTable model = new ListModelTable(data);
+		Vector<String> columnNames = new Vector<String>();
 		m_tableAtp.setData(model, columnNames);
-		//
-		m_tableAtp.setColumnClass(0, Timestamp.class, true);   //  Date
-		m_tableAtp.setColumnClass(1, Double.class, true);      //  Quantity
-		m_tableAtp.setColumnClass(2, String.class, true);      //  Partner
-		m_tableAtp.setColumnClass(3, Double.class, true);      //  Quantity
-		m_tableAtp.setColumnClass(4, Double.class, true);      //  Quantity
-		m_tableAtp.setColumnClass(5, String.class, true);   	  //  Locator
-		m_tableAtp.setColumnClass(6, String.class, true);   	  //  ASI
-		m_tableAtp.setColumnClass(7, String.class, true);      //  DocNo
-		m_tableAtp.setColumnClass(8, String.class, true);   	  //  Warehouse
-		//
 		m_tableAtp.autoSize();
 	}	//	initAtpTab
 

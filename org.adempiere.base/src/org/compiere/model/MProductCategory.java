@@ -146,8 +146,6 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 		super(ctx, M_Product_Category_ID, trxName);
 		if (M_Product_Category_ID == 0)
 		{
-		//	setName (null);
-		//	setValue (null);
 			setMMPolicy (MMPOLICY_FiFo);	// F
 			setPlannedMargin (Env.ZERO);
 			setIsDefault (false);

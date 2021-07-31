@@ -267,9 +267,6 @@ public class MDistribution extends X_GL_Distribution
 		super (ctx, GL_Distribution_ID, trxName);
 		if (GL_Distribution_ID == 0)
 		{
-		//	setC_AcctSchema_ID (0);
-		//	setName (null);
-			//
 			setAnyAcct (true);	// Y
 			setAnyActivity (true);	// Y
 			setAnyBPartner (true);	// Y
@@ -442,7 +439,6 @@ public class MDistribution extends X_GL_Distribution
 			dl.calculateQty (Qty);	
 			total = total.add(dl.getAmt());
 			totalQty = totalQty.add(dl.getQty());
-		//	log.fine("distribute - Line=" + dl.getLine() + " - " + dl.getPercent() + "% " + dl.getAmt() + " - Total=" + total);
 			//	Remainder
 			if (dl.getPercent().compareTo(Env.ZERO) == 0)
 				indexZeroPercent = i;
@@ -460,12 +456,10 @@ public class MDistribution extends X_GL_Distribution
 		{
 			if (indexZeroPercent != -1)
 			{
-			//	log.fine("distribute - Difference=" + difference + " - 0%Line=" + m_lines[indexZeroPercent]); 
 				m_lines[indexZeroPercent].setAmt (difference);
 			}
 			else if (indexBiggest != -1)
 			{
-			//	log.fine("distribute - Difference=" + difference + " - MaxLine=" + m_lines[indexBiggest] + " - " + m_lines[indexBiggest].getAmt()); 
 				m_lines[indexBiggest].setAmt (m_lines[indexBiggest].getAmt().add(difference));
 			}
 			else
@@ -477,12 +471,10 @@ public class MDistribution extends X_GL_Distribution
 		{
 			if (indexZeroPercent != -1)
 			{
-			//	log.fine("distribute - Difference=" + difference + " - 0%Line=" + m_lines[indexZeroPercent]); 
 				m_lines[indexZeroPercent].setQty (differenceQty);
 			}
 			else if (indexBiggest != -1)
 			{
-			//	log.fine("distribute - Difference=" + difference + " - MaxLine=" + m_lines[indexBiggest] + " - " + m_lines[indexBiggest].getAmt()); 
 				m_lines[indexBiggest].setQty (m_lines[indexBiggest].getQty().add(differenceQty));
 			}
 			else

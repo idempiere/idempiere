@@ -170,12 +170,10 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		super (ctx, C_AllocationHdr_ID, trxName);
 		if (C_AllocationHdr_ID == 0)
 		{
-		//	setDocumentNo (null);
 			setDateTrx (new Timestamp(System.currentTimeMillis()));
 			setDateAcct (getDateTrx());
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-		//	setC_Currency_ID (0);
+			setDocAction (DOCACTION_Complete);
+			setDocStatus (DOCSTATUS_Drafted);
 			setApprovalAmt (Env.ZERO);
 			setIsApproved (false);
 			setIsManual (false);
@@ -841,7 +839,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		}
 	
 
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getDateAcct();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getDateAcct();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
@@ -1067,7 +1065,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			description = Env.parseVariable(description, this, trxName, true);
 			description = Msg.parseTranslation(getCtx(), description);
 		} else
-			description = Env.getContext(getCtx(), "#AD_User_Name"); // just to be sure
+			description = Env.getContext(getCtx(), Env.AD_USER_NAME); // just to be sure
 
 		return description;
 	}

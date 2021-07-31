@@ -168,7 +168,7 @@ public class CalloutInvoice extends CalloutEngine
 					mTab.setValue("M_PriceList_ID", ii);
 				else
 				{	//	get default PriceList
-					int i = Env.getContextAsInt(ctx, "#M_PriceList_ID");
+					int i = Env.getContextAsInt(ctx, Env.M_PRICELIST_ID);
 					if (i != 0)
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);
@@ -484,7 +484,7 @@ public class CalloutInvoice extends CalloutEngine
 		int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Org_ID");
 		if (log.isLoggable(Level.FINE)) log.fine("Org=" + AD_Org_ID);
 
-		int M_Warehouse_ID = Env.getContextAsInt(ctx, "#M_Warehouse_ID");
+		int M_Warehouse_ID = Env.getContextAsInt(ctx, Env.M_WAREHOUSE_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("Warehouse=" + M_Warehouse_ID);
 
 		//

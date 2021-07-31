@@ -23,8 +23,10 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.expression.logic.LogicEvaluator;
 
 
 /**
@@ -87,13 +89,8 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		super (ctx, AD_Process_Para_ID, trxName);
 		if (AD_Process_Para_ID == 0)
 		{
-		//	setAD_Process_ID (0);	Parent
-		//	setName (null);
-		//	setColumnName (null);
-			
 			setFieldLength (0);
 			setSeqNo (0);
-		//	setAD_Reference_ID (0);
 			setIsCentrallyMaintained (true);
 			setIsRange (false);
 			setIsMandatory (false);
@@ -333,6 +330,18 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 			setHelp (element.getHelp());
 		}
 
+		//validate logic expression
+		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getReadOnlyLogic());
+			}
+		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_DisplayLogic)) {
+			if (isActive() && !Util.isEmpty(getDisplayLogic(), true) && !getDisplayLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getDisplayLogic());
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 

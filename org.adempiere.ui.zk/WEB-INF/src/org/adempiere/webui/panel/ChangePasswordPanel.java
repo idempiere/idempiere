@@ -334,6 +334,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
         		throw new IllegalArgumentException(Msg.getMsg(m_ctx, "NewPasswordMustDiffer"));
     	}
 
+    	StringBuilder tenantsChanged = new StringBuilder();
     	Trx trx = null;
     	try
     	{
@@ -344,7 +345,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	    	for (KeyNamePair clientKNPair : m_clientKNPairs)
 	    	{	    		
 	    		int clientId = clientKNPair.getKey();
-	    		Env.setContext(m_ctx, "#AD_Client_ID", clientId);
+	    		Env.setContext(m_ctx, Env.AD_CLIENT_ID, clientId);
 	    		MUser user = MUser.get(m_ctx, m_userName);
 	    		if (user == null)
 	    		{
@@ -360,6 +361,9 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	    		try {
 	    			PO.setCrossTenantSafe();
 	    			user.saveEx(trx.getTrxName());
+	    			if (tenantsChanged.length() > 0)
+	    				tenantsChanged.append(", ");
+	    			tenantsChanged.append(clientKNPair.getName());
 	    		} finally {
 	    			PO.clearCrossTenantSafe();
 	    		}
@@ -379,7 +383,7 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
     			trx.close();
     	}
     	
-		String msg = Msg.getMsg(m_ctx, "NewPasswordValidForAllTenants");
+		String msg = Msg.getMsg(m_ctx, "NewPasswordValidForAllTenants", new Object[] {tenantsChanged});
 		Messagebox.showDialog(msg, AEnv.getDialogHeader(Env.getCtx(), 0), Messagebox.OK, Messagebox.INFORMATION, new Callback<Integer>() {
 			@Override
 			public void onCallback(Integer result) {

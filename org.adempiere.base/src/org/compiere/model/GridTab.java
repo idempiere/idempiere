@@ -112,7 +112,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8443012394354164942L;
+	private static final long serialVersionUID = 6119615577891555600L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -1364,7 +1364,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!isDetail())
 			return true;
 		//	Same link column value
-		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, this.getParentTabNo(), getLinkColumnName());
+		// IDEMPIERE-4799 Fix Check Parent Column name
+		String columnName = Util.isEmpty(m_parentColumnName) ? getLinkColumnName() : m_parentColumnName;
+		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, this.getParentTabNo(), columnName);
 		return m_linkValue.equals(value);
 	}	//	isCurrent
 
@@ -2236,7 +2238,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void loadLocks()
 	{
-		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), "#AD_User_ID");
+		int AD_User_ID = Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - AD_User_ID=" + AD_User_ID);
 		if (!canHaveAttachment())
 			return;
@@ -2301,7 +2303,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public void lock (Properties ctx, int Record_ID, boolean lock)
 	{
-		int AD_User_ID = Env.getContextAsInt(ctx, "#AD_User_ID");
+		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("Lock=" + lock + ", AD_User_ID=" + AD_User_ID
 			+ ", AD_Table_ID=" + m_vo.AD_Table_ID + ", Record_ID=" + Record_ID);
 		MPrivateAccess access = MPrivateAccess.get (ctx, AD_User_ID, m_vo.AD_Table_ID, Record_ID);
@@ -2328,8 +2330,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		m_DataStatusEvent = e;          //  save it
 		//  when sorted set current row to 0
 		String msg = m_DataStatusEvent.getAD_Message();
-		if (msg != null && msg.equals("Sorted"))
-			setCurrentRow(0, true);
+		if (msg != null && msg.equals(GridTable.SORTED_DSE_EVENT))
+		{
+			oldCurrentRow = m_currentRow;
+			if (e.getCurrentRow() >= 0)
+				setCurrentRow(e.getCurrentRow());
+			else
+				setCurrentRow(0, true);
+		}
 		//  set current row
 		m_DataStatusEvent = e;          //  setCurrentRow clear it, need to save again
 		m_DataStatusEvent.setCurrentRow(m_currentRow);
@@ -2397,7 +2405,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	//	log.fine("fini - " + e.toString());
 	}	//	fireDataStatusChanged
 
-	private void updateDataStatusEventProperties(DataStatusEvent e) {
+	/**
+	 * update {@link DataStatusEvent} properties from gridTab
+	 * @param e
+	 */
+	public void updateDataStatusEventProperties(DataStatusEvent e) {
 		e.Created = (Timestamp)getValue("Created");
 		e.CreatedBy = (Integer)getValue("CreatedBy");
 		e.Updated = (Timestamp)getValue("Updated");
@@ -2651,6 +2663,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//reset
 		m_DataStatusEvent = null;
 
+		m_mTable.setCurrentRow(m_currentRow);
+		
 		return m_currentRow;
 	}   //  setCurrentRow
 
@@ -2839,6 +2853,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private List<Callout> activeCalloutInstance = new ArrayList<Callout>();
 
 	private boolean m_updateWindowContext = true;
+
+	// Cached parent Tab No
+	private int m_parentTabNo = -1;
 
 	/**
 	 *
@@ -3309,11 +3326,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	private int getParentTabNo()
 	{
+		if (m_parentTabNo >= 0)
+			return m_parentTabNo;
 		int tabNo = m_vo.TabNo;
 		int currentLevel = m_vo.TabLevel;
 		int parentLevel = currentLevel-1;
 		if (parentLevel < 0)
-			return tabNo;
+			return (m_parentTabNo = tabNo);
 		while (parentLevel != currentLevel)
 		{
 			tabNo--;
@@ -3321,7 +3340,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (tabNo == 0)
 				break;
 		}
-		return tabNo;
+		return (m_parentTabNo = tabNo);
 	}
 
 	public GridTab getParentTab()
@@ -3437,7 +3456,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		// minimum between AD_Tab.MaxQueryRecords and AD_Role.MaxQueryRecords
 		int roleMaxQueryRecords = MRole.getDefault().getMaxQueryRecords();
 		int tabMaxQueryRecords = m_vo.MaxQueryRecords;
-		if (roleMaxQueryRecords > 0 && roleMaxQueryRecords < tabMaxQueryRecords)
+		if (roleMaxQueryRecords > 0 && (roleMaxQueryRecords < tabMaxQueryRecords || tabMaxQueryRecords == 0))
 			tabMaxQueryRecords = roleMaxQueryRecords;
 		return tabMaxQueryRecords;
 	}
@@ -3468,5 +3487,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		int max = getMaxQueryRecords();
 		return max > 0 && noRecords > max;
 	}	//	isQueryMax
+
+	/***
+	 * reset to empty
+	 */
+	public void reset() {
+		m_mTable.reset();
+		setCurrentRow(0, true);
+	}
 
 }	//	GridTab

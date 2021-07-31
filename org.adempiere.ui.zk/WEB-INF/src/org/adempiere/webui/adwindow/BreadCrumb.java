@@ -283,7 +283,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 					}					
 				});
 				linkPopup.setPage(pathLabel.getPage());
-				linkPopup.open(pathLabel);								
+				linkPopup.open(pathLabel, "after_start");
 			}
 		};
 		pathLabel.addEventListener(Events.ON_CLICK, listener);
@@ -329,6 +329,9 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 			if (windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
 				return;
 
+			if (windowContent != null && windowContent.isBlock())
+				return;
+			
 			KeyEvent keyEvent = (KeyEvent) event;
 			if (keyEvent.isAltKey()) {
 				if (keyEvent.getKeyCode() == KeyEvent.LEFT) {

@@ -17,7 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -48,7 +47,9 @@ import org.xml.sax.SAXException;
  *
  */
 public class AttachmentFileSystem implements IAttachmentStore {
-	
+
+	// TODO: Implement FileSystemFallbackDB
+
 	private final CLogger log = CLogger.getCLogger(getClass());
 	
 	@Override
@@ -202,21 +203,9 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 				final File file = new File(filePath);
 				if (file.exists()) {
-					// read files into byte[]
-					final byte[] dataEntry = new byte[(int) file.length()];
-					try {
-						final FileInputStream fileInputStream = new FileInputStream(file);
-						fileInputStream.read(dataEntry);
-						fileInputStream.close();
-					} catch (FileNotFoundException e) {
-						log.severe("File Not Found.");
-						e.printStackTrace();
-					} catch (IOException e1) {
-						log.severe("Error Reading The File.");
-						e1.printStackTrace();
-					}
-					final MAttachmentEntry entry = new MAttachmentEntry(file.getName(),
-							dataEntry, attach.m_items.size() + 1);
+					// file data read delayed
+					IAttachmentLazyDataSource ds = new AttachmentFileLazyDataSource(file);
+					final MAttachmentEntry entry = new MAttachmentEntry(file.getName(), attach.m_items.size() + 1, ds);
 					attach.m_items.add(entry);
 				} else {
 					log.severe("file not found: " + file.getAbsolutePath());

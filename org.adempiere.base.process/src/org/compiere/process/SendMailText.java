@@ -278,7 +278,7 @@ public class SendMailText extends SvrProcess
 		} else {
 			log.warning("FAILURE - " + to.getEMail());
 		}
-		StringBuilder msglog = new StringBuilder((OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());
+		StringBuilder msglog = new StringBuilder(Msg.parseTranslation(getCtx(), OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());
 		addLog(0, null, null, msglog.toString());
 		return Boolean.valueOf(OK);
 	}	//	sendIndividualMail
