@@ -17,11 +17,13 @@
 package org.compiere.wf;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.PO;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.compiere.model.X_AD_WF_NextCondition;
@@ -115,14 +117,34 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	 */
 	public boolean evaluate (MWFActivity activity)
 	{
+		return evaluate(activity.getPO());
+	}	//	evaluate
+	
+	/**
+	 * 	Evaluate Condition
+	 * 	@param po PO
+	 *	@return true if true
+	 */
+	public boolean evaluate (PO po)
+	{
 		if (getAD_Column_ID() == 0)
 			throw new IllegalStateException("No Column defined - " + this);
 			
-		PO po = activity.getPO();
 		if (po == null || po.get_ID() == 0)
 			throw new IllegalStateException("Could not evaluate " + po + " - " + this);
 		//
-		Object valueObj = po.get_ValueOfColumn(getAD_Column_ID());
+		Object valueObj = null;
+
+		if (get_Value("SQLStatement") != null && !get_Value("SQLStatement").equals("")) {
+			try {
+				valueObj = getSqlResult(po.get_ID());
+			} catch (Exception e) {
+				throw new IllegalStateException("Could not execute SQL statement " + po + " - " + this);
+			}
+		} else {
+			valueObj = po.get_ValueOfColumn(getAD_Column_ID());
+		}
+		
 		if (valueObj == null)
 			valueObj = "";
 		String value1 = getDecodedValue(getValue(), po);	// F3P: added value decoding
@@ -341,6 +363,41 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 
 		makeImmutable();
 		return this;
+	}
+	
+	/**
+	 * Executes SQLStatement of Record and returns result as Object
+	 * @param Record_ID
+	 * @return SQL statement execution result
+	 * @throws Exception
+	 */
+	private Object getSqlResult(int Record_ID) throws Exception {
+		String sqlStatement = (String) get_Value("SQLStatement");
+		String tableName = getAD_Column().getAD_Table().getTableName();
+		String pkName = tableName + "_ID"; // primary key name
+
+		Object result = null;
+
+		String resultSql = String.format("SELECT (%s) FROM %s WHERE %s = %d", sqlStatement, tableName, pkName, Record_ID);
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			pstmt = DB.prepareStatement(resultSql, null);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				result = rs.getObject(1);
+			}
+		} catch (Exception e) {
+			log.warning("AD_WF_NextCondition_ID = " + get_ID() + ". " + e.getMessage());
+			throw e;
+		} finally {
+			DB.close(rs, pstmt);
+		}
+
+		return result;
 	}
 
 }	//	MWFNextCondition
