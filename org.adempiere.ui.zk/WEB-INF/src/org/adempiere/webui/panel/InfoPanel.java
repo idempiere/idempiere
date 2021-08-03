@@ -77,6 +77,7 @@ import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -1942,35 +1943,29 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			return m_PO_Window_ID;
 		if (m_SO_Window_ID > 0)
 			return m_SO_Window_ID;
-		//
-		String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, tableName);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				m_SO_Window_ID = rs.getInt(1);
-				m_PO_Window_ID = rs.getInt(2);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//
-		if (!isSOTrx && m_PO_Window_ID > 0)
-			return m_PO_Window_ID;
-		return m_SO_Window_ID;
+
+		MTable table = MTable.get(Env.getCtx(), tableName);
+
+		String columnName = "";
+		if (table.getColumnIndex("IsSOTrx") > 0)
+			columnName = "IsSOTrx";
+		else if (table.getColumnIndex("IsReceipt") > 0)
+			columnName = "IsReceipt";
+
+		MQuery query = new MQuery(tableName);
+		query.addRestriction("AD_Client_ID = " + Env.getAD_Client_ID(Env.getCtx())); // otherwise GRAVE: SELECT Count(*) FROM C_Payment WHERE  AND IsReceipt='Y'
+
+		if (!Util.isEmpty(columnName))
+			query.addRestriction(columnName, MQuery.EQUAL, isSOTrx);
+
+		int winID = Env.getZoomWindowID(query);
+		if (isSOTrx)
+			m_SO_Window_ID = winID;
+		else
+			m_PO_Window_ID = winID;
+
+		return winID;
+
 	}	//	getAD_Window_ID
 
     public void onEvent(Event event)
