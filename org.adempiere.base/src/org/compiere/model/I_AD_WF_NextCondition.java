@@ -199,6 +199,15 @@ public interface I_AD_WF_NextCondition
 	  */
 	public int getSeqNo();
 
+    /** Column name SQLStatement */
+    public static final String COLUMNNAME_SQLStatement = "SQLStatement";
+
+	/** Set SQLStatement	  */
+	public void setSQLStatement (String SQLStatement);
+
+	/** Get SQLStatement	  */
+	public String getSQLStatement();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
