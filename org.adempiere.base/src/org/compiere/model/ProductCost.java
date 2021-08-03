@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -52,6 +53,12 @@ public class ProductCost
 		m_M_AttributeSetInstance_ID = M_AttributeSetInstance_ID;
 		m_trxName = trxName;
 	}	//	ProductCost
+	
+	/** Valid Combination Cache			*/
+	private static CCache<String, Integer> s_valid_comb_cache = new CCache<String, Integer>("ProductCost_ValidCombination", 40);
+	
+	/** Default Valid Compbination Cache			*/
+	private static CCache<String, Integer> s_default_valid_comb_cache = new CCache<String, Integer>("ProductCost_DefaultValidCombination", 40);
 	
 	/** The ID					*/
 	private int				m_M_Product_ID = 0;
@@ -181,38 +188,45 @@ public class ProductCost
 		//  No Product - get Default from Product Category
 		if (m_M_Product_ID == 0)
 			return getAccountDefault(AcctType, as);
-
-		String sql = "SELECT P_Revenue_Acct, P_Expense_Acct, P_Asset_Acct, P_Cogs_Acct, "	//	1..4
-			+ "P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, "	//	5..6
-			+ "P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct,"			//	7..8
-			+ "P_CostAdjustment_Acct, P_InventoryClearing_Acct,"			//	9..10
-			+ "P_WIP_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,"	//  11.12.13
-			+ "P_RateVariance_Acct,P_MixVariance_Acct,P_FloorStock_Acct," 	//  14.15.16
-			+ "P_CostOfProduction_Acct,P_Labor_Acct,P_Burden_Acct,P_OutsideProcessing_Acct,"	//  17.18,19,20
-			+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct,"	//  21,23
-			+ "P_LandedCostClearing_Acct "									//  24
-			+ "FROM M_Product_Acct "
-			+ "WHERE M_Product_ID=? AND C_AcctSchema_ID=?";
-		//
-		int validCombination_ID = 0;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_M_Product_ID);
-			pstmt.setInt(2, as.getC_AcctSchema_ID());
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				validCombination_ID = rs.getInt(AcctType);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
+		
+		String key = m_M_Product_ID + "_" + as.getC_AcctSchema_ID() + "_" + AcctType;
+		Integer validCombination_ID = s_valid_comb_cache.get(key);
+		
+		if(validCombination_ID == null || validCombination_ID == 0) {
+			String sql = "SELECT P_Revenue_Acct, P_Expense_Acct, P_Asset_Acct, P_Cogs_Acct, "	//	1..4
+				+ "P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, "	//	5..6
+				+ "P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct,"			//	7..8
+				+ "P_CostAdjustment_Acct, P_InventoryClearing_Acct,"			//	9..10
+				+ "P_WIP_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,"	//  11.12.13
+				+ "P_RateVariance_Acct,P_MixVariance_Acct,P_FloorStock_Acct," 	//  14.15.16
+				+ "P_CostOfProduction_Acct,P_Labor_Acct,P_Burden_Acct,P_OutsideProcessing_Acct,"	//  17.18,19,20
+				+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct,"	//  21,23
+				+ "P_LandedCostClearing_Acct "									//  24
+				+ "FROM M_Product_Acct "
+				+ "WHERE M_Product_ID=? AND C_AcctSchema_ID=?";
+			//
+			validCombination_ID = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, m_M_Product_ID);
+				pstmt.setInt(2, as.getC_AcctSchema_ID());
+				rs = pstmt.executeQuery();
+				if (rs.next())
+					validCombination_ID = rs.getInt(AcctType);
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, sql, e);
+			}
+			finally {
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}
+			if (validCombination_ID != 0)
+				s_valid_comb_cache.put(key, validCombination_ID);
 		}
 		if (validCombination_ID == 0)
 			return null;
@@ -230,39 +244,46 @@ public class ProductCost
 	{
 		if (AcctType < ACCTTYPE_P_Revenue || AcctType > ACCTTYPE_P_LandedCostClearing)
 			return null;
-
-		String sql = "SELECT P_Revenue_Acct, P_Expense_Acct, P_Asset_Acct, P_Cogs_Acct, "
-			+ "P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, "
-			+ "P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct, "
-			+ "P_CostAdjustment_Acct, P_InventoryClearing_Acct, "
-			+ "P_WIP_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,"		//  11.12.13
-			+ "P_RateVariance_Acct,P_MixVariance_Acct,P_FloorStock_Acct," 			//  14.15.16
-			+ "P_CostOfProduction_Acct,P_Labor_Acct,P_Burden_Acct,P_OutsideProcessing_Acct,"		//  17.18,19,20
-			+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct,"			//  21,23
-			+ "P_LandedCostClearing_Acct "											//  24
-			+ "FROM M_Product_Category pc, M_Product_Category_Acct pca "
-			+ "WHERE pc.M_Product_Category_ID=pca.M_Product_Category_ID"
-			+ " AND pca.C_AcctSchema_ID=? "
-			+ "ORDER BY pc.IsDefault DESC, pc.Created";
-		//
-		int validCombination_ID = 0;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, as.getC_AcctSchema_ID());
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				validCombination_ID = rs.getInt(AcctType);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
+		
+		String key = as.getC_AcctSchema_ID()+ "_" + AcctType;
+		Integer validCombination_ID = s_default_valid_comb_cache.get(key);
+		
+		if(validCombination_ID == null || validCombination_ID == 0) {
+			String sql = "SELECT P_Revenue_Acct, P_Expense_Acct, P_Asset_Acct, P_Cogs_Acct, "
+				+ "P_PurchasePriceVariance_Acct, P_InvoicePriceVariance_Acct, "
+				+ "P_TradeDiscountRec_Acct, P_TradeDiscountGrant_Acct, "
+				+ "P_CostAdjustment_Acct, P_InventoryClearing_Acct, "
+				+ "P_WIP_Acct,P_MethodChangeVariance_Acct,P_UsageVariance_Acct,"		//  11.12.13
+				+ "P_RateVariance_Acct,P_MixVariance_Acct,P_FloorStock_Acct," 			//  14.15.16
+				+ "P_CostOfProduction_Acct,P_Labor_Acct,P_Burden_Acct,P_OutsideProcessing_Acct,"		//  17.18,19,20
+				+ "P_Overhead_Acct,P_Scrap_Acct,P_AverageCostVariance_Acct,"			//  21,23
+				+ "P_LandedCostClearing_Acct "											//  24
+				+ "FROM M_Product_Category pc, M_Product_Category_Acct pca "
+				+ "WHERE pc.M_Product_Category_ID=pca.M_Product_Category_ID"
+				+ " AND pca.C_AcctSchema_ID=? "
+				+ "ORDER BY pc.IsDefault DESC, pc.Created";
+			//
+			validCombination_ID = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, as.getC_AcctSchema_ID());
+				rs = pstmt.executeQuery();
+				if (rs.next())
+					validCombination_ID = rs.getInt(AcctType);
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, sql, e);
+			}
+			finally {
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}
+			if (validCombination_ID != 0)
+				s_default_valid_comb_cache.put(key, validCombination_ID);
 		}
 		if (validCombination_ID == 0)
 			return null;
