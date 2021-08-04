@@ -178,15 +178,17 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 				if (md.getNode_ID() == mtnMovingNode.getNode_ID()) {
 					updateMovingNodePO(oldMParent, mtnMovingNode, i, trx.getTrxName());
 				}
-				StringBuilder sql = new StringBuilder("UPDATE ");
-				sql.append(mTree.getNodeTableName())
-					.append(" SET Parent_ID=").append(oldMParent.getNode_ID())
-					.append(", SeqNo=").append(i)
-					.append(", Updated=getDate()")
-					.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
-					.append(" AND Node_ID=").append(md.getNode_ID());
-				if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
-				no = DB.executeUpdate(sql.toString(),trx.getTrxName());
+				else {
+					StringBuilder sql = new StringBuilder("UPDATE ");
+					sql.append(mTree.getNodeTableName())
+						.append(" SET Parent_ID=").append(oldMParent.getNode_ID())
+						.append(", SeqNo=").append(i)
+						.append(", Updated=getDate()")
+						.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
+						.append(" AND Node_ID=").append(md.getNode_ID());
+					if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
+					no = DB.executeUpdate(sql.toString(),trx.getTrxName());
+				}
 			}
 			if (oldParent != newParent) 
 			{
@@ -198,15 +200,17 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 					if (md.getNode_ID() == mtnMovingNode.getNode_ID()) {
 						updateMovingNodePO(newMParent, mtnMovingNode, i, trx.getTrxName());
 					}
-					StringBuilder sql = new StringBuilder("UPDATE ");
-					sql.append(mTree.getNodeTableName())
-						.append(" SET Parent_ID=").append(newMParent.getNode_ID())
-						.append(", SeqNo=").append(i)
-						.append(", Updated=getDate()")
-						.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
-						.append(" AND Node_ID=").append(md.getNode_ID());
-					if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
-					DB.executeUpdateEx(sql.toString(),trx.getTrxName());
+					else {
+						StringBuilder sql = new StringBuilder("UPDATE ");
+						sql.append(mTree.getNodeTableName())
+							.append(" SET Parent_ID=").append(newMParent.getNode_ID())
+							.append(", SeqNo=").append(i)
+							.append(", Updated=getDate()")
+							.append(" WHERE AD_Tree_ID=").append(mTree.getAD_Tree_ID())
+							.append(" AND Node_ID=").append(md.getNode_ID());
+						if (log.isLoggable(Level.FINE)) log.fine(sql.toString());
+						DB.executeUpdateEx(sql.toString(),trx.getTrxName());
+					}
 				}
 			}
 			//	COMMIT          *********************
