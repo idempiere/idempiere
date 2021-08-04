@@ -547,6 +547,14 @@ public abstract class CreateFromInvoice extends CreateFrom
 				if (inoutLine != null)
 				{
 					invoiceLine.setShipLine(inoutLine);		//	overwrites
+					if(invoiceLine.getC_UOM_ID()!=inoutLine.getC_UOM_ID()) {
+						invoiceLine.setC_UOM_ID(inoutLine.getC_UOM_ID());						
+						BigDecimal PriceEntered = MUOMConversion.convertProductFrom (invoice.getCtx(), M_Product_ID, 
+								inoutLine.getC_UOM_ID(), invoiceLine.getPriceEntered());
+							if (PriceEntered == null)
+								PriceEntered = invoiceLine.getPriceEntered(); 						
+						invoiceLine.setPriceEntered(PriceEntered);						
+					}						
 				}
 				else {
 					log.fine("No Receipt Line");
