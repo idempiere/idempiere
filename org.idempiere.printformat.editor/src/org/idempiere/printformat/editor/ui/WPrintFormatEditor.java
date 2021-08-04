@@ -52,6 +52,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.model.X_AD_PrintPaper;
 import org.compiere.print.MPrintColor;
@@ -293,6 +294,7 @@ public class WPrintFormatEditor implements ValueChangeListener {
 		editorMap.put(MPrintFormatItem.COLUMNNAME_IsVarianceCalc, printFormatForm.editorIsVarianceCalc);
 		editorMap.put(MPrintFormatItem.COLUMNNAME_IsRunningTotal, printFormatForm.editorIsRunningTotal);
 		editorMap.put(MPrintFormatItem.COLUMNNAME_RunningTotalLines, printFormatForm.editorRunningTotalLines);
+		editorMap.put(MPrintFormatItem.COLUMNNAME_IsPrintInstanceAttributes, printFormatForm.editorIsPrintInstanceAttributes);
 	}
 
 	private void validateProperties(final MPrintFormatItem pfItem) {
@@ -301,7 +303,14 @@ public class WPrintFormatEditor implements ValueChangeListener {
 			public String get_ValueAsString(String variableName) {
 
 				String retString = null;
-
+				//ref column
+				String foreignColumn = "";
+				int f = variableName.indexOf('.');
+				if (f > 0) {
+					foreignColumn = variableName.substring(f+1, variableName.length());
+					variableName = variableName.substring(0, f);
+				}
+				
 				if (pfItem.get_ColumnIndex(variableName) >= 0 ) {					
 					if (pfItem.get_Value(variableName) instanceof Boolean) {
 						retString = pfItem.get_Value(variableName).equals(true) ? "Y"
@@ -311,6 +320,23 @@ public class WPrintFormatEditor implements ValueChangeListener {
 					}
 				}
 
+				//check . foreign reference
+				if (!Util.isEmpty(retString) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")) {
+					int id = 0;
+					try {
+						id = Integer.parseInt(retString);
+					} catch (Exception e){}
+					if (id > 0) {
+						String foreignTable = variableName.substring(0, variableName.length()-3);
+						MTable table = MTable.get(Env.getCtx(), foreignTable);
+						if (table != null) {
+							retString = DB.getSQLValueString(null,
+									"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
+											+ foreignTable + "_ID = ?", id);
+						}
+					}
+				}
+				
 				if (Util.isEmpty(retString)) {
 					MPrintFormat format = MPrintFormat.get(Env.getCtx(),
 							pfItem.getAD_PrintFormat_ID(), false);

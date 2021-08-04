@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -37,6 +38,8 @@ import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.MPrintPaper;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
+import org.compiere.print.layout.InstanceAttributeColumn;
+import org.compiere.print.layout.InstanceAttributeData;
 import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Evaluator;
@@ -96,21 +99,27 @@ extends AbstractExcelExporter
 		if (m_printData.getRowIndex() != row)
 			m_printData.setRowIndex(row);
 		//
-		MPrintFormatItem item = (MPrintFormatItem) columns.get(col);
-		Object obj = null;
-
-		if (item.isTypeField() || item.isTypePrintFormat() && item.isImageField()) {
-			obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
-		}
-
-		/** DEVCOFFEE: script column **/
-		if (item.isTypeScript())
-		{
-			obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
-		}
-
-		if (obj != null && obj instanceof PrintDataElement) {
-			return (PrintDataElement)obj;
+		Object colObj = columns.get(col);
+		if (colObj instanceof InstanceAttributeColumn) {
+			InstanceAttributeColumn ia = (InstanceAttributeColumn) colObj;
+			return ia.getPrintDataElement(row);
+		} else if (colObj instanceof MPrintFormatItem) {
+			MPrintFormatItem item = (MPrintFormatItem) colObj;
+			Object obj = null;
+	
+			if (item.isTypeField() || item.isTypePrintFormat() && item.isImageField()) {
+				obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
+			}
+	
+			/** DEVCOFFEE: script column **/
+			if (item.isTypeScript())
+			{
+				obj = m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
+			}
+	
+			if (obj != null && obj instanceof PrintDataElement) {
+				return (PrintDataElement)obj;
+			}
 		}
 		return null;
 	}
@@ -195,6 +204,9 @@ extends AbstractExcelExporter
 		if (colObj instanceof MPrintFormatItem) {
 			MPrintFormatItem item = (MPrintFormatItem) colObj;
 			return item.getPrintName(getLanguage());
+		} else if (colObj instanceof InstanceAttributeColumn) {
+			InstanceAttributeColumn ia = (InstanceAttributeColumn) colObj;
+			return ia.getName();
 		} else {
 			return "";
 		}
@@ -306,15 +318,43 @@ extends AbstractExcelExporter
 	@Override
 	protected void export(OutputStream out) throws Exception {
 		columns = new ArrayList<>();
+		List<InstanceAttributeData> asiElements = new ArrayList<>();
+		int columnCount = 0;
 		for (int col = 0; col < m_printFormat.getItemCount(); col++)
 		{
 			MPrintFormatItem item = m_printFormat.getItem(col);
 			if (item.isPrinted())
 			{
-				columns.add(item);
+				if (item.isTypeField() && item.isPrintInstanceAttributes())
+				{
+					InstanceAttributeData asiElement = new InstanceAttributeData(item, columnCount);
+					asiElement.readAttributesData(m_printData);
+					asiElements.add(asiElement);						
+					continue;
+				}
+				else 
+				{
+					columns.add(item);
+					columnCount++;
+				}
 			}
 		}
-
+		if (asiElements.size() > 0)
+		{
+			int columnCreated = 0;
+			for(InstanceAttributeData data : asiElements)
+			{
+				List<InstanceAttributeColumn> instanceColumns = data.getColumns();
+				int index = data.getColumnIndex() + columnCreated;
+				for(InstanceAttributeColumn c : instanceColumns)
+				{
+					columns.add(index, c);
+					index++;
+					columnCreated++;
+				}
+			}
+		}
+		
 		super.export(out);
 	}
 	
