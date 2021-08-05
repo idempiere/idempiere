@@ -78,7 +78,7 @@ UPDATE AD_Val_Rule SET Code='M_Attribute.M_Attribute_ID IN ( SELECT M_Attribute_
 ;
 
 -- Aug 10, 2017 7:35:34 AM GMT+08:00
-UPDATE AD_Field SET DisplayLogic='@AD_Column_ID.AD_Reference_ID@=35 | @AD_Column_ID.ColumnName@=''M_AttributeSetInstance_ID'' & @PrintFormatType@=F & @IsForm@=N', AD_Val_Rule_ID=NULL, AD_Reference_Value_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-08-04 08:20:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205192
+UPDATE AD_Field SET DisplayLogic='(@AD_Column_ID.AD_Reference_ID@=35 | @AD_Column_ID.ColumnName@=''M_AttributeSetInstance_ID'') & @PrintFormatType@=F & @IsForm@=N', AD_Val_Rule_ID=NULL, AD_Reference_Value_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-08-04 08:20:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205192
 ;
 
 SELECT register_migration_script('202108021350_IDEMPIERE-4899.sql') FROM dual

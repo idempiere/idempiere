@@ -584,7 +584,9 @@ extends AbstractExcelExporter
 		if (m_printData.getRowIndex() != row)
 			m_printData.setRowIndex(row);
 
-		MPrintFormatItem item = m_printFormat.getItem(col);
+		Object colobj = columns.get(col);
+		MPrintFormatItem item = colobj instanceof InstanceAttributeColumn ? ((InstanceAttributeColumn)colobj).getPrintFormatItem()
+				: (MPrintFormatItem)colobj;
 		if (Util.isEmpty(item.getDisplayLogic()))
 			return true;
 

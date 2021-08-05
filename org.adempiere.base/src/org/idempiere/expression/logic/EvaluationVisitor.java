@@ -149,7 +149,27 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 			}
 		}
 		
-		return left.compareTo(right) == 0;		
+		//check string==bigdecimal or bigdecimal==string
+		if (left instanceof String && !(right instanceof String)) {
+			if (right instanceof BigDecimal) {
+				return left.equals(((BigDecimal)right).toPlainString());
+			} else {
+				return left.equals(right.toString());
+			}
+		} else if (right instanceof String && !(left instanceof String)) {
+			if (left instanceof BigDecimal) {
+				return ((BigDecimal)left).toPlainString().equals(right);
+			} else {
+				return left.toString().equals(right.toString());
+			}
+		}
+		
+		try {
+			return left.compareTo(right) == 0;
+		} catch (Exception e) {
+			//fall back to string
+			return left.toString().equals(right.toString());
+		}
 	}
 
 	private Boolean isIn(String left, String rightText) {
