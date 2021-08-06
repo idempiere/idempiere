@@ -629,6 +629,45 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	{
 		try
 		{
+			//collect column to print
+			List<Object> columns = new ArrayList<>();
+			List<InstanceAttributeData> asiElements = new ArrayList<>();
+			int columnCount = 0;
+			for (int col = 0; col < m_printFormat.getItemCount(); col++)
+			{
+				MPrintFormatItem item = m_printFormat.getItem(col);
+				if (item.isPrinted())
+				{
+					if (item.isTypeField() && item.isPrintInstanceAttributes())
+					{
+						InstanceAttributeData asiElement = new InstanceAttributeData(item, columnCount);
+						asiElement.readAttributesData(m_printData);
+						asiElements.add(asiElement);						
+						continue;
+					}
+					else 
+					{
+						columns.add(item);
+						columnCount++;
+					}
+				}
+			}
+			if (asiElements.size() > 0)
+			{
+				int columnCreated = 0;
+				for(InstanceAttributeData data : asiElements)
+				{
+					List<InstanceAttributeColumn> instanceColumns = data.getColumns();
+					int index = data.getColumnIndex() + columnCreated;
+					for(InstanceAttributeColumn c : instanceColumns)
+					{
+						columns.add(index, c);
+						index++;
+						columnCreated++;
+					}
+				}
+			}
+			
 			String cssPrefix = extension != null ? extension.getClassPrefix() : null;
 			if (cssPrefix != null && cssPrefix.trim().length() == 0)
 				cssPrefix = null;
@@ -698,10 +737,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				mapCssInfo.clear();
 				MPrintFormatItem item = null;
 				int printColIndex = -1;
-				for(int col = 0; col < m_printFormat.getItemCount(); col++)
+				for(int col = 0; col < columns.size(); col++)
 				{
-					item = m_printFormat.getItem(col);
-					if(item.isPrinted())
+					Object colobj = columns.get(col);
+					if (colobj instanceof MPrintFormatItem)
+						item = (MPrintFormatItem) colobj;
+					else if (colobj instanceof InstanceAttributeColumn)
+						item = ((InstanceAttributeColumn) colobj).getPrintFormatItem();
+					if(item != null)
 					{
 						printColIndex++;
 						addCssInfo(item, printColIndex);
@@ -815,45 +858,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 			int printColIndex = -1;
 			HashMap<Integer, th> suppressMap = new HashMap<>();
-			
-			//collect column to print
-			List<Object> columns = new ArrayList<>();
-			List<InstanceAttributeData> asiElements = new ArrayList<>();
-			int columnCount = 0;
-			for (int col = 0; col < m_printFormat.getItemCount(); col++)
-			{
-				MPrintFormatItem item = m_printFormat.getItem(col);
-				if (item.isPrinted())
-				{
-					if (item.isTypeField() && item.isPrintInstanceAttributes())
-					{
-						InstanceAttributeData asiElement = new InstanceAttributeData(item, columnCount);
-						asiElement.readAttributesData(m_printData);
-						asiElements.add(asiElement);						
-						continue;
-					}
-					else 
-					{
-						columns.add(item);
-						columnCount++;
-					}
-				}
-			}
-			if (asiElements.size() > 0)
-			{
-				int columnCreated = 0;
-				for(InstanceAttributeData data : asiElements)
-				{
-					List<InstanceAttributeColumn> instanceColumns = data.getColumns();
-					int index = data.getColumnIndex() + columnCreated;
-					for(InstanceAttributeColumn c : instanceColumns)
-					{
-						columns.add(index, c);
-						index++;
-						columnCreated++;
-					}
-				}
-			}
 			
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < m_printData.getRowCount(); row++)
