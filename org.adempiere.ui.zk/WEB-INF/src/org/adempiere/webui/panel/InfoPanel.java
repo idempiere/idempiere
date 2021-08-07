@@ -92,6 +92,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -894,6 +895,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             model.addTableModelListener(this);
             model.setMultiple(p_multipleSelection);
             contentPanel.setData(model, null);
+            contentPanel.renderHeaderColumnWidth();
         }
         restoreSelectedInPage();
         updateStatusBar (m_count);
@@ -2586,7 +2588,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
         m_ok = ok;
-
+        saveWlistBoxColumnWidth(this.getFirstChild());
         //  End Worker
         if (isLookup())
         {
@@ -2598,6 +2600,19 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        this.detach();
     }   //  dispose
 
+    public void saveWlistBoxColumnWidth(Component comp){
+
+        if(comp instanceof WListbox){
+        	((WListbox)comp).saveColumnWidth();
+        }
+
+        List<Component> list = comp.getChildren();
+        for(Component child:list){
+        	saveWlistBoxColumnWidth(child);
+        }
+     }    
+    
+    
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		updateListSelected();
 		WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;
