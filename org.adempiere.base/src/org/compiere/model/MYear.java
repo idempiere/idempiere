@@ -61,8 +61,6 @@ public class MYear extends X_C_Year
 		super (ctx, C_Year_ID, trxName);
 		if (C_Year_ID == 0)
 		{
-		//	setC_Calendar_ID (0);
-		//	setYear (null);
 			setProcessing (false);	// N
 		}		
 	}	//	MYear

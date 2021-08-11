@@ -22,6 +22,8 @@ import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WYesNoEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -41,7 +43,7 @@ import org.zkoss.zul.Div;
  * @author hengsin
  *
  */
-public class WPreference extends WQuickEntry implements EventListener<Event> {
+public class WPreference extends WQuickEntry implements EventListener<Event>, ValueChangeListener {
 	/**
 	 * 
 	 */
@@ -114,6 +116,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 			div.appendChild(adempiereSys.getComponent());
 			this.appendChild(div);
 			adempiereSys.setValue(Env.getCtx().getProperty("AdempiereSys"));
+			adempiereSys.addValueChangeListener(this);
 
 			logMigrationScript = new WYesNoEditor("LogMigrationScript", Msg.getMsg(Env.getCtx(), "LogMigrationScript", true),
 					null, false, false, true);
@@ -123,6 +126,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 			div.appendChild(logMigrationScript.getComponent());
 			this.appendChild(div);
 			logMigrationScript.setValue(Env.getCtx().getProperty("LogMigrationScript"));
+			logMigrationScript.addValueChangeListener(this);
 		}
 
 		ToolBar toolbar = new ToolBar();
@@ -194,9 +198,27 @@ public class WPreference extends WQuickEntry implements EventListener<Event> {
 			Env.getCtx().setProperty("LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
 			Env.getCtx().setProperty("P|LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
 		}
-		if (adempiereSys != null)
+		if (adempiereSys != null) {
 			Env.getCtx().setProperty("AdempiereSys", (Boolean)adempiereSys.getValue() ? "Y" : "N");
+			Env.getCtx().setProperty("P|AdempiereSys", (Boolean)adempiereSys.getValue() ? "Y" : "N");
+		}
 
 		this.detach();
 	} //onSave
+
+	public void valueChange(ValueChangeEvent evt) {
+		if (evt.getSource() instanceof WYesNoEditor) {
+			// Log Migration Script and AdempiereSys are just in-memory preferences, set them without need to save
+			if (evt.getSource() == logMigrationScript) {
+				Env.getCtx().setProperty("LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
+				Env.getCtx().setProperty("P|LogMigrationScript", (Boolean)logMigrationScript.getValue() ? "Y" : "N");
+				dynamicDisplay();
+			} else if (evt.getSource() == adempiereSys) {
+				Env.getCtx().setProperty("AdempiereSys", (Boolean)adempiereSys.getValue() ? "Y" : "N");
+				Env.getCtx().setProperty("P|AdempiereSys", (Boolean)adempiereSys.getValue() ? "Y" : "N");
+			}
+		}
+		super.valueChange(evt);
+	}
+
 }

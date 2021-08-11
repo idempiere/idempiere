@@ -64,6 +64,7 @@
 	height: 29px;
 }
 .status-db {
+    white-space: nowrap;
 	padding-top: 0;
 	padding-bottom: 0;
 	padding-left: 5px;

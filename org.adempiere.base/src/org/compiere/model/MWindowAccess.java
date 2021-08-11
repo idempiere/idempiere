@@ -47,8 +47,6 @@ public class MWindowAccess extends X_AD_Window_Access
 			throw new IllegalArgumentException("Multi-Key");
 		else
 		{
-		//	setAD_Role_ID (0);
-		//	setAD_Window_ID (0);
 			setIsReadWrite (true);
 		}
 	}	//	MWindowAccess

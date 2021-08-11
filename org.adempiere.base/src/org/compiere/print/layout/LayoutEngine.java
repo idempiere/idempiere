@@ -1589,11 +1589,24 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		nextPages.x += xOffset;
 		nextPages.width -= xOffset;
 		//	Column count
+		List<Integer> instanceAttributeList = new ArrayList<>();
+		List<MPrintFormatItem> instanceAttributeItems = new ArrayList<>();
 		int columnCount = 0;
 		for (int c = 0; c < format.getItemCount(); c++)
 		{
 			if (format.getItem(c).isPrinted())
+			{
+				if (format.getItem(c).isTypeField())
+				{
+					if(format.getItem(c).isPrintInstanceAttributes())
+					{
+						instanceAttributeList.add(columnCount);
+						instanceAttributeItems.add(format.getItem(c));
+						continue;
+					}
+				}
 				columnCount++;
+			}
 		}
 		//	System.out.println("Cols=" + cols);
 
@@ -1612,6 +1625,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		for (int c = 0; c < format.getItemCount(); c++)
 		{
 			MPrintFormatItem item = format.getItem(c);
+			if (instanceAttributeItems.contains(item))
+				continue;
 			if (item.isPrinted())
 			{
 				if (item.isNextLine() && item.getBelowColumn() != 0)
@@ -1737,6 +1752,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			{
 				Serializable columnElement = null;
 				MPrintFormatItem item = format.getItem(c);
+				if (instanceAttributeItems.contains(item))
+					continue;
 				Serializable dataElement = null;
 				if (item.isPrinted())	//	Text Columns
 				{
@@ -1805,6 +1822,33 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//		System.out.println("No PK " + printData);
 		}	//	for all rows
 
+		//add asi attributes columns
+		List<InstanceAttributeData> asiElements = new ArrayList<>();
+		if (instanceAttributeList.size() > 0) {
+			for(int i = 0;  i < instanceAttributeItems.size(); i ++) {
+				MPrintFormatItem item = instanceAttributeItems.get(i);
+				int columnIndex = instanceAttributeList.get(i);
+				InstanceAttributeData asiElement = new InstanceAttributeData(item, columnIndex);
+				asiElement.readAttributesData(printData);
+				asiElements.add(asiElement);
+			}
+			
+			int columnOffset = 0;
+			for (InstanceAttributeData element : asiElements) {
+				TableProperties tableProperties = new TableProperties(columnHeader, columnMaxWidth, columnMaxHeight, fixedWidth, colSuppressRepeats, 
+						columnJustification);
+				int currentCount = columnHeader.length;
+				element.updateTable(elements, tableProperties, columnOffset);
+				columnHeader = tableProperties.getColumnHeader();
+				columnMaxWidth = tableProperties.getColumnMaxWidth();
+				columnMaxHeight = tableProperties.getColumnMaxHeight();
+				fixedWidth = tableProperties.getFixedWidth();
+				colSuppressRepeats = tableProperties.getColSuppressRepeats();
+				columnJustification = tableProperties.getColumnJustification();
+				columnOffset += columnHeader.length - currentCount;
+			}
+		}
+		
 		//
 		TableElement table = new TableElement(columnHeader,
 			columnMaxWidth, columnMaxHeight, columnJustification,
