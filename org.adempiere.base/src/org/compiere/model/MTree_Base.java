@@ -254,8 +254,6 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		super(ctx, AD_Tree_ID, trxName);
 		if (AD_Tree_ID == 0)
 		{
-		//	setName (null);
-		//	setTreeType (null);
 			setIsAllNodes (true);	//	complete tree
 			setIsDefault(false);
 		}

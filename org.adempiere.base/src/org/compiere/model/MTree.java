@@ -294,8 +294,6 @@ public class MTree extends MTree_Base
 					addToTree (node_ID, parent_ID, seqNo, onBar);	//	calls getNodeDetail
 			}
 			//
-			//closing the rowset will also close connection for oracle rowset implementation
-			//m_nodeRowSet.close();
 			m_nodeRowSet = null;
 			m_nodeIdMap = null;
 		}
@@ -557,11 +555,10 @@ public class MTree extends MTree_Base
 		MTreeNode retValue = null;
 		try
 		{
-			//m_nodeRowSet.beforeFirst();
 			ArrayList<Integer> nodeList = m_nodeIdMap.get(Integer.valueOf(node_ID));
 			int size = nodeList != null ? nodeList.size() : 0;
 			int i = 0;
-			//while (m_nodeRowSet.next())
+
 			while (i < size)
 			{
 				Integer nodeId = nodeList.get(i);
@@ -638,7 +635,6 @@ public class MTree extends MTree_Base
 								description = userDef.getDescription();
 						}
 					}
-				//	log.fine("getNodeDetail - " + name + " - " + actionColor + " - " + access);
 					//
 					if (access != null		//	rw or ro for Role 
 						|| m_editable)		//	Menu Window can see all
@@ -693,28 +689,6 @@ public class MTree extends MTree_Base
 			}
 		}
 	}   //  trimTree
-
-	/**
-	 *  Diagnostics: Print tree
-	 */
-	/*private void dumpTree()
-	{
-		Enumeration<?> en = m_root.preorderEnumeration();
-		int count = 0;
-		while (en.hasMoreElements())
-		{
-			StringBuilder sb = new StringBuilder();
-			MTreeNode nd = (MTreeNode)en.nextElement();
-			for (int i = 0; i < nd.getLevel(); i++)
-				sb.append(" ");
-			sb.append("ID=").append(nd.getNode_ID())
-				.append(", SeqNo=").append(nd.getSeqNo())
-				.append(" ").append(nd.getName());
-			System.out.println(sb.toString());
-			count++;
-		}
-		System.out.println("Count=" + count);
-	}   //  diagPrintTree*/
 
 	/**
 	 *  Get Root node

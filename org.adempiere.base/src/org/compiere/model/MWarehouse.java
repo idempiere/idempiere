@@ -137,9 +137,6 @@ public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 		super(ctx, M_Warehouse_ID, trxName);
 		if (M_Warehouse_ID == 0)
 		{
-		//	setValue (null);
-		//	setName (null);
-		//	setC_Location_ID (0);
 			setSeparator ("*");	// *
 		}
 	}	//	MWarehouse
