@@ -61,12 +61,8 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		super (ctx, S_TimeExpense_ID, trxName);
 		if (S_TimeExpense_ID == 0)
 		{
-		//	setC_BPartner_ID (0);
 			setDateReport (new Timestamp (System.currentTimeMillis ()));
-		//	setDocumentNo (null);
 			setIsApproved (false);
-		//	setM_PriceList_ID (0);
-		//	setM_Warehouse_ID (0);
 			super.setProcessed (false);
 			setProcessing(false);
 		}
@@ -447,8 +443,6 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		if (m_processMsg != null)
 			return false;
 
-		//	Close Not delivered Qty
-	//	setDocAction(DOCACTION_None);
 		return true;
 	}	//	closeIt
 	

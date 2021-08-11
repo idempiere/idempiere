@@ -49,8 +49,6 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		super (ctx, S_TimeExpenseLine_ID, trxName);
 		if (S_TimeExpenseLine_ID == 0)
 		{
-		//	setS_TimeExpenseLine_ID (0);		//	PK
-		//	setS_TimeExpense_ID (0);			//	Parent
 			setQty(Env.ONE);
 			setQtyInvoiced(Env.ZERO);
 			setQtyReimbursed(Env.ZERO);
