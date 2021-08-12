@@ -30,7 +30,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210723L;
+	private static final long serialVersionUID = 20210809L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -43,7 +43,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Reference_ID (0);
 			setColumnName (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
 			setIsAutocomplete (false);
 // N
@@ -616,6 +616,23 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public String getPlaceholder2 () 
 	{
 		return (String)get_Value(COLUMNNAME_Placeholder2);
+	}
+
+	/** Set Query.
+		@param Query 
+		SQL
+	  */
+	public void setQuery (String Query)
+	{
+		set_Value (COLUMNNAME_Query, Query);
+	}
+
+	/** Get Query.
+		@return SQL
+	  */
+	public String getQuery () 
+	{
+		return (String)get_Value(COLUMNNAME_Query);
 	}
 
 	/** Set Read Only Logic.
