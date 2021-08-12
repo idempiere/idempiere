@@ -16,10 +16,15 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.logging.Level;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
+
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MAuthorizationAccount;
 
 /**
  *  Email User Authentification
@@ -32,10 +37,24 @@ public class EMailAuthenticator extends Authenticator
 	/**
 	 * 	Constructor
 	 * 	@param username user name
-	 * 	@param password user password
+	 * 	@param password user password (ignored if is OAuth2 account)
 	 */
 	public EMailAuthenticator (String username, String password)
 	{
+		MAuthorizationAccount authAccount = MAuthorizationAccount.getEMailAccount(username);
+		if (authAccount != null)
+		{
+			m_isOAuth2 = true;
+			try
+			{
+				password = authAccount.refreshAndGetAccessToken();
+			}
+			catch (GeneralSecurityException | IOException e)
+			{
+				throw new AdempiereException(e);
+			}
+		}
+
 		m_pass = new PasswordAuthentication (username, password);
 		if (username == null || username.length() == 0)
 		{
@@ -51,17 +70,27 @@ public class EMailAuthenticator extends Authenticator
 
 	/**	Password		*/
 	private PasswordAuthentication 	m_pass = null;
+	/**	Is OAuth2		*/
+	private boolean m_isOAuth2 = false;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(EMailAuthenticator.class);
 
 	/**
-	 *	Ger PasswordAuthentication
-	 * 	@return Password Autnetifucation
+	 *	Get Password Authentication
+	 * 	@return Password Authentication
 	 */
 	protected PasswordAuthentication getPasswordAuthentication()
 	{
 		return m_pass;
 	}	//	getPasswordAuthentication
+
+	/**
+	 * If the authenticator is using OAuth2 account
+	 * @return boolean
+	 */
+	protected boolean isOAuth2() {
+		return m_isOAuth2;
+	}
 
 	/**
 	 * 	Get String representation
