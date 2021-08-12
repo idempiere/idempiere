@@ -202,7 +202,8 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		PO mnPO = new Query(Env.getCtx(), mTree.getNodeTableName(), whereClause.toString(), trxName).first();
 		mnPO.set_ValueNoCheck("Parent_ID", mtnParentNode.getNode_ID());
 		mnPO.set_ValueNoCheck("SeqNo", NodeIndex);
-		mnPO.saveEx(trxName);
+		if (mnPO.is_Changed()) 
+			mnPO.saveEx(trxName);
 	}
 	
 	class MenuListener implements EventListener<Event> {
