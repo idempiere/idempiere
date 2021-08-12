@@ -46,7 +46,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 
@@ -266,13 +265,6 @@ public final class EMail implements Serializable
 			props.put("mail.debug", "true");
 		//
 
-		MAuthorizationAccount authAccount = null;
-		boolean isOAuth2 = false;
-		if (m_auth != null) {
-			authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
-			isOAuth2 = (authAccount != null);
-		}
-
 		Session session = null;
 		try
 		{
@@ -290,13 +282,12 @@ public final class EMail implements Serializable
 			{
 				props.put("mail.smtp.starttls.enable", "true");
 			}
-			if (isOAuth2) {
+			if (m_auth != null && m_auth.isOAuth2()) {
 				props.put("mail.smtp.auth.mechanisms", "XOAUTH2");
 			    props.put("mail.smtp.starttls.required", "true");
 			    props.put("mail.smtp.auth.login.disable","true");
 			    props.put("mail.smtp.auth.plain.disable","true");
 			    props.put("mail.debug.auth", "true");
-				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.refreshAndGetAccessToken());
 			}
 			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());
@@ -586,14 +577,13 @@ public final class EMail implements Serializable
 	 */
 	public EMailAuthenticator createAuthenticator (String username, String password)
 	{
-		if (username == null || password == null)
+		if (username == null)
 		{
-			log.warning("Ignored - " +  username + "/" + password);
+			log.warning("Ignored - username null");
 			m_auth = null;
 		}
 		else
 		{
-		//	log.fine("setEMailUser: " + username + "/" + password);
 			m_auth = new EMailAuthenticator (username, password);
 		}
 		return m_auth;
