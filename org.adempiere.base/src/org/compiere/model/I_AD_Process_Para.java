@@ -414,6 +414,19 @@ public interface I_AD_Process_Para
 	/** Get Placeholder2	  */
 	public String getPlaceholder2();
 
+    /** Column name Query */
+    public static final String COLUMNNAME_Query = "Query";
+
+	/** Set Query.
+	  * SQL
+	  */
+	public void setQuery (String Query);
+
+	/** Get Query.
+	  * SQL
+	  */
+	public String getQuery();
+
     /** Column name ReadOnlyLogic */
     public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
 
