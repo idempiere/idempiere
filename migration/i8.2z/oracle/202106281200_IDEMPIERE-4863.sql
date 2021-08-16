@@ -5,7 +5,7 @@ CREATE TABLE AD_Wlistbox_Customization
     AD_Client_ID 					NUMBER(10) NOT NULL,
     AD_Org_ID 						NUMBER(10) NOT NULL,
     AD_Wlistbox_Customization_ID 	NUMBER(10) NOT NULL, 
-    WlistboxName 					VARCHAR(60) NOT NULL,
+    WlistboxName 					VARCHAR(255) NOT NULL,
     AD_User_ID 						NUMBER(10) NOT NULL,
     Created 						DATE DEFAULT SYSDATE,
     CreatedBy 						NUMBER(10) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE AD_Wlistbox_Customization
     UpdatedBy 						NUMBER(10) NOT NULL,
     AD_Wlistbox_Customization_UU 	VARCHAR2(36 CHAR) DEFAULT NULL,
 	CONSTRAINT AD_Wlistbox_Customization_Key PRIMARY KEY (AD_Wlistbox_Customization_ID),
-	CONSTRAINT WlistboxName_UU UNIQUE (AD_Client_ID,AD_Org_ID,WlistboxName),
+	CONSTRAINT WlistboxName_UU UNIQUE (AD_Client_ID,AD_User_ID,WlistboxName),
 	CONSTRAINT AD_User_AD_WlistboxCustomization FOREIGN KEY (AD_User_ID) REFERENCES AD_user(AD_User_ID) DEFERRABLE INITIALLY DEFERRED	
 );
 

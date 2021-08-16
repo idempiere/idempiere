@@ -128,15 +128,8 @@ public class ColumnInfo
 	 */
 	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, boolean readOnly, String columnName)
 	{
-		setColHeader(colHeader);
-		setColSQL(colSQL);
-		setColClass(colClass);
-		setReadOnly(readOnly);
-		setColumnName(columnName);
+		this(colHeader, colSQL, colClass, readOnly, false, null, columnName); 
 	}   //  ColumnInfo	
-	
-	
-	
 	
 
 	private String      m_colHeader;

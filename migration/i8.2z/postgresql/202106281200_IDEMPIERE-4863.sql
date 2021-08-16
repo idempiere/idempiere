@@ -5,7 +5,7 @@ CREATE TABLE adempiere.AD_Wlistbox_Customization
     AD_Client_ID numeric(10,0) NOT NULL,
     AD_Org_ID numeric(10,0) NOT NULL,
     AD_Wlistbox_Customization_ID numeric(10,0) NOT NULL DEFAULT NULL::numeric,
-    WlistboxName varchar(60) NOT NULL,
+    WlistboxName varchar(255) NOT NULL,
     AD_User_ID numeric(10,0) NOT NULL,
     Created timestamp without time zone NOT NULL DEFAULT statement_timestamp(),
     CreatedBy numeric(10,0) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE adempiere.AD_Wlistbox_Customization
     UpdatedBy numeric(10,0) NOT NULL,
     AD_Wlistbox_Customization_UU character varying(36) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
     CONSTRAINT AD_Wlistbox_Customization_key PRIMARY KEY (AD_Wlistbox_Customization_ID),
-    CONSTRAINT WlistboxName_UU UNIQUE (AD_Client_ID,AD_Org_ID,WlistboxName),
+    CONSTRAINT WlistboxName_UU UNIQUE (AD_Client_ID,AD_User_ID,WlistboxName),
     CONSTRAINT AD_User_AD_WlistboxCustomization FOREIGN KEY (AD_User_ID)
         REFERENCES adempiere.AD_User (AD_User_ID) MATCH SIMPLE
         ON UPDATE NO ACTION

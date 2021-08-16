@@ -384,10 +384,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
         int columnIndex = 0;
         StringBuilder sql = new StringBuilder ("SELECT ");
         setLayout(layout);
-        if (from.indexOf(" ") > 0)
-        	setwListBoxName(from.substring(0, from.indexOf(" ") ));
-        else
-        	setwListBoxName(from);
         
         clearColumns();
 
@@ -877,10 +873,16 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		return;
 	}   //  setRowCount
 	
+	/*
+	 * Set the name of the wListbox
+	 */
 	public void setwListBoxName(String wListBoxName) {
 		this.wListBoxName = wListBoxName;
 	}
 	
+	/*
+	 * Get the name of the wListbox
+	 */
 	public String getwListBoxName() {
 		return wListBoxName;
 	}	
@@ -1103,6 +1105,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	{
 	    // create header (if needed)
 	    initialiseHeader();
+	    renderHeaderColumnWidth();
 	    invalidate();
 	}
 
@@ -1273,24 +1276,34 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	{
 		this.allowIDColumnForReadWrite = allowIDColumnForReadWrite;
 	}
-
 	
-	
-	
-	public String getColumnWidth(String columnName, List<String>columnList) {
+    /**
+     * Retrieve the width of the column
+     * 
+     * @param columnName the name of the column to find the width of.
+     * @param columnList list of the columns and their width
+     * @return the width of the column
+     */
+	private String getColumnWidth(String columnName, List<String>columnList) 
+	{
 		String width ="null";
 		String[] w;
 		
 		for (String column : columnList)
 		{
-			if (column.contains(columnName)) {
-				w = column.trim().split("=");
+			w = column.trim().split("=");
+			if (w[0].equals(columnName))
+			{
 				return w[1];
 			}
 		}
 		return width;
 	}
 	
+    /**
+     * Render the header of the WListbox with the columns width of the saved column width
+     * 
+     */
 	public void renderHeaderColumnWidth () 
 	{
 		if (wListBoxName != null && getListHead() != null) 
@@ -1314,7 +1327,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 					{
 						Listheader header = (Listheader) obj;
 						String columnWidth = this.getColumnWidth(Columns[i].getColumnName(), columnList);
-						if (!columnWidth.contains("null"))	
+						if (!("null".equals(columnWidth)) || !Util.isEmpty(columnWidth))	
 							ZKUpdateUtil.setWidth(header, columnWidth);
 						i++; 
 					}
@@ -1323,6 +1336,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		}
 	}
 	
+    /**
+     * Save the width of all the columns in the WLsitbox  
+     */
 	public boolean saveColumnWidth() 
 	{
 		boolean ok = false;
