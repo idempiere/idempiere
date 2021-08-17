@@ -204,7 +204,7 @@ public class GenericZoomProvider implements IZoomProvider {
 				break;
 		}
 
-		query.addRestriction(targetColumnName + "=" + po.get_ID());
+		query.addRestriction(targetTableName + "." + targetColumnName + "=" + po.get_ID());
 		query.setZoomTableName(targetTableName);
 		query.setZoomColumnName(targetColumnName);
 		query.setZoomValue(po.get_ID());
@@ -217,9 +217,9 @@ public class GenericZoomProvider implements IZoomProvider {
 		if (   clientID != 0
 			&& ( MTable.ACCESSLEVEL_All.equals(accessLevel)
 			  || MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel))) {
-			query.addRestriction("AD_Client_ID IN (0, " + clientID + ")");
+			query.addRestriction(targetTableName+".AD_Client_ID IN (0, " + clientID + ")");
 		} else {
-			query.addRestriction("AD_Client_ID=" + clientID);
+			query.addRestriction(targetTableName+".AD_Client_ID=" + clientID);
 		}
 
 		StringBuilder sqlb = new StringBuilder("SELECT COUNT(*) FROM ")
