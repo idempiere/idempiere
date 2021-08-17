@@ -140,35 +140,35 @@ INSERT INTO t_alter_column values('c_projectissue','Reversal_ID','NUMERIC(10)',n
 ;
 
 -- Aug 17, 2021, 6:10:48 PM MYT
-INSERT INTO AD_Workflow (Name,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AccessLevel,EntityType,Author,WorkingTime,Duration,Version,Cost,DurationUnit,WaitingTime,PublishStatus,IsDefault,AD_Table_ID,Value,WorkflowType,IsValid,DocumentNo,IsBetaFunctionality,AD_Workflow_UU) VALUES ('Process_C_ProjectIssue',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:47','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:47','YYYY-MM-DD HH24:MI:SS'),100,'1','U','iDempiere',0,1,0,0.0,'D',0,'U','N',623,'Process_C_ProjectIssue','P','N','10000000','N','8ffb218e-e2b9-4375-87ec-11ca5d648283')
+INSERT INTO AD_Workflow (Name,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AccessLevel,EntityType,Author,WorkingTime,Duration,Version,Cost,DurationUnit,WaitingTime,PublishStatus,IsDefault,AD_Table_ID,Value,WorkflowType,IsValid,DocumentNo,IsBetaFunctionality,AD_Workflow_UU) VALUES ('Process_C_ProjectIssue',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:47','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:47','YYYY-MM-DD HH24:MI:SS'),100,'1','D','iDempiere',0,1,0,0.0,'D',0,'D','N',623,'Process_C_ProjectIssue','P','N','10000000','N','8ffb218e-e2b9-4375-87ec-11ca5d648283')
 ;
 
 -- Aug 17, 2021, 6:10:49 PM MYT
-INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,DocAction,Value,AD_WF_Node_UU) VALUES (200028,'(DocAuto)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:48','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:48','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',0,'U',0,0,0,0.0,0,'X','X','--','(DocAuto)','3ae63237-fa0f-4b96-900b-77f814d31304')
+INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,DocAction,Value,AD_WF_Node_UU) VALUES (200028,'(DocAuto)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:48','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:48','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',0,'D',0,0,0,0.0,0,'X','X','--','(DocAuto)','3ae63237-fa0f-4b96-900b-77f814d31304')
 ;
 
 -- Aug 17, 2021, 6:10:50 PM MYT
-INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,DocAction,Value,AD_WF_Node_UU) VALUES (200029,'(DocComplete)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:49','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:49','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',0,'U',0,0,0,0.0,0,'X','X','CO','(DocComplete)','e7b1f604-2233-45e2-9f99-ac4f27392edb')
+INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,DocAction,Value,AD_WF_Node_UU) VALUES (200029,'(DocComplete)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:49','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:49','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',0,'D',0,0,0,0.0,0,'X','X','CO','(DocComplete)','e7b1f604-2233-45e2-9f99-ac4f27392edb')
 ;
 
 -- Aug 17, 2021, 6:10:50 PM MYT
-INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,DocAction,Value,AD_WF_Node_UU) VALUES (200030,'(DocPrepare)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',0,'U',0,0,0,0.0,0,'X','X','PR','(DocPrepare)','be9ed2b0-f470-48d7-a83a-b37cc1c3a074')
+INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,DocAction,Value,AD_WF_Node_UU) VALUES (200030,'(DocPrepare)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',0,'D',0,0,0,0.0,0,'X','X','PR','(DocPrepare)','be9ed2b0-f470-48d7-a83a-b37cc1c3a074')
 ;
 
 -- Aug 17, 2021, 6:10:51 PM MYT
-INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,Value,AD_WF_Node_UU) VALUES (200031,'(Start)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,'Z','Y',0,'U',0,0,0,0.0,0,'X','X','(Start)','274360c6-7c88-4e4d-9887-0042fd8f38af')
+INSERT INTO AD_WF_Node (AD_WF_Node_ID,Name,Description,AD_Workflow_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,"action",IsCentrallyMaintained,YPosition,EntityType,XPosition,"limit",Duration,Cost,WaitingTime,JoinElement,SplitElement,Value,AD_WF_Node_UU) VALUES (200031,'(Start)','(Standard Node)',200007,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:50','YYYY-MM-DD HH24:MI:SS'),100,'Z','Y',0,'D',0,0,0,0.0,0,'X','X','(Start)','274360c6-7c88-4e4d-9887-0042fd8f38af')
 ;
 
 -- Aug 17, 2021, 6:10:51 PM MYT
-INSERT INTO AD_WF_NodeNext (AD_WF_Node_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Client_ID,AD_Org_ID,AD_WF_Next_ID,EntityType,SeqNo,Description,AD_WF_NodeNext_ID,IsStdUserWorkflow,AD_WF_NodeNext_UU) VALUES (200031,'Y',TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,0,0,200030,'U',10,'(Standard Approval)',200028,'Y','b27ec4a5-b18e-4eec-8aa9-cc1903554e74')
+INSERT INTO AD_WF_NodeNext (AD_WF_Node_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Client_ID,AD_Org_ID,AD_WF_Next_ID,EntityType,SeqNo,Description,AD_WF_NodeNext_ID,IsStdUserWorkflow,AD_WF_NodeNext_UU) VALUES (200031,'Y',TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,0,0,200030,'D',10,'(Standard Approval)',200028,'Y','b27ec4a5-b18e-4eec-8aa9-cc1903554e74')
 ;
 
 -- Aug 17, 2021, 6:10:52 PM MYT
-INSERT INTO AD_WF_NodeNext (AD_WF_Node_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Client_ID,AD_Org_ID,AD_WF_Next_ID,EntityType,SeqNo,Description,AD_WF_NodeNext_ID,IsStdUserWorkflow,AD_WF_NodeNext_UU) VALUES (200031,'Y',TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,0,0,200028,'U',100,'(Standard Transition)',200029,'N','8f0f7d9b-c4d1-4b80-8b77-e78ac4918de2')
+INSERT INTO AD_WF_NodeNext (AD_WF_Node_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Client_ID,AD_Org_ID,AD_WF_Next_ID,EntityType,SeqNo,Description,AD_WF_NodeNext_ID,IsStdUserWorkflow,AD_WF_NodeNext_UU) VALUES (200031,'Y',TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:51','YYYY-MM-DD HH24:MI:SS'),100,0,0,200028,'D',100,'(Standard Transition)',200029,'N','8f0f7d9b-c4d1-4b80-8b77-e78ac4918de2')
 ;
 
 -- Aug 17, 2021, 6:10:53 PM MYT
-INSERT INTO AD_WF_NodeNext (AD_WF_Node_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Client_ID,AD_Org_ID,AD_WF_Next_ID,EntityType,SeqNo,Description,AD_WF_NodeNext_ID,IsStdUserWorkflow,AD_WF_NodeNext_UU) VALUES (200030,'Y',TO_TIMESTAMP('2021-08-17 18:10:52','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:52','YYYY-MM-DD HH24:MI:SS'),100,0,0,200029,'U',100,'(Standard Transition)',200030,'N','e993246e-21ae-496f-857f-9d30c2f486ba')
+INSERT INTO AD_WF_NodeNext (AD_WF_Node_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Client_ID,AD_Org_ID,AD_WF_Next_ID,EntityType,SeqNo,Description,AD_WF_NodeNext_ID,IsStdUserWorkflow,AD_WF_NodeNext_UU) VALUES (200030,'Y',TO_TIMESTAMP('2021-08-17 18:10:52','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:52','YYYY-MM-DD HH24:MI:SS'),100,0,0,200029,'D',100,'(Standard Transition)',200030,'N','e993246e-21ae-496f-857f-9d30c2f486ba')
 ;
 
 -- Aug 17, 2021, 6:10:53 PM MYT
@@ -176,7 +176,7 @@ UPDATE AD_Workflow SET AD_WF_Node_ID=200031, IsValid='Y',Updated=TO_TIMESTAMP('2
 ;
 
 -- Aug 17, 2021, 6:10:53 PM MYT
-INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,IsReport,Value,AccessLevel,EntityType,AD_Workflow_ID,IsBetaFunctionality,AD_Process_UU) VALUES (200135,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:53','YYYY-MM-DD HH24:MI:SS'),100,'Process Project Issue','N','C_ProjectIssue Process','3','U',200007,'N','10c5f71a-c84d-43df-87bd-29a4778351ef')
+INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,IsReport,Value,AccessLevel,EntityType,AD_Workflow_ID,IsBetaFunctionality,AD_Process_UU) VALUES (200135,0,0,'Y',TO_TIMESTAMP('2021-08-17 18:10:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-08-17 18:10:53','YYYY-MM-DD HH24:MI:SS'),100,'Process Project Issue','N','C_ProjectIssue Process','3','D',200007,'N','10c5f71a-c84d-43df-87bd-29a4778351ef')
 ;
 
 -- Aug 17, 2021, 6:10:53 PM MYT
