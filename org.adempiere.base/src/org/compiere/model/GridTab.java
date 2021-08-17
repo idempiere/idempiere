@@ -2631,6 +2631,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		if (changingRow && keyCalloutDelayed != null)
 			processCallout(keyCalloutDelayed);
+		
+		//set isSOTrx context
+		if (changingRow) {
+			setIsSOTrxContext();
+		}
+		
 		loadDependentInfo();
 
 		if (!fireEvents)    //  prevents informing twice
@@ -2667,6 +2673,48 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		
 		return m_currentRow;
 	}   //  setCurrentRow
+
+	private void setIsSOTrxContext() {
+		final String IsSOTrx = "IsSOTrx";
+		final String C_DocType_ID = "C_DocType_ID";
+		final String C_DocTypeTarget_ID = "C_DocTypeTarget_ID";
+		if (getField(IsSOTrx) != null || getField(C_DocType_ID) != null || getField(C_DocTypeTarget_ID) != null) {
+			String isSOTrx = null;
+			GridField field = getField(IsSOTrx);
+			if (field != null && field.getValue() != null) {
+				Object value = field.getValue();
+				if (value instanceof Boolean) {
+					isSOTrx = ((Boolean) value).booleanValue() ? "Y" : "N";
+				} else if (value instanceof String) {
+					isSOTrx = (String) value;
+				}
+			}
+			if (isSOTrx == null) {
+				field = getField(C_DocType_ID);
+				if (field != null && field.getValue() != null) {
+					int docTypeId = ((Number)field.getValue()).intValue();
+					if (docTypeId > 0) {
+						isSOTrx = MDocType.get(docTypeId).isSOTrx() ? "Y" : "N";
+					}
+				}
+			}
+			if (isSOTrx == null) {
+				field = getField(C_DocTypeTarget_ID);
+				if (field != null && field.getValue() != null) {
+					int docTypeId = ((Number)field.getValue()).intValue();
+					if (docTypeId > 0) {
+						isSOTrx = MDocType.get(docTypeId).isSOTrx() ? "Y" : "N";
+					}
+				}
+			}
+			if (isSOTrx != null) {
+				Env.setContext(Env.getCtx(), getWindowNo(), getTabNo(), IsSOTrx, isSOTrx);
+				if (m_vo.TabNo == 0) {
+					Env.setContext(Env.getCtx(), getWindowNo(), IsSOTrx, isSOTrx);
+				}
+			}
+		}
+	}
 
 
 	/**
