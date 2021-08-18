@@ -63,11 +63,13 @@ public class SystemIDs
 	public final static int FORM_MFA_REGISTER = 200017;
 
 	public final static int MENU_NOTICE = 233;
-
+	
 	public final static int MESSAGE_REQUESTUPDATE = 834;
 	public final static int MESSAGE_WORKFLOWRESULT = 753;
 	public final static int MESSAGE_NOTES = 52244;
 
+	public static final int MY_PROFILE_MENU_ID = 53246;
+	
 	public final static int PRINTFORMAT_STATEMENTOFACCOUNT = 134;
 	public final static int PRINTFORMAT_ORDER_HEADER_TEMPLATE = 100;
 	public final static int PRINTFORMAT_ORDER_LINETAX_TEMPLATE = 101;

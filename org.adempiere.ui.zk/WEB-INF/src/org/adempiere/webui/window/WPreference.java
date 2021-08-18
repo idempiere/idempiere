@@ -33,6 +33,7 @@ import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MMenu;
 import org.compiere.model.MRole;
 import org.compiere.model.MUserPreference;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -54,8 +55,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 	 */
 	private static final long serialVersionUID = 3259434079666571595L;
 	private static final CLogger log = CLogger.getCLogger(WPreference.class);
-	
-	private static final int MY_PROFILE_MENU_ID = 53246;
+		
 	private static final String LINE_DIV_STYLE = "background-color: transparent !important; border: none; margin: 5px;";
 
 	private WYesNoEditor 	adempiereSys;
@@ -117,7 +117,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		div.appendChild(morePreferences);
 		this.appendChild(div);
 				
-		MMenu myProfileMenu = MMenu.get(MY_PROFILE_MENU_ID);		
+		MMenu myProfileMenu = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID);		
 		div = new Div();
 		div.setStyle(LINE_DIV_STYLE);
 		myProfile= new A();	
@@ -236,7 +236,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 				AEnv.zoom(MUserPreference.Table_ID, recordId);
 				this.detach();
 			} else if (com == myProfile) {
-				MMenu myProfileMenu = MMenu.get(MY_PROFILE_MENU_ID);
+				MMenu myProfileMenu = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID);
 				AEnv.zoom(myProfileMenu.getAD_Window_ID(), null);
 				this.detach();
 			}
