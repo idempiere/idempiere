@@ -92,17 +92,26 @@ public class DefaultEvaluatee implements Evaluatee {
 			} catch (Exception e){}
 			if (id > 0) {
 				String refValue = "";
+				MColumn column = null;
 				if (m_GridTab != null) {
-					MColumn column = MColumn.get(ctx, m_GridTab.getTableName(), variableName);
-					if (column != null) {
-						String foreignTable = column.getReferenceTableName();
-						refValue = DB.getSQLValueString(null,
-								"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-										+ foreignTable + "_ID = ?", id);
+					column = MColumn.get(ctx, m_GridTab.getTableName(), variableName);					
+					if (column == null) {
+						//try parent
+						GridTab parent = m_GridTab.getParentTab();
+						while (column == null && parent != null) {
+							column = MColumn.get(ctx, parent.getTableName(), variableName);
+							parent = parent.getParentTab();
+						}
 					}
+				}
+				if (column != null) {
+					String foreignTable = column.getReferenceTableName();
+					refValue = DB.getSQLValueString(null,
+							"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
+									+ foreignTable + "_ID = ?", id);
 					return refValue;
 				} else {
-					// no GridTab - maybe coming from process parameter, try tableName from columnName
+					// no MColumn found, try tableName from columnName
 					String foreignTable = variableName.substring(0, variableName.length()-3);
 					MTable table = MTable.get(ctx, foreignTable);
 					if (table != null) {
