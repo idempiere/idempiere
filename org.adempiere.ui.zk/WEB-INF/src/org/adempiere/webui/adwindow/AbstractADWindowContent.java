@@ -380,8 +380,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	gridTab.getTableModel().setChanged(false);
 
         adTabbox.setSelectedIndex(0);
-        // all fields context for window is clear at AbstractADTab.prepareContext, set again IsSOTrx for window
-        Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
+        // set again IsSOTrx for window if context for window is clear at AbstractADTab.prepareContext, 
+        if (Env.getContext(ctx, curWindowNo, "IsSOTrx", true) == null)
+        	Env.setContext(ctx, curWindowNo, "IsSOTrx", gridWindow.isSOTrx());
         toolbar.enableTabNavigation(adTabbox.getTabCount() > 1);
         toolbar.enableFind(true);
         adTabbox.evaluate(null);

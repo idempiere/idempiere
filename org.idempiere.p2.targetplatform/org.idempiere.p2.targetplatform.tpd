@@ -1,5 +1,5 @@
 
-target "idempiere-210426"
+target "idempiere-210816"
 
 with source configurePhase allEnvironments
 
@@ -47,7 +47,6 @@ location "https://idempiere.github.io/binary.file/p2.maven/maven-p2-R20201101" {
 	com.github.relaxng.Datatype
 	com.google.zxing.core
 	com.ibm.icu
-	com.itextpdf
 	com.jaspersoft.studio.bundles.barbecue
 	com.jaspersoft.studio.bundles.itext
 	com.sun.activation.jakarta.activation
