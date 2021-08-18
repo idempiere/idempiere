@@ -34,4 +34,6 @@ public interface IInfoFactory {
             boolean multiSelection, String whereClause, int AD_InfoWindow_ID);
 	
 	public InfoWindow create (int AD_InfoWindow_ID); 
+	
+	public InfoWindow create (int AD_InfoWindow_ID, String predefinedContextVariables); 
 }

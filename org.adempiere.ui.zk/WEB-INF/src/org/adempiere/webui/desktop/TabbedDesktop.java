@@ -111,10 +111,9 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 */
 	@Override
 	public void openInfo(int infoId) {
-		InfoPanel infoPanel = InfoManager.create(infoId);
+		InfoPanel infoPanel = InfoManager.create(infoId, getPredefinedContextVariables());
 		
 		if (infoPanel != null) {
-			Env.setPredefinedVariables(Env.getCtx(), infoPanel.getWindowNo(), getPredefinedContextVariables());
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
 			infoPanel.setParent(tabPanel);
 			String title = infoPanel.getTitle();

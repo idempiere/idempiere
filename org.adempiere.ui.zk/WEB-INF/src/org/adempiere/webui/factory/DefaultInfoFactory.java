@@ -50,6 +50,13 @@ public class DefaultInfoFactory implements IInfoFactory {
 	@Override
 	public InfoPanel create(int WindowNo, String tableName, String keyColumn,
 			String value, boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup) {
+	
+		return create(WindowNo, tableName, keyColumn,
+				value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, null);
+	}
+	
+	public InfoPanel create(int WindowNo, String tableName, String keyColumn,
+				String value, boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables) {
 		InfoPanel info = null;
 		setSOTrxBasedOnDocType(WindowNo);
 
@@ -106,7 +113,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 	                    multiSelection, whereClause, lookup);
 	    	}
         } else {
-        	info = new InfoWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup);
+        	info = new InfoWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, null, predefinedContextVariables);
         	if (!info.loadedOK()) {
 	            info = new InfoGeneralPanel (value, WindowNo,
 	                tableName, keyColumn,
@@ -176,10 +183,17 @@ public class DefaultInfoFactory implements IInfoFactory {
 
 	@Override
 	public InfoWindow create(int AD_InfoWindow_ID) {
+		
+		return create(AD_InfoWindow_ID, null);
+	}
+	
+	@Override
+	public InfoWindow create(int AD_InfoWindow_ID, String predefinedContextVariables) {
+		
 		MInfoWindow infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, (String)null);
 		String tableName = infoWindow.getAD_Table().getTableName();
 		String keyColumn = tableName + "_ID";
-		InfoPanel info = create(-1, tableName, keyColumn, null, false, null, AD_InfoWindow_ID, false);
+		InfoPanel info = create(-1, tableName, keyColumn, null, false, null, AD_InfoWindow_ID, false, predefinedContextVariables);
 		if (info instanceof InfoWindow)
 			return (InfoWindow) info;
 		else
