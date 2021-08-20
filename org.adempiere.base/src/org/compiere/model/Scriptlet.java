@@ -366,7 +366,6 @@ public class Scriptlet
 	{
 		if (key != null && key.length() > 0)
 		{
-		//	log.fine( "Scriptlet.setEnvironment " + key, value);
 			if (value == null)
 				m_ctx.remove(key);
 			else
