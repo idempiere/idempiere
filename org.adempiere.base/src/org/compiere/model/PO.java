@@ -3806,7 +3806,18 @@ public abstract class PO
 			.append(" AND NOT EXISTS (SELECT * FROM ").append(tableName)
 			.append("_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.")
 			.append(keyColumn).append("=t.").append(keyColumn).append(")");
-		int no = DB.executeUpdate(sql.toString(), m_trxName);
+		int no = -1;
+		try {
+			no = DB.executeUpdateEx(sql.toString(), m_trxName);
+		} catch (DBException e) {
+			String msg;
+			if (DBException.isValueTooLarge(e)) {
+				msg = Msg.getMsg(getCtx(), "MismatchTrlColumnSize");
+			} else {
+				msg = "insertTranslations -> " + e.getLocalizedMessage();
+			}
+			throw new AdempiereException(msg, e);
+		}
 		if (uuidColumn != null && !uuidFunction) {
 			UUIDGenerator.updateUUID(uuidColumn, get_TrxName());
 		}
@@ -3887,6 +3898,7 @@ public abstract class PO
 		StringBuilder andNotBaseLang = new StringBuilder(" AND AD_Language!=").append(DB.TO_STRING(baselang));
 		int no = -1;
 
+	  try {
 		if (client.isMultiLingualDocument()) {
 			if (client.getAD_Language().equals(baselang)) {
 				// tenant language = base language
@@ -3895,7 +3907,7 @@ public abstract class PO
 					.append(sqlupdate)
 					.append("IsTranslated='N'")
 					.append(whereid);
-				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+				no = DB.executeUpdateEx(sqlexec.toString(), m_trxName);
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 			} else {
 				// tenant language <> base language
@@ -3907,7 +3919,7 @@ public abstract class PO
 					.append("IsTranslated='Y'")
 					.append(whereid)
 					.append(getAD_Client_ID() == 0 ? andBaseLang : andClientLang);
-				no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+				no = DB.executeUpdateEx(sqlexec.toString(), m_trxName);
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				if (no >= 0) {
 					// set other translations as untranslated
@@ -3916,7 +3928,7 @@ public abstract class PO
 						.append("IsTranslated='N'")
 						.append(whereid)
 						.append(getAD_Client_ID() == 0 ? andNotBaseLang : andNotClientLang);
-					no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+					no = DB.executeUpdateEx(sqlexec.toString(), m_trxName);
 					if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				}
 			}
@@ -3928,9 +3940,19 @@ public abstract class PO
 				.append(sqlcols)
 				.append("IsTranslated='Y'")
 				.append(whereid);
-			no = DB.executeUpdate(sqlexec.toString(), m_trxName);
+			no = DB.executeUpdateEx(sqlexec.toString(), m_trxName);
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		}
+	  } catch (DBException e) {
+		String msg;
+		if (DBException.isValueTooLarge(e)) {
+			msg = Msg.getMsg(getCtx(), "MismatchTrlColumnSize");
+		} else {
+			msg = "updateTranslations -> " + e.getLocalizedMessage();
+		}
+		throw new AdempiereException(msg, e);
+	  }
+
 		return no >= 0;
 	}	//	updateTranslations
 

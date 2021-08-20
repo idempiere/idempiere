@@ -36,13 +36,14 @@ import org.compiere.util.DB;
  */
 public class DBException extends AdempiereException
 {
-	public static final String DATABASE_OPERATION_TIMEOUT_MSG = "DatabaseOperationTimeout";
-	public static final String DELETE_ERROR_DEPENDENT_MSG = "DeleteErrorDependent";
-	public static final String SAVE_ERROR_NOT_UNIQUE_MSG = "SaveErrorNotUnique";
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4264201718343118625L;
+	private static final long serialVersionUID = -1961265420169932726L;
+
+	public static final String DATABASE_OPERATION_TIMEOUT_MSG = "DatabaseOperationTimeout";
+	public static final String DELETE_ERROR_DEPENDENT_MSG = "DeleteErrorDependent";
+	public static final String SAVE_ERROR_NOT_UNIQUE_MSG = "SaveErrorNotUnique";
 	private String m_sql = null;
 
 	/**
@@ -212,7 +213,18 @@ public class DBException extends AdempiereException
     		return false;
     	}
     }
-    
+
+    /**
+     * Check if value too large for column exception (aka ORA-12899)
+     * @param e exception
+     */
+    public static boolean isValueTooLarge(Exception e) {
+    	if (DB.isPostgreSQL())
+    		return isSQLState(e, "22001");
+    	//
+    	return isErrorCode(e, 12899);
+    }
+
     /**
      * @param e
      */
@@ -227,4 +239,5 @@ public class DBException extends AdempiereException
     		return null;
     	}
     }
+
 }	//	DBException
