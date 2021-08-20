@@ -90,6 +90,7 @@ import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -1253,7 +1254,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     @Override
     public String get_ValueAsString(String variableName)
     {
-        return Env.getContext(Env.getCtx(), windowNo, variableName);
+    	return new DefaultEvaluatee(getGridTab(), windowNo, tabNo).get_ValueAsString(Env.getCtx(), variableName);
     } // get_ValueAsString
 
     /**
