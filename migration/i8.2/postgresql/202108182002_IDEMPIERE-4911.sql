@@ -4,7 +4,7 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 ;
 
 -- Aug 18, 2021, 8:13:56 PM CEST
-UPDATE AD_Message SET MsgText='Error synchronizing translation, string too long', MsgTip='There is a mismatch on the size of a translated column, the translated column is shorter than the original column',Updated=TO_TIMESTAMP('2021-08-18 20:13:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200714
+UPDATE AD_Message SET MsgText='Error synchronizing translation, string too long', MsgTip='There is a mismatch in the size of a translated column.  Please contact the system administrator to correct the problem.',Updated=TO_TIMESTAMP('2021-08-18 20:13:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200714
 ;
 
 -- Aug 18, 2021, 9:24:16 PM CEST
