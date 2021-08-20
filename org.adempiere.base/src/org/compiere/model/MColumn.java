@@ -545,6 +545,20 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			setSeqNoSelection(next);
 		}
 
+		// IDEMPIERE-4911
+		MTable table = MTable.get(getAD_Table_ID());
+		String tableName = table.getTableName();
+		if (tableName.toLowerCase().endsWith("_trl")) {
+			String parentTable = tableName.substring(0, tableName.length()-4);
+			MColumn column = MColumn.get(getCtx(), parentTable, colname);
+			if (column != null && column.isTranslated()) {
+				if (getFieldLength() < column.getFieldLength()) {
+					log.saveWarning("Warning", "Size increased to " + column.getFieldLength() + " in translated column " + tableName + "." + colname);
+					setFieldLength(column.getFieldLength());
+				}
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 	
@@ -586,7 +600,26 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				|| "EntityType".equals(get_ValueOld(COLUMNNAME_ColumnName).toString()))) {
 			MChangeLog.resetLoggedList();
 		}
-		
+
+		// IDEMPIERE-4911
+		if (isTranslated()) {
+			MTable table = MTable.get(getAD_Table_ID());
+			String trlTableName = table.getTableName() + "_Trl";
+			MTable trlTable = MTable.get(getCtx(), trlTableName);
+			if (trlTable == null) {
+				log.saveWarning("Warning", Msg.getMsg(getCtx(), "WarnCreateTrlTable", new Object[] {trlTableName, getColumnName()}));
+			} else {
+				MColumn trlColumn = MColumn.get(getCtx(), trlTableName, getColumnName());
+				if (trlColumn == null) {
+					log.saveWarning("Warning", Msg.getMsg(getCtx(), "WarnCreateTrlColumn", new Object[] {trlTableName, getColumnName()}));
+				} else {
+					if (trlColumn.getFieldLength() < getFieldLength()) {
+						log.saveWarning("Warning", Msg.getMsg(getCtx(), "WarnUpdateSizeTrlTable", new Object[] {trlTableName, getColumnName(), getFieldLength()}));
+					}
+				}
+			}
+		}
+
 		return success;
 	}	//	afterSave
 	
