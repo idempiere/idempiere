@@ -816,7 +816,6 @@ public abstract class PO
 	
 			//
 			// globalqss -- Bug 1618469 - is throwing not updateable even on new records
-			// if (!p_info.isColumnUpdateable(index))
 			if ( ( ! p_info.isColumnUpdateable(index) ) && ( ! is_new() ) )
 			{
 				colInfo += " - NewValue=" + value + " - OldValue=" + get_Value(index);
@@ -1331,7 +1330,6 @@ public abstract class PO
 		{
 			setKeyInfo();
 			m_IDs = new Object[] {Integer.valueOf(ID)};
-			//m_KeyColumns = new String[] {p_info.getTableName() + "_ID"};
 			load(trxName);
 		}
 		else	//	new
@@ -1403,7 +1401,6 @@ public abstract class PO
 			.append(get_WhereClause(false,uuID));
 
 		//
-	//	int index = -1;
 		if (log.isLoggable(Level.FINEST)) log.finest(get_WhereClause(true,uuID));
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1439,7 +1436,6 @@ public abstract class PO
 				log.log(Level.SEVERE, "NO Data found for " + get_WhereClause(true,uuID), new Exception());
 				m_IDs = new Object[] {I_ZERO};
 				success = false;
-			//	throw new DBException("NO Data found for " + get_WhereClause(true));
 			}
 			m_createNew = false;
 			//	reset new values
@@ -1451,14 +1447,10 @@ public abstract class PO
 			if (m_trxName != null)
 				msg = "[" + m_trxName + "] - ";
 			msg += get_WhereClause(true,uuID)
-			//	+ ", Index=" + index
-			//	+ ", Column=" + get_ColumnName(index)
-			//	+ ", " + p_info.toString(index)
 				+ ", SQL=" + sql.toString();
 			success = false;
 			m_IDs = new Object[] {I_ZERO};
 			log.log(Level.SEVERE, msg, e);
-		//	throw new DBException(e);
 		}
 		//	Finish
 		finally {
@@ -1669,7 +1661,6 @@ public abstract class PO
 			while (it.hasNext())
 			{
 				String column = (String)it.next();
-//				int index = p_info.getColumnIndex(column);
 				String value = (String)m_custom.get(column);
 				if (value != null)
 					hmOut.put(column, value);
@@ -1709,9 +1700,6 @@ public abstract class PO
 	protected void loadDefaults()
 	{
 		setStandardDefaults();
-		//
-		/** @todo defaults from Field */
-	//	MField.getDefault(p_info.getDefaultLogic(i));
 	}	//	loadDefaults
 
 	/**
@@ -2403,7 +2391,6 @@ public abstract class PO
 			log.log(Level.WARNING, "afterSave", e);
 			log.saveError("Error", e, false);
 			success = false;
-		//	throw new DBException(e);
 		}
 		// Call ModelValidators TYPE_AFTER_NEW/TYPE_AFTER_CHANGE - teo_sarca [ 1675490 ]
 		if (success) {
@@ -2520,13 +2507,6 @@ public abstract class PO
 	 */
 	protected boolean beforeSave(boolean newRecord)
 	{
-		/** Prevents saving
-		log.saveError("Error", Msg.parseTranslation(getCtx(), "@C_Currency_ID@ = @C_Currency_ID@"));
-		log.saveError("FillMandatory", Msg.getElement(getCtx(), "PriceEntered"));
-		/** Issues message
-		log.saveWarning(AD_Message, message);
-		log.saveInfo (AD_Message, message);
-		**/
 		return true;
 	}	//	beforeSave
 
@@ -3718,7 +3698,6 @@ public abstract class PO
 	 */
 	protected boolean beforeDelete ()
 	{
-	//	log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
 		return true;
 	} 	//	beforeDelete
 
@@ -4816,7 +4795,6 @@ public abstract class PO
 			while (it.hasNext())
 			{
 				String columnName = (String)it.next();
-//				int index = p_info.getColumnIndex(columnName);
 				String value = (String)m_custom.get(columnName);
 				//
 				Element col = document.createElement(columnName);
