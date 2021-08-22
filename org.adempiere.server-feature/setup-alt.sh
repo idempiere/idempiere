@@ -12,6 +12,9 @@ else
   echo Set JAVA_HOME to the directory of your local JDK.
 fi
 
+# setup application requires getVar.sh to be executable
+find . -name '*.sh' -exec chmod u+x '{}' \;
+
 #setup idempiere.properties and idempiereEnv.propertiess
 $JAVA -jar plugins/org.eclipse.equinox.launcher_1.*.jar -install setup -configuration setup/configuration -application org.adempiere.install.application $@
 
