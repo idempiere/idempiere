@@ -2,6 +2,9 @@
 #
 echo Setup idempiere Server
 
+# setup application requires getVar.sh to be executable
+find . -name '*.sh' -exec chmod u+x '{}' \;
+
 # Setup idempiere.properties and idempiereEnv.properties
 ./idempiere --launcher.ini setup.ini -application org.adempiere.install.silent-application $@
 
