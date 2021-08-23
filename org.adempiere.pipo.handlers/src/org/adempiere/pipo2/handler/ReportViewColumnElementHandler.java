@@ -1,19 +1,27 @@
-/******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2006 Adempiere, Inc. All Rights Reserved.                *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- *
- * Copyright (C) 2005 Robert Klein. robeklein@hotmail.com
- * Contributor(s): Low Heng Sin hengsin@avantz.com
- *****************************************************************************/
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - Nicolas Micoud (TGI)											   *
+ **********************************************************************/
 package org.adempiere.pipo2.handler;
 
 import java.util.List;
@@ -35,6 +43,10 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+/**
+ * Report View Column (AD_ReportView_Column) element handler
+ * @author Nicolas Micoud (TGI)
+ */
 public class ReportViewColumnElementHandler extends AbstractElementHandler {
 
 	public void startElement(PIPOContext ctx, Element element)
@@ -94,7 +106,6 @@ public class ReportViewColumnElementHandler extends AbstractElementHandler {
 		X_AD_ReportView_Column po = null;
 		Query query = new Query(ctx.ctx, "AD_ReportView_Column", "AD_ReportView_ID=? AND AD_Column_ID=?", getTrxName(ctx));
 		po = query.setParameters(new Object[]{AD_ReportView_ID, AD_Column_ID}).first();
-		System.out.println("po:" + po.toString());
 		if (po != null) {
 
 			if (!isPackOutElement(ctx, po))
