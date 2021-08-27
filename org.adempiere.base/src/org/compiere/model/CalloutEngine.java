@@ -135,7 +135,7 @@ public class CalloutEngine implements Callout
 	 *	Conversion Rules.
 	 *	Convert a String
 	 *
-	 *	@param methodName   method name and additional arguments (in brackets, seperated by commas)
+	 *	@param methodName   method name and additional arguments (in brackets, separated by commas)
 	 *  @param value    the value
 	 *	@return converted String or Null if no method found
 	 */
@@ -146,7 +146,7 @@ public class CalloutEngine implements Callout
 		if(methodAndArgs.contains("(") && methodAndArgs.substring(methodAndArgs.indexOf("(")).contains(")")) {
 			methodName = methodAndArgs.substring(0, methodAndArgs.indexOf('('));
 			additionalArgs = methodAndArgs.substring(methodAndArgs.indexOf("(")+1, methodAndArgs.indexOf(")"))
-					.split(ARG_SEPARATOR); //Everything between the brackets, seperated by commas, is considered additional arguments
+					.split(ARG_SEPARATOR); //Everything between the brackets, separated by commas, is considered additional arguments
 		} else {
 			methodName = methodAndArgs;
 		}
