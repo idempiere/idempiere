@@ -73,7 +73,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	private static final int PRODUCT_OAK_TREE = 123;
 	private static final int PRODUCT_AZALEA = 128;
 	private static final int PRODUCT_FERT50 = 136;
-	private static final int PRODUCT_ASSEMBLYAREA = 50019;
+	private static final int PRODUCT_MARY = 132;
 	private static final int ORG_FERTILIZER = 50001;
 	private static final int WAREHOUSE_FERTILIZER = 50002;
 	private static final int LOCATOR_FERTILIZER = 50001;
@@ -750,7 +750,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Assembly Area with default UOM = Hour
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_ASSEMBLYAREA));
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_MARY));
 		line1.setQty(new BigDecimal("1"));
 		line1.saveEx();
 		
