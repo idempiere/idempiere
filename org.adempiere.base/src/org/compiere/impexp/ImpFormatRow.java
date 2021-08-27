@@ -322,7 +322,7 @@ public final class ImpFormatRow
 				}
 				catch (Exception e)
 				{
-					log.log(Level.SEVERE, "MTab.setFormatInfo - " + e.toString());
+					throw new AdempiereException(e);
 				}
 				if (m_callout.length == 0 || m_method == null || m_method.length == 0)
 				{
