@@ -55,7 +55,7 @@ public class MQuery implements Serializable, Cloneable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8412818805510431201L;
+	private static final long serialVersionUID = 4726305684993324747L;
 
 	/**
 	 *	Get Query from Parameter
@@ -666,6 +666,24 @@ public class MQuery implements Serializable, Cloneable
 	 * 	@param Code Code, e.g 0, All%
 	 *  @param InfoName Display Name
 	 * 	@param InfoDisplay Display of Code (Lookup)
+	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
+	 *  @param depth ( = no open brackets )
+	 */
+	public void addRestriction (String ColumnName, String Operator,
+		Object Code, String InfoName, String InfoDisplay, String andOrCondition, int depth)
+	{
+		Restriction r = new Restriction (ColumnName, Operator,
+			Code, InfoName, InfoDisplay, andOrCondition, depth);
+		m_list.add(r);
+	}	//	addRestriction
+	
+	/*************************************************************************
+	 * 	Add Restriction
+	 * 	@param ColumnName ColumnName
+	 * 	@param Operator Operator, e.g. = != ..
+	 * 	@param Code Code, e.g 0, All%
+	 *  @param InfoName Display Name
+	 * 	@param InfoDisplay Display of Code (Lookup)
 	 */
 	public void addRestriction (String ColumnName, String Operator,
 		Object Code, String InfoName, String InfoDisplay)
@@ -718,8 +736,28 @@ public class MQuery implements Serializable, Cloneable
 		Object Code, Object Code_to,
 		String InfoName, String InfoDisplay, String InfoDisplay_to, boolean andCondition, int depth)
 	{
+		addRangeRestriction(ColumnName,
+				Code, Code_to,
+				InfoName, InfoDisplay, InfoDisplay_to, andCondition ? "AND" : "OR", depth);
+	}
+
+	/**
+	 * 	Add Range Restriction (BETWEEN)
+	 * 	@param ColumnName ColumnName
+	 * 	@param Code Code, e.g 0, All%
+	 * 	@param Code_to Code, e.g 0, All%
+	 *  @param InfoName Display Name
+	 * 	@param InfoDisplay Display of Code (Lookup)
+	 * 	@param InfoDisplay_to Display of Code (Lookup)
+	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
+	 *  @param depth ( = no open brackets )
+	 */
+	public void addRangeRestriction (String ColumnName,
+		Object Code, Object Code_to,
+		String InfoName, String InfoDisplay, String InfoDisplay_to, String andOrCondition, int depth)
+	{
 		Restriction r = new Restriction (ColumnName, Code, Code_to,
-			InfoName, InfoDisplay, InfoDisplay_to, andCondition, depth);
+			InfoName, InfoDisplay, InfoDisplay_to, andOrCondition, depth);
 		m_list.add(r);
 	}	//	addRestriction
 	
@@ -842,7 +880,7 @@ public class MQuery implements Serializable, Cloneable
 		{
 			Restriction r = (Restriction)m_list.get(i);
 			if (i != 0)
-				sb.append(r.andCondition ? " AND " : " OR ");
+				sb.append(" ").append(r.andOrCondition).append(" ");
 			for ( ; currentDepth < r.joinDepth; currentDepth++ )
 			{
 				sb.append('(');
@@ -890,7 +928,7 @@ public class MQuery implements Serializable, Cloneable
 				sb.append(')');
 			}
 			if (i != 0)
-				sb.append(r.andCondition ? " AND " : " OR ");
+				sb.append(" ").append(r.andOrCondition).append(" ");
 			//
 			sb.append(r.getInfoName())
 				.append(r.getInfoOperator())
@@ -1211,9 +1249,29 @@ class Restriction  implements Serializable
 	 * 	@param code Code, e.g 0, All%
 	 *  @param infoName Display Name
 	 * 	@param infoDisplay Display of Code (Lookup)
+	 * 	@param andCondition true->AND false->OR
+	 *  @param depth number of parenthesis
 	 */
 	Restriction (String columnName, String operator,
 		Object code, String infoName, String infoDisplay, boolean andCondition, int depth)
+	{
+		this(columnName, operator, code, infoName, infoDisplay,
+				andCondition ? "AND" : "OR",
+				depth);
+	}
+
+	/**
+	 * 	Restriction
+	 * 	@param columnName ColumnName
+	 * 	@param operator Operator, e.g. = != ..
+	 * 	@param code Code, e.g 0, All%
+	 *  @param infoName Display Name
+	 * 	@param infoDisplay Display of Code (Lookup)
+	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
+	 *  @param depth number of parenthesis
+	 */
+	Restriction (String columnName, String operator,
+		Object code, String infoName, String infoDisplay, String andOrCondition, int depth)
 	{
 		this.ColumnName = columnName.trim();
 		if (infoName != null)
@@ -1222,7 +1280,7 @@ class Restriction  implements Serializable
 			InfoName = ColumnName;
 
 		
-		this.andCondition = andCondition;
+		this.andOrCondition = andOrCondition;
 		this.joinDepth = depth < 0 ? 0 : depth;
 		
 		//
@@ -1258,12 +1316,33 @@ class Restriction  implements Serializable
 	 *  @param infoName Display Name
 	 * 	@param infoDisplay Display of Code (Lookup)
 	 * 	@param infoDisplay_to Display of Code (Lookup)
+	 * 	@param andCondition true->AND false->OR
+	 *  @param depth number of parenthesis
 	 */
 	Restriction (String columnName,
 		Object code, Object code_to,
 		String infoName, String infoDisplay, String infoDisplay_to, boolean andCondition, int depth)
 	{
-		this (columnName, MQuery.BETWEEN, code, infoName, infoDisplay, andCondition, depth);
+		this(columnName, code, code_to,
+				infoName, infoDisplay, infoDisplay_to, andCondition ? "AND" : "OR", depth);
+	}
+
+	/**
+	 * 	Range Restriction (BETWEEN)
+	 * 	@param columnName ColumnName
+	 * 	@param code Code, e.g 0, All%
+	 * 	@param code_to Code, e.g 0, All%
+	 *  @param infoName Display Name
+	 * 	@param infoDisplay Display of Code (Lookup)
+	 * 	@param infoDisplay_to Display of Code (Lookup)
+	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
+	 *  @param depth number of parenthesis
+	 */
+	Restriction (String columnName,
+		Object code, Object code_to,
+		String infoName, String infoDisplay, String infoDisplay_to, String andOrCondition, int depth)
+	{
+		this (columnName, MQuery.BETWEEN, code, infoName, infoDisplay, andOrCondition, depth);
 
 		//	Code_to
 		Code_to = code_to;
@@ -1284,11 +1363,24 @@ class Restriction  implements Serializable
 	/**
 	 * 	Create Restriction with direct WHERE clause
 	 * 	@param whereClause SQL WHERE Clause
+	 * 	@param andCondition true->AND false->OR
+	 *  @param depth number of parenthesis
 	 */
 	Restriction (String whereClause, boolean andCondition, int depth)
 	{
+		this(whereClause, andCondition ? "AND" : "OR", depth);
+	}
+
+	/**
+	 * 	Create Restriction with direct WHERE clause
+	 * 	@param whereClause SQL WHERE Clause
+	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
+	 *  @param depth number of parenthesis
+	 */
+	Restriction (String whereClause, String andOrCondition, int depth)
+	{
 		DirectWhereClause = whereClause;
-		this.andCondition = andCondition;
+		this.andOrCondition = andOrCondition;
 		this.joinDepth = depth;
 	}	//	Restriction
 
@@ -1309,7 +1401,7 @@ class Restriction  implements Serializable
 	/** Info To				*/
 	protected String 	InfoDisplay_to;
 	/** And/Or Condition	*/
-	protected boolean	andCondition = true;
+	protected String	andOrCondition = "AND";
 	/** And/Or condition nesting depth ( = number of open brackets at and/or) */
 	protected int		joinDepth = 0;
 
