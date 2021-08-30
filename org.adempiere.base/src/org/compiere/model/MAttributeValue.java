@@ -43,14 +43,6 @@ public class MAttributeValue extends X_M_AttributeValue
 	public MAttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName)
 	{
 		super (ctx, M_AttributeValue_ID, trxName);
-		/** if (M_AttributeValue_ID == 0)
-		{
-		setM_AttributeValue_ID (0);
-		setM_Attribute_ID (0);
-		setName (null);
-		setValue (null);
-		}
-		**/
 	}	//	MAttributeValue
 
 	/**

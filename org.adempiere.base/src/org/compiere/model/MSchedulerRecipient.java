@@ -98,4 +98,20 @@ public class MSchedulerRecipient extends X_AD_SchedulerRecipient implements Immu
 		return this;
 	}
 
+	/**
+	 * 	String Representation
+	 *	@return info
+	 */
+	@Override
+	public String toString() 
+	{
+		StringBuilder sb = new StringBuilder("MSchedulerRecipient[");
+		sb.append(get_ID()).append("-")
+			.append("AD_User_ID").append("=").append(getAD_User_ID())
+			.append(",AD_Role_ID").append("=").append(getAD_Role_ID())
+			.append(",IsUpload").append("=").append(isUpload())
+			.append(",AD_AuthorizationAccount_ID").append("=").append(getAD_AuthorizationAccount_ID())
+			.append("]");
+		return sb.toString();
+	} //	toString
 }	//	MSchedulerRecipient

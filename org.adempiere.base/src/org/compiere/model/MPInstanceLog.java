@@ -275,12 +275,30 @@ public class MPInstanceLog
 	}
 
 	/**
+	 * Get Table ID
+	 * @return Table ID
+	 */
+	public int getAD_Table_ID()
+	{
+		return m_AD_Table_ID;
+	}
+
+	/**
 	 * Set Table ID
 	 * @param tableId
 	 */
 	public void setAD_Table_ID(int tableId)
 	{
 		m_AD_Table_ID = tableId;
+	}
+
+	/**
+	 * Get Record ID
+	 * @return Record ID
+	 */
+	public int getRecord_ID()
+	{
+		return m_Record_ID;
 	}
 
 	/**

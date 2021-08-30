@@ -104,10 +104,6 @@ public class MLanguage extends X_AD_Language
 		}
 	}	//	maintain
 
-//	/**	Logger						*/
-//	private static CLogger		s_log = CLogger.getCLogger (MLanguage.class);
-
-	
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -466,8 +462,6 @@ public class MLanguage extends X_AD_Language
 							.append(" WHERE ").append(keyColumn).append(" NOT IN (SELECT ").append(keyColumn)
 							.append(" FROM ").append(tableName)
 							.append(" WHERE AD_Language='").append(getAD_Language()).append("')");
-		//	+ " WHERE (" + keyColumn + ",'" + getAD_Language()+ "') NOT IN (SELECT " 
-		//		+ keyColumn + ",AD_Language FROM " + tableName + ")";
 		int no = DB.executeUpdateEx(insert.toString(), null, get_TrxName());
 		// IDEMPIERE-99 Language Maintenance does not create UUIDs
 		MTable table = MTable.get(getCtx(), tableName);
@@ -492,28 +486,6 @@ public class MLanguage extends X_AD_Language
 
 		System.out.println(MLanguage.get(Env.getCtx(), "de_DE"));
 		System.out.println(MLanguage.get(Env.getCtx(), "en_US"));
-
-		/**
-		Locale[] locales = Locale.getAvailableLocales();
-		for (int i = 0; i < locales.length; i++)
-		{
-			Locale loc = locales[i];
-			if (loc.getVariant() != null && loc.getVariant().length() != 0)
-				continue;
-			if (loc.getCountry() != null && loc.getCountry().length() != 0)
-				continue;
-
-			System.out.println(loc.toString()
-				+ " - " + loc.getDisplayName()
-				+ " + " + loc.getCountry()
-				+ " + " + loc.getLanguage()
-			);
-			MLanguage lang = new MLanguage (Env.getCtx(), loc.toString(),
-				loc.getDisplayName(), loc.getCountry(), loc.getLanguage());
-			lang.saveEx();
-			System.out.println(lang);
-		}
-	   /**/
 	}	//	main
 
 }	//	MLanguage

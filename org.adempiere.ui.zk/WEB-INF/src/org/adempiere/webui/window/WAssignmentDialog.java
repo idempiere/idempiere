@@ -215,6 +215,8 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		row = new Row();
 		row.appendCellChild(confirmPanel, 3);
 		rows.appendChild(row);
+		
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 		//
 	}	//	jbInit
 
@@ -397,8 +399,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		//	cancel - return
 		else if (e.getTarget().getId().equals("Cancel"))
 		{
-			m_cancel = true;
-			detach();
+			onCancel();
 		}
 
 		//	delete - delete and return
@@ -420,6 +421,11 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 			if (cmd_save())
 				detach();
 		}		
+	}
+
+	private void onCancel() {
+		m_cancel = true;
+		detach();
 	}
 
 	public void onShowSchedule() 

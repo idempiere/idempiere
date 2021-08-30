@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.adempiere.webui.factory.MappedFormFactory">
+   <property name="service.ranking" type="Integer" value="1"/>
+   <service>
+      <provide interface="org.adempiere.webui.factory.IFormFactory"/>
+      <provide interface="org.adempiere.webui.factory.IMappedFormFactory"/>
+   </service>
+   <implementation class="org.adempiere.webui.factory.MappedFormFactory"/>
+</scr:component>

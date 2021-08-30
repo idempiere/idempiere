@@ -101,7 +101,6 @@ public class ImageDBStorageImpl implements IImageStore {
 				if (log.isLoggable(Level.FINE)) log.fine(entry.getCompressedSize() + " (" + entry.getSize() + ") "
 						+ (entry.getCompressedSize() * 100 / entry.getSize()) + "%");
 				//
-				// zip.finish();
 				zip.close();
 				deflatedData = out.toByteArray();
 				if (log.isLoggable(Level.FINE)) log.fine("Length=" + inflatedData.length);

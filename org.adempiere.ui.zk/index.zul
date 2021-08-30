@@ -13,6 +13,12 @@ Copyright (C) 2007 Ashley G Ramdass.
 <?link rel="stylesheet" type="text/css" href="${themeStyleSheetByBrowser}"?>
 <?link rel="stylesheet" type="text/css" href="css/PAPanel.css"?>
 <?link rel="manifest" href="manifest.json"?>
+<?style content="
+     .z-grid-header > table > tbody > tr.z-columns > th.z-column.hiddencol > .z-column-content {
+	     white-space: nowrap !important;     
+	     text-overflow: unset !important;
+     }
+"?>
 <zk>
 	<script><![CDATA[
 		zk.load("jawwa.atmosphere");
@@ -239,7 +245,31 @@ Copyright (C) 2007 Ashley G Ramdass.
 				}
 				this.$onSize.apply(this, arguments);
 			});
-		});			
+		});	
+		
+		zk.afterLoad("zul.mesh", function () {
+		    var _xFrozen = {};
+		    zk.override(zul.mesh.Frozen.prototype, _xFrozen, {
+		        _doScrollNow: function() {
+					var result = _xFrozen._doScrollNow.apply(this, arguments);
+					/*Patch: add class to non-visible columns*/
+					var mesh = this.parent;
+					if (mesh.head) {
+						var totalCols = mesh.head.nChildren,
+									hdcol = mesh.ehdfaker.firstChild;
+			
+						for (var faker, i = 0; hdcol && i < totalCols; hdcol = hdcol.nextSibling, i++) {
+							if (hdcol.style.width.indexOf('0.001px') != -1 || hdcol.style.width.indexOf('0px') != -1) {
+								jq(zk.$(hdcol).$n()).addClass("hiddencol");
+							} else {
+								jq(zk.$(hdcol).$n()).removeClass("hiddencol");
+							}
+						}
+					}
+					return result;
+		        }
+		    });
+		});						
 	]]>
 	</script>
     <include src="${themePreference}"/>

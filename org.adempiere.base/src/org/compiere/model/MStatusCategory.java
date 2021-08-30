@@ -148,7 +148,6 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 		super (ctx, R_StatusCategory_ID, trxName);
 		if (R_StatusCategory_ID == 0)
 		{
-		//	setName (null);
 			setIsDefault (false);
 		}
 	}	//	RStatusCategory

@@ -432,8 +432,7 @@ public class GridTable extends AbstractTableModel
 		//
 		if (log.isLoggable(Level.FINE))
 			log.fine(m_SQL_Count);
-		if (log.isLoggable(Level.INFO))
-			Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_SQL, m_SQL);
+		Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_SQL, m_SQL);
 		return m_SQL;
 	}	//	createSelectSql
 
@@ -2159,7 +2158,7 @@ public class GridTable extends AbstractTableModel
 			return SAVE_ERROR;
 		}
 		
-		CacheMgt.get().reset(m_tableName);
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(m_tableName));
 		
 		//	everything ok
 		m_rowData = null;

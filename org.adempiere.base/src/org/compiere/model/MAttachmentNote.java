@@ -43,15 +43,6 @@ public class MAttachmentNote extends X_AD_AttachmentNote
 	public MAttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName)
 	{
 		super (ctx, AD_AttachmentNote_ID, trxName);
-		/**
-		if (AD_AttachmentNote_ID == 0)
-		{
-			setAD_Attachment_ID (0);
-			setAD_User_ID (0);
-			setTextMsg (null);
-			setTitle (null);
-		}
-		/**/
 	}	//	MAttachmentNote
 	
 	/** 

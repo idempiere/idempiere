@@ -30,6 +30,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -53,9 +54,11 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.media.IMediaView;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -124,6 +127,8 @@ public class WAttachment extends Window implements EventListener<Event>
 	private String orientation;
 
 	private int maxPreviewSize;
+
+	private Component customPreviewComponent;
 
 	private static List<String> autoPreviewList;
 
@@ -367,6 +372,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			orientation = ClientInfo.get().orientation;
 			ClientInfo.onClientInfo(this, this::onClientInfo);
 		}
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
 	protected void onClientInfo()
@@ -465,6 +471,18 @@ public class WAttachment extends Window implements EventListener<Event>
 			else
 			{
 				clearPreview();
+				IMediaView view = Extensions.getMediaView(mimeType, getExtension(entry.getName()), ClientInfo.isMobile());
+				if (view != null) 
+				{
+					if (data.length <= maxPreviewSize) {
+						AMedia media = new AMedia(entry.getName(), null, mimeType, entry.getData());
+						customPreviewComponent = view.renderMediaView(previewPanel, media, true);
+						return true;
+					} else {
+						return false;
+					}
+				}
+				
 				return false;
 			}
 		}
@@ -476,6 +494,14 @@ public class WAttachment extends Window implements EventListener<Event>
 			sizeLabel.setText("");
 			return false;
 		}
+	}
+
+	private String getExtension(String name) {
+		int index = name.lastIndexOf(".");
+		if (index > 0) {
+			return name.substring(index+1);
+		}
+		return "";
 	}
 
 	/**
@@ -501,6 +527,11 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		preview.setSrc(null);
 		preview.setVisible(false);
+		if (customPreviewComponent != null)
+		{
+			customPreviewComponent.detach();
+			customPreviewComponent = null;
+		}
 	}
 
 	/**
@@ -591,8 +622,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				dispose();
 			}
 		} else if (e.getTarget() == bCancel) {
-			//	Cancel
-			dispose();
+			onCancel();
 		} else if (e.getTarget() == bDeleteAll) {
 			//	Delete Attachment
 			deleteAttachment();
@@ -613,6 +643,11 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 
 	}	//	onEvent
+
+	private void onCancel() {
+		//	Cancel
+		dispose();
+	}
 
 	private void processUploadMedia(Media media) {
 		if (media != null && media.getByteData().length>0)

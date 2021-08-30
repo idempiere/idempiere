@@ -49,9 +49,6 @@ public class MCommissionRun extends X_C_CommissionRun
 		super(ctx, C_CommissionRun_ID, trxName);
 		if (C_CommissionRun_ID == 0)
 		{
-		//	setC_Commission_ID (0);
-		//	setDocumentNo (null);
-		//	setStartDate (new Timestamp(System.currentTimeMillis()));
 			setGrandTotal (Env.ZERO);
 			setProcessed (false);
 		}

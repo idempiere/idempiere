@@ -254,8 +254,6 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		super(ctx, AD_Tree_ID, trxName);
 		if (AD_Tree_ID == 0)
 		{
-		//	setName (null);
-		//	setTreeType (null);
 			setIsAllNodes (true);	//	complete tree
 			setIsDefault(false);
 		}
@@ -406,12 +404,12 @@ public class MTree_Base extends X_AD_Tree implements ImmutablePOSupport
 		
 		String tableName = getSourceTableName(true);
 		MTable table = MTable.get(getCtx(), tableName);
-		if (table.getColumnIndex("IsSummary") < 0) {
+		if (! table.columnExistsInDB("IsSummary")) {
 			// IsSummary is mandatory column to have a tree
 			log.saveError("Error", "IsSummary column required for tree tables"); 
 			return false;
 		}
-		if (table.getColumnIndex("Value") < 0) {
+		if (! table.columnExistsInDB("Value")) {
 			if (isTreeDrivenByValue()) {
 				// Value is mandatory column to have a tree driven by Value
 				setIsTreeDrivenByValue(false);

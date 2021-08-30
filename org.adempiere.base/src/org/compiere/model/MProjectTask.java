@@ -46,11 +46,7 @@ public class MProjectTask extends X_C_ProjectTask
 		super (ctx, C_ProjectTask_ID, trxName);
 		if (C_ProjectTask_ID == 0)
 		{
-		//	setC_ProjectTask_ID (0);	//	PK
-		//	setC_ProjectPhase_ID (0);	//	Parent
-		//	setC_Task_ID (0);			//	FK
 			setSeqNo (0);
-		//	setName (null);
 			setQty (Env.ZERO);
 		}
 	}	//	MProjectTask

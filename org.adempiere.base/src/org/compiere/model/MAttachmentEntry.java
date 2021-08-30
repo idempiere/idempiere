@@ -48,18 +48,7 @@ public class MAttachmentEntry
 		super ();
 		setName (name);
 		setData (data);
-		if (index > 0)
-			m_index = index;
-		else
-		{
-			long now = System.currentTimeMillis();
-			if (s_seed+3600000l < now)	//	older then 1 hour
-			{
-				s_seed = now;
-				s_random = new Random(s_seed);
-			}
-			m_index = s_random.nextInt();
-		}
+		setIndex(index);
 	}	//	MAttachmentItem
 	
 	/**
@@ -73,11 +62,27 @@ public class MAttachmentEntry
 	}	//	MAttachmentItem
 	
 	/**
+	 * Constructor for delayed load
+	 * @param parent
+	 * @param name
+	 * @param index
+	 * @param lazy data source
+	 */
+	public MAttachmentEntry (String name, int index, IAttachmentLazyDataSource ds) {
+		super ();
+		setName (name);
+		setIndex(index);
+		setLazyDataSource(ds);
+	}
+
+	/**
 	 * Copy constructor
 	 * @param copy
 	 */
 	public MAttachmentEntry(MAttachmentEntry copy)
 	{
+		this.m_isDataSet = copy.m_isDataSet;
+		this.m_ds = copy.m_ds;
 		this.m_data = copy.m_data != null ? Arrays.copyOf(copy.m_data, copy.m_data.length) : null;
 		this.m_index = copy.m_index;
 		this.m_name = copy.m_name;
@@ -85,7 +90,10 @@ public class MAttachmentEntry
 	
 	/**	The Name				*/
 	private String 	m_name = "?";
-	/** The Data				*/
+
+	/** If m_data has been set */
+	private boolean m_isDataSet = false;
+	/** The Data, do not use m_data directly, it can be not loaded yet, always use the method getData to access this variable */
 	private byte[] 	m_data = null;
 	
 	/** Random Seed			*/
@@ -97,13 +105,18 @@ public class MAttachmentEntry
 
 	/**	Logger			*/
 	protected CLogger	log = CLogger.getCLogger(getClass());
-	
-	
+
+	/** Lazy Data Source */
+	private IAttachmentLazyDataSource m_ds = null;
+
 	/**
 	 * @return Returns the data.
 	 */
 	public byte[] getData ()
 	{
+		if (! m_isDataSet && m_ds != null) {
+			setData(m_ds.getData());
+		}
 		return m_data;
 	}
 	/**
@@ -112,6 +125,7 @@ public class MAttachmentEntry
 	public void setData (byte[] data)
 	{
 		m_data = data;
+		m_isDataSet = true;
 	}
 	/**
 	 * @return Returns the name.
@@ -134,7 +148,7 @@ public class MAttachmentEntry
 	
 	/**
 	 * 	Get Attachment Index
-	 *	@return timestamp
+	 *	@return int index
 	 */
 	public int getIndex()
 	{
@@ -157,13 +171,13 @@ public class MAttachmentEntry
 	public String toStringX ()
 	{
 		StringBuilder sb = new StringBuilder (m_name);
-		if (m_data != null)
+		if (getData() != null)
 		{
 			sb.append(" (");
 			//
-			float size = m_data.length;
+			float size = getData().length;
 			if (size <= 1024)
-				sb.append(m_data.length).append(" B");
+				sb.append(getData().length).append(" B");
 			else
 			{
 				size /= 1024;
@@ -190,34 +204,34 @@ public class MAttachmentEntry
 	{
 		StringBuilder hdr = new StringBuilder("----- ").append(getName()).append(" -----");
 		System.out.println (hdr.toString());
-		if (m_data == null)
+		if (getData() == null)
 		{
 			System.out.println ("----- no data -----");
 			return;
 		}
 		//	raw data
-		for (int i = 0; i < m_data.length; i++)
+		for (int i = 0; i < getData().length; i++)
 		{
-			char data = (char)m_data[i];
+			char data = (char)getData()[i];
 			System.out.print(data);
 		}
 			
 		System.out.println ();
 		System.out.println (hdr.toString());
 		//	Count nulls at end
-		int ii = m_data.length -1;
+		int ii = getData().length -1;
 		int nullCount = 0;
-		while (m_data[ii--] == 0)
+		while (getData()[ii--] == 0)
 			nullCount++;
-		StringBuilder msgout = new StringBuilder("----- Length=").append(m_data.length).append(", EndNulls=").append(nullCount) 
-				.append(", RealLength=").append((m_data.length-nullCount));
+		StringBuilder msgout = new StringBuilder("----- Length=").append(getData().length).append(", EndNulls=").append(nullCount) 
+				.append(", RealLength=").append((getData().length-nullCount));
 		System.out.println(msgout.toString());
 		/**
 		//	Dump w/o nulls
 		if (nullCount > 0)
 		{
-			for (int i = 0; i < m_data.length-nullCount; i++)
-				System.out.print((char)m_data[i]);
+			for (int i = 0; i < getData().length-nullCount; i++)
+				System.out.print((char)getData()[i]);
 			System.out.println ();
 			System.out.println (hdr);
 		}
@@ -252,12 +266,12 @@ public class MAttachmentEntry
 	 */
 	public File getFile (File file)
 	{
-		if (m_data == null || m_data.length == 0)
+		if (getData() == null || getData().length == 0)
 			return null;
 		try
 		{
 			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(m_data);
+			fos.write(getData());
 			fos.close();
 		}
 		catch (IOException ioe)
@@ -303,13 +317,40 @@ public class MAttachmentEntry
 	 */
 	public InputStream getInputStream()
 	{
-		if (m_data == null)
+		if (getData() == null)
 			return null;
-		return new ByteArrayInputStream(m_data);
+		return new ByteArrayInputStream(getData());
 	}	//	getInputStream
 
 	public void setIndex(int index) {
-		m_index = index;
+		if (index > 0)
+			m_index = index;
+		else
+		{
+			long now = System.currentTimeMillis();
+			if (s_seed+3600000l < now)	//	older then 1 hour
+			{
+				s_seed = now;
+				s_random = new Random(s_seed);
+			}
+			m_index = s_random.nextInt();
+		}
 	}
-	
+
+	/**
+	 * Set the lazy data source
+	 * @param obj
+	 */
+	public void setLazyDataSource(IAttachmentLazyDataSource ds) {
+		m_ds = ds;
+	}
+
+	/**
+	 * Get the lazy data source
+	 * @return
+	 */
+	public IAttachmentLazyDataSource getLazyDataSource() {
+		return m_ds;
+	}
+
 }	//	MAttachmentItem

@@ -54,11 +54,8 @@ public class MPAttributeLookup extends Lookup
 	public MPAttributeLookup(Properties ctx, int WindowNo)
 	{
 		super(DisplayType.TableDir, WindowNo);
-//		m_ctx = ctx;
 	}	//	MPAttribute
 
-//	/**	Properties					*/
-//	private Properties 			m_ctx;
 	/**	No Instance Value			*/
 	private static KeyNamePair	NO_INSTANCE = new KeyNamePair (0,"");
 

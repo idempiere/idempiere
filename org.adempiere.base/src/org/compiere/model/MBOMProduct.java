@@ -72,12 +72,10 @@ public class MBOMProduct extends X_M_BOMProduct
 		super (ctx, M_BOMProduct_ID, trxName);
 		if (M_BOMProduct_ID == 0)
 		{
-		//	setM_BOM_ID (0);
 			setBOMProductType (BOMPRODUCTTYPE_StandardProduct);	// S
 			setBOMQty (Env.ONE);
 			setIsPhantom (false);
 			setLeadTimeOffset (0);
-		//	setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
 		}
 	}	//	MBOMProduct
 

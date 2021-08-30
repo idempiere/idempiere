@@ -97,8 +97,11 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	public static MImage getCopy(Properties ctx, int AD_Image_ID, String trxName)
 	{
 		MImage img = get(AD_Image_ID);
-		if (img != null && img.getAD_Image_ID() > 0)
+		if (img != null && img.getAD_Image_ID() > 0) {
+			MStorageProvider copyprov = img.provider;
 			img = new MImage(ctx, img, trxName);
+			img.setStorageProvider(copyprov);
+		}
 		
 		return img;
 	}
@@ -399,8 +402,12 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	 * @param trxName
 	 */
 	private void initImageStoreDetails(Properties ctx, String trxName) {
-		MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
-		provider=new MStorageProvider(ctx, clientInfo.getStorageImage_ID(), trxName);		
+		if (is_new()) {
+			MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
+			setStorageProvider(MStorageProvider.get(ctx, clientInfo.getStorageImage_ID()));
+		} else {
+			setStorageProvider(MStorageProvider.get(ctx, getAD_StorageProvider_ID()));
+		}
 	}
 	
 	/**
@@ -410,6 +417,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	 */
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;
+		setAD_StorageProvider_ID(p.getAD_StorageProvider_ID());
 	}
 	
 	public byte[] getByteData(){

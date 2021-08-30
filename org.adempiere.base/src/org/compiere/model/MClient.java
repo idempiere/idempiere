@@ -135,7 +135,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MClient.class);
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MClient>	s_cache = new ImmutableIntPOCache<Integer,MClient>(Table_Name, 3, 120, true);
+	private static ImmutableIntPOCache<Integer,MClient>	s_cache = new ImmutableIntPOCache<Integer,MClient>(Table_Name, 3, 120);
 
 
 	/**************************************************************************
@@ -153,8 +153,6 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 		{
 			if (m_createNew)
 			{
-			//	setValue (null);
-			//	setName (null);
 				setAD_Org_ID(0);
 				setIsMultiLingualDocument (false);
 				setIsSmtpAuthorization (false);
@@ -457,6 +455,13 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 			AD_Tree_Org_ID, AD_Tree_BPartner_ID, AD_Tree_Project_ID,
 			AD_Tree_SalesRegion_ID, AD_Tree_Product_ID,
 			AD_Tree_Campaign_ID, AD_Tree_Activity_ID, get_TrxName());
+		int defaultStorageProvider = MStorageProvider.getDefaultStorageProviderID();
+		if (defaultStorageProvider > 0)
+		{
+			clientInfo.setAD_StorageProvider_ID(defaultStorageProvider);
+			clientInfo.setStorageImage_ID(defaultStorageProvider);
+			clientInfo.setStorageArchive_ID(defaultStorageProvider);
+		}
 		success = clientInfo.save();
 		return success;
 	}	//	createTrees
@@ -1008,7 +1013,6 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	 *
 	 *	@return boolean representing if client accounting is enabled and it's on a client
 	 */
-	//private static final String CLIENT_ACCOUNTING_DISABLED = "D";
 	private static final String CLIENT_ACCOUNTING_QUEUE = "Q";
 	private static final String CLIENT_ACCOUNTING_IMMEDIATE = "I";
 

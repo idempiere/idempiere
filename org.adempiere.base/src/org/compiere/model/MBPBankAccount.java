@@ -74,7 +74,6 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 		super (ctx, C_BP_BankAccount_ID, trxName);
 		if (C_BP_BankAccount_ID == 0)
 		{
-		//	setC_BPartner_ID (0);
 			setIsACH (false);
 			setBPBankAcctUse(BPBANKACCTUSE_Both);
 		}

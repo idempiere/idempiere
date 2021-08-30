@@ -104,9 +104,7 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 			setIsDefault (false);
 			setBankAccountType (BANKACCOUNTTYPE_Checking);
 			setCurrentBalance (Env.ZERO);
-		//	setC_Currency_ID (0);
 			setCreditLimit (Env.ZERO);
-		//	setC_BankAccount_ID (0);
 		}
 	}	//	MBankAccount
 

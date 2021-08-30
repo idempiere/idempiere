@@ -175,6 +175,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		set(from, to, subject, message);
 		setAttachment(attachment);
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	commonInit
 
 
@@ -272,7 +273,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lFrom);
 		row.appendChild(div);
 		row.appendChild(fFrom);
-		ZKUpdateUtil.setHflex(fFrom, "1");
+		ZKUpdateUtil.setWidth(fFrom, "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -281,13 +282,13 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lTo);
 		row.appendChild(div);
 		row.appendChild(fUser.getComponent());
-		ZKUpdateUtil.setHflex(fUser.getComponent(), "1");
+		ZKUpdateUtil.setWidth(fUser.getComponent(), "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(new Label(""));
 		row.appendChild(fTo);
-		ZKUpdateUtil.setHflex(fTo, "1");
+		ZKUpdateUtil.setWidth(fTo, "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -296,13 +297,13 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lCc);
 		row.appendChild(div);
 		row.appendChild(fCcUser.getComponent());
-		ZKUpdateUtil.setHflex(fCcUser.getComponent(), "1");
+		ZKUpdateUtil.setWidth(fCcUser.getComponent(), "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
 		row.appendChild(new Label(""));
 		row.appendChild(fCc);
-		ZKUpdateUtil.setHflex(fCc, "1");
+		ZKUpdateUtil.setWidth(fCc, "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -316,7 +317,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		div.appendChild(lSubject);
 		row.appendChild(div);
 		row.appendChild(fSubject);
-		ZKUpdateUtil.setHflex(fSubject, "1");
+		ZKUpdateUtil.setWidth(fSubject, "100%");
 		
 		row = new Row();
 		rows.appendChild(row);
@@ -376,7 +377,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
-		ZKUpdateUtil.setHflex(borderlayout, "1");
+		ZKUpdateUtil.setWidth(borderlayout, "100%");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
@@ -522,9 +523,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 */
 	public void onEvent(Event event) throws Exception {		
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
-			onClose();
-				
-		//	Send
+			onCancel();
 		else if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
 			Clients.clearBusy();
@@ -588,6 +587,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		}
 		else if (event.getTarget() == bAddDefaultMailText) // Insert the mail text at cursor (light side) ? or at the end (dark side) :D
 			addMailText();
+	}
+
+	private void onCancel() {
+		onClose();
 	}
 
 	/**
@@ -861,4 +864,13 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			
 		}
 	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (fUser != null)
+			fUser.getComponent().focus();
+	}
+	
+	
 }	//	WEMailDialog

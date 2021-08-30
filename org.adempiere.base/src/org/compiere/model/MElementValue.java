@@ -52,9 +52,6 @@ public class MElementValue extends X_C_ElementValue implements ImmutablePOSuppor
 		super(ctx, C_ElementValue_ID, trxName);
 		if (C_ElementValue_ID == 0)
 		{
-		//	setC_Element_ID (0);	//	Parent
-		//	setName (null);
-		//	setValue (null);
 			setIsSummary (false);
 			setAccountSign (ACCOUNTSIGN_Natural);
 			setAccountType (ACCOUNTTYPE_Expense);
@@ -167,13 +164,6 @@ public class MElementValue extends X_C_ElementValue implements ImmutablePOSuppor
 		setPostBudget(imp.isPostBudget());
 		setPostEncumbrance(imp.isPostEncumbrance());
 		setPostStatistical(imp.isPostStatistical());
-		//
-	//	setC_BankAccount_ID(imp.getC_BankAccount_ID());
-	//	setIsForeignCurrency(imp.isForeignCurrency());
-	//	setC_Currency_ID(imp.getC_Currency_ID());
-	//	setIsBankAccount(imp.isIsBankAccount());
-	//	setValidFrom(null);
-	//	setValidTo(null);
 	}	//	set
 	
 	

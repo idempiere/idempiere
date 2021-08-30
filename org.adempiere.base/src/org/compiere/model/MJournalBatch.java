@@ -54,7 +54,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5920767495976301905L;
+	private static final long serialVersionUID = 4447134860127309777L;
 
 	/**
 	 * 	Create new Journal Batch by copying
@@ -103,10 +103,6 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		super (ctx, GL_JournalBatch_ID, trxName);
 		if (GL_JournalBatch_ID == 0)
 		{
-		//	setGL_JournalBatch_ID (0);	PK
-		//	setDescription (null);
-		//	setDocumentNo (null);
-		//	setC_DocType_ID (0);
 			setPostingType (POSTINGTYPE_Actual);
 			setDocAction (DOCACTION_Complete);
 			setDocStatus (DOCSTATUS_Drafted);
@@ -138,9 +134,6 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	{
 		this (original.getCtx(), 0, original.get_TrxName());
 		setClientOrg(original);
-		//
-	//	setC_AcctSchema_ID(original.getC_AcctSchema_ID());
-	//	setGL_Budget_ID(original.getGL_Budget_ID());
 		setGL_Category_ID(original.getGL_Category_ID());
 		setPostingType(original.getPostingType());
 		setDescription(original.getDescription());
@@ -148,12 +141,6 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		setControlAmt(original.getControlAmt());
 		//
 		setC_Currency_ID(original.getC_Currency_ID());
-	//	setC_ConversionType_ID(original.getC_ConversionType_ID());
-	//	setCurrencyRate(original.getCurrencyRate());
-		
-	//	setDateDoc(original.getDateDoc());
-	//	setDateAcct(original.getDateAcct());
-	//	setC_Period_ID(original.getC_Period_ID());
 	}	//	MJournal
 	
 	
@@ -877,10 +864,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -963,4 +947,17 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		
 		return true;
 	}
+
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isComplete
+
 }	//	MJournalBatch

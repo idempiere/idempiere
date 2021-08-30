@@ -150,15 +150,12 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		super (ctx, C_Tax_ID, trxName);
 		if (C_Tax_ID == 0)
 		{
-		//	setC_Tax_ID (0);		PK
 			setIsDefault (false);
 			setIsDocumentLevel (true);
 			setIsSummary (false);
 			setIsTaxExempt (false);
-		//	setName (null);
 			setRate (Env.ZERO);
 			setRequiresTaxCertificate (false);
-		//	setC_TaxCategory_ID (0);	//	FK
 			setSOPOType (SOPOTYPE_Both);
 			setValidFrom (TimeUtil.getDay(1990,1,1));
 			setIsSalesTax(false);

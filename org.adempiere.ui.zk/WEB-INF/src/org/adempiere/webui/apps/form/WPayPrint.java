@@ -74,7 +74,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.South;
 
-import com.itextpdf.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfReader;
 
 /**
  *  Payment Print & Export

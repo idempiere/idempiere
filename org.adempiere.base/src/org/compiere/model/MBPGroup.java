@@ -209,8 +209,6 @@ public class MBPGroup extends X_C_BP_Group implements ImmutablePOSupport
 		super (ctx, C_BP_Group_ID, trxName);
 		if (C_BP_Group_ID == 0)
 		{
-		//	setValue (null);
-		//	setName (null);
 			setIsConfidentialInfo (false);	// N
 			setIsDefault (false);
 			setPriorityBase(PRIORITYBASE_Same);

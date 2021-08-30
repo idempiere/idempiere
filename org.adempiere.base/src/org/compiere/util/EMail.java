@@ -46,7 +46,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 
@@ -78,6 +77,10 @@ public final class EMail implements Serializable
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
+	
+	//log last email send error message in context
+	public final static String EMAIL_SEND_MSG = "EmailSendMsg";
+	
 	/**
 	 *	Full Constructor
 	 *  @param client the client
@@ -247,10 +250,13 @@ public final class EMail implements Serializable
 		}
 		
 		m_sentMsg = null;
+		Env.getCtx().remove(EMAIL_SEND_MSG);
+		
 		//
 		if (!isValid(true))
 		{
 			m_sentMsg = "Invalid Data";
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return m_sentMsg;
 		}
 		//
@@ -265,13 +271,6 @@ public final class EMail implements Serializable
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");
 		//
-
-		MAuthorizationAccount authAccount = null;
-		boolean isOAuth2 = false;
-		if (m_auth != null) {
-			authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
-			isOAuth2 = (authAccount != null);
-		}
 
 		Session session = null;
 		try
@@ -290,13 +289,12 @@ public final class EMail implements Serializable
 			{
 				props.put("mail.smtp.starttls.enable", "true");
 			}
-			if (isOAuth2) {
+			if (m_auth != null && m_auth.isOAuth2()) {
 				props.put("mail.smtp.auth.mechanisms", "XOAUTH2");
 			    props.put("mail.smtp.starttls.required", "true");
 			    props.put("mail.smtp.auth.login.disable","true");
 			    props.put("mail.smtp.auth.plain.disable","true");
 			    props.put("mail.debug.auth", "true");
-				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.refreshAndGetAccessToken());
 			}
 			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());
@@ -305,12 +303,14 @@ public final class EMail implements Serializable
 		{
 			log.log(Level.WARNING, "Auth=" + m_auth + " - " + se.toString());
 			m_sentMsg = se.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return se.toString();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "Auth=" + m_auth, e);
 			m_sentMsg = e.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return e.toString();
 		}
 
@@ -475,12 +475,14 @@ public final class EMail implements Serializable
 			else
 				log.log(Level.WARNING, sb.toString());
 			m_sentMsg = sb.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return sb.toString();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
 			m_sentMsg = e.getLocalizedMessage();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return e.getLocalizedMessage();
 		}
 		finally
@@ -586,14 +588,13 @@ public final class EMail implements Serializable
 	 */
 	public EMailAuthenticator createAuthenticator (String username, String password)
 	{
-		if (username == null || password == null)
+		if (username == null)
 		{
-			log.warning("Ignored - " +  username + "/" + password);
+			log.warning("Ignored - username null");
 			m_auth = null;
 		}
 		else
 		{
-		//	log.fine("setEMailUser: " + username + "/" + password);
 			m_auth = new EMailAuthenticator (username, password);
 		}
 		return m_auth;

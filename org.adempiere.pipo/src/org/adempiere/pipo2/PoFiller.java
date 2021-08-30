@@ -57,10 +57,12 @@ public class PoFiller{
 		String value = getStringValue(columnName);
 		if(value == null)
 			return false;
-		
-		String strParts [] = value.split("[|]");
-		return strParts.length == 2;
 
+		String strParts [] = value.split("[|]");
+		return (   strParts.length == 2
+				&& strParts[0].endsWith(PackOut.PACKOUT_BLOB_FILE_EXTENSION)
+				&& (   PoExporter.POEXPORTER_BLOB_TYPE_STRING.equals(strParts[1]) // see PoExporter.addBlob
+					|| PoExporter.POEXPORTER_BLOB_TYPE_BYTEARRAY.equals(strParts[1])));
 	}
 	
 	/**
@@ -186,11 +188,11 @@ public class PoFiller{
 				}
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
-				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName);
+				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName, po.get_TrxName());
 				MTable foreignTable = null;
 				String refTableName = col.getReferenceTableName();
 				if (refTableName != null) {
-					foreignTable = MTable.get(Env.getCtx(), refTableName);
+					foreignTable = MTable.get(Env.getCtx(), refTableName, po.get_TrxName());
 				} else {
 					if ("Record_ID".equalsIgnoreCase(columnName)) {
 						// special case - get the foreign table using AD_Table_ID
@@ -207,7 +209,7 @@ public class PoFiller{
 							}
 						}
 						if (tableID > 0) {
-							foreignTable = MTable.get(Env.getCtx(), tableID);
+							foreignTable = MTable.get(Env.getCtx(), tableID, po.get_TrxName());
 							refTableName = foreignTable.getTableName();
 						}
 					}
@@ -358,7 +360,11 @@ public class PoFiller{
 				} else if (DisplayType.isLOB(info.getColumnDisplayType(index))) {
 					setBlob(qName);
 				} else {
-					setString(qName);
+					if (isBlobOnPackinFile(qName)) {
+						setBlob(qName);
+					} else {
+						setString(qName);
+					}
 				}
 			}
 		}
@@ -410,7 +416,7 @@ public class PoFiller{
 					PackIn packIn = ctx.packIn;
 					try {
 						bytes = packIn.readBlob(fileName);
-						if ("byte[]".equals(dataType)) {
+						if (PoExporter.POEXPORTER_BLOB_TYPE_BYTEARRAY.equals(dataType)) {
 							data = bytes;
 						} else {
 							data = new String(bytes, "UTF-8");

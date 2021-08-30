@@ -55,7 +55,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2433704480923324032L;
+	private static final long serialVersionUID = -3318054439833405030L;
 
 	/**
 	 * Create empty Authorization Credential
@@ -96,20 +96,43 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 			// get the scope parameter
 			MPInstancePara paramScope = null;
 			for (MPInstancePara param : pinstance.getParameters()) {
-				if ("AD_AuthorizationScope".equals(param.getParameterName())) {
+				if ("AD_AuthorizationScopes".equals(param.getParameterName())) {
 					paramScope = param;
 					break;
 				}
 			}
 			if (paramScope == null) {
 				// this is not expected, just added here for safety
-				msg = "Process instance parameter for Scope not found";
+				msg = "Process instance parameter for Scopes not found";
 				return msg;
 			}
+			MPInstanceLog pilog = pinstance.addLog(null, 0, null, null, MAuthorizationAccount.Table_ID, 0);
+			msg = processToken(Env.getCtx(), code, paramScope.getP_String(), pilog);
+			pilog.saveEx();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			msg = Msg.getMsg(getCtx(), "Error") + ex.getLocalizedMessage();
+			return msg;
+		}
+
+		return msg;
+	}
+
+	/**
+	 * Create or Update an Account based on the token received
+	 * @param ctx
+	 * @param code
+	 * @param paramScope
+	 * @param pilog       MPInstanceLog to set the log message and record_ID, it is not saved, the caller must save it
+	 * @return String message indicating success
+	 */
+	public String processToken(Properties ctx, String code, String paramScope, MPInstanceLog pilog) {
+		String msg = null;
+		try {
 			String clientId = getAuthorizationClientId();
 			String clientSecret = getAuthorizationClientSecret();
 			Timestamp ts = new Timestamp(System.currentTimeMillis());
-			MAuthorizationProvider ap = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
+			MAuthorizationProvider ap = new MAuthorizationProvider(ctx, getAD_AuthorizationProvider_ID(), get_TrxName());
 			AuthorizationCodeTokenRequest request = new AuthorizationCodeTokenRequest(new NetHttpTransport(),
 					GsonFactory.getDefaultInstance(),
 					new GenericUrl(ap.getTokenEndpoint()), code);
@@ -123,23 +146,23 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 				email = (String) idtoken.getPayload().get("email");
 			}
 			if (email == null) {
-				msg = Msg.parseTranslation(getCtx(), "@Error@ @OAuthProcessToken_CouldNotGetEMail@");
+				msg = Msg.parseTranslation(ctx, "@Error@ @OAuthProcessToken_CouldNotGetEMail@");
 				return msg;
 			}
 
 			boolean newAccount = false;
 			MAuthorizationAccount account = null;
-			Query query = new Query(Env.getCtx(), MAuthorizationAccount.Table_Name, "AD_Client_ID=? AND AD_User_ID=? AND EMail=? AND AD_AuthorizationCredential_ID=? AND AD_AuthorizationScope=?", get_TrxName());
-			query.setParameters(Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), email, getAD_AuthorizationCredential_ID(), paramScope.getP_String());
-			account = query.first();
+			Query query = new Query(ctx, MAuthorizationAccount.Table_Name, "AD_Client_ID=? AND AD_User_ID=? AND EMail=? AND AD_AuthorizationCredential_ID=?", get_TrxName());
+			query.setParameters(Env.getAD_Client_ID(ctx), Env.getAD_User_ID(ctx), email, getAD_AuthorizationCredential_ID());
+			account = query.setOnlyActiveRecords(true).first();
 			if (account == null) {
-				account = new MAuthorizationAccount(Env.getCtx(), 0, get_TrxName());
+				account = new MAuthorizationAccount(ctx, 0, get_TrxName());
 				account.setEMail(email);
 				account.setAD_AuthorizationCredential_ID(getAD_AuthorizationCredential_ID());
-				account.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
-				account.setAD_AuthorizationScope(paramScope.getP_String());
+				account.setAD_User_ID(Env.getAD_User_ID(ctx));
 				newAccount = true;
 			}
+			account.setAD_AuthorizationScopes(paramScope);
 
 			account.setAccessToken(tokenResponse.getAccessToken());
 			account.setAccessTokenTimestamp(ts);
@@ -156,7 +179,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 
 			if (tokenResponse.getRefreshToken() == null && account.getRefreshToken() == null) {
 				//revoke access and ask for retry
-				MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
+				MAuthorizationProvider provider = new MAuthorizationProvider(ctx, getAD_AuthorizationProvider_ID(), get_TrxName());
 				String revokeEndPoint = provider.getRevokeEndpoint();
 				if (revokeEndPoint != null) {
 					HttpRequestFactory factory = new NetHttpTransport().createRequestFactory();
@@ -164,7 +187,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 					HttpRequest revokeRequest = factory.buildGetRequest(url);
 					revokeRequest.execute();
 				}
-				msg = Msg.parseTranslation(getCtx(), "@Error@ @OAuthProcessToken_NoRefreshToken@");
+				msg = Msg.parseTranslation(ctx, "@Error@ @OAuthProcessToken_NoRefreshToken@");
 				return msg;
 			}
 
@@ -172,17 +195,19 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 				account.setRefreshToken(tokenResponse.getRefreshToken());
 			}
 			account.saveEx();
-			String logmsg = Msg.parseTranslation(getCtx(), (newAccount ? "@Created@" : "@Updated@") + " @AD_AuthorizationAccount_ID@ for ") + account.getEMail();
-			MPInstanceLog pilog = pinstance.addLog(null, 0, null, logmsg, MAuthorizationAccount.Table_ID, account.getAD_AuthorizationAccount_ID());
-			pilog.saveEx();
+			if (pilog != null) {
+				String logmsg = Msg.parseTranslation(ctx, (newAccount ? "@Created@" : "@Updated@") + " @AD_AuthorizationAccount_ID@ for ") + account.getEMail();
+				pilog.setP_Msg(logmsg);
+				pilog.setRecord_ID(account.getAD_AuthorizationAccount_ID());
+			}
 			account.syncOthers();
 			if (newAccount)
-				msg = Msg.getMsg(getCtx(), "Authorization_Access_OK", new Object[] {account.getEMail()});
+				msg = Msg.getMsg(ctx, "Authorization_Access_OK", new Object[] {account.getEMail(), paramScope});
 			else
-				msg = Msg.getMsg(getCtx(), "Authorization_Access_Previous", new Object[] {account.getEMail()});
+				msg = Msg.getMsg(ctx, "Authorization_Access_Previous", new Object[] {account.getEMail(), paramScope});
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			msg = Msg.getMsg(getCtx(), "Error") + ex.getLocalizedMessage();
+			msg = Msg.getMsg(ctx, "Error") + ex.getLocalizedMessage();
 			return msg;
 		}
 
@@ -191,14 +216,14 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 
 	/**
 	 * Get a complete Authorization end point URL with all the parameters required
-	 * @param scope
+	 * @param scopes
 	 * @param state
-	 * @return
+	 * @return authorization url
 	 */
-	public String getFullAuthorizationEndpoint(String scope, String state) {
-		String scopeUrl = findScopeUrl(scope);
+	public String getFullAuthorizationEndpoint(String scopes, String state) {
+		String scopeUrl = findScopeUrl(scopes);
 		if (scopeUrl == null)
-			throw new AdempiereException("Could not find scope " + scope + " for provider " + getAD_AuthorizationProvider_ID());
+			throw new AdempiereException("Could not find scope " + scopes + " for provider " + getAD_AuthorizationProvider_ID());
 		MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
 		String authEndPoint = provider.getAuthorizationEndpoint();
 		StringBuilder url = new StringBuilder(authEndPoint).append("?");
@@ -215,18 +240,34 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 
 	/**
 	 * Get the scope URL for the authorization provider
-	 * @param scope
-	 * @return
+	 * @param scopes
+	 * @return scope url
 	 */
-	private String findScopeUrl(String scope) {
-		String scopeUrl = null;
-		MAuthorizationScopeProv scpr = new Query(Env.getCtx(), MAuthorizationScopeProv.Table_Name, "AD_AuthorizationProvider_ID=? AND AD_AuthorizationScope=?", get_TrxName())
-				.setOnlyActiveRecords(true)
-				.setParameters(getAD_AuthorizationProvider_ID(), scope)
-				.first();
-		if (scpr != null)
-			scopeUrl = scpr.getScopeURL();
-		return scopeUrl;
+	private String findScopeUrl(String scopes) {
+		StringBuilder urlBuilder = new StringBuilder();
+		List<String> scopeURLs = new ArrayList<String>();
+		String[] scopeList = scopes.split("[,]");
+		for(String scope : scopeList) {
+			scope = scope.trim();
+			MAuthorizationScopeProv scpr = new Query(Env.getCtx(), MAuthorizationScopeProv.Table_Name, "AD_AuthorizationProvider_ID=? AND AD_AuthorizationScope=?", get_TrxName())
+					.setOnlyActiveRecords(true)
+					.setParameters(getAD_AuthorizationProvider_ID(), scope)
+					.first();
+			if (scpr != null) {
+				String[] urls = scpr.getScopeURL().split("\\s+");
+				for(String url : urls) {
+					url = url.trim();
+					if (!scopeURLs.contains(url))
+						scopeURLs.add(url);
+				}
+			}
+		}
+		for(String scopeURL : scopeURLs) {
+			if (urlBuilder.length() > 0)
+				urlBuilder.append(" ");
+			urlBuilder.append(scopeURL);
+		}
+		return urlBuilder.length() > 0 ? urlBuilder.toString() : null;
 	}
 
 } // MAuthorizationCredential

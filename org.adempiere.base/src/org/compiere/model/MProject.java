@@ -89,9 +89,6 @@ public class MProject extends X_C_Project
 		super (ctx, C_Project_ID, trxName);
 		if (C_Project_ID == 0)
 		{
-		//	setC_Project_ID(0);
-		//	setValue (null);
-		//	setC_Currency_ID (0);
 			setCommittedAmt (Env.ZERO);
 			setCommittedQty (Env.ZERO);
 			setInvoicedAmt (Env.ZERO);
@@ -100,7 +97,6 @@ public class MProject extends X_C_Project
 			setPlannedMarginAmt (Env.ZERO);
 			setPlannedQty (Env.ZERO);
 			setProjectBalanceAmt (Env.ZERO);
-		//	setProjectCategory(PROJECTCATEGORY_General);
 			setProjInvoiceRule(PROJINVOICERULE_None);
 			setProjectLineLevel(PROJECTLINELEVEL_Project);
 			setIsCommitCeiling (false);

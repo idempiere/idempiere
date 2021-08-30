@@ -5,7 +5,8 @@
 	border-width: 1px;
 	border-color: #BBBBBB;
 	border-style: solid;
-	border-collapse: collapse;
+	border-collapse: separate;
+  	border-spacing: 0;
 	width: 90%;
 	background-color: #EBF1EF;	
 	border-width: 0px;
@@ -68,3 +69,34 @@
 	border-width: 0px 0px 0px 0px;
 }
 
+div.rp-flex-container {
+	display: flex; 
+	flex-direction: column; 
+	height: 100%;
+}
+
+#rp-para-table-wrap {
+	flex-grow: 0;
+}
+
+div.rp-table-wrap {
+	flex-grow: 1;
+	overflow: auto;
+}
+
+div.rp-table-wrap > table > thead > tr > th {
+	position: sticky;
+	top: 0;
+}
+
+@media print {
+	div.rp-flex-container {
+		height: auto;
+	}
+	div.rp-table-wrap {
+		overflow: visible;
+	}
+	div.rp-table-wrap > table > thead > tr > th {
+		position: relative;
+	}
+}

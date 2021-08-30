@@ -20,6 +20,8 @@
 // Generic PO.
 package org.adempiere.model;
 
+import java.io.File;
+import java.math.BigDecimal;
 // import for GenericPO
 import java.sql.ResultSet;
 import java.util.Properties;
@@ -27,6 +29,7 @@ import java.util.Properties;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.process.DocAction;
 
 /**
  * Generic PO implementation, this can be use together with ModelValidator as alternative to the classic 
@@ -36,13 +39,14 @@ import org.compiere.model.POInfo;
  * @author Marco LOMBARDO
  * @contributor Low Heng Sin
  */
-public class GenericPO extends PO {
-
+public class GenericPO extends PO implements DocAction {	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6558017105997010172L;
-
+	private static final long serialVersionUID = 3180937588404433030L;
+	
+	private DocActionDelegate<GenericPO> docActionDelegate = new DocActionDelegate<>(this);
+	
 	/**
 	 * @param tableName
 	 * @param ctx
@@ -130,6 +134,210 @@ public class GenericPO extends PO {
 	@Override
 	protected int get_AccessLevel() {
 		return Integer.parseInt(p_info.getAccessLevel());
+	}
+
+
+
+	/* METHODS TO USE GenericPO in Documents */
+
+	/**
+	 * Set Document Status.
+	 *	@param DocStatus The current status of the document
+	 */
+	@Override
+	public void setDocStatus(String DocStatus) {
+		docActionDelegate.setDocStatus(DocStatus);
+	}
+
+	/**
+	 * Get Document Status.
+	 * @return The current status of the document
+	 */
+	@Override
+	public String getDocStatus() {
+		return docActionDelegate.getDocStatus();
+	}
+
+	/**************************************************************************
+	 * 	Process document
+	 *	@param processAction document action
+	 *	@return true if performed
+	 */
+	@Override
+	public boolean processIt (String processAction) {
+		return docActionDelegate.processIt(processAction);
+	}	//	process
+
+	/**
+	 * 	Unlock Document.
+	 * 	@return true if success
+	 */
+	@Override
+	public boolean unlockIt()
+	{
+		return docActionDelegate.unlockIt();
+	}	//	unlockIt
+
+	/**
+	 * Get Document Action.
+	 * @return The targeted status of the document
+	 */
+	@Override
+	public String getDocAction() {
+		return docActionDelegate.getDocAction();
+	}
+
+	/**
+	 * 	Invalidate Document
+	 * 	@return true if success
+	 */
+	@Override
+	public boolean invalidateIt()
+	{
+		return docActionDelegate.invalidateIt();
+	}	//	invalidateIt
+
+	/**
+	 *	Prepare Document
+	 * 	@return new status (In Progress or Invalid)
+	 */
+	@Override
+	public String prepareIt() {
+		return docActionDelegate.prepareIt();
+	}	//	prepareIt
+
+	/**
+	 * 	Approve Document
+	 * 	@return true if success
+	 */
+	@Override
+	public boolean approveIt() {
+		return docActionDelegate.approveIt();
+	}	//	approveIt
+
+	/**
+	 * 	Reject Approval
+	 * 	@return true if success
+	 */
+	@Override
+	public boolean rejectIt() {
+		return docActionDelegate.rejectIt();
+	}	//	rejectIt
+
+	/**
+	 * 	Complete Document
+	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
+	 */
+	@Override
+	public String completeIt() {
+		return docActionDelegate.completeIt();
+	}	//	completeIt
+
+	/**
+	 * 	Void Document.
+	 * 	@return true if success
+	 */
+	@Override
+	public boolean voidIt()
+	{
+		return docActionDelegate.voidIt();
+	}	//	voidIt
+
+	/**
+	 * 	Close Document.
+	 * 	@return true if success
+	 */
+	@Override
+	public boolean closeIt()
+	{
+		return docActionDelegate.closeIt();
+	}	//	closeIt
+
+	/**
+	 * 	Reverse Correction - same date
+	 * 	@return true if success
+	 */
+	@Override
+	public boolean reverseCorrectIt()
+	{
+		return docActionDelegate.reverseCorrectIt();
+	}	//	reverseCorrectIt
+
+	/**
+	 * 	Reverse Accrual - none
+	 * 	@return false
+	 */
+	@Override
+	public boolean reverseAccrualIt()
+	{
+		return docActionDelegate.reverseAccrualIt();
+	}	//	reverseAccrualIt
+
+	/**
+	 * 	Re-activate.
+	 * 	@return true if success 
+	 */
+	@Override
+	public boolean reActivateIt()
+	{
+		return docActionDelegate.reActivateIt();
+	}	//	reActivateIt
+
+	/*************************************************************************
+	 * 	Get Summary
+	 *	@return Summary of Document
+	 */
+	@Override
+	public String getSummary() {
+		return docActionDelegate.getSummary();
+	}	//	getSummary
+
+	@Override
+	public String getDocumentNo() {
+		return docActionDelegate.getDocumentNo();
+	}
+
+	/**
+	 * 	Get Document Info
+	 *	@return document info (untranslated)
+	 */
+	@Override
+	public String getDocumentInfo() {
+		return docActionDelegate.getDocumentInfo();
+	}	//	getDocumentInfo
+
+	@Override
+	public File createPDF() {
+		return docActionDelegate.createPDF();
+	}
+
+	/**
+	 * 	Get Process Message
+	 *	@return clear text error message
+	 */
+	@Override
+	public String getProcessMsg() {
+		return docActionDelegate.getProcessMsg();
+	}	//	getProcessMsg
+
+	@Override
+	public int getDoc_User_ID() {
+		return docActionDelegate.getDoc_User_ID();
+	}
+
+	/**
+	 * Get Currency.
+	 * @return The Currency for this record
+	 */
+	@Override
+	public int getC_Currency_ID() {
+		return docActionDelegate.getC_Currency_ID();
+	}
+
+
+	@Override
+	public BigDecimal getApprovalAmt() {
+		return docActionDelegate.getApprovalAmt();
 	}
 
 } // GenericPO

@@ -512,6 +512,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		southPane.appendChild(confirmPanel);
 		
 		addEventListener("onSaveError", this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	/**
 	 * Dynamically add fields to the Location dialog box
@@ -756,8 +757,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		}
 		else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
 		{
-			m_change = false;
-			this.dispose();
+			onCancel();
 		}
 		else if (toLink.equals(event.getTarget()))
 		{
@@ -928,6 +928,11 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			doPopup();
 			focus();			
 		}
+	}
+
+	private void onCancel() {
+		m_change = false;
+		this.dispose();
 	}
 
 	

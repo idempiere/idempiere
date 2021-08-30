@@ -81,6 +81,27 @@ public class Trx
 		return retValue;
 	}	//	get
 	
+	/**
+	 * 	Get Transaction in a Connection
+	 *	@param trxName trx name
+	 *	@param createNew if false, null is returned if not found
+	 *	@param con Connection
+	 *	@return Transaction or null
+	 */
+	public static Trx get (String trxName, boolean createNew, Connection con)
+	{
+		if (trxName == null || trxName.length() == 0)
+			throw new IllegalArgumentException ("No Transaction Name");
+
+		Trx retValue = (Trx)s_cache.get(trxName);
+		if (retValue == null && createNew)
+		{
+			retValue = new Trx (trxName, con);
+			s_cache.put(trxName, retValue);
+		}
+		return retValue;
+	}	//	get
+	
 	/**	Transaction Cache					*/
 	private static final Map<String,Trx> s_cache = new ConcurrentHashMap<String, Trx>(); 
 	

@@ -30,7 +30,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210723L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc_Parameter (Properties ctx, int AD_UserDef_Proc_Parameter_ID, String trxName)
@@ -71,6 +71,34 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID 
+		Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
     {
@@ -333,10 +361,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 
 	/** IsDisplayed AD_Reference_ID=319 */
 	public static final int ISDISPLAYED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDISPLAYED_Yes = "Y";
 	/** No = N */
 	public static final String ISDISPLAYED_No = "N";
+	/** Yes = Y */
+	public static final String ISDISPLAYED_Yes = "Y";
 	/** Set Displayed.
 		@param IsDisplayed 
 		Determines, if this field is displayed
@@ -357,10 +385,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 
 	/** IsMandatory AD_Reference_ID=319 */
 	public static final int ISMANDATORY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISMANDATORY_Yes = "Y";
 	/** No = N */
 	public static final String ISMANDATORY_No = "N";
+	/** Yes = Y */
+	public static final String ISMANDATORY_Yes = "Y";
 	/** Set Mandatory.
 		@param IsMandatory 
 		Data entry is required in this column
