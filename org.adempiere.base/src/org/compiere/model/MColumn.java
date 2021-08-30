@@ -526,11 +526,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		}
 
 		// IDEMPIERE-4911
-		MTable table = MTable.get(getAD_Table_ID());
+		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
 		String tableName = table.getTableName();
 		if (tableName.toLowerCase().endsWith("_trl")) {
 			String parentTable = tableName.substring(0, tableName.length()-4);
-			MColumn column = MColumn.get(getCtx(), parentTable, colname);
+			MColumn column = MColumn.get(getCtx(), parentTable, colname, get_TrxName());
 			if (column != null && column.isTranslated()) {
 				if (getFieldLength() < column.getFieldLength()) {
 					log.saveWarning("Warning", "Size increased to " + column.getFieldLength() + " in translated column " + tableName + "." + colname);
