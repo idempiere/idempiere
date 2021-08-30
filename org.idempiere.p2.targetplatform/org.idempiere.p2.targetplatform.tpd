@@ -1,5 +1,5 @@
 
-target "idempiere-210828"
+target "idempiere-210831"
 
 with source configurePhase allEnvironments
 
@@ -17,8 +17,7 @@ location "https://idempiere.github.io/binary.file/p2.zk/9.6.0" {
 	zweb-dsp
 }
 
-//location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
-location "file:///home/hengsin/workspace/idempiere-master/idempiere/org.idempiere.repackaged/target/repository" {
+location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
 	jakarta.xml.ws-api
 	org.atmosphere.runtime
 	com.google.guava

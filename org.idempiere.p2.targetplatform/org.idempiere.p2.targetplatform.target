@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-210828" sequenceNumber="1630335853">
+<target name="idempiere-210831" sequenceNumber="1630363487">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.0"/>
@@ -24,7 +24,7 @@
       <unit id="com.google.http-client.google-http-client" version="1.39.2.sp_1_v202108300649"/>
       <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202108300649"/>
       <unit id="org.apache.felix.webconsole" version="4.6.4.v202108300649"/>
-      <repository location="file:///home/hengsin/workspace/idempiere-master/idempiere/org.idempiere.repackaged/target/repository"/>
+      <repository location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.osgi" version="3.16.300.v20210525-1715"/>
