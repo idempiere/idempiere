@@ -29,7 +29,7 @@
  	  </init-param>
  	  <init-param>
     	<param-name>org.atmosphere.websocket.suppressJSR356</param-name>
-    	<param-value>true</param-value>
+    	<param-value>false</param-value>
  	  </init-param>
       <load-on-startup>0</load-on-startup>
       <!-- Remove async-supported if you are not using Servlet 3.0 -->

@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.webservices.client.feature"
       label="Webservices Client Library"
-      version="8.2.0.qualifier"
+      version="9.0.0.qualifier"
       provider-name="www.idempiere.org">
 
    <description url="http://www.example.com/description">
@@ -158,13 +158,6 @@
          unpack="false"/>
 
    <plugin
-         id="com.sun.org.apache.xml.internal.resolver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.diffplug.osgi.extension.sun.misc"
          download-size="0"
          install-size="0"
@@ -173,7 +166,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.glassfish.jaxb.txw2"
+         id="wrapped.org.glassfish.jaxb.txw2"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -181,6 +174,13 @@
 
    <plugin
          id="jakarta.ws.rs-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="wrapped.com.sun.org.apache.xml.internal.resolver"
          download-size="0"
          install-size="0"
          version="0.0.0"

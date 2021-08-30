@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="8.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.eclipse.equinox.p2.director.product" application="org.adempiere.server.application" version="9.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -41,11 +41,12 @@
       <plugin id="org.adempiere.server" autoStart="true" startLevel="0" />
       <plugin id="org.adempiere.ui.zk" autoStart="true" startLevel="0" />
       <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="1" />
+      <plugin id="org.apache.aries.util" autoStart="true" startLevel="1" />
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
       <plugin id="org.apache.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
@@ -61,15 +62,15 @@
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-el" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-jsp" autoStart="true" startLevel="0" />
-      <property name="osgi.framework.activeThreadType" value="normal" />
-      <property name="osgi.console.enable.builtin" value="false" />
-      <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="eclipse.product" value="org.adempiere.server.product" />
+      <property name="osgi.noShutdown" value="true" />
       <property name="osgi.compatibility.bootdelegation" value="true" />
-      <property name="osgi.checkConfiguration" value="true" />
+      <property name="osgi.console.enable.builtin" value="false" />
+      <property name="osgi.framework.activeThreadType" value="normal" />
+      <property name="org.eclipse.update.reconcile" value="false" />
       <property name="osgi.instance.area.default" value="@config.dir/../workspace" />
       <property name="org.eclipse.equinox.simpleconfigurator.exclusiveInstallation" value="false" />
-      <property name="osgi.noShutdown" value="true" />
-      <property name="eclipse.product" value="org.adempiere.server.product" />
+      <property name="osgi.checkConfiguration" value="true" />
    </configurations>
 
    <preferencesInfo>
