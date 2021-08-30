@@ -55,7 +55,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2433704480923324032L;
+	private static final long serialVersionUID = -5410915257751308490L;
 
 	/**
 	 * Create empty Authorization Credential
@@ -252,6 +252,15 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 		if (scpr != null)
 			scopeUrl = scpr.getScopeURL();
 		return scopeUrl;
+	}
+
+	/**
+	 * Get Authorization Redirect URL parsing context variables
+	 * @return Authorization Redirect URL
+	 */
+	@Override
+	public String getAuthorizationRedirectURL() {
+		return Env.parseContext(getCtx(), 0, super.getAuthorizationRedirectURL(), false, false);
 	}
 
 } // MAuthorizationCredential
