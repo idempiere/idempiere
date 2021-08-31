@@ -129,7 +129,9 @@ public final class Env
 	public static final String SYSTEM_NAME = "#System_Name";
 	public static final String UI_CLIENT = "#UIClient";
 	public static final String USER_LEVEL = "#User_Level";
-	
+
+	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
+
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
 	
@@ -568,6 +570,12 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
+		if (context.startsWith(PREFIX_SYSTEM_VARIABLE)) {
+			String retValue = System.getenv(context.substring(PREFIX_SYSTEM_VARIABLE.length()));
+			if (retValue == null)
+				retValue = "";
+			return retValue;
+		}
 		return ctx.getProperty(context, "");
 	}	//	getContext
 
