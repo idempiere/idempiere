@@ -14,6 +14,9 @@ package org.adempiere.webui.component;
 
 import java.util.logging.Level;
 
+import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.IADTabbox;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MTree;
@@ -24,6 +27,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -183,6 +187,14 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			}
 			//	COMMIT          *********************
 			trx.commit(true);
+			
+			// IDEMPIERE-4937 Force refresh of the GridTab
+			Component c = SessionManager.getAppDesktop().getActiveWindow();
+			ADWindow adwindow = ADWindow.findADWindow(c);
+			if (adwindow != null) {
+				IADTabbox adTabbox = adwindow.getADWindowContent().getADTab();
+				adTabbox.getSelectedGridTab().dataRefreshAll();
+			}
 		}
         catch (Exception e)
 		{
