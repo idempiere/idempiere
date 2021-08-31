@@ -91,6 +91,8 @@ public final class Env
 	
 	public static final String RUNNING_UNIT_TESTING_TEST_CASE = "#RUNNING_UNIT_TESTING_TEST_CASE";
 
+	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
+
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
@@ -528,6 +530,12 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
+		if (context.startsWith(PREFIX_SYSTEM_VARIABLE)) {
+			String retValue = System.getenv(context.substring(PREFIX_SYSTEM_VARIABLE.length()));
+			if (retValue == null)
+				retValue = "";
+			return retValue;
+		}
 		return ctx.getProperty(context, "");
 	}	//	getContext
 
