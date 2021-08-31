@@ -134,6 +134,7 @@ public class WPrintFormatEditorForm extends Window
 	protected WEditor editorIsVarianceCalc = null;
 	protected WEditor editorIsRunningTotal = null;
 	protected WEditor editorRunningTotalLines = null;
+	protected WEditor editorIsPrintInstanceAttributes = null;
 	
 	/**
 	 * 
@@ -702,6 +703,18 @@ public class WPrintFormatEditorForm extends Window
 		row.setGroup(group);
 		rows.appendChild(row);
 		
+		row = new Row();
+		row.appendChild(new Label(Msg.getElement(
+						Env.getCtx(),
+						MPrintFormatItem.COLUMNNAME_IsPrintInstanceAttributes)));
+		editorIsPrintInstanceAttributes = new WYesNoEditor(
+				MPrintFormatItem.COLUMNNAME_IsPrintInstanceAttributes, "", null,
+				false, false, true);
+		row.appendChild(editorIsPrintInstanceAttributes.getComponent());
+		editorIsPrintInstanceAttributes.addValueChangeListener(pfe);	
+		row.setGroup(group);
+		rows.appendChild(row);
+				
 		row = new Row();
 		row.appendChild(new Label(Msg.getElement(
 						Env.getCtx(),

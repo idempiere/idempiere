@@ -60,6 +60,7 @@ Export-Package: bsh,
  org.idempiere.expression.logic,
  org.idempiere.fa.service.api,
  org.idempiere.model,
+ org.idempiere.print,
  org.idempiere.process
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
@@ -140,7 +141,6 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  org.passay;bundle-version="0.0.0",
  org.cryptacular,
- com.itextpdf;bundle-version="0.0.0",
  net.sf.supercsv.super-csv;bundle-version="0.0.0",
  bcprov;bundle-version="1.54.0",
  org.krysalis.barcode4j;bundle-version="0.0.0",
@@ -161,6 +161,8 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  org.apache.httpcomponents.httpcore;bundle-version="4.4.12",
  com.google.guava;bundle-version="28.2.0",
  wrapped.com.google.zxing.javase;bundle-version="3.4.1",
- wrapped.dev.samstevens.totp.totp;bundle-version="1.7.1"
+ wrapped.dev.samstevens.totp.totp;bundle-version="1.7.1",
+ com.github.librepdf.openpdf;bundle-version="1.3.26",
+ com.github.librepdf.openpdf-fonts-extra;bundle-version="1.3.26"
 Automatic-Module-Name: org.adempiere.base
 Bundle-Vendor: iDempiere Community

@@ -30,7 +30,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210611L;
+	private static final long serialVersionUID = 20210827L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -76,34 +76,6 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
-			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
-
-	/** Set Field Group.
-		@param AD_FieldGroup_ID 
-		Logical grouping of fields
-	  */
-	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
-	{
-		if (AD_FieldGroup_ID < 1) 
-			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
-	}
-
-	/** Get Field Group.
-		@return Logical grouping of fields
-	  */
-	public int getAD_FieldGroup_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
@@ -139,6 +111,34 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Field_ID()));
     }
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID 
+		Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
     {
@@ -477,10 +477,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
 	/** IsAlwaysUpdateable AD_Reference_ID=319 */
 	public static final int ISALWAYSUPDATEABLE_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISALWAYSUPDATEABLE_Yes = "Y";
 	/** No = N */
 	public static final String ISALWAYSUPDATEABLE_No = "N";
+	/** Yes = Y */
+	public static final String ISALWAYSUPDATEABLE_Yes = "Y";
 	/** Set Always Updatable.
 		@param IsAlwaysUpdateable 
 		The column is always updateable, even if the record is not active or processed
@@ -501,10 +501,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
 	/** IsAutocomplete AD_Reference_ID=319 */
 	public static final int ISAUTOCOMPLETE_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISAUTOCOMPLETE_Yes = "Y";
 	/** No = N */
 	public static final String ISAUTOCOMPLETE_No = "N";
+	/** Yes = Y */
+	public static final String ISAUTOCOMPLETE_Yes = "Y";
 	/** Set Autocomplete.
 		@param IsAutocomplete 
 		Automatic completion for textfields
@@ -525,10 +525,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
 	/** IsDisplayed AD_Reference_ID=319 */
 	public static final int ISDISPLAYED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDISPLAYED_Yes = "Y";
 	/** No = N */
 	public static final String ISDISPLAYED_No = "N";
+	/** Yes = Y */
+	public static final String ISDISPLAYED_Yes = "Y";
 	/** Set Displayed.
 		@param IsDisplayed 
 		Determines, if this field is displayed
@@ -547,12 +547,33 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
 
+	/** IsDisplayedGrid AD_Reference_ID=319 */
+	public static final int ISDISPLAYEDGRID_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISDISPLAYEDGRID_No = "N";
+	/** Yes = Y */
+	public static final String ISDISPLAYEDGRID_Yes = "Y";
+	/** Set Show in Grid.
+		@param IsDisplayedGrid Show in Grid	  */
+	public void setIsDisplayedGrid (String IsDisplayedGrid)
+	{
+
+		set_Value (COLUMNNAME_IsDisplayedGrid, IsDisplayedGrid);
+	}
+
+	/** Get Show in Grid.
+		@return Show in Grid	  */
+	public String getIsDisplayedGrid () 
+	{
+		return (String)get_Value(COLUMNNAME_IsDisplayedGrid);
+	}
+
 	/** IsMandatory AD_Reference_ID=319 */
 	public static final int ISMANDATORY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISMANDATORY_Yes = "Y";
 	/** No = N */
 	public static final String ISMANDATORY_No = "N";
+	/** Yes = Y */
+	public static final String ISMANDATORY_Yes = "Y";
 	/** Set Mandatory.
 		@param IsMandatory 
 		Data entry is required in this column
@@ -573,10 +594,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
 	/** IsReadOnly AD_Reference_ID=319 */
 	public static final int ISREADONLY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISREADONLY_Yes = "Y";
 	/** No = N */
 	public static final String ISREADONLY_No = "N";
+	/** Yes = Y */
+	public static final String ISREADONLY_Yes = "Y";
 	/** Set Read Only.
 		@param IsReadOnly 
 		Field is read only
@@ -597,10 +618,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
 	/** IsSameLine AD_Reference_ID=319 */
 	public static final int ISSAMELINE_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISSAMELINE_Yes = "Y";
 	/** No = N */
 	public static final String ISSAMELINE_No = "N";
+	/** Yes = Y */
+	public static final String ISSAMELINE_Yes = "Y";
 	/** Set Same Line.
 		@param IsSameLine 
 		Displayed on same line as previous field
@@ -621,12 +642,12 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
 	/** IsToolbarButton AD_Reference_ID=200099 */
 	public static final int ISTOOLBARBUTTON_AD_Reference_ID=200099;
-	/** Toolbar = Y */
-	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
-	/** Window = N */
-	public static final String ISTOOLBARBUTTON_Window = "N";
 	/** Both = B */
 	public static final String ISTOOLBARBUTTON_Both = "B";
+	/** Window = N */
+	public static final String ISTOOLBARBUTTON_Window = "N";
+	/** Toolbar = Y */
+	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
 	/** Set Toolbar Button.
 		@param IsToolbarButton 
 		Show the button on the toolbar, the window, or both
@@ -647,10 +668,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 
 	/** IsUpdateable AD_Reference_ID=319 */
 	public static final int ISUPDATEABLE_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISUPDATEABLE_Yes = "Y";
 	/** No = N */
 	public static final String ISUPDATEABLE_No = "N";
+	/** Yes = Y */
+	public static final String ISUPDATEABLE_Yes = "Y";
 	/** Set Updatable.
 		@param IsUpdateable 
 		Determines, if the field can be updated

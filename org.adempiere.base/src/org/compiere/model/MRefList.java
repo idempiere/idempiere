@@ -280,11 +280,7 @@ public class MRefList extends X_AD_Ref_List
 		super (ctx, AD_Ref_List_ID, trxName);
 		if (AD_Ref_List_ID == 0)
 		{
-		//	setAD_Reference_ID (0);
-		//	setAD_Ref_List_ID (0);
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
-		//	setName (null);
-		//	setValue (null);
 		}
 	}	//	MRef_List
 

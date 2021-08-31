@@ -614,6 +614,13 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		return s;
 	}   //  getSQLText
 
+	protected void resetParameters() {
+		txt1.setValue("");
+		txt2.setValue("");
+		txt3.setValue("");
+		txt4.setValue("");
+	}
+
 	/**
 	 *  Set Parameters for Query.
 	 *  (as defined in getSQLWhere)

@@ -47,6 +47,7 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPayment;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MUOM;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
@@ -72,9 +73,11 @@ public class SalesOrderTest extends AbstractTestCase {
 	private static final int PRODUCT_OAK_TREE = 123;
 	private static final int PRODUCT_AZALEA = 128;
 	private static final int PRODUCT_FERT50 = 136;
+	private static final int PRODUCT_MARY = 132;
 	private static final int ORG_FERTILIZER = 50001;
 	private static final int WAREHOUSE_FERTILIZER = 50002;
 	private static final int LOCATOR_FERTILIZER = 50001;
+	private static final int UOM_HOUR = 101;
 
 	@Test
 	/**
@@ -660,6 +663,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	public void testMultiASIShipment() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
+		
 		MProduct fert50 = new MProduct(ctx, PRODUCT_FERT50, trxName);
 
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -732,6 +736,32 @@ public class SalesOrderTest extends AbstractTestCase {
 				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
 				0, trxName);
 		assertEquals(0, storages.length);
+	}
+	
+	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4912
+	 */
+	public void testUOMDefault() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		//Assembly Area with default UOM = Hour
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_MARY));
+		line1.setQty(new BigDecimal("1"));
+		line1.saveEx();
+		
+		assertEquals(UOM_HOUR, line1.getC_UOM_ID());
+		
+		MOrderLine line2 = new MOrderLine(order);
+		line2.setLine(20);
+		line2.setDescription("This is a description order line with no product nor charge");
+		line2.saveEx();
+		
+		assertEquals(MUOM.getDefault_UOM_ID(Env.getCtx()), line2.getC_UOM_ID());
 	}
 
 }

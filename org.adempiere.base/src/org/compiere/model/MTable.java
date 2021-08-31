@@ -259,8 +259,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		super (ctx, AD_Table_ID, trxName);
 		if (AD_Table_ID == 0)
 		{
-		//	setName (null);
-		//	setTableName (null);
 			setAccessLevel (ACCESSLEVEL_SystemOnly);	// 4
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setIsChangeLog (false);

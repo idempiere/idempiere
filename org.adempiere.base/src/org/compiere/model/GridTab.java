@@ -48,6 +48,7 @@ import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -589,6 +590,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		m_mTable.addDataStatusListener(this);
 	//	m_mTable.addTableModelListener(this);
 	}   //  enableEvents
+
+	/**
+	 * get Tab Type
+	 * @return String
+	 */
+	public String getTabType()
+	{
+		return m_vo.AD_TabType;
+	} // getTabType
 
 	/**
 	 *	Assemble whereClause and query MTable and position to row 0.
@@ -1623,7 +1633,18 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public String get_ValueAsString (String variableName)
 	{
-		return Env.getContext (m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, variableName, false, true);
+		return get_ValueAsString (m_vo.ctx, variableName);
+	}	//	get_ValueAsString
+	
+	/**
+	 * 	Get Variable Value (Evaluatee)
+	 *  @param ctx context
+	 *	@param variableName name
+	 *	@return value
+	 */
+	public String get_ValueAsString (Properties ctx, String variableName)
+	{
+		return new DefaultEvaluatee(this, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
 	/**
@@ -2631,6 +2652,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		if (changingRow && keyCalloutDelayed != null)
 			processCallout(keyCalloutDelayed);
+		
+		//set isSOTrx context
+		if (changingRow) {
+			setIsSOTrxContext();
+		}
+		
 		loadDependentInfo();
 
 		if (!fireEvents)    //  prevents informing twice
@@ -2667,6 +2694,48 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		
 		return m_currentRow;
 	}   //  setCurrentRow
+
+	private void setIsSOTrxContext() {
+		final String IsSOTrx = "IsSOTrx";
+		final String C_DocType_ID = "C_DocType_ID";
+		final String C_DocTypeTarget_ID = "C_DocTypeTarget_ID";
+		if (getField(IsSOTrx) != null || getField(C_DocType_ID) != null || getField(C_DocTypeTarget_ID) != null) {
+			String isSOTrx = null;
+			GridField field = getField(IsSOTrx);
+			if (field != null && field.getValue() != null) {
+				Object value = field.getValue();
+				if (value instanceof Boolean) {
+					isSOTrx = ((Boolean) value).booleanValue() ? "Y" : "N";
+				} else if (value instanceof String) {
+					isSOTrx = (String) value;
+				}
+			}
+			if (isSOTrx == null) {
+				field = getField(C_DocType_ID);
+				if (field != null && field.getValue() != null) {
+					int docTypeId = ((Number)field.getValue()).intValue();
+					if (docTypeId > 0) {
+						isSOTrx = MDocType.get(docTypeId).isSOTrx() ? "Y" : "N";
+					}
+				}
+			}
+			if (isSOTrx == null) {
+				field = getField(C_DocTypeTarget_ID);
+				if (field != null && field.getValue() != null) {
+					int docTypeId = ((Number)field.getValue()).intValue();
+					if (docTypeId > 0) {
+						isSOTrx = MDocType.get(docTypeId).isSOTrx() ? "Y" : "N";
+					}
+				}
+			}
+			if (isSOTrx != null) {
+				Env.setContext(Env.getCtx(), getWindowNo(), getTabNo(), IsSOTrx, isSOTrx);
+				if (m_vo.TabNo == 0) {
+					Env.setContext(Env.getCtx(), getWindowNo(), IsSOTrx, isSOTrx);
+				}
+			}
+		}
+	}
 
 
 	/**

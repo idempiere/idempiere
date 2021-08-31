@@ -208,13 +208,6 @@
          unpack="false"/>
 
    <plugin
-         id="com.itextpdf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="bcprov"
          download-size="0"
          install-size="0"
@@ -503,6 +496,20 @@
 
    <plugin
          id="jakarta.jws-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.github.librepdf.openpdf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.github.librepdf.openpdf-fonts-extra"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -56,7 +56,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 		int parent_ID, boolean isSummary, String imageIndicator, boolean onBar, Color color)
 	{
 		super();
-	//	log.fine( "MTreeNode Node_ID=" + node_ID + ", Parent_ID=" + parent_ID + " - " + name);
+
 		m_node_ID = node_ID;
 		m_seqNo = seqNo;
 		m_name = name;
@@ -236,8 +236,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	 */
 	public String toString()
 	{
-		return //   m_node_ID + "/" + m_parent_ID + " " + m_seqNo + " - " +
-			m_name;
+		return m_name;
 	}   //  toString
 
 	/**
@@ -331,10 +330,6 @@ public class MTreeNode extends DefaultMutableTreeNode
 			imageIndex = TYPE_PROCESS;
 		else if (imageIndicator.equals(MWFNode.ACTION_SubWorkflow))		//	WorkFlow
 			imageIndex = TYPE_WORKFLOW;
-		/*
-		else if (imageIndicator.equals(MWFNode.ACTION_UserWorkbench))	//	Workbench
-			imageIndex = TYPE_WORKBENCH;
-		*/
 		else if (imageIndicator.equals(MWFNode.ACTION_SetVariable))		//	Set Variable
 			imageIndex = TYPE_SETVARIABLE;
 		else if (imageIndicator.equals(MWFNode.ACTION_UserChoice))		//	User Choice

@@ -37,7 +37,6 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,9 +48,8 @@ import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.attribute.DocAttributeSet;
 
-import org.compiere.model.MClientInfo;
+import org.adempiere.base.Core;
 import org.compiere.model.MQuery;
-import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
@@ -80,6 +78,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.print.IPrintHeaderFooter;
+import org.idempiere.print.StandardHeaderFooter;
 
 /**
  *	Adempiere Print Engine.
@@ -265,11 +265,24 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		boolean tempHasLayout = m_hasLayout;
 		m_hasLayout = false;	//	do not start re-calculation
 		MPrintPaper mPaper = MPrintPaper.get(format.getAD_PrintPaper_ID());
-		if (m_format.isStandardHeaderFooter())
-			setPaper(mPaper.getCPaper());
-		else
+		if (m_format.isStandardHeaderFooter()) {
+			StandardHeaderFooter headerFooter = new StandardHeaderFooter();
+			setPaper(mPaper.getCPaper(), 
+					headerFooter.getHeaderHeight(), headerFooter.getFooterHeight());
+		}
+		else if (m_format.getAD_PrintHeaderFooter_ID() > 0) {
+			IPrintHeaderFooter printHeaderFooter = Core.getPrintHeaderFooter(m_format.getAD_PrintHeaderFooter());
+			if (printHeaderFooter != null) {
+				setPaper(mPaper.getCPaper(), 
+						printHeaderFooter.getHeaderHeight(), printHeaderFooter.getFooterHeight());
+			} else {
+				setPaper(mPaper.getCPaper(),
+						m_format.getHeaderMargin(), m_format.getFooterMargin());
+			}
+		} else {
 			setPaper(mPaper.getCPaper(),
-				m_format.getHeaderMargin(), m_format.getFooterMargin());
+					m_format.getHeaderMargin(), m_format.getFooterMargin());
+		}
 		m_hasLayout = tempHasLayout;
 		//
 		m_printColor = MPrintColor.get(getCtx(), format.getAD_PrintColor_ID());
@@ -444,8 +457,20 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	{
 		//	Header/Footer
 		m_headerFooter = new HeaderFooter(m_printCtx);
-		if (!m_format.isForm() && m_format.isStandardHeaderFooter())
-			createStandardHeaderFooter();
+		if (!m_format.isForm()) {
+			if (m_format.isStandardHeaderFooter()) {
+				StandardHeaderFooter headerFooter = new StandardHeaderFooter();
+				headerFooter.createHeaderFooter(m_format, m_headerFooter, m_header, m_footer, m_query);
+			} else if (m_format.getAD_PrintHeaderFooter_ID() > 0) {
+				IPrintHeaderFooter printHeaderFooter = Core.getPrintHeaderFooter(m_format.getAD_PrintHeaderFooter());
+				if (printHeaderFooter != null) {
+					printHeaderFooter.createHeaderFooter(m_format, m_headerFooter, m_header, m_footer, m_query);
+				} else {
+					if (log.isLoggable(Level.WARNING)) 
+						log.warning("Print Header/Footer not found, AD_PrintHeaderFooter_ID="+m_format.getAD_PrintHeaderFooter_ID());
+				}
+			}
+		}
 		//
 		m_pageNo = 0;
 		m_pages.clear();
@@ -933,77 +958,6 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	{
 		return (getYspace()-height) >= 0f;
 	}	//	isYspaceFor
-	
-	/**************************************************************************
-	 *	Create Standard Header/Footer
-	 *  <pre>
-	 *  title           C        Page x of x
-	 *  Copyright      who         date&time
-	 *  </pre>
-	 */
-	private void createStandardHeaderFooter()
-	{
-		MClientInfo ci = MClientInfo.get(Env.getCtx());
-		PrintElement element = null;
-		if (ci.getLogoReport_ID() > 0) {
-			element = new ImageElement(ci.getLogoReport_ID(), false);
-		} else {
-			element = new ImageElement(org.compiere.Adempiere.getHeaderLogo());
-		}
-	//	element = new ImageElement(org.compiere.Adempiere.getImageLogo());	//	100x30
-		element.layout(48, 15, false, MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft);
-		element.setLocation(m_header.getLocation());
-		m_headerFooter.addElement(element);
-		//
-		MPrintTableFormat tf = m_format.getTableFormat();
-		Font font = tf.getPageHeader_Font();
-		Color color = tf.getPageHeaderFG_Color();
-		//
-		element = new StringElement("@*ReportName@", font, color, null, true);
-		element.layout (m_header.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_Center);
-		element.setLocation(m_header.getLocation());
-		m_headerFooter.addElement(element);
-		//
-		//
-		element = new StringElement("@Page@ @*Page@ @of@ @*PageCount@", font, color, null, true);
-		element.layout (m_header.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_TrailingRight);
-		element.setLocation(m_header.getLocation());
-		m_headerFooter.addElement(element);
-
-		//	Footer
-		font = tf.getPageFooter_Font();
-		color = tf.getPageFooterFG_Color();
-		//
-		element = new StringElement(Env.getStandardReportFooterTrademarkText(), font, color, null, true);
-		/** You can use the following to customize reports for your product name  */
-	//	element = new StringElement(Adempiere.NAME, font, color, null, true);
-		element.layout (m_footer.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft);
-		Point ft = m_footer.getLocation();
-		ft.y += m_footer.height - element.getHeight() - 2;	//	2pt above min
-		element.setLocation(ft);
-		m_headerFooter.addElement(element);
-		//
-		String s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_MSG, "", Env.getAD_Client_ID(Env.getCtx()));
-		if (Util.isEmpty(s, true))
-			s = "@*Header@";
-		element = new StringElement(s, font, color, null, true);
-		element.layout (m_footer.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_Center);
-		element.setLocation(ft);
-		m_headerFooter.addElement(element);
-		//
-		String timestamp = "";
-		s = MSysConfig.getValue(MSysConfig.ZK_FOOTER_SERVER_DATETIME_FORMAT, Env.getAD_Client_ID(Env.getCtx()));
-		if (!Util.isEmpty(s, true))
-			timestamp = new SimpleDateFormat(s).format(System.currentTimeMillis());
-		else
-			timestamp = "@*CurrentDateTime@";
-		element = new StringElement(timestamp, font, color, null, true);
-		element.layout (m_footer.width, 0, true, MPrintFormatItem.FIELDALIGNMENTTYPE_TrailingRight);
-		element.setLocation(ft);
-		m_headerFooter.addElement(element);
-	}	//	createStandardHeaderFooter
-
-
 	
 	/**************************************************************************
 	 * 	Layout Form.
@@ -1635,11 +1589,24 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		nextPages.x += xOffset;
 		nextPages.width -= xOffset;
 		//	Column count
+		List<Integer> instanceAttributeList = new ArrayList<>();
+		List<MPrintFormatItem> instanceAttributeItems = new ArrayList<>();
 		int columnCount = 0;
 		for (int c = 0; c < format.getItemCount(); c++)
 		{
 			if (format.getItem(c).isPrinted())
+			{
+				if (format.getItem(c).isTypeField())
+				{
+					if(format.getItem(c).isPrintInstanceAttributes())
+					{
+						instanceAttributeList.add(columnCount);
+						instanceAttributeItems.add(format.getItem(c));
+						continue;
+					}
+				}
 				columnCount++;
+			}
 		}
 		//	System.out.println("Cols=" + cols);
 
@@ -1658,6 +1625,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		for (int c = 0; c < format.getItemCount(); c++)
 		{
 			MPrintFormatItem item = format.getItem(c);
+			if (instanceAttributeItems.contains(item))
+				continue;
 			if (item.isPrinted())
 			{
 				if (item.isNextLine() && item.getBelowColumn() != 0)
@@ -1783,6 +1752,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 			{
 				Serializable columnElement = null;
 				MPrintFormatItem item = format.getItem(c);
+				if (instanceAttributeItems.contains(item))
+					continue;
 				Serializable dataElement = null;
 				if (item.isPrinted())	//	Text Columns
 				{
@@ -1851,6 +1822,33 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		//		System.out.println("No PK " + printData);
 		}	//	for all rows
 
+		//add asi attributes columns
+		List<InstanceAttributeData> asiElements = new ArrayList<>();
+		if (instanceAttributeList.size() > 0) {
+			for(int i = 0;  i < instanceAttributeItems.size(); i ++) {
+				MPrintFormatItem item = instanceAttributeItems.get(i);
+				int columnIndex = instanceAttributeList.get(i);
+				InstanceAttributeData asiElement = new InstanceAttributeData(item, columnIndex);
+				asiElement.readAttributesData(printData);
+				asiElements.add(asiElement);
+			}
+			
+			int columnOffset = 0;
+			for (InstanceAttributeData element : asiElements) {
+				TableProperties tableProperties = new TableProperties(columnHeader, columnMaxWidth, columnMaxHeight, fixedWidth, colSuppressRepeats, 
+						columnJustification);
+				int currentCount = columnHeader.length;
+				element.updateTable(elements, tableProperties, columnOffset);
+				columnHeader = tableProperties.getColumnHeader();
+				columnMaxWidth = tableProperties.getColumnMaxWidth();
+				columnMaxHeight = tableProperties.getColumnMaxHeight();
+				fixedWidth = tableProperties.getFixedWidth();
+				colSuppressRepeats = tableProperties.getColSuppressRepeats();
+				columnJustification = tableProperties.getColumnJustification();
+				columnOffset += columnHeader.length - currentCount;
+			}
+		}
+		
 		//
 		TableElement table = new TableElement(columnHeader,
 			columnMaxWidth, columnMaxHeight, columnJustification,

@@ -107,8 +107,6 @@ public class MRequestAction extends X_R_RequestAction
 		getChangeHTML(sb, "R_Status_ID");
 		getChangeHTML(sb, "SalesRep_ID");
 		getChangeHTML(sb, "Summary");
-		//
-	//	getChangeHTML(sb, "AD_Org_ID");		//	always stored
 		getChangeHTML(sb, "AD_Role_ID");
 		getChangeHTML(sb, "AD_User_ID");
 		getChangeHTML(sb, "C_Activity_ID");

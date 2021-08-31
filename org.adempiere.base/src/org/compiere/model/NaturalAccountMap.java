@@ -239,11 +239,6 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		if (IsDocControlled == null || IsDocControlled.length() == 0)
 			IsDocControlled = "N";
 
-
-	//	log.config( "Value=" + Value + ", AcctType=" + AccountType
-	//		+ ", Sign=" + AccountSign + ", Doc=" + docControlled
-	//		+ ", Summary=" + summary + " - " + Name + " - " + Description);
-
 		try
 		{
 			//	Try to find - allows to use same natural account for multiple default accounts 
