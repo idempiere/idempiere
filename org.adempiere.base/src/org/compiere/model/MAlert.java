@@ -51,10 +51,6 @@ public class MAlert extends X_AD_Alert
 		super (ctx, AD_Alert_ID, trxName);
 		if (AD_Alert_ID == 0)
 		{
-		//	setAD_AlertProcessor_ID (0);
-		//	setName (null);
-		//	setAlertMessage (null);
-		//	setAlertSubject (null);
 			setEnforceClientSecurity (true);	// Y
 			setEnforceRoleSecurity (true);	// Y
 			setIsValid (true);	// Y

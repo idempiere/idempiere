@@ -18,7 +18,12 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,10 +53,14 @@ import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardContentAccess;
 import org.compiere.model.MDashboardPreference;
 import org.compiere.model.MGoal;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
+import org.compiere.model.MLookupInfo;
 import org.compiere.model.MMenu;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -59,6 +68,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -415,19 +426,34 @@ public class DashboardController implements EventListener<Event> {
 			if (dc.isEmbedReportContent()) 
 			{
 				String processParameters = dc.getProcessParameters();
-				embedReport(content, AD_Process_ID, processParameters);
-				
+
+				Iframe iframe = new Iframe();
+				iframe.setSclass("dashboard-report-iframe");
+				content.appendChild(iframe);
+				iframe.setContent(generateReport(AD_Process_ID, processParameters));
+
 				Toolbar toolbar = new Toolbar();
 				content.appendChild(toolbar);
-				btn.setLabel("Open run dialog");						
+				btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
 				toolbar.appendChild(btn);
 				
 				btn = new ToolBarButton();
 				btn.setAttribute("AD_Process_ID", AD_Process_ID);
 				btn.setAttribute("ProcessParameters", processParameters);
 				btn.addEventListener(Events.ON_CLICK, this);
-				btn.setLabel("View report in new tab");
+				btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
 				toolbar.appendChild(new Separator("vertical"));
+				toolbar.appendChild(btn);
+
+				btn = new ToolBarButton();
+				if (ThemeManager.isUseFontIconForImage()) {
+					btn.setIconSclass("z-icon-Refresh");
+					btn.setSclass("trash-toolbarbutton");
+				}
+				else
+					btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+
+				btn.addEventListener(Events.ON_CLICK, e -> iframe.setContent(generateReport(AD_Process_ID, processParameters)));
 				toolbar.appendChild(btn);
 			}
 			else
@@ -471,7 +497,7 @@ public class DashboardController implements EventListener<Event> {
     	{
         	try {
         		
-                Component component = Extensions.getDashboardGadget(url, content);                
+                Component component = Extensions.getDashboardGadget(url, content, dc);
                 if(component != null)
                 {
                 	if (component instanceof Include)
@@ -854,21 +880,17 @@ public class DashboardController implements EventListener<Event> {
 				+ " - " + process.getName());
 		
 		return re;
-   	}
-   	
-   	public void embedReport(Component parent, int AD_Process_ID, String parameters) throws Exception {
+	}
+
+	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
-		
-		Iframe iframe = new Iframe();
-		iframe.setSclass("dashboard-report-iframe");
+
 		File file = File.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", 
 				SessionManager.getAppDesktop().getComponent().getUuid()));
-		AMedia media = new AMedia(re.getName(), "html", "text/html", file, false);
-		iframe.setContent(media);
-		parent.appendChild(iframe);
+		return new AMedia(re.getName(), "html", "text/html", file, false);
 	}
-   	
+
    	protected void openReportInViewer(int AD_Process_ID, String parameters) {
    		ReportEngine re = runReport(AD_Process_ID, parameters);
    		new ZkReportViewerProvider().openViewer(re);
@@ -880,63 +902,186 @@ public class DashboardController implements EventListener<Event> {
 			String[] params = parameters.split("[,]");
 			for (String s : params)
 			{
-				String[] elements = s.split("[=]");
-				String key = elements[0];
-				String value = elements[1];
+				int pos = s.indexOf("=");
+				String key = s.substring(0, pos);
+				String value = s.substring(pos + 1);
 				paramMap.put(key, value);
 			}
 			MPInstancePara[] iParams = pInstance.getParameters();
 			for (MPInstancePara iPara : iParams)
 			{
-				 String variable = paramMap.get(iPara.getParameterName());
-	//				Value - Constant/Variable
-				Object value = variable;
-				if (variable == null
-					|| (variable != null && variable.length() == 0))
-					value = null;
-				else if (variable.indexOf('@') != -1)	//	we have a variable
-				{
-					value = Env.parseContext(Env.getCtx(), 0, variable, false, false);
-				}	//	@variable@
-				
-				//	No Value
-				if (value == null)
-				{
+				String variable = paramMap.get(iPara.getParameterName());
+
+				if (Util.isEmpty(variable))
 					continue;
-				}
-				
-				//	Convert to Type				
-				if (DisplayType.isNumeric(iPara.getDisplayType()) 
-					|| DisplayType.isID(iPara.getDisplayType()))
-				{
-					BigDecimal bd = null;
-					if (value instanceof BigDecimal)
-						bd = (BigDecimal)value;
-					else if (value instanceof Integer)
-						bd = new BigDecimal (((Integer)value).intValue());
-					else
-						bd = new BigDecimal (value.toString());
-					iPara.setP_Number(bd);
-				}
-				else if (DisplayType.isDate(iPara.getDisplayType()))
-				{
-					Timestamp ts = null;
-					if (value instanceof Timestamp)
-						ts = (Timestamp)value;
-					else
-						ts = Timestamp.valueOf(value.toString());
-					iPara.setP_Date(ts);
-				}
-				else
-				{
-					iPara.setP_String(value.toString());
-				}
-				iPara.saveEx();
-				
+
+				boolean isTo = false;
+
+				for (String paramValue : variable.split(";")) {
+
+					 //				Value - Constant/Variable
+					 Object value = paramValue;
+					 if (paramValue == null
+							 || (paramValue != null && paramValue.length() == 0))
+						 value = null;
+					 else if (paramValue.startsWith("@SQL=")) {
+						 String sql = paramValue.substring(5);
+						 sql = Env.parseContext(Env.getCtx(), 0, sql, false, false);	//	replace variables
+						 if (!Util.isEmpty(sql)) {
+							 PreparedStatement stmt = null;
+							 ResultSet rs = null;
+							 try {
+								 stmt = DB.prepareStatement(sql, null);
+								 rs = stmt.executeQuery();
+								 if (rs.next()) {
+									 if (   DisplayType.isNumeric(iPara.getDisplayType()) 
+										 || DisplayType.isID(iPara.getDisplayType()))
+										 value = rs.getBigDecimal(1);
+									 else if (DisplayType.isDate(iPara.getDisplayType()))
+										 value = rs.getTimestamp(1);
+									 else
+										 value = rs.getString(1);
+								 } else {
+									 if (logger.isLoggable(Level.INFO))
+										 logger.log(Level.INFO, "(" + iPara.getParameterName() + ") - no Result: " + sql);
+								 }
+							 }
+							 catch (SQLException e) {
+								 logger.log(Level.WARNING, "(" + iPara.getParameterName() + ") " + sql, e);
+							 }
+							 finally{
+								 DB.close(rs, stmt);
+								 rs = null;
+								 stmt = null;
+							 }
+						 }
+					 }	//	SQL Statement
+					 else if (paramValue.indexOf('@') != -1)	//	we have a variable
+					 {
+						 value = Env.parseContext(Env.getCtx(), 0, paramValue, false, false);
+					 }	//	@variable@
+
+					 //	No Value
+					 if (value == null)
+					 {
+						 continue;
+					 }
+
+					 //	Convert to Type				
+					 if (DisplayType.isNumeric(iPara.getDisplayType()))
+					 {
+						 BigDecimal bd = null;
+						 if (value instanceof BigDecimal)
+							 bd = (BigDecimal)value;
+						 else if (value instanceof Integer)
+							 bd = new BigDecimal (((Integer)value).intValue());
+						 else
+							 bd = new BigDecimal (value.toString());
+						DecimalFormat decimalFormat = DisplayType.getNumberFormat(iPara.getDisplayType());
+						String info = decimalFormat.format(iPara.getP_Number());
+						 if (isTo) {
+							 iPara.setP_Number_To(bd);
+							 iPara.setInfo_To(info);
+						 }
+						 else {
+							 iPara.setP_Number(bd);
+							 iPara.setInfo(info);
+						 }
+					 }
+					 else if (iPara.getDisplayType() == DisplayType.Search || iPara.getDisplayType() == DisplayType.Table || iPara.getDisplayType() == DisplayType.TableDir) {
+						 int id = new BigDecimal (value.toString()).intValue();
+						 if (isTo) {
+							 iPara.setP_Number_To(new BigDecimal (value.toString()));
+							 iPara.setInfo_To(getDisplay(pInstance, iPara, id));
+						 }
+						 else {
+							 iPara.setP_Number(new BigDecimal (value.toString()));
+							 iPara.setInfo(getDisplay(pInstance, iPara, id));
+						 }
+					 }
+					 else if (DisplayType.isDate(iPara.getDisplayType()))
+					 {
+						 Timestamp ts = null;
+						 if (value instanceof Timestamp)
+							 ts = (Timestamp)value;
+						 else
+							 ts = Timestamp.valueOf(value.toString());
+						SimpleDateFormat dateFormat = DisplayType.getDateFormat(iPara.getDisplayType());
+						String info = dateFormat.format(ts);
+						 if (isTo) {
+							 iPara.setP_Date_To(ts);
+							 iPara.setInfo_To(info);
+						 }
+						 else {
+							 iPara.setP_Date(ts);
+							 iPara.setInfo(info);
+						 }
+					 }
+					 else
+					 {
+						 if (isTo) {
+							 iPara.setP_String_To(value.toString());
+							 iPara.setInfo_To(value.toString());
+						 }
+						 else {
+							 iPara.setP_String(value.toString());
+							 iPara.setInfo(value.toString());
+						 }
+					 }
+					 iPara.saveEx();
+
+					 isTo = true;
+				 }
 			}
 		}				
 	}
-	
+
+	private String getDisplay(MPInstance i, MPInstancePara ip, int id) {
+		try {
+			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());
+
+			if (pp != null) {
+
+				MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), 0, 0, pp.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), "", pp.getAD_Reference_Value_ID(), false, "");
+
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				StringBuilder name = new StringBuilder("");
+				try
+				{
+					pstmt = DB.prepareStatement(mli.QueryDirect, null);
+					pstmt.setInt(1, id);
+
+					rs = pstmt.executeQuery();
+					if (rs.next()) {
+						name.append(rs.getString(3));
+						boolean isActive = rs.getString(4).equals("Y");
+						if (!isActive)
+							name.insert(0, MLookup.INACTIVE_S).append(MLookup.INACTIVE_E);
+
+						if (rs.next())
+							logger.log(Level.SEVERE, "Error while displaying parameter for embedded report - Not unique (first returned) for SQL=" + mli.QueryDirect);
+					}
+				}
+				catch (Exception e) {
+					logger.log(Level.SEVERE, "Error while displaying parameter for embedded report - " + mli.KeyColumn + ": SQL=" + mli.QueryDirect + " : " + e);
+				}
+				finally {
+					DB.close(rs, pstmt);
+					rs = null;
+					pstmt = null;
+				}
+
+				return name.toString();
+			}
+		}
+		catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to retrieve data to display for embedded report " + MProcess.get(i.getAD_Process_ID()).getName() + " : " + ip.getParameterName(), e);
+		}
+
+		return Integer.toString(id);
+	}
+
 	public void updateLayout(ClientInfo clientInfo) {
 		if (isShowInDashboard) {
 			if (ClientInfo.isMobile()) {

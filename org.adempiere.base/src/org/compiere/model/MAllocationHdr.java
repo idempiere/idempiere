@@ -170,12 +170,10 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		super (ctx, C_AllocationHdr_ID, trxName);
 		if (C_AllocationHdr_ID == 0)
 		{
-		//	setDocumentNo (null);
 			setDateTrx (new Timestamp(System.currentTimeMillis()));
 			setDateAcct (getDateTrx());
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-		//	setC_Currency_ID (0);
+			setDocAction (DOCACTION_Complete);
+			setDocStatus (DOCSTATUS_Drafted);
 			setApprovalAmt (Env.ZERO);
 			setIsApproved (false);
 			setIsManual (false);

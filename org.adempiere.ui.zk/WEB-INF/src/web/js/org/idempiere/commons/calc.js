@@ -73,10 +73,14 @@ function Calc()
 				var re = new RegExp("[" + separator + "]", "g");
 				value = value.replace(re,'.');
 			}
-			var reclean = new RegExp("[^1234567890+-/*%() ]", "g"); // sanitize
-			value = value.replace(reclean,'');
-			var reperc = new RegExp("[%]", "g"); // percentage
-			value = value.replace(reperc,'/100 ');
+			value = value
+				.replace(/[^1234567890+-/*%() ]/g, '')            // sanitize
+				.replace(/[%]/g, '/100 ')                         // percentage
+					// now replace leading zeroes
+				.replace(/\b0+\b/g, 'z')                          // replace bare zeros with sentinel 
+				.replace(/[1-9\.]0+/g, m => m.replace(/0/g, 'z')) // save these too
+				.replace(/0/g, '')                                // throw away the rest of the zeros
+				.replace(/z/g, '0');                              // turn sentinels back to zeros
 			newValue = value;
 			var result = "" + eval(value);
 			if (separator != '.')

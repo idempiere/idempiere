@@ -86,7 +86,14 @@ public class POFinder {
     			uuid = uuid.trim();
     			String targetUUID = Env.getAD_Client_ID(ctx.ctx) > 0 ? getTargetUUID(ctx.ctx, tableName, uuid, ctx.trx.getTrxName()) : uuid; 
     			Query query = new Query(ctx.ctx, tableName, uuidColumn+"=?", getTrxName(ctx));
-    			po = query.setParameters(targetUUID).firstOnly();
+    			/* Is possible to read here from source tenant to create in a new tenant, so safe to allow reading
+    			 * writing in wrong tenant is controlled later */
+    			try {
+    				PO.setCrossTenantSafe();
+    	   			po = query.setParameters(targetUUID).firstOnly();
+    	   		} finally {
+    	   			PO.clearCrossTenantSafe();
+    	   		}
     			if (po != null && po.getAD_Client_ID() > 0) {
     				if (po.getAD_Client_ID() > 0 && po.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
     					targetUUID = UUID.randomUUID().toString();
@@ -101,7 +108,15 @@ public class POFinder {
     		String id = element.properties.get(idColumn).contents.toString();
     		if (id != null && id.trim().length() > 0) {
     			Query query = new Query(ctx.ctx, tableName, idColumn+"=?", getTrxName(ctx));
-    			po = query.setParameters(Integer.valueOf(id.trim())).firstOnly();
+    			/* Allow reading from a different tenant to show user a clearer error message below
+    			 * This is, instead of "Cross tenant PO reading request" the user will see a message
+    			 * "2Pack cannot update/access record that belongs to another client" which is more explanatory */
+    			try {
+    				PO.setCrossTenantSafe();
+    				po = query.setParameters(Integer.valueOf(id.trim())).firstOnly();
+    			} finally {
+    				PO.clearCrossTenantSafe();
+    			}
     			if (po != null && po.getAD_Client_ID() > 0) {
     				if (po.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
     					throw new IllegalStateException("2Pack cannot update/access record that belongs to another client. TableName="+po.get_TableName()

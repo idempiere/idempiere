@@ -132,12 +132,7 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 
 		MTableIndex m_TableIndex = new MTableIndex(ctx.ctx, AD_TableIndex_ID, null);
 		
-		boolean createElement = true;
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_TableIndex.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_TableIndex);
 		
 		if (createElement) {
 			if (m_TableIndex.getAD_Message_ID() > 0) {

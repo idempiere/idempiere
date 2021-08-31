@@ -1,4 +1,4 @@
-/**********************************************************************
+/***********************************************************************
  * This file is part of iDempiere ERP Open Source                      *
  * http://www.idempiere.org                                            *
  *                                                                     *
@@ -28,8 +28,6 @@ package org.idempiere.process;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.IArchiveStore;
@@ -37,6 +35,7 @@ import org.compiere.model.IAttachmentStore;
 import org.compiere.model.IImageStore;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
@@ -57,6 +56,9 @@ public class MigrateStorageProvider extends SvrProcess {
 	private boolean p_IsMigrateAttachment = false;
 	private boolean p_IsMigrateArchive = false;
 	private boolean p_IsMigrateImage = false;
+	private boolean p_IsMigrateData = true;
+	private int p_IDFrom = 0;
+	private int p_IDTo = 0;
 	private boolean p_DeleteOld = false;
 	int cntAttachment = 0;
 	int cntArchive = 0;
@@ -82,6 +84,11 @@ public class MigrateStorageProvider extends SvrProcess {
 				p_IsMigrateArchive  = para.getParameterAsBoolean();
 			} else if ("IsMigrateImage".equals(name)) {
 				p_IsMigrateImage  = para.getParameterAsBoolean();
+			} else if ("IsMigrateData".equals(name)) {
+				p_IsMigrateData  = para.getParameterAsBoolean();
+			} else if ("Record_ID".equals(name)) {
+				p_IDFrom = para.getParameterAsInt();
+				p_IDTo = para.getParameter_ToAsInt();
 			} else if ("DeleteOld".equals(name)) {
 				p_DeleteOld  = para.getParameterAsBoolean();
 			} else {
@@ -103,18 +110,23 @@ public class MigrateStorageProvider extends SvrProcess {
 					+ ", IsMigrateAttachment=" + p_IsMigrateAttachment
 					+ ", IsMigrateArchive=" + p_IsMigrateArchive
 					+ ", IsMigrateImage=" + p_IsMigrateImage
+					+ ", IsMigrateData=" + p_IsMigrateData
+					+ ", IDFrom=" + p_IDFrom
+					+ ", IDTo=" + p_IDTo
 					+ ", DeleteOld=" + p_DeleteOld);
 
 		if ( ! (p_IsMigrateAttachment || p_IsMigrateArchive || p_IsMigrateImage ) ) {
 			return "Nothing to migrate, please select an option";
 		}
 
+		MStorageProvider newProvider = MStorageProvider.get(getCtx(), p_AD_StorageProvider_ID);
+
 		// Create list of clients to process:
 		//   - single AD_Client
 		//   - clients using the actual storage provider (depending on the isMigrate flags)
-		List<Integer> clients = new ArrayList<Integer>();
+		int[] clientsToUpdate;
 		if (p_AD_Client_ID >= 0) {
-			clients.add(p_AD_Client_ID);
+			clientsToUpdate = new int[] {p_AD_Client_ID};
 			p_Actual_StorageProvider_ID = 0;
 		} else {
 			StringBuilder whereClause = new StringBuilder();
@@ -139,71 +151,90 @@ public class MigrateStorageProvider extends SvrProcess {
 				}
 				whereClause.append("StorageImage_ID").append(storageClause);
 			}
-			int[] ids = new Query(getCtx(), MClientInfo.Table_Name, whereClause.toString(), get_TrxName())
+			clientsToUpdate = new Query(getCtx(), MClientInfo.Table_Name, whereClause.toString(), get_TrxName())
 					.setOrderBy("AD_Client_ID")
 					.getIDs();
-			for (int id : ids) {
-				clients.add(id);
-			}
 		}
-		if ( clients.size() == 0) {
-			return "Nothing to migrate, no clients with that storage provider";
-		}
-		MStorageProvider newProvider = new MStorageProvider(getCtx(), p_AD_StorageProvider_ID, get_TrxName());
-		boolean isNewStorageDB = MStorageProvider.METHOD_Database.equals(newProvider.getMethod());
 
-		int idxClient = 0;
-		int totalClients = clients.size();
-		// for each client
-		for (int clientid : clients) {
-			idxClient++;
+		// Start the process updating the provider, data migration goes later
+		for (int clientid : clientsToUpdate) {
 			MClientInfo clientInfo = MClientInfo.getCopy(getCtx(), clientid, (String)null);
 			MClient client = MClient.get(getCtx(), clientid);
-			int odometer = 10;
 
-			if (p_IsMigrateAttachment) {
-				if (   clientInfo.getAD_StorageProvider_ID() == p_AD_StorageProvider_ID
-					|| (clientInfo.getAD_StorageProvider_ID() == 0 && isNewStorageDB)) {
-					String msg = client.getName() + " has already attachment storage " + newProvider.getName();
-					addLog(msg);
-				} else {
-					migrateAttachments(newProvider, idxClient, totalClients, clientid, clientInfo, client, odometer);
-				}
+			if (   p_IsMigrateAttachment
+				&& clientInfo.getAD_StorageProvider_ID() != p_AD_StorageProvider_ID) {
+				clientInfo.setAD_StorageProvider_ID(p_AD_StorageProvider_ID);
+				clientInfo.saveEx();
+				String msg = "Attachment provider set to " + newProvider.getName() + " on " + client.getName();
+				addLog(msg);
 			}
 
-			if (p_IsMigrateArchive) {
-				if (   clientInfo.getStorageArchive_ID() == p_AD_StorageProvider_ID
-					|| (clientInfo.getStorageArchive_ID() == 0 && isNewStorageDB)) {
-					String msg = client.getName() + " has already archive storage " + newProvider.getName();
-					addLog(msg);
-				} else {
-					migrateArchives(newProvider, idxClient, totalClients, clientid, clientInfo, client, odometer);
-				}
+			if (   p_IsMigrateArchive
+				&& clientInfo.getStorageArchive_ID() != p_AD_StorageProvider_ID) {
+				clientInfo.setStorageArchive_ID(p_AD_StorageProvider_ID);
+				clientInfo.saveEx();
+				String msg = "Archive provider set to " + newProvider.getName() + " on " + client.getName();
+				addLog(msg);
 			}
 
-			if (p_IsMigrateImage) {
-				if (   clientInfo.getStorageImage_ID() == p_AD_StorageProvider_ID
-					|| (clientInfo.getStorageImage_ID() == 0 && isNewStorageDB)) {
-					String msg = client.getName() + " has already image storage " + newProvider.getName();
-					addLog(msg);
-				} else {
-					migrateImages(newProvider, idxClient, totalClients, clientid, clientInfo, client, odometer);
-				}
+			if (   p_IsMigrateImage
+				&& clientInfo.getStorageImage_ID() != p_AD_StorageProvider_ID) {
+				clientInfo.setStorageImage_ID(p_AD_StorageProvider_ID);
+				clientInfo.saveEx();
+				String msg = "Image provider set to " + newProvider.getName() + " on " + client.getName();
+				addLog(msg);
+			}
+		}
+		commitEx();
+		CacheMgt.get().reset(MClientInfo.Table_Name);
+
+		if (p_IsMigrateData) {
+			int[] clientsToMigrate;
+			if (p_AD_Client_ID >= 0) {
+				clientsToMigrate = new int[] {p_AD_Client_ID};
+			} else {
+				final String whereMigrate = "(AD_StorageProvider_ID=? OR StorageArchive_ID=? OR StorageImage_ID=?)";
+				clientsToMigrate = new Query(getCtx(), MClientInfo.Table_Name, whereMigrate, get_TrxName())
+						.setOrderBy("AD_Client_ID")
+						.setParameters(p_AD_StorageProvider_ID, p_AD_StorageProvider_ID, p_AD_StorageProvider_ID)
+						.getIDs();
 			}
 
-		} // end for each client
+			int idxClient = 0;
+			int totalClients = clientsToMigrate.length;
+
+			// for each client
+			for (int clientid : clientsToMigrate) {
+				idxClient++;
+				MClient client = MClient.get(getCtx(), clientid);
+				int odometer = 10;
+
+				if (p_IsMigrateAttachment) {
+					migrateAttachments(newProvider, idxClient, totalClients, clientid, client, odometer);
+				}
+
+				if (p_IsMigrateArchive) {
+					migrateArchives(newProvider, idxClient, totalClients, clientid, client, odometer);
+				}
+
+				if (p_IsMigrateImage) {
+					migrateImages(newProvider, idxClient, totalClients, clientid, client, odometer);
+				}
+			} // end for each client
+
+		}
 
 		return "@Updated@ " + cntAttachment + " @AD_Attachment_ID@, " + cntArchive + " @AD_Archive_ID@, " + cntImage + " @AD_Image_ID@";
 	}	//	doIt
 
 	private void migrateAttachments(MStorageProvider newProvider, int idxClient, int totalClients, int clientid,
-			MClientInfo clientInfo, MClient client, int odometer) throws SQLException {
+			MClient client, int odometer) throws SQLException {
 		// migrate attachment
 		status(idxClient, totalClients, "Migrating attachments for " + client.getName());
-		int[] attachIds = new Query(getCtx(), MAttachment.Table_Name, "AD_Client_ID=?", get_TrxName())
-				.setParameters(clientid)
+		final String where = "AD_Client_ID=? AND (?=0 OR AD_Attachment_ID>=?) AND (?=0 OR AD_Attachment_ID<=?) AND COALESCE(AD_StorageProvider_ID,0)!=?";
+		int[] attachIds = new Query(getCtx(), MAttachment.Table_Name, where, get_TrxName())
+				.setParameters(clientid, p_IDFrom, p_IDFrom, p_IDTo, p_IDTo, p_AD_StorageProvider_ID)
 				.setOrderBy("AD_Attachment_ID")
-				.setForUpdate(true)  // lock these records in the table
 				.getIDs();
 		int cntRecords = attachIds.length;
 		// iterate on each record of the associated table
@@ -214,55 +245,40 @@ public class MigrateStorageProvider extends SvrProcess {
 				progress(idxClient, totalClients, idxAttach, cntRecords, "Migrating attachment ");
 			}
 			MAttachment attachment = new MAttachment(getCtx(), attachId, get_TrxName());
-			attachment.getEntries();
+			int oldProviderId = attachment.getAD_StorageProvider_ID();
+			for (MAttachmentEntry entry : attachment.getEntries()) {
+				entry.getData(); // force load in case old provider is delayed 
+			}
 			attachment.setStorageProvider(newProvider);
 			attachment.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 			// create file on the new storage provider
 			attachment.saveEx();
 			cntAttachment++;
-		}
-		// set the corresponding storage provider
-		int oldProviderId = clientInfo.getAD_StorageProvider_ID();
-		clientInfo.setAD_StorageProvider_ID(p_AD_StorageProvider_ID);
-		clientInfo.saveEx();
-		// cache reset
-		CacheMgt.get().reset(MClientInfo.Table_Name, clientInfo.getAD_Client_ID());
-		commitEx();
-		String msg = "Migrated " + cntRecords + " attachments on " + client.getName();
-		addLog(msg);
-		// if delete old
-		if (p_DeleteOld) {
-			MStorageProvider oldProvider = new MStorageProvider(getCtx(), oldProviderId, get_TrxName());
-			if (! (oldProviderId == 0 || MStorageProvider.METHOD_Database.equals(oldProvider.getMethod()))) {
-				// DB method doesn't require delete
-				IAttachmentStore oldStore = oldProvider.getAttachmentStore();
-				// iterate on each record of the associated table
-				idxAttach = 0;
-				for (int attachId : attachIds) {
-					idxAttach++;
-					if (idxAttach % odometer == 0) {
-						progress(idxClient, totalClients, idxAttach, cntRecords, "Deleting old attachment ");
-					}
-					//   delete file on old storage
-					MAttachment attachment = new MAttachment(getCtx(), attachId, get_TrxName());
-					attachment.setStorageProvider(newProvider);
-					attachment.getEntries();
+			// commit on every record migrated
+			commitEx();
+
+			if (p_DeleteOld) {
+				MStorageProvider oldProvider = MStorageProvider.get(getCtx(), oldProviderId);
+				if (! (oldProviderId == 0 || MStorageProvider.METHOD_Database.equals(oldProvider.getMethod()))) { // DB method doesn't require delete
+					IAttachmentStore oldStore = oldProvider.getAttachmentStore();
+					// delete file on old storage
 					oldStore.delete(attachment, oldProvider);
+					commitEx();
 				}
-				msg = "Deleted " + cntRecords + " old attachment files on " + client.getName();
-				addLog(msg);
 			}
 		}
+		String msg = "Migrated " + cntRecords + " attachments on " + client.getName();
+		addLog(msg);
 	}
 
 	private void migrateArchives(MStorageProvider newProvider, int idxClient, int totalClients, int clientid,
-			MClientInfo clientInfo, MClient client, int odometer) throws SQLException {
+			MClient client, int odometer) throws SQLException {
 		// migrate archive
 		status(idxClient, totalClients, "Migrating archives for " + client.getName());
-		int[] archiveIds = new Query(getCtx(), MArchive.Table_Name, "AD_Client_ID=?", get_TrxName())
-				.setParameters(clientid)
+		final String where = "AD_Client_ID=? AND (?=0 OR AD_Archive_ID>=?) AND (?=0 OR AD_Archive_ID<=?) AND COALESCE(AD_StorageProvider_ID,0)!=?";
+		int[] archiveIds = new Query(getCtx(), MArchive.Table_Name, where, get_TrxName())
+				.setParameters(clientid, p_IDFrom, p_IDFrom, p_IDTo, p_IDTo, p_AD_StorageProvider_ID)
 				.setOrderBy("AD_Archive_ID")
-				.setForUpdate(true)  // lock these records in the table
 				.getIDs();
 		int cntRecords = archiveIds.length;
 		// iterate on each record of the associated table
@@ -273,6 +289,7 @@ public class MigrateStorageProvider extends SvrProcess {
 				progress(idxClient, totalClients, idxArchive, cntRecords, "Migrating archive ");
 			}
 			MArchive archive = new MArchive(getCtx(), archiveId, get_TrxName());
+			int oldProviderId = archive.getAD_StorageProvider_ID();
 			byte[] data = archive.getBinaryData();
 			archive.setStorageProvider(newProvider);
 			archive.setBinaryData(data);
@@ -280,48 +297,31 @@ public class MigrateStorageProvider extends SvrProcess {
 			// create file on the new storage provider
 			archive.saveEx();
 			cntArchive++;
-		}
-		// set the corresponding storage provider
-		int oldProviderId = clientInfo.getStorageArchive_ID();
-		clientInfo.setStorageArchive_ID(p_AD_StorageProvider_ID);
-		clientInfo.saveEx();
-		// cache reset
-		CacheMgt.get().reset(MClientInfo.Table_Name, clientInfo.getAD_Client_ID());
-		commitEx();
-		String msg = "Migrated " + cntRecords + " archives on " + client.getName();
-		addLog(msg);
-		// if delete old
-		if (p_DeleteOld) {
-			MStorageProvider oldProvider = new MStorageProvider(getCtx(), oldProviderId, get_TrxName());
-			if (! (oldProviderId == 0 || MStorageProvider.METHOD_Database.equals(oldProvider.getMethod()))) {
-				// DB method doesn't require delete
-				IArchiveStore oldStore = oldProvider.getArchiveStore();
-				// iterate on each record of the associated table
-				idxArchive = 0;
-				for (int archiveId : archiveIds) {
-					idxArchive++;
-					if (idxArchive % odometer == 0) {
-						progress(idxClient, totalClients, idxArchive, cntRecords, "Deleting old archive ");
-					}
-					//   delete file on old storage
-					MArchive archive = new MArchive(getCtx(), archiveId, get_TrxName());
-					archive.setStorageProvider(newProvider);
+			// commit on every record migrated
+			commitEx();
+
+			if (p_DeleteOld) {
+				MStorageProvider oldProvider = MStorageProvider.get(getCtx(), oldProviderId);
+				if (! (oldProviderId == 0 || MStorageProvider.METHOD_Database.equals(oldProvider.getMethod()))) { // DB method doesn't require delete
+					IArchiveStore oldStore = oldProvider.getArchiveStore();
+					// delete file on old storage
 					oldStore.deleteArchive(archive, oldProvider);
+					commitEx();
 				}
-				msg = "Deleted " + cntRecords + " old archive files on " + client.getName();
-				addLog(msg);
 			}
 		}
+		String msg = "Migrated " + cntRecords + " archives on " + client.getName();
+		addLog(msg);
 	}
 
 	private void migrateImages(MStorageProvider newProvider, int idxClient, int totalClients, int clientid,
-			MClientInfo clientInfo, MClient client, int odometer) throws SQLException {
+			MClient client, int odometer) throws SQLException {
 		// migrate image
 		status(idxClient, totalClients, "Migrating images for " + client.getName());
-		int[] imageIds = new Query(getCtx(), MImage.Table_Name, "AD_Client_ID=?", get_TrxName())
-				.setParameters(clientid)
+		final String where = "AD_Client_ID=? AND (?=0 OR AD_Image_ID>=?) AND (?=0 OR AD_Image_ID<=?) AND COALESCE(AD_StorageProvider_ID,0)!=?";
+		int[] imageIds = new Query(getCtx(), MImage.Table_Name, where, get_TrxName())
+				.setParameters(clientid, p_IDFrom, p_IDFrom, p_IDTo, p_IDTo, p_AD_StorageProvider_ID)
 				.setOrderBy("AD_Image_ID")
-				.setForUpdate(true)  // lock these records in the table
 				.getIDs();
 		int cntRecords = imageIds.length;
 		// iterate on each record of the associated table
@@ -332,45 +332,28 @@ public class MigrateStorageProvider extends SvrProcess {
 				progress(idxClient, totalClients, idxImage, cntRecords, "Migrating image ");
 			}
 			MImage image = new MImage(getCtx(), imageId, get_TrxName());
+			int oldProviderId = image.getAD_StorageProvider_ID();
 			byte[] data = image.getBinaryData();
 			image.setStorageProvider(newProvider);
 			image.setBinaryData(data);
 			image.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 			// create file on the new storage provider
 			image.saveEx();
-			cntImage++;
-		}
-		// set the corresponding storage provider
-		int oldProviderId = clientInfo.getStorageImage_ID();
-		clientInfo.setStorageImage_ID(p_AD_StorageProvider_ID);
-		clientInfo.saveEx();
-		// cache reset
-		CacheMgt.get().reset(MClientInfo.Table_Name, clientInfo.getAD_Client_ID());
-		commitEx();
-		String msg = "Migrated " + cntRecords + " images on " + client.getName();
-		addLog(msg);
-		// if delete old
-		if (p_DeleteOld) {
-			MStorageProvider oldProvider = new MStorageProvider(getCtx(), oldProviderId, get_TrxName());
-			if (! (oldProviderId == 0 || MStorageProvider.METHOD_Database.equals(oldProvider.getMethod()))) {
-				// DB method doesn't require delete
-				IImageStore oldStore = oldProvider.getImageStore();
-				// iterate on each record of the associated table
-				idxImage = 0;
-				for (int imageId : imageIds) {
-					idxImage++;
-					if (idxImage % odometer == 0) {
-						progress(idxClient, totalClients, idxImage, cntRecords, "Deleting old image ");
-					}
-					//   delete file on old storage
-					MImage image = new MImage(getCtx(), imageId, get_TrxName());
-					image.setStorageProvider(newProvider);
+			// commit on every record migrated
+			commitEx();
+
+			if (p_DeleteOld) {
+				MStorageProvider oldProvider = MStorageProvider.get(getCtx(), oldProviderId);
+				if (! (oldProviderId == 0 || MStorageProvider.METHOD_Database.equals(oldProvider.getMethod()))) { // DB method doesn't require delete
+					IImageStore oldStore = oldProvider.getImageStore();
+					// delete file on old storage
 					oldStore.delete(image, oldProvider);
+					commitEx();
 				}
-				msg = "Deleted " + cntRecords + " old image files on " + client.getName();
-				addLog(msg);
 			}
 		}
+		String msg = "Migrated " + cntRecords + " images on " + client.getName();
+		addLog(msg);
 	}
 
 	private void progress(int idxClient, int totalClients, int idxRecord, int cntRecords, String msg) {

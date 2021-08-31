@@ -146,7 +146,6 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 			setIsReadOnly (false);	// N
 			setIsSOTrx (false);
 			setIsSummary (false);
-		//	setName (null);
 		}
 	}	//	MMenu
 

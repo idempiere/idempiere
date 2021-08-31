@@ -149,11 +149,8 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	{
 		// parameters
 		final int AD_Org_ID = Env.getAD_Org_ID(ctx);
-		//final int anyOrg = 0;
 		final int AD_Role_ID = Env.getAD_Role_ID(ctx);
-		//final String anyRole = "NULL";
 		final int AD_User_ID = Env.getAD_User_ID(ctx);
-		//final String anyUser = "NULL";
 		
 		//  Check Cache
 		String key = new StringBuilder().append(window_ID).append("_")

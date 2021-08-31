@@ -298,9 +298,9 @@ public abstract class SvrProcess implements ProcessCall
 	private Event sendProcessEvent(String topic) {
 		Event event = EventManager.newEvent(topic,
 				new EventProperty(EventManager.EVENT_DATA, m_pi),
-				new EventProperty("processUUID", m_pi.getAD_Process_UU()),
-				new EventProperty("className", m_pi.getClassName()),
-				new EventProperty("processClassName", this.getClass().getName()));
+				new EventProperty(EventManager.PROCESS_UID_PROPERTY, m_pi.getAD_Process_UU()),
+				new EventProperty(EventManager.CLASS_NAME_PROPERTY, m_pi.getClassName()),
+				new EventProperty(EventManager.PROCESS_CLASS_NAME_PROPERTY, this.getClass().getName()));
 		EventManager.getInstance().sendEvent(event);
 		return event;
 	}

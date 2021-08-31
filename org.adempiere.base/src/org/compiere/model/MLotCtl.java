@@ -43,11 +43,9 @@ public class MLotCtl extends X_M_LotCtl
 		super (ctx, M_LotCtl_ID, trxName);
 		if (M_LotCtl_ID == 0)
 		{
-		//	setM_LotCtl_ID (0);
 			setStartNo (1);
 			setCurrentNext (1);
 			setIncrementNo (1);
-		//	setName (null);
 		}
 	}	//	MLotCtl
 

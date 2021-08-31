@@ -7,7 +7,7 @@ CREATE OR REPLACE VIEW AD_TAB_VT
  COMMITWARNING, READONLYLOGIC, DISPLAYLOGIC, AD_COLUMN_ID, AD_PROCESS_ID, 
  ISSORTTAB, ISINSERTRECORD, ISADVANCEDTAB, AD_COLUMNSORTORDER_ID, AD_COLUMNSORTYESNO_ID, 
  INCLUDED_TAB_ID, PARENT_COLUMN_ID, AD_Tab_UU, AD_Table_UU, TREEDISPLAYEDON,
- MAXQUERYRECORDS, IsAllowAdvancedLookup, IsLookupOnlySelection)
+ MAXQUERYRECORDS, IsAllowAdvancedLookup, IsLookupOnlySelection, AD_TabType)
 AS 
 SELECT trl.AD_Language, t.AD_Tab_ID, t.AD_Window_ID, t.AD_Table_ID, trl.Name, trl.Description, 
     trl.Help, t.SeqNo, t.IsSingleRow, t.HasTree, t.IsInfoTab, tbl.ReplicationType,
@@ -18,7 +18,7 @@ SELECT trl.AD_Language, t.AD_Tab_ID, t.AD_Window_ID, t.AD_Table_ID, trl.Name, tr
     t.AD_Column_ID, t.AD_Process_ID, t.IsSortTab, t.IsInsertRecord, t.IsAdvancedTab,
     t.AD_ColumnSortOrder_ID, t.AD_ColumnSortYesNo_ID, t.Included_Tab_ID, t.Parent_Column_ID,
     t.AD_Tab_UU, tbl.AD_Table_UU, t.TreeDisplayedOn, t.MaxQueryRecords,
-    t.IsAllowAdvancedLookup, t.IsLookupOnlySelection
+    t.IsAllowAdvancedLookup, t.IsLookupOnlySelection, t.AD_TabType
 FROM AD_Tab t 
 	INNER JOIN AD_Table tbl ON (t.AD_Table_ID = tbl.AD_Table_ID)
 	INNER JOIN AD_Tab_Trl trl ON (t.AD_Tab_ID = trl.AD_Tab_ID)

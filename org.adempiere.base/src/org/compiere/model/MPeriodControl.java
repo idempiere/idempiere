@@ -47,8 +47,6 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 		super(ctx, C_PeriodControl_ID, trxName);
 		if (C_PeriodControl_ID == 0)
 		{
-		//	setC_Period_ID (0);
-		//	setDocBaseType (null);
 			setPeriodAction (PERIODACTION_NoAction);
 			setPeriodStatus (PERIODSTATUS_NeverOpened);
 		}

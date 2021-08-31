@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Payment Selection Line Model
@@ -47,10 +48,6 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 		super(ctx, C_PaySelectionLine_ID, trxName);
 		if (C_PaySelectionLine_ID == 0)
 		{
-		//	setC_PaySelection_ID (0);
-		//	setPaymentRule (null);	// S
-		//	setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_PaySelectionLine WHERE C_PaySelection_ID=@C_PaySelection_ID@
-		//	setC_Invoice_ID (0);
 			setIsSOTrx (false);
 			setOpenAmt(Env.ZERO);
 			setPayAmt (Env.ZERO);
@@ -143,6 +140,11 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MPaySelection parent = new MPaySelection(getCtx(), getC_PaySelection_ID(), get_TrxName());
+		if (newRecord && parent.isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_PaySelection_ID"));
+			return false;
+		}
 		setDifferenceAmt(getOpenAmt().subtract(getPayAmt()).subtract(getDiscountAmt()).subtract(getWriteOffAmt()));
 		return true;
 	}	//	beforeSave

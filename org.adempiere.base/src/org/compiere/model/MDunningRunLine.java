@@ -201,28 +201,6 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	
 	/**
 	 * 	Set Payment
-	 *
-	public void setPayment (MPayment payment)
-	{
-		m_payment = payment;
-		if (payment != null)
-		{
-			m_C_CurrencyFrom_ID = payment.getC_Currency_ID();
-			setAmt(payment.getPayAmt());	//	need to reverse
-			setOpenAmt(getAmt());	//	not correct
-			setConvertedAmt (MConversionRate.convert(getCtx(), getOpenAmt(), 
-				getC_CurrencyFrom_ID(), getC_CurrencyTo_ID(), getAD_Client_ID(), getAD_Org_ID()));
-		}
-		else
-		{
-			m_C_CurrencyFrom_ID = 0;
-			setAmt(Env.ZERO);
-			setConvertedAmt(Env.ZERO);
-		}
-	}	//	setPayment
-	
-	/**
-	 * 	Set Payment
 	 *	@param C_Payment_ID
 	 *	@param C_Currency_ID
 	 *	@param PayAmt

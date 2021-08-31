@@ -229,8 +229,6 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 			setIsSOPriceList (false);
 			setIsTaxIncluded (false);
 			setPricePrecision (2);	// 2
-		//	setName (null);
-		//	setC_Currency_ID (0);
 		}
 	}	//	MPriceList
 

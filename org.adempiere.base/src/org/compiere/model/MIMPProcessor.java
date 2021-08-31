@@ -60,7 +60,6 @@ public class MIMPProcessor
 		super(ctx, EXP_ReplicationProcessor_ID, trxName);
 		if (EXP_ReplicationProcessor_ID == 0)
 		{
-			//setValue (/*client.getName() + " - " +*/ "Default Import Processor");
 			setName (/*client.getName() + " - " +*/ "Default Import Processor");
 			setFrequencyType (FREQUENCYTYPE_Hour);
 			setFrequency (1);
@@ -147,7 +146,6 @@ public class MIMPProcessor
 			.append(" FROM ").append(X_IMP_ProcessorParameter.Table_Name)
 			.append(" WHERE ").append(X_IMP_ProcessorParameter.COLUMNNAME_IMP_Processor_ID).append("=?") // # 1
 			.append(" AND IsActive = ?")  // # 2
-			//.append(" ORDER BY ").append(X_EXP_ProcessorParameter.COLUMNNAME_)
 		;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

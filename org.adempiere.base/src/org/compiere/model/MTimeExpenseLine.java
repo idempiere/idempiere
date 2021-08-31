@@ -49,8 +49,6 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		super (ctx, S_TimeExpenseLine_ID, trxName);
 		if (S_TimeExpenseLine_ID == 0)
 		{
-		//	setS_TimeExpenseLine_ID (0);		//	PK
-		//	setS_TimeExpense_ID (0);			//	Parent
 			setQty(Env.ONE);
 			setQtyInvoiced(Env.ZERO);
 			setQtyReimbursed(Env.ZERO);
@@ -190,8 +188,8 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "S_TimeExpenseLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "S_TimeExpense_ID"));
 			return false;
 		}
 		//	Calculate Converted Amount

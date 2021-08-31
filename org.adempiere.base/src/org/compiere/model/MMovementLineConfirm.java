@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Inventory Movement Confirmation Line
@@ -47,8 +48,6 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 		super (ctx, M_MovementLineConfirm_ID, trxName);
 		if (M_MovementLineConfirm_ID == 0)
 		{
-		//	setM_MovementConfirm_ID (0);	Parent
-		//	setM_MovementLine_ID (0);
 			setConfirmedQty (Env.ZERO);
 			setDifferenceQty (Env.ZERO);
 			setScrappedQty (Env.ZERO);
@@ -148,6 +147,11 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MMovementConfirm parent = new MMovementConfirm(getCtx(), getM_MovementConfirm_ID(), get_TrxName());
+		if (newRecord && parent.isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_MovementConfirm_ID"));
+			return false;
+		}
 		//	Calculate Difference = Target - Confirmed
 		BigDecimal difference = getTargetQty();
 		difference = difference.subtract(getConfirmedQty());

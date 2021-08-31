@@ -237,8 +237,6 @@ public class SetGetUtil
 		if (s_log.isLoggable(Level.FINEST)) 
 		{
 			s_log.finest("Entering: From=" + from+ " - To=" + to);
-//			s_log.finest("includeFields=" + ARHIPAC.toString(includeFields));
-//			s_log.finest("excludeFields=" + ARHIPAC.toString(excludeFields));
 		}
 		//
 		if (to == null || from == null)
@@ -515,7 +513,6 @@ public class SetGetUtil
 		}
 		else if (o instanceof PO)
 		{
-//			return ((PO)o).is_UserEntry();
 			return false; // TODO
 		}
 		else
@@ -787,7 +784,6 @@ public class SetGetUtil
 			String errmsg = tab.setValue(name, value);
 			if (errmsg != null && errmsg.length() > 0)
 			{
-				//~ log.saveError("Error", errmsg);
 				return false;
 			}
 			return true;

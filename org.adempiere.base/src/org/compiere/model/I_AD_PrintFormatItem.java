@@ -541,6 +541,19 @@ public interface I_AD_PrintFormatItem
 	  */
 	public boolean isPrinted();
 
+    /** Column name IsPrintInstanceAttributes */
+    public static final String COLUMNNAME_IsPrintInstanceAttributes = "IsPrintInstanceAttributes";
+
+	/** Set Print Attributes.
+	  * Print each attributes as report column instead of printing the description of attribute set instance
+	  */
+	public void setIsPrintInstanceAttributes (boolean IsPrintInstanceAttributes);
+
+	/** Get Print Attributes.
+	  * Print each attributes as report column instead of printing the description of attribute set instance
+	  */
+	public boolean isPrintInstanceAttributes();
+
     /** Column name IsRelativePosition */
     public static final String COLUMNNAME_IsRelativePosition = "IsRelativePosition";
 
@@ -761,6 +774,19 @@ public interface I_AD_PrintFormatItem
 	  * Create Running Total Lines (page break) every x lines
 	  */
 	public int getRunningTotalLines();
+
+    /** Column name Script */
+    public static final String COLUMNNAME_Script = "Script";
+
+	/** Set Script.
+	  * Dynamic Java Language Script to calculate result
+	  */
+	public void setScript (String Script);
+
+	/** Get Script.
+	  * Dynamic Java Language Script to calculate result
+	  */
+	public String getScript();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

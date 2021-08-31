@@ -49,21 +49,6 @@ public interface I_AD_UserDef_Field
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_FieldGroup_ID */
-    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
-
-	/** Set Field Group.
-	  * Logical grouping of fields
-	  */
-	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
-
-	/** Get Field Group.
-	  * Logical grouping of fields
-	  */
-	public int getAD_FieldGroup_ID();
-
-	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
-
     /** Column name AD_Field_ID */
     public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
 
@@ -78,6 +63,21 @@ public interface I_AD_UserDef_Field
 	public int getAD_Field_ID();
 
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
+
+    /** Column name AD_FieldGroup_ID */
+    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
+
+	/** Set Field Group.
+	  * Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
+
+	/** Get Field Group.
+	  * Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID();
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_FieldStyle_ID */
     public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
@@ -359,6 +359,15 @@ public interface I_AD_UserDef_Field
 	  */
 	public String getIsDisplayed();
 
+    /** Column name IsDisplayedGrid */
+    public static final String COLUMNNAME_IsDisplayedGrid = "IsDisplayedGrid";
+
+	/** Set Show in Grid	  */
+	public void setIsDisplayedGrid (String IsDisplayedGrid);
+
+	/** Get Show in Grid	  */
+	public String getIsDisplayedGrid();
+
     /** Column name IsMandatory */
     public static final String COLUMNNAME_IsMandatory = "IsMandatory";
 
@@ -506,6 +515,15 @@ public interface I_AD_UserDef_Field
  lowest number comes first
 	  */
 	public int getSeqNo();
+
+    /** Column name SeqNoGrid */
+    public static final String COLUMNNAME_SeqNoGrid = "SeqNoGrid";
+
+	/** Set Grid Sequence No	  */
+	public void setSeqNoGrid (int SeqNoGrid);
+
+	/** Get Grid Sequence No	  */
+	public int getSeqNoGrid();
 
     /** Column name SortNo */
     public static final String COLUMNNAME_SortNo = "SortNo";

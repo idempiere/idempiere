@@ -127,8 +127,6 @@ public class MBOM extends X_M_BOM implements ImmutablePOSupport
 		super (ctx, M_BOM_ID, trxName);
 		if (M_BOM_ID == 0)
 		{
-		//	setM_Product_ID (0);
-		//	setName (null);
 			setBOMType (BOMTYPE_CurrentActive);	// A
 			setBOMUse (BOMUSE_Master);	// A
 		}

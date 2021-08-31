@@ -765,12 +765,7 @@ public class MMatchPO extends X_M_MatchPO
 		super (ctx, M_MatchPO_ID, trxName);
 		if (M_MatchPO_ID == 0)
 		{
-		//	setC_OrderLine_ID (0);
-		//	setDateTrx (new Timestamp(System.currentTimeMillis()));
-		//	setM_InOutLine_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);
-		//	setQty (Env.ZERO);
 			setPosted (false);
 			setProcessed (false);
 			setProcessing (false);

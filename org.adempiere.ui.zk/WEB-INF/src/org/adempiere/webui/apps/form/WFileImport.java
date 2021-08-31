@@ -80,7 +80,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5779187375101512112L;
+	private static final long serialVersionUID = -7462842139127270429L;
 	private static final int MAX_LOADED_LINES = 100;
 	private static final int MAX_SHOWN_LINES = 10;
 	
@@ -241,7 +241,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		//	Load Formats
 		pickFormat.appendItem(s_none, s_none);
 		
-		String sql = MRole.getDefault().addAccessSQL("SELECT Name,AD_Impformat_ID FROM AD_ImpFormat WHERE isactive='Y'", "AD_ImpFormat",
+		String sql = MRole.getDefault().addAccessSQL("SELECT Name, AD_Impformat_ID FROM AD_ImpFormat WHERE IsActive='Y' ORDER BY Name", "AD_ImpFormat",
 				MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

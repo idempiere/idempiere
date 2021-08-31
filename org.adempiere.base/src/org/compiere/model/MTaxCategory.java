@@ -46,7 +46,6 @@ public class MTaxCategory extends X_C_TaxCategory
 		super (ctx, C_TaxCategory_ID, trxName);
 		if (C_TaxCategory_ID == 0)
 		{
-		//	setName (null);
 			setIsDefault (false);
 		}
 	}	//	MTaxCategory

@@ -322,4 +322,5 @@ public class DefaultModelFactory implements IModelFactory {
 			s_log.log(Level.SEVERE, "(rs) - Not found - Table=" + tableName);
 		return null;
 	}
+
 }

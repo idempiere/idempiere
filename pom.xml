@@ -36,6 +36,8 @@
 		<module>org.idempiere.webservices</module>
 		<module>org.idempiere.webservices-feature</module>
 		<module>org.idempiere.zk.extra</module>
+		<module>org.idempiere.keikai</module>
+		<module>org.idempiere.printformat.editor</module>
 		<module>org.adempiere.report.jasper-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>
@@ -55,7 +57,7 @@
 		<module>org.idempiere.javadoc</module>
 		<module>org.idempiere.test-feature</module>
 		<module>org.idempiere.test</module>
-		<module>${idempiere.target}</module>
+		<module>org.idempiere.p2.targetplatform</module>
 	</modules>
 
 </project>

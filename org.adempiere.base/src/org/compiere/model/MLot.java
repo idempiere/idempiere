@@ -127,13 +127,6 @@ public class MLot extends X_M_Lot
 	public MLot (Properties ctx, int M_Lot_ID, String trxName)
 	{
 		super (ctx, M_Lot_ID, trxName);
-		/** if (M_Lot_ID == 0)
-		{
-			setM_Lot_ID (0);
-			setM_Product_ID (0);
-			setName (null);
-		}
-		**/
 	}	//	MLot
 
 	/**

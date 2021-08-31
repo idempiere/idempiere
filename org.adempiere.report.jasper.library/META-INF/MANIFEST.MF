@@ -14,6 +14,8 @@ Bundle-ClassPath: .,
  lib/jasperreports-fonts.jar,
  lib/jasperreports-functions.jar,
  lib/olap4j.jar,
- lib/xmpcore.jar
+ lib/xmpcore.jar,
+ lib/SparseBitSet.jar
 Automatic-Module-Name: org.adempiere.report.jasper.library
 Bundle-Vendor: iDempiere Community
+Export-Package: com.zaxxer.sparsebits

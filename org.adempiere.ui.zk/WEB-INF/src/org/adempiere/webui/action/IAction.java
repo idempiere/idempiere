@@ -31,7 +31,13 @@ public interface IAction {
 	 * you can customize toolbar button like add style, client javascript,...
 	 * @param toolbarButton
 	 */
-	public default void decorate(Toolbarbutton toolbarButton) {
-		
+	public default void decorate(Toolbarbutton toolbarButton) {		
+	}
+	
+	/**
+	 * @return font icon class
+	 */
+	public default String getIconSclass() {
+		return "";
 	}
 }

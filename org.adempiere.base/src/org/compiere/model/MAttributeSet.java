@@ -168,7 +168,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 
 	/**	Instance Attributes					*/
 	private MAttribute[]		m_instanceAttributes = null;
-	/**	Instance Attributes					*/
+	/**	Product Attributes					*/
 	private MAttribute[]		m_productAttributes = null;
 	
 	/** Entry Exclude						*/

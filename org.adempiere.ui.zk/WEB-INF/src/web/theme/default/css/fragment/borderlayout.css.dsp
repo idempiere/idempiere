@@ -76,3 +76,6 @@
 	box-shadow: 0px 0px 1px 1px #cfcfcf;
 	padding-left: 4px;
 }
+.z-north, .z-south, .z-west, .z-center, .z-east {
+	border: none;
+}

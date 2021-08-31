@@ -58,12 +58,6 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 		super (ctx, C_DunningRunEntry_ID, trxName);
 		if (C_DunningRunEntry_ID == 0)
 		{
-		//	setC_BPartner_ID (0);
-		//	setC_BPartner_Location_ID (0);
-		//	setAD_User_ID (0);
-			
-		//	setSalesRep_ID (0);
-		//	setC_Currency_ID (0);
 			setAmt (Env.ZERO);
 			setQty (Env.ZERO);
 			setProcessed (false);
@@ -264,17 +258,6 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 		return retValue;
 	}	//	hasInvoices
 
-	/**
-	 * Get Parent
-	 * @return Dunning Run
-	 */
-	/*private MDunningRun getParent() 
-	{
-		if (m_parent == null) 
-			m_parent = new MDunningRun(getCtx(), getC_DunningRun_ID (), get_TrxName());
-		return m_parent;
-	}	//	getParent*/
-	
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
