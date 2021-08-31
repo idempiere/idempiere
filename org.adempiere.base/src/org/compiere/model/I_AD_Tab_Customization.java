@@ -148,6 +148,15 @@ public interface I_AD_Tab_Customization
 	  */
 	public boolean isActive();
 
+    /** Column name IsAutoHideEmptyColumn */
+    public static final String COLUMNNAME_IsAutoHideEmptyColumn = "IsAutoHideEmptyColumn";
+
+	/** Set Auto Hide Empty Column	  */
+	public void setIsAutoHideEmptyColumn (String IsAutoHideEmptyColumn);
+
+	/** Get Auto Hide Empty Column	  */
+	public String getIsAutoHideEmptyColumn();
+
     /** Column name IsDisplayedGrid */
     public static final String COLUMNNAME_IsDisplayedGrid = "IsDisplayedGrid";
 

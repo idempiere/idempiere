@@ -79,19 +79,6 @@ public interface I_AD_Field
 
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
-    /** Column name AD_Field_ID */
-    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
-
-	/** Set Field.
-	  * Field on a database table
-	  */
-	public void setAD_Field_ID (int AD_Field_ID);
-
-	/** Get Field.
-	  * Field on a database table
-	  */
-	public int getAD_Field_ID();
-
     /** Column name AD_FieldStyle_ID */
     public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
 
@@ -106,6 +93,19 @@ public interface I_AD_Field
 	public int getAD_FieldStyle_ID();
 
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
+
+    /** Column name AD_Field_ID */
+    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
+
+	/** Set Field.
+	  * Field on a database table
+	  */
+	public void setAD_Field_ID (int AD_Field_ID);
+
+	/** Get Field.
+	  * Field on a database table
+	  */
+	public int getAD_Field_ID();
 
     /** Column name AD_Field_UU */
     public static final String COLUMNNAME_AD_Field_UU = "AD_Field_UU";
@@ -218,6 +218,19 @@ public interface I_AD_Field
 	public int getAD_Val_Rule_Lookup_ID();
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
+
+    /** Column name ColumnSQL */
+    public static final String COLUMNNAME_ColumnSQL = "ColumnSQL";
+
+	/** Set Column SQL.
+	  * Virtual Column (r/o)
+	  */
+	public void setColumnSQL (String ColumnSQL);
+
+	/** Get Column SQL.
+	  * Virtual Column (r/o)
+	  */
+	public String getColumnSQL();
 
     /** Column name ColumnSpan */
     public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";

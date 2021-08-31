@@ -33,7 +33,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210817L;
 
     /** Standard Constructor */
     public X_C_ProjectIssue (Properties ctx, int C_ProjectIssue_ID, String trxName)
@@ -43,6 +43,12 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
         {
 			setC_Project_ID (0);
 			setC_ProjectIssue_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setIsApproved (false);
+// N
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_ProjectIssue WHERE C_Project_ID=@C_Project_ID@
 			setM_AttributeSetInstance_ID (0);
@@ -172,6 +178,122 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** DocAction AD_Reference_ID=135 */
+	public static final int DOCACTION_AD_Reference_ID=135;
+	/** <None> = -- */
+	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
+	/** Prepare = PR */
+	public static final String DOCACTION_Prepare = "PR";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
+	/** Wait Complete = WC */
+	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
+	/** Set Document Action.
+		@param DocAction 
+		The targeted status of the document
+	  */
+	public void setDocAction (String DocAction)
+	{
+
+		set_Value (COLUMNNAME_DocAction, DocAction);
+	}
+
+	/** Get Document Action.
+		@return The targeted status of the document
+	  */
+	public String getDocAction () 
+	{
+		return (String)get_Value(COLUMNNAME_DocAction);
+	}
+
+	/** DocStatus AD_Reference_ID=131 */
+	public static final int DOCSTATUS_AD_Reference_ID=131;
+	/** Unknown = ?? */
+	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
+	/** In Progress = IP */
+	public static final String DOCSTATUS_InProgress = "IP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
+	/** Waiting Confirmation = WC */
+	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Set Document Status.
+		@param DocStatus 
+		The current status of the document
+	  */
+	public void setDocStatus (String DocStatus)
+	{
+
+		set_Value (COLUMNNAME_DocStatus, DocStatus);
+	}
+
+	/** Get Document Status.
+		@return The current status of the document
+	  */
+	public String getDocStatus () 
+	{
+		return (String)get_Value(COLUMNNAME_DocStatus);
+	}
+
+	/** Set Approved.
+		@param IsApproved 
+		Indicates if this document requires approval
+	  */
+	public void setIsApproved (boolean IsApproved)
+	{
+		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
+	}
+
+	/** Get Approved.
+		@return Indicates if this document requires approval
+	  */
+	public boolean isApproved () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsApproved);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Line No.
@@ -430,6 +552,34 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_C_ProjectIssue getReversal() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_Name)
+			.getPO(getReversal_ID(), get_TrxName());	}
+
+	/** Set Reversal ID.
+		@param Reversal_ID 
+		ID of document reversal
+	  */
+	public void setReversal_ID (int Reversal_ID)
+	{
+		if (Reversal_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_Reversal_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_Reversal_ID, Integer.valueOf(Reversal_ID));
+	}
+
+	/** Get Reversal ID.
+		@return ID of document reversal
+	  */
+	public int getReversal_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Reversal_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_S_TimeExpenseLine getS_TimeExpenseLine() throws RuntimeException

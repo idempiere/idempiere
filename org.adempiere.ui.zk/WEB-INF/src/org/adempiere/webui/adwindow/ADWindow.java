@@ -87,8 +87,10 @@ public class ADWindow extends AbstractUIPart
          
          this.ctx = ctx;
          this.adWindowId = adWindowId;
-         this.adWindowUUID = MWindow.get(ctx, adWindowId).getAD_Window_UU();
+         MWindow window = MWindow.get(ctx, adWindowId);
+         this.adWindowUUID = window.getAD_Window_UU();
          windowNo = SessionManager.getAppDesktop().registerWindow(this);
+         Env.setPredefinedVariables(ctx, windowNo, window.getPredefinedContextVariables());
          this.query = query;
          try {
              init();

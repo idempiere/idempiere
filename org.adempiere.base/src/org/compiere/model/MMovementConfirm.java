@@ -51,7 +51,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -399427235334348654L;
+	private static final long serialVersionUID = -3617284116557414217L;
 
 	/**
 	 * 	Create Confirmation or return existing one
@@ -96,7 +96,6 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 		super (ctx, M_MovementConfirm_ID, trxName);
 		if (M_MovementConfirm_ID == 0)
 		{
-		//	setM_Movement_ID (0);
 			setDocAction (DOCACTION_Complete);
 			setDocStatus (DOCSTATUS_Drafted);
 			setIsApproved (false);	// N
@@ -244,10 +243,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -765,10 +761,19 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	 */
 	public int getC_Currency_ID()
 	{
-	//	MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID());
-	//	return pl.getC_Currency_ID();
 		return 0;
 	}	//	getC_Currency_ID
 
-	
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isComplete
+
 }	//	MMovementConfirm

@@ -85,15 +85,21 @@ when detect side effect, fix to only apply for parameter window*/
 
 .input-paramenter-layout{
 	width: 70%;
+	margin-left: 5%;
+	margin-right: 25%;
 }
 @media screen and (max-width: 700px) {
 	.input-paramenter-layout{
 		width: 90% !important;
+		margin-left: 2% !important;
+		margin-right: 8% !important;
 	}
 }
 @media screen and (max-width: 500px) {
 	.input-paramenter-layout{
 		width: 100% !important;
+		margin-left: 0 !important;
+		margin-right: 0 !important;
 	}
 }
 

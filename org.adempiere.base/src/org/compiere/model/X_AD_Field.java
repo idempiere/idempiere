@@ -32,7 +32,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210604L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -148,29 +148,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Field.
-		@param AD_Field_ID 
-		Field on a database table
-	  */
-	public void setAD_Field_ID (int AD_Field_ID)
-	{
-		if (AD_Field_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
-	}
-
-	/** Get Field.
-		@return Field on a database table
-	  */
-	public int getAD_Field_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
@@ -194,6 +171,29 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public int getAD_FieldStyle_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldStyle_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Field.
+		@param AD_Field_ID 
+		Field on a database table
+	  */
+	public void setAD_Field_ID (int AD_Field_ID)
+	{
+		if (AD_Field_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
+	}
+
+	/** Get Field.
+		@return Field on a database table
+	  */
+	public int getAD_Field_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -379,6 +379,23 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Column SQL.
+		@param ColumnSQL 
+		Virtual Column (r/o)
+	  */
+	public void setColumnSQL (String ColumnSQL)
+	{
+		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
+	}
+
+	/** Get Column SQL.
+		@return Virtual Column (r/o)
+	  */
+	public String getColumnSQL () 
+	{
+		return (String)get_Value(COLUMNNAME_ColumnSQL);
 	}
 
 	/** Set Column Span.

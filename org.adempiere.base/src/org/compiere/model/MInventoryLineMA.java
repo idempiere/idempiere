@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 
@@ -236,6 +237,11 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MInventoryLine parentline = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+		if (newRecord && parentline.getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Inventory_ID"));
+			return false;
+		}
 		//Set DateMaterialPolicy
 		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
 			I_M_InventoryLine line = getM_InventoryLine();

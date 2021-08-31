@@ -26,6 +26,7 @@ import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Create AP Invoices for Commission
@@ -75,7 +76,7 @@ public class CommissionAPInvoice extends SvrProcess
 			throw new IllegalArgumentException("CommissionAPInvoice - No BPartner");
 			
 		//	Create Invoice
-		MInvoice invoice = new MInvoice (getCtx(), 0, null);
+		MInvoice invoice = new MInvoice (getCtx(), 0, get_TrxName());
 		invoice.setClientOrg(com.getAD_Client_ID(), com.getAD_Org_ID());
 		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);	//	API
 		invoice.setBPartner(bp);
@@ -97,7 +98,9 @@ public class CommissionAPInvoice extends SvrProcess
 		if (!iLine.save())
 			throw new IllegalStateException("CommissionAPInvoice - cannot save Invoice Line");
 		//
-		return "@C_Invoice_ID@ = " + invoice.getDocumentNo();
+		addBufferLog(invoice.get_ID(), null, null, Msg.getElement(getCtx(), MInvoice.COLUMNNAME_C_Invoice_ID) + " #" + invoice.getDocumentNo(), MInvoice.Table_ID, invoice.get_ID());
+		//
+		return "@Success@";
 	}	//	doIt
 
 }	//	CommissionAPInvoice

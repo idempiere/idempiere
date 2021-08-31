@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
@@ -29,6 +31,7 @@ import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 
 
 /**
@@ -103,7 +106,8 @@ public class TranslationDocSync extends SvrProcess
 		String baseTable = trlTable.substring(0, trlTable.length()-4);
 		
 		if (log.isLoggable(Level.CONFIG)) log.config(baseTable + ": " + columnNames);
-		
+
+	  try {
 		if (client.isMultiLingualDocument()) {
 			String baselang = Language.getBaseAD_Language();
 			if (client.getAD_Language().equals(baselang)) {
@@ -118,8 +122,8 @@ public class TranslationDocSync extends SvrProcess
 						.append(baseTable).append("_ID=b.").append(baseTable).append("_ID) WHERE AD_Client_ID=")
 						.append(getAD_Client_ID()).append(" AND AD_Language=").append(DB.TO_STRING(client.getAD_Language()));
 
-				int no = DB.executeUpdate(sql.toString(), get_TrxName());
-				addLog(0, null, new BigDecimal(no), baseTable);
+				int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
+				addBufferLog(0, null, new BigDecimal(no), baseTable, 0, 0);
 			}
 		} else {
 			// auto update all translations
@@ -129,9 +133,18 @@ public class TranslationDocSync extends SvrProcess
 					.append(baseTable).append("_ID=b.").append(baseTable).append("_ID) WHERE AD_Client_ID=")
 					.append(getAD_Client_ID());
 
-			int no = DB.executeUpdate(sql.toString(), get_TrxName());
-			addLog(0, null, new BigDecimal(no), baseTable);
+			int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
+			addBufferLog(0, null, new BigDecimal(no), baseTable, 0, 0);
 		}
+	  } catch (DBException e) {
+		String msg = trlTable + " -> ";
+		if (DBException.isValueTooLarge(e)) {
+			msg += Msg.getMsg(getCtx(), "MismatchTrlColumnSize");
+		} else {
+			msg += e.getLocalizedMessage();
+		}
+		throw new AdempiereException(msg, e);
+	  }
 		
 	}	//	processTable
 

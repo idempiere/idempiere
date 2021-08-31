@@ -140,7 +140,6 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	};
 	private CustomForm form;
 	
-//	private Vbox queryPanel = new Vbox();
 	private Checkbox reportField = new Checkbox();
 	private Label processLabel = new Label(Msg.translate(Env.getCtx(), "AD_Process_ID"));
 	private Listbox processField = new Listbox();
@@ -160,7 +159,6 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private Datebox createdQFrom = new Datebox();
 	private Datebox createdQTo = new Datebox();
 	
-//	private Vbox viewEnterPanel = new Vbox();
 	private Button bBack = new Button();
 	private Button bNext = new Button();
 	private Label positionInfo = new Label(".");
@@ -259,7 +257,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private void jbInit() throws Exception
 	{
 		ZKUpdateUtil.setWidth(tabbox, "100%");
-		ZKUpdateUtil.setHeight(tabbox, "90%");
+		ZKUpdateUtil.setVflex(tabbox, "1");		
 		tabbox.appendChild(tabs);
 		tabbox.appendChild(tabpanels);
 		tabbox.addEventListener(Events.ON_SELECT, this);
@@ -573,6 +571,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		tabpanels.appendChild(tabViewPanel);
 		
 		confirmPanel.addActionListener(this);
+		ZKUpdateUtil.setVflex(confirmPanel, "min");
+		confirmPanel.setStyle("padding-top: 2px;padding-bottom: 2px;");
 		updateQDisplay();
 
 		iframe.setId("reportFrame");

@@ -46,8 +46,6 @@ public class MFormAccess extends X_AD_Form_Access
 			throw new IllegalArgumentException("Multi-Key");
 		else
 		{
-		//	setAD_Form_ID (0);
-		//	setAD_Role_ID (0);
 			setIsReadWrite (true);
 		}
 	}	//	MFormAccess

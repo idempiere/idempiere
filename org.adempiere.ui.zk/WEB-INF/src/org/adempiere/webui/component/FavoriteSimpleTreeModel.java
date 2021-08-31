@@ -19,7 +19,9 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.desktop.AbstractDesktop;
 import org.adempiere.webui.desktop.FavouriteController;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -315,6 +317,9 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 		try
 		{
 			MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(menuID, null);
+			IDesktop desktop = SessionManager.getAppDesktop();
+			if (desktop instanceof AbstractDesktop)
+				((AbstractDesktop)desktop).setPredefinedContextVariables(menu.getPredefinedContextVariables());
 
 			MQuery query = new MQuery("");
 			query.addRestriction("1=2");

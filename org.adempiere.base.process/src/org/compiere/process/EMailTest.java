@@ -67,12 +67,12 @@ public class EMailTest extends SvrProcess
 				documentDir = ".";
 			File file = new File (documentDir);
 			if (file.exists() && file.isDirectory())
-				addLog(0, null, null, "Found Directory: " + client.getDocumentDir());
+				addLog(0, null, null, "Found Directory: " + documentDir);
 			else
-				addLog(0, null, null, "Not Found Directory: " + client.getDocumentDir());
+				addLog(0, null, null, "Not Found Directory: " + documentDir);
 		}
 		
-		return Util.isEmpty(clientTest) ? "OK" : clientTest;
+		return Util.isEmpty(clientTest) ? "OK" : ("@Error@ " + clientTest);
 	}	//	doIt
 	
 }	//	EMailTest

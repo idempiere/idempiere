@@ -64,10 +64,6 @@ public class MRequisition extends X_M_Requisition implements DocAction
 		super (ctx, M_Requisition_ID, trxName);
 		if (M_Requisition_ID == 0)
 		{
-		//	setDocumentNo (null);
-		//	setAD_User_ID (0);
-		//	setM_PriceList_ID (0);
-		//	setM_Warehouse_ID(0);
 			setDateDoc(new Timestamp(System.currentTimeMillis()));
 			setDateRequired (new Timestamp(System.currentTimeMillis()));
 			setDocAction (DocAction.ACTION_Complete);	// CO
@@ -164,10 +160,7 @@ public class MRequisition extends X_M_Requisition implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	/**

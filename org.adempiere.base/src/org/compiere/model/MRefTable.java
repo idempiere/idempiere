@@ -42,9 +42,6 @@ public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 		super (ctx, AD_Reference_ID, trxName);
 		if (AD_Reference_ID == 0)
 		{
-		//	setAD_Table_ID (0);
-		//	setAD_Display (0);
-		//	setAD_Key (0);
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setIsValueDisplayed (false);
 		}

@@ -170,6 +170,10 @@ public class GridFieldVO implements Serializable, Cloneable
 				//IDEMPIERE-1120 Implement Field SeqNo customization
 				if (userDef.getSeqNo() > 0)
 				    vo.SeqNo = userDef.getSeqNo();
+				if (userDef.getIsDisplayedGrid() != null)
+				    vo.IsDisplayedGrid = "Y".equals(userDef.getIsDisplayedGrid());
+				if (userDef.getSeqNoGrid() > 0)
+					vo.SeqNoGrid = userDef.getSeqNoGrid();
 				if (userDef.getAD_Val_Rule_ID() > 0)
 					vo.ValidationCode  = MValRule.get(vo.ctx, userDef.getAD_Val_Rule_ID()).getCode();
 				if (userDef.getAD_Val_Rule_Lookup_ID() > 0)
@@ -428,6 +432,10 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.Placeholder = rs.getString("Placeholder");
 			vo.Placeholder2 = rs.getString("Placeholder2");
 			vo.IsAutocomplete = "Y".equals(rs.getString("IsAutoComplete"));
+			//
+			vo.FieldGroup = rs.getString("FieldGroup");
+			vo.FieldGroupType = rs.getString("FieldGroupType");
+			vo.IsCollapsedByDefault = "Y".equals(rs.getString("IsCollapsedByDefault"));
 		}
 		catch (SQLException e)
 		{
@@ -475,6 +483,11 @@ public class GridFieldVO implements Serializable, Cloneable
 					vo.ValueMax = userDef.getValueMax();
 				if (userDef.getIsMandatory()!= null)
 					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
+				if (userDef.getAD_FieldGroup_ID() > 0) {
+					X_AD_FieldGroup fg = new X_AD_FieldGroup(Env.getCtx(), userDef.getAD_FieldGroup_ID(), null);
+					vo.FieldGroup = fg.get_Translation(X_AD_FieldGroup.COLUMNNAME_Name);
+					vo.FieldGroupType = fg.getFieldGroupType();
+				}
 			}
 		}
 		//fim devCoffee - 3858

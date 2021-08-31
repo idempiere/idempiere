@@ -129,18 +129,6 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	}	//	MUserOrgAccess
 
 	/**
-	 * 	User Constructor
-	 *	param user user
-	 *	param AD_Org_ID org
-	 *
-	public MUserOrgAccess (MUser user, int AD_Org_ID)
-	{
-		this (user.getCtx(), 0, user.get_TrxName());
-		setClientOrg (user.getAD_Client_ID(), AD_Org_ID);
-		setAD_User_ID (user.getAD_User_ID());
-	}	//	MUserOrgAccess
-
-	/**
 	 * 	String Representation
 	 *	@return info
 	 */

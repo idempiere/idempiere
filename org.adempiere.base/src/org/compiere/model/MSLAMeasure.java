@@ -48,7 +48,6 @@ public class MSLAMeasure extends X_PA_SLA_Measure
 		super (ctx, PA_SLA_Measure_ID, trxName);
 		if (PA_SLA_Measure_ID == 0)
 		{
-		//	setPA_SLA_Goal_ID (0);
 			setDateTrx (new Timestamp(System.currentTimeMillis()));
 			setMeasureActual (Env.ZERO);
 			setProcessed (false);

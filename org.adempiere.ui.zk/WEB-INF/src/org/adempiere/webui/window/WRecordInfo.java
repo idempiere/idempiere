@@ -253,6 +253,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		hbox.appendChild(confirmPanel);
 		
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	jbInit
 	
 	
@@ -541,6 +542,11 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	
 	
 	public void onEvent(Event event) throws Exception {
+		onCancel();
+	}
+
+
+	private void onCancel() {
 		this.detach();
 	}
 

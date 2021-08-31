@@ -57,17 +57,11 @@ import org.compiere.util.Msg;
 		super (ctx, C_BankStatementLine_ID, trxName);
 		if (C_BankStatementLine_ID == 0)
 		{
-		//	setC_BankStatement_ID (0);		//	Parent
-		//	setC_Charge_ID (0);
-		//	setC_Currency_ID (0);	//	Bank Acct Currency
-		//	setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_BankStatementLine WHERE C_BankStatement_ID=@C_BankStatement_ID@
 			setStmtAmt(Env.ZERO);
 			setTrxAmt(Env.ZERO);
 			setInterestAmt(Env.ZERO);
 			setChargeAmt(Env.ZERO);
 			setIsReversal (false);
-		//	setValutaDate (new Timestamp(System.currentTimeMillis()));	// @StatementDate@
-		//	setDateAcct (new Timestamp(System.currentTimeMillis()));	// @StatementDate@
 		}
 	}	//	MBankStatementLine
 	
@@ -162,8 +156,8 @@ import org.compiere.util.Msg;
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_BankStatementLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_BankStatement_ID"));
 			return false;
 		}
 		//	Calculate Charge = Statement - trx - Interest  

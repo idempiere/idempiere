@@ -30,12 +30,18 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 	private Toolbarbutton toolbarButton;
 	private String actionId;
 	private int windowNo;
+	private int tabNo = -1;
 	private MToolBarButton mToolbarButton;
 
 	public ToolbarCustomButton(MToolBarButton mToolbarButton, Toolbarbutton btn, String actionId, int windowNo) {
+		this(mToolbarButton, btn, actionId, windowNo, -1);
+	}
+	
+	public ToolbarCustomButton(MToolBarButton mToolbarButton, Toolbarbutton btn, String actionId, int windowNo, int tabNo) {
 		toolbarButton = btn;
 		this.actionId = actionId;
 		this.windowNo = windowNo;
+		this.tabNo = tabNo;
 		this.mToolbarButton = mToolbarButton;
 		
 		toolbarButton.addEventListener(Events.ON_CLICK, this);
@@ -62,7 +68,7 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 		if (adTabpanel == null)
 			return "";
 		
-		int tabNo = adTabpanel.getTabNo();
+		int tabNo = this.tabNo >= 0 ? this.tabNo : adTabpanel.getTabNo();
 		if( tabNo == 0)
 	    	return adTabpanel.get_ValueAsString(variableName);
 	    else

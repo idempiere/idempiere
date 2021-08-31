@@ -31,7 +31,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MClient;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
@@ -39,6 +41,7 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -60,12 +63,16 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	private static final int DOCTYPE_PO = 126;
 	private static final int DOCTYPE_RECEIPT = 122;
 	private static final int DOCTYPE_AP_INVOICE = 123;
+	private static final int PRODUCT_FERT50 = 136;
+	private static final int PRODUCT_MULCH = 137;
 	private static final int PRODUCT_SEEDER = 143;
 	private static final int PRODUCT_WEEDER = 141;
-	private static final int PRODUCT_MULCH = 137;
 	private static final int USER_GARDENADMIN = 101;
 	private static final BigDecimal THREE = new BigDecimal("3");
 	private static final BigDecimal MINUS_THREE = new BigDecimal("-3");
+
+	private static final int ORG_FERTILIZER = 50001;
+	private static final int WAREHOUSE_FERTILIZER = 50002;
 
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4575
@@ -314,6 +321,102 @@ public class PurchaseOrderTest extends AbstractTestCase {
 				qtyOrdered = qtyOrdered.add(rs.getQty());
 		}
 		return qtyOrdered;
+	}
+
+	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4768
+	 */
+	public void testMultiDateMaterialReceipt() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		MProduct fert50 = new MProduct(ctx, PRODUCT_FERT50, trxName);
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp past_month = TimeUtil.addMonths(today, -1);
+		
+		// create an ASI for Fertilizer Lot with Lot 2020  
+		MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+		asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
+		asi.setLot("2020");
+		asi.saveEx();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setAD_Org_ID(ORG_FERTILIZER);
+		order.setBPartner(MBPartner.get(ctx, BP_PATIO));
+		order.setIsSOTrx(false);
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Warehouse);
+		// ?? why setC_DocTypeTarget_ID sets back IsSOTrx=true
+		order.setIsSOTrx(false);
+		order.setM_Warehouse_ID(WAREHOUSE_FERTILIZER);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.setPaymentRule(MOrder.PAYMENTRULE_OnCredit); // this is the default, just making it explicit
+		order.setDateOrdered(past_month);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, PRODUCT_FERT50));
+		line1.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(past_month);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(trxName);
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyDelivered().intValue());
+		assertEquals(0, line1.getQtyInvoiced().intValue());
+
+		MOrder order2 = new MOrder(ctx, 0, trxName);
+		order2.setAD_Org_ID(ORG_FERTILIZER);
+		order2.setBPartner(MBPartner.get(ctx, BP_PATIO));
+		order2.setIsSOTrx(false);
+		order2.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Warehouse);
+		// ?? why setC_DocTypeTarget_ID sets back IsSOTrx=true
+		order2.setIsSOTrx(false);
+		order2.setM_Warehouse_ID(WAREHOUSE_FERTILIZER);
+		order2.setDocStatus(DocAction.STATUS_Drafted);
+		order2.setDocAction(DocAction.ACTION_Complete);
+		order2.setPaymentRule(MOrder.PAYMENTRULE_OnCredit); // this is the default, just making it explicit
+		order2.setDateOrdered(today);
+		order2.saveEx();
+
+		MOrderLine line2 = new MOrderLine(order2);
+		line2.setLine(10);
+		line2.setProduct(MProduct.get(ctx, PRODUCT_FERT50));
+		line2.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+		line2.setQty(new BigDecimal("1"));
+		line2.setDatePromised(today);
+		line2.saveEx();
+
+		ProcessInfo info2 = MWorkflow.runDocumentActionWorkflow(order2, DocAction.ACTION_Complete);
+		assertFalse(info2.isError(), info2.getSummary());
+		order2.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order2.getDocStatus());
+		line2.load(trxName);
+		assertEquals(0, line2.getQtyReserved().intValue());
+		assertEquals(1, line2.getQtyDelivered().intValue());
+		assertEquals(0, line2.getQtyInvoiced().intValue());
+
+		// Expected to create two entries in storage because of the different dates
+		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, WAREHOUSE_FERTILIZER,
+				PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), null,
+				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
+				0, trxName);
+		assertEquals(2, storages.length);
+		for (int i = 0; i < storages.length; i++) {
+			MStorageOnHand storage = storages[i];
+			assertEquals(1, storage.getQtyOnHand().intValue());
+			if (i == 0)
+				assertEquals(past_month, storage.getDateMaterialPolicy());
+			else
+				assertEquals(today, storage.getDateMaterialPolicy());
+		}
 	}
 
 }

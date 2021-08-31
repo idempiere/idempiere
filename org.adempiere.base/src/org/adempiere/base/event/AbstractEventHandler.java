@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.compiere.model.PO;
@@ -127,7 +126,7 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 * @return PO
 	 */
 	protected PO getPO(Event event) {
-		return getEventProperty(event, IEventManager.EVENT_DATA);
+		return EventHelper.getPO(event);
 	}
 
 	/**
@@ -135,7 +134,7 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 * @return ProcessInfo
 	 */
 	protected ProcessInfo getProcessInfo(Event event) {
-		return getEventProperty(event, IEventManager.EVENT_DATA);
+		return EventHelper.getProcessInfo(event);
 	}
 
 	/**
@@ -144,7 +143,7 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 * @param event
 	 */
 	protected <T> T getEventData(Event event) {
-		return getEventProperty(event, IEventManager.EVENT_DATA);
+		return EventHelper.getEventData(event);				
 	}
 
 	/**
@@ -153,9 +152,8 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 * @param event
 	 * @param property
 	 */
-	@SuppressWarnings("unchecked")
 	protected <T> T getEventProperty(Event event, String property) {
-		return (T) event.getProperty(property);
+		return EventHelper.getEventProperty(event, property);
 	}
 
 	/**
@@ -163,10 +161,7 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 * @param e
 	 */
 	protected void addError(Event event, Throwable e) {
-		String msg = e.getLocalizedMessage();
-		if (msg == null)
-			msg = e.toString();
-		addErrorMessage(event, msg);
+		EventHelper.addError(event, e);
 	}
 
 	/**
@@ -174,8 +169,6 @@ public abstract class AbstractEventHandler implements EventHandler {
 	 * @param errorMessage
 	 */
 	protected void addErrorMessage(Event event, String errorMessage) {
-		List<String> errors = getEventProperty(event, IEventManager.EVENT_ERROR_MESSAGES);
-		if (errors != null)
-			errors.add(errorMessage);
+		EventHelper.addErrorMessage(event, errorMessage);
 	}
 }

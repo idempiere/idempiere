@@ -20,17 +20,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
+import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
-import org.adempiere.pipo2.PoExporter;
-import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
+import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.compiere.model.I_AD_Form;
@@ -105,20 +106,26 @@ public class MenuElementHandler extends AbstractElementHandler {
 			parentId = ReferenceUtils.resolveReference(ctx.ctx, parentElement, getTrxName(ctx));
 		}
 
-			StringBuilder updateSQL = null;
+			String strSeqNo = getStringValue(element, "SeqNo");
+			int seqNo = 0;
+			if (strSeqNo != null)
+				seqNo = Integer.valueOf(strSeqNo);
+
 			int AD_Tree_ID = getDefaultMenuTreeId();
-			String sql = "SELECT count(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID = "+AD_Tree_ID
-					+ " AND Node_ID = " + mMenu.getAD_Menu_ID();
-			int countRecords = DB.getSQLValue(getTrxName(ctx), sql);
+
+			final String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=? AND SeqNo>=? AND AD_Tree_ID=?";
+
+			final String sql1 = "SELECT COUNT(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
+			int countRecords = DB.getSQLValueEx(getTrxName(ctx), sql1, AD_Tree_ID, mMenu.getAD_Menu_ID());
 			if (countRecords > 0) {
-				sql = "select * from AD_TREENODEMM where AD_Tree_ID = "+AD_Tree_ID+" and "
-								+ " Node_ID =?";
+				int oldseqNo = 0;
+				final String sql2 = "SELECT * FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				try {
-					pstmt = DB.prepareStatement(sql,
-							getTrxName(ctx));
-					pstmt.setInt(1, mMenu.getAD_Menu_ID());
+					pstmt = DB.prepareStatement(sql2, getTrxName(ctx));
+					pstmt.setInt(1, AD_Tree_ID);
+					pstmt.setInt(2, mMenu.getAD_Menu_ID());
 					rs = pstmt.executeQuery();
 					if (rs.next()) {
 	
@@ -130,10 +137,10 @@ public class MenuElementHandler extends AbstractElementHandler {
 						for (int q = 1; q <= columns; q++) {
 	
 							String colName = meta.getColumnName(q).toUpperCase();
-							sql = "SELECT AD_Column_ID FROM AD_column WHERE Upper(ColumnName) = ? AND AD_Table_ID = ?";
-							int columnID = DB.getSQLValue(getTrxName(ctx), sql, colName, tableID);
-							sql = "SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?";
-							int referenceID = DB.getSQLValue(getTrxName(ctx), sql, columnID);
+							final String sql3 = "SELECT AD_Column_ID FROM AD_column WHERE Upper(ColumnName) = ? AND AD_Table_ID = ?";
+							int columnID = DB.getSQLValueEx(getTrxName(ctx), sql3, colName, tableID);
+							final String sql4 = "SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?";
+							int referenceID = DB.getSQLValueEx(getTrxName(ctx), sql4, columnID);
 							Object obj = rs.getObject(q);
 							colValue = obj == null ? "" : obj.toString();
 							X_AD_Package_Imp_Backup backup = new X_AD_Package_Imp_Backup(ctx.ctx, 0, getTrxName(ctx));
@@ -145,7 +152,9 @@ public class MenuElementHandler extends AbstractElementHandler {
 							backup.setColValue(colValue);
 							backup.saveEx();
 						}
-	
+						oldseqNo = rs.getInt("SeqNo");
+						if (rs.wasNull())
+							oldseqNo = seqNo;
 					}
 	
 				} catch (Exception e) {
@@ -153,25 +162,19 @@ public class MenuElementHandler extends AbstractElementHandler {
 				} finally {
 					DB.close(rs, pstmt);
 				}
-	
-				updateSQL = new StringBuilder("UPDATE AD_TREENODEMM ").append(
-						"SET Parent_ID = " + parentId).append(
-						" , SeqNo = " + getStringValue(element, "SeqNo")).append(
-						" WHERE AD_Tree_ID = "+AD_Tree_ID).append(
-						" AND Node_ID = " + mMenu.getAD_Menu_ID());
+				if (seqNo != oldseqNo)
+					DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
+				final String updateSQL = "UPDATE AD_TREENODEMM SET Parent_ID=?, SeqNo=? WHERE AD_Tree_ID=? AND Node_ID=?";
+				DB.executeUpdateEx(updateSQL, new Object[] {parentId, seqNo, AD_Tree_ID, mMenu.getAD_Menu_ID()}, getTrxName(ctx));
 			} else {
-				updateSQL = new StringBuilder("INSERT INTO AD_TREENODEMM").append(
-						"(AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy, ").append(
-						"Parent_ID, SeqNo, AD_Tree_ID, Node_ID)").append(
-						"VALUES(0, 0, 0, 0, ").append(
-						parentId + "," + getStringValue(element, "SeqNo") + ", "+AD_Tree_ID+", "
-								+ mMenu.getAD_Menu_ID() + ")");
+				DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
+				final String insertSQL = "INSERT INTO AD_TREENODEMM (AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy,Parent_ID, SeqNo, AD_Tree_ID, Node_ID, AD_TREENODEMM_UU) VALUES(0,0,0,0,?,?,?,?,?)";
+				DB.executeUpdateEx(insertSQL, new Object[] {parentId, seqNo, AD_Tree_ID, mMenu.getAD_Menu_ID(), UUID.randomUUID().toString()}, getTrxName(ctx));
 			}
-			DB.executeUpdate(updateSQL.toString(), getTrxName(ctx));
 	}
 
 	private int getDefaultMenuTreeId() {
-		return DB.getSQLValue(null, "SELECT AD_Tree_ID FROM AD_Tree WHERE TreeType='MM' AND AD_Client_ID=0 ORDER BY IsDefault DESC, AD_Tree_ID");
+		return DB.getSQLValueEx(null, "SELECT AD_Tree_ID FROM AD_Tree WHERE TreeType='MM' AND AD_Client_ID=0 ORDER BY IsDefault DESC, AD_Tree_ID");
 	}
 
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
@@ -211,13 +214,13 @@ public class MenuElementHandler extends AbstractElementHandler {
 		PoExporter filler = new PoExporter(ctx, document, m_Menu);
 		List<String> excludes = defaultExcludeList(X_AD_Menu.Table_Name);
 		int AD_Tree_ID = getDefaultMenuTreeId();
-		String sql = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID = "+AD_Tree_ID+" and Node_ID=?";
-		int id = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
+		final String sql1 = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID=? AND Node_ID=?";
+		int id = DB.getSQLValueEx(null, sql1, AD_Tree_ID, m_Menu.getAD_Menu_ID());
 		if (id > 0) {
 			filler.addTableReference("Parent_ID", "AD_Menu", id, new AttributesImpl());
 		}
-		sql = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID = "+AD_Tree_ID+" and Node_ID=?";
-		int seqNo = DB.getSQLValue(null, sql, m_Menu.getAD_Menu_ID());
+		final String sql2 = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID=? AND Node_ID=?";
+		int seqNo = DB.getSQLValueEx(null, sql2, AD_Tree_ID, m_Menu.getAD_Menu_ID());
 		filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
 		if (m_Menu.getAD_Menu_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.addString("AD_Menu_ID", Integer.toString(m_Menu.getAD_Menu_ID()), new AttributesImpl());
@@ -228,18 +231,18 @@ public class MenuElementHandler extends AbstractElementHandler {
 	private void createApplication(PIPOContext ctx, TransformerHandler document,
 			int AD_Menu_ID) throws SAXException {
 		PackOut packOut = ctx.packOut;
-		String sql = null;
 		int AD_Tree_ID = getDefaultMenuTreeId();
-		sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
+		final String sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
 				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID, B.AD_INFOWINDOW_ID "
 				+ "FROM AD_TreeNodeMM A, AD_Menu B "
-				+ "WHERE A.Node_ID = "
-				+ AD_Menu_ID + " AND A.Node_ID = B.AD_Menu_ID" + " AND A.AD_Tree_ID="+AD_Tree_ID;
+				+ "WHERE A.Node_ID=? AND A.Node_ID = B.AD_Menu_ID AND A.AD_Tree_ID=?";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+			pstmt.setInt(1, AD_Menu_ID);
+			pstmt.setInt(2, AD_Tree_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 
@@ -310,18 +313,18 @@ public class MenuElementHandler extends AbstractElementHandler {
 	public void createModule(PIPOContext ctx, TransformerHandler document,
 			int menu_id) throws SAXException {
 		PackOut packOut = ctx.packOut;
-		String sql = null;
 		int AD_Tree_ID = getDefaultMenuTreeId();
-		sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
+		final String sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
 				+ "B.AD_PROCESS_ID, B.AD_FORM_ID, B.AD_WORKBENCH_ID, B.AD_INFOWINDOW_ID "
 				+ "FROM AD_TreeNodeMM A, AD_Menu B "
-				+ "WHERE A.Parent_ID = "
-				+ menu_id + " AND A.Node_ID = B.AD_Menu_ID" + " AND A.AD_Tree_ID="+AD_Tree_ID;
+				+ "WHERE A.Parent_ID=? AND A.Node_ID = B.AD_Menu_ID AND A.AD_Tree_ID=?";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+			pstmt.setInt(1, menu_id);
+			pstmt.setInt(2, AD_Tree_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				// Menu tag Start.
@@ -390,11 +393,3 @@ public class MenuElementHandler extends AbstractElementHandler {
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID);
 	}
 }
-
-
-
-
-
-
-
-

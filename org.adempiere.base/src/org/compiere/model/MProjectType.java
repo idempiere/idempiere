@@ -87,13 +87,6 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	public MProjectType (Properties ctx, int C_ProjectType_ID, String trxName)
 	{
 		super (ctx, C_ProjectType_ID, trxName);
-		/**
-		if (C_ProjectType_ID == 0)
-		{
-			setC_ProjectType_ID (0);
-			setName (null);
-		}
-		**/
 	}	//	MProjectType
 
 	/**
@@ -272,8 +265,6 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureDisplay))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		;
 			orderBy = "TRUNC(" + dateColumn + ",'" + trunc + "')";
 			groupBy = orderBy + ", 0 ";
 			sb.append(groupBy)
@@ -341,8 +332,7 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureDisplay))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		trunc = "D";
+
 			where = "TRUNC(" + dateColumn + ",'" + trunc
 				+ "')=TRUNC(" + DB.TO_DATE(date) + ",'" + trunc + "')";
 		}

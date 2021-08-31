@@ -54,7 +54,7 @@ public final class Msg
 	 * 	Get Message Object
 	 *	@return Msg
 	 */
-	private static synchronized Msg get()
+	public static synchronized Msg get()
 	{
 		if (s_msg == null)
 			s_msg = new Msg();
@@ -81,7 +81,7 @@ public final class Msg
 	 *  @param ad_language Language Key
 	 *  @return HashMap of Language
 	 */
-	private synchronized CCache<String,String> getMsgMap (String ad_language)
+	public synchronized CCache<String,String> getMsgMap (String ad_language)
 	{
 		String AD_Language = ad_language;
 		if (AD_Language == null || AD_Language.length() == 0)
@@ -101,7 +101,12 @@ public final class Msg
 		return retValue;
 	}   //  getMsgMap
 	
-	private synchronized CCache<String,String> getElementMap (String ad_language)
+	/**
+	 * Get language specific translation map for AD_Element
+	 * @param ad_language
+	 * @return ad_element map
+	 */
+	public synchronized CCache<String,String> getElementMap (String ad_language)
 	{
 		String AD_Language = ad_language;
 		if (AD_Language == null || AD_Language.length() == 0)
@@ -688,7 +693,33 @@ public final class Msg
 		return outStr.toString();
 	}   //  parseTranslation
 
+	/**
+	 * 
+	 * @param adLanguage
+	 * @param text
+	 * @return true if translation exists for text and adLanguage
+	 */
+	public static boolean hasTranslation(String adLanguage, String text)
+	{
+		if (Util.isEmpty(text, true))
+			return false;
+		
+		String AD_Language = adLanguage;
+		if (AD_Language == null || AD_Language.length() == 0)
+			AD_Language = Language.getBaseAD_Language();
 
+		//	Check AD_Message
+		String retStr = get().lookup (AD_Language, text);
+		if (!Util.isEmpty(retStr, true))
+			return true;
+
+		//	Check AD_Element
+		retStr = getElement(AD_Language, text, false);
+		if (!Util.isEmpty(retStr, true))
+			return true;
+		
+		return false;
+	}
 	/**
 	 *  Get translated text message for AD_Message, ampersand cleaned (used to indicate shortcut)
 	 *  @param  ctx Context to retrieve language

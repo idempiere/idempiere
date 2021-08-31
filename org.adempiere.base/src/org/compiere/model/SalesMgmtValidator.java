@@ -57,9 +57,6 @@ public class SalesMgmtValidator implements ModelValidator
 		engine.addModelChange(MOrder.Table_Name, this);
 		engine.addModelChange(MOrderLine.Table_Name, this);
 		
-		//	Documents to be monitored
-	//	engine.addDocValidate(MInvoice.Table_Name, this);
-
 	}	//	initialize
 
     /**

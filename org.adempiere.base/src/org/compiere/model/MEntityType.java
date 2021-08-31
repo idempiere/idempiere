@@ -187,31 +187,7 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 				return false;
 			}
 		}
-		else	//	new
-		{
-			/*
-			setEntityType(getEntityType().toUpperCase());	//	upper case
-			if (getEntityType().trim().length() < 4)
-			{
-				log.saveError("FillMandatory", Msg.getElement(getCtx(), "EntityType") 
-					+ " - 4 Characters");
-				return false;
-			}
-			boolean ok = true;
-			char[] cc = getEntityType().toCharArray();
-			for (int i = 0; i < cc.length; i++)
-			{
-				char c = cc[i];
-				if (Character.isDigit(c) || (c >= 'A' && c <= 'Z'))
-					continue;
-				//
-				log.saveError("FillMandatory", Msg.getElement(getCtx(), "EntityType") 
-					+ " - Must be ASCII Letter or Digit");
-				return false;
-			}
-			*/
-			//setAD_EntityType_ID();
-		}	//	new
+		
 		return true;
 	}	//	beforeSave
 	

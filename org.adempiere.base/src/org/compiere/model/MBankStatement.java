@@ -65,7 +65,6 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		super (ctx, C_BankStatement_ID, trxName);
 		if (C_BankStatement_ID == 0)
 		{ 
-		//	setC_BankAccount_ID (0);	//	parent
 			setStatementDate (new Timestamp(System.currentTimeMillis()));	// @Date@
 			setDocAction (DOCACTION_Complete);	// CO
 			setDocStatus (DOCSTATUS_Drafted);	// DR
@@ -228,10 +227,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -312,25 +308,15 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		}
 		//	Lines
 		BigDecimal total = Env.ZERO;
-		// IDEMPIERE-480 changed the way accounting is posted, now lines post just with the accounting date of the statement header
-		// so, it is unnecessary to validate the period of lines
-		// Timestamp minDate = getStatementDate();
-		// Timestamp maxDate = minDate;
 		for (int i = 0; i < lines.length; i++)
 		{
 			MBankStatementLine line = lines[i];
 			if (!line.isActive())
 				continue;
 			total = total.add(line.getStmtAmt());
-			// if (line.getDateAcct().before(minDate))
-				// minDate = line.getDateAcct(); 
-			// if (line.getDateAcct().after(maxDate))
-				// maxDate = line.getDateAcct(); 
 		}
 		setStatementDifference(total);
 		setEndingBalance(getBeginningBalance().add(total));
-		// MPeriod.testPeriodOpen(getCtx(), minDate, MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
-		// MPeriod.testPeriodOpen(getCtx(), maxDate, MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
@@ -644,8 +630,6 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public int getC_Currency_ID()
 	{
-	//	MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID());
-	//	return pl.getC_Currency_ID();
 		return 0;
 	}	//	getC_Currency_ID
 

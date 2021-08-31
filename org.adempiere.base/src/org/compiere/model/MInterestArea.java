@@ -130,8 +130,6 @@ public class MInterestArea extends X_R_InterestArea implements ImmutablePOSuppor
 		super (ctx, R_InterestArea_ID, trxName);
 		if (R_InterestArea_ID == 0)
 		{
-		//	setName (null);
-		//	setR_InterestArea_ID (0);
 			setIsSelfService (false);
 		}
 	}	//	MInterestArea

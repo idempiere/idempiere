@@ -57,9 +57,6 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 		super (ctx, AD_Tab_ID, trxName);
 		if (AD_Tab_ID == 0)
 		{
-		//	setAD_Window_ID (0);
-		//	setAD_Table_ID (0);
-		//	setName (null);
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setHasTree (false);
 			setIsReadOnly (false);
@@ -193,7 +190,6 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-	//	UPDATE AD_Tab SET IsInsertRecord='N' WHERE IsInsertRecord='Y' AND IsReadOnly='Y'
 		if (isReadOnly() && isInsertRecord())
 			setIsInsertRecord(false);
 		//RF[2826384]

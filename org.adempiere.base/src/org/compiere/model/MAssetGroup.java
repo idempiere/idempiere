@@ -132,21 +132,13 @@ public class MAssetGroup extends X_A_Asset_Group implements ImmutablePOSupport
 	public static int getDefault_ID(SetGetModel m)
 	{
 		int AD_Client_ID = SetGetUtil.get_AttrValueAsInt(m, "AD_Client_ID");
-		/* commented by @win
-		int A_AssetType_ID = SetGetUtil.get_AttrValueAsInt(m, MAssetType.COLUMNNAME_A_Asset_Type_ID);
-		*/
 		final String sql = "SELECT "+COLUMNNAME_A_Asset_Group_ID
 				+ " FROM "+Table_Name
 				+ " WHERE AD_Client_ID=?"
-			//	+ " AND NVL("+COLUMNNAME_A_Asset_Type_ID+",0) IN (0,?)" //commented by @win
 				+ " ORDER BY "+COLUMNNAME_IsDefault+" DESC"
 							+", "+COLUMNNAME_A_Asset_Group_ID+" ASC" // default first, older first
 		;
-		/* modify by @win
-		int id = DB.getSQLValueEx(null, sql, AD_Client_ID, A_AssetType_ID);
-		*/
 		int id = DB.getSQLValueEx(null, sql, AD_Client_ID);
-		// modify by @win
 		
 		return id;
 	}
@@ -157,31 +149,6 @@ public class MAssetGroup extends X_A_Asset_Group implements ImmutablePOSupport
 	 */
 	public static void updateAsset(SetGetModel m, int A_Asset_Group_ID)
 	{
-		/* commented by @win
-		int i = (Integer) m.get_AttrValue(MAsset.COLUMNNAME_A_Asset_Type_ID);
-		MAssetType type = MAssetType.get(m.getCtx(), m.get_AttrValue(MAsset.COLUMNNAME_A_Asset_Type_ID));
-		if (type == null)
-			return;
-		
-		if (A_Asset_Group_ID > 0)
-		{
-			if (!type.isFixedAsset())
-			{
-				return;
-			}
-			MAssetGroup assetGrp = MAssetGroup.get(m.getCtx(), A_Asset_Group_ID);
-			int A_Asset_Class_ID = assetGrp.getA_Asset_Class_ID();
-			if (A_Asset_Class_ID > 0)
-			{
-				m.set_AttrValue(MAsset.COLUMNNAME_A_Asset_Class_ID, A_Asset_Class_ID);
-			}
-		}
-		else
-		{
-			A_Asset_Group_ID = MAssetGroup.getDefault_ID(SetGetUtil.wrap(m));
-			m.set_AttrValue(MAsset.COLUMNNAME_A_Asset_Group_ID, A_Asset_Group_ID);
-		}
-		*/ 
 		if (A_Asset_Group_ID < 0) {
 			A_Asset_Group_ID = MAssetGroup.getDefault_ID(SetGetUtil.wrap(m));
 			m.set_AttrValue(MAsset.COLUMNNAME_A_Asset_Group_ID, A_Asset_Group_ID);
@@ -193,15 +160,6 @@ public class MAssetGroup extends X_A_Asset_Group implements ImmutablePOSupport
 	
 	protected boolean beforeSave (boolean newRecord)
 	{
-		/* commented by @win
-		MAssetType type = MAssetType.get(getCtx(), getA_Asset_Type_ID());
-		if (type != null)
-		{
-			type.update(SetGetUtil.wrap(this), newRecord == true);
-		}
-		*/
-		//end commented by @win
-		
 		return true;
 	}
 	

@@ -116,12 +116,6 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 		String trxName)
 	{
 		super (ctx, M_ProductDownload_ID, trxName);
-		if (M_ProductDownload_ID == 0)
-		{
-		//	setM_Product_ID (0);
-		//	setName (null);
-		//	setDownloadURL (null);
-		}
 	}	//	MProductDownload
 
 	/**

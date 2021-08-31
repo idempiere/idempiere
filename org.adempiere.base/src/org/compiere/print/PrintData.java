@@ -255,7 +255,7 @@ public class PrintData implements Serializable
 		if (functionRow)
 			m_functionRows.add(Integer.valueOf(m_matrix.getRowIndex()));
 		if (m_hasLevelNo && levelNo != 0)
-			addNode(new PrintDataElement(LEVEL_NO, Integer.valueOf(levelNo), DisplayType.Integer, null));
+			addNode(new PrintDataElement(0, LEVEL_NO, Integer.valueOf(levelNo), DisplayType.Integer, null));
 	}	//	addRow
 
 	/**
@@ -448,6 +448,7 @@ public class PrintData implements Serializable
 	 * 	@param AD_Column_ID AD_Column_ID
 	 * 	@return PrintData(Element) with AD_Column_ID or null
 	 */
+	@Deprecated
 	public Object getNode (Integer AD_Column_ID)
 	{
 		int index = getIndex (AD_Column_ID.intValue());
@@ -457,6 +458,30 @@ public class PrintData implements Serializable
 		return nodes.get(index);
 	}	//	getNode
 
+	/**
+	 * 
+	 * @param item
+	 * @return PrintData(Element) with AD_PrintFormatItem_ID or null
+	 */
+	public Object getNodeByPrintFormatItem(MPrintFormatItem item)
+	{
+		return getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
+	}
+	
+	/**
+	 * 	Get Node with AD_PrintFormatItem_ID in row
+	 * 	@param AD_PrintFormatItem_ID AD_PrintFormatItem_ID
+	 * 	@return PrintData(Element) with AD_PrintFormatItem_ID or null
+	 */
+	public Object getNodeByPrintFormatItemId (int AD_PrintFormatItem_ID)
+	{
+		int index = getIndexOfPrintFormatItem(AD_PrintFormatItem_ID);
+		if (index < 0)
+			return null;
+		List<Serializable> nodes = m_matrix.getRowData();
+		return nodes.get(index);
+	}	//	getNode
+	
 	/**
 	 * 	Get Primary Key in row
 	 * 	@return PK or null
@@ -515,6 +540,7 @@ public class PrintData implements Serializable
 	 * 	@param AD_Column_ID AD_Column_ID
 	 * 	@return index or -1
 	 */
+	@Deprecated
 	public int getIndex (int AD_Column_ID)
 	{
 		if (m_columnInfo == null)
@@ -530,6 +556,35 @@ public class PrintData implements Serializable
 		return -1;
 	}	//	getIndex
 
+	/**
+	 * 	Get Index of Node in Structure (not recursing) row
+	 * 	@param AD_PrintFormatItem_ID AD_PrintFormatItem_ID
+	 * 	@return index or -1
+	 */
+	public int getIndexOfPrintFormatItem(int AD_PrintFormatItem_ID)
+	{
+		List<Serializable> nodes = m_matrix.getRowData();
+		if (nodes == null)
+			return -1;
+		for (int i = 0; i < nodes.size(); i++)
+		{
+			Object o = nodes.get(i);
+			if (o instanceof PrintDataElement)
+			{
+				if (AD_PrintFormatItem_ID == ((PrintDataElement)o).getAD_PrintFormatItem_ID())
+					return i;
+			}
+			else if (o instanceof PrintData)
+			{
+				continue;
+			}
+			else
+				log.log(Level.SEVERE, "Element not PrintData(Element) " + o.getClass().getName());
+		}
+		//	As Data is stored sparse, there might be lots of NULL values
+	//	log.log(Level.SEVERE, "PrintData.getIndex - Element not found - " + name);
+		return -1;
+	}
 	
 	/**************************************************************************
 	 * 	Dump All Data - header and rows
@@ -686,6 +741,7 @@ public class PrintData implements Serializable
 					if (!pde.isNull())
 					{
 						Element element = document.createElement(PrintDataElement.XML_TAG);
+						element.setAttribute(PrintDataElement.XML_ATTRIBUTE_PRINTFORMATITEM_ID, Integer.toString(pde.getAD_PrintFormatItem_ID()));
 						element.setAttribute(PrintDataElement.XML_ATTRIBUTE_NAME, pde.getColumnName());
 						if (pde.hasKey())
 							element.setAttribute(PrintDataElement.XML_ATTRIBUTE_KEY, pde.getValueKey());
@@ -771,39 +827,6 @@ public class PrintData implements Serializable
 	}	//	parseXML
 
 
-	/**************************************************************************
-	 * 	Test
-	 * 	@param args test
-	 */
-	public static void main(String[] args)
-	{
-		PrintData pd = new PrintData(new Properties(), "test1");
-		pd.addNode(new PrintDataElement("test1element1","testvalue<1>",0,null));
-		pd.addNode(new PrintDataElement("test1element2","testvalue&2&",0,null));
-
-		PrintData pdx = new PrintData(new Properties(), "test2");
-		pdx.addNode(new PrintDataElement("test2element1-1","testvalue11",0,null));
-		pdx.addNode(new PrintDataElement("test2element1-2","testvalue12",0,null));
-		pdx.addRow(false, 0, new ArrayList<Serializable>());
-		pdx.addNode(new PrintDataElement("test2element2-1","testvalue21",0,null));
-		pdx.addNode(new PrintDataElement("test2element2-2","testvalue22",0,null));
-
-		pd.addNode(pdx);
-		pd.addNode(new PrintDataElement("test1element3","testvalue/3/",0,null));
-
-		pd.createXML("C:\\Temp\\printData.xml");
-		pd.createXML(new StreamResult(System.out));
-		System.out.println("");
-		pd.dump();
-
-		//	parse
-		System.out.println("");
-		PrintData pd1 = parseXML (new Properties(), new File("C:\\Temp\\printData.xml"));
-		pd1.createXML(new StreamResult(System.out));
-		System.out.println("");
-		pd1.dump();
-	}	//	main
-	
 	public MReportLine getMReportLine()
 	{
 		List<Serializable> nodes = m_matrix.getRowData();
@@ -834,7 +857,7 @@ public class PrintData implements Serializable
 	{
 		addRow(functionRow, levelNo);
 		if (m_hasLevelNo && reportLineID != 0)
-			addNode(new PrintDataElement("PA_ReportLine_ID", reportLineID, DisplayType.Integer, null));
+			addNode(new PrintDataElement(0, "PA_ReportLine_ID", reportLineID, DisplayType.Integer, null));
 	}
 
 }	//	PrintData
