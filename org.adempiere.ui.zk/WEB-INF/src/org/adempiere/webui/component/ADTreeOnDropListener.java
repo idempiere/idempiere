@@ -29,7 +29,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
-import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -190,7 +189,6 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 					updateNodePO(newMParent, md, i, trx.getTrxName());
 				}
 			}
-			String changeIndicator = trx.getEventChangesIndicatorKey();
 			//	COMMIT          *********************
 			trx.commit(true);
 			
@@ -198,9 +196,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			ADWindow adwindow = ADWindow.findADWindow(c);
 			if (adwindow != null) {
 				ADWindowContent adwindowContent = adwindow.getADWindowContent();
-				String flag = Env.getContext(Env.getCtx(), changeIndicator);
-				if (!Util.isEmpty(flag)) {
-					Env.setContext(Env.getCtx(), changeIndicator, (String)null);					
+				if (trx.hasChangesMadeByEventListener()) {
 					Clients.showBusy(null);
 					Executions.schedule(c.getDesktop(), e -> {
 						adwindowContent.onRefresh();
