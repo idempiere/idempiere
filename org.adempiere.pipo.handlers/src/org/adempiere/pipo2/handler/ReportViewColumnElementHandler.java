@@ -39,7 +39,6 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_ReportView_Column;
-import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -99,13 +98,9 @@ public class ReportViewColumnElementHandler extends AbstractElementHandler {
 
 	public void create(PIPOContext ctx, TransformerHandler document)
 			throws SAXException {
-		
-		int AD_ReportView_ID = Env.getContextAsInt(ctx.ctx, X_AD_ReportView_Column.COLUMNNAME_AD_ReportView_ID);
-		int AD_Column_ID = Env.getContextAsInt(ctx.ctx, X_AD_ReportView_Column.COLUMNNAME_AD_Column_ID);
-		
-		X_AD_ReportView_Column po = null;
-		Query query = new Query(ctx.ctx, "AD_ReportView_Column", "AD_ReportView_ID=? AND AD_Column_ID=?", getTrxName(ctx));
-		po = query.setParameters(new Object[]{AD_ReportView_ID, AD_Column_ID}).first();
+
+		X_AD_ReportView_Column po = (X_AD_ReportView_Column) ctx.ctx.get("po");
+
 		if (po != null) {
 
 			if (!isPackOutElement(ctx, po))
@@ -145,11 +140,9 @@ public class ReportViewColumnElementHandler extends AbstractElementHandler {
 				.first();
 		
 		if (po != null) {
-			Env.setContext(packout.getCtx().ctx, X_AD_ReportView_Column.COLUMNNAME_AD_ReportView_ID, po.getAD_ReportView_ID());
-			Env.setContext(packout.getCtx().ctx, X_AD_ReportView_Column.COLUMNNAME_AD_Column_ID, po.getAD_Column_ID());
+			packout.getCtx().ctx.put("po", po);
 			this.create(packout.getCtx(), packoutHandler);
-			packout.getCtx().ctx.remove(X_AD_ReportView_Column.COLUMNNAME_AD_ReportView_ID);
-			packout.getCtx().ctx.remove(X_AD_ReportView_Column.COLUMNNAME_AD_Column_ID);
+			packout.getCtx().ctx.remove("po", po);
 		} else {
 			throw new AdempiereException("AD_Process_Access_UU not found = " + uuid);
 		}

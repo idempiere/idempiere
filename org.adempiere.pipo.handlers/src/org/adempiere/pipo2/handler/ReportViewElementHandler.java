@@ -35,6 +35,7 @@ import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.MReportView;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_ReportView_Col;
@@ -185,11 +186,13 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 	private void createReportViewColumn(PIPOContext ctx,
 			TransformerHandler document, int AD_ReportView_ID, int AD_Column_ID)
 					throws SAXException {
-		Env.setContext(ctx.ctx, X_AD_ReportView_Column.COLUMNNAME_AD_ReportView_ID, AD_ReportView_ID);
-		Env.setContext(ctx.ctx, X_AD_ReportView_Column.COLUMNNAME_AD_Column_ID, AD_Column_ID);
+
+		Query query = new Query(ctx.ctx, "AD_ReportView_Column", "AD_ReportView_ID=? AND AD_Column_ID=?", getTrxName(ctx));
+		X_AD_ReportView_Column po = query.setParameters(new Object[]{AD_ReportView_ID, AD_Column_ID}).first();
+
+		ctx.ctx.put("po", po);
 		columnSelHandler.create(ctx, document);
-		ctx.ctx.remove(X_AD_ReportView_Column.COLUMNNAME_AD_ReportView_ID);
-		ctx.ctx.remove(X_AD_ReportView_Column.COLUMNNAME_AD_Column_ID);
+		ctx.ctx.remove("po");
 	}
 
 	private void createReportViewBinding(PIPOContext ctx, TransformerHandler document,
