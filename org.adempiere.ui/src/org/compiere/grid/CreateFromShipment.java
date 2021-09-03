@@ -640,7 +640,7 @@ public abstract class CreateFromShipment extends CreateFrom
 				{
 					if (il.getQtyEntered().compareTo(il.getQtyInvoiced()) != 0)
 					{
-						iol.setQtyEntered(QtyEntered
+						iol.setMovementQty(QtyEntered
 								.multiply(il.getQtyInvoiced())
 								.divide(il.getQtyEntered(), 12, RoundingMode.HALF_UP));
 						iol.setC_UOM_ID(il.getC_UOM_ID());

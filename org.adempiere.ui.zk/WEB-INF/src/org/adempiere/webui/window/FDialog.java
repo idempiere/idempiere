@@ -37,7 +37,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
-
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -360,6 +360,11 @@ public class FDialog
     }
     
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo) {
+		askForInput(message, lookup, editorType, callback, desktop, windowNo, "", null);
+	}
+	
+	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo, String title, Object defaultValue) {
+		
 		final WEditor weditor;
 
 		switch (editorType) {
@@ -386,15 +391,24 @@ public class FDialog
 			weditor = null;
 			break;
 		}
+
+		if (weditor != null && defaultValue != null)
+			weditor.setValue(defaultValue);
+
 		Executions.schedule(desktop, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				FDialog.askForInput(windowNo, weditor, message, callback);
+				FDialog.askForInput(windowNo, weditor, message, title, callback);
 			}
 		}, new Event("onAskForInput"));
 	}
 
     public static void askForInput(int windowNo, WEditor weditor, String adMessage, final Callback<Object> callback)
+    {
+    	askForInput(windowNo, weditor, adMessage, "", callback);
+    }
+    
+    public static void askForInput(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Object> callback) // ok
     {
     	Callback<Object> msgCallback = null;
     	if (callback != null)
@@ -407,11 +421,15 @@ public class FDialog
 			};
     	}
     	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo),
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
 
-    public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback)
+    public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback) {
+    	askForInput(windowNo, comp, adMessage, "", callback);
+    }
+
+    public static void askForInput(int windowNo, Component comp, String adMessage, String title, final Callback<String> callback)
     {
     	Callback<String> msgCallback = null;
     	if (callback != null) 
@@ -424,7 +442,7 @@ public class FDialog
 			};
     	}
     	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo), 
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
     }
 
