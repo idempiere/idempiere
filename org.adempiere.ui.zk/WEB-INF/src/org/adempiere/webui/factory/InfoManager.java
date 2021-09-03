@@ -155,6 +155,18 @@ public class InfoManager
 	 * @return {@link InfoWindow}
 	 */
 	public static InfoWindow create (int AD_InfoWindow_ID)
+	{
+		return create (AD_InfoWindow_ID, null);
+	}
+
+
+	/**
+	 * 
+	 * @param AD_InfoWindow_ID
+	 * @param predefinedContextVariables
+	 * @return {@link InfoWindow}
+	 */
+	public static InfoWindow create (int AD_InfoWindow_ID, String predefinedContextVariables)
     {
         InfoWindow info = null;
 
@@ -167,7 +179,7 @@ public class InfoManager
 					IInfoFactory service = serviceReference.getService();
 					if (service != null) {
 						visitedIds.add(key);
-						info = service.create(AD_InfoWindow_ID);
+						info = service.create(AD_InfoWindow_ID ,predefinedContextVariables);
 						if (info != null)
 							return info;
 					} else {
@@ -187,7 +199,7 @@ public class InfoManager
 			if (service != null)
 			{
 				s_infoFactoryCache.put(serviceId, serviceReference);
-				info = service.create(AD_InfoWindow_ID);
+				info = service.create(AD_InfoWindow_ID, predefinedContextVariables);
 				if (info != null)
 					break;
 			}
