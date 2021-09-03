@@ -137,6 +137,10 @@
             id="AD_ReportView_Col">
       </handler>
       <handler
+            class="org.adempiere.pipo2.handler.ReportViewColumnElementHandler"
+            id="AD_ReportView_Column">
+      </handler>
+      <handler
             class="org.adempiere.pipo2.handler.PrintFormatElementHandler"
             id="AD_PrintFormat">
       </handler>
