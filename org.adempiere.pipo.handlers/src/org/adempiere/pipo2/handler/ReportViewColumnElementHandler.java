@@ -126,9 +126,7 @@ public class ReportViewColumnElementHandler extends AbstractElementHandler {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Reportview_Column);
 		List<String> excludes = defaultExcludeList(X_AD_ReportView_Column.Table_Name);
-		if (m_Reportview_Column.getAD_ReportView_ID() <= PackOut.MAX_OFFICIAL_ID || m_Reportview_Column.getAD_Column_ID() <= PackOut.MAX_OFFICIAL_ID)
-			filler.add("AD_ReportView_Column_UU", new AttributesImpl());
-
+		filler.add("AD_ReportView_Column_UU", new AttributesImpl());
 		filler.export(excludes);
 	}
 
