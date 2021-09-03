@@ -96,7 +96,7 @@
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-kahadb-store@default:default"/>
-        <setEntry value="wrapped.org.apache.poi.poi-ooxml-schemas@default:default"/>
+        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
         <setEntry value="wrapped.org.apache.xmlbeans.xmlbeans@default:default"/>

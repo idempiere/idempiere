@@ -134,6 +134,7 @@ Import-Package: com.google.zxing,
  org.osgi.service.event;version="1.2.0",
  org.osgi.util.promise;version="1.0.0",
  org.osgi.util.tracker;version="1.5.0"
+DynamicImport-Package: org.adempiere.db.*
 Eclipse-BuddyPolicy: registered
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.adempiere.base.BaseActivator
@@ -156,14 +157,14 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="0.0.0",
  com.google.guava;bundle-version="28.2.0",
  com.github.librepdf.openpdf;bundle-version="1.3.26",
  com.github.librepdf.openpdf-fonts-extra;bundle-version="1.3.26",
- wrapped.org.apache.poi.poi;bundle-version="5.0.0",
- wrapped.org.apache.poi.poi-ooxml;bundle-version="5.0.0",
- wrapped.org.apache.poi.poi-ooxml-schemas;bundle-version="4.1.2",
- wrapped.org.apache.xmlbeans.xmlbeans;bundle-version="4.0.0",
+ wrapped.org.apache.poi.poi;bundle-version="4.1.2",
+ wrapped.org.apache.poi.poi-ooxml;bundle-version="4.1.2",
+ wrapped.org.apache.xmlbeans.xmlbeans;bundle-version="3.1.0",
  wrapped.org.jfree.jcommon;bundle-version="1.0.24",
  wrapped.org.jfree.jfreechart;bundle-version="1.5.3",
  wrapped.com.google.http-client.google-http-client-gson;bundle-version="1.39.2",
  wrapped.com.google.zxing.javase;bundle-version="3.4.1",
- wrapped.dev.samstevens.totp.totp;bundle-version="1.7.1"
+ wrapped.dev.samstevens.totp.totp;bundle-version="1.7.1",
+ org.apache.poi.ooxml-schemas;bundle-version="4.1.2"
 Automatic-Module-Name: org.adempiere.base
 Bundle-Vendor: iDempiere Community

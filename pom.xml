@@ -53,6 +53,7 @@
 		<module>org.adempiere.payment.processor-feature</module>
 		<module>org.idempiere.zk-feature</module>
 		<module>org.idempiere.webservices.client-feature</module>
+		<module>org.idempiere.jetty.osgi.boot.fragment</module>
 		<module>org.idempiere.p2</module>
 		<module>org.idempiere.javadoc</module>
 		<module>org.idempiere.test-feature</module>

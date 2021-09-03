@@ -22,6 +22,7 @@
 		<webconsole.version>4.6.4</webconsole.version>
 		<guava.version>30.1.1-jre</guava.version>
 		<google-http-client.version>1.39.2-sp.1</google-http-client.version>
+		<poi.version>4.1.2</poi.version>
 	</properties>
 	<build>
 		<plugins>
@@ -59,6 +60,18 @@
 												<Import-Package>*;resolution:=optional</Import-Package>
 												<Export-Package>*;version="${atmosphere-runtime.version}";-noimport:=true</Export-Package>
 												<Bundle-Version>${atmosphere-runtime.version}.v${maven.build.timestamp}</Bundle-Version>
+												<Provide-Capability>osgi.serviceloader;osgi.serviceloader="javax.servl
+												 et.ServletContainerInitializer",osgi.serviceloader;osgi.serviceloader
+												 ="org.atmosphere.inject.CDIProducer",osgi.serviceloader;osgi.servicel
+												 oader="org.atmosphere.inject.Injectable"
+												</Provide-Capability>
+												<Require-Capability><![CDATA[osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+												 ,osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)"
+												 ,osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+												 ,osgi.serviceloader;cardinality:=multiple;filter:="(osgi.serviceloade
+												 r=org.atmosphere.inject.Injectable)"
+												 ]]>
+												</Require-Capability>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -67,6 +80,7 @@
 											<transitive>false</transitive>
 											<override>true</override>
 											<instructions>
+												<DynamicImport-Package>org.glassfish.hk2.osgiresourcelocator</DynamicImport-Package>
 												<Import-Package>*;resolution:=optional</Import-Package>
         											<Export-Package>*;version="${xml.ws-api.version}";-noimport:=true</Export-Package>
 												<_removeheaders>Private-Package</_removeheaders>
@@ -117,6 +131,9 @@
 												]]></Export-Package>
 												<_removeheaders>Private-Package</_removeheaders>
 												<Bundle-Version>${webconsole.version}.v${maven.build.timestamp}</Bundle-Version>
+												<Bundle-Activator>
+													org.apache.felix.webconsole.internal.OsgiManagerActivator
+												</Bundle-Activator>
 											</instructions>
 										</artifact>
 										<artifact>
@@ -204,6 +221,27 @@
 												 nt.util"
         											]]></Export-Package>
 												<Bundle-Version>${google-http-client.version}.v${maven.build.timestamp}</Bundle-Version>
+											</instructions>
+										</artifact>
+										<artifact>
+											<id>org.apache.poi:poi-ooxml-schemas:${poi.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+											<override>true</override>
+											<instructions>
+												<Import-Package>com.microsoft.schemas.office.powerpoint;resolution:=op
+												 tional,com.microsoft.schemas.office.word;resolution:=optional,javax.x
+												 ml.namespace;resolution:=optional,javax.xml.stream;resolution:=option
+												 al,org.apache.xmlbeans;resolution:=optional,org.apache.xmlbeans.impl.
+												 values;resolution:=optional,org.apache.xmlbeans.impl.xb.xmlschema;res
+												 olution:=optional,org.apache.xmlbeans.xml.stream;resolution:=optional
+												 ,org.openxmlformats.schemas.officeDocument.x2006.math;resolution:=opt
+												 ional,org.openxmlformats.schemas.schemaLibrary.x2006.main;resolution:
+												 =optional,org.w3c.dom;resolution:=optional
+												 ,org.apache.xmlbeans.impl.schema;resolution:=optional
+												 </Import-Package>
+        											<Export-Package>*;version="${poi.version}";-noimport:=true</Export-Package>
+												<Bundle-Version>${poi.version}.v${maven.build.timestamp}</Bundle-Version>
 											</instructions>
 										</artifact>
 									</artifacts>

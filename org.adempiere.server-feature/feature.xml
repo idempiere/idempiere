@@ -603,13 +603,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.jetty.osgi.boot.warurl"
          download-size="0"
          install-size="0"
@@ -642,6 +635,14 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.idempiere.jetty.osgi.boot.fragment"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

@@ -250,12 +250,6 @@ Export-Package:        *;-noimport:=true
       <version>3.1.13</version>
       <type>jar</type>
     </location>
-    <location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.jvnet.mimepull</groupId>
-      <artifactId>mimepull</artifactId>
-      <version>1.9.15</version>
-      <type>jar</type>
-    </location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.sun.xml.bind.external</groupId>
       <artifactId>rngom</artifactId>
@@ -816,6 +810,19 @@ Export-Package:        *;version="${version}";-noimport:=true
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>3.1.0</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-object</artifactId>
       <version>3.1.18</version>
@@ -851,7 +858,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
-      <version>5.0.0</version>
+      <version>4.1.2</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -889,7 +896,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
-      <version>5.0.0</version>
+      <version>4.1.2</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -931,32 +938,6 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>2.2.1</version>
 	  <type>jar</type>
 	</location>	
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml-lite</artifactId>
-      <version>5.0.0</version>
-      <type>jar</type>
-      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
-version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
-Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
-Export-Package:        *;version="${version}";-noimport:=true
-]]></instructions>
-	</location>		
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml-schemas</artifactId>
-      <version>4.1.2</version>
-      <type>jar</type>
-      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
-version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
-Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
-Export-Package:        *;version="${version}";-noimport:=true
-]]></instructions>
-	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>xmlgraphics-commons</artifactId>
@@ -1106,7 +1087,7 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>1.8.2.5</version>
       <type>jar</type>
 	</location>
-	<!--  -->
+	<!-- org.eclipse.jetty -->
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>

@@ -18,3 +18,4 @@ Bundle-Activator: org.adempiere.db.postgresql.PostgreSQLBundleActivator
 Service-Component: OSGI-INF/*.xml
 Automatic-Module-Name: org.compiere.db.postgresql.provider
 Bundle-Vendor: iDempiere Community
+Export-Package: org.adempiere.db.postgresql.config

@@ -145,6 +145,7 @@
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
         <setEntry value="org.apache.neethi@default:default"/>
+        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.batik@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.jaxen@default:default"/>
@@ -273,8 +274,7 @@
         <setEntry value="org.junit.platform.suite.api@default:default"/>
         <setEntry value="org.junit.vintage.engine@default:default"/>
         <setEntry value="org.junit@default:default"/>
-        <setEntry value="org.jvnet.mimepull*1.9.14@default:default"/>
-        <setEntry value="org.jvnet.mimepull*1.9.15@default:default"/>
+        <setEntry value="org.jvnet.mimepull@default:default"/>
         <setEntry value="org.jvnet.staxex.stax-ex@default:default"/>
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-el@default:default"/>
@@ -306,7 +306,6 @@
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-kahadb-store@default:default"/>
-        <setEntry value="wrapped.org.apache.poi.poi-ooxml-schemas@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
         <setEntry value="wrapped.org.apache.xmlbeans.xmlbeans@default:default"/>

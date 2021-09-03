@@ -61,7 +61,7 @@
         <setEntry value="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
-        <setEntry value="wrapped.org.apache.poi.poi-ooxml-schemas@default:default"/>
+        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>

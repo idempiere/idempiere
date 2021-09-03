@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-210831" sequenceNumber="1630363487">
+<target name="idempiere-210901" sequenceNumber="1630461774">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="zcommon" version="9.6.0"/>
-      <unit id="zel" version="9.6.0"/>
-      <unit id="zhtml" version="9.6.0"/>
-      <unit id="zjavassist" version="9.6.0"/>
-      <unit id="zk" version="9.6.0"/>
-      <unit id="zkbind" version="9.6.0"/>
-      <unit id="zkplus" version="9.6.0"/>
-      <unit id="zkwebfragment" version="9.6.0"/>
-      <unit id="zul" version="9.6.0"/>
-      <unit id="zweb" version="9.6.0"/>
-      <unit id="zweb-dsp" version="9.6.0"/>
-      <repository location="https://idempiere.github.io/binary.file/p2.zk/9.6.0"/>
+      <unit id="zcommon" version="9.6.0.1"/>
+      <unit id="zel" version="9.6.0.1"/>
+      <unit id="zhtml" version="9.6.0.1"/>
+      <unit id="zjavassist" version="9.6.0.1"/>
+      <unit id="zk" version="9.6.0.1"/>
+      <unit id="zkbind" version="9.6.0.1"/>
+      <unit id="zkplus" version="9.6.0.1"/>
+      <unit id="zkwebfragment" version="9.6.0.1"/>
+      <unit id="zul" version="9.6.0.1"/>
+      <unit id="zweb" version="9.6.0.1"/>
+      <unit id="zweb-dsp" version="9.6.0.1"/>
+      <repository location="https://idempiere.github.io/binary.file/p2.zk/9.6.0.1"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="jakarta.xml.ws-api" version="2.3.3.v202108300649"/>
-      <unit id="org.atmosphere.runtime" version="2.7.2.v202108300649"/>
-      <unit id="com.google.guava" version="30.1.1.jre_v202108300649"/>
-      <unit id="com.google.http-client.google-http-client" version="1.39.2.sp_1_v202108300649"/>
-      <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202108300649"/>
-      <unit id="org.apache.felix.webconsole" version="4.6.4.v202108300649"/>
+      <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
+      <unit id="org.atmosphere.runtime" version="2.7.2.v202109010034"/>
+      <unit id="com.google.guava" version="30.1.1.jre_v202109010034"/>
+      <unit id="com.google.http-client.google-http-client" version="1.39.2.sp_1_v202109010034"/>
+      <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
+      <unit id="org.apache.felix.webconsole" version="4.6.4.v202109010034"/>
+      <unit id="org.apache.poi.ooxml-schemas" version="4.1.2.v202109010034"/>
       <repository location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
@@ -380,12 +381,6 @@ Export-Package:        *;-noimport:=true
       <groupId>org.glassfish.ha</groupId>
       <artifactId>ha-api</artifactId>
       <version>3.1.13</version>
-      <type>jar</type>
-    </location>
-    <location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.jvnet.mimepull</groupId>
-      <artifactId>mimepull</artifactId>
-      <version>1.9.15</version>
       <type>jar</type>
     </location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
@@ -948,6 +943,19 @@ Export-Package:        *;version="${version}";-noimport:=true
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>3.1.0</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-object</artifactId>
       <version>3.1.18</version>
@@ -983,7 +991,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
-      <version>5.0.0</version>
+      <version>4.1.2</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1021,7 +1029,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
-      <version>5.0.0</version>
+      <version>4.1.2</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1063,32 +1071,6 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>2.2.1</version>
 	  <type>jar</type>
 	</location>	
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml-lite</artifactId>
-      <version>5.0.0</version>
-      <type>jar</type>
-      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
-version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
-Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
-Export-Package:        *;version="${version}";-noimport:=true
-]]></instructions>
-	</location>		
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml-schemas</artifactId>
-      <version>4.1.2</version>
-      <type>jar</type>
-      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
-version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
-Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
-Export-Package:        *;version="${version}";-noimport:=true
-]]></instructions>
-	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>xmlgraphics-commons</artifactId>
@@ -1238,7 +1220,7 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>1.8.2.5</version>
       <type>jar</type>
 	</location>
-	<!--  -->
+	<!-- org.eclipse.jetty -->
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>

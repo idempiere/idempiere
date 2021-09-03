@@ -310,7 +310,7 @@
          unpack="false"/>
 
    <plugin
-         id="wrapped.org.apache.poi.poi-ooxml-schemas"
+         id="org.apache.poi.ooxml-schemas"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -339,6 +339,27 @@
 
    <plugin
          id="wrapped.org.jfree.jfreechart"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.w3c.dom.events"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.jaspersoft.studio.bundles.commons-digester"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="wrapped.com.zaxxer.SparseBitSet"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,9 +1,9 @@
 
-target "idempiere-210831"
+target "idempiere-210901"
 
 with source configurePhase allEnvironments
 
-location "https://idempiere.github.io/binary.file/p2.zk/9.6.0" {
+location "https://idempiere.github.io/binary.file/p2.zk/9.6.0.1" {
 	zcommon
 	zel
 	zhtml
@@ -23,7 +23,8 @@ location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
 	com.google.guava
 	com.google.http-client.google-http-client
 	com.sun.xml.fastinfoset.FastInfoset
-	org.apache.felix.webconsole	
+	org.apache.felix.webconsole
+	org.apache.poi.ooxml-schemas	
 }
 
 location "https://download.eclipse.org/eclipse/updates/4.20" {
