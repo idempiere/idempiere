@@ -730,6 +730,14 @@ public class Trx
 		m_displayName = displayName;
 	}
 	
+	/**
+	 * 
+	 * @return Context key for event listener to flag that additional db changes have been made.
+	 */
+	public String getEventChangesIndicatorKey() {
+		return getTrxName() + "|HasChangesByEventListener";
+	}
+	
 	static class TrxMonitor implements Runnable
 	{
 
