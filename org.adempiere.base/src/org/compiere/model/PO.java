@@ -2880,7 +2880,7 @@ public abstract class PO
 				else if (c == String.class)
 				{
 					if (value.toString().length() == 0) {
-						where.append(" AND ").append(oc).append(" IS NULL ");
+						where.append(" AND ").append(oc).append(" = '' ");
 					} else {
 						where.append(" AND ").append(oc).append(" = ? ");
 						optimisticLockingParams.add(encrypt(index,value));
