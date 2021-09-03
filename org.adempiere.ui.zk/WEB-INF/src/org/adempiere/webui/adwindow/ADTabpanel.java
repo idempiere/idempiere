@@ -90,6 +90,7 @@ import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -117,6 +118,7 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Style;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
 import org.zkoss.zul.TreeModel;
@@ -152,7 +154,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6023888511495744589L;
+	private static final long serialVersionUID = -5335610241895151024L;
 
 	private static final String ON_SAVE_OPEN_PREFERENCE_EVENT = "onSaveOpenPreference";
 
@@ -174,7 +176,6 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
     private GridTab           gridTab;
 
-    @SuppressWarnings("unused")
 	private GridWindow        gridWindow;
 
     private AbstractADWindowContent      windowPanel;
@@ -387,15 +388,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     /**
      *
      * @param winPanel
-     * @param windowNo
      * @param gridTab
-     * @param gridWindow
      */
-    public void init(AbstractADWindowContent winPanel, int windowNo, GridTab gridTab,
-            GridWindow gridWindow)
+    public void init(AbstractADWindowContent winPanel, GridTab gridTab)
     {
-        this.windowNo = windowNo;
-        this.gridWindow = gridWindow;
+        this.gridWindow = gridTab.getGridWindow();
+        this.windowNo = gridWindow.getWindowNo();
         this.gridTab = gridTab;
         // callout dialog ask for input - devCoffee #3390
         gridTab.setCalloutUI(new CalloutDialog(Executions.getCurrent().getDesktop(), windowNo));
@@ -1253,7 +1251,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     @Override
     public String get_ValueAsString(String variableName)
     {
-        return Env.getContext(Env.getCtx(), windowNo, variableName);
+    	return new DefaultEvaluatee(getGridTab(), windowNo, tabNo).get_ValueAsString(Env.getCtx(), variableName);
     } // get_ValueAsString
 
     /**
@@ -2304,4 +2302,23 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		}
 		tabbox.setVisible(isGroupTabVisible);
 	}
+
+	@Override
+	public boolean isEnableCustomizeButton()
+	{
+		return isGridView();
+	}
+
+	@Override
+	public void updateToolbar(ADWindowToolbar toolbar)
+	{
+
+	}
+
+	@Override
+	public void updateDetailToolbar(Toolbar toolbar)
+	{
+
+	}
+
 }

@@ -126,7 +126,6 @@ public class ScheduleUtil
 
 
 		//	Resource Unavailability -------------------------------------------
-	//	log.fine( "- Unavailability -");
 		String sql = "SELECT Description, DateFrom, DateTo "
 		  + "FROM S_ResourceUnavailable "
 		  + "WHERE S_Resource_ID=?"					//	#1
@@ -137,7 +136,6 @@ public class ScheduleUtil
 		ResultSet rs = null;
 		try
 		{
-	//		log.fine( sql, "ID=" + S_Resource_ID + ", Start=" + m_startDate + ", End=" + m_endDate);
 			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, m_S_Resource_ID);
 			pstmt.setTimestamp(2, m_startDate);
@@ -149,7 +147,7 @@ public class ScheduleUtil
 					TimeUtil.getNextDay(rs.getTimestamp(3)),	//	user entered date need to convert to not including end time
 					Msg.getMsg (m_ctx, "ResourceUnAvailable"), rs.getString(1),
 					MAssignmentSlot.STATUS_UnAvailable);
-			//	log.fine( "- Unavailable", ma);
+
 				if (getAll)
 					createDaySlot (list, ma);
 				else
@@ -175,7 +173,6 @@ public class ScheduleUtil
 
 
 		//	NonBusinessDay ----------------------------------------------------
-	//	log.fine( "- NonBusinessDay -");
 		//	"WHERE TRUNC(Date1) BETWEEN TRUNC(?) AND TRUNC(?)"   causes
 		//	ORA-00932: inconsistent datatypes: expected NUMBER got TIMESTAMP
 		sql = MRole.getDefault(m_ctx, false).addAccessSQL (
@@ -186,7 +183,6 @@ public class ScheduleUtil
 		{
 			Timestamp startDay = TimeUtil.getDay(m_startDate);
 			Timestamp endDay = TimeUtil.getDay(m_endDate);
-	//		log.fine( sql, "Start=" + startDay + ", End=" + endDay);
 			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setTimestamp(1, startDay);
 			pstmt.setTimestamp(2, endDay);
@@ -221,7 +217,6 @@ public class ScheduleUtil
 
 
 		//	ResourceType Available --------------------------------------------
-	//	log.fine( "- ResourceTypeAvailability -");
 		sql = "SELECT Name, IsTimeSlot,TimeSlotStart,TimeSlotEnd, "	//	1..4
 			+ "IsDateSlot,OnMonday,OnTuesday,OnWednesday,"			//	5..8
 			+ "OnThursday,OnFriday,OnSaturday,OnSunday "			//	9..12
@@ -384,7 +379,7 @@ public class ScheduleUtil
 	private void layoutSlots (ArrayList<MAssignmentSlot> list, ArrayList<MAssignmentSlot> clean)
 	{
 		int size = list.size();
-	//	System.out.println("Start List=" + size + ", Clean=" + clean.size());
+
 		if (size == 0)
 			return;
 		else if (size == 1)
@@ -615,7 +610,6 @@ public class ScheduleUtil
 				//
 				m_S_ResourceType_ID = rs.getInt(4);
 				m_C_UOM_ID = rs.getInt(5);
-			//	log.fine( "- Resource_ID=" + m_S_ResourceType_ID + ",IsAvailable=" + m_isAvailable);
 			}
 			else
 				m_isAvailable = false;
@@ -645,7 +639,6 @@ public class ScheduleUtil
 	private void createTimeSlot (ArrayList<MAssignmentSlot> list,
 		Timestamp startTime, Timestamp endTime)
 	{
-	//	log.fine( "MSchedule.createTimeSlot");
 		GregorianCalendar cal = new GregorianCalendar(Language.getLoginLanguage().getLocale());
 		cal.setTimeInMillis(m_startDate.getTime());
 		//	End Date for Comparison
@@ -709,7 +702,6 @@ public class ScheduleUtil
 		boolean OnMonday, boolean OnTuesday, boolean OnWednesday,
 		boolean OnThursday, boolean OnFriday, boolean OnSaturday, boolean OnSunday)
 	{
-	//	log.fine( "MSchedule.createDaySlot");
 		GregorianCalendar cal = new GregorianCalendar(Language.getLoginLanguage().getLocale());
 		cal.setTimeInMillis(m_startDate.getTime());
 		//	End Date for Comparison
@@ -753,7 +745,6 @@ public class ScheduleUtil
 	 */
 	private void createDaySlot (ArrayList<MAssignmentSlot> list, MAssignmentSlot ma)
 	{
-	//	log.fine( "MSchedule.createDaySlot", ma);
 		//
 		Timestamp start = ma.getStartTime();
 		GregorianCalendar calStart = new GregorianCalendar();
@@ -842,8 +833,6 @@ public class ScheduleUtil
 				calEnd.set(Calendar.MILLISECOND, 0);
 				calEnd.add(Calendar.DAY_OF_YEAR, 1);
 			}
-//System.out.println("Start=" + new Timestamp(cal.getTimeInMillis()));
-//System.out.println("Endt=" + new Timestamp(calEnd.getTimeInMillis()));
 
 			//	Set end Slot Time
 			GregorianCalendar calEndSlot = new GregorianCalendar();

@@ -564,7 +564,16 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		Env.setContext(Env.getCtx(), "ColumnSQL", "now()");
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
-	
+
+	@Test
+	public void testOSEnvVariable() {
+		String username = System.getenv("USER");
+		if (username == null)
+			username = "";
+		String expr = "@$env.USER@='" + username + "'";
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+
 	private static class ContextEvaluatee implements Evaluatee {
 
 		@Override

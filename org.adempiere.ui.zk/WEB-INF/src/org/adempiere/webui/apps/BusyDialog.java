@@ -54,7 +54,6 @@ public class BusyDialog extends Window {
 	public void statusUpdate(String message) {
 		if (label != null) {
 			label.setText(message);
-			this.invalidate();
 		}
 	}
 }

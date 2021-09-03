@@ -359,7 +359,7 @@ public final class WAccountDialog extends Window
 		}
 
 		//  GridController
-		m_adTabPanel.init(null, m_WindowNo, m_mTab, null);
+		m_adTabPanel.init(null, m_mTab);
 
 		//  Prepare Parameter
 		parameterLayout.makeNoStrip();

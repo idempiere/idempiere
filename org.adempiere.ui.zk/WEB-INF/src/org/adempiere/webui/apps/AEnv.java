@@ -72,7 +72,7 @@ import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 
-import com.itextpdf.text.DocumentException;
+import com.lowagie.text.DocumentException;
 
 /**
  *  ZK Application Environment and utilities
