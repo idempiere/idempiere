@@ -1013,10 +1013,10 @@ public class GridTable extends AbstractTableModel
 		
 		if (!isSameSortEntries)
 		{
-			//	update UI
-			fireTableDataChanged();
 			//  Info detected by MTab.dataStatusChanged and current row set to 0
 			fireDataStatusIEvent(SORTED_DSE_EVENT, "#" + m_sort.size());
+			//	update UI
+			fireTableDataChanged();
 		}
 	}	//	sort
 
