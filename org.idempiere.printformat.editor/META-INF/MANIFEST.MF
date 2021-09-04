@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Report Editor
 Bundle-SymbolicName: org.idempiere.printformat.editor
-Bundle-Version: 8.2.0.qualifier
+Bundle-Version: 9.0.0.qualifier
 Bundle-Activator: org.idempiere.printformat.editor.Activator
 Bundle-Vendor: TREKGLOBAL
 Import-Package: org.osgi.framework,
@@ -11,9 +11,9 @@ Import-Package: org.osgi.framework,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
-Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
- org.adempiere.ui.zk;bundle-version="8.2.0",
- org.adempiere.plugin.utils;bundle-version="8.2.0",
+Require-Bundle: org.adempiere.base;bundle-version="9.0.0",
+ org.adempiere.ui.zk;bundle-version="9.0.0",
+ org.adempiere.plugin.utils;bundle-version="9.0.0",
  zcommon,
  zel,
  zhtml,
@@ -22,6 +22,6 @@ Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
  zkplus,
  zul,
  zweb
-Service-Component: OSGI-INF/org.idempiere.printformat.editor.action.EditorAction.xml
 Export-Package: action.images
 Automatic-Module-Name: org.idempiere.printformat.editor
+Service-Component: OSGI-INF/org.idempiere.printformat.editor.action.EditorAction.xml

@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.webservices.client.feature"
       label="Webservices Client Library"
-      version="8.2.0.qualifier"
+      version="9.0.0.qualifier"
       provider-name="www.idempiere.org">
 
    <description url="http://www.example.com/description">
@@ -21,147 +21,147 @@
          id="org.glassfish.external.management-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.3"
          unpack="false"/>
 
    <plugin
          id="org.glassfish.gmbal.gmbal"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.0.3"
          unpack="false"/>
 
    <plugin
          id="org.glassfish.pfl.pfl-dynamic"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.1.2"
          unpack="false"/>
 
    <plugin
          id="org.glassfish.pfl.pfl-tf"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.1.2"
          unpack="false"/>
 
    <plugin
          id="org.glassfish.pfl.pfl-asm"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.1.0"
          unpack="false"/>
 
    <plugin
          id="com.sun.xml.fastinfoset.FastInfoset"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.2.18.v202109010034"
          unpack="false"/>
 
+   <plugin
+         id="com.sun.xml.fastinfoset.FastInfoset"
+         download-size="0"
+         install-size="0"
+         version="2.0.0"
+         unpack="false"/>
+         
    <plugin
          id="org.jvnet.staxex.stax-ex"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.8.3"
          unpack="false"/>
 
    <plugin
          id="stax2-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.2.1"
          unpack="false"/>
 
    <plugin
          id="org.jvnet.mimepull"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.9.14"
          unpack="false"/>
 
    <plugin
          id="com.sun.xml.messaging.saaj.impl"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.5.3"
          unpack="false"/>
 
    <plugin
          id="com.sun.xml.ws.policy"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.7.10"
          unpack="false"/>
 
    <plugin
          id="com.sun.xml.stream.buffer.streambuffer"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.5.10"
          unpack="false"/>
 
    <plugin
          id="com.sun.istack.commons-runtime"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.0.12"
          unpack="false"/>
 
    <plugin
          id="jakarta.jws-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.1.0"
          unpack="false"/>
 
    <plugin
          id="jakarta.xml.soap-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.4.2"
          unpack="false"/>
 
    <plugin
          id="com.sun.xml.ws.jaxws-rt"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.3.5"
          unpack="false"/>
 
    <plugin
          id="com.sun.xml.bind.jaxb-impl"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.3.5"
          unpack="false"/>
 
    <plugin
          id="jakarta.xml.bind-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.3.3"
          unpack="false"/>
 
    <plugin
          id="jakarta.xml.ws-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.3.3.v202109010034"
          unpack="false"/>
 
    <plugin
          id="org.glassfish.pfl.pfl-basic"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.sun.org.apache.xml.internal.resolver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
+         version="4.1.2"
          unpack="false"/>
 
    <plugin
@@ -173,17 +173,38 @@
          unpack="false"/>
 
    <plugin
-         id="org.glassfish.jaxb.txw2"
+         id="wrapped.org.glassfish.jaxb.txw2"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.3.5"
          unpack="false"/>
 
    <plugin
          id="jakarta.ws.rs-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.1.6"
+         unpack="false"/>
+
+   <plugin
+         id="wrapped.com.sun.org.apache.xml.internal.resolver"
+         download-size="0"
+         install-size="0"
+         version="20050927.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="wrapped.com.sun.net.httpserver.http"
+         download-size="0"
+         install-size="0"
+         version="20070405.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.glassfish.ha.ha-api"
+         download-size="0"
+         install-size="0"
+         version="3.1.13"
          unpack="false"/>
 
 </feature>

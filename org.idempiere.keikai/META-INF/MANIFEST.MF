@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: zk keikai
 Bundle-SymbolicName: org.idempiere.keikai
-Bundle-Version: 8.2.0.qualifier
+Bundle-Version: 9.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Bundle-ClassPath: .,
  lib/keikai-oss.jar,
  lib/keikai-model-oss.jar,
  lib/zpoi.jar,
- lib/ooxml-schemas.jar
+ lib/ooxml-schemas.jar,
+ lib/xmlbeans.jar
 Export-Package: io.keikai.api,
  io.keikai.api.impl,
  io.keikai.api.model,
@@ -186,8 +187,8 @@ Require-Bundle: zcommon,
  zul,
  zweb,
  zjavassist,
- org.apache.commons.fileupload;bundle-version="1.2.2",
- org.adempiere.base;bundle-version="8.2.0"
+ org.apache.commons.commons-fileupload;bundle-version="1.4.0",
+ org.adempiere.base;bundle-version="9.0.0"
 Import-Package: javax.imageio,
  javax.servlet;version="3.1.0",
  javax.servlet.annotation;version="3.1.0",
@@ -195,9 +196,6 @@ Import-Package: javax.imageio,
  javax.servlet.http;version="3.1.0",
  org.apache.commons.codec.binary;version="1.13.0",
  org.apache.commons.codec.digest;version="1.13.0",
- org.apache.xmlbeans,
- org.apache.xmlbeans.impl.schema,
- org.apache.xmlbeans.impl.values,
  org.dom4j;version="2.1.1",
  org.dom4j.io;version="2.1.1",
  org.osgi.service.component;version="1.4.0",
@@ -208,7 +206,7 @@ Import-Package: javax.imageio,
  org.w3c.dom
 Automatic-Module-Name: org.idempiere.keikai
 Bundle-Vendor: iDempiere Community
-Service-Component: OSGI-INF/org.idempiere.keikai.view.KeikaiMediaViewProvider.xml
 Bundle-ActivationPolicy: lazy
-Fragment-Host: org.adempiere.ui.zk;bundle-version="8.2.0"
+Fragment-Host: org.adempiere.ui.zk;bundle-version="9.0.0"
 Jetty-WarPatchFragmentFolderPath: /
+Service-Component: OSGI-INF/org.idempiere.keikai.view.KeikaiMediaViewProvider.xml
