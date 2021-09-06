@@ -367,7 +367,6 @@ public class DocumentEngine implements DocAction
 							for (PO docafter : docsPostProcess) {								
 								if (docafter.get_ValueAsBoolean("Posted"))
 									continue;
-								@SuppressWarnings("unused")
 								String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
 								if (!Util.isEmpty(ignoreError, true)) {
 									log.warning("Error posting " + docafter + ". Error="+ignoreError);

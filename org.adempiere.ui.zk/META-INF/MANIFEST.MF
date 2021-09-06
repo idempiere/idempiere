@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Web Client
 Bundle-SymbolicName: org.adempiere.ui.zk;singleton:=true
-Bundle-Version: 8.2.0.qualifier
+Bundle-Version: 9.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Import-Package: com.google.common.annotations;version="30.1.1",
@@ -43,13 +43,18 @@ Import-Package: com.google.common.annotations;version="30.1.1",
  org.apache.commons.fileupload.servlet;version="1.2.2",
  org.apache.commons.fileupload.util;version="1.2.2",
  org.apache.commons.lang3;version="3.1.0",
+ org.apache.commons.text;version="1.9.0",
+ org.apache.commons.text.diff;version="1.9.0",
+ org.apache.commons.text.io;version="1.9.0",
+ org.apache.commons.text.lookup;version="1.9.0",
+ org.apache.commons.text.matcher;version="1.9.0",
+ org.apache.commons.text.similarity;version="1.9.0",
+ org.apache.commons.text.translate;version="1.9.0",
  org.apache.ecs,
  org.apache.ecs.xhtml,
  org.apache.tools.ant,
  org.apache.tools.ant.taskdefs,
  org.eclipse.core.runtime;version="3.4.0",
- org.eclipse.jetty.websocket.jsr356;version="9.4.12",
- org.eclipse.jetty.websocket.jsr356.server;version="9.4.12",
  org.jfree.chart,
  org.jfree.chart.encoders,
  org.jfree.chart.entity,
@@ -176,7 +181,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  zkplus;bundle-version="0.0.0",
  zul;bundle-version="0.0.0",
  zweb;bundle-version="0.0.0",
- org.apache.commons.io;bundle-version="0.0.0",
+ org.apache.commons.commons-io;bundle-version="0.0.0",
  org.atmosphere.runtime;bundle-version="0.0.0",
  zkwebfragment,
  com.sun.activation.jakarta.activation;bundle-version="1.2.1",

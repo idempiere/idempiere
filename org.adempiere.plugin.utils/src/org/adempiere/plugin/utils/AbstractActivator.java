@@ -21,10 +21,13 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.IDictionaryService;
 import org.adempiere.util.IProcessUI;
+import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.AdempiereSystemError;
@@ -250,9 +253,17 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	@Override
 	public IDictionaryService addingService(
 			ServiceReference<IDictionaryService> reference) {
-		service = context.getService(reference);
-		if (isFrameworkStarted())
-			frameworkStarted ();
+		Runnable runnable = () -> {
+			service = context.getService(reference);
+			if (isFrameworkStarted())
+				frameworkStarted ();
+		};
+		if (Adempiere.getThreadPoolExecutor() != null) {
+			Adempiere.getThreadPoolExecutor().submit(runnable);
+		} else {
+			MyServerStateChangeListener l = new MyServerStateChangeListener(runnable);
+			Adempiere.addServerStateChangeListener(l);
+		}
 		return null;
 	}
 
@@ -264,5 +275,19 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 	@Override
 	public void removedService(ServiceReference<IDictionaryService> reference,
 			IDictionaryService service) {
+	}
+	
+	private class MyServerStateChangeListener implements ServerStateChangeListener {
+		private Runnable runnable;
+		private MyServerStateChangeListener(Runnable r) {
+			this.runnable = r;
+		}
+		@Override
+		public void stateChange(ServerStateChangeEvent e) {
+			if (e.getEventType() == ServerStateChangeEvent.SERVER_START) {
+				Adempiere.getThreadPoolExecutor().submit(runnable);
+				Adempiere.removeServerStateChangeListener(this);
+			}			
+		}		
 	}
 }

@@ -112,11 +112,13 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 571979727987834997L;
+	private static final long serialVersionUID = 3153695115162945843L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
 	private static final String USE_TIMEOUT_FOR_UPDATE = "org.adempiere.po.useTimeoutForUpdate";
+	
+	private static final String USE_OPTIMISTIC_LOCKING = "org.idempiere.po.useOptimisticLocking";
 
 	/** default timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
@@ -290,6 +292,9 @@ public abstract class PO
 	
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
+	
+	private String[] m_optimisticLockingColumns = new String[] {"Updated"};
+	private Boolean m_useOptimisticLocking = null;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -2548,6 +2553,14 @@ public abstract class PO
 		List<Object> params = new ArrayList<Object>();
 				
 		String where = get_WhereClause(true);
+		
+		List<Object> optimisticLockingParams = new ArrayList<Object>();
+		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
+		{
+			StringBuilder builder = new StringBuilder(where);
+			addOptimisticLockingClause(optimisticLockingParams, builder);
+			where = builder.toString();
+		}
 		//
 		boolean changes = false;
 		StringBuilder sql = new StringBuilder ("UPDATE ");
@@ -2785,9 +2798,12 @@ public abstract class PO
 				}
 			}
 			sql.append(" WHERE ").append(where);
-			/** @todo status locking goes here */
 
 			if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
+			
+			if (is_UseOptimisticLocking() && optimisticLockingParams.size() > 0)
+				params.addAll(optimisticLockingParams);
+			
 			int no = 0;
 			if (isUseTimeoutForUpdate())
 				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, QUERY_TIME_OUT)
@@ -2827,7 +2843,95 @@ public abstract class PO
 			return true;
 		}
 	}
+	
+	private void addOptimisticLockingClause(List<Object> optimisticLockingParams, StringBuilder where) {
+		for(String oc : m_optimisticLockingColumns)
+		{
+			int index = get_ColumnIndex(oc); 
+			if (index >= 0)
+			{
+				Class<?> c = p_info.getColumnClass(index);
+				int dt = p_info.getColumnDisplayType(index);
+				if (DisplayType.isLOB(dt))
+					continue;
+				Object value = get_ValueOld(oc);
+				if (value == null)
+				{
+					where.append(" AND ").append(oc).append(" IS NULL ");
+				}
+				else if (value instanceof Timestamp)
+				{
+					if (dt == DisplayType.Date)
+						where.append(" AND ").append(oc).append(" = trunc(cast(? as date))");
+					else
+						where.append(" AND ").append(oc).append(" = ? ");
+					optimisticLockingParams.add(value);
+				}
+				else if (c == Boolean.class)
+				{
+					where.append(" AND ").append(oc).append(" = ? ");
+					boolean bValue = false;
+					if (value instanceof Boolean)
+						bValue = ((Boolean)value).booleanValue();
+					else
+						bValue = "Y".equals(value);
+					optimisticLockingParams.add(encrypt(index,bValue ? "Y" : "N"));
+				}
+				else if (c == String.class)
+				{
+					if (value.toString().length() == 0) {
+						where.append(" AND ").append(oc).append(" = '' ");
+					} else {
+						where.append(" AND ").append(oc).append(" = ? ");
+						optimisticLockingParams.add(encrypt(index,value));
+					}
+				}
+				else
+				{
+					where.append(" AND ").append(oc).append(" = ? ");
+					optimisticLockingParams.add(value);
+				}
+				
+			}
+		}
+	}
 
+	/**
+	 * 
+	 * @return true if optimistic locking is enable
+	 */
+	public boolean is_UseOptimisticLocking() {
+		if (m_useOptimisticLocking != null)
+			return m_useOptimisticLocking;
+		else
+			return "true".equalsIgnoreCase(System.getProperty(USE_OPTIMISTIC_LOCKING, "false"));
+	}
+	
+	/**
+	 * enable/disable optimistic locking
+	 * @param enable
+	 */
+	public void set_UseOptimisticLocking(boolean enable) {
+		m_useOptimisticLocking = enable;
+	}
+	
+	/**
+	 * 
+	 * @return optimistic locking columns
+	 */
+	public String[] get_OptimisticLockingColumns() {
+		return m_optimisticLockingColumns;
+	}
+
+	/**
+	 * set columns use for optimistic locking (auto add to where clause for update
+	 * and delete)
+	 * @param columns
+	 */
+	public void set_OptimisticLockingColumns(String[] columns) {
+		m_optimisticLockingColumns = columns;
+	}
+	
 	private boolean isUseTimeoutForUpdate() {
 		return "true".equalsIgnoreCase(System.getProperty(USE_TIMEOUT_FOR_UPDATE, "false"))
 			&& DB.getDatabase().isQueryTimeoutSupported();
@@ -3469,15 +3573,27 @@ public abstract class PO
 				}
 		
 				//	The Delete Statement
+				String where = get_WhereClause(true);
+				List<Object> optimisticLockingParams = new ArrayList<Object>();
+				if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
+				{
+					StringBuilder builder = new StringBuilder(where);
+					addOptimisticLockingClause(optimisticLockingParams, builder);
+					where = builder.toString();
+				}
 				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
 					.append(p_info.getTableName())
 					.append(" WHERE ")
-					.append(get_WhereClause(true));
+					.append(where);
 				int no = 0;
 				if (isUseTimeoutForUpdate())
-					no = DB.executeUpdateEx(sql.toString(), localTrxName, QUERY_TIME_OUT);
+					no = optimisticLockingParams.isEmpty() 
+						 ? DB.executeUpdateEx(sql.toString(), localTrxName, QUERY_TIME_OUT)
+						 : DB.executeUpdateEx(sql.toString(), optimisticLockingParams.toArray(), localTrxName, QUERY_TIME_OUT);
 				else
-					no = DB.executeUpdate(sql.toString(), localTrxName);
+					no = optimisticLockingParams.isEmpty() 
+						 ? DB.executeUpdate(sql.toString(), localTrxName)
+						 : DB.executeUpdate(sql.toString(), optimisticLockingParams.toArray(), false, localTrxName);
 				success = no == 1;
 			}
 			catch (Exception e)

@@ -46,7 +46,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.encoders.EncoderUtil;
 import org.jfree.chart.encoders.ImageFormat;
-import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import org.zkoss.calendar.Calendars;
 import org.zkoss.calendar.api.CalendarEvent;
@@ -329,6 +329,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void syncModel() {
 		Hashtable<String,BigDecimal> ht = new Hashtable<String,BigDecimal>();
 		
@@ -362,8 +363,8 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 			pieDataset.setValue(name == null ? "" : name, Double.valueOf(size > 0 ? value.doubleValue()/size*100 : 0));
 		}
 		
-		JFreeChart chart = ChartFactory.createPieChart3D(Msg.getMsg(Env.getCtx(),"EventsAnalysis"), pieDataset, true, true, true);
-		PiePlot3D plot = (PiePlot3D) chart.getPlot(); 
+		JFreeChart chart = ChartFactory.createPieChart(Msg.getMsg(Env.getCtx(),"EventsAnalysis"), pieDataset, true, true, true);
+		PiePlot plot = (PiePlot) chart.getPlot(); 
 		plot.setForegroundAlpha(0.5f);
 		BufferedImage bi = chart.createBufferedImage(600, 250);
 		try {
