@@ -290,7 +290,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     protected abstract void switchEditStatus(boolean editStatus);
     
-    private void focusToActivePanel() {
+    /**
+     * set focus to active panel
+     */
+    public void focusToActivePanel() {
     	IADTabpanel adTabPanel = adTabbox.getSelectedTabpanel();
 		focusToTabpanel(adTabPanel);
 	}

@@ -34,10 +34,12 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.MReportView;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
-import org.compiere.model.MReportView;
 import org.compiere.model.X_AD_ReportView_Col;
+import org.compiere.model.X_AD_ReportView_Column;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -46,6 +48,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ReportViewElementHandler extends AbstractElementHandler {
 
 	private ReportViewColElementHandler columnHandler = new ReportViewColElementHandler();
+	private ReportViewColumnElementHandler columnSelHandler = new ReportViewColumnElementHandler();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
@@ -132,6 +135,22 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			DB.close(rs, pstmt);
 		}
 
+		sql = "SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_Reportview_ID= "
+				+ AD_ReportView_ID;
+		pstmt = null;
+		rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				createReportViewColumn(ctx, document, AD_ReportView_ID, rs.getInt("AD_Column_ID"));
+			}
+		} catch (Exception e) {
+			throw new AdempiereException(e);
+		} finally {
+			DB.close(rs, pstmt);
+		}
+
 		if (createElement) {
 			document.endElement("", "", MReportView.Table_Name);
 		}
@@ -162,6 +181,18 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 				AD_ReportView_Col_ID);
 		columnHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
+	}
+
+	private void createReportViewColumn(PIPOContext ctx,
+			TransformerHandler document, int AD_ReportView_ID, int AD_Column_ID)
+					throws SAXException {
+
+		Query query = new Query(ctx.ctx, "AD_ReportView_Column", "AD_ReportView_ID=? AND AD_Column_ID=?", getTrxName(ctx));
+		X_AD_ReportView_Column po = query.setParameters(new Object[]{AD_ReportView_ID, AD_Column_ID}).first();
+
+		ctx.ctx.put("po", po);
+		columnSelHandler.create(ctx, document);
+		ctx.ctx.remove("po");
 	}
 
 	private void createReportViewBinding(PIPOContext ctx, TransformerHandler document,

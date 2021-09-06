@@ -1479,9 +1479,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     	}
     	else if (ON_DEFER_SET_SELECTED_NODE.equals(event.getName())) {
     		removeAttribute(ON_DEFER_SET_SELECTED_NODE_ATTR);
-    		if (gridTab.getRecord_ID() >= 0 && gridTab.isTreeTab() && treePanel != null) {
-            	setSelectedNode(gridTab.getRecord_ID());
-            }
+    		setSelectedNode();
     	}
     	else if (WPaymentEditor.ON_SAVE_PAYMENT.equals(event.getName())) {
     		windowPanel.onSavePayment();
@@ -1527,6 +1525,15 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		}
     	}
     }
+
+    /**
+     * set selected tree node for current row (if there's tree)
+     */
+	public void setSelectedNode() {
+		if (gridTab.getRecord_ID() >= 0 && gridTab.isTreeTab() && treePanel != null) {
+			setSelectedNode(gridTab.getRecord_ID());
+		}
+	}
 
     private void onSouthEvent(SouthEvent event) {
     	if (event == SouthEvent.OPEN || event == SouthEvent.CLOSE) {

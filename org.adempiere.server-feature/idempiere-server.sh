@@ -35,7 +35,6 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 -Dmail.mime.decodefilename=true
 -Dmail.mime.encodeparameters=true
 -Dmail.mime.decodeparameters=true
--Dorg.eclipse.jetty.annotations.AnnotationParser.LEVEL=OFF
 --add-exports java.desktop/sun.awt=ALL-UNNAMED
 --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED
 --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED

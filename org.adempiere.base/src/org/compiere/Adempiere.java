@@ -64,9 +64,9 @@ public final class Adempiere
 	/** Timestamp                   */
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
-	static public String	MAIN_VERSION	= "Release 8.2";
+	static public String	MAIN_VERSION	= "Development 9.0";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2020-12-20";
+	static public String	DATE_VERSION	= "2021-09-01";
 	/** Database Version as date    Compared with AD_System		*/
 	static public String	DB_VERSION		= "2020-12-20";
 
@@ -560,6 +560,8 @@ public final class Adempiere
 				log.log(Level.FINEST, System.getProperties().toString());
 		}
 
+		loadDBProvider();
+		
 		//  Set Default Database Connection from Ini
 		DB.setDBTarget(CConnection.get());
 
@@ -572,6 +574,19 @@ public final class Adempiere
 
 		return startupEnvironment(isClient);
 	}   //  startup
+
+	private static void loadDBProvider() {
+		try {
+			Adempiere.class.getClassLoader().loadClass("org.adempiere.db.oracle.config.ConfigOracle");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			Adempiere.class.getClassLoader().loadClass("org.adempiere.db.postgresql.config.ConfigPostgreSQL");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	private static void createThreadPool() {
 		int max = Runtime.getRuntime().availableProcessors() * 20;

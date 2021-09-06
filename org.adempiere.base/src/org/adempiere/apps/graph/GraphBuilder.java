@@ -45,6 +45,7 @@ public class GraphBuilder {
 	protected String		m_Y_AxisLabel = "Y Axis";
 	protected DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 	protected DefaultCategoryDataset linearDataset = new DefaultCategoryDataset();
+	@SuppressWarnings("rawtypes")
 	protected DefaultPieDataset pieDataset = new DefaultPieDataset();
 
 	private static final CLogger log = CLogger.getCLogger(GraphBuilder.class);
@@ -113,7 +114,7 @@ public class GraphBuilder {
 	}
 
 	private JFreeChart createBarChart() {
-		JFreeChart chart = ChartFactory.createBarChart3D(
+		JFreeChart chart = ChartFactory.createBarChart(
 				m_goal.getMeasure().getName(),         // chart title
 				m_X_AxisLabel,               // domain axis label
 				m_Y_AxisLabel,                  // range axis label
@@ -129,7 +130,7 @@ public class GraphBuilder {
 	}
 
 	private JFreeChart createPieChart() {
-		final JFreeChart chart = ChartFactory.createPieChart3D(m_goal.getMeasure().getName(),
+		final JFreeChart chart = ChartFactory.createPieChart(m_goal.getMeasure().getName(),
 				pieDataset, false, true, true);
 
 		return chart;
@@ -168,7 +169,7 @@ public class GraphBuilder {
 
 	private JFreeChart createLineChart() {
 		// create the chart...
-		JFreeChart chart = ChartFactory.createLineChart3D(
+		JFreeChart chart = ChartFactory.createLineChart(
 				m_goal.getMeasure().getName(),         // chart title
 				m_X_AxisLabel,               // domain axis label
 				m_Y_AxisLabel,                  // range axis label
@@ -250,6 +251,7 @@ public class GraphBuilder {
 		return list;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void loadDataSet(List<GraphColumn> list) {
 		pieDataset = new DefaultPieDataset();
 		dataset = new DefaultCategoryDataset();

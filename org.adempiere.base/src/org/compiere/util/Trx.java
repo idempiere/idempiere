@@ -112,6 +112,8 @@ public class Trx
 	protected Exception trace;
 	
 	private String m_displayName;
+	
+	private boolean m_changesMadeByEventListener = false;
 
 	public static void startTrxMonitor()
 	{
@@ -274,6 +276,7 @@ public class Trx
 		}
 		m_active = true;
 		m_startTime = System.currentTimeMillis();
+		m_changesMadeByEventListener = false;
 		return true;
 	}	//	startTrx
 
@@ -362,6 +365,7 @@ public class Trx
 			{
 				m_connection.rollback(savepoint);
 				if (log.isLoggable(Level.INFO)) log.info ("**** " + m_trxName);
+				m_changesMadeByEventListener = false;
 				return true;
 			}
 		}
@@ -728,6 +732,24 @@ public class Trx
 	public void setDisplayName(String displayName)
 	{
 		m_displayName = displayName;
+	}
+	
+	/**
+	 * Indicate additional db changes have been made by event listener
+	 * @param changesMade
+	 */
+	public void setChangesMadeByEventListener(boolean changesMade)
+	{
+		m_changesMadeByEventListener = changesMade;
+	}
+	
+	/**
+	 * 
+	 * @return true if event listener(s) has flag that additional db changes have been made 
+	 */
+	public boolean hasChangesMadeByEventListener()
+	{
+		return m_changesMadeByEventListener;
 	}
 	
 	static class TrxMonitor implements Runnable

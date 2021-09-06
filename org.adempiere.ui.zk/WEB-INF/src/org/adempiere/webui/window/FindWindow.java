@@ -1041,11 +1041,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         setValues(listColumn, listOperator, fields);
 
-        // And Or
+        // And / Or / And Not / Or Not
     	ValueNamePair[]	andOr = new ValueNamePair[] {
     		new ValueNamePair ("",			""),	
     		new ValueNamePair ("AND",		Msg.getMsg(Env.getCtx(),"AND")),
-    		new ValueNamePair ("OR",		Msg.getMsg(Env.getCtx(),"OR"))	
+    		new ValueNamePair ("OR",		Msg.getMsg(Env.getCtx(),"OR")),
+    		new ValueNamePair ("AND NOT",	Msg.getMsg(Env.getCtx(),"ANDNOT")),
+    		new ValueNamePair ("OR NOT",	Msg.getMsg(Env.getCtx(),"ORNOT"))
     	};
         
     	for (ValueNamePair item: andOr)
@@ -1845,10 +1847,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				// And Or
 	            Listbox listAndOr = (Listbox)row.getFellow("listAndOr"+row.getId());
 	            String andOr = listAndOr.getSelectedItem().getValue().toString();
-				boolean and = true;
-				if ( rowIndex > 1 ) {
-					and = !"OR".equals(andOr);
-				}         
 	            //  Op
 				Combobox op = (Combobox)row.getFellow("listOperator"+row.getId());
 	            if (op == null)
@@ -1880,7 +1878,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
 	            	{
 	            		m_query.addRestriction(ColumnSQL, Operator, null,
-	            				infoName, null, and, openBrackets);
+	            				infoName, null, andOr, openBrackets);
 	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets);
 	            	}
 	            	continue;
@@ -1924,26 +1922,26 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                if (parsedValue2 == null)
 	                    continue;
 	                m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
-	                    infoName, infoDisplay, infoDisplay_to, and, openBrackets);
+	                    infoName, infoDisplay, infoDisplay_to, andOr, openBrackets);
 	            }
 	            else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator)) {
 	                if (!(parsedValue instanceof Integer)) {
 	                    continue;
 	                }
-	                m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue()), and, openBrackets);
+	                m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue()), andOr, openBrackets);
 	            }
 	            else if ((field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
 	            		(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
 	            {
 	            	String clause = DB.intersectClauseForCSV(ColumnSQL, parsedValue.toString());
 	            	if (MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator))
-	            		m_query.addRestriction(clause, and, openBrackets);
+	            		m_query.addRestriction(clause, andOr, openBrackets);
 	            	else
-	            		m_query.addRestriction("NOT (" + clause + ")", and, openBrackets);
+	            		m_query.addRestriction("NOT (" + clause + ")", andOr, openBrackets);
 	            }
 	            else
 	            	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
-	            			infoName, infoDisplay, and, openBrackets);
+	            			infoName, infoDisplay, andOr, openBrackets);
 
 	            appendCode(code, ColumnName, Operator, value != null ? value.toString() : "", value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets);
 	        }

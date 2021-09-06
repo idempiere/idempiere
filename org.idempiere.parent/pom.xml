@@ -5,41 +5,62 @@
 
 	<groupId>org.idempiere</groupId>
 	<artifactId>org.idempiere.parent</artifactId>
-	<version>8.2.0-SNAPSHOT</version>
+	<version>${revision}</version>
 	<packaging>pom</packaging>
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
+		<revision>9.0.0-SNAPSHOT</revision>
 		<jdk.version>11</jdk.version>
 		<tycho.version>2.4.0</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jp.version>6.15.0</jp.version>
-		<zk.version>9.5.0.1</zk.version>
-		<zk.javassist.src.version>3.23.1-GA</zk.javassist.src.version>
+		<jp.version>6.17.0</jp.version>
+		<zk.version>9.6.0.1</zk.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
-		<springframework.version>4.3.19.RELEASE_1</springframework.version><!--cfx dependency on [3.1,5)-->
-		<!-- https://www.eclipse.org/jetty/documentation/9.3.x/alpn-chapter.html#alpn-versions -->
-		<jetty.alpn-boot.version>8.1.12.v20180117</jetty.alpn-boot.version>
-		<netbeans.lib.version>RELEASE113</netbeans.lib.version>
+		<netbeans.lib.version>RELEASE124</netbeans.lib.version>
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version><!-- get from master, update when mave have update-->
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.17</idempiere-equinox-url>
-		<idempiere-equinox-repository-id>eclipse-2020-09</idempiere-equinox-repository-id>
-		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20200831200620/repository</idempiere-orbit-url>
-		<idempiere-orbit-repository-id>orbit-2020-09-R20200831200620</idempiere-orbit-repository-id>
+		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.20</idempiere-equinox-url>
+		<idempiere-equinox-repository-id>eclipse-2021-06</idempiere-equinox-repository-id>
+		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository</idempiere-orbit-url>
+		<idempiere-orbit-repository-id>orbit-2021-06-R20210602031627</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.test.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
-		<codehaus.plexus>2.8.5</codehaus.plexus>
 	</properties>
 
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+			      <groupId>org.codehaus.mojo</groupId>
+			      <artifactId>flatten-maven-plugin</artifactId>
+			      <version>1.1.0</version>
+			      <configuration>
+			        <updatePomFile>true</updatePomFile>
+			        <flattenMode>resolveCiFriendliesOnly</flattenMode>
+			      </configuration>
+			      <executions>
+			        <execution>
+			          <id>flatten</id>
+			          <phase>process-resources</phase>
+			          <goals>
+			            <goal>flatten</goal>
+			          </goals>
+			        </execution>
+			        <execution>
+			          <id>flatten.clean</id>
+			          <phase>clean</phase>
+			          <goals>
+			            <goal>clean</goal>
+			          </goals>
+			        </execution>
+			      </executions>
+			    </plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
@@ -145,7 +166,7 @@
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
-						        <artifactId>org.eclipse.equinox.ds</artifactId>
+						        <artifactId>org.apache.felix.scr</artifactId>
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
@@ -527,8 +548,8 @@
 	            </repository>
             </repositories>
             <build>
-                <plugins>
-                    <plugin>
+              <plugins>
+                <plugin>
 		            <groupId>org.eclipse.tycho</groupId>
 		            <artifactId>target-platform-configuration</artifactId>
 		            <version>${tycho.version}</version>
@@ -555,7 +576,7 @@
 				            <artifact>
 					            <groupId>org.idempiere</groupId>
 					            <artifactId>${idempiere.target}</artifactId>
-					            <version>8.2.0-SNAPSHOT</version>
+					            <version>9.0.0-SNAPSHOT</version>
 				            </artifact>
 			            </target>
 
@@ -571,7 +592,7 @@
 					            <ws>win32</ws>
 					            <arch>x86_64</arch>
 				            </environment>
-					    <environment>
+					    	<environment>
 					            <os>macosx</os>
 					            <ws>cocoa</ws>
 					            <arch>x86_64</arch>
@@ -580,30 +601,9 @@
 			            <executionEnvironmentDefault>JavaSE-${jdk.version}</executionEnvironmentDefault>
 			            <executionEnvironment>JavaSE-${jdk.version}</executionEnvironment>
 		            </configuration>
-		     </plugin>
-		 </plugins>
-	    </build>
-	</profile>
-
-        <profile>
-            <id>buildP2FromMaven</id>
-            <repositories>
-            	<repository>
-                	<id>${idempiere-equinox-repository-id}</id>
-                    <url>${idempiere-equinox-url}</url>
-                	<layout>p2</layout>
-                </repository>
-                <repository>
-                    <id>${idempiere-orbit-repository-id}</id>
-                    <url>${idempiere-orbit-url}</url>
-                    <layout>p2</layout>
-                </repository>
-                <repository>
-		            <id>wso2</id>
-		            <url>https://dist.wso2.org/maven2</url>
-	            </repository>
-            </repositories>
-        </profile>
-
+		        </plugin>
+		      </plugins>
+	        </build>
+		</profile>
     </profiles>
 </project>

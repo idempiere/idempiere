@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>8.2.0-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.ui.zk</artifactId>
@@ -53,12 +53,12 @@
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>
 									<artifactId>ckez</artifactId>
-									<version>4.7.0.0</version>
+									<version>4.16.1.1</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
 									<artifactId>owasp-java-html-sanitizer</artifactId>
-									<version>20190503.1</version>
+									<version>20200713.1</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

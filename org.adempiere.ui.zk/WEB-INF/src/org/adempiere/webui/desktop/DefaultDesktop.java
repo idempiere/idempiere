@@ -596,6 +596,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		{
 			pnlHead.invalidate();
 		}
+		
+		homeTab.invalidate();	
 	}
 
 	protected void setSidePopupWidth(Popup popup) {
