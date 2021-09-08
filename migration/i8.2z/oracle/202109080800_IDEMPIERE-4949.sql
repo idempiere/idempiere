@@ -7,7 +7,7 @@ INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated
 ;
 
 -- Sep 8, 2021, 12:04:08 PM MYT
-INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200182,0,0,TO_DATE('2021-09-08 12:04:08','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2021-09-08 12:04:08','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','ZK_DESKTOP_SHOW_HOME_BUTTON','Y','Y/N - Define if the Home toolbar button is show on desktop browser','D','S','2ff5aab3-79bf-41b7-bbf2-929f9ef3b3d2')
+INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200182,0,0,TO_DATE('2021-09-08 12:04:08','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2021-09-08 12:04:08','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','ZK_DESKTOP_SHOW_HOME_BUTTON','Y','Y/N - Define if the Home toolbar button is show on desktop browser','D','C','2ff5aab3-79bf-41b7-bbf2-929f9ef3b3d2')
 ;
 
 -- Sep 8, 2021, 12:33:31 PM MYT
