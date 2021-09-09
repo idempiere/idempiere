@@ -76,10 +76,6 @@
 	background-color: #E4E4E4;
 }
 
-.desktop-tabbox .z-tabs-content {
-    width: 5555px !important;
-}
-
 .desktop-tabbox .z-tab {
 	height: 24px;
 }
@@ -172,7 +168,6 @@
 .z-anchorchildren { overflow:visible }
 
 .desktop-hometab {
-	margin-left: 2px !important;
 }
 
 .desktop-tabbox .z-tabs .z-toolbar-tabs-body {
@@ -269,4 +264,18 @@
 .user-panel-popup .z-popup-content > .z-vlayout {
 	overflow-x: auto;
 	padding: 8px;
+}
+
+.z-menuitem.selected .z-menuitem-text {
+	font-weight: bold;
+}
+
+.window-container-toolbar-btn.tab-list {
+	font-size: smaller;
+	padding-right: 6px;
+}
+.window-container-toolbar-btn.tab-list i {
+	padding-right: 0px;
+	margin-right: -4px;
+	font-size: larger;
 }
