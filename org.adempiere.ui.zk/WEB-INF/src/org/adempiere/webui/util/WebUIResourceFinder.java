@@ -54,45 +54,38 @@ public class WebUIResourceFinder implements IResourceFinder {
 		}
 		if (url == null && name.startsWith("org/compiere/images")) {
 			String t = name.substring("org/compiere/".length());
-			t = ThemeManager.getThemeResource(t);
-			e = find(t);
-			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
-			if (url == null && t.endsWith(".gif")) {
-				t = t.replace(".gif", ".png");
-				e = find(t);
-				url = e != null && e.hasMoreElements() ? e.nextElement() : null;
-			}
+			url = findResource(t);
 		} else if (url == null && name.startsWith("/org/compiere/images")) {
 			String t = name.substring("/org/compiere/".length());
-			t = ThemeManager.getThemeResource(t);
+			url = findResource(t);
+		} else if (url == null && name.startsWith("images/")) {
+			url = findResource(name);
+		} else if (url == null && name.endsWith(".gif")) {
+			String t = name.replace(".gif", ".png");
 			e = find(t);
 			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
-			if (url == null && t.endsWith(".gif")) {
-				t = t.replace(".gif", ".png");
-				e = find(t);
-				url = e != null && e.hasMoreElements() ? e.nextElement() : null;
-			}
-		} else if (url == null && name.startsWith("images/")) {
-			String t = ThemeManager.getThemeResource(name);
+		}
+		return url;
+	}
+	
+	private URL findResource(String name) {
+		Enumeration<URL> e;
+		URL url;
+		String t = ThemeManager.getThemeResource(name);
+		if (t.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE)) {
+			url = ThemeManager.class.getResource(ThemeManager.toClassPathResourcePath(t));
+		} else {
+			e = find(t);
+			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
+		}
+		if (url == null && t.endsWith(".gif")) {
+			t = t.replace(".gif", ".png");
 			if (t.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE)) {
 				url = ThemeManager.class.getResource(ThemeManager.toClassPathResourcePath(t));
 			} else {
 				e = find(t);
 				url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 			}
-			if (url == null && t.endsWith(".gif")) {
-				t = t.replace(".gif", ".png");
-				if (t.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE)) {
-					url = ThemeManager.class.getResource(ThemeManager.toClassPathResourcePath(t));
-				} else {
-					e = find(t);
-					url = e != null && e.hasMoreElements() ? e.nextElement() : null;
-				}
-			}
-		} else if (url == null && name.endsWith(".gif")) {
-			String t = name.replace(".gif", ".png");
-			e = find(t);
-			url = e != null && e.hasMoreElements() ? e.nextElement() : null;
 		}
 		return url;
 	}
