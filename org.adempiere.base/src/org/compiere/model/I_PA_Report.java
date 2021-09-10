@@ -136,6 +136,15 @@ public interface I_PA_Report
 	  */
 	public String getDescription();
 
+    /** Column name ExcludeAdjustmentPeriods */
+    public static final String COLUMNNAME_ExcludeAdjustmentPeriods = "ExcludeAdjustmentPeriods";
+
+	/** Set Exclude Adjustment Periods	  */
+	public void setExcludeAdjustmentPeriods (String ExcludeAdjustmentPeriods);
+
+	/** Get Exclude Adjustment Periods	  */
+	public String getExcludeAdjustmentPeriods();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
