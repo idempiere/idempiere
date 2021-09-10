@@ -75,7 +75,7 @@ public class ManageImageCache {
 	 * @param image
 	 * @return
 	 */
-	public static String getImageInternalUrl (MImage image){
+	public static URL getImageInternalUrl (MImage image){
 		if (image == null)
 			return null;
 		return getImageInternalUrl(image.getImageURL());
@@ -86,12 +86,12 @@ public class ManageImageCache {
 	 * @param url
 	 * @return
 	 */
-	public static String getImageInternalUrl (String url){
+	public static URL getImageInternalUrl (String url){
 		if (url == null || url.trim().length() == 0 || url.indexOf("://") > 0)
 			return null;
 		
 		URL urlRsource = Core.getResourceFinder().getResource(url);
-		return urlRsource == null?null:urlRsource.getPath();
+		return urlRsource;
 	}
 	
 	/**
@@ -154,6 +154,37 @@ public class ManageImageCache {
 		}
 		
 		return aImage;
+	}
+	
+	/**
+	 * 
+	 * @param url
+	 * @return {@link Image}
+	 */
+	public Image getImage(URL url) {
+		if (url == null)
+			return null;
+		
+		Image image = null;
+		boolean hasCache = false;
+		synchronized (imageCache) {
+			hasCache = imageCache.containsKey(url.toString());
+			if (hasCache)
+				image = imageCache.get(url.toString());
+		}
+		
+		
+		if (!hasCache) {
+			try {
+				image = new AImage(url);
+			} catch (IOException e) {
+				log.log(Level.SEVERE, e.getMessage(), e);
+			}
+			synchronized (imageCache) {
+				imageCache.put(url.toString(), image);
+			}
+		}
+		return image;
 	}
 	
 	/**
