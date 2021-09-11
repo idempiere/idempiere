@@ -137,17 +137,30 @@ public class MPInstance extends X_AD_PInstance
 	{
 		if (m_parameters != null)
 			return m_parameters;
-		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		final String whereClause = "AD_PInstance_ID=?";
-		List <MPInstancePara> list = new Query(getCtx(), I_AD_PInstance_Para.Table_Name, whereClause, null) // @TODO: Review implications of using transaction 
-		.setParameters(getAD_PInstance_ID())
-		.setOrderBy("SeqNo, ParameterName")
-		.list();
-
+		
+		List <MPInstancePara> list = new ArrayList<MPInstancePara>();
+		try (POResultSet<MPInstancePara> rs = getScrollableParameters())
+		{
+			while(rs.hasNext())
+				list.add(rs.next());
+		}
 		//
 		m_parameters = new MPInstancePara[list.size()];
 		list.toArray(m_parameters);
 		return m_parameters;
+	}	//	getParameters
+	
+	/**
+	 * 	Get Parameters
+	 *	@return {@link POResultSet}
+	 */
+	public POResultSet<MPInstancePara> getScrollableParameters()
+	{
+		final String whereClause = "AD_PInstance_ID=?";
+		return new Query(getCtx(), I_AD_PInstance_Para.Table_Name, whereClause, null) 
+			.setParameters(getAD_PInstance_ID())
+			.setOrderBy("SeqNo, ParameterName")
+			.scroll();
 	}	//	getParameters
 	
 	/**
@@ -412,6 +425,12 @@ public class MPInstance extends X_AD_PInstance
 		return ip;
 	}
 	
+	
+	@Override
+	public I_AD_Process getAD_Process() throws RuntimeException {
+		return MProcess.get(getAD_Process_ID());
+	}
+
 	public static void publishChangedEvent(int AD_User_ID) {
 		IMessageService service = Core.getMessageService();
 		if (service != null) {
@@ -433,27 +452,31 @@ public class MPInstance extends X_AD_PInstance
 		List<MPInstance> list = new ArrayList<MPInstance>();
 		List<String> paramsStrAdded = new ArrayList<String>();
 
-		List<MPInstance> namedInstances = new Query(ctx, Table_Name, "AD_Process_ID=? AND AD_User_ID=? AND Name IS NOT NULL", null)
+		Query query = new Query(ctx, Table_Name, "AD_Process_ID=? AND AD_User_ID=? AND Name IS NOT NULL", null)
 			.setClient_ID()
 			.setOnlyActiveRecords(true)
 			.setParameters(AD_Process_ID, AD_User_ID)
-			.setOrderBy("Name")
-			.list();
-		for (MPInstance namedInstance : namedInstances) {
-			list.add(namedInstance);
-			paramsStrAdded.add(namedInstance.getParamsStr());
+			.setOrderBy("Name");		
+		try (POResultSet<MPInstance> namedInstances = query.scroll()) {
+			while(namedInstances.hasNext()) {
+				MPInstance namedInstance = namedInstances.next();
+				list.add(namedInstance);
+				paramsStrAdded.add(namedInstance.getParamsStr());
+			}			
 		}
 
 		// unnamed instances
 		int lastRunCount = MSysConfig.getIntValue(MSysConfig.LASTRUN_RECORD_COUNT, 5, Env.getAD_Client_ID(ctx));
 		if (lastRunCount > 0) {
+			int maxLoopCount = 10 * lastRunCount;
 			// using JDBC instead of Query for performance reasons, AD_PInstance can be huge
 			String sql = "SELECT * FROM AD_PInstance "
 					+ " WHERE AD_Process_ID=? AND AD_User_ID=? AND IsActive='Y' AND AD_Client_ID=? AND Name IS NULL" 
 					+ " ORDER BY Created DESC";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			int cnt = 0;
+			int runCount = 0;
+			int loopCount = 0;
 			try {
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setFetchSize(lastRunCount);
@@ -462,16 +485,19 @@ public class MPInstance extends X_AD_PInstance
 				pstmt.setInt(3, Env.getAD_Client_ID(ctx));
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
+					loopCount++;
 					MPInstance unnamedInstance = new MPInstance(ctx, rs, null);
 					String paramsStr = unnamedInstance.getParamsStr();
 					if (! paramsStrAdded.contains(paramsStr)) {
 						unnamedInstance.setName(Msg.getMsg(ctx, "LastRun") + " " + unnamedInstance.getCreated());
 						list.add(unnamedInstance);
 						paramsStrAdded.add(paramsStr);
-						cnt++;
-						if (cnt == lastRunCount)
+						runCount++;
+						if (runCount == lastRunCount)
 							break;
 					}
+					if (loopCount == maxLoopCount)
+						break;
 				}
 			} catch (Exception e)
 			{
