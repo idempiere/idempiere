@@ -52,7 +52,10 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 6553711529361500744L;
 	
-	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"_AD_Language", 100, false);
+	/**
+	 * MLanguage cache key by AD_Language value
+	 */
+	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"|AD_Language", 100, false);
 
 	/**
 	 * 	Get Language Model from Language
