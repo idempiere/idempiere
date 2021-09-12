@@ -306,7 +306,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			headerTab.switchRowPresentation();
 		}
 		
-		if (!headerTab.getGridTab().isSortTab())
+		if (!headerTab.getGridTab().isSortTab() && headerTab instanceof ADTabpanel)
 			headerTab.getGridTab().setCurrentRow(row, true);
 		
 		if (headerTab.isGridView()) {
@@ -537,7 +537,8 @@ public class CompositeADTabbox extends AbstractADTabbox
     			hasChanges = true;
     		}
     		if (hasChanges) {
-    			headerTab.getDetailPane().getParent().invalidate();
+    			if (headerTab.getDetailPane().getParent() != null)
+    				headerTab.getDetailPane().getParent().invalidate();
     		}
     	}
 	}
@@ -997,11 +998,15 @@ public class CompositeADTabbox extends AbstractADTabbox
 			headerTab.getDetailPane().updateToolbar(false, true);
 		} else {
 			tabPanel.dynamicDisplay(0);
-			RowRenderer<Object[]> renderer = tabPanel.getGridView().getListbox().getRowRenderer();
-			GridTabRowRenderer gtr = (GridTabRowRenderer)renderer;
-			Row row = gtr.getCurrentRow();
-			if (row != null)	
-				gtr.setCurrentRow(row);
+			if (tabPanel.getGridView() != null && tabPanel.getGridView().getListbox() != null) {
+				RowRenderer<Object[]> renderer = tabPanel.getGridView().getListbox().getRowRenderer();
+				if (renderer != null) {
+					GridTabRowRenderer gtr = (GridTabRowRenderer) renderer;
+					Row row = gtr.getCurrentRow();
+					if (row != null)
+						gtr.setCurrentRow(row);
+				}
+			}
 		}
 		if (wasForm) {
 			// maintain form on header when zooming to a detail tab

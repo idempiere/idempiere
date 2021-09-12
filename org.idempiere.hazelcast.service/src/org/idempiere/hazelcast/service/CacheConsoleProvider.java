@@ -53,7 +53,7 @@ public class CacheConsoleProvider implements CommandProvider {
                     sb.append("hazelcast ");
                     sb.append(member.getUuid());
                     sb.append(" Node Server: ");
-                    sb.append(member.getSocketAddress());
+                    sb.append(member.getAddress());
                     sb.append("\n");
                 }
             }

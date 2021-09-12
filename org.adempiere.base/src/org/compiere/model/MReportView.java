@@ -28,8 +28,6 @@ public class MReportView extends X_AD_ReportView implements ImmutablePOSupport {
 	 */
 	private static final long serialVersionUID = 6065574433744333005L;
 	
-	/**	Static Logger					*/
-	//private static CLogger	s_log	= CLogger.getCLogger (MReportView.class);
 	/**	Cache					*/
 	static private ImmutableIntPOCache<Integer,MReportView> s_cache = new ImmutableIntPOCache<Integer,MReportView>(Table_Name, 30, 60);
 	

@@ -40,6 +40,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -1222,57 +1223,7 @@ public class GridField
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{
-		//ref column
-		String foreignColumn = "";
-		int f = variableName.indexOf('.');
-		if (f > 0) {
-			foreignColumn = variableName.substring(f+1, variableName.length());
-			variableName = variableName.substring(0, f);
-		}
-		
-		String value = null;
-		if( m_vo.TabNo == 0)
-	    	value = Env.getContext (ctx, m_vo.WindowNo, variableName, true);
-	    else
-	    {
-	    	boolean tabOnly = false;
-	    	if (variableName.startsWith("~")) 
-	    	{
-	    		variableName = variableName.substring(1);
-	    		tabOnly = true;
-	    	}
-	    	value = Env.getContext (ctx, m_vo.WindowNo, m_vo.TabNo, variableName, tabOnly, true);
-	    }
-		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")) {
-			int id = 0;
-			try {
-				id = Integer.parseInt(value);
-			} catch (Exception e){}
-			if (id > 0) {
-				String refValue = "";
-				if (getGridTab() != null) {
-					MColumn column = MColumn.get(ctx, getGridTab().getTableName(), variableName);
-					if (column != null) {
-						String foreignTable = column.getReferenceTableName();
-						refValue = DB.getSQLValueString(null,
-								"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-										+ foreignTable + "_ID = ?", id);
-					}
-					return refValue;
-				} else {
-					// no GridTab - maybe coming from process parameter, try tableName from columnName
-					String foreignTable = variableName.substring(0, variableName.length()-3);
-					MTable table = MTable.get(ctx, foreignTable);
-					if (table != null) {
-						refValue = DB.getSQLValueString(null,
-								"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-										+ foreignTable + "_ID = ?", id);
-						return refValue;
-					}
-				}
-			}
-		}
-		return value;
+		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
 

@@ -240,6 +240,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		
 		addEventListener(Events.ON_UPLOAD, this);
 		addEventListener("onSave", this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}   //  init
 
 	public void onEvent(Event e) throws Exception {
@@ -255,8 +256,7 @@ public class WImageDialog extends Window implements EventListener<Event>
 		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
-			cancel = true;
-			detach();
+			onCancel();
 		}
 		else if (e.getTarget().getId().equals(ConfirmPanel.A_RESET))
 		{
@@ -323,6 +323,11 @@ public class WImageDialog extends Window implements EventListener<Event>
 				Clients.clearBusy(this);
 			}
 		}
+	}
+
+	private void onCancel() {
+		cancel = true;
+		detach();
 	}
 
 	private void onSave() {
@@ -419,5 +424,14 @@ public class WImageDialog extends Window implements EventListener<Event>
 	 */
 	public void setDefaultNameForCaptureImage(String defaultNameForCaptureImage) {
 		this.defaultNameForCaptureImage = defaultNameForCaptureImage;
+	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (fileButton != null)
+			fileButton.focus();
 	}	
+	
+	
 }   //  WImageDialog

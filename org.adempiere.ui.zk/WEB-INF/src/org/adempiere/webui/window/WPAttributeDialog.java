@@ -235,6 +235,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		centerLayout.setOddRowSclass("even");
 		//
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	init
 
 	/**
@@ -808,10 +809,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		//	Cancel
 		else if (e.getTarget().getId().equals("Cancel"))
 		{
-			m_changed = false;
-			m_M_AttributeSetInstance_ID = 0;
-			m_M_Locator_ID = 0;
-			dispose();
+			onCancel();
 		}
 		//	Zoom M_Lot
 		else if (e.getTarget() == mZoom)
@@ -821,6 +819,13 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		else
 			log.log(Level.SEVERE, "not found - " + e);
 	}	//	actionPerformed
+
+	private void onCancel() {
+		m_changed = false;
+		m_M_AttributeSetInstance_ID = 0;
+		m_M_Locator_ID = 0;
+		dispose();
+	}
 
 	private void cmd_existingCombo() {
 		ListItem pp = existingCombo.getSelectedItem();

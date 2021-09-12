@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>8.2.0-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 
@@ -19,18 +19,18 @@
 	<build>
 		<plugins>
 			<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>3.0.0</version>
-					<executions>
-					  <execution>
-						<id>parse-version</id>
-						<goals>
-						  <goal>parse-version</goal>
-						</goals>
-					  </execution>
-					</executions>
-				</plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+				  <execution>
+					<id>parse-version</id>
+					<goals>
+					  <goal>parse-version</goal>
+					</goals>
+				  </execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
 				<artifactId>tycho-document-bundle-plugin</artifactId>

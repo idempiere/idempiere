@@ -244,12 +244,6 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "PaymentNoProcessor"));
 			else
 			{
-				// Validate before trying to process
-//				String msg = pp.validate();
-//				if (msg!=null && msg.trim().length()>0) {
-//					setErrorMessage(Msg.getMsg(getCtx(), msg));
-//				} else {
-					// Process if validation succeeds
 					approved = pp.processCC();
 					setCreditCardNumber(PaymentUtil.encrpytCreditCard(getCreditCardNumber()));
 					setCreditCardVV(PaymentUtil.encrpytCvv(getCreditCardVV()));
@@ -287,7 +281,6 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 						else
 							setErrorMessage("From " +  getCreditCardName() + ": " + getR_RespMsg());
 					}
-//				}
 			}
 		}
 		catch (Exception e)

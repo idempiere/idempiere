@@ -17,7 +17,7 @@ zk.override(zk.Widget.prototype, "canActivate",
 			var wgt = this;
 			while (wgt) {
 				if (wgt.busy) {					
-					if (wgt.busy.className == 'zul.wnd.Window') {
+					if (wgt.busy.className) {
 						if (zUtl.isAncestor(wgt.busy, this)) {
 							return true;
 						} else {
@@ -29,7 +29,7 @@ zk.override(zk.Widget.prototype, "canActivate",
 						jq.focusOut();
 					}
 					return false;
-				}
+				}				
 				if (wgt.className == 'zul.wnd.Window') {
 					if (wgt.getMode() == 'overlapped') {
 						return true;

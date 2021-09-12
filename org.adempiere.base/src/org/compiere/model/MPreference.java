@@ -44,12 +44,6 @@ public class MPreference extends X_AD_Preference
 	public MPreference(Properties ctx, int AD_Preference_ID, String trxName)
 	{
 		super(ctx, AD_Preference_ID, trxName);
-		if (AD_Preference_ID == 0)
-		{
-		//	setAD_Preference_ID (0);
-		//	setAttribute (null);
-		//	setValue (null);
-		}
 	}	//	MPreference
 
 	/**

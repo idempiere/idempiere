@@ -181,9 +181,6 @@ public class MChangeLog extends X_AD_ChangeLog
 		setOldValue (OldValue);
 		setNewValue (NewValue);
 		setEventChangeLog(event);
-		//	EVENT / Release 3.3.1t_2007-12-05 ADempiere
-		// Drop description from AD_ChangeLog - pass it to AD_Session to save disk space
-		// setDescription(Adempiere.MAIN_VERSION + "_" + Adempiere.DATE_VERSION + " " + Adempiere.getImplementationVersion());
 	}	//	MChangeLog
 
 	

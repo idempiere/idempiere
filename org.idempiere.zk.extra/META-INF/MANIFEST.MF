@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: extra zk library
 Bundle-SymbolicName: org.idempiere.zk.extra
-Bundle-Version: 8.2.0.qualifier
+Bundle-Version: 9.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Bundle-ClassPath: .,
@@ -57,8 +57,6 @@ Export-Package: com.google.debugging.sourcemap,
  com.google.protobuf,
  google.protobuf,
  google.protobuf.compiler,
- javax.annotation,
- javax.annotation.meta,
  jsinterop.annotations,
  metainfo.zk,
  org.checkerframework.checker.nullness.qual,
@@ -199,7 +197,7 @@ Require-Bundle: zcommon,
  zul,
  zweb,
  zjavassist,
- org.apache.commons.fileupload;bundle-version="1.2.2"
+ org.apache.commons.commons-fileupload;bundle-version="1.4.0"
 Import-Package: javax.servlet;version="3.1.0",
  javax.servlet.annotation;version="3.1.0",
  javax.servlet.descriptor;version="3.1.0",

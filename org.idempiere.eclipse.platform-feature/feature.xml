@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.eclipse.platform.feature"
       label="Eclipse Platform for iDempiere"
-      version="8.2.0.qualifier"
+      version="9.0.0.qualifier"
       provider-name="www.idempiere.org">
 
    <description url="http://www.example.com/description">
@@ -18,7 +18,7 @@
    </license>
 
    <plugin
-         id="org.apache.commons.codec"
+         id="org.apache.commons.commons-codec"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -103,13 +103,6 @@
 
    <plugin
          id="org.eclipse.equinox.console"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.ds"
          download-size="0"
          install-size="0"
          version="0.0.0"

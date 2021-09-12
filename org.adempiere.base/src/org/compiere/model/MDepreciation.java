@@ -194,8 +194,6 @@ public class MDepreciation extends X_A_Depreciation implements ImmutablePOSuppor
 	{
 		String depreciationType = getDepreciationType();
 		BigDecimal retValue = null;
-		//~ int offset = getFixMonthOffset();
-		//~ A_Current_Period += offset;
 		
 		if(CLogMgt.isLevelFinest())
 		{
@@ -376,9 +374,6 @@ public class MDepreciation extends X_A_Depreciation implements ImmutablePOSuppor
 	 */
 	private BigDecimal apply_ARH_AD1(MDepreciationWorkfile wk, MAssetAcct assetAcct, int A_Current_Period,BigDecimal Accum_Dep)
 	{
-		//~ /** Current Worksheet */
-		//~ MDepreciationWorkfile wk = MDepreciationWorkfile.get(getCtx(), A_Asset_ID, PostingType);
-		
 		/** FAs' value = acquisition value - the amount recovered */
 		BigDecimal assetAmt = wk.getActualCost();
 		/** Life in months */
@@ -387,29 +382,16 @@ public class MDepreciation extends X_A_Depreciation implements ImmutablePOSuppor
 		int A_Current_Year = (int)(A_Current_Period / 12);
 		/** Life in years = integer part of (the life in months / 12) => first year will be 0 */
 		int A_Life_Year = (int)(A_Life_Period / 12);
-		//~ /** Number of years of use remaining (including current year) */
-		//~ int A_RemainingLife_Year = A_Life_Year - A_Current_Year;
-		
-		
-		/** Coefficient K */
-		/* @win : looks like a country specific requirement
-		BigDecimal coef_K = get_AD_K(A_Life_Year);
-		*/
 		
 		/** Linear damping coefficient for one year = 1 / total number of years */
 		BigDecimal coef_sl = BigDecimal.ONE.divide(new BigDecimal(A_Life_Year), getPrecision() + 2, RoundingMode.DOWN);
 		/** Degressive damping coefficient for one year = one-year linear depreciation * coeficient K */
-		//BigDecimal coef_ad1 = coef_sl.multiply(coef_K); //commented by @win
 		BigDecimal coef_ad1 = coef_sl.multiply(BigDecimal.valueOf(2.0)); //added by @win
-		
-		/** AD2 */
-		//~ BigDecimal DUR = BD_100.multiply(
 		
 		// logging
 		if (log.isLoggable(Level.FINE))  {
 			log.fine("assetAmt=" + assetAmt + ", A_Life_Period=" + A_Life_Period);
 			log.fine("A_Current_Year=" + A_Current_Year + ", A_Life_Year=" + A_Life_Year);
-			//log.fine("coef_K=" + coef_K + ", coef_sl=" + coef_sl + ", coef_ad1=" + coef_ad1); //commented out by @win
 		}
 		
 		/** Depreciation for the current year, is calculated below */
@@ -469,30 +451,6 @@ public class MDepreciation extends X_A_Depreciation implements ImmutablePOSuppor
 	{
 		throw new AssetNotImplementedException("AD2");
 	}
-	
-	/** For depreciation regime skimmed returns coefficient K depending on the life of FAs
-	 *	@param A_Life_Year	life in years
-	 *	@return coeficient K degressive method for
-	 *	@see #apply_ARH_AD1(int, int, String, int, BigDecimal)
-	 */
-	/*private static BigDecimal get_AD_K(int A_Life_Year)
-	{
-		if (A_Life_Year < 2) {
-			throw new IllegalArgumentException("@A_Life_Year@ = " + A_Life_Year + " < 2");
-		}
-		// A_Life_Year in [2, 5]
-		else if (A_Life_Year <= 5) {
-			return new BigDecimal(1.5);
-		}
-		// A_Life_Year in (5, 10]
-		else if (A_Life_Year <= 10) {
-			return new BigDecimal(2.0);
-		}
-		// A_Life_Year in (10, infinit)
-		else {
-			return new BigDecimal(2.5);
-		}
-	}*/
 	
 	/** Calculate the value of depreciation over a month (period). In the last month of the year we add errors from the adjustment calculation
 	 *	@param A_Current_Period		current month's index

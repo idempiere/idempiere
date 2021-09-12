@@ -121,6 +121,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			log.log(Level.SEVERE, "", ex);
 		}
 		addEventListener(ON_OK_ECHO, this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	public ProcessModalDialog (int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
@@ -222,10 +223,14 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			onOk();
 		} else if (component.equals(bCancel)) {
 			super.onEvent(event);
-			cancelProcess();
+			onCancel();
 		}else {
 			super.onEvent(event);
 		}
+	}
+
+	private void onCancel() {
+		cancelProcess();
 	}
 
 	private void onOk() {

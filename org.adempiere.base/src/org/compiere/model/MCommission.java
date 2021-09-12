@@ -49,12 +49,6 @@ public class MCommission extends X_C_Commission
 		super(ctx, C_Commission_ID, trxName);
 		if (C_Commission_ID == 0)
 		{
-		//	setName (null);
-		//	setC_BPartner_ID (0);
-		//	setC_Charge_ID (0);
-		//	setC_Commission_ID (0);
-		//	setC_Currency_ID (0);
-			//
 			setDocBasisType (DOCBASISTYPE_Invoice);	// I
 			setFrequencyType (FREQUENCYTYPE_Monthly);	// M
 			setListDetails (false);

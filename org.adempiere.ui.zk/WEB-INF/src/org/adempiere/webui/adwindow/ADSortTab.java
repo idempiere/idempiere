@@ -56,6 +56,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.event.ListDataEvent;
 
 /**
@@ -79,18 +80,26 @@ public class ADSortTab extends Panel implements IADTabpanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2238411612673317537L;
+	private static final long serialVersionUID = 4302282658814599752L;
+
+	public ADSortTab()
+	{
+	}
 
 	/**
-	 *	Sort Tab Constructor
-	 *
-	 *  @param WindowNo Window No
-	 *  @param GridTab
+	 * Initiate
+	 * 
+	 * @param winPanel
+	 * @param WindowNo
+	 * @param gridTab
+	 * @param gridWindow
 	 */
-	public ADSortTab(int WindowNo, GridTab gridTab)
+	@Override
+	public void init(AbstractADWindowContent winPanel, GridTab gridTab)
 	{
+		this.adWindowPanel = winPanel;
 		if (log.isLoggable(Level.CONFIG)) log.config("SortOrder=" + gridTab.getAD_ColumnSortOrder_ID() + ", SortYesNo=" + gridTab.getAD_ColumnSortYesNo_ID());
-		m_WindowNo = WindowNo;
+		m_WindowNo = winPanel.getWindowNo();
 		this.gridTab = gridTab;
 
 		m_AD_Table_ID = gridTab.getAD_Table_ID();
@@ -102,7 +111,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 				removeAttribute(ATTR_ON_ACTIVATE_POSTED);
 			}
 		});
-	}	//	ADSortTab
+	} // init
 
 	/**	Logger			*/
 	protected static final CLogger log = CLogger.getCLogger(ADSortTab.class);
@@ -1056,5 +1065,35 @@ public class ADSortTab extends Panel implements IADTabpanel
 	{
 		return false;
 	}
-}	//ADSortTab
 
+	@Override
+	public List<org.zkoss.zul.Button> getToolbarButtons()
+	{
+		return new ArrayList<org.zkoss.zul.Button>();
+	}
+
+	@Override
+	public boolean isEnableCustomizeButton()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isEnableProcessButton()
+	{
+		return false;
+	}
+
+	@Override
+	public void updateToolbar(ADWindowToolbar toolbar)
+	{
+
+	}
+
+	@Override
+	public void updateDetailToolbar(Toolbar toolbar)
+	{
+
+	}
+
+}	//ADSortTab

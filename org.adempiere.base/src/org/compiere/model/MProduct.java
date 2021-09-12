@@ -225,12 +225,6 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		super (ctx, M_Product_ID, trxName);
 		if (M_Product_ID == 0)
 		{
-		//	setValue (null);
-		//	setName (null);
-		//	setM_Product_Category_ID (0);
-		//	setC_TaxCategory_ID (0);
-		//	setC_UOM_ID (0);
-		//
 			setProductType (PRODUCTTYPE_Item);	// I
 			setIsBOM (false);	// N
 			setIsInvoicePrintDetails (false);
@@ -668,7 +662,6 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		
 		//	Reset Stocked if not Item
 		//AZ Goodwill: Bug Fix isStocked always return false
-		//if (isStocked() && !PRODUCTTYPE_Item.equals(getProductType()))
 		if (!PRODUCTTYPE_Item.equals(getProductType()))
 			setIsStocked(false);
 		
@@ -782,7 +775,6 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 					+ "FROM M_Product p "
 					+ "WHERE p.M_Product_ID=a.M_Product_ID) "
 				+ "WHERE IsActive='Y'"
-			//	+ " AND GuaranteeDate > getDate()"
 				+ "  AND M_Product_ID=" + getM_Product_ID();
 			int no = DB.executeUpdate(sql, get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Asset Description updated #" + no);
@@ -825,29 +817,6 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		}
 		//	delete costing		
 		MCost.delete(this);
-		
-		// [ 1674225 ] Delete Product: Costing deletion error
-		/*MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(getCtx(),getAD_Client_ID(), get_TrxName());
-		for(int i=0; i<mass.length; i++)
-		{
-			// Get Cost Elements
-			MCostElement[] ces = MCostElement.getMaterialWithCostingMethods(this);
-			MCostElement ce = null;
-			for(int j=0; j<ces.length; j++)
-			{
-				if(MCostElement.COSTINGMETHOD_StandardCosting.equals(ces[i].getCostingMethod()))
-				{
-					ce = ces[i];
-					break;
-				}
-			}
-			
-			if(ce == null)
-				continue;
-			
-			MCost mcost = MCost.get(this, 0, mass[i], 0, ce.getM_CostElement_ID());
-			mcost.delete(true, get_TrxName());
-		}*/
 		
 		//
 		return true; 

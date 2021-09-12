@@ -131,8 +131,6 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 		super(ctx, R_RequestType_ID, trxName);
 		if (R_RequestType_ID == 0)
 		{
-		//	setR_RequestType_ID (0);
-		//	setName (null);
 			setDueDateTolerance (7);
 			setIsDefault (false);
 			setIsEMailWhenDue (false);
@@ -428,8 +426,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureScope))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		;
+
 			sb.append(" AND TRUNC(")
 				.append(dateColumn).append(",'").append(trunc).append("')=TRUNC(")
 				.append(DB.TO_DATE(reportDate)).append(",'").append(trunc).append("')");
@@ -476,8 +473,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureDisplay))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		;
+
 			orderBy = "TRUNC(" + dateColumn + ",'" + trunc + "')";
 			groupBy = orderBy + ", 3 ";
 			sb.append(orderBy)
@@ -546,8 +542,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 				trunc = "MM";
 			else if (MGoal.MEASUREDISPLAY_Week.equals(MeasureDisplay))
 				trunc = "W";
-		//	else if (MGoal.MEASUREDISPLAY_Day.equals(MeasureDisplay))
-		//		trunc = "D";
+
 			where = "TRUNC(" + dateColumn + ",'" + trunc
 				+ "')=TRUNC(" + DB.TO_DATE(date) + ",'" + trunc + "')";
 		}

@@ -36,10 +36,8 @@ public class MProductionLine extends X_M_ProductionLine {
 		super (ctx, M_ProductionLine_ID, trxName);
 		if (M_ProductionLine_ID == 0)
 		{
-			setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionLine WHERE M_Production_ID=@M_Production_ID@
+			setLine (0);
 			setM_AttributeSetInstance_ID (0);
-//			setM_Locator_ID (0);	// @M_Locator_ID@
-//			setM_Product_ID (0);
 			setM_ProductionLine_ID (0);
 			setM_Production_ID (0);
 			setMovementQty (Env.ZERO);

@@ -137,17 +137,6 @@ public class MPaymentTerm extends X_C_PaymentTerm
 				setIsValid(true);
 			return validMsg;
 		}
-		// Allow schedules with just one record
-		// if (m_schedule.length == 1)
-		// {
-		// 	setIsValid(false);
-		// 	if (m_schedule[0].isValid())
-		// 	{
-		// 		m_schedule[0].setIsValid(false);
-		// 		m_schedule[0].saveEx();
-		// 	}
-		// 	return "@Invalid@ @Count@ # = 1 (@C_PaySchedule_ID@)";
-		// }
 		
 		//	Add up
 		BigDecimal total = Env.ZERO;

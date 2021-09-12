@@ -52,7 +52,6 @@ public class MDunningRun extends X_C_DunningRun
 		super (ctx, C_DunningRun_ID, trxName);
 		if (C_DunningRun_ID == 0)
 		{
-		//	setC_DunningLevel_ID (0);
 			setDunningDate (new Timestamp(System.currentTimeMillis()));
 			setProcessed (false);
 		}	

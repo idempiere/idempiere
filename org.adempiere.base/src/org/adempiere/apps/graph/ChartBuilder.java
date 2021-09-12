@@ -155,6 +155,7 @@ public class ChartBuilder {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void addData(MChartDatasource ds) {
 		
 		String value = ds.getValueColumn();
@@ -371,6 +372,7 @@ public class ChartBuilder {
 		return (IntervalXYDataset) dataset;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public PieDataset getPieDataset() {
 		dataset = new DefaultPieDataset();
 		loadData();
@@ -461,7 +463,7 @@ public class ChartBuilder {
 	}
 
 	private JFreeChart create3DPieChart() {
-		final JFreeChart chart = ChartFactory.createPieChart3D(chartModel.get_Translation(MChart.COLUMNNAME_Name),
+		final JFreeChart chart = ChartFactory.createPieChart(chartModel.get_Translation(MChart.COLUMNNAME_Name),
 				getPieDataset(), false, true, true);
 	
 		return chart;
@@ -491,7 +493,7 @@ public class ChartBuilder {
 	}
 
 	private JFreeChart create3DBarChart() {
-		JFreeChart chart = ChartFactory.createBarChart3D(
+		JFreeChart chart = ChartFactory.createBarChart(
 				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
 				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
 				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
@@ -532,7 +534,7 @@ public class ChartBuilder {
 	}
 
 	private JFreeChart create3DStackedBarChart() {
-		JFreeChart chart = ChartFactory.createStackedBarChart3D(
+		JFreeChart chart = ChartFactory.createStackedBarChart(
 				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
 				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
 				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label
@@ -605,7 +607,7 @@ public class ChartBuilder {
 
 	private JFreeChart create3DLineChart() {
 		// create the chart...
-		JFreeChart chart = ChartFactory.createLineChart3D(
+		JFreeChart chart = ChartFactory.createLineChart(
 				chartModel.get_Translation(MChart.COLUMNNAME_Name),         // chart title
 				chartModel.get_Translation(MChart.COLUMNNAME_DomainLabel),               // domain axis label
 				chartModel.get_Translation(MChart.COLUMNNAME_RangeLabel),                  // range axis label

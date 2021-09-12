@@ -171,7 +171,8 @@ public class EmailSrv {
 			return mailSession;
 		
 		//	Session
-		Properties props = System.getProperties();
+		Properties props = new Properties();
+		props.putAll(System.getProperties());
 		String protocol = "imap";
 		if (isSSL){
 			protocol = "imaps";

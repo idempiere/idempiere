@@ -89,13 +89,8 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		super (ctx, AD_Process_Para_ID, trxName);
 		if (AD_Process_Para_ID == 0)
 		{
-		//	setAD_Process_ID (0);	Parent
-		//	setName (null);
-		//	setColumnName (null);
-			
 			setFieldLength (0);
 			setSeqNo (0);
-		//	setAD_Reference_ID (0);
 			setIsCentrallyMaintained (true);
 			setIsRange (false);
 			setIsMandatory (false);

@@ -153,8 +153,6 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 		{
 			if (m_createNew)
 			{
-			//	setValue (null);
-			//	setName (null);
 				setAD_Org_ID(0);
 				setIsMultiLingualDocument (false);
 				setIsSmtpAuthorization (false);
@@ -1015,7 +1013,6 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	 *
 	 *	@return boolean representing if client accounting is enabled and it's on a client
 	 */
-	//private static final String CLIENT_ACCOUNTING_DISABLED = "D";
 	private static final String CLIENT_ACCOUNTING_QUEUE = "Q";
 	private static final String CLIENT_ACCOUNTING_IMMEDIATE = "I";
 

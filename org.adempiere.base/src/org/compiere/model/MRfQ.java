@@ -89,11 +89,6 @@ public class MRfQ extends X_C_RfQ
 		super (ctx, C_RfQ_ID, trxName);
 		if (C_RfQ_ID == 0)
 		{
-		//	setC_RfQ_Topic_ID (0);
-		//	setName (null);
-		//	setC_Currency_ID (0);	// @$C_Currency_ID @
-		//	setSalesRep_ID (0);
-			//
 			setDateResponse (new Timestamp(System.currentTimeMillis()));
 			setDateWorkStart (new Timestamp(System.currentTimeMillis()));
 			setIsInvitedVendorsOnly (false);

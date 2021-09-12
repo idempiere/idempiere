@@ -185,6 +185,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		setClosable(true);
 		setSizable(true);
 		setMaximizable(true);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {		
@@ -213,8 +214,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 */
 	public void onEvent(Event event) throws Exception {
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
-			cancelled = true;
-			detach();
+			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
 				if (tabbox.getSelectedIndex() == 0) {
@@ -248,6 +248,11 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 				updateStatus(editor.getValue().length());
 			}
 		}
+	}
+
+	private void onCancel() {
+		cancelled = true;
+		detach();
 	}
 	
 	private void updateStatus(int newLength) {

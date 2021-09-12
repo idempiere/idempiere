@@ -56,8 +56,6 @@ public class MCashLine extends X_C_CashLine
 		super (ctx, C_CashLine_ID, trxName);
 		if (C_CashLine_ID == 0)
 		{
-		//	setLine (0);
-		//	setCashType (CASHTYPE_GeneralExpense);
 			setAmount (Env.ZERO);
 			setDiscountAmt(Env.ZERO);
 			setWriteOffAmt(Env.ZERO);
