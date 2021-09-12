@@ -29,11 +29,12 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
-import org.compiere.Adempiere;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Language Model
@@ -44,12 +45,14 @@ import org.compiere.util.Msg;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2444851 ] MLanguage should throw an exception if there is an error
  */
-public class MLanguage extends X_AD_Language
-{
+public class MLanguage extends X_AD_Language implements ImmutablePOSupport
+{	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6415602943484245447L;
+	private static final long serialVersionUID = 6553711529361500744L;
+	
+	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"_AD_Language", 100, false);
 
 	/**
 	 * 	Get Language Model from Language
@@ -70,9 +73,16 @@ public class MLanguage extends X_AD_Language
 	 */
 	public static MLanguage get (Properties ctx, String AD_Language)
 	{
-		return new Query(ctx, Table_Name, COLUMNNAME_AD_Language+"=?", null)
+		MLanguage retValue = s_cache.get(ctx, AD_Language, e -> new MLanguage(ctx, e));
+		if (retValue != null)
+			return retValue;
+		
+		retValue = new Query(ctx, Table_Name, COLUMNNAME_AD_Language+"=?", null)
 					.setParameters(AD_Language)
 					.firstOnly();
+		if (retValue != null)
+			s_cache.put(AD_Language, retValue, e -> new MLanguage(ctx, e));
+		return retValue;
 	}	//	get
 
 	/**
@@ -146,6 +156,27 @@ public class MLanguage extends X_AD_Language
 		setCountryCode(CountryCode);	//	US
 		setLanguageISO(LanguageISO);	//	en
 	}	//	MLanguage
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLanguage(Properties ctx, MLanguage copy) {
+		this(ctx, copy, (String)null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLanguage(Properties ctx, MLanguage copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_dateFormat = copy.m_dateFormat != null ? new SimpleDateFormat(copy.m_dateFormat.toPattern()) : null; 
+	}
 
 	/**	Locale						*/
 	private Locale				m_locale = null;
@@ -474,18 +505,13 @@ public class MLanguage extends X_AD_Language
 		return no;
 	}	//	addTable
 
-
-	/**************************************************************************
-	 * 	Setup
-	 *	@param args args
-	 */
-	public static void main(String[] args)
-	{
-		System.out.println("Language");
-		Adempiere.startup(true);
-
-		System.out.println(MLanguage.get(Env.getCtx(), "de_DE"));
-		System.out.println(MLanguage.get(Env.getCtx(), "en_US"));
-	}	//	main
+	@Override
+	public MLanguage markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		return this;
+	}
 
 }	//	MLanguage

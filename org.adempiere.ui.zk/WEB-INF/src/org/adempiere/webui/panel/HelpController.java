@@ -380,7 +380,7 @@ public class HelpController
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Form))
         	{
-        		MForm form = new MForm(Env.getCtx(), recordId, null);
+        		MForm form = MForm.get(recordId);
         		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Form")) {
 
 					nameMsg = form.get_Translation("Name",false);
