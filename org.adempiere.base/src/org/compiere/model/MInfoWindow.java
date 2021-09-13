@@ -244,17 +244,10 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	public synchronized MInfoColumn[] getInfoColumns() {
 		if (m_infocolumns == null) {
 			Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
-			List<MInfoColumn> list = new ArrayList<MInfoColumn>();
-			POResultSet<MInfoColumn> rs = query.setParameters(getAD_InfoWindow_ID())
+			List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
 					.setOnlyActiveRecords(true)
 					.setOrderBy("SeqNo, AD_InfoColumn_ID")
-					.scroll();
-			try {
-				while (rs.hasNext())
-					list.add(rs.next());
-			} finally {
-				rs.close();
-			}
+					.list();
 			m_infocolumns = list.toArray(new MInfoColumn[0]);
 		}
 		
