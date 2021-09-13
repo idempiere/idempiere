@@ -285,7 +285,7 @@ public class HelpController
 
     		if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Tab))
         	{
-        		MTab tab = new MTab(Env.getCtx(), recordId, null);
+        		MTab tab = MTab.get(recordId);
         		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Tab")) {
 
 					nameMsg = tab.get_Translation("Name", false);
