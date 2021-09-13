@@ -137,30 +137,17 @@ public class MPInstance extends X_AD_PInstance
 	{
 		if (m_parameters != null)
 			return m_parameters;
-		
-		List <MPInstancePara> list = new ArrayList<MPInstancePara>();
-		try (POResultSet<MPInstancePara> rs = getScrollableParameters())
-		{
-			while(rs.hasNext())
-				list.add(rs.next());
-		}
+		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
+		final String whereClause = "AD_PInstance_ID=?";
+		List <MPInstancePara> list = new Query(getCtx(), I_AD_PInstance_Para.Table_Name, whereClause, null) // @TODO: Review implications of using transaction 
+		.setParameters(getAD_PInstance_ID())
+		.setOrderBy("SeqNo, ParameterName")
+		.list();
+
 		//
 		m_parameters = new MPInstancePara[list.size()];
 		list.toArray(m_parameters);
 		return m_parameters;
-	}	//	getParameters
-	
-	/**
-	 * 	Get Parameters
-	 *	@return {@link POResultSet}
-	 */
-	public POResultSet<MPInstancePara> getScrollableParameters()
-	{
-		final String whereClause = "AD_PInstance_ID=?";
-		return new Query(getCtx(), I_AD_PInstance_Para.Table_Name, whereClause, null) 
-			.setParameters(getAD_PInstance_ID())
-			.setOrderBy("SeqNo, ParameterName")
-			.scroll();
 	}	//	getParameters
 	
 	/**
@@ -452,17 +439,15 @@ public class MPInstance extends X_AD_PInstance
 		List<MPInstance> list = new ArrayList<MPInstance>();
 		List<String> paramsStrAdded = new ArrayList<String>();
 
-		Query query = new Query(ctx, Table_Name, "AD_Process_ID=? AND AD_User_ID=? AND Name IS NOT NULL", null)
+		List<MPInstance> namedInstances = new Query(ctx, Table_Name, "AD_Process_ID=? AND AD_User_ID=? AND Name IS NOT NULL", null)
 			.setClient_ID()
 			.setOnlyActiveRecords(true)
 			.setParameters(AD_Process_ID, AD_User_ID)
-			.setOrderBy("Name");		
-		try (POResultSet<MPInstance> namedInstances = query.scroll()) {
-			while(namedInstances.hasNext()) {
-				MPInstance namedInstance = namedInstances.next();
-				list.add(namedInstance);
-				paramsStrAdded.add(namedInstance.getParamsStr());
-			}			
+			.setOrderBy("Name")
+			.list();
+		for (MPInstance namedInstance : namedInstances) {
+			list.add(namedInstance);
+			paramsStrAdded.add(namedInstance.getParamsStr());
 		}
 
 		// unnamed instances
