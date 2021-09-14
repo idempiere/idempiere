@@ -64,7 +64,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      */
     public void onMenuSelected(int menuId)
     {
-        MMenu menu = new MMenu(Env.getCtx(), menuId, null);
+        MMenu menu = MMenu.get(menuId); 
 
       try
       {
