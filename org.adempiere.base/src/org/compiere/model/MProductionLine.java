@@ -36,10 +36,8 @@ public class MProductionLine extends X_M_ProductionLine {
 		super (ctx, M_ProductionLine_ID, trxName);
 		if (M_ProductionLine_ID == 0)
 		{
-			setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionLine WHERE M_Production_ID=@M_Production_ID@
+			setLine (0);
 			setM_AttributeSetInstance_ID (0);
-//			setM_Locator_ID (0);	// @M_Locator_ID@
-//			setM_Product_ID (0);
 			setM_ProductionLine_ID (0);
 			setM_Production_ID (0);
 			setMovementQty (Env.ZERO);
@@ -108,81 +106,42 @@ public class MProductionLine extends X_M_ProductionLine {
 		if (log.isLoggable(Level.FINEST))	log.log(Level.FINEST, "asi Description is: " + asiString);
 		// create transactions for finished goods
 		if ( getM_Product_ID() == getEndProduct_ID()) {
+			if (reversalId <= 0  && isAutoGenerateLot && getM_AttributeSetInstance_ID() == 0)
+			{
+				asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
+				setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+			} 
+			Timestamp dateMPolicy = date;
+			if(getM_AttributeSetInstance_ID()>0){
+				Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), getM_Locator_ID(), get_TrxName());
+				if (t != null)
+					dateMPolicy = t;
+			}
 			
-			// Loop over all existing MAs to make sure that multiple serial numbers are saved
-			ArrayList<MProductionLineMA> existingMAs = getLineMAs();
-			if (existingMAs.isEmpty()) {
-				// use old mechanics if no MAs exist
-				if (reversalId <= 0  && isAutoGenerateLot && getM_AttributeSetInstance_ID() == 0)
-				{
-					asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
-					setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
-				} 
-				Timestamp dateMPolicy = date;
-				if(getM_AttributeSetInstance_ID()>0){
-					Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), getM_Locator_ID(), get_TrxName());
-					if (t != null)
-						dateMPolicy = t;
-				}
-				
-				dateMPolicy = Util.removeTime(dateMPolicy);
-				//for reversal, keep the ma copy from original trx
-				if (reversalId <= 0  ) 
-				{
-					MProductionLineMA lineMA = new MProductionLineMA( this,
-							asi.get_ID(), getMovementQty(),dateMPolicy);
-					if ( !lineMA.save(get_TrxName()) ) {
-						log.log(Level.SEVERE, "Could not save MA for " + toString());
-						errorString.append("Could not save MA for " + toString() + "\n" );
-					}
-				}
-				MTransaction matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
-						"P+", 
-						getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
-						getMovementQty(), date, get_TrxName());
-				matTrx.setM_ProductionLine_ID(get_ID());
-				if ( !matTrx.save(get_TrxName()) ) {
-					log.log(Level.SEVERE, "Could not save transaction for " + toString());
-					errorString.append("Could not save transaction for " + toString() + "\n");
-				}
-				MStorageOnHand storage = MStorageOnHand.getCreate(getCtx(), getM_Locator_ID(),
-						getM_Product_ID(), asi.get_ID(),dateMPolicy, get_TrxName());
-				storage.addQtyOnHand(getMovementQty());
-				if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Created finished goods line " + getLine());
-			
-			} else {
-				// MAs were added manually, use new mechanics
-				BigDecimal qtyToCreate = new BigDecimal(0).add(getMovementQty());
-				
-				for (MProductionLineMA existing : existingMAs) {
-					try {
-						asi = (MAttributeSetInstance) existing.getM_AttributeSetInstance();
-					} catch (ClassCastException e) {
-						errorString.append("Caught " + e + " at ProductionLineMA with ID " + existing.get_ID() + "\n");
-					}
-					
-					MTransaction matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
-							"P+", 
-							getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
-							existing.getMovementQty(), date, get_TrxName());
-					matTrx.setM_ProductionLine_ID(get_ID());
-					if ( !matTrx.save(get_TrxName()) ) {
-						log.log(Level.SEVERE, "Could not save transaction for " + toString());
-						errorString.append("Could not save transaction for " + toString() + "\n");
-					}
-					
-					MStorageOnHand storage = MStorageOnHand.getCreate(getCtx(), getM_Locator_ID(),
-							getM_Product_ID(), asi.get_ID(), Util.removeTime(date), get_TrxName());
-					storage.addQtyOnHand(existing.getMovementQty());
-					
-					BigDecimal tmp = existing.getMovementQty().negate();
-					qtyToCreate = qtyToCreate.add(tmp);
-				}
-				
-				if (qtyToCreate.signum() != 0) {
-					errorString.append( (qtyToCreate.signum() < 0 ? "Too many" : "Insufficient") + " products were created. Please check the amounts entered in the endproduct's attribute set instances.\n");
+			dateMPolicy = Util.removeTime(dateMPolicy);
+			//for reversal, keep the ma copy from original trx
+			if (reversalId <= 0  ) 
+			{
+				MProductionLineMA lineMA = new MProductionLineMA( this,
+						asi.get_ID(), getMovementQty(),dateMPolicy);
+				if ( !lineMA.save(get_TrxName()) ) {
+					log.log(Level.SEVERE, "Could not save MA for " + toString());
+					errorString.append("Could not save MA for " + toString() + "\n" );
 				}
 			}
+			MTransaction matTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
+					"P+", 
+					getM_Locator_ID(), getM_Product_ID(), asi.get_ID(), 
+					getMovementQty(), date, get_TrxName());
+			matTrx.setM_ProductionLine_ID(get_ID());
+			if ( !matTrx.save(get_TrxName()) ) {
+				log.log(Level.SEVERE, "Could not save transaction for " + toString());
+				errorString.append("Could not save transaction for " + toString() + "\n");
+			}
+			MStorageOnHand storage = MStorageOnHand.getCreate(getCtx(), getM_Locator_ID(),
+					getM_Product_ID(), asi.get_ID(),dateMPolicy, get_TrxName());
+			storage.addQtyOnHand(getMovementQty());
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Created finished goods line " + getLine());
 			
 			return errorString.toString();
 		}
@@ -197,10 +156,9 @@ public class MProductionLine extends X_M_ProductionLine {
 
 		if (qtyToMove.signum() > 0) {
 			// new mechanics to keep existing ASIs
-			// start by listing all that exist already
-			ArrayList<MProductionLineMA> existingMAs = getLineMAs();
+			MProductionLineMA[] existingMAs = getLineMAs();
 			
-			// for each of them: find the specified item in the storage and reduce the amount
+			// for each existing ASI: find the specified item in the storage and reduce the amount
 			// if it's not in there, remove it
 			for (MProductionLineMA ma : existingMAs) {
 				int storageErrCounter = 0;
@@ -250,6 +208,7 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			
 			// old mechanics to fill leftovers
+			
 			for (int sl = 0; sl < storages.length; sl++) {
 	
 				BigDecimal lineQty = storages[sl].getQtyOnHand();
@@ -428,14 +387,8 @@ public class MProductionLine extends X_M_ProductionLine {
 		}
 	}
 
-	/**
-	 * Removes all automatically generated attribute set instances from the current line
-	 * @param onlyAutoGenerated If true, this will only delete MAs marked as isAutoGenerated
-	 * @return The amount of deleted lines
-	 */
 	protected int deleteMA(boolean onlyAutoGenerated) {
-		String sql = "DELETE FROM M_ProductionLineMA WHERE M_ProductionLine_ID = " + get_ID() 
-			+ (onlyAutoGenerated ? " AND isAutoGenerated = 'Y'" : "");
+		String sql = "DELETE FROM M_ProductionLineMA WHERE M_ProductionLine_ID = " + get_ID() + (onlyAutoGenerated?" AND isAutoGenerated = 'Y'":"");
 		int count = DB.executeUpdateEx( sql, get_TrxName() );
 		return count;
 	}
@@ -455,6 +408,10 @@ public class MProductionLine extends X_M_ProductionLine {
 
 		if (getM_Production_ID() > 0) 
 		{
+			if (newRecord && productionParent.isProcessed()) {
+				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+				return false;
+			}
 			if ( productionParent.getM_Product_ID() == getM_Product_ID() && productionParent.getProductionQty().signum() == getMovementQty().signum())
 				setIsEndProduct(true);
 			else 
@@ -463,6 +420,11 @@ public class MProductionLine extends X_M_ProductionLine {
 		else 
 		{
 			I_M_ProductionPlan plan = getM_ProductionPlan();
+			MProduction prod = new MProduction(getCtx(), plan.getM_Production_ID(), get_TrxName());
+			if (newRecord && prod.isProcessed()) {
+				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+				return false;
+			}
 			if (plan.getM_Product_ID() == getM_Product_ID() && plan.getProductionQty().signum() == getMovementQty().signum())
 				setIsEndProduct(true);
 			else 
@@ -512,23 +474,39 @@ public class MProductionLine extends X_M_ProductionLine {
 	}
 
 	/**
-	 * Creates a new list, adds all existing MAs to it via the load constructor and returns the list.
 	 * 
-	 * @return An {@code ArrayList} holding references to all existing {@link MProductionLineMA} objects associated with this line.
+	 * @return
 	 */
-	public ArrayList<MProductionLineMA> getLineMAs() {
-		ArrayList<MProductionLineMA> existingMAs = new ArrayList<>();
-		String checkExistingSql = "SELECT * FROM M_ProductionLineMA WHERE M_ProductionLine_ID = ?";
-		try {
-			PreparedStatement checkExistingStatement = DB.prepareStatement(checkExistingSql, null);
-			checkExistingStatement.setInt(1, getM_ProductionLine_ID());
-			ResultSet checkExistingRS = checkExistingStatement.executeQuery();
-			while (checkExistingRS.next())
-				existingMAs.add(new MProductionLineMA(getCtx(), checkExistingRS, null));
-		} catch (SQLException e) {
-			log.warning(e.getMessage());
+	public MProductionLineMA[] getLineMAs() {
+		ArrayList<MProductionLineMA> list = new ArrayList<MProductionLineMA>();
+		
+		String sql = "SELECT pl.M_ProductionLine_ID, pl,M_AttributeSetInstance_ID , pl.MovementQty, pl.DateMaterialPolicy "
+			+ "FROM M_ProductionLineMA pl "
+			+ "WHERE pl.M_ProductionLine_ID = ?";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt.setInt(1, get_ID());			
+			rs = pstmt.executeQuery();
+			while (rs.next())
+				list.add( new MProductionLineMA( this, rs.getInt(2), rs.getBigDecimal(3), rs.getTimestamp(4) ) );	
+		}
+		catch (SQLException ex)
+		{
+			throw new AdempiereException("Unable to load production lines", ex);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
 		}
 		
-		return existingMAs;
+		MProductionLineMA[] retValue = new MProductionLineMA[list.size()];
+		list.toArray(retValue);
+		return retValue;
 	}
 }
