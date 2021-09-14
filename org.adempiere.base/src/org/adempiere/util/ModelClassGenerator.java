@@ -36,7 +36,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.Adempiere;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
