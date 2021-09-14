@@ -29,6 +29,7 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Info Window Column Model
@@ -36,12 +37,12 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: MInfoColumn.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
+public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6313260451237775302L;
+	private static final long serialVersionUID = 3909164419255524834L;
 
 	/**
 	 * 	Stanfard Constructor
@@ -225,5 +226,17 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 	@Override
 	public I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException {
 		return MValRule.getCopy(getCtx(), getAD_Val_Rule_ID(), get_TrxName());
+	}
+
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_parent != null && !m_parent.is_Immutable())
+			m_parent.markImmutable();
+		
+		return this;
 	}
 }	//	MInfoColumn

@@ -427,7 +427,7 @@ public class HelpController
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Info))
         	{
-        		MInfoWindow info = new MInfoWindow(Env.getCtx(), recordId, null);
+        		MInfoWindow info = MInfoWindow.getInfoWindow(recordId);
         		// Load User Def
     			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
 
