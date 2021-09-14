@@ -208,5 +208,5 @@ Automatic-Module-Name: org.idempiere.keikai
 Bundle-Vendor: iDempiere Community
 Bundle-ActivationPolicy: lazy
 Fragment-Host: org.adempiere.ui.zk;bundle-version="9.0.0"
-Jetty-WarPatchFragmentFolderPath: /
+Jetty-WarPrependFragmentResourcePath: /
 Service-Component: OSGI-INF/org.idempiere.keikai.view.KeikaiMediaViewProvider.xml

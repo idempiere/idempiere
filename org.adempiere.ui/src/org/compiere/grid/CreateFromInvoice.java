@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
@@ -547,6 +548,14 @@ public abstract class CreateFromInvoice extends CreateFrom
 				if (inoutLine != null)
 				{
 					invoiceLine.setShipLine(inoutLine);		//	overwrites
+					if(invoiceLine.getC_UOM_ID()!=inoutLine.getC_UOM_ID()) {
+						invoiceLine.setC_UOM_ID(inoutLine.getC_UOM_ID());						
+						BigDecimal PriceEntered = MUOMConversion.convertProductFrom (invoice.getCtx(), M_Product_ID, 
+								inoutLine.getC_UOM_ID(), invoiceLine.getPriceEntered());
+							if (PriceEntered == null)
+								throw new AdempiereException("No Conversion For Price=" + invoiceLine.getPriceEntered());
+						invoiceLine.setPriceEntered(PriceEntered);						
+					}						
 				}
 				else {
 					log.fine("No Receipt Line");
