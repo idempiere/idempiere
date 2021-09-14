@@ -411,9 +411,9 @@ public class ModelClassGenerator
 			{
 				sb.append(NL)
 				.append("\tpublic ").append(referenceClassName).append(" get").append(fieldName).append("() throws RuntimeException").append(NL)
-				.append("    {").append(NL)
-				.append("\t\treturn (").append(referenceClassName).append(")MTable.get(getCtx(), ").append(referenceClassName).append(".Table_Name)").append(NL)
-				.append("\t\t\t.getPO(get").append(columnName).append("(), get_TrxName());")
+				.append("\t{").append(NL)
+				.append("\t\treturn (").append(referenceClassName).append(")MTable.get(getCtx(), ").append(referenceClassName).append(".Table_ID)").append(NL)
+				.append("\t\t\t.getPO(get").append(columnName).append("(), get_TrxName());").append(NL)
 				/**/
 				.append("\t}").append(NL)
 				;
