@@ -41,17 +41,20 @@ public class AnnotationBasedModelFactory extends DefaultModelFactory implements 
 				return candidate;
 		}
 
-		// scan annotations
+		// scan model annotations
 		BundleWiring wiring = usingBundle.adapt(BundleWiring.class);
-		for(Class<?> clazz : ClassIndex.getAnnotated(Model.class, wiring.getClassLoader()))
+		for(Class<?> xClass : ClassIndex.getAnnotated(Model.class, wiring.getClassLoader()))
 		{
-			Model ma = clazz.getAnnotation(Model.class);
-			if(ma.table().equalsIgnoreCase(tableName)) 
+			Model annotation = xClass.getAnnotation(Model.class);
+			if(annotation.table().equalsIgnoreCase(tableName))
 			{
-				candidate = clazz;
-				// M* classes are preferred over X* classes
-				if(!ma.intermediate())
-					break;
+				candidate = xClass;
+				for(Class<?> mClass : ClassIndex.getSubclasses(xClass, wiring.getClassLoader())) {
+					if(!mClass.equals(candidate) && candidate.isAssignableFrom(mClass))
+						// favoring candidates higher in the class hierarchy
+						candidate = mClass;
+				}
+				break;
 			}
 		}
 

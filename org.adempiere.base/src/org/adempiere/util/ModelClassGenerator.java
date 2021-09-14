@@ -36,6 +36,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.Adempiere;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
@@ -168,6 +169,7 @@ public class ModelClassGenerator
 		start.append("/** Generated Model for ").append(tableName).append(NL)
 			 .append(" *  @author iDempiere (generated) ").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
+			 .append("@IndexSubclasses").append(NL)
 			 .append("@org.adempiere.base.Model(table=\"").append(tableName).append("\", intermediate=true)").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")

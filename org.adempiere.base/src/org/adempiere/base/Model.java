@@ -21,10 +21,4 @@ public @interface Model {
 	 */
 	String table();
 
-	/**
-	 * Identifies auto-generated X* model classes.
-	 * @return
-	 */
-	boolean intermediate() default false;
-
 }
