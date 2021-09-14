@@ -58,7 +58,7 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	public static MTab get(int AD_Tab_ID)
 	{
 		Integer key = Integer.valueOf(AD_Tab_ID);
-		MTab retValue = s_cache.get (key);
+		MTab retValue = s_cache.get (Env.getCtx(), key, e -> new MTab(Env.getCtx(), e));
 		if (retValue != null) 
 			return retValue;
 		

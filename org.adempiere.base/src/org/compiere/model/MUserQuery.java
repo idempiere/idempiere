@@ -300,7 +300,7 @@ public class MUserQuery extends X_AD_UserQuery
 	protected boolean beforeSave(boolean newRecord) {
 		if (getAD_Tab_ID() > 0) {
 			if (newRecord || is_ValueChanged(COLUMNNAME_AD_Tab_ID)) {
-				MTab tab = MTab.get(getAD_Tab_ID());
+				MTab tab = new MTab(getCtx(), getAD_Tab_ID(), get_TrxName());
 				setAD_Window_ID(tab.getAD_Window_ID());
 				setAD_Table_ID(tab.getAD_Table_ID());
 			}
