@@ -48,7 +48,6 @@ import org.idempiere.cache.ImmutablePOSupport;
  * @author Mark Ostermann (mark_o), metas consult GmbH
  * 			<li>BF [ 2814628 ] Wrong evaluation of Product inactive in beforeSave()
  */
-@org.adempiere.base.Model(table="M_Product")
 public class MProduct extends X_M_Product implements ImmutablePOSupport
 {
 	/**
