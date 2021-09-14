@@ -30,7 +30,9 @@
     <stringAttribute key="product" value="org.adempiere.server.server_product"/>
     <stringAttribute key="productFile" value="/org.adempiere.server-feature/server.product"/>
     <setAttribute key="selected_target_bundles">
+        <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
+        <setEntry value="bcutil@default:default"/>
         <setEntry value="com.github.librepdf.openpdf-fonts-extra@default:default"/>
         <setEntry value="com.github.librepdf.openpdf@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
@@ -61,6 +63,7 @@
         <setEntry value="org.apache.geronimo.specs.geronimo-jms_1.1_spec@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
+        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib.source"/>
         <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
@@ -74,6 +77,7 @@
         <setEntry value="org.eclipse.equinox.preferences@default:default"/>
         <setEntry value="org.eclipse.equinox.registry@default:default"/>
         <setEntry value="org.eclipse.jetty.servlet-api@default:default"/>
+        <setEntry value="org.eclipse.jetty.util@default:default"/>
         <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
         <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
@@ -91,7 +95,6 @@
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-kahadb-store@default:default"/>
-        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
         <setEntry value="wrapped.org.apache.xmlbeans.xmlbeans@default:default"/>
@@ -101,6 +104,7 @@
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.adempiere.base@default:default"/>
+        <setEntry value="org.adempiere.install@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
