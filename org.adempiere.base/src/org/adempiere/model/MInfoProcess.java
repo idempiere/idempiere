@@ -23,6 +23,7 @@ import org.compiere.model.X_AD_InfoProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * Contain info of process in info window
@@ -30,11 +31,12 @@ import org.compiere.util.Evaluator;
  * @author hieplq
  *
  */
-public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
+public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, ImmutablePOSupport {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5586972894900686397L;
+	private static final long serialVersionUID = 7833442401205258074L;
 
 	/**
 	 * {@inheritDoc}
@@ -114,6 +116,16 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
 	@Override
 	public MInfoColumn getAD_InfoColumn (){
 		return (MInfoColumn)super.getAD_InfoColumn();
+	}
+
+	@Override
+	public MInfoProcess markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		
+		return this;
 	}
 	
 }

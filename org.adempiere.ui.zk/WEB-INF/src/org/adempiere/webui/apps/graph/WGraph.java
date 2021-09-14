@@ -39,6 +39,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zhtml.A;
 import org.zkoss.zhtml.Br;
 import org.zkoss.zhtml.Table;
@@ -506,12 +507,14 @@ public class WGraph extends Div implements IdSpace {
 	}
 
 	private String stripHtml(String htmlString, boolean all) {
-		htmlString = htmlString.replace("<html>", "").replace("</html>", "")
-				.replace("<body>", "").replace("</body>", "").replace("<head>",
-						"").replace("</head>", "");
-
-		if (all)
-			htmlString = htmlString.replace(">", "&gt;").replace("<", "&lt;");
+		if (!Util.isEmpty(htmlString, true)) {
+			htmlString = htmlString.replace("<html>", "").replace("</html>", "")
+					.replace("<body>", "").replace("</body>", "").replace("<head>",
+							"").replace("</head>", "");
+	
+			if (all)
+				htmlString = htmlString.replace(">", "&gt;").replace("<", "&lt;");
+		}
 		return htmlString;
 	}
 } // BarGraph
