@@ -43,7 +43,7 @@ public class DefaultEvaluatee implements Evaluatee {
 	private int m_WindowNo;
 	private int m_TabNo;
 
-	private static final ReferenceCache s_ReferenceCache = new ReferenceCache("DefaultEvaluatee_ReferenceCache", 100, 60, 2000);
+	private static final ReferenceCache s_ReferenceCache = new ReferenceCache("DefaultEvaluatee_ReferenceCache", 100, 1, 2000);
 	
 	/**
 	 * 
