@@ -197,6 +197,7 @@
         <setEntry value="org.apache.xml.resolver@default:default"/>
         <setEntry value="org.apache.xml.serializer@default:default"/>
         <setEntry value="org.atmosphere.runtime@default:default"/>
+        <setEntry value="org.codehaus.jettison.jettison@default:default"/>
         <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
         <setEntry value="org.eclipse.core.commands@default:default"/>

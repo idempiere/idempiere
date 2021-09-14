@@ -584,7 +584,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	@Override
 	protected void loadInfoWindowData (){
 		if (m_infoWindowID > 0) {
-			infoWindow = new MInfoWindow(Env.getCtx(), m_infoWindowID, null);
+			infoWindow = MInfoWindow.getInfoWindow(m_infoWindowID);
 		}else {
 			infoWindow = MInfoWindow.get(p_tableName, (String)null);			
 		}

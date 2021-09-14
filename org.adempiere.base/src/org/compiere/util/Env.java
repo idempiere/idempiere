@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +46,6 @@ import org.adempiere.util.ServerContextProvider;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.GridWindowVO;
-import org.compiere.model.I_AD_Window;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookupCache;
@@ -1922,10 +1920,6 @@ public final class Env
 		return p;
 	}
 
-	/**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
-
 	/**
 	 *  Get Window Model
 	 *
@@ -1937,46 +1931,10 @@ public final class Env
 	public static GridWindowVO getMWindowVO (int WindowNo, int AD_Window_ID, int AD_Menu_ID)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
-		GridWindowVO mWindowVO = null;
-		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
-		{
-			mWindowVO = s_windowsvo.get(AD_Window_ID);
-			if (mWindowVO != null)
-			{
-				mWindowVO = mWindowVO.clone(WindowNo);
-				if (log.isLoggable(Level.INFO)) log.info("Cached=" + mWindowVO);
-			}
-		}
-
-		//  Create Window Model on Client
-		if (mWindowVO == null)
-		{
-			if (log.isLoggable(Level.CONFIG)) log.config("create local");
-			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
-			if (mWindowVO != null)
-				s_windowsvo.put(AD_Window_ID, mWindowVO);
-		}	//	from Client
+		GridWindowVO mWindowVO = GridWindowVO.get(AD_Window_ID, WindowNo, AD_Menu_ID);
 		if (mWindowVO == null)
 			return null;
 
-		//  Check (remote) context
-		if (!mWindowVO.ctx.equals(Env.getCtx()))
-		{
-			//  Remote Context is called by value, not reference
-			//  Add Window properties to context
-			Enumeration<?> keyEnum = mWindowVO.ctx.keys();
-			while (keyEnum.hasMoreElements())
-			{
-				String key = (String)keyEnum.nextElement();
-				if (key.startsWith(WindowNo+"|"))
-				{
-					String value = mWindowVO.ctx.getProperty (key);
-					Env.setContext(Env.getCtx(), key, value);
-				}
-			}
-			//  Sync Context
-			mWindowVO.setCtx(Env.getCtx());
-		}
 		return mWindowVO;
 	}   //  getWindow
 

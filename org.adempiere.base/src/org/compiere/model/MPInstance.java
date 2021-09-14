@@ -412,6 +412,12 @@ public class MPInstance extends X_AD_PInstance
 		return ip;
 	}
 	
+	
+	@Override
+	public I_AD_Process getAD_Process() throws RuntimeException {
+		return MProcess.get(getAD_Process_ID());
+	}
+
 	public static void publishChangedEvent(int AD_User_ID) {
 		IMessageService service = Core.getMessageService();
 		if (service != null) {
@@ -447,13 +453,15 @@ public class MPInstance extends X_AD_PInstance
 		// unnamed instances
 		int lastRunCount = MSysConfig.getIntValue(MSysConfig.LASTRUN_RECORD_COUNT, 5, Env.getAD_Client_ID(ctx));
 		if (lastRunCount > 0) {
+			int maxLoopCount = 10 * lastRunCount;
 			// using JDBC instead of Query for performance reasons, AD_PInstance can be huge
 			String sql = "SELECT * FROM AD_PInstance "
 					+ " WHERE AD_Process_ID=? AND AD_User_ID=? AND IsActive='Y' AND AD_Client_ID=? AND Name IS NULL" 
 					+ " ORDER BY Created DESC";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			int cnt = 0;
+			int runCount = 0;
+			int loopCount = 0;
 			try {
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setFetchSize(lastRunCount);
@@ -462,16 +470,19 @@ public class MPInstance extends X_AD_PInstance
 				pstmt.setInt(3, Env.getAD_Client_ID(ctx));
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
+					loopCount++;
 					MPInstance unnamedInstance = new MPInstance(ctx, rs, null);
 					String paramsStr = unnamedInstance.getParamsStr();
 					if (! paramsStrAdded.contains(paramsStr)) {
 						unnamedInstance.setName(Msg.getMsg(ctx, "LastRun") + " " + unnamedInstance.getCreated());
 						list.add(unnamedInstance);
 						paramsStrAdded.add(paramsStr);
-						cnt++;
-						if (cnt == lastRunCount)
+						runCount++;
+						if (runCount == lastRunCount)
 							break;
 					}
+					if (loopCount == maxLoopCount)
+						break;
 				}
 			} catch (Exception e)
 			{

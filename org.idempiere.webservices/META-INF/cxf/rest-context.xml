@@ -19,6 +19,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean="xmlBeansProvider" />
+			<ref bean="xmlBeansJSONProvider" />
 		</jaxrs:providers>
 	</jaxrs:server>
 
@@ -27,4 +28,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
 
 	<bean id="xmlBeansProvider"
 		class="org.apache.cxf.jaxrs.provider.xmlbeans.XMLBeansElementProvider" />
+		
+	<bean id="xmlBeansJSONProvider"
+		class="org.idempiere.jaxrs.provider.xmlbeans.XMLBeansJSONProvider" />
 </beans>
