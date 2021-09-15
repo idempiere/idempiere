@@ -205,7 +205,7 @@ public class FinReport extends SvrProcess
 						MPeriod.PERIODTYPE_AdjustmentPeriod, per.getEndDate(), per.getC_Year_ID());
 				if (adjPeriodToExclude_ID > 0) {
 					p_AdjPeriodToExclude = " C_Period_ID!=" + adjPeriodToExclude_ID + " AND ";
-					log.warning("Will Exclude Adjustment Period -> " + p_AdjPeriodToExclude);
+					log.info("Will Exclude Adjustment Period -> " + p_AdjPeriodToExclude);
 				}
 			}
 		}
