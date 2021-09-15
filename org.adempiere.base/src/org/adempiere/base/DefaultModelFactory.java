@@ -28,7 +28,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Default model factory implementation base on legacy code in MTable.
+ * Default model factory implementation base on legacy code in {@link MTable}.
  * @author Jorg Janke
  * @author hengsin
  */

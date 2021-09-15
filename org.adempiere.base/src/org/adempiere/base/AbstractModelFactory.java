@@ -22,14 +22,24 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
+/**
+ * Provides basic functionality for {@link PO} resolution and instantiation.
+ * Based on legacy code in {@link MTable}.
+ * @author Jorg Janke
+ * @author hengsin
+ */
 public abstract class AbstractModelFactory implements IModelFactory {
 
 	private final static CLogger s_log = CLogger.getCLogger(AbstractModelFactory.class);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PO getPO(String tableName, int Record_ID, String trxName) {
 		Class<?> clazz = getClass(tableName);
@@ -82,6 +92,9 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PO getPO(String tableName, ResultSet rs, String trxName) {
 		Class<?> clazz = getClass(tableName);
