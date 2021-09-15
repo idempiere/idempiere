@@ -30,7 +30,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210910L;
 
     /** Standard Constructor */
     public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
         {
 			setC_AcctSchema_ID (0);
 			setC_Calendar_ID (0);
+			setExcludeAdjustmentPeriods (null);
+// 1
 			setListSources (false);
 			setListTrx (false);
 			setName (null);
@@ -177,6 +179,27 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** No = 0 */
+	public static final String EXCLUDEADJUSTMENTPERIODS_No = "0";
+	/** Only Report Period = 1 */
+	public static final String EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod = "1";
+	/** All adjustment periods = 2 */
+	public static final String EXCLUDEADJUSTMENTPERIODS_AllAdjustmentPeriods = "2";
+	/** Set Exclude Adjustment Periods.
+		@param ExcludeAdjustmentPeriods Exclude Adjustment Periods	  */
+	public void setExcludeAdjustmentPeriods (String ExcludeAdjustmentPeriods)
+	{
+
+		set_Value (COLUMNNAME_ExcludeAdjustmentPeriods, ExcludeAdjustmentPeriods);
+	}
+
+	/** Get Exclude Adjustment Periods.
+		@return Exclude Adjustment Periods	  */
+	public String getExcludeAdjustmentPeriods () 
+	{
+		return (String)get_Value(COLUMNNAME_ExcludeAdjustmentPeriods);
 	}
 
 	public org.compiere.model.I_AD_Process getJasperProcess() throws RuntimeException

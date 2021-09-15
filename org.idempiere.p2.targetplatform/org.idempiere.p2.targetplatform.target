@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-210901" sequenceNumber="1630461774">
+<target name="idempiere-210901" sequenceNumber="1631278143">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.0.1"/>
@@ -966,6 +966,12 @@ Export-Package:        *;version="${version}";-noimport:=true
       <artifactId>cxf-rt-rs-extension-providers</artifactId>
       <version>3.1.18</version>
       <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <version>1.4.1</version>
+	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.dom4j</groupId>

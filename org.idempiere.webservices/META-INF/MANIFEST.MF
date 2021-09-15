@@ -105,7 +105,8 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  wrapped.org.springframework.spring-core;bundle-version="5.2.15",
  wrapped.org.springframework.spring-expression;bundle-version="5.2.15",
  wrapped.org.apache.xmlbeans.xmlbeans;bundle-version="3.1.0",
- wrapped.org.springframework.spring-web;bundle-version="5.2.15"
+ wrapped.org.springframework.spring-web;bundle-version="5.2.15",
+ org.codehaus.jettison.jettison;bundle-version="1.4.1"
 Bundle-ClassPath: .,
  lib/idempiere-xmlbeans.jar
 Export-Package: org.compiere.model,

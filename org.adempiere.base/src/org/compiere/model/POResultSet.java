@@ -34,7 +34,7 @@ import org.compiere.util.DB;
  * 			<li>FR [ 1984834 ] Add POResultSet.hasNext convenient method
  * 			<li>FR [ 1985134 ] POResultSet improvements
  */
-public class POResultSet<T extends PO> {
+public class POResultSet<T extends PO> implements AutoCloseable {
 
 	private String trxName;
 	private ResultSet resultSet;

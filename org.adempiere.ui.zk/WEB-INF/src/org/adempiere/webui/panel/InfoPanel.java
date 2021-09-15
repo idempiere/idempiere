@@ -1943,29 +1943,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (m_SO_Window_ID > 0)
 			return m_SO_Window_ID;
 		//
-		String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table != null)
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, tableName);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				m_SO_Window_ID = rs.getInt(1);
-				m_PO_Window_ID = rs.getInt(2);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
+			m_SO_Window_ID = table.getAD_Window_ID();
+			m_PO_Window_ID = table.getPO_Window_ID();
 		}
 		//
 		if (!isSOTrx && m_PO_Window_ID > 0)

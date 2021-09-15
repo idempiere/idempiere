@@ -1236,8 +1236,10 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			return false;
 		else if (sysNative != null)
 			return sysNative;
-		else
+		else if (!Util.isEmpty(Ini.getProperty(P_POSTGRE_SQL_NATIVE), true))
 			return Ini.isPropertyBool(P_POSTGRE_SQL_NATIVE);
+		else
+			return true;
 	}
 	
 	/**

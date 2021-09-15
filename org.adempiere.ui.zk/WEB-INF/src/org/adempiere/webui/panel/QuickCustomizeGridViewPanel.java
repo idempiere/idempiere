@@ -237,7 +237,7 @@ public class QuickCustomizeGridViewPanel extends Panel {
 		try {
 			List<MField> lsFieldsOfGrid = query.list();
 			HashMap<Integer, ListElement> curTabSel = new HashMap<Integer, QuickCustomizeGridViewPanel.ListElement>();
-			MTab tab = new MTab(Env.getCtx(), m_AD_Tab_ID, null);
+			MTab tab = MTab.get(m_AD_Tab_ID);
 
 			for (MField field : lsFieldsOfGrid) {
 				if (!MRole.getDefault(Env.getCtx(), false).isColumnAccess(tab.getAD_Table_ID(), field.getAD_Column_ID(),

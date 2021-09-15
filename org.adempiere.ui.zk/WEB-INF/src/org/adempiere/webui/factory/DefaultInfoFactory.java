@@ -189,7 +189,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 
 	@Override
 	public InfoWindow create(int AD_InfoWindow_ID, String predefinedContextVariables) {
-		MInfoWindow infoWindow = new MInfoWindow(Env.getCtx(), AD_InfoWindow_ID, (String)null);
+		MInfoWindow infoWindow = MInfoWindow.getInfoWindow(AD_InfoWindow_ID);
 		String tableName = infoWindow.getAD_Table().getTableName();
 		String keyColumn = tableName + "_ID";
 		InfoPanel info = create(-1, tableName, keyColumn, null, false, null, AD_InfoWindow_ID, false, predefinedContextVariables);
