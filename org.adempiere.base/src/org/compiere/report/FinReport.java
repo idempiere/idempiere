@@ -196,11 +196,8 @@ public class FinReport extends SvrProcess
 		m_report = new MReport (getCtx(), getRecord_ID(), null);
 		sb.append(" - ").append(m_report);
 
-		/* Exclude adjustment period
-		 * - if the report period is standard
-		 * - and there is an adjustment period with the same end date (on the same year) 
-		 */
-		if (p_C_Period_ID > 0) {
+		// Exclude adjustment period(s) ?
+		if (m_report.getExcludeAdjustmentPeriods().equals(MReport.EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod)) { // if the report period is standard and there is an adjustment period with the same end date (on the same year) 
 			MPeriod per = MPeriod.get(getCtx(), p_C_Period_ID);
 			if (MPeriod.PERIODTYPE_StandardCalendarPeriod.equals(per.getPeriodType())) {
 				int adjPeriodToExclude_ID = DB.getSQLValue(get_TrxName(),
@@ -208,11 +205,15 @@ public class FinReport extends SvrProcess
 						MPeriod.PERIODTYPE_AdjustmentPeriod, per.getEndDate(), per.getC_Year_ID());
 				if (adjPeriodToExclude_ID > 0) {
 					p_AdjPeriodToExclude = " C_Period_ID!=" + adjPeriodToExclude_ID + " AND ";
-					log.warning("Will Exclude Adjustment Period -> " + p_AdjPeriodToExclude);
+					log.info("Will Exclude Adjustment Period -> " + p_AdjPeriodToExclude);
 				}
 			}
 		}
-		
+		else if (m_report.getExcludeAdjustmentPeriods().equals(MReport.EXCLUDEADJUSTMENTPERIODS_AllAdjustmentPeriods)) {
+			p_AdjPeriodToExclude = new StringBuilder(" C_Period_ID NOT IN (SELECT C_Period_ID FROM C_Period p, C_Year y WHERE p.C_Year_ID = y.C_Year_ID AND y.C_Calendar_ID = ")
+					.append(m_report.getC_Calendar_ID()).append(" AND PeriodType = 'A') AND ").toString();
+		}
+
 		//
 		setPeriods();
 		sb.append(" - C_Period_ID=").append(p_C_Period_ID)
