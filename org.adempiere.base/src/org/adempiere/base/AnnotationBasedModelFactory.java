@@ -13,6 +13,7 @@
 package org.adempiere.base;
 
 import org.atteo.classindex.ClassIndex;
+import org.compiere.util.CCache;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
@@ -28,10 +29,12 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Saulo Gil
  */
 @Component(scope = ServiceScope.BUNDLE)
-public class AnnotationBasedModelFactory extends DefaultModelFactory implements IModelFactory
+public class AnnotationBasedModelFactory extends AbstractModelFactory implements IModelFactory
 {
 
 	private Bundle usingBundle;
+
+	private CCache<String,Class<?>> classCache = new CCache<String,Class<?>>(null, "ABMF", 100, 120, false, 2000);
 
 	@Activate
 	void activate(ComponentContext context)
@@ -42,8 +45,8 @@ public class AnnotationBasedModelFactory extends DefaultModelFactory implements 
 	@Override
 	public Class<?> getClass(String tableName) 
 	{
-		// search first into DefaultModelFactory's cache
-		Class<?> candidate = s_classCache.get(tableName);
+		// search first into cache
+		Class<?> candidate = classCache.get(tableName);
 		if (candidate != null)
 		{
 			// Object.class indicate no generated PO class for tableName
@@ -70,9 +73,8 @@ public class AnnotationBasedModelFactory extends DefaultModelFactory implements 
 			}
 		}
 
-		if(candidate!=null)
-			// inject association into DefaultModelFactory's cache
-			s_classCache.put(tableName, candidate);
+		//Object.class to indicate no PO class for tableName
+		classCache.put(tableName, candidate == null ? Object.class : candidate);
 
 		return candidate;
 	}
