@@ -19,7 +19,6 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * Translates table names into model classes having the {@link Model} annotation. Relies on
@@ -28,7 +27,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * discovery using SPI is preferred over reflection-based methods.
  * @author Saulo Gil
  */
-@Component(scope = ServiceScope.BUNDLE)
+@Component(immediate = true, service = IModelFactory.class, property = {"service.ranking:Integer=1"})
 public class AnnotationBasedModelFactory extends AbstractModelFactory implements IModelFactory
 {
 

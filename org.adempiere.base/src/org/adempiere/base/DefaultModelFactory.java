@@ -31,6 +31,7 @@ import org.compiere.util.Util;
  * Default model factory implementation base on legacy code in {@link MTable}.
  * @author Jorg Janke
  * @author hengsin
+ * @deprecated
  */
 public class DefaultModelFactory extends AbstractModelFactory {
 

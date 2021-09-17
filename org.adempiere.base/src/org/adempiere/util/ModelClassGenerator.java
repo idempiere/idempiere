@@ -161,6 +161,7 @@ public class ModelClassGenerator
 
 		addImportClass(java.util.Properties.class);
 		addImportClass(java.sql.ResultSet.class);
+		addImportClass("org.atteo.classindex.IndexSubclasses");
 		if (!packageName.equals("org.compiere.model"))
 			addImportClass("org.compiere.model.*");
 		createImports(start);
