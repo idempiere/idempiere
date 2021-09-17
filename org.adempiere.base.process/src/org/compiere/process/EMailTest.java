@@ -105,7 +105,7 @@ public class EMailTest extends SvrProcess
 			}	
 			try
 			{
-				String msg = email.send();			
+				String msg = email.send();
 				if (EMail.SENT_OK.equals (msg))
 				{
 					if (log.isLoggable(Level.INFO)) log.info("Sent Test EMail to " + client.getRequestEMail());
@@ -117,7 +117,7 @@ public class EMailTest extends SvrProcess
 						+ smtp.getSMTPHost() + ": " //+ smtp.getRequestEMail()
 						+ " (" + smtp.getRequestUser()
 						+ ") to " + client.getRequestEMail() + ": " + msg);
-					return msg;
+					return "@Error@" + msg;
 				}
 			}
 			catch (Exception ex)

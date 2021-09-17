@@ -905,12 +905,10 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 				   from, to,
 				   subject, message, html);
 
-		int smtpID = MSMTP.getSmtpID(Env.getAD_Client_ID(getCtx()), from, get_TrxName());
-		if (smtpID > 0) {
-			MSMTP smtp = new MSMTP(getCtx(), smtpID, get_TrxName());
-			if (smtp.isSmtpAuthorization())
-				email.createAuthenticator (smtp.getRequestUser(), smtp.getRequestUserPW());
-		}
+		MSMTP smtp = MSMTP.get(getCtx(), getAD_Client_ID(), from, get_TrxName());
+
+		if (smtp != null && smtp.isSmtpAuthorization())
+			email.createAuthenticator (smtp.getRequestUser(), smtp.getRequestUserPW());
 		else if (isSmtpAuthorization())
 			email.createAuthenticator (getRequestUser(), getRequestUserPW());
 		return email;

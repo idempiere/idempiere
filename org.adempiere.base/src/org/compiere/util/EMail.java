@@ -250,13 +250,12 @@ public final class EMail implements Serializable
 	public String send ()
 	{
 		if (!m_forceUseTenantSmtp && getFrom() != null) {
-			String from = getFrom().getAddress();
-			int smtpID = MSMTP.getSmtpID(Env.getAD_Client_ID(m_ctx), from, null);
-			if (smtpID > 0) {
-				MSMTP smtp = new MSMTP(m_ctx, smtpID, null);
+			MSMTP smtp = MSMTP.get(m_ctx, Env.getAD_Client_ID(m_ctx), getFrom().getAddress());
+			if (smtp != null) {
 				setSmtpHost(smtp.getSMTPHost());
 				setSmtpPort(smtp.getSMTPPort());
 				setSecureSmtp(smtp.isSecureSMTP());
+				if (log.isLoggable(Level.FINE)) log.fine("sending email using from " + getFrom().getAddress() + " usin " + smtp.toString());
 			}
 		}
 

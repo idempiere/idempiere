@@ -29,15 +29,21 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * SMTP servers
  */
-public class MSMTP extends X_AD_SMTP {
+public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3645639750095013941L;
+
+	/**	Cache */
+	private static ImmutablePOCache<String,MSMTP>	s_cache = new ImmutablePOCache<String,MSMTP>(Table_Name, 20);
 
 	/**
 	 * SMTP constructor
@@ -51,7 +57,6 @@ public class MSMTP extends X_AD_SMTP {
 
 	/**
 	 * SMTP constructor
-	 *
 	 * @param ctx     context
 	 * @param rs      ResultSet
 	 * @param trxName transaction
@@ -59,24 +64,58 @@ public class MSMTP extends X_AD_SMTP {
 	public MSMTP(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	} // MSMTP
-	
-	/** Search a SMTP server for the sender (1st try with the full address, 2nd try with domain only) */
-	public static int getSmtpID(int clientID, String from, String trxName) {
-		
-		System.out.println("getSmtpID : clientID=" + clientID + " / from=" + from);
-		
-		String sql = "SELECT AD_SMTP_ID FROM AD_SMTP WHERE AD_Client_ID IN (0, ?) AND IsActive = 'Y' AND UPPER(UsedByEmailOrDomain) LIKE ? ORDER BY AD_Client_ID DESC, AD_SMTP_ID";
-		
-		int smtpID = DB.getSQLValueEx(trxName, sql, clientID, "%" + from.toUpperCase() + "%");
 
-		if (smtpID <= 0)
-			DB.getSQLValueEx(trxName, sql, clientID, "%" + from.substring(from.indexOf("@")).toUpperCase() + "%");
-
-		System.out.println("getSmtpID : " + new MSMTP(Env.getCtx(), smtpID, trxName).toString());
-		
-		return smtpID;
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSMTP(Properties ctx, MSMTP copy) {
+		this(ctx, copy, (String) null);
 	}
-	
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSMTP(Properties ctx, MSMTP copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+
+	/** Search a SMTP server for the sender (1st try with the full address, 2nd try with domain only) */
+	public static MSMTP get (Properties ctx, int clientID, String from) {
+		return get(ctx, clientID, from, null);
+	}
+
+	/** Search a SMTP server for the sender (1st try with the full address, 2nd try with domain only) */
+	public static MSMTP get (Properties ctx, int clientID, String from, String trxName) {
+
+		String key = new StringBuilder().append(clientID).append("_").append(from).toString();
+
+		MSMTP retValue = s_cache.get(ctx, key, e -> new MSMTP(ctx, e));
+		if (retValue != null)
+			return retValue;
+
+		// Try with email address first
+		String sql = "SELECT AD_SMTP_ID FROM AD_SMTP WHERE AD_Client_ID IN (0, ?) AND IsActive = 'Y' AND UPPER(UsedByEmailOrDomain) = ? ORDER BY AD_Client_ID DESC, AD_SMTP_ID";
+		int smtpID = DB.getSQLValueEx(trxName, sql, clientID, from.toUpperCase());
+
+		if (smtpID <= 0) {
+			String domain = from.substring(from.indexOf("@") + 1);
+			smtpID = DB.getSQLValueEx(trxName, sql, clientID, domain.toUpperCase());
+		}
+
+		if (smtpID > 0) {
+			MSMTP smtp = new MSMTP(ctx, smtpID, trxName);
+			s_cache.put (key, smtp, e -> new MSMTP(Env.getCtx(), smtp));
+		}
+
+		return retValue;
+	}
+
 	/**
 	 * 	String Representation
 	 *	@return info
@@ -84,5 +123,14 @@ public class MSMTP extends X_AD_SMTP {
 	public String toString() {
 		return new StringBuilder ("MSMTP[").append(get_ID()).append(" - Name=").append(getName()).append(" - Host=").append(getSMTPHost()).append("]").toString();
 	}	//	toString
-	
+
+	@Override
+	public MSMTP markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 } // MSMTP
