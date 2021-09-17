@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_MovementLine")
 public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_MovementLine (Properties ctx, int M_MovementLine_ID, String trxName)
@@ -106,9 +109,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	}
 
 	public org.eevolution.model.I_DD_OrderLine getDD_OrderLine() throws RuntimeException
-    {
-		return (org.eevolution.model.I_DD_OrderLine)MTable.get(getCtx(), org.eevolution.model.I_DD_OrderLine.Table_Name)
-			.getPO(getDD_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_DD_OrderLine)MTable.get(getCtx(), org.eevolution.model.I_DD_OrderLine.Table_ID)
+			.getPO(getDD_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Order Line.
 		@param DD_OrderLine_ID Distribution Order Line	  */
@@ -176,9 +180,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
     }
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -204,9 +209,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstanceTo() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstanceTo_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstanceTo_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance To.
 		@param M_AttributeSetInstanceTo_ID 
@@ -232,9 +238,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	}
 
 	public I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -260,9 +267,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	}
 
 	public I_M_Locator getM_LocatorTo() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_LocatorTo_ID(), get_TrxName());	}
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_LocatorTo_ID(), get_TrxName());
+	}
 
 	/** Set Locator To.
 		@param M_LocatorTo_ID 
@@ -288,9 +296,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	}
 
 	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Movement)MTable.get(getCtx(), org.compiere.model.I_M_Movement.Table_Name)
-			.getPO(getM_Movement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Movement)MTable.get(getCtx(), org.compiere.model.I_M_Movement.Table_ID)
+			.getPO(getM_Movement_ID(), get_TrxName());
+	}
 
 	/** Set Inventory Move.
 		@param M_Movement_ID 
@@ -373,9 +382,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -425,9 +435,10 @@ public class X_M_MovementLine extends PO implements I_M_MovementLine, I_Persiste
 	}
 
 	public org.compiere.model.I_M_MovementLine getReversalLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_Name)
-			.getPO(getReversalLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)
+			.getPO(getReversalLine_ID(), get_TrxName());
+	}
 
 	/** Set Reversal Line.
 		@param ReversalLine_ID 

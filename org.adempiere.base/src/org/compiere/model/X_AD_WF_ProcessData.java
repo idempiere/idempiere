@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ProcessData
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_WF_ProcessData")
 public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WF_ProcessData (Properties ctx, int AD_WF_ProcessData_ID, String trxName)
@@ -110,9 +113,10 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_Name)
-			.getPO(getAD_WF_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_ID)
+			.getPO(getAD_WF_Process_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Process.
 		@param AD_WF_Process_ID 

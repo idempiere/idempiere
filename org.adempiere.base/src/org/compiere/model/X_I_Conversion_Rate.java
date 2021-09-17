@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Conversion_Rate
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="I_Conversion_Rate")
 public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_I_Conversion_Rate (Properties ctx, int I_Conversion_Rate_ID, String trxName)
@@ -74,9 +77,10 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
     }
 
 	public org.compiere.model.I_C_Conversion_Rate getC_Conversion_Rate() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Conversion_Rate)MTable.get(getCtx(), org.compiere.model.I_C_Conversion_Rate.Table_Name)
-			.getPO(getC_Conversion_Rate_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Conversion_Rate)MTable.get(getCtx(), org.compiere.model.I_C_Conversion_Rate.Table_ID)
+			.getPO(getC_Conversion_Rate_ID(), get_TrxName());
+	}
 
 	/** Set Conversion Rate.
 		@param C_Conversion_Rate_ID 
@@ -102,9 +106,10 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
-			.getPO(getC_ConversionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
 
 	/** Set Currency Type.
 		@param C_ConversionType_ID 
@@ -130,9 +135,10 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -158,9 +164,10 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency_To() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID_To(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID_To(), get_TrxName());
+	}
 
 	/** Set Currency To.
 		@param C_Currency_ID_To 

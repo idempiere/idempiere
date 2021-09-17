@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for I_ProductPlanning
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="I_ProductPlanning")
 public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_I_ProductPlanning (Properties ctx, int I_ProductPlanning_ID, String trxName)
@@ -78,9 +81,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
     }
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 
@@ -123,9 +127,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -168,9 +173,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException
-    {
-		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_Name)
-			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_ID)
+			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());
+	}
 
 	/** Set Network Distribution.
 		@param DD_NetworkDistribution_ID Network Distribution	  */
@@ -374,9 +380,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_Name)
-			.getPO(getM_Forecast_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_ID)
+			.getPO(getM_Forecast_ID(), get_TrxName());
+	}
 
 	/** Set Forecast.
 		@param M_Forecast_ID 
@@ -402,9 +409,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_Name)
-			.getPO(getM_ForecastLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_ID)
+			.getPO(getM_ForecastLine_ID(), get_TrxName());
+	}
 
 	/** Set Forecast Line.
 		@param M_ForecastLine_ID 
@@ -430,9 +438,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -458,9 +467,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -637,9 +647,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getPlanner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getPlanner_ID(), get_TrxName());
+	}
 
 	/** Set Planner.
 		@param Planner_ID Planner	  */
@@ -679,9 +690,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_Name)
-			.getPO(getPP_Product_BOM_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
+	}
 
 	/** Set BOM & Formula.
 		@param PP_Product_BOM_ID 
@@ -707,9 +719,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Product_Planning getPP_Product_Planning() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Product_Planning)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_Planning.Table_Name)
-			.getPO(getPP_Product_Planning_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Product_Planning)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_Planning.Table_ID)
+			.getPO(getPP_Product_Planning_ID(), get_TrxName());
+	}
 
 	/** Set Product Planning.
 		@param PP_Product_Planning_ID Product Planning	  */
@@ -868,9 +881,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
 		@param SalesRep_ID 
@@ -896,9 +910,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
 		@param S_Resource_ID 

@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_Default
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_AcctSchema_Default")
 public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Default (Properties ctx, int C_AcctSchema_Default_ID, String trxName)
@@ -107,9 +110,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
     }
 
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Bank Asset.
 		@param B_Asset_Acct 
@@ -132,9 +136,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_InterestExp_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestExp_Acct(), get_TrxName());
+	}
 
 	/** Set Bank Interest Expense.
 		@param B_InterestExp_Acct 
@@ -157,9 +162,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_InterestRev_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestRev_Acct(), get_TrxName());
+	}
 
 	/** Set Bank Interest Revenue.
 		@param B_InterestRev_Acct 
@@ -182,9 +188,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_InTransit_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InTransit_Acct(), get_TrxName());
+	}
 
 	/** Set Bank In Transit.
 		@param B_InTransit_Acct 
@@ -207,9 +214,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_PaymentSelect_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_PaymentSelect_Acct(), get_TrxName());
+	}
 
 	/** Set Payment Selection.
 		@param B_PaymentSelect_Acct 
@@ -232,9 +240,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_UnallocatedCash_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_UnallocatedCash_Acct(), get_TrxName());
+	}
 
 	/** Set Unallocated Cash.
 		@param B_UnallocatedCash_Acct 
@@ -271,9 +280,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -307,9 +317,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
     }
 
 	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCB_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Cash Book Asset.
 		@param CB_Asset_Acct 
@@ -332,9 +343,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCB_CashTransfer_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_CashTransfer_Acct(), get_TrxName());
+	}
 
 	/** Set Cash Transfer.
 		@param CB_CashTransfer_Acct 
@@ -357,9 +369,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCB_Differences_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Differences_Acct(), get_TrxName());
+	}
 
 	/** Set Cash Book Differences.
 		@param CB_Differences_Acct 
@@ -382,9 +395,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCB_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Cash Book Expense.
 		@param CB_Expense_Acct 
@@ -407,9 +421,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCB_Receipt_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Receipt_Acct(), get_TrxName());
+	}
 
 	/** Set Cash Book Receipt.
 		@param CB_Receipt_Acct 
@@ -432,9 +447,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCh_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCh_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Charge Account.
 		@param Ch_Expense_Acct 
@@ -457,9 +473,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Prepayment_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Prepayment_Acct(), get_TrxName());
+	}
 
 	/** Set Customer Prepayment.
 		@param C_Prepayment_Acct 
@@ -482,9 +499,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Receivable_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Receivable_Acct(), get_TrxName());
+	}
 
 	/** Set Customer Receivables.
 		@param C_Receivable_Acct 
@@ -507,9 +525,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Receivable_Services_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Receivable_Services_Acct(), get_TrxName());
+	}
 
 	/** Set Receivable Services.
 		@param C_Receivable_Services_Acct 
@@ -532,9 +551,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getNotInvoicedReceipts_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getNotInvoicedReceipts_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getNotInvoicedReceipts_Acct(), get_TrxName());
+	}
 
 	/** Set Not-invoiced Receipts.
 		@param NotInvoicedReceipts_Acct 
@@ -557,9 +577,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Product Asset.
 		@param P_Asset_Acct 
@@ -582,9 +603,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_AverageCostVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_AverageCostVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Average Cost Variance.
 		@param P_AverageCostVariance_Acct 
@@ -607,9 +629,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getPayDiscount_Exp_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPayDiscount_Exp_Acct(), get_TrxName());
+	}
 
 	/** Set Payment Discount Expense.
 		@param PayDiscount_Exp_Acct 
@@ -632,9 +655,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getPayDiscount_Rev_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPayDiscount_Rev_Acct(), get_TrxName());
+	}
 
 	/** Set Payment Discount Revenue.
 		@param PayDiscount_Rev_Acct 
@@ -657,9 +681,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_COGS_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_COGS_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_COGS_Acct(), get_TrxName());
+	}
 
 	/** Set Product COGS.
 		@param P_COGS_Acct 
@@ -682,9 +707,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_CostAdjustment_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_CostAdjustment_Acct(), get_TrxName());
+	}
 
 	/** Set Cost Adjustment.
 		@param P_CostAdjustment_Acct 
@@ -707,9 +733,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Product Expense.
 		@param P_Expense_Acct 
@@ -732,9 +759,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_InventoryClearing_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_InventoryClearing_Acct(), get_TrxName());
+	}
 
 	/** Set Inventory Clearing.
 		@param P_InventoryClearing_Acct 
@@ -757,9 +785,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_InvoicePriceVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_InvoicePriceVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Invoice Price Variance.
 		@param P_InvoicePriceVariance_Acct 
@@ -782,9 +811,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getPJ_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPJ_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Project Asset.
 		@param PJ_Asset_Acct 
@@ -807,9 +837,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getPJ_WIP_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPJ_WIP_Acct(), get_TrxName());
+	}
 
 	/** Set Work In Progress.
 		@param PJ_WIP_Acct 
@@ -832,9 +863,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_LandedCostClearing_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_LandedCostClearing_Acct(), get_TrxName());
+	}
 
 	/** Set Landed Cost Clearing.
 		@param P_LandedCostClearing_Acct 
@@ -857,9 +889,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_PurchasePriceVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_PurchasePriceVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_PurchasePriceVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Purchase Price Variance.
 		@param P_PurchasePriceVariance_Acct 
@@ -882,9 +915,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_RateVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_RateVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_RateVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Rate Variance.
 		@param P_RateVariance_Acct 
@@ -907,9 +941,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Revenue_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Revenue_Acct(), get_TrxName());
+	}
 
 	/** Set Product Revenue.
 		@param P_Revenue_Acct 
@@ -953,9 +988,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_TradeDiscountGrant_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_TradeDiscountGrant_Acct(), get_TrxName());
+	}
 
 	/** Set Trade Discount Granted.
 		@param P_TradeDiscountGrant_Acct 
@@ -978,9 +1014,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_TradeDiscountRec_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_TradeDiscountRec_Acct(), get_TrxName());
+	}
 
 	/** Set Trade Discount Received.
 		@param P_TradeDiscountRec_Acct 
@@ -1003,9 +1040,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getRealizedGain_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getRealizedGain_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getRealizedGain_Acct(), get_TrxName());
+	}
 
 	/** Set Realized Gain Acct.
 		@param RealizedGain_Acct 
@@ -1028,9 +1066,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getRealizedLoss_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getRealizedLoss_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getRealizedLoss_Acct(), get_TrxName());
+	}
 
 	/** Set Realized Loss Acct.
 		@param RealizedLoss_Acct 
@@ -1053,9 +1092,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getT_Credit_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getT_Credit_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getT_Credit_Acct(), get_TrxName());
+	}
 
 	/** Set Tax Credit.
 		@param T_Credit_Acct 
@@ -1078,9 +1118,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getT_Due_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getT_Due_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getT_Due_Acct(), get_TrxName());
+	}
 
 	/** Set Tax Due.
 		@param T_Due_Acct 
@@ -1103,9 +1144,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getT_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getT_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getT_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Tax Expense.
 		@param T_Expense_Acct 
@@ -1128,9 +1170,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getUnEarnedRevenue_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getUnEarnedRevenue_Acct(), get_TrxName());
+	}
 
 	/** Set Unearned Revenue.
 		@param UnEarnedRevenue_Acct 
@@ -1153,9 +1196,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getUnrealizedGain_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getUnrealizedGain_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getUnrealizedGain_Acct(), get_TrxName());
+	}
 
 	/** Set Unrealized Gain Acct.
 		@param UnrealizedGain_Acct 
@@ -1178,9 +1222,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getUnrealizedLoss_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getUnrealizedLoss_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getUnrealizedLoss_Acct(), get_TrxName());
+	}
 
 	/** Set Unrealized Loss Acct.
 		@param UnrealizedLoss_Acct 
@@ -1203,9 +1248,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getV_Liability_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getV_Liability_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getV_Liability_Acct(), get_TrxName());
+	}
 
 	/** Set Vendor Liability.
 		@param V_Liability_Acct 
@@ -1228,9 +1274,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getV_Liability_Services_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getV_Liability_Services_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getV_Liability_Services_Acct(), get_TrxName());
+	}
 
 	/** Set Vendor Service Liability.
 		@param V_Liability_Services_Acct 
@@ -1253,9 +1300,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getV_Prepayment_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getV_Prepayment_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getV_Prepayment_Acct(), get_TrxName());
+	}
 
 	/** Set Vendor Prepayment.
 		@param V_Prepayment_Acct 
@@ -1278,9 +1326,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getW_Differences_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getW_Differences_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getW_Differences_Acct(), get_TrxName());
+	}
 
 	/** Set Warehouse Differences.
 		@param W_Differences_Acct 
@@ -1303,9 +1352,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	}
 
 	public I_C_ValidCombination getWriteOff_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getWriteOff_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getWriteOff_Acct(), get_TrxName());
+	}
 
 	/** Set Write-off.
 		@param WriteOff_Acct 

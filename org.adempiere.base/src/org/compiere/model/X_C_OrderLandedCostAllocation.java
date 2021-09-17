@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCostAllocation
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_OrderLandedCostAllocation")
 public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLandedCostAllocation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCostAllocation (Properties ctx, int C_OrderLandedCostAllocation_ID, String trxName)
@@ -153,9 +156,10 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 	}
 
 	public org.compiere.model.I_C_OrderLandedCost getC_OrderLandedCost() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLandedCost)MTable.get(getCtx(), org.compiere.model.I_C_OrderLandedCost.Table_Name)
-			.getPO(getC_OrderLandedCost_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLandedCost)MTable.get(getCtx(), org.compiere.model.I_C_OrderLandedCost.Table_ID)
+			.getPO(getC_OrderLandedCost_ID(), get_TrxName());
+	}
 
 	/** Set Estimated Landed Cost.
 		@param C_OrderLandedCost_ID Estimated Landed Cost	  */
@@ -178,9 +182,10 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
 		@param C_OrderLine_ID 

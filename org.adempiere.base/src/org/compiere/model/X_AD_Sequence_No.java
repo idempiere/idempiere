@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_Sequence_No
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Sequence_No")
 public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Sequence_No (Properties ctx, int AD_Sequence_No_ID, String trxName)
@@ -72,9 +75,10 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getAD_Sequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getAD_Sequence_ID(), get_TrxName());
+	}
 
 	/** Set Sequence.
 		@param AD_Sequence_ID 

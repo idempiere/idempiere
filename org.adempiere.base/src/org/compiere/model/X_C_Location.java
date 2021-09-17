@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Location
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_Location")
 public class X_C_Location extends PO implements I_C_Location, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Location (Properties ctx, int C_Location_ID, String trxName)
@@ -157,9 +160,10 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	}
 
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AddressValidation)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidation.Table_Name)
-			.getPO(getC_AddressValidation_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AddressValidation)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidation.Table_ID)
+			.getPO(getC_AddressValidation_ID(), get_TrxName());
+	}
 
 	/** Set Address Validation.
 		@param C_AddressValidation_ID Address Validation	  */
@@ -182,9 +186,10 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	}
 
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_City)MTable.get(getCtx(), org.compiere.model.I_C_City.Table_Name)
-			.getPO(getC_City_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_City)MTable.get(getCtx(), org.compiere.model.I_C_City.Table_ID)
+			.getPO(getC_City_ID(), get_TrxName());
+	}
 
 	/** Set City.
 		@param C_City_ID 
@@ -210,9 +215,10 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
-			.getPO(getC_Country_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
+			.getPO(getC_Country_ID(), get_TrxName());
+	}
 
 	/** Set Country.
 		@param C_Country_ID 
@@ -317,9 +323,10 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
-			.getPO(getC_Region_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
+			.getPO(getC_Region_ID(), get_TrxName());
+	}
 
 	/** Set Region.
 		@param C_Region_ID 

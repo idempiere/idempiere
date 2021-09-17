@@ -20,20 +20,23 @@ package org.eevolution.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="HR_ListLine")
 public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_ListLine (Properties ctx, int HR_ListLine_ID, String trxName)
@@ -246,9 +249,10 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_ListVersion getHR_ListVersion() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_ListVersion)MTable.get(getCtx(), org.eevolution.model.I_HR_ListVersion.Table_Name)
-			.getPO(getHR_ListVersion_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_ListVersion)MTable.get(getCtx(), org.eevolution.model.I_HR_ListVersion.Table_ID)
+			.getPO(getHR_ListVersion_ID(), get_TrxName());
+	}
 
 	/** Set Payroll List Version.
 		@param HR_ListVersion_ID Payroll List Version	  */

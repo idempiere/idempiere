@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_DiscountSchemaLine")
 public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -106,9 +109,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -134,9 +138,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	}
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
-			.getPO(getC_ConversionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
 
 	/** Set Currency Type.
 		@param C_ConversionType_ID 
@@ -286,16 +291,16 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 
 	/** Limit_Base AD_Reference_ID=194 */
 	public static final int LIMIT_BASE_AD_Reference_ID=194;
+	/** Fixed Price = F */
+	public static final String LIMIT_BASE_FixedPrice = "F";
 	/** List Price = L */
 	public static final String LIMIT_BASE_ListPrice = "L";
+	/** Product Cost = P */
+	public static final String LIMIT_BASE_ProductCost = "P";
 	/** Standard Price = S */
 	public static final String LIMIT_BASE_StandardPrice = "S";
 	/** Limit (PO) Price = X */
 	public static final String LIMIT_BASE_LimitPOPrice = "X";
-	/** Fixed Price = F */
-	public static final String LIMIT_BASE_FixedPrice = "F";
-	/** Product Cost = P */
-	public static final String LIMIT_BASE_ProductCost = "P";
 	/** Set Limit price Base.
 		@param Limit_Base 
 		Base price for calculation of the new price
@@ -398,24 +403,24 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final int LIMIT_ROUNDING_AD_Reference_ID=155;
 	/** Whole Number .00 = 0 */
 	public static final String LIMIT_ROUNDING_WholeNumber00 = "0";
+	/** Nickel .05, .10, .15, ... = 5 */
+	public static final String LIMIT_ROUNDING_Nickel051015 = "5";
+	/** Ending in 9/5 = 9 */
+	public static final String LIMIT_ROUNDING_EndingIn95 = "9";
+	/** Currency Precision = C */
+	public static final String LIMIT_ROUNDING_CurrencyPrecision = "C";
+	/** Dime .10, .20, .30, ... = D */
+	public static final String LIMIT_ROUNDING_Dime102030 = "D";
+	/** Hundred = h */
+	public static final String LIMIT_ROUNDING_Hundred = "h";
 	/** No Rounding = N */
 	public static final String LIMIT_ROUNDING_NoRounding = "N";
 	/** Quarter .25 .50 .75 = Q */
 	public static final String LIMIT_ROUNDING_Quarter255075 = "Q";
-	/** Dime .10, .20, .30, ... = D */
-	public static final String LIMIT_ROUNDING_Dime102030 = "D";
-	/** Nickel .05, .10, .15, ... = 5 */
-	public static final String LIMIT_ROUNDING_Nickel051015 = "5";
-	/** Ten 10.00, 20.00, .. = T */
-	public static final String LIMIT_ROUNDING_Ten10002000 = "T";
-	/** Currency Precision = C */
-	public static final String LIMIT_ROUNDING_CurrencyPrecision = "C";
-	/** Ending in 9/5 = 9 */
-	public static final String LIMIT_ROUNDING_EndingIn95 = "9";
-	/** Hundred = h */
-	public static final String LIMIT_ROUNDING_Hundred = "h";
 	/** Thousand = t */
 	public static final String LIMIT_ROUNDING_Thousand = "t";
+	/** Ten 10.00, 20.00, .. = T */
+	public static final String LIMIT_ROUNDING_Ten10002000 = "T";
 	/** Set Limit price Rounding.
 		@param Limit_Rounding 
 		Rounding of the final result
@@ -456,16 +461,16 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 
 	/** List_Base AD_Reference_ID=194 */
 	public static final int LIST_BASE_AD_Reference_ID=194;
+	/** Fixed Price = F */
+	public static final String LIST_BASE_FixedPrice = "F";
 	/** List Price = L */
 	public static final String LIST_BASE_ListPrice = "L";
+	/** Product Cost = P */
+	public static final String LIST_BASE_ProductCost = "P";
 	/** Standard Price = S */
 	public static final String LIST_BASE_StandardPrice = "S";
 	/** Limit (PO) Price = X */
 	public static final String LIST_BASE_LimitPOPrice = "X";
-	/** Fixed Price = F */
-	public static final String LIST_BASE_FixedPrice = "F";
-	/** Product Cost = P */
-	public static final String LIST_BASE_ProductCost = "P";
 	/** Set List price Base.
 		@param List_Base 
 		Price used as the basis for price list calculations
@@ -568,24 +573,24 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final int LIST_ROUNDING_AD_Reference_ID=155;
 	/** Whole Number .00 = 0 */
 	public static final String LIST_ROUNDING_WholeNumber00 = "0";
+	/** Nickel .05, .10, .15, ... = 5 */
+	public static final String LIST_ROUNDING_Nickel051015 = "5";
+	/** Ending in 9/5 = 9 */
+	public static final String LIST_ROUNDING_EndingIn95 = "9";
+	/** Currency Precision = C */
+	public static final String LIST_ROUNDING_CurrencyPrecision = "C";
+	/** Dime .10, .20, .30, ... = D */
+	public static final String LIST_ROUNDING_Dime102030 = "D";
+	/** Hundred = h */
+	public static final String LIST_ROUNDING_Hundred = "h";
 	/** No Rounding = N */
 	public static final String LIST_ROUNDING_NoRounding = "N";
 	/** Quarter .25 .50 .75 = Q */
 	public static final String LIST_ROUNDING_Quarter255075 = "Q";
-	/** Dime .10, .20, .30, ... = D */
-	public static final String LIST_ROUNDING_Dime102030 = "D";
-	/** Nickel .05, .10, .15, ... = 5 */
-	public static final String LIST_ROUNDING_Nickel051015 = "5";
-	/** Ten 10.00, 20.00, .. = T */
-	public static final String LIST_ROUNDING_Ten10002000 = "T";
-	/** Currency Precision = C */
-	public static final String LIST_ROUNDING_CurrencyPrecision = "C";
-	/** Ending in 9/5 = 9 */
-	public static final String LIST_ROUNDING_EndingIn95 = "9";
-	/** Hundred = h */
-	public static final String LIST_ROUNDING_Hundred = "h";
 	/** Thousand = t */
 	public static final String LIST_ROUNDING_Thousand = "t";
+	/** Ten 10.00, 20.00, .. = T */
+	public static final String LIST_ROUNDING_Ten10002000 = "T";
 	/** Set List price Rounding.
 		@param List_Rounding 
 		Rounding rule for final list price
@@ -605,9 +610,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	}
 
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_Name)
-			.getPO(getM_DiscountSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
+			.getPO(getM_DiscountSchema_ID(), get_TrxName());
+	}
 
 	/** Set Discount Schema.
 		@param M_DiscountSchema_ID 
@@ -670,9 +676,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_ID(), get_TrxName());
+	}
 
 	/** Set Product Category.
 		@param M_Product_Category_ID 
@@ -698,9 +705,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -775,16 +783,16 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 
 	/** Std_Base AD_Reference_ID=194 */
 	public static final int STD_BASE_AD_Reference_ID=194;
+	/** Fixed Price = F */
+	public static final String STD_BASE_FixedPrice = "F";
 	/** List Price = L */
 	public static final String STD_BASE_ListPrice = "L";
+	/** Product Cost = P */
+	public static final String STD_BASE_ProductCost = "P";
 	/** Standard Price = S */
 	public static final String STD_BASE_StandardPrice = "S";
 	/** Limit (PO) Price = X */
 	public static final String STD_BASE_LimitPOPrice = "X";
-	/** Fixed Price = F */
-	public static final String STD_BASE_FixedPrice = "F";
-	/** Product Cost = P */
-	public static final String STD_BASE_ProductCost = "P";
 	/** Set Standard price Base.
 		@param Std_Base 
 		Base price for calculating new standard price
@@ -887,24 +895,24 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public static final int STD_ROUNDING_AD_Reference_ID=155;
 	/** Whole Number .00 = 0 */
 	public static final String STD_ROUNDING_WholeNumber00 = "0";
+	/** Nickel .05, .10, .15, ... = 5 */
+	public static final String STD_ROUNDING_Nickel051015 = "5";
+	/** Ending in 9/5 = 9 */
+	public static final String STD_ROUNDING_EndingIn95 = "9";
+	/** Currency Precision = C */
+	public static final String STD_ROUNDING_CurrencyPrecision = "C";
+	/** Dime .10, .20, .30, ... = D */
+	public static final String STD_ROUNDING_Dime102030 = "D";
+	/** Hundred = h */
+	public static final String STD_ROUNDING_Hundred = "h";
 	/** No Rounding = N */
 	public static final String STD_ROUNDING_NoRounding = "N";
 	/** Quarter .25 .50 .75 = Q */
 	public static final String STD_ROUNDING_Quarter255075 = "Q";
-	/** Dime .10, .20, .30, ... = D */
-	public static final String STD_ROUNDING_Dime102030 = "D";
-	/** Nickel .05, .10, .15, ... = 5 */
-	public static final String STD_ROUNDING_Nickel051015 = "5";
-	/** Ten 10.00, 20.00, .. = T */
-	public static final String STD_ROUNDING_Ten10002000 = "T";
-	/** Currency Precision = C */
-	public static final String STD_ROUNDING_CurrencyPrecision = "C";
-	/** Ending in 9/5 = 9 */
-	public static final String STD_ROUNDING_EndingIn95 = "9";
-	/** Hundred = h */
-	public static final String STD_ROUNDING_Hundred = "h";
 	/** Thousand = t */
 	public static final String STD_ROUNDING_Thousand = "t";
+	/** Ten 10.00, 20.00, .. = T */
+	public static final String STD_ROUNDING_Ten10002000 = "T";
 	/** Set Standard price Rounding.
 		@param Std_Rounding 
 		Rounding rule for calculated price

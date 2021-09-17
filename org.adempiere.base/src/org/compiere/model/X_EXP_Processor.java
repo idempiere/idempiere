@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for EXP_Processor
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="EXP_Processor")
 public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_EXP_Processor (Properties ctx, int EXP_Processor_ID, String trxName)
@@ -124,9 +127,10 @@ public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent
 	}
 
 	public org.compiere.model.I_EXP_Processor_Type getEXP_Processor_Type() throws RuntimeException
-    {
-		return (org.compiere.model.I_EXP_Processor_Type)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor_Type.Table_Name)
-			.getPO(getEXP_Processor_Type_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_EXP_Processor_Type)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor_Type.Table_ID)
+			.getPO(getEXP_Processor_Type_ID(), get_TrxName());
+	}
 
 	/** Set Export Processor Type.
 		@param EXP_Processor_Type_ID Export Processor Type	  */

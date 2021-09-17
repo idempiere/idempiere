@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PeriodControl
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_PeriodControl")
 public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName)
@@ -117,9 +120,10 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	}
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getC_Period_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
 
 	/** Set Period.
 		@param C_Period_ID 
@@ -146,70 +150,70 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 
 	/** DocBaseType AD_Reference_ID=183 */
 	public static final int DOCBASETYPE_AD_Reference_ID=183;
-	/** GL Journal = GLJ */
-	public static final String DOCBASETYPE_GLJournal = "GLJ";
-	/** GL Document = GLD */
-	public static final String DOCBASETYPE_GLDocument = "GLD";
+	/** AP Credit Memo = APC */
+	public static final String DOCBASETYPE_APCreditMemo = "APC";
 	/** AP Invoice = API */
 	public static final String DOCBASETYPE_APInvoice = "API";
 	/** AP Payment = APP */
 	public static final String DOCBASETYPE_APPayment = "APP";
+	/** AR Credit Memo = ARC */
+	public static final String DOCBASETYPE_ARCreditMemo = "ARC";
+	/** AR Pro Forma Invoice = ARF */
+	public static final String DOCBASETYPE_ARProFormaInvoice = "ARF";
 	/** AR Invoice = ARI */
 	public static final String DOCBASETYPE_ARInvoice = "ARI";
 	/** AR Receipt = ARR */
 	public static final String DOCBASETYPE_ARReceipt = "ARR";
-	/** Sales Order = SOO */
-	public static final String DOCBASETYPE_SalesOrder = "SOO";
-	/** AR Pro Forma Invoice = ARF */
-	public static final String DOCBASETYPE_ARProFormaInvoice = "ARF";
-	/** Material Delivery = MMS */
-	public static final String DOCBASETYPE_MaterialDelivery = "MMS";
-	/** Material Receipt = MMR */
-	public static final String DOCBASETYPE_MaterialReceipt = "MMR";
-	/** Material Movement = MMM */
-	public static final String DOCBASETYPE_MaterialMovement = "MMM";
-	/** Purchase Order = POO */
-	public static final String DOCBASETYPE_PurchaseOrder = "POO";
-	/** Purchase Requisition = POR */
-	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
-	/** Material Physical Inventory = MMI */
-	public static final String DOCBASETYPE_MaterialPhysicalInventory = "MMI";
-	/** AP Credit Memo = APC */
-	public static final String DOCBASETYPE_APCreditMemo = "APC";
-	/** AR Credit Memo = ARC */
-	public static final String DOCBASETYPE_ARCreditMemo = "ARC";
+	/** Payment Allocation = CMA */
+	public static final String DOCBASETYPE_PaymentAllocation = "CMA";
 	/** Bank Statement = CMB */
 	public static final String DOCBASETYPE_BankStatement = "CMB";
 	/** Cash Journal = CMC */
 	public static final String DOCBASETYPE_CashJournal = "CMC";
-	/** Payment Allocation = CMA */
-	public static final String DOCBASETYPE_PaymentAllocation = "CMA";
-	/** Material Production = MMP */
-	public static final String DOCBASETYPE_MaterialProduction = "MMP";
-	/** Match Invoice = MXI */
-	public static final String DOCBASETYPE_MatchInvoice = "MXI";
-	/** Match PO = MXP */
-	public static final String DOCBASETYPE_MatchPO = "MXP";
-	/** Project Issue = PJI */
-	public static final String DOCBASETYPE_ProjectIssue = "PJI";
-	/** Maintenance Order = MOF */
-	public static final String DOCBASETYPE_MaintenanceOrder = "MOF";
-	/** Manufacturing Order = MOP */
-	public static final String DOCBASETYPE_ManufacturingOrder = "MOP";
-	/** Quality Order = MQO */
-	public static final String DOCBASETYPE_QualityOrder = "MQO";
-	/** Payroll = HRP */
-	public static final String DOCBASETYPE_Payroll = "HRP";
 	/** Distribution Order = DOO */
 	public static final String DOCBASETYPE_DistributionOrder = "DOO";
-	/** Manufacturing Cost Collector = MCC */
-	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
 	/** Fixed Assets Addition = FAA */
 	public static final String DOCBASETYPE_FixedAssetsAddition = "FAA";
 	/** Fixed Assets Disposal = FAD */
 	public static final String DOCBASETYPE_FixedAssetsDisposal = "FAD";
 	/** Fixed Assets Depreciation = FDP */
 	public static final String DOCBASETYPE_FixedAssetsDepreciation = "FDP";
+	/** GL Document = GLD */
+	public static final String DOCBASETYPE_GLDocument = "GLD";
+	/** GL Journal = GLJ */
+	public static final String DOCBASETYPE_GLJournal = "GLJ";
+	/** Payroll = HRP */
+	public static final String DOCBASETYPE_Payroll = "HRP";
+	/** Manufacturing Cost Collector = MCC */
+	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
+	/** Material Physical Inventory = MMI */
+	public static final String DOCBASETYPE_MaterialPhysicalInventory = "MMI";
+	/** Material Movement = MMM */
+	public static final String DOCBASETYPE_MaterialMovement = "MMM";
+	/** Material Production = MMP */
+	public static final String DOCBASETYPE_MaterialProduction = "MMP";
+	/** Material Receipt = MMR */
+	public static final String DOCBASETYPE_MaterialReceipt = "MMR";
+	/** Material Delivery = MMS */
+	public static final String DOCBASETYPE_MaterialDelivery = "MMS";
+	/** Maintenance Order = MOF */
+	public static final String DOCBASETYPE_MaintenanceOrder = "MOF";
+	/** Manufacturing Order = MOP */
+	public static final String DOCBASETYPE_ManufacturingOrder = "MOP";
+	/** Quality Order = MQO */
+	public static final String DOCBASETYPE_QualityOrder = "MQO";
+	/** Match Invoice = MXI */
+	public static final String DOCBASETYPE_MatchInvoice = "MXI";
+	/** Match PO = MXP */
+	public static final String DOCBASETYPE_MatchPO = "MXP";
+	/** Project Issue = PJI */
+	public static final String DOCBASETYPE_ProjectIssue = "PJI";
+	/** Purchase Order = POO */
+	public static final String DOCBASETYPE_PurchaseOrder = "POO";
+	/** Purchase Requisition = POR */
+	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
+	/** Sales Order = SOO */
+	public static final String DOCBASETYPE_SalesOrder = "SOO";
 	/** Set Document BaseType.
 		@param DocBaseType 
 		Logical type of document
@@ -230,14 +234,14 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 
 	/** PeriodAction AD_Reference_ID=176 */
 	public static final int PERIODACTION_AD_Reference_ID=176;
-	/** Open Period = O */
-	public static final String PERIODACTION_OpenPeriod = "O";
 	/** Close Period = C */
 	public static final String PERIODACTION_ClosePeriod = "C";
-	/** Permanently Close Period = P */
-	public static final String PERIODACTION_PermanentlyClosePeriod = "P";
 	/** <No Action> = N */
 	public static final String PERIODACTION_NoAction = "N";
+	/** Open Period = O */
+	public static final String PERIODACTION_OpenPeriod = "O";
+	/** Permanently Close Period = P */
+	public static final String PERIODACTION_PermanentlyClosePeriod = "P";
 	/** Set Period Action.
 		@param PeriodAction 
 		Action taken for this period
@@ -258,14 +262,14 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 
 	/** PeriodStatus AD_Reference_ID=177 */
 	public static final int PERIODSTATUS_AD_Reference_ID=177;
-	/** Open = O */
-	public static final String PERIODSTATUS_Open = "O";
 	/** Closed = C */
 	public static final String PERIODSTATUS_Closed = "C";
-	/** Permanently closed = P */
-	public static final String PERIODSTATUS_PermanentlyClosed = "P";
 	/** Never opened = N */
 	public static final String PERIODSTATUS_NeverOpened = "N";
+	/** Open = O */
+	public static final String PERIODSTATUS_Open = "O";
+	/** Permanently closed = P */
+	public static final String PERIODSTATUS_PermanentlyClosed = "P";
 	/** Set Period Status.
 		@param PeriodStatus 
 		Current state of this period

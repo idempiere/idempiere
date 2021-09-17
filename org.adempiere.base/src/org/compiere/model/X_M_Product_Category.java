@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_Category
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_Product_Category")
 public class X_M_Product_Category extends PO implements I_M_Product_Category, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Product_Category (Properties ctx, int M_Product_Category_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
     }
 
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Group)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Group.Table_Name)
-			.getPO(getA_Asset_Group_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Group)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Group.Table_ID)
+			.getPO(getA_Asset_Group_ID(), get_TrxName());
+	}
 
 	/** Set Asset Group.
 		@param A_Asset_Group_ID 
@@ -109,9 +113,10 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor_ID(), get_TrxName());
+	}
 
 	/** Set Print Color.
 		@param AD_PrintColor_ID 
@@ -203,10 +208,10 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 
 	/** MMPolicy AD_Reference_ID=335 */
 	public static final int MMPOLICY_AD_Reference_ID=335;
-	/** LiFo = L */
-	public static final String MMPOLICY_LiFo = "L";
 	/** FiFo = F */
 	public static final String MMPOLICY_FiFo = "F";
+	/** LiFo = L */
+	public static final String MMPOLICY_LiFo = "L";
 	/** Set Material Policy.
 		@param MMPolicy 
 		Material Movement Policy
@@ -249,9 +254,10 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category_Parent() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_Parent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_Parent_ID(), get_TrxName());
+	}
 
 	/** Set Parent Product Category.
 		@param M_Product_Category_Parent_ID Parent Product Category	  */

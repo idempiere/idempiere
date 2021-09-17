@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BP_Price
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_BP_Price")
 public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_BP_Price (Properties ctx, int M_BP_Price_ID, String trxName)
@@ -101,9 +104,10 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -129,9 +133,10 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -252,9 +257,10 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -329,10 +335,10 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 
 	/** PriceOverrideType AD_Reference_ID=53410 */
 	public static final int PRICEOVERRIDETYPE_AD_Reference_ID=53410;
-	/** Fixed Price = P */
-	public static final String PRICEOVERRIDETYPE_FixedPrice = "P";
 	/** Discount = D */
 	public static final String PRICEOVERRIDETYPE_Discount = "D";
+	/** Fixed Price = P */
+	public static final String PRICEOVERRIDETYPE_FixedPrice = "P";
 	/** Set Price Override Type.
 		@param PriceOverrideType 
 		Type of price override, fixed price or discount off list

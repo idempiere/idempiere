@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintLabelLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_PrintLabelLine")
 public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PrintLabelLine (Properties ctx, int AD_PrintLabelLine_ID, String trxName)
@@ -79,9 +82,10 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -107,9 +111,10 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	}
 
 	public org.compiere.model.I_AD_LabelPrinterFunction getAD_LabelPrinterFunction() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_LabelPrinterFunction)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinterFunction.Table_Name)
-			.getPO(getAD_LabelPrinterFunction_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_LabelPrinterFunction)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinterFunction.Table_ID)
+			.getPO(getAD_LabelPrinterFunction_ID(), get_TrxName());
+	}
 
 	/** Set Label printer Function.
 		@param AD_LabelPrinterFunction_ID 
@@ -135,9 +140,10 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	}
 
 	public org.compiere.model.I_AD_PrintLabel getAD_PrintLabel() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintLabel)MTable.get(getCtx(), org.compiere.model.I_AD_PrintLabel.Table_Name)
-			.getPO(getAD_PrintLabel_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintLabel)MTable.get(getCtx(), org.compiere.model.I_AD_PrintLabel.Table_ID)
+			.getPO(getAD_PrintLabel_ID(), get_TrxName());
+	}
 
 	/** Set Print Label.
 		@param AD_PrintLabel_ID 

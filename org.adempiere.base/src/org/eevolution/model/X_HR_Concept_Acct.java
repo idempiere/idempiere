@@ -19,18 +19,21 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 
 /** Generated Model for HR_Concept_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="HR_Concept_Acct")
 public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_Concept_Acct (Properties ctx, int HR_Concept_Acct_ID, String trxName)
@@ -75,9 +78,10 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -103,9 +107,10 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 	}
 
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_Name)
-			.getPO(getC_BP_Group_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
+			.getPO(getC_BP_Group_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner Group.
 		@param C_BP_Group_ID 
@@ -165,9 +170,10 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 	}
 
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_Name)
-			.getPO(getHR_Concept_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_ID)
+			.getPO(getHR_Concept_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Concept.
 		@param HR_Concept_ID Payroll Concept	  */
@@ -190,9 +196,10 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 	}
 
 	public I_C_ValidCombination getHR_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getHR_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getHR_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Payroll Expense Account.
 		@param HR_Expense_Acct Payroll Expense Account	  */
@@ -212,9 +219,10 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 	}
 
 	public I_C_ValidCombination getHR_Revenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getHR_Revenue_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getHR_Revenue_Acct(), get_TrxName());
+	}
 
 	/** Set Payroll Revenue Account.
 		@param HR_Revenue_Acct Payroll Revenue Account	  */
@@ -258,9 +266,10 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -286,9 +295,10 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 	}
 
 	public I_C_ValidCombination getUser2() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

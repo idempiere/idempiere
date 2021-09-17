@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_User")
 public class X_AD_User extends PO implements I_AD_User, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201231L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -215,9 +218,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public I_C_Location getBP_Location() throws RuntimeException
-    {
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
-			.getPO(getBP_Location_ID(), get_TrxName());	}
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getBP_Location_ID(), get_TrxName());
+	}
 
 	/** Set BP Address.
 		@param BP_Location_ID 
@@ -257,9 +261,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -285,9 +290,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
 
 	/** Set Partner Location.
 		@param C_BPartner_Location_ID 
@@ -313,9 +319,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -341,9 +348,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_Name)
-			.getPO(getC_Greeting_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_ID)
+			.getPO(getC_Greeting_ID(), get_TrxName());
+	}
 
 	/** Set Greeting.
 		@param C_Greeting_ID 
@@ -369,9 +377,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
-			.getPO(getC_Job_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
+			.getPO(getC_Job_ID(), get_TrxName());
+	}
 
 	/** Set Position.
 		@param C_Job_ID 
@@ -397,9 +406,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public I_C_Location getC_Location() throws RuntimeException
-    {
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
-			.getPO(getC_Location_ID(), get_TrxName());	}
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
 
 	/** Set Address.
 		@param C_Location_ID 
@@ -759,10 +769,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** IsMenuAutoExpand AD_Reference_ID=319 */
 	public static final int ISMENUAUTOEXPAND_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISMENUAUTOEXPAND_Yes = "Y";
 	/** No = N */
 	public static final String ISMENUAUTOEXPAND_No = "N";
+	/** Yes = Y */
+	public static final String ISMENUAUTOEXPAND_Yes = "Y";
 	/** Set Auto expand menu.
 		@param IsMenuAutoExpand 
 		If ticked, the menu is automatically expanded
@@ -971,22 +981,22 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public static final int LEADSOURCE_AD_Reference_ID=53415;
 	/** Cold Call = CC */
 	public static final String LEADSOURCE_ColdCall = "CC";
+	/** Conference = CN */
+	public static final String LEADSOURCE_Conference = "CN";
 	/** Existing Customer = EC */
 	public static final String LEADSOURCE_ExistingCustomer = "EC";
+	/** Email = EL */
+	public static final String LEADSOURCE_Email = "EL";
 	/** Employee = EM */
 	public static final String LEADSOURCE_Employee = "EM";
 	/** Partner = PT */
 	public static final String LEADSOURCE_Partner = "PT";
-	/** Conference = CN */
-	public static final String LEADSOURCE_Conference = "CN";
 	/** Trade Show = TS */
 	public static final String LEADSOURCE_TradeShow = "TS";
-	/** Web Site = WS */
-	public static final String LEADSOURCE_WebSite = "WS";
 	/** Word of Mouth = WM */
 	public static final String LEADSOURCE_WordOfMouth = "WM";
-	/** Email = EL */
-	public static final String LEADSOURCE_Email = "EL";
+	/** Web Site = WS */
+	public static final String LEADSOURCE_WebSite = "WS";
 	/** Set Lead Source.
 		@param LeadSource 
 		The source of this lead/opportunity
@@ -1024,16 +1034,16 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** LeadStatus AD_Reference_ID=53416 */
 	public static final int LEADSTATUS_AD_Reference_ID=53416;
-	/** New = N */
-	public static final String LEADSTATUS_New = "N";
-	/** Working = W */
-	public static final String LEADSTATUS_Working = "W";
-	/** Expired = E */
-	public static final String LEADSTATUS_Expired = "E";
-	/** Recycled = R */
-	public static final String LEADSTATUS_Recycled = "R";
 	/** Converted = C */
 	public static final String LEADSTATUS_Converted = "C";
+	/** Expired = E */
+	public static final String LEADSTATUS_Expired = "E";
+	/** New = N */
+	public static final String LEADSTATUS_New = "N";
+	/** Recycled = R */
+	public static final String LEADSTATUS_Recycled = "R";
+	/** Working = W */
+	public static final String LEADSTATUS_Working = "W";
 	/** Set Lead Status.
 		@param LeadStatus 
 		The status of this lead/opportunity in the sales cycle
@@ -1096,14 +1106,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** NotificationType AD_Reference_ID=344 */
 	public static final int NOTIFICATIONTYPE_AD_Reference_ID=344;
+	/** EMail+Notice = B */
+	public static final String NOTIFICATIONTYPE_EMailPlusNotice = "B";
 	/** EMail = E */
 	public static final String NOTIFICATIONTYPE_EMail = "E";
 	/** Notice = N */
 	public static final String NOTIFICATIONTYPE_Notice = "N";
 	/** None = X */
 	public static final String NOTIFICATIONTYPE_None = "X";
-	/** EMail+Notice = B */
-	public static final String NOTIFICATIONTYPE_EMailPlusNotice = "B";
 	/** Set Notification Type.
 		@param NotificationType 
 		Type of Notifications
@@ -1195,9 +1205,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getR_DefaultMailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_DefaultMailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_DefaultMailText_ID(), get_TrxName());
+	}
 
 	/** Set Default mail template.
 		@param R_DefaultMailText_ID Default mail template	  */
@@ -1220,9 +1231,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
 		@param SalesRep_ID 
@@ -1279,9 +1291,10 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
 		@param Supervisor_ID 

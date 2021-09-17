@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReplicationStrategy
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_ReplicationStrategy")
 public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStrategy, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ReplicationStrategy (Properties ctx, int AD_ReplicationStrategy_ID, String trxName)
@@ -40,7 +43,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
         {
 			setAD_ReplicationStrategy_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
         } */
     }
@@ -148,9 +151,10 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	}
 
 	public org.compiere.model.I_EXP_Processor getEXP_Processor() throws RuntimeException
-    {
-		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_Name)
-			.getPO(getEXP_Processor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_ID)
+			.getPO(getEXP_Processor_ID(), get_TrxName());
+	}
 
 	/** Set Export Processor.
 		@param EXP_Processor_ID Export Processor	  */

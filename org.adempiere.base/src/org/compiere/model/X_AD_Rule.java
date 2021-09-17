@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Rule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Rule")
 public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Rule (Properties ctx, int AD_Rule_ID, String trxName)
@@ -40,7 +43,7 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
         {
 			setAD_Rule_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setEventType (null);
 			setName (null);
 			setRuleType (null);
@@ -80,16 +83,16 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	public static final int ACCESSLEVEL_AD_Reference_ID=5;
 	/** Organization = 1 */
 	public static final String ACCESSLEVEL_Organization = "1";
+	/** Client only = 2 */
+	public static final String ACCESSLEVEL_ClientOnly = "2";
 	/** Client+Organization = 3 */
 	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
 	/** System only = 4 */
 	public static final String ACCESSLEVEL_SystemOnly = "4";
-	/** All = 7 */
-	public static final String ACCESSLEVEL_All = "7";
 	/** System+Client = 6 */
 	public static final String ACCESSLEVEL_SystemPlusClient = "6";
-	/** Client only = 2 */
-	public static final String ACCESSLEVEL_ClientOnly = "2";
+	/** All = 7 */
+	public static final String ACCESSLEVEL_All = "7";
 	/** Set Data Access Level.
 		@param AccessLevel 
 		Access Level required
@@ -183,20 +186,20 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	public static final int EVENTTYPE_AD_Reference_ID=53236;
 	/** Callout = C */
 	public static final String EVENTTYPE_Callout = "C";
-	/** Process = P */
-	public static final String EVENTTYPE_Process = "P";
-	/** Model Validator Table Event = T */
-	public static final String EVENTTYPE_ModelValidatorTableEvent = "T";
 	/** Model Validator Document Event = D */
 	public static final String EVENTTYPE_ModelValidatorDocumentEvent = "D";
-	/** Model Validator Login Event = L */
-	public static final String EVENTTYPE_ModelValidatorLoginEvent = "L";
 	/** Human Resource & Payroll = H */
 	public static final String EVENTTYPE_HumanResourcePayroll = "H";
+	/** Model Validator Login Event = L */
+	public static final String EVENTTYPE_ModelValidatorLoginEvent = "L";
 	/** Measure for Performance Analysis = M */
 	public static final String EVENTTYPE_MeasureForPerformanceAnalysis = "M";
+	/** Process = P */
+	public static final String EVENTTYPE_Process = "P";
 	/** GL Reconciliation = R */
 	public static final String EVENTTYPE_GLReconciliation = "R";
+	/** Model Validator Table Event = T */
+	public static final String EVENTTYPE_ModelValidatorTableEvent = "T";
 	/** Set Event Type.
 		@param EventType 
 		Type of Event
@@ -261,12 +264,12 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	public static final int RULETYPE_AD_Reference_ID=53235;
 	/** Aspect Orient Program = A */
 	public static final String RULETYPE_AspectOrientProgram = "A";
-	/** JSR 223 Scripting APIs = S */
-	public static final String RULETYPE_JSR223ScriptingAPIs = "S";
-	/** JSR 94 Rule Engine API = R */
-	public static final String RULETYPE_JSR94RuleEngineAPI = "R";
 	/** SQL = Q */
 	public static final String RULETYPE_SQL = "Q";
+	/** JSR 94 Rule Engine API = R */
+	public static final String RULETYPE_JSR94RuleEngineAPI = "R";
+	/** JSR 223 Scripting APIs = S */
+	public static final String RULETYPE_JSR223ScriptingAPIs = "S";
 	/** Set Rule Type.
 		@param RuleType Rule Type	  */
 	public void setRuleType (String RuleType)

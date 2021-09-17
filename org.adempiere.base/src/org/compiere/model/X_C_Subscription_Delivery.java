@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Subscription_Delivery
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_Subscription_Delivery")
 public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_Delivery, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Subscription_Delivery (Properties ctx, int C_Subscription_Delivery_ID, String trxName)
@@ -117,9 +120,10 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
 	}
 
 	public org.compiere.model.I_C_Subscription getC_Subscription() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Subscription)MTable.get(getCtx(), org.compiere.model.I_C_Subscription.Table_Name)
-			.getPO(getC_Subscription_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Subscription)MTable.get(getCtx(), org.compiere.model.I_C_Subscription.Table_ID)
+			.getPO(getC_Subscription_ID(), get_TrxName());
+	}
 
 	/** Set Subscription.
 		@param C_Subscription_ID 

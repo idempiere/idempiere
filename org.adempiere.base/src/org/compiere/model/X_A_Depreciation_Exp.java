@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Exp
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="A_Depreciation_Exp")
 public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Exp (Properties ctx, int A_Depreciation_Exp_ID, String trxName)
@@ -90,9 +93,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
     }
 
 	public I_C_ValidCombination getA_Account_Number_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Account_Number_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Account_Number_Acct(), get_TrxName());
+	}
 
 	/** Set A_Account_Number_Acct.
 		@param A_Account_Number_Acct A_Account_Number_Acct	  */
@@ -180,9 +184,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	}
 
 	public org.compiere.model.I_A_Asset_Addition getA_Asset_Addition() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Addition)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Addition.Table_Name)
-			.getPO(getA_Asset_Addition_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Addition)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Addition.Table_ID)
+			.getPO(getA_Asset_Addition_ID(), get_TrxName());
+	}
 
 	/** Set Asset Addition.
 		@param A_Asset_Addition_ID Asset Addition	  */
@@ -239,9 +244,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	}
 
 	public org.compiere.model.I_A_Asset_Disposed getA_Asset_Disposed() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Disposed)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Disposed.Table_Name)
-			.getPO(getA_Asset_Disposed_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Disposed)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Disposed.Table_ID)
+			.getPO(getA_Asset_Disposed_ID(), get_TrxName());
+	}
 
 	/** Set Asset Disposed.
 		@param A_Asset_Disposed_ID Asset Disposed	  */
@@ -264,9 +270,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	}
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
 		@param A_Asset_ID 
@@ -326,9 +333,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	}
 
 	public org.compiere.model.I_A_Depreciation_Entry getA_Depreciation_Entry() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Depreciation_Entry)MTable.get(getCtx(), org.compiere.model.I_A_Depreciation_Entry.Table_Name)
-			.getPO(getA_Depreciation_Entry_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Depreciation_Entry)MTable.get(getCtx(), org.compiere.model.I_A_Depreciation_Entry.Table_ID)
+			.getPO(getA_Depreciation_Entry_ID(), get_TrxName());
+	}
 
 	/** Set Depreciation Entry.
 		@param A_Depreciation_Entry_ID Depreciation Entry	  */
@@ -439,9 +447,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -467,9 +476,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	}
 
 	public I_C_ValidCombination getCR_Account() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCR_Account_ID(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCR_Account_ID(), get_TrxName());
+	}
 
 	/** Set Account (credit).
 		@param CR_Account_ID 
@@ -529,9 +539,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	}
 
 	public I_C_ValidCombination getDR_Account() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getDR_Account_ID(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getDR_Account_ID(), get_TrxName());
+	}
 
 	/** Set Account (debit).
 		@param DR_Account_ID 
@@ -639,10 +650,10 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
 		@param PostingType 
 		The type of posted amount for the transaction

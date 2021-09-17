@@ -19,19 +19,22 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept_Category
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="HR_Concept_Category")
 public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName)
@@ -90,9 +93,10 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	}
 
 	public I_C_ValidCombination getHR_Concept_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getHR_Concept_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getHR_Concept_Acct(), get_TrxName());
+	}
 
 	/** Set Payroll Concept Account.
 		@param HR_Concept_Acct Payroll Concept Account	  */

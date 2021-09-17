@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankAccount
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_BankAccount")
 public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BankAccount (Properties ctx, int C_BankAccount_ID, String trxName)
@@ -100,14 +103,14 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 
 	/** BankAccountType AD_Reference_ID=216 */
 	public static final int BANKACCOUNTTYPE_AD_Reference_ID=216;
-	/** Checking = C */
-	public static final String BANKACCOUNTTYPE_Checking = "C";
-	/** Savings = S */
-	public static final String BANKACCOUNTTYPE_Savings = "S";
 	/** Cash = B */
 	public static final String BANKACCOUNTTYPE_Cash = "B";
+	/** Checking = C */
+	public static final String BANKACCOUNTTYPE_Checking = "C";
 	/** Card = D */
 	public static final String BANKACCOUNTTYPE_Card = "D";
+	/** Savings = S */
+	public static final String BANKACCOUNTTYPE_Savings = "S";
 	/** Set Bank Account Type.
 		@param BankAccountType 
 		Bank Account Type
@@ -181,9 +184,10 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_Name)
-			.getPO(getC_Bank_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_ID)
+			.getPO(getC_Bank_ID(), get_TrxName());
+	}
 
 	/** Set Bank.
 		@param C_Bank_ID 
@@ -209,9 +213,10 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 

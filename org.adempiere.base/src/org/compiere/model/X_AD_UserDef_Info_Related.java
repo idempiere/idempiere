@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_UserDef_Info_Related
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_UserDef_Info_Related")
 public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_Related, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -73,9 +76,10 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
     }
 
 	public org.compiere.model.I_AD_InfoRelated getAD_InfoRelated() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoRelated)MTable.get(getCtx(), org.compiere.model.I_AD_InfoRelated.Table_Name)
-			.getPO(getAD_InfoRelated_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoRelated)MTable.get(getCtx(), org.compiere.model.I_AD_InfoRelated.Table_ID)
+			.getPO(getAD_InfoRelated_ID(), get_TrxName());
+	}
 
 	/** Set InfoRelated.
 		@param AD_InfoRelated_ID InfoRelated	  */
@@ -98,9 +102,10 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	}
 
 	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_UserDef_Info)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Info.Table_Name)
-			.getPO(getAD_UserDef_Info_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_UserDef_Info)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Info.Table_ID)
+			.getPO(getAD_UserDef_Info_ID(), get_TrxName());
+	}
 
 	/** Set User defined Info Window.
 		@param AD_UserDef_Info_ID User defined Info Window	  */

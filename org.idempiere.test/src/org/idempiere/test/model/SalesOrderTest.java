@@ -483,7 +483,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		//test2 with AfterReceipt
 		MOrder order1 = MOrder.copyFrom(order, today, order.getC_DocType_ID(), true, false, false, getTrxName());
-		order1.setDeliveryRule(MOrder.DELIVERYRULE_AfterReceipt);
+		order1.setDeliveryRule(MOrder.DELIVERYRULE_AfterPayment);
 		order1.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order1, DocAction.ACTION_Complete);
@@ -573,7 +573,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		//test3 with AfterReceipt
 		MOrder order2 = MOrder.copyFrom(order, today, order.getC_DocType_ID(), true, false, false, getTrxName());
-		order2.setDeliveryRule(MOrder.DELIVERYRULE_AfterReceipt);
+		order2.setDeliveryRule(MOrder.DELIVERYRULE_AfterPayment);
 		order2.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order2, DocAction.ACTION_Complete);

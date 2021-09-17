@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList_Version
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_PriceList_Version")
 public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_PriceList_Version (Properties ctx, int M_PriceList_Version_ID, String trxName)
@@ -95,9 +98,10 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	}
 
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_Name)
-			.getPO(getM_DiscountSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
+			.getPO(getM_DiscountSchema_ID(), get_TrxName());
+	}
 
 	/** Set Discount Schema.
 		@param M_DiscountSchema_ID 
@@ -123,9 +127,10 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	}
 
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
-			.getPO(getM_PriceList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
+			.getPO(getM_PriceList_ID(), get_TrxName());
+	}
 
 	/** Set Price List.
 		@param M_PriceList_ID 
@@ -151,9 +156,10 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	}
 
 	public org.compiere.model.I_M_PriceList_Version getM_Pricelist_Version_Base() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_Name)
-			.getPO(getM_Pricelist_Version_Base_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
+			.getPO(getM_Pricelist_Version_Base_ID(), get_TrxName());
+	}
 
 	/** Set Base Price List.
 		@param M_Pricelist_Version_Base_ID 

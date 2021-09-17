@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Window
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Window")
 public class X_AD_Window extends PO implements I_AD_Window, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210219L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Window (Properties ctx, int AD_Window_ID, String trxName)
@@ -40,7 +43,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
         {
 			setAD_Window_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsBetaFunctionality (false);
 			setIsDefault (false);
 			setIsSOTrx (true);
@@ -80,9 +83,10 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Color getAD_Color() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Color)MTable.get(getCtx(), org.compiere.model.I_AD_Color.Table_Name)
-			.getPO(getAD_Color_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Color)MTable.get(getCtx(), org.compiere.model.I_AD_Color.Table_ID)
+			.getPO(getAD_Color_ID(), get_TrxName());
+	}
 
 	/** Set System Color.
 		@param AD_Color_ID 
@@ -108,9 +112,10 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_Name)
-			.getPO(getAD_Image_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
+			.getPO(getAD_Image_ID(), get_TrxName());
+	}
 
 	/** Set Image.
 		@param AD_Image_ID 
@@ -380,14 +385,14 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 
 	/** WindowType AD_Reference_ID=108 */
 	public static final int WINDOWTYPE_AD_Reference_ID=108;
-	/** Single Record = S */
-	public static final String WINDOWTYPE_SingleRecord = "S";
 	/** Maintain = M */
 	public static final String WINDOWTYPE_Maintain = "M";
-	/** Transaction = T */
-	public static final String WINDOWTYPE_Transaction = "T";
 	/** Query Only = Q */
 	public static final String WINDOWTYPE_QueryOnly = "Q";
+	/** Single Record = S */
+	public static final String WINDOWTYPE_SingleRecord = "S";
+	/** Transaction = T */
+	public static final String WINDOWTYPE_Transaction = "T";
 	/** Set WindowType.
 		@param WindowType 
 		Type or classification of a Window

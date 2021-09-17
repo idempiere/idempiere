@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Val_Rule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Val_Rule")
 public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName)
@@ -40,7 +43,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
         {
 			setAD_Val_Rule_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setType (null);
         } */
@@ -192,12 +195,12 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 
 	/** Type AD_Reference_ID=101 */
 	public static final int TYPE_AD_Reference_ID=101;
-	/** SQL = S */
-	public static final String TYPE_SQL = "S";
-	/** Java Language = J */
-	public static final String TYPE_JavaLanguage = "J";
 	/** Java Script = E */
 	public static final String TYPE_JavaScript = "E";
+	/** Java Language = J */
+	public static final String TYPE_JavaLanguage = "J";
+	/** SQL = S */
+	public static final String TYPE_SQL = "S";
 	/** Set Type.
 		@param Type 
 		Type of Validation (SQL, Java Script, Java Language)

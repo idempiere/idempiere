@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for M_ShipperPickupTypes
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_ShipperPickupTypes")
 public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)
@@ -99,9 +102,10 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	}
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
 
 	/** Set Shipper.
 		@param M_Shipper_ID 
@@ -127,9 +131,10 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	}
 
 	public org.compiere.model.I_M_ShipperPickupTypesCfg getM_ShipperPickupTypesCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperPickupTypesCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypesCfg.Table_Name)
-			.getPO(getM_ShipperPickupTypesCfg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperPickupTypesCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypesCfg.Table_ID)
+			.getPO(getM_ShipperPickupTypesCfg_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Pickup Types Configuration.
 		@param M_ShipperPickupTypesCfg_ID Shipper Pickup Types Configuration	  */

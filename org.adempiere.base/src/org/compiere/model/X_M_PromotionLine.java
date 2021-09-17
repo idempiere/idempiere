@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_PromotionLine")
 public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_PromotionLine (Properties ctx, int M_PromotionLine_ID, String trxName)
@@ -119,9 +122,10 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
 	}
 
 	public org.compiere.model.I_M_PromotionGroup getM_PromotionGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PromotionGroup)MTable.get(getCtx(), org.compiere.model.I_M_PromotionGroup.Table_Name)
-			.getPO(getM_PromotionGroup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PromotionGroup)MTable.get(getCtx(), org.compiere.model.I_M_PromotionGroup.Table_ID)
+			.getPO(getM_PromotionGroup_ID(), get_TrxName());
+	}
 
 	/** Set Promotion Group.
 		@param M_PromotionGroup_ID Promotion Group	  */
@@ -144,9 +148,10 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
 	}
 
 	public org.compiere.model.I_M_Promotion getM_Promotion() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_Name)
-			.getPO(getM_Promotion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_ID)
+			.getPO(getM_Promotion_ID(), get_TrxName());
+	}
 
 	/** Set Promotion.
 		@param M_Promotion_ID Promotion	  */

@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for M_CostHistory
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_CostHistory")
 public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_CostHistory (Properties ctx, int M_CostHistory_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
     }
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -109,9 +113,10 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	}
 
 	public org.compiere.model.I_M_CostDetail getM_CostDetail() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostDetail)MTable.get(getCtx(), org.compiere.model.I_M_CostDetail.Table_Name)
-			.getPO(getM_CostDetail_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostDetail)MTable.get(getCtx(), org.compiere.model.I_M_CostDetail.Table_ID)
+			.getPO(getM_CostDetail_ID(), get_TrxName());
+	}
 
 	/** Set Cost Detail.
 		@param M_CostDetail_ID 
@@ -137,9 +142,10 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	}
 
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_Name)
-			.getPO(getM_CostElement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
+			.getPO(getM_CostElement_ID(), get_TrxName());
+	}
 
 	/** Set Cost Element.
 		@param M_CostElement_ID 
@@ -202,9 +208,10 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	}
 
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostType)MTable.get(getCtx(), org.compiere.model.I_M_CostType.Table_Name)
-			.getPO(getM_CostType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostType)MTable.get(getCtx(), org.compiere.model.I_M_CostType.Table_ID)
+			.getPO(getM_CostType_ID(), get_TrxName());
+	}
 
 	/** Set Cost Type.
 		@param M_CostType_ID 

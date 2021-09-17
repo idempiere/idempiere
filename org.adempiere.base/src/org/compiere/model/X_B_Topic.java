@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_Topic
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="B_Topic")
 public class X_B_Topic extends PO implements I_B_Topic, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_B_Topic (Properties ctx, int B_Topic_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
     }
 
 	public org.compiere.model.I_B_TopicCategory getB_TopicCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_B_TopicCategory)MTable.get(getCtx(), org.compiere.model.I_B_TopicCategory.Table_Name)
-			.getPO(getB_TopicCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_B_TopicCategory)MTable.get(getCtx(), org.compiere.model.I_B_TopicCategory.Table_ID)
+			.getPO(getB_TopicCategory_ID(), get_TrxName());
+	}
 
 	/** Set Topic Category.
 		@param B_TopicCategory_ID 
@@ -132,9 +136,10 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	public org.compiere.model.I_B_TopicType getB_TopicType() throws RuntimeException
-    {
-		return (org.compiere.model.I_B_TopicType)MTable.get(getCtx(), org.compiere.model.I_B_TopicType.Table_Name)
-			.getPO(getB_TopicType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_B_TopicType)MTable.get(getCtx(), org.compiere.model.I_B_TopicType.Table_ID)
+			.getPO(getB_TopicType_ID(), get_TrxName());
+	}
 
 	/** Set Topic Type.
 		@param B_TopicType_ID 

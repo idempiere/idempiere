@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintForm
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_PrintForm")
 public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PrintForm (Properties ctx, int AD_PrintForm_ID, String trxName)
@@ -126,9 +129,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getDistrib_Order_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getDistrib_Order_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getDistrib_Order_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Order Mail Text.
 		@param Distrib_Order_MailText_ID 
@@ -154,9 +158,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getDistrib_Order_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getDistrib_Order_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getDistrib_Order_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Order Print Format.
 		@param Distrib_Order_PrintFormat_ID 
@@ -182,9 +187,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getInvoice_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getInvoice_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getInvoice_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Mail Text.
 		@param Invoice_MailText_ID 
@@ -210,9 +216,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getInvoice_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getInvoice_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Print Format.
 		@param Invoice_PrintFormat_ID 
@@ -238,9 +245,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getManuf_Order_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getManuf_Order_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getManuf_Order_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Mail Text.
 		@param Manuf_Order_MailText_ID 
@@ -266,9 +274,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getManuf_Order_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getManuf_Order_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getManuf_Order_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Print Format.
 		@param Manuf_Order_PrintFormat_ID 
@@ -319,9 +328,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
     }
 
 	public org.compiere.model.I_R_MailText getOrder_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getOrder_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getOrder_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Order Mail Text.
 		@param Order_MailText_ID 
@@ -347,9 +357,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getOrder_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getOrder_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getOrder_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Order Print Format.
 		@param Order_PrintFormat_ID 
@@ -375,9 +386,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getProject_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getProject_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getProject_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Project Mail Text.
 		@param Project_MailText_ID 
@@ -403,9 +415,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getProject_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getProject_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getProject_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Project Print Format.
 		@param Project_PrintFormat_ID 
@@ -431,9 +444,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getRemittance_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getRemittance_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getRemittance_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Remittance Mail Text.
 		@param Remittance_MailText_ID 
@@ -459,9 +473,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getRemittance_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getRemittance_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getRemittance_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Remittance Print Format.
 		@param Remittance_PrintFormat_ID 
@@ -487,9 +502,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getShipment_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getShipment_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getShipment_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Shipment Mail Text.
 		@param Shipment_MailText_ID 
@@ -515,9 +531,10 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getShipment_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getShipment_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getShipment_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Shipment Print Format.
 		@param Shipment_PrintFormat_ID 

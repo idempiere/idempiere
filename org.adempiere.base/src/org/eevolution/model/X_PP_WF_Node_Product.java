@@ -20,19 +20,22 @@ package org.eevolution.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for PP_WF_Node_Product
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PP_WF_Node_Product")
 public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Product (Properties ctx, int PP_WF_Node_Product_ID, String trxName)
@@ -42,7 +45,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
         {
 			setAD_WF_Node_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setM_Product_ID (0);
 			setPP_WF_Node_Product_ID (0);
         } */
@@ -77,9 +80,10 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
     }
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
 		@param AD_WF_Node_ID 
@@ -106,12 +110,12 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 
 	/** ConfigurationLevel AD_Reference_ID=53222 */
 	public static final int CONFIGURATIONLEVEL_AD_Reference_ID=53222;
-	/** System = S */
-	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Client = C */
 	public static final String CONFIGURATIONLEVEL_Client = "C";
 	/** Organization = O */
 	public static final String CONFIGURATIONLEVEL_Organization = "O";
+	/** System = S */
+	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Set Configuration Level.
 		@param ConfigurationLevel 
 		Configuration Level for this parameter
@@ -172,9 +176,10 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

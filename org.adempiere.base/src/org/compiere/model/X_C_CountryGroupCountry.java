@@ -20,17 +20,20 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_CountryGroupCountry
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_CountryGroupCountry")
 public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCountry, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName)
@@ -105,9 +108,10 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	}
 
 	public org.compiere.model.I_C_CountryGroup getC_CountryGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_Name)
-			.getPO(getC_CountryGroup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_ID)
+			.getPO(getC_CountryGroup_ID(), get_TrxName());
+	}
 
 	/** Set Country Group.
 		@param C_CountryGroup_ID Country Group	  */
@@ -130,9 +134,10 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	}
 
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
-			.getPO(getC_Country_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
+			.getPO(getC_Country_ID(), get_TrxName());
+	}
 
 	/** Set Country.
 		@param C_Country_ID 
