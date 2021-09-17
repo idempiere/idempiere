@@ -25,6 +25,9 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.util.ManageImageCache;
 import org.compiere.model.MImage;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MUserDefInfo;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.image.Image;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
@@ -132,7 +135,16 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 		
 		public static DecorateInfo get (MInfoWindow mInfo){
-			return mInfo==null?null:new DecorateInfo(mInfo.getImageURL());
+
+			if (mInfo != null) {
+				String image = mInfo.getImageURL();
+				MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), mInfo.getAD_InfoWindow_ID());
+				if (userDef != null && !Util.isEmpty(userDef.getImageURL()))
+					image = userDef.getImageURL();
+
+				return new DecorateInfo(image);
+			}
+			return null;
 		}
 	}
 	

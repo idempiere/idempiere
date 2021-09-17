@@ -171,7 +171,7 @@ public class GenericZoomProvider implements IZoomProvider {
 		int tabIDLoop = AD_Tab_ID;
 		int levelUp = 0;
 		while (true) {
-			MTab tab = new MTab(ctx, tabIDLoop, null);
+			MTab tab = MTab.get(tabIDLoop);
 			String whereCtx = tab.getWhereClause();
 			if (!Util.isEmpty(whereCtx, true)) {
 				if (whereCtx.indexOf("@") != -1)
