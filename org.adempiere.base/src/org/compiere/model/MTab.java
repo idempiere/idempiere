@@ -216,6 +216,8 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	{
 		if (isReadOnly() && isInsertRecord())
 			setIsInsertRecord(false);
+		if (is_new() || is_ValueChanged(COLUMNNAME_AD_TabType))
+			setIsSortTab(AD_TABTYPE_Sort.equals(getAD_TabType())); // preserve this redundant flag for backward compatibility
 		//RF[2826384]
 		if(isSortTab())
 		{
