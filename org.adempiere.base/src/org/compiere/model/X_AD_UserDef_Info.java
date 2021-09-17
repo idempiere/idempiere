@@ -29,7 +29,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210906L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -39,6 +39,8 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
         {
 			setAD_InfoWindow_ID (0);
 			setAD_UserDef_Info_ID (0);
+			setSeqNo (0);
+// 0
         } */
     }
 
@@ -242,6 +244,47 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** Set Image URL.
+		@param ImageURL 
+		URL of  image
+	  */
+	public void setImageURL (String ImageURL)
+	{
+		set_ValueNoCheck (COLUMNNAME_ImageURL, ImageURL);
+	}
+
+	/** Get Image URL.
+		@return URL of  image
+	  */
+	public String getImageURL () 
+	{
+		return (String)get_Value(COLUMNNAME_ImageURL);
+	}
+
+	/** IsShowInDashboard AD_Reference_ID=319 */
+	public static final int ISSHOWINDASHBOARD_AD_Reference_ID=319;
+	/** Yes = Y */
+	public static final String ISSHOWINDASHBOARD_Yes = "Y";
+	/** No = N */
+	public static final String ISSHOWINDASHBOARD_No = "N";
+	/** Set Show in Dashboard.
+		@param IsShowInDashboard 
+		Show the dashlet in the dashboard
+	  */
+	public void setIsShowInDashboard (String IsShowInDashboard)
+	{
+
+		set_Value (COLUMNNAME_IsShowInDashboard, IsShowInDashboard);
+	}
+
+	/** Get Show in Dashboard.
+		@return Show the dashlet in the dashboard
+	  */
+	public String getIsShowInDashboard () 
+	{
+		return (String)get_Value(COLUMNNAME_IsShowInDashboard);
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -257,5 +300,25 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Sequence.
+		@param SeqNo 
+		Method of ordering records; lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo)
+	{
+		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
+	}
+
+	/** Get Sequence.
+		@return Method of ordering records; lowest number comes first
+	  */
+	public int getSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }
