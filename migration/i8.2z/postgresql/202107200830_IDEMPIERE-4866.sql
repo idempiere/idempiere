@@ -86,7 +86,7 @@ UPDATE AD_PrintFormatItem SET PrintName='SMTP Server', Name='SMTP Server' WHERE 
 ;
 
 -- Jul 20, 2021, 8:19:40 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (214556,0,'EMail Test','Test EMail',200280,'EMailTest',1,'N','N','N','N','N',0,'N',28,0,0,'Y',TO_TIMESTAMP('2021-07-20 08:19:40','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-20 08:19:40','YYYY-MM-DD HH24:MI:SS'),0,2806,'Y','N','D','N','N','N','Y','cb98c7f6-e9c2-4bcc-8004-15686e1cc871','Y',0,'Y','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,AD_Process_ID) VALUES (214556,0,'EMail Test','Test EMail',200280,'EMailTest',1,'N','N','N','N','N',0,'N',28,0,0,'Y',TO_TIMESTAMP('2021-07-20 08:19:40','YYYY-MM-DD HH24:MI:SS'),0,TO_TIMESTAMP('2021-07-20 08:19:40','YYYY-MM-DD HH24:MI:SS'),0,2806,'Y','N','D','N','N','N','Y','cb98c7f6-e9c2-4bcc-8004-15686e1cc871','Y',0,'Y','N','N',327)
 ;
 
 -- Jul 20, 2021, 8:19:50 AM CEST
