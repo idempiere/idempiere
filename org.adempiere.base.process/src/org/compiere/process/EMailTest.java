@@ -58,9 +58,6 @@ public class EMailTest extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		int tableID = getProcessInfo().getTable_ID();
-		System.out.println(tableID);
-		
 		if (getProcessInfo().getTable_ID() == MClient.Table_ID) {
 			MClient client = MClient.get (getCtx(), p_AD_Client_ID);
 			if (log.isLoggable(Level.INFO)) log.info(client.toString());

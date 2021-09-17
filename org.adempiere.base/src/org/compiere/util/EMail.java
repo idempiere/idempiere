@@ -249,7 +249,7 @@ public final class EMail implements Serializable
 	 */
 	public String send ()
 	{
-		if (!m_forceUseTenantSmtp) {
+		if (!m_forceUseTenantSmtp && getFrom() != null) {
 			String from = getFrom().getAddress();
 			int smtpID = MSMTP.getSmtpID(Env.getAD_Client_ID(m_ctx), from, null);
 			if (smtpID > 0) {

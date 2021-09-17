@@ -23,14 +23,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SMTP
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
 public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210705L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_SMTP (Properties ctx, int AD_SMTP_ID, String trxName)
@@ -39,7 +39,6 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
       /** if (AD_SMTP_ID == 0)
         {
 			setAD_SMTP_ID (0);
-// @#AD_Client_ID@
 			setIsSecureSMTP (false);
 // N
 			setIsSmtpAuthorization (false);
@@ -55,7 +54,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 3 - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -76,8 +75,8 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
       return sb.toString();
     }
 
-	/** Set AD_SMTP.
-		@param AD_SMTP_ID AD_SMTP	  */
+	/** Set SMTP Server.
+		@param AD_SMTP_ID SMTP Server	  */
 	public void setAD_SMTP_ID (int AD_SMTP_ID)
 	{
 		if (AD_SMTP_ID < 1) 
@@ -86,8 +85,8 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 			set_ValueNoCheck (COLUMNNAME_AD_SMTP_ID, Integer.valueOf(AD_SMTP_ID));
 	}
 
-	/** Get AD_SMTP.
-		@return AD_SMTP	  */
+	/** Get SMTP Server.
+		@return SMTP Server	  */
 	public int getAD_SMTP_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_SMTP_ID);
@@ -271,17 +270,17 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Used by emails and/or domains.
-		@param UsedByEmailAndOrDomain Used by emails and/or domains	  */
-	public void setUsedByEmailAndOrDomain (String UsedByEmailAndOrDomain)
+	/** Set Used by email or domain.
+		@param UsedByEmailOrDomain Used by email or domain	  */
+	public void setUsedByEmailOrDomain (String UsedByEmailOrDomain)
 	{
-		set_Value (COLUMNNAME_UsedByEmailAndOrDomain, UsedByEmailAndOrDomain);
+		set_Value (COLUMNNAME_UsedByEmailOrDomain, UsedByEmailOrDomain);
 	}
 
-	/** Get Used by emails and/or domains.
-		@return Used by emails and/or domains	  */
-	public String getUsedByEmailAndOrDomain () 
+	/** Get Used by email or domain.
+		@return Used by email or domain	  */
+	public String getUsedByEmailOrDomain () 
 	{
-		return (String)get_Value(COLUMNNAME_UsedByEmailAndOrDomain);
+		return (String)get_Value(COLUMNNAME_UsedByEmailOrDomain);
 	}
 }

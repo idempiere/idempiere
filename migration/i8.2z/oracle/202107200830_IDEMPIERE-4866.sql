@@ -117,11 +117,11 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Jul 20, 2021, 8:21:06 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (203527,0,0,'Y',TO_DATE('2021-07-20 08:20:53','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:20:53','YYYY-MM-DD HH24:MI:SS'),0,'UsedByEmailAndOrDomain','Used by emails and/or domains',NULL,NULL,'Used by emails and/or domains','D','a1d45340-7b37-4a20-aecb-7520ed02e32c')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (203527,0,0,'Y',TO_DATE('2021-07-20 08:20:53','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:20:53','YYYY-MM-DD HH24:MI:SS'),0,'UsedByEmailOrDomain','Used by email or domain',NULL,NULL,'Used by email or domain','D','a1d45340-7b37-4a20-aecb-7520ed02e32c')
 ;
 
 -- Jul 20, 2021, 8:21:23 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214563,0,'Used by emails and/or domains',200280,'UsedByEmailAndOrDomain',255,'N','N','N','N','N',0,'N',10,0,0,'Y',TO_DATE('2021-07-20 08:21:23','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:21:23','YYYY-MM-DD HH24:MI:SS'),0,203527,'Y','N','D','N','N','N','Y','c7a8c6bb-a7da-48d2-8b8b-40d07a3acb2d','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214563,0,'Used by email or domain',200280,'UsedByEmailOrDomain',255,'N','N','N','N','N',0,'N',10,0,0,'Y',TO_DATE('2021-07-20 08:21:23','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:21:23','YYYY-MM-DD HH24:MI:SS'),0,203527,'Y','N','D','N','N','N','Y','c7a8c6bb-a7da-48d2-8b8b-40d07a3acb2d','Y',0,'N','N','N','N')
 ;
 
 -- Jul 20, 2021, 8:21:35 AM CEST
@@ -133,7 +133,7 @@ UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2021-07-20 08:21:38','YYYY-
 ;
 
 -- Jul 20, 2021, 8:21:47 AM CEST
-CREATE TABLE AD_SMTP (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) DEFAULT 0 NOT NULL, AD_SMTP_ID NUMBER(10) NOT NULL, AD_SMTP_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE DEFAULT SYSDATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, EMailTest CHAR(1) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsSecureSMTP CHAR(1) DEFAULT 'N' CHECK (IsSecureSMTP IN ('Y','N')) NOT NULL, IsSmtpAuthorization CHAR(1) DEFAULT 'N' CHECK (IsSmtpAuthorization IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, RequestUser VARCHAR2(60 CHAR) DEFAULT NULL , RequestUserPW VARCHAR2(255 CHAR) DEFAULT NULL , SMTPHost VARCHAR2(60 CHAR) DEFAULT NULL , SMTPPort NUMBER(10) DEFAULT NULL , Updated DATE DEFAULT SYSDATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, UsedByEmailAndOrDomain VARCHAR2(255 CHAR) DEFAULT NULL , CONSTRAINT AD_SMTP_Key PRIMARY KEY (AD_SMTP_ID), CONSTRAINT AD_SMTP_UU_idx UNIQUE (AD_SMTP_UU))
+CREATE TABLE AD_SMTP (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) DEFAULT 0 NOT NULL, AD_SMTP_ID NUMBER(10) NOT NULL, AD_SMTP_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE DEFAULT SYSDATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, EMailTest CHAR(1) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsSecureSMTP CHAR(1) DEFAULT 'N' CHECK (IsSecureSMTP IN ('Y','N')) NOT NULL, IsSmtpAuthorization CHAR(1) DEFAULT 'N' CHECK (IsSmtpAuthorization IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, RequestUser VARCHAR2(60 CHAR) DEFAULT NULL , RequestUserPW VARCHAR2(255 CHAR) DEFAULT NULL , SMTPHost VARCHAR2(60 CHAR) DEFAULT NULL , SMTPPort NUMBER(10) DEFAULT NULL , Updated DATE DEFAULT SYSDATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, UsedByEmailOrDomain VARCHAR2(255 CHAR) DEFAULT NULL , CONSTRAINT AD_SMTP_Key PRIMARY KEY (AD_SMTP_ID), CONSTRAINT AD_SMTP_UU_idx UNIQUE (AD_SMTP_UU))
 ;
 
 -- Jul 20, 2021, 8:22:35 AM CEST
@@ -141,7 +141,7 @@ INSERT INTO AD_Window (AD_Window_ID,Name,AD_Client_ID,AD_Org_ID,IsActive,Created
 ;
 
 -- Jul 20, 2021, 8:23:15 AM CEST
-INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200298,'SMTP Server',200118,10,'N',200280,0,0,'Y',TO_DATE('2021-07-20 08:23:15','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:23:15','YYYY-MM-DD HH24:MI:SS'),0,'N','N','N','N','N','N',0,'N','D','Y','N','bdf27ca5-26af-456d-a647-6bad3d5cad38','B','N','Y',0)
+INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200298,'SMTP Server',200118,10,'Y',200280,0,0,'Y',TO_DATE('2021-07-20 08:23:15','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:23:15','YYYY-MM-DD HH24:MI:SS'),0,'N','N','N','N','N','N',0,'N','D','Y','N','bdf27ca5-26af-456d-a647-6bad3d5cad38','B','N','Y',0)
 ;
 
 -- Jul 20, 2021, 8:23:17 AM CEST
@@ -193,7 +193,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 ;
 
 -- Jul 20, 2021, 8:23:20 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (206732,'Used by emails and/or domains',200298,214563,'Y',255,110,'N','N','N','N',0,0,'Y',TO_DATE('2021-07-20 08:23:20','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:23:20','YYYY-MM-DD HH24:MI:SS'),0,'N','Y','D','0cd1cffd-9570-43ff-b40f-25de04997618','Y',100,5)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (206732,'Used by email or domain',200298,214563,'Y',255,110,'N','N','N','N',0,0,'Y',TO_DATE('2021-07-20 08:23:20','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2021-07-20 08:23:20','YYYY-MM-DD HH24:MI:SS'),0,'N','Y','D','0cd1cffd-9570-43ff-b40f-25de04997618','Y',100,5)
 ;
 
 -- Jul 20, 2021, 8:23:21 AM CEST

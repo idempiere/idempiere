@@ -65,7 +65,7 @@ public class MSMTP extends X_AD_SMTP {
 		
 		System.out.println("getSmtpID : clientID=" + clientID + " / from=" + from);
 		
-		String sql = "SELECT AD_SMTP_ID FROM AD_SMTP WHERE AD_Client_ID IN (0, ?) AND IsActive = 'Y' AND UPPER(UsedByEmailAndOrDomain) LIKE ? ORDER BY AD_Client_ID DESC, AD_SMTP_ID";
+		String sql = "SELECT AD_SMTP_ID FROM AD_SMTP WHERE AD_Client_ID IN (0, ?) AND IsActive = 'Y' AND UPPER(UsedByEmailOrDomain) LIKE ? ORDER BY AD_Client_ID DESC, AD_SMTP_ID";
 		
 		int smtpID = DB.getSQLValueEx(trxName, sql, clientID, "%" + from.toUpperCase() + "%");
 

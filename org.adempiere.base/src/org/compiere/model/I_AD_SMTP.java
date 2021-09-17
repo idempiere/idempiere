@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_SMTP
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_AD_SMTP 
 {
@@ -30,14 +30,14 @@ public interface I_AD_SMTP
     /** TableName=AD_SMTP */
     public static final String Table_Name = "AD_SMTP";
 
-    /** AD_Table_ID=1000839 */
-    public static final int Table_ID = MTable.getTable_ID(Table_Name);
+    /** AD_Table_ID=200280 */
+    public static final int Table_ID = 200280;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(6);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -65,10 +65,10 @@ public interface I_AD_SMTP
     /** Column name AD_SMTP_ID */
     public static final String COLUMNNAME_AD_SMTP_ID = "AD_SMTP_ID";
 
-	/** Set AD_SMTP	  */
+	/** Set SMTP Server	  */
 	public void setAD_SMTP_ID (int AD_SMTP_ID);
 
-	/** Get AD_SMTP	  */
+	/** Get SMTP Server	  */
 	public int getAD_SMTP_ID();
 
     /** Column name AD_SMTP_UU */
@@ -229,12 +229,12 @@ public interface I_AD_SMTP
 	  */
 	public int getUpdatedBy();
 
-    /** Column name UsedByEmailAndOrDomain */
-    public static final String COLUMNNAME_UsedByEmailAndOrDomain = "UsedByEmailAndOrDomain";
+    /** Column name UsedByEmailOrDomain */
+    public static final String COLUMNNAME_UsedByEmailOrDomain = "UsedByEmailOrDomain";
 
-	/** Set Used by emails and/or domains	  */
-	public void setUsedByEmailAndOrDomain (String UsedByEmailAndOrDomain);
+	/** Set Used by email or domain	  */
+	public void setUsedByEmailOrDomain (String UsedByEmailOrDomain);
 
-	/** Get Used by emails and/or domains	  */
-	public String getUsedByEmailAndOrDomain();
+	/** Get Used by email or domain	  */
+	public String getUsedByEmailOrDomain();
 }
