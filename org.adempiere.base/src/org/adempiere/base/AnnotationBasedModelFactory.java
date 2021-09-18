@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
  * discovery using SPI is preferred over reflection-based methods.
  * @author Saulo Gil
  */
-@Component(immediate = true, service = IModelFactory.class, property = {"service.ranking:Integer=1"})
+@Component(immediate = true, service = IModelFactory.class, property = {"service.ranking:Integer=-1"})
 public class AnnotationBasedModelFactory extends AbstractModelFactory implements IModelFactory
 {
 
