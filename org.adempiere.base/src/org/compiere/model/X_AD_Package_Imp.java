@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Imp
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Package_Imp")
 public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp (Properties ctx, int AD_Package_Imp_ID, String trxName)
@@ -101,9 +104,10 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Package_Imp_Proc getAD_Package_Imp_Proc() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Package_Imp_Proc)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp_Proc.Table_Name)
-			.getPO(getAD_Package_Imp_Proc_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Package_Imp_Proc)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp_Proc.Table_ID)
+			.getPO(getAD_Package_Imp_Proc_ID(), get_TrxName());
+	}
 
 	/** Set Package Imp. Proc..
 		@param AD_Package_Imp_Proc_ID Package Imp. Proc.	  */

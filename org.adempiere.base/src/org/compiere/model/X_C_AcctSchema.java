@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_AcctSchema")
 public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)
@@ -180,9 +183,10 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -209,18 +213,18 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 
 	/** CommitmentType AD_Reference_ID=359 */
 	public static final int COMMITMENTTYPE_AD_Reference_ID=359;
-	/** PO Commitment only = C */
-	public static final String COMMITMENTTYPE_POCommitmentOnly = "C";
-	/** PO Commitment & Reservation = B */
-	public static final String COMMITMENTTYPE_POCommitmentReservation = "B";
-	/** None = N */
-	public static final String COMMITMENTTYPE_None = "N";
 	/** PO/SO Commitment & Reservation = A */
 	public static final String COMMITMENTTYPE_POSOCommitmentReservation = "A";
-	/** SO Commitment only = S */
-	public static final String COMMITMENTTYPE_SOCommitmentOnly = "S";
+	/** PO Commitment & Reservation = B */
+	public static final String COMMITMENTTYPE_POCommitmentReservation = "B";
+	/** PO Commitment only = C */
+	public static final String COMMITMENTTYPE_POCommitmentOnly = "C";
+	/** None = N */
+	public static final String COMMITMENTTYPE_None = "N";
 	/** PO/SO Commitment = O */
 	public static final String COMMITMENTTYPE_POSOCommitment = "O";
+	/** SO Commitment only = S */
+	public static final String COMMITMENTTYPE_SOCommitmentOnly = "S";
 	/** Set Commitment Type.
 		@param CommitmentType 
 		Create Commitment and/or Reservations for Budget Control
@@ -241,12 +245,12 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 
 	/** CostingLevel AD_Reference_ID=355 */
 	public static final int COSTINGLEVEL_AD_Reference_ID=355;
+	/** Batch/Lot = B */
+	public static final String COSTINGLEVEL_BatchLot = "B";
 	/** Client = C */
 	public static final String COSTINGLEVEL_Client = "C";
 	/** Organization = O */
 	public static final String COSTINGLEVEL_Organization = "O";
-	/** Batch/Lot = B */
-	public static final String COSTINGLEVEL_BatchLot = "B";
 	/** Set Costing Level.
 		@param CostingLevel 
 		The lowest level to accumulate Costing Information
@@ -267,20 +271,20 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 
 	/** CostingMethod AD_Reference_ID=122 */
 	public static final int COSTINGMETHOD_AD_Reference_ID=122;
-	/** Standard Costing = S */
-	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** Average PO = A */
 	public static final String COSTINGMETHOD_AveragePO = "A";
-	/** Lifo = L */
-	public static final String COSTINGMETHOD_Lifo = "L";
 	/** Fifo = F */
 	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
-	/** Average Invoice = I */
-	public static final String COSTINGMETHOD_AverageInvoice = "I";
 	/** Last Invoice = i */
 	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Average Invoice = I */
+	public static final String COSTINGMETHOD_AverageInvoice = "I";
+	/** Lifo = L */
+	public static final String COSTINGMETHOD_Lifo = "L";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
+	/** Standard Costing = S */
+	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** User Defined = U */
 	public static final String COSTINGMETHOD_UserDefined = "U";
 	/** _ = x */
@@ -304,9 +308,10 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getC_Period_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
 
 	/** Set Period.
 		@param C_Period_ID 
@@ -350,14 +355,14 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 
 	/** GAAP AD_Reference_ID=123 */
 	public static final int GAAP_AD_Reference_ID=123;
-	/** International GAAP = UN */
-	public static final String GAAP_InternationalGAAP = "UN";
-	/** US GAAP = US */
-	public static final String GAAP_USGAAP = "US";
 	/** German HGB = DE */
 	public static final String GAAP_GermanHGB = "DE";
 	/** French Accounting Standard = FR */
 	public static final String GAAP_FrenchAccountingStandard = "FR";
+	/** International GAAP = UN */
+	public static final String GAAP_InternationalGAAP = "UN";
+	/** US GAAP = US */
+	public static final String GAAP_USGAAP = "US";
 	/** Custom Accounting Rules = XX */
 	public static final String GAAP_CustomAccountingRules = "XX";
 	/** Set GAAP.
@@ -619,9 +624,10 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	}
 
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostType)MTable.get(getCtx(), org.compiere.model.I_M_CostType.Table_Name)
-			.getPO(getM_CostType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostType)MTable.get(getCtx(), org.compiere.model.I_M_CostType.Table_ID)
+			.getPO(getM_CostType_ID(), get_TrxName());
+	}
 
 	/** Set Cost Type.
 		@param M_CostType_ID 
@@ -751,14 +757,14 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 
 	/** TaxCorrectionType AD_Reference_ID=392 */
 	public static final int TAXCORRECTIONTYPE_AD_Reference_ID=392;
+	/** Write-off and Discount = B */
+	public static final String TAXCORRECTIONTYPE_Write_OffAndDiscount = "B";
+	/** Discount only = D */
+	public static final String TAXCORRECTIONTYPE_DiscountOnly = "D";
 	/** None = N */
 	public static final String TAXCORRECTIONTYPE_None = "N";
 	/** Write-off only = W */
 	public static final String TAXCORRECTIONTYPE_Write_OffOnly = "W";
-	/** Discount only = D */
-	public static final String TAXCORRECTIONTYPE_DiscountOnly = "D";
-	/** Write-off and Discount = B */
-	public static final String TAXCORRECTIONTYPE_Write_OffAndDiscount = "B";
 	/** Set Tax Correction.
 		@param TaxCorrectionType 
 		Type of Tax Correction

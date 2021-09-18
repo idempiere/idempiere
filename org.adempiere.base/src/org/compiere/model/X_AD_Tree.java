@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tree
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Tree")
 public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)
@@ -82,9 +85,10 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -306,9 +310,10 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Column getParent_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getParent_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getParent_Column_ID(), get_TrxName());
+	}
 
 	/** Set Parent Column.
 		@param Parent_Column_ID 
@@ -356,28 +361,38 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 
 	/** TreeType AD_Reference_ID=120 */
 	public static final int TREETYPE_AD_Reference_ID=120;
-	/** Menu = MM */
-	public static final String TREETYPE_Menu = "MM";
-	/** Element Value = EV */
-	public static final String TREETYPE_ElementValue = "EV";
-	/** Product = PR */
-	public static final String TREETYPE_Product = "PR";
-	/** BPartner = BP */
-	public static final String TREETYPE_BPartner = "BP";
-	/** Organization = OO */
-	public static final String TREETYPE_Organization = "OO";
-	/** BoM = BB */
-	public static final String TREETYPE_BoM = "BB";
-	/** Project = PJ */
-	public static final String TREETYPE_Project = "PJ";
-	/** Sales Region = SR */
-	public static final String TREETYPE_SalesRegion = "SR";
-	/** Product Category = PC */
-	public static final String TREETYPE_ProductCategory = "PC";
-	/** Campaign = MC */
-	public static final String TREETYPE_Campaign = "MC";
 	/** Activity = AY */
 	public static final String TREETYPE_Activity = "AY";
+	/** BoM = BB */
+	public static final String TREETYPE_BoM = "BB";
+	/** BPartner = BP */
+	public static final String TREETYPE_BPartner = "BP";
+	/** CM Container = CC */
+	public static final String TREETYPE_CMContainer = "CC";
+	/** CM Media = CM */
+	public static final String TREETYPE_CMMedia = "CM";
+	/** CM Container Stage = CS */
+	public static final String TREETYPE_CMContainerStage = "CS";
+	/** CM Template = CT */
+	public static final String TREETYPE_CMTemplate = "CT";
+	/** Element Value = EV */
+	public static final String TREETYPE_ElementValue = "EV";
+	/** Campaign = MC */
+	public static final String TREETYPE_Campaign = "MC";
+	/** Menu = MM */
+	public static final String TREETYPE_Menu = "MM";
+	/** Organization = OO */
+	public static final String TREETYPE_Organization = "OO";
+	/** Product Category = PC */
+	public static final String TREETYPE_ProductCategory = "PC";
+	/** Project = PJ */
+	public static final String TREETYPE_Project = "PJ";
+	/** Product = PR */
+	public static final String TREETYPE_Product = "PR";
+	/** Sales Region = SR */
+	public static final String TREETYPE_SalesRegion = "SR";
+	/** Custom Table = TL */
+	public static final String TREETYPE_CustomTable = "TL";
 	/** User 1 = U1 */
 	public static final String TREETYPE_User1 = "U1";
 	/** User 2 = U2 */
@@ -386,16 +401,6 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	public static final String TREETYPE_User3 = "U3";
 	/** User 4 = U4 */
 	public static final String TREETYPE_User4 = "U4";
-	/** CM Container = CC */
-	public static final String TREETYPE_CMContainer = "CC";
-	/** CM Container Stage = CS */
-	public static final String TREETYPE_CMContainerStage = "CS";
-	/** CM Template = CT */
-	public static final String TREETYPE_CMTemplate = "CT";
-	/** CM Media = CM */
-	public static final String TREETYPE_CMMedia = "CM";
-	/** Custom Table = TL */
-	public static final String TREETYPE_CustomTable = "TL";
 	/** Set Type | Area.
 		@param TreeType 
 		Element this tree is built on (i.e Product, Business Partner)

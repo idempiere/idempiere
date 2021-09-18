@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Goal
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PA_SLA_Goal")
 public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_SLA_Goal (Properties ctx, int PA_SLA_Goal_ID, String trxName)
@@ -80,9 +83,10 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -224,9 +228,10 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
     }
 
 	public org.compiere.model.I_PA_SLA_Criteria getPA_SLA_Criteria() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_SLA_Criteria)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Criteria.Table_Name)
-			.getPO(getPA_SLA_Criteria_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_SLA_Criteria)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Criteria.Table_ID)
+			.getPO(getPA_SLA_Criteria_ID(), get_TrxName());
+	}
 
 	/** Set SLA Criteria.
 		@param PA_SLA_Criteria_ID 

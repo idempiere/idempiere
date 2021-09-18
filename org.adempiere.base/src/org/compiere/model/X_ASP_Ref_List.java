@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for ASP_Ref_List
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="ASP_Ref_List")
 public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Ref_List (Properties ctx, int ASP_Ref_List_ID, String trxName)
@@ -73,9 +76,10 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -101,9 +105,10 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Ref_List)MTable.get(getCtx(), org.compiere.model.I_AD_Ref_List.Table_Name)
-			.getPO(getAD_Ref_List_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Ref_List)MTable.get(getCtx(), org.compiere.model.I_AD_Ref_List.Table_ID)
+			.getPO(getAD_Ref_List_ID(), get_TrxName());
+	}
 
 	/** Set Reference List.
 		@param AD_Ref_List_ID 
@@ -129,9 +134,10 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_Name)
-			.getPO(getASP_Level_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)
+			.getPO(getASP_Level_ID(), get_TrxName());
+	}
 
 	/** Set ASP Level.
 		@param ASP_Level_ID ASP Level	  */

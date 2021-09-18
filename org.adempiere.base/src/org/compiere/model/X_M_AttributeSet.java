@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_AttributeSet")
 public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -345,10 +348,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public static final int MANDATORYTYPE_AD_Reference_ID=324;
 	/** Not Mandatory = N */
 	public static final String MANDATORYTYPE_NotMandatory = "N";
-	/** Always Mandatory = Y */
-	public static final String MANDATORYTYPE_AlwaysMandatory = "Y";
 	/** When Shipping = S */
 	public static final String MANDATORYTYPE_WhenShipping = "S";
+	/** Always Mandatory = Y */
+	public static final String MANDATORYTYPE_AlwaysMandatory = "Y";
 	/** Set Mandatory Type.
 		@param MandatoryType 
 		The specification of a Product Attribute Instance is mandatory
@@ -424,9 +427,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	public org.compiere.model.I_M_LotCtl getM_LotCtl() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_LotCtl)MTable.get(getCtx(), org.compiere.model.I_M_LotCtl.Table_Name)
-			.getPO(getM_LotCtl_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_LotCtl)MTable.get(getCtx(), org.compiere.model.I_M_LotCtl.Table_ID)
+			.getPO(getM_LotCtl_ID(), get_TrxName());
+	}
 
 	/** Set Lot Control.
 		@param M_LotCtl_ID 
@@ -452,9 +456,10 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	public org.compiere.model.I_M_SerNoCtl getM_SerNoCtl() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_SerNoCtl)MTable.get(getCtx(), org.compiere.model.I_M_SerNoCtl.Table_Name)
-			.getPO(getM_SerNoCtl_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_SerNoCtl)MTable.get(getCtx(), org.compiere.model.I_M_SerNoCtl.Table_ID)
+			.getPO(getM_SerNoCtl_ID(), get_TrxName());
+	}
 
 	/** Set Serial No Control.
 		@param M_SerNoCtl_ID 

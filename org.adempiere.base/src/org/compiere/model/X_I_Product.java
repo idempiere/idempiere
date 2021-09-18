@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Product
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="I_Product")
 public class X_I_Product extends PO implements I_I_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210209L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_I_Product (Properties ctx, int I_Product_ID, String trxName)
@@ -92,9 +95,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -120,9 +124,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -185,9 +190,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 
@@ -516,9 +522,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_ID(), get_TrxName());
+	}
 
 	/** Set Product Category.
 		@param M_Product_Category_ID 
@@ -544,9 +551,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -786,18 +794,18 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 
 	/** ProductType AD_Reference_ID=270 */
 	public static final int PRODUCTTYPE_AD_Reference_ID=270;
-	/** Item = I */
-	public static final String PRODUCTTYPE_Item = "I";
-	/** Service = S */
-	public static final String PRODUCTTYPE_Service = "S";
-	/** Resource = R */
-	public static final String PRODUCTTYPE_Resource = "R";
-	/** Expense type = E */
-	public static final String PRODUCTTYPE_ExpenseType = "E";
-	/** Online = O */
-	public static final String PRODUCTTYPE_Online = "O";
 	/** Asset = A */
 	public static final String PRODUCTTYPE_Asset = "A";
+	/** Expense type = E */
+	public static final String PRODUCTTYPE_ExpenseType = "E";
+	/** Item = I */
+	public static final String PRODUCTTYPE_Item = "I";
+	/** Online = O */
+	public static final String PRODUCTTYPE_Online = "O";
+	/** Resource = R */
+	public static final String PRODUCTTYPE_Resource = "R";
+	/** Service = S */
+	public static final String PRODUCTTYPE_Service = "S";
 	/** Set Product Type.
 		@param ProductType 
 		Type of product

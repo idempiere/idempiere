@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionRunLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_DistributionRunLine")
 public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_DistributionRunLine (Properties ctx, int M_DistributionRunLine_ID, String trxName)
@@ -118,9 +121,10 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 	}
 
 	public org.compiere.model.I_M_DistributionList getM_DistributionList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DistributionList)MTable.get(getCtx(), org.compiere.model.I_M_DistributionList.Table_Name)
-			.getPO(getM_DistributionList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DistributionList)MTable.get(getCtx(), org.compiere.model.I_M_DistributionList.Table_ID)
+			.getPO(getM_DistributionList_ID(), get_TrxName());
+	}
 
 	/** Set Distribution List.
 		@param M_DistributionList_ID 
@@ -146,9 +150,10 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 	}
 
 	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_Name)
-			.getPO(getM_DistributionRun_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_ID)
+			.getPO(getM_DistributionRun_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Run.
 		@param M_DistributionRun_ID 
@@ -239,9 +244,10 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

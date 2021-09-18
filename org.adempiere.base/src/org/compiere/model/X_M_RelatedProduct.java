@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for M_RelatedProduct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_RelatedProduct")
 public class X_M_RelatedProduct extends PO implements I_M_RelatedProduct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_RelatedProduct (Properties ctx, int M_RelatedProduct_ID, String trxName)
@@ -90,9 +93,10 @@ public class X_M_RelatedProduct extends PO implements I_M_RelatedProduct, I_Pers
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -149,9 +153,10 @@ public class X_M_RelatedProduct extends PO implements I_M_RelatedProduct, I_Pers
 	}
 
 	public org.compiere.model.I_M_Product getRelatedProduct() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getRelatedProduct_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getRelatedProduct_ID(), get_TrxName());
+	}
 
 	/** Set Related Product.
 		@param RelatedProduct_ID 
@@ -178,10 +183,10 @@ public class X_M_RelatedProduct extends PO implements I_M_RelatedProduct, I_Pers
 
 	/** RelatedProductType AD_Reference_ID=313 */
 	public static final int RELATEDPRODUCTTYPE_AD_Reference_ID=313;
-	/** Web Promotion = P */
-	public static final String RELATEDPRODUCTTYPE_WebPromotion = "P";
 	/** Alternative = A */
 	public static final String RELATEDPRODUCTTYPE_Alternative = "A";
+	/** Web Promotion = P */
+	public static final String RELATEDPRODUCTTYPE_WebPromotion = "P";
 	/** Supplemental = S */
 	public static final String RELATEDPRODUCTTYPE_Supplemental = "S";
 	/** Set Related Product Type.

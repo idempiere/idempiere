@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for ASP_Process_Para
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="ASP_Process_Para")
 public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Process_Para (Properties ctx, int ASP_Process_Para_ID, String trxName)
@@ -71,9 +74,10 @@ public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Pers
     }
 
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_Name)
-			.getPO(getAD_Process_Para_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
+			.getPO(getAD_Process_Para_ID(), get_TrxName());
+	}
 
 	/** Set Process Parameter.
 		@param AD_Process_Para_ID Process Parameter	  */
@@ -96,9 +100,10 @@ public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Pers
 	}
 
 	public org.compiere.model.I_ASP_Process getASP_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Process)MTable.get(getCtx(), org.compiere.model.I_ASP_Process.Table_Name)
-			.getPO(getASP_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Process)MTable.get(getCtx(), org.compiere.model.I_ASP_Process.Table_ID)
+			.getPO(getASP_Process_ID(), get_TrxName());
+	}
 
 	/** Set ASP Process.
 		@param ASP_Process_ID ASP Process	  */

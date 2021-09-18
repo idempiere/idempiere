@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ElementValue
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="I_ElementValue")
 public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName)
@@ -73,12 +76,12 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 
 	/** AccountSign AD_Reference_ID=118 */
 	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
-	/** Natural = N */
-	public static final String ACCOUNTSIGN_Natural = "N";
-	/** Debit = D */
-	public static final String ACCOUNTSIGN_Debit = "D";
 	/** Credit = C */
 	public static final String ACCOUNTSIGN_Credit = "C";
+	/** Debit = D */
+	public static final String ACCOUNTSIGN_Debit = "D";
+	/** Natural = N */
+	public static final String ACCOUNTSIGN_Natural = "N";
 	/** Set Account Sign.
 		@param AccountSign 
 		Indicates the Natural Sign of the Account as a Debit or Credit
@@ -101,16 +104,16 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public static final int ACCOUNTTYPE_AD_Reference_ID=117;
 	/** Asset = A */
 	public static final String ACCOUNTTYPE_Asset = "A";
-	/** Liability = L */
-	public static final String ACCOUNTTYPE_Liability = "L";
-	/** Revenue = R */
-	public static final String ACCOUNTTYPE_Revenue = "R";
 	/** Expense = E */
 	public static final String ACCOUNTTYPE_Expense = "E";
-	/** Owner's Equity = O */
-	public static final String ACCOUNTTYPE_OwnerSEquity = "O";
+	/** Liability = L */
+	public static final String ACCOUNTTYPE_Liability = "L";
 	/** Memo = M */
 	public static final String ACCOUNTTYPE_Memo = "M";
+	/** Owner's Equity = O */
+	public static final String ACCOUNTTYPE_OwnerSEquity = "O";
+	/** Revenue = R */
+	public static final String ACCOUNTTYPE_Revenue = "R";
 	/** Set Account Type.
 		@param AccountType 
 		Indicates the type of account
@@ -130,9 +133,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -158,9 +162,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_Name)
-			.getPO(getC_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
+			.getPO(getC_Element_ID(), get_TrxName());
+	}
 
 	/** Set Element.
 		@param C_Element_ID 
@@ -186,9 +191,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Account Element.
 		@param C_ElementValue_ID 
@@ -408,9 +414,10 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_ElementValue getParentElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getParentElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getParentElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Parent Account.
 		@param ParentElementValue_ID 

@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectTask
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_ProjectTask")
 public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ProjectTask (Properties ctx, int C_ProjectTask_ID, String trxName)
@@ -101,9 +104,10 @@ public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_Name)
-			.getPO(getC_ProjectPhase_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
+			.getPO(getC_ProjectPhase_ID(), get_TrxName());
+	}
 
 	/** Set Project Phase.
 		@param C_ProjectPhase_ID 
@@ -166,9 +170,10 @@ public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Task getC_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Task)MTable.get(getCtx(), org.compiere.model.I_C_Task.Table_Name)
-			.getPO(getC_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Task)MTable.get(getCtx(), org.compiere.model.I_C_Task.Table_ID)
+			.getPO(getC_Task_ID(), get_TrxName());
+	}
 
 	/** Set Standard Task.
 		@param C_Task_ID 
@@ -228,9 +233,10 @@ public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -296,14 +302,14 @@ public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
 	public static final int PROJINVOICERULE_AD_Reference_ID=383;
 	/** None = - */
 	public static final String PROJINVOICERULE_None = "-";
-	/** Committed Amount = C */
-	public static final String PROJINVOICERULE_CommittedAmount = "C";
 	/** Time&Material max Comitted = c */
 	public static final String PROJINVOICERULE_TimeMaterialMaxComitted = "c";
-	/** Time&Material = T */
-	public static final String PROJINVOICERULE_TimeMaterial = "T";
+	/** Committed Amount = C */
+	public static final String PROJINVOICERULE_CommittedAmount = "C";
 	/** Product  Quantity = P */
 	public static final String PROJINVOICERULE_ProductQuantity = "P";
+	/** Time&Material = T */
+	public static final String PROJINVOICERULE_TimeMaterial = "T";
 	/** Set Invoice Rule.
 		@param ProjInvoiceRule 
 		Invoice Rule for the project

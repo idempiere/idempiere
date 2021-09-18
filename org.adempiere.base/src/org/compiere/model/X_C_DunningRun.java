@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRun
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_DunningRun")
 public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_DunningRun (Properties ctx, int C_DunningRun_ID, String trxName)
@@ -76,9 +79,10 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
     }
 
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_Name)
-			.getPO(getC_Dunning_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
+			.getPO(getC_Dunning_ID(), get_TrxName());
+	}
 
 	/** Set Dunning.
 		@param C_Dunning_ID 
@@ -104,9 +108,10 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DunningLevel getC_DunningLevel() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DunningLevel)MTable.get(getCtx(), org.compiere.model.I_C_DunningLevel.Table_Name)
-			.getPO(getC_DunningLevel_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DunningLevel)MTable.get(getCtx(), org.compiere.model.I_C_DunningLevel.Table_ID)
+			.getPO(getC_DunningLevel_ID(), get_TrxName());
+	}
 
 	/** Set Dunning Level.
 		@param C_DunningLevel_ID Dunning Level	  */

@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestUpdate
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="R_RequestUpdate")
 public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_R_RequestUpdate (Properties ctx, int R_RequestUpdate_ID, String trxName)
@@ -121,9 +124,10 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	public org.compiere.model.I_M_Product getM_ProductSpent() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_ProductSpent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_ProductSpent_ID(), get_TrxName());
+	}
 
 	/** Set Product Used.
 		@param M_ProductSpent_ID 
@@ -206,9 +210,10 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_Name)
-			.getPO(getR_Request_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)
+			.getPO(getR_Request_ID(), get_TrxName());
+	}
 
 	/** Set Request.
 		@param R_Request_ID 

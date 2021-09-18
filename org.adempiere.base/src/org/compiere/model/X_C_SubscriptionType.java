@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_SubscriptionType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_SubscriptionType")
 public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_SubscriptionType (Properties ctx, int C_SubscriptionType_ID, String trxName)
@@ -149,12 +152,12 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 
 	/** FrequencyType AD_Reference_ID=221 */
 	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
 	/** Day = D */
 	public static final String FREQUENCYTYPE_Day = "D";
+	/** Hour = H */
+	public static final String FREQUENCYTYPE_Hour = "H";
+	/** Minute = M */
+	public static final String FREQUENCYTYPE_Minute = "M";
 	/** Set Frequency Type.
 		@param FrequencyType 
 		Frequency of event

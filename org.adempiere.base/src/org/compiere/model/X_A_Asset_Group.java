@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Group
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="A_Asset_Group")
 public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
     }
 
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Class)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Class.Table_Name)
-			.getPO(getA_Asset_Class_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Class)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Class.Table_ID)
+			.getPO(getA_Asset_Class_ID(), get_TrxName());
+	}
 
 	/** Set Asset class.
 		@param A_Asset_Class_ID Asset class	  */
@@ -151,9 +155,10 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Type)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Type.Table_Name)
-			.getPO(getA_Asset_Type_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Type)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Type.Table_ID)
+			.getPO(getA_Asset_Type_ID(), get_TrxName());
+	}
 
 	/** Set Asset Type.
 		@param A_Asset_Type_ID Asset Type	  */

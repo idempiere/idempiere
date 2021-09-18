@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_UserDef_Field")
 public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210827L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -76,10 +79,40 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
       return sb.toString();
     }
 
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());
+	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID 
+		Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
-			.getPO(getAD_Field_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
+			.getPO(getAD_Field_ID(), get_TrxName());
+	}
 
 	/** Set Field.
 		@param AD_Field_ID 
@@ -112,38 +145,11 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Field_ID()));
     }
 
-	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
-			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
-
-	/** Set Field Group.
-		@param AD_FieldGroup_ID 
-		Logical grouping of fields
-	  */
-	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
-	{
-		if (AD_FieldGroup_ID < 1) 
-			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
-	}
-
-	/** Get Field Group.
-		@return Logical grouping of fields
-	  */
-	public int getAD_FieldGroup_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
-			.getPO(getAD_FieldStyle_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_FieldStyle_ID(), get_TrxName());
+	}
 
 	/** Set Field Style.
 		@param AD_FieldStyle_ID 
@@ -169,9 +175,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
-			.getPO(getAD_LabelStyle_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_LabelStyle_ID(), get_TrxName());
+	}
 
 	/** Set Label Style.
 		@param AD_LabelStyle_ID 
@@ -197,9 +204,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -225,9 +233,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -287,9 +296,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	public org.compiere.model.I_AD_UserDef_Tab getAD_UserDef_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_UserDef_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Tab.Table_Name)
-			.getPO(getAD_UserDef_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_UserDef_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Tab.Table_ID)
+			.getPO(getAD_UserDef_Tab_ID(), get_TrxName());
+	}
 
 	/** Set User defined Tab.
 		@param AD_UserDef_Tab_ID User defined Tab	  */
@@ -312,9 +322,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -340,9 +351,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation (Lookup).
 		@param AD_Val_Rule_Lookup_ID 
@@ -742,9 +754,10 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	}
 
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_Name)
-			.getPO(getPA_DashboardContent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_ID)
+			.getPO(getPA_DashboardContent_ID(), get_TrxName());
+	}
 
 	/** Set Dashboard Content.
 		@param PA_DashboardContent_ID Dashboard Content	  */

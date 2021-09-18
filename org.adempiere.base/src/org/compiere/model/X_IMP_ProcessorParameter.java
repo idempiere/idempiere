@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for IMP_ProcessorParameter
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="IMP_ProcessorParameter")
 public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParameter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorParameter (Properties ctx, int IMP_ProcessorParameter_ID, String trxName)
@@ -107,9 +110,10 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	}
 
 	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException
-    {
-		return (org.compiere.model.I_IMP_Processor)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor.Table_Name)
-			.getPO(getIMP_Processor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_IMP_Processor)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor.Table_ID)
+			.getPO(getIMP_Processor_ID(), get_TrxName());
+	}
 
 	/** Set Import Processor.
 		@param IMP_Processor_ID Import Processor	  */

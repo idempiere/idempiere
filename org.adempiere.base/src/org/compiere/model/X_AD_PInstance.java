@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_PInstance")
 public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -76,9 +79,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Language)MTable.get(getCtx(), org.compiere.model.I_AD_Language.Table_Name)
-			.getPO(getAD_Language_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Language)MTable.get(getCtx(), org.compiere.model.I_AD_Language.Table_ID)
+			.getPO(getAD_Language_ID(), get_TrxName());
+	}
 
 	/** Set Language ID.
 		@param AD_Language_ID Language ID	  */
@@ -146,9 +150,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -174,9 +179,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -202,9 +208,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -328,14 +335,14 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 
 	/** NotificationType AD_Reference_ID=344 */
 	public static final int NOTIFICATIONTYPE_AD_Reference_ID=344;
+	/** EMail+Notice = B */
+	public static final String NOTIFICATIONTYPE_EMailPlusNotice = "B";
 	/** EMail = E */
 	public static final String NOTIFICATIONTYPE_EMail = "E";
 	/** Notice = N */
 	public static final String NOTIFICATIONTYPE_Notice = "N";
 	/** None = X */
 	public static final String NOTIFICATIONTYPE_None = "X";
-	/** EMail+Notice = B */
-	public static final String NOTIFICATIONTYPE_EMailPlusNotice = "B";
 	/** Set Notification Type.
 		@param NotificationType 
 		Type of Notifications

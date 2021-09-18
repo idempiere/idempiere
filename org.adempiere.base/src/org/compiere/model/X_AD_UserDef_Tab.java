@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_UserDef_Tab")
 public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
@@ -74,9 +77,10 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -102,9 +106,10 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
 		@param AD_Tab_ID 
@@ -113,9 +118,9 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	public void setAD_Tab_ID (int AD_Tab_ID)
 	{
 		if (AD_Tab_ID < 1) 
-			set_Value (COLUMNNAME_AD_Tab_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_Tab_ID, null);
 		else 
-			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
 	}
 
 	/** Get Tab.
@@ -172,9 +177,10 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_UserDef_Win getAD_UserDef_Win() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_UserDef_Win)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Win.Table_Name)
-			.getPO(getAD_UserDef_Win_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_UserDef_Win)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Win.Table_ID)
+			.getPO(getAD_UserDef_Win_ID(), get_TrxName());
+	}
 
 	/** Set User defined Window.
 		@param AD_UserDef_Win_ID User defined Window	  */
@@ -249,10 +255,10 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 
 	/** IsAllowAdvancedLookup AD_Reference_ID=319 */
 	public static final int ISALLOWADVANCEDLOOKUP_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISALLOWADVANCEDLOOKUP_Yes = "Y";
 	/** No = N */
 	public static final String ISALLOWADVANCEDLOOKUP_No = "N";
+	/** Yes = Y */
+	public static final String ISALLOWADVANCEDLOOKUP_Yes = "Y";
 	/** Set Allow Advanced Lookup.
 		@param IsAllowAdvancedLookup Allow Advanced Lookup	  */
 	public void setIsAllowAdvancedLookup (String IsAllowAdvancedLookup)
@@ -270,10 +276,10 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 
 	/** IsLookupOnlySelection AD_Reference_ID=319 */
 	public static final int ISLOOKUPONLYSELECTION_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISLOOKUPONLYSELECTION_Yes = "Y";
 	/** No = N */
 	public static final String ISLOOKUPONLYSELECTION_No = "N";
+	/** Yes = Y */
+	public static final String ISLOOKUPONLYSELECTION_Yes = "Y";
 	/** Set Lookup Only Selection Columns.
 		@param IsLookupOnlySelection 
 		When defined to true Lookup panel will display only selection columns. Default to false.
@@ -318,10 +324,10 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 
 	/** IsReadOnly AD_Reference_ID=319 */
 	public static final int ISREADONLY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISREADONLY_Yes = "Y";
 	/** No = N */
 	public static final String ISREADONLY_No = "N";
+	/** Yes = Y */
+	public static final String ISREADONLY_Yes = "Y";
 	/** Set Read Only.
 		@param IsReadOnly 
 		Field is read only
@@ -342,10 +348,10 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 
 	/** IsSingleRow AD_Reference_ID=319 */
 	public static final int ISSINGLEROW_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISSINGLEROW_Yes = "Y";
 	/** No = N */
 	public static final String ISSINGLEROW_No = "N";
+	/** Yes = Y */
+	public static final String ISSINGLEROW_Yes = "Y";
 	/** Set Single Row Layout.
 		@param IsSingleRow 
 		Default for toggle between Single- and Multi-Row (Grid) Layout

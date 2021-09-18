@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_ReplicationDocument
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_ReplicationDocument")
 public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocument, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName)
@@ -131,9 +134,10 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -159,9 +163,10 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
 
 	/** Set Document Type.
 		@param C_DocType_ID 
@@ -205,14 +210,14 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 
 	/** ReplicationType AD_Reference_ID=126 */
 	public static final int REPLICATIONTYPE_AD_Reference_ID=126;
+	/** Broadcast = B */
+	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Local = L */
 	public static final String REPLICATIONTYPE_Local = "L";
 	/** Merge = M */
 	public static final String REPLICATIONTYPE_Merge = "M";
 	/** Reference = R */
 	public static final String REPLICATIONTYPE_Reference = "R";
-	/** Broadcast = B */
-	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Set Replication Type.
 		@param ReplicationType 
 		Type of Data Replication

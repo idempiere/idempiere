@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShipperLabelsCfg
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_ShipperLabelsCfg")
 public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_ShipperLabelsCfg (Properties ctx, int M_ShipperLabelsCfg_ID, String trxName)
@@ -159,9 +162,10 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	}
 
 	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_Name)
-			.getPO(getM_ShipperCfg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_ID)
+			.getPO(getM_ShipperCfg_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Configuration.
 		@param M_ShipperCfg_ID Shipper Configuration	  */

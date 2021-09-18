@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ActivityResult
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_WF_ActivityResult")
 public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityResult (Properties ctx, int AD_WF_ActivityResult_ID, String trxName)
@@ -73,9 +76,10 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
     }
 
 	public org.compiere.model.I_AD_WF_Activity getAD_WF_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Activity)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Activity.Table_Name)
-			.getPO(getAD_WF_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Activity)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Activity.Table_ID)
+			.getPO(getAD_WF_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Activity.
 		@param AD_WF_Activity_ID 

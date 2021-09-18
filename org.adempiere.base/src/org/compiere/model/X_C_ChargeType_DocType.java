@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_ChargeType_DocType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_ChargeType_DocType")
 public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)
@@ -89,9 +92,10 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	}
 
 	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ChargeType)MTable.get(getCtx(), org.compiere.model.I_C_ChargeType.Table_Name)
-			.getPO(getC_ChargeType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ChargeType)MTable.get(getCtx(), org.compiere.model.I_C_ChargeType.Table_ID)
+			.getPO(getC_ChargeType_ID(), get_TrxName());
+	}
 
 	/** Set Charge Type.
 		@param C_ChargeType_ID Charge Type	  */
@@ -114,9 +118,10 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
 
 	/** Set Document Type.
 		@param C_DocType_ID 

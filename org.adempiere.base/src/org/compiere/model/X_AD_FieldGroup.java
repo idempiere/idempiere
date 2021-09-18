@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_FieldGroup
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_FieldGroup")
 public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_FieldGroup (Properties ctx, int AD_FieldGroup_ID, String trxName)
@@ -40,7 +43,7 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
         {
 			setAD_FieldGroup_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
         } */
     }
@@ -132,12 +135,12 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 
 	/** FieldGroupType AD_Reference_ID=53000 */
 	public static final int FIELDGROUPTYPE_AD_Reference_ID=53000;
-	/** Tab = T */
-	public static final String FIELDGROUPTYPE_Tab = "T";
-	/** Label = L */
-	public static final String FIELDGROUPTYPE_Label = "L";
 	/** Collapse = C */
 	public static final String FIELDGROUPTYPE_Collapse = "C";
+	/** Label = L */
+	public static final String FIELDGROUPTYPE_Label = "L";
+	/** Tab = T */
+	public static final String FIELDGROUPTYPE_Tab = "T";
 	/** Set Field Group Type.
 		@param FieldGroupType Field Group Type	  */
 	public void setFieldGroupType (String FieldGroupType)

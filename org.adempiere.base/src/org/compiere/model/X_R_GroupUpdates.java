@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for R_GroupUpdates
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="R_GroupUpdates")
 public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName)
@@ -72,9 +75,10 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -124,9 +128,10 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	}
 
 	public org.compiere.model.I_R_Group getR_Group() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_Group)MTable.get(getCtx(), org.compiere.model.I_R_Group.Table_Name)
-			.getPO(getR_Group_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_Group)MTable.get(getCtx(), org.compiere.model.I_R_Group.Table_ID)
+			.getPO(getR_Group_ID(), get_TrxName());
+	}
 
 	/** Set Group.
 		@param R_Group_ID 

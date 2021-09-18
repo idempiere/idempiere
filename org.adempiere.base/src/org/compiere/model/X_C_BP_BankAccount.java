@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_BankAccount
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_BP_BankAccount")
 public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BP_BankAccount (Properties ctx, int C_BP_BankAccount_ID, String trxName)
@@ -125,9 +128,10 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -281,14 +285,14 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 
 	/** BankAccountType AD_Reference_ID=216 */
 	public static final int BANKACCOUNTTYPE_AD_Reference_ID=216;
-	/** Checking = C */
-	public static final String BANKACCOUNTTYPE_Checking = "C";
-	/** Savings = S */
-	public static final String BANKACCOUNTTYPE_Savings = "S";
 	/** Cash = B */
 	public static final String BANKACCOUNTTYPE_Cash = "B";
+	/** Checking = C */
+	public static final String BANKACCOUNTTYPE_Checking = "C";
 	/** Card = D */
 	public static final String BANKACCOUNTTYPE_Card = "D";
+	/** Savings = S */
+	public static final String BANKACCOUNTTYPE_Savings = "S";
 	/** Set Bank Account Type.
 		@param BankAccountType 
 		Bank Account Type
@@ -309,12 +313,12 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 
 	/** BPBankAcctUse AD_Reference_ID=393 */
 	public static final int BPBANKACCTUSE_AD_Reference_ID=393;
-	/** None = N */
-	public static final String BPBANKACCTUSE_None = "N";
 	/** Both = B */
 	public static final String BPBANKACCTUSE_Both = "B";
 	/** Direct Debit = D */
 	public static final String BPBANKACCTUSE_DirectDebit = "D";
+	/** None = N */
+	public static final String BPBANKACCTUSE_None = "N";
 	/** Direct Deposit = T */
 	public static final String BPBANKACCTUSE_DirectDeposit = "T";
 	/** Set Account Usage.
@@ -336,9 +340,10 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	}
 
 	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_Name)
-			.getPO(getC_Bank_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_ID)
+			.getPO(getC_Bank_ID(), get_TrxName());
+	}
 
 	/** Set Bank.
 		@param C_Bank_ID 
@@ -364,9 +369,10 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -429,9 +435,10 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	}
 
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_Name)
-			.getPO(getC_PaymentProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)
+			.getPO(getC_PaymentProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Payment Processor.
 		@param C_PaymentProcessor_ID 
@@ -517,18 +524,18 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 	public static final int CREDITCARDTYPE_AD_Reference_ID=149;
 	/** Amex = A */
 	public static final String CREDITCARDTYPE_Amex = "A";
-	/** MasterCard = M */
-	public static final String CREDITCARDTYPE_MasterCard = "M";
-	/** Visa = V */
-	public static final String CREDITCARDTYPE_Visa = "V";
 	/** ATM = C */
 	public static final String CREDITCARDTYPE_ATM = "C";
 	/** Diners = D */
 	public static final String CREDITCARDTYPE_Diners = "D";
+	/** MasterCard = M */
+	public static final String CREDITCARDTYPE_MasterCard = "M";
 	/** Discover = N */
 	public static final String CREDITCARDTYPE_Discover = "N";
 	/** Purchase Card = P */
 	public static final String CREDITCARDTYPE_PurchaseCard = "P";
+	/** Visa = V */
+	public static final String CREDITCARDTYPE_Visa = "V";
 	/** Set Credit Card.
 		@param CreditCardType 
 		Credit Card (Visa, MC, AmEx)
@@ -621,12 +628,12 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 
 	/** R_AvsAddr AD_Reference_ID=213 */
 	public static final int R_AVSADDR_AD_Reference_ID=213;
-	/** Match = Y */
-	public static final String R_AVSADDR_Match = "Y";
 	/** No Match = N */
 	public static final String R_AVSADDR_NoMatch = "N";
 	/** Unavailable = X */
 	public static final String R_AVSADDR_Unavailable = "X";
+	/** Match = Y */
+	public static final String R_AVSADDR_Match = "Y";
 	/** Set Address verified.
 		@param R_AvsAddr 
 		This address has been verified
@@ -647,12 +654,12 @@ public class X_C_BP_BankAccount extends PO implements I_C_BP_BankAccount, I_Pers
 
 	/** R_AvsZip AD_Reference_ID=213 */
 	public static final int R_AVSZIP_AD_Reference_ID=213;
-	/** Match = Y */
-	public static final String R_AVSZIP_Match = "Y";
 	/** No Match = N */
 	public static final String R_AVSZIP_NoMatch = "N";
 	/** Unavailable = X */
 	public static final String R_AVSZIP_Unavailable = "X";
+	/** Match = Y */
+	public static final String R_AVSZIP_Match = "Y";
 	/** Set Zip verified.
 		@param R_AvsZip 
 		The Zip Code has been verified

@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Image
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Image")
 public class X_AD_Image extends PO implements I_AD_Image, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210416L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Image (Properties ctx, int AD_Image_ID, String trxName)
@@ -40,7 +43,7 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
         {
 			setAD_Image_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
         } */
     }
@@ -111,9 +114,10 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
-			.getPO(getAD_StorageProvider_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_ID)
+			.getPO(getAD_StorageProvider_ID(), get_TrxName());
+	}
 
 	/** Set Storage Provider.
 		@param AD_StorageProvider_ID Storage Provider	  */

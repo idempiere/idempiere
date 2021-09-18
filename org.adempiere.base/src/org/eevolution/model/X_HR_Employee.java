@@ -20,19 +20,22 @@ package org.eevolution.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Employee
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="HR_Employee")
 public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_Employee (Properties ctx, int HR_Employee_ID, String trxName)
@@ -77,9 +80,10 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
     }
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -105,9 +109,10 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -167,9 +172,10 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_Name)
-			.getPO(getHR_Department_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
+			.getPO(getHR_Department_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Department.
 		@param HR_Department_ID Payroll Department	  */
@@ -226,9 +232,10 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_Name)
-			.getPO(getHR_Job_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_ID)
+			.getPO(getHR_Job_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Job.
 		@param HR_Job_ID Payroll Job	  */
@@ -251,9 +258,10 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_Name)
-			.getPO(getHR_Payroll_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
+			.getPO(getHR_Payroll_ID(), get_TrxName());
+	}
 
 	/** Set Payroll.
 		@param HR_Payroll_ID Payroll	  */

@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for M_Shipper
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_Shipper")
 public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Shipper (Properties ctx, int M_Shipper_ID, String trxName)
@@ -71,9 +74,10 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -116,9 +120,10 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_Name)
-			.getPO(getM_ShipperCfg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_ID)
+			.getPO(getM_ShipperCfg_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Configuration.
 		@param M_ShipperCfg_ID Shipper Configuration	  */
@@ -178,9 +183,10 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_Name)
-			.getPO(getM_ShippingProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)
+			.getPO(getM_ShippingProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Shipping Processor.
 		@param M_ShippingProcessor_ID Shipping Processor	  */

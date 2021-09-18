@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tree_Favorite_Node
  *  @author iDempiere (generated) 
- *  @version Release 8.1
+ *  @version Development 9.0
  */
 public interface I_AD_Tree_Favorite_Node 
 {

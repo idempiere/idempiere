@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalGeneratorLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="GL_JournalGeneratorLine")
 public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGeneratorLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorLine (Properties ctx, int GL_JournalGeneratorLine_ID, String trxName)
@@ -137,9 +140,10 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -165,9 +169,10 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValueCR() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValueCR_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValueCR_ID(), get_TrxName());
+	}
 
 	/** Set Account CR.
 		@param C_ElementValueCR_ID Account CR	  */
@@ -190,9 +195,10 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValueDR() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValueDR_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValueDR_ID(), get_TrxName());
+	}
 
 	/** Set Account DR.
 		@param C_ElementValueDR_ID Account DR	  */
@@ -232,9 +238,10 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	public org.compiere.model.I_GL_JournalGenerator getGL_JournalGenerator() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_JournalGenerator)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGenerator.Table_Name)
-			.getPO(getGL_JournalGenerator_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_JournalGenerator)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGenerator.Table_ID)
+			.getPO(getGL_JournalGenerator_ID(), get_TrxName());
+	}
 
 	/** Set GL Journal Generator.
 		@param GL_JournalGenerator_ID GL Journal Generator	  */

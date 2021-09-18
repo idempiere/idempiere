@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AttachmentNote
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_AttachmentNote")
 public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_AttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName)
@@ -75,9 +78,10 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
     }
 
 	public org.compiere.model.I_AD_Attachment getAD_Attachment() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Attachment)MTable.get(getCtx(), org.compiere.model.I_AD_Attachment.Table_Name)
-			.getPO(getAD_Attachment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Attachment)MTable.get(getCtx(), org.compiere.model.I_AD_Attachment.Table_ID)
+			.getPO(getAD_Attachment_ID(), get_TrxName());
+	}
 
 	/** Set Attachment.
 		@param AD_Attachment_ID 
@@ -140,9 +144,10 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 

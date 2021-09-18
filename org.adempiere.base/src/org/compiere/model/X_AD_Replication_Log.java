@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication_Log
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Replication_Log")
 public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Replication_Log (Properties ctx, int AD_Replication_Log_ID, String trxName)
@@ -111,9 +114,10 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	}
 
 	public org.compiere.model.I_AD_Replication_Run getAD_Replication_Run() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Replication_Run)MTable.get(getCtx(), org.compiere.model.I_AD_Replication_Run.Table_Name)
-			.getPO(getAD_Replication_Run_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Replication_Run)MTable.get(getCtx(), org.compiere.model.I_AD_Replication_Run.Table_ID)
+			.getPO(getAD_Replication_Run_ID(), get_TrxName());
+	}
 
 	/** Set Replication Run.
 		@param AD_Replication_Run_ID 
@@ -147,9 +151,10 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
     }
 
 	public org.compiere.model.I_AD_ReplicationTable getAD_ReplicationTable() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ReplicationTable)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationTable.Table_Name)
-			.getPO(getAD_ReplicationTable_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ReplicationTable)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationTable.Table_ID)
+			.getPO(getAD_ReplicationTable_ID(), get_TrxName());
+	}
 
 	/** Set Replication Table.
 		@param AD_ReplicationTable_ID 

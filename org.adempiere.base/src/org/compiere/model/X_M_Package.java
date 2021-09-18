@@ -21,18 +21,21 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for M_Package
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_Package")
 public class X_M_Package extends PO implements I_M_Package, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Package (Properties ctx, int M_Package_ID, String trxName)
@@ -148,9 +151,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
 
 	/** Set Partner Location.
 		@param C_BPartner_Location_ID 
@@ -176,9 +180,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_Name)
-			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_ID)
+			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner Shipping Account.
 		@param C_BP_ShippingAcct_ID Business Partner Shipping Account	  */
@@ -201,9 +206,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -229,9 +235,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_Length_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_Length_ID(), get_TrxName());
+	}
 
 	/** Set UOM for Length.
 		@param C_UOM_Length_ID 
@@ -257,9 +264,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_Weight_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_Weight_ID(), get_TrxName());
+	}
 
 	/** Set UOM for Weight.
 		@param C_UOM_Weight_ID 
@@ -593,9 +601,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getHoldAddress_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getHoldAddress_ID(), get_TrxName());
+	}
 
 	/** Set Hold Address.
 		@param HoldAddress_ID Hold Address	  */
@@ -1045,9 +1054,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_Name)
-			.getPO(getM_InOut_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
+			.getPO(getM_InOut_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt.
 		@param M_InOut_ID 
@@ -1110,9 +1120,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
 
 	/** Set Shipper.
 		@param M_Shipper_ID 
@@ -1138,9 +1149,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_Name)
-			.getPO(getM_ShipperLabels_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_ID)
+			.getPO(getM_ShipperLabels_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Labels.
 		@param M_ShipperLabels_ID Shipper Labels	  */
@@ -1163,9 +1175,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackaging.Table_Name)
-			.getPO(getM_ShipperPackaging_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackaging.Table_ID)
+			.getPO(getM_ShipperPackaging_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Packaging.
 		@param M_ShipperPackaging_ID Shipper Packaging	  */
@@ -1188,9 +1201,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypes.Table_Name)
-			.getPO(getM_ShipperPickupTypes_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypes.Table_ID)
+			.getPO(getM_ShipperPickupTypes_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Pickup Types.
 		@param M_ShipperPickupTypes_ID Shipper Pickup Types	  */
@@ -1213,9 +1227,10 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_Name)
-			.getPO(getM_ShippingProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)
+			.getPO(getM_ShippingProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Shipping Processor.
 		@param M_ShippingProcessor_ID Shipping Processor	  */
@@ -1294,18 +1309,18 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
 	public static final String PAYMENTRULE_Cash = "B";
-	/** Credit Card = K */
-	public static final String PAYMENTRULE_CreditCard = "K";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULE_DirectDeposit = "T";
-	/** Check = S */
-	public static final String PAYMENTRULE_Check = "S";
-	/** On Credit = P */
-	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULE_CreditCard = "K";
 	/** Mixed POS Payment = M */
 	public static final String PAYMENTRULE_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULE_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULE_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULE_DirectDeposit = "T";
 	/** Set Payment Rule.
 		@param PaymentRule 
 		How you pay the invoice

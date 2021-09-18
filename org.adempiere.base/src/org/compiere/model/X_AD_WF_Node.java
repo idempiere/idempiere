@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Node
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_WF_Node")
 public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WF_Node (Properties ctx, int AD_WF_Node_ID, String trxName)
@@ -48,7 +51,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 			setCost (Env.ZERO);
 			setDuration (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCentrallyMaintained (true);
 // Y
 			setJoinElement (null);
@@ -94,32 +97,32 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** Action AD_Reference_ID=302 */
 	public static final int ACTION_AD_Reference_ID=302;
-	/** Wait (Sleep) = Z */
-	public static final String ACTION_WaitSleep = "Z";
+	/** User Workbench = B */
+	public static final String ACTION_UserWorkbench = "B";
 	/** User Choice = C */
 	public static final String ACTION_UserChoice = "C";
+	/** Document Action = D */
+	public static final String ACTION_DocumentAction = "D";
 	/** Sub Workflow = F */
 	public static final String ACTION_SubWorkflow = "F";
+	/** User Info = I */
+	public static final String ACTION_UserInfo = "I";
+	/** EMail = M */
+	public static final String ACTION_EMail = "M";
+	/** Apps Process = P */
+	public static final String ACTION_AppsProcess = "P";
+	/** Apps Report = R */
+	public static final String ACTION_AppsReport = "R";
+	/** Apps Task = T */
+	public static final String ACTION_AppsTask = "T";
 	/** Set Variable = V */
 	public static final String ACTION_SetVariable = "V";
 	/** User Window = W */
 	public static final String ACTION_UserWindow = "W";
 	/** User Form = X */
 	public static final String ACTION_UserForm = "X";
-	/** Apps Task = T */
-	public static final String ACTION_AppsTask = "T";
-	/** Apps Report = R */
-	public static final String ACTION_AppsReport = "R";
-	/** Apps Process = P */
-	public static final String ACTION_AppsProcess = "P";
-	/** Document Action = D */
-	public static final String ACTION_DocumentAction = "D";
-	/** EMail = M */
-	public static final String ACTION_EMail = "M";
-	/** User Workbench = B */
-	public static final String ACTION_UserWorkbench = "B";
-	/** User Info = I */
-	public static final String ACTION_UserInfo = "I";
+	/** Wait (Sleep) = Z */
+	public static final String ACTION_WaitSleep = "Z";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
@@ -139,9 +142,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -167,9 +171,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
 
 	/** Set Context Help.
 		@param AD_CtxHelp_ID Context Help	  */
@@ -192,9 +197,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
 		@param AD_Form_ID 
@@ -220,9 +226,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_Name)
-			.getPO(getAD_Image_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
+			.getPO(getAD_Image_ID(), get_TrxName());
+	}
 
 	/** Set Image.
 		@param AD_Image_ID 
@@ -248,9 +255,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -276,9 +284,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -304,9 +313,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
 		@param AD_Task_ID 
@@ -332,9 +342,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_WF_Block getAD_WF_Block() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Block)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Block.Table_Name)
-			.getPO(getAD_WF_Block_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Block)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Block.Table_ID)
+			.getPO(getAD_WF_Block_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Block.
 		@param AD_WF_Block_ID 
@@ -397,9 +408,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
-			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
+			.getPO(getAD_WF_Responsible_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Responsible.
 		@param AD_WF_Responsible_ID 
@@ -425,9 +437,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -453,9 +466,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 
@@ -515,9 +529,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -581,34 +596,34 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -669,12 +684,12 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** DynPriorityUnit AD_Reference_ID=221 */
 	public static final int DYNPRIORITYUNIT_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String DYNPRIORITYUNIT_Minute = "M";
-	/** Hour = H */
-	public static final String DYNPRIORITYUNIT_Hour = "H";
 	/** Day = D */
 	public static final String DYNPRIORITYUNIT_Day = "D";
+	/** Hour = H */
+	public static final String DYNPRIORITYUNIT_Hour = "H";
+	/** Minute = M */
+	public static final String DYNPRIORITYUNIT_Minute = "M";
 	/** Set Dynamic Priority Unit.
 		@param DynPriorityUnit 
 		Change of priority when Activity is suspended waiting for user
@@ -712,10 +727,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** EMailRecipient AD_Reference_ID=363 */
 	public static final int EMAILRECIPIENT_AD_Reference_ID=363;
-	/** Document Owner = D */
-	public static final String EMAILRECIPIENT_DocumentOwner = "D";
 	/** Document Business Partner = B */
 	public static final String EMAILRECIPIENT_DocumentBusinessPartner = "B";
+	/** Document Owner = D */
+	public static final String EMAILRECIPIENT_DocumentOwner = "D";
 	/** WF Responsible = R */
 	public static final String EMAILRECIPIENT_WFResponsible = "R";
 	/** Set EMail Recipient.
@@ -1010,9 +1025,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Mail Template.
 		@param R_MailText_ID 
@@ -1082,9 +1098,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
 		@param S_Resource_ID 
@@ -1269,9 +1286,10 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getWorkflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getWorkflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getWorkflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param Workflow_ID 

@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionDistribution
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_PromotionDistribution")
 public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistribution, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName)
@@ -107,10 +110,10 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	public static final int DISTRIBUTIONTYPE_AD_Reference_ID=53295;
 	/** Min = I */
 	public static final String DISTRIBUTIONTYPE_Min = "I";
-	/** Max = X */
-	public static final String DISTRIBUTIONTYPE_Max = "X";
 	/** Minus = N */
 	public static final String DISTRIBUTIONTYPE_Minus = "N";
+	/** Max = X */
+	public static final String DISTRIBUTIONTYPE_Max = "X";
 	/** Set Distribution Type.
 		@param DistributionType 
 		Type of quantity distribution calculation using comparison qty and order qty as operand
@@ -164,9 +167,10 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	}
 
 	public org.compiere.model.I_M_Promotion getM_Promotion() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_Name)
-			.getPO(getM_Promotion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_ID)
+			.getPO(getM_Promotion_ID(), get_TrxName());
+	}
 
 	/** Set Promotion.
 		@param M_Promotion_ID Promotion	  */
@@ -189,9 +193,10 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	}
 
 	public org.compiere.model.I_M_PromotionLine getM_PromotionLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PromotionLine)MTable.get(getCtx(), org.compiere.model.I_M_PromotionLine.Table_Name)
-			.getPO(getM_PromotionLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PromotionLine)MTable.get(getCtx(), org.compiere.model.I_M_PromotionLine.Table_ID)
+			.getPO(getM_PromotionLine_ID(), get_TrxName());
+	}
 
 	/** Set Promotion Line.
 		@param M_PromotionLine_ID Promotion Line	  */
@@ -215,10 +220,10 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 
 	/** Operation AD_Reference_ID=53294 */
 	public static final int OPERATION_AD_Reference_ID=53294;
-	/** >= = >= */
-	public static final String OPERATION_GtEq = ">=";
 	/** <= = <= */
 	public static final String OPERATION_LeEq = "<=";
+	/** >= = >= */
+	public static final String OPERATION_GtEq = ">=";
 	/** Set Operation.
 		@param Operation 
 		Compare Operation

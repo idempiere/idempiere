@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Method
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="MFA_Method")
 public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210605L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName)
@@ -125,10 +128,10 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 
 	/** Method AD_Reference_ID=200187 */
 	public static final int METHOD_AD_Reference_ID=200187;
-	/** Time-Based One-Time Password = TOTP */
-	public static final String METHOD_Time_BasedOne_TimePassword = "TOTP";
 	/** EMail = EMail */
 	public static final String METHOD_EMail = "EMail";
+	/** Time-Based One-Time Password = TOTP */
+	public static final String METHOD_Time_BasedOne_TimePassword = "TOTP";
 	/** Set Method.
 		@param Method Method	  */
 	public void setMethod (String Method)
@@ -162,9 +165,10 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Element getMFA_ElementPrm() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
-			.getPO(getMFA_ElementPrm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
+			.getPO(getMFA_ElementPrm_ID(), get_TrxName());
+	}
 
 	/** Set Parameter Element.
 		@param MFA_ElementPrm_ID Parameter Element	  */
@@ -239,10 +243,10 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 
 	/** MFATimeProvider AD_Reference_ID=200189 */
 	public static final int MFATIMEPROVIDER_AD_Reference_ID=200189;
-	/** System = S */
-	public static final String MFATIMEPROVIDER_System = "S";
 	/** Ntp = N */
 	public static final String MFATIMEPROVIDER_Ntp = "N";
+	/** System = S */
+	public static final String MFATIMEPROVIDER_System = "S";
 	/** Set Time Provider.
 		@param MFATimeProvider Time Provider	  */
 	public void setMFATimeProvider (String MFATimeProvider)
@@ -274,12 +278,12 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 
 	/** MFAType AD_Reference_ID=200188 */
 	public static final int MFATYPE_AD_Reference_ID=200188;
-	/** Something you Know = K */
-	public static final String MFATYPE_SomethingYouKnow = "K";
-	/** Something you Have = H */
-	public static final String MFATYPE_SomethingYouHave = "H";
 	/** Something you Are (Biometrics) = A */
 	public static final String MFATYPE_SomethingYouAreBiometrics = "A";
+	/** Something you Have = H */
+	public static final String MFATYPE_SomethingYouHave = "H";
+	/** Something you Know = K */
+	public static final String MFATYPE_SomethingYouKnow = "K";
 	/** Location = L */
 	public static final String MFATYPE_Location = "L";
 	/** Set MFA Type.
@@ -326,9 +330,10 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
     }
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Mail Template.
 		@param R_MailText_ID 

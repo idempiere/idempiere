@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSKey
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_POSKey")
 public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_POSKey (Properties ctx, int C_POSKey_ID, String trxName)
@@ -100,9 +103,10 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor_ID(), get_TrxName());
+	}
 
 	/** Set Print Color.
 		@param AD_PrintColor_ID 
@@ -128,9 +132,10 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
-			.getPO(getAD_PrintFont_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)
+			.getPO(getAD_PrintFont_ID(), get_TrxName());
+	}
 
 	/** Set Print Font.
 		@param AD_PrintFont_ID 
@@ -179,9 +184,10 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	}
 
 	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_Name)
-			.getPO(getC_POSKeyLayout_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_ID)
+			.getPO(getC_POSKeyLayout_ID(), get_TrxName());
+	}
 
 	/** Set POS Key Layout.
 		@param C_POSKeyLayout_ID 
@@ -238,9 +244,10 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -371,9 +378,10 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	}
 
 	public org.compiere.model.I_C_POSKeyLayout getSubKeyLayout() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_Name)
-			.getPO(getSubKeyLayout_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_ID)
+			.getPO(getSubKeyLayout_ID(), get_TrxName());
+	}
 
 	/** Set Key Layout.
 		@param SubKeyLayout_ID 

@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InventoryLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_InventoryLine")
 public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_InventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
@@ -82,9 +85,10 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
     }
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -148,10 +152,10 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 
 	/** InventoryType AD_Reference_ID=292 */
 	public static final int INVENTORYTYPE_AD_Reference_ID=292;
-	/** Inventory Difference = D */
-	public static final String INVENTORYTYPE_InventoryDifference = "D";
 	/** Charge Account = C */
 	public static final String INVENTORYTYPE_ChargeAccount = "C";
+	/** Inventory Difference = D */
+	public static final String INVENTORYTYPE_InventoryDifference = "D";
 	/** Set Inventory Type.
 		@param InventoryType 
 		Type of inventory difference
@@ -199,9 +203,10 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
     }
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -227,9 +232,10 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	}
 
 	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_Name)
-			.getPO(getM_Inventory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_ID)
+			.getPO(getM_Inventory_ID(), get_TrxName());
+	}
 
 	/** Set Phys.Inventory.
 		@param M_Inventory_ID 
@@ -292,9 +298,10 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	}
 
 	public I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -320,9 +327,10 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -469,9 +477,10 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	}
 
 	public org.compiere.model.I_M_InventoryLine getReversalLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_Name)
-			.getPO(getReversalLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
+			.getPO(getReversalLine_ID(), get_TrxName());
+	}
 
 	/** Set Reversal Line.
 		@param ReversalLine_ID 

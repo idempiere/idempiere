@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ServiceLevelLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_ServiceLevelLine")
 public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ServiceLevelLine (Properties ctx, int C_ServiceLevelLine_ID, String trxName)
@@ -77,9 +80,10 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
     }
 
 	public org.compiere.model.I_C_ServiceLevel getC_ServiceLevel() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ServiceLevel)MTable.get(getCtx(), org.compiere.model.I_C_ServiceLevel.Table_Name)
-			.getPO(getC_ServiceLevel_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ServiceLevel)MTable.get(getCtx(), org.compiere.model.I_C_ServiceLevel.Table_ID)
+			.getPO(getC_ServiceLevel_ID(), get_TrxName());
+	}
 
 	/** Set Service Level.
 		@param C_ServiceLevel_ID 

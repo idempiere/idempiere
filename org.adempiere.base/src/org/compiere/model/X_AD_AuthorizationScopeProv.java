@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_AuthorizationScopeProv
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_AuthorizationScopeProv")
 public class X_AD_AuthorizationScopeProv extends PO implements I_AD_AuthorizationScopeProv, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210224L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationScopeProv (Properties ctx, int AD_AuthorizationScopeProv_ID, String trxName)
@@ -37,7 +40,9 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
       super (ctx, AD_AuthorizationScopeProv_ID, trxName);
       /** if (AD_AuthorizationScopeProv_ID == 0)
         {
+			setAD_AuthorizationScope (null);
 			setAD_AuthorizationScopeProv_ID (0);
+			setScopeURL (null);
         } */
     }
 
@@ -70,9 +75,10 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
     }
 
 	public org.compiere.model.I_AD_AuthorizationProvider getAD_AuthorizationProvider() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AuthorizationProvider)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationProvider.Table_Name)
-			.getPO(getAD_AuthorizationProvider_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AuthorizationProvider)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationProvider.Table_ID)
+			.getPO(getAD_AuthorizationProvider_ID(), get_TrxName());
+	}
 
 	/** Set Authorization Provider.
 		@param AD_AuthorizationProvider_ID Authorization Provider	  */
@@ -98,10 +104,10 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 	public static final int AD_AUTHORIZATIONSCOPE_AD_Reference_ID=200185;
 	/** Calendar = Calendar */
 	public static final String AD_AUTHORIZATIONSCOPE_Calendar = "Calendar";
-	/** EMail = EMail */
-	public static final String AD_AUTHORIZATIONSCOPE_EMail = "EMail";
 	/** Document = Document */
 	public static final String AD_AUTHORIZATIONSCOPE_Document = "Document";
+	/** EMail = EMail */
+	public static final String AD_AUTHORIZATIONSCOPE_EMail = "EMail";
 	/** Profile = Profile */
 	public static final String AD_AUTHORIZATIONSCOPE_Profile = "Profile";
 	/** Storage = Storage */

@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintLabel
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_PrintLabel")
 public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PrintLabel (Properties ctx, int AD_PrintLabel_ID, String trxName)
@@ -77,9 +80,10 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
     }
 
 	public org.compiere.model.I_AD_LabelPrinter getAD_LabelPrinter() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_LabelPrinter)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinter.Table_Name)
-			.getPO(getAD_LabelPrinter_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_LabelPrinter)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinter.Table_ID)
+			.getPO(getAD_LabelPrinter_ID(), get_TrxName());
+	}
 
 	/** Set Label printer.
 		@param AD_LabelPrinter_ID 
@@ -142,9 +146,10 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 

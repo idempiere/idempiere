@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecog_Service
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_RevenueRecog_Service")
 public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Service, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_RevenueRecog_Service (Properties ctx, int C_RevenueRecog_Service_ID, String trxName)
@@ -74,9 +77,10 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
     }
 
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_Name)
-			.getPO(getC_RevenueRecognition_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
+			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
+	}
 
 	/** Set Revenue Recognition.
 		@param C_RevenueRecognition_ID 

@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Language
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Language")
 public class X_AD_Language extends PO implements I_AD_Language, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Language (Properties ctx, int AD_Language_ID, String trxName)
@@ -129,9 +132,10 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintPaper getAD_PrintPaper() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintPaper)MTable.get(getCtx(), org.compiere.model.I_AD_PrintPaper.Table_Name)
-			.getPO(getAD_PrintPaper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintPaper)MTable.get(getCtx(), org.compiere.model.I_AD_PrintPaper.Table_ID)
+			.getPO(getAD_PrintPaper_ID(), get_TrxName());
+	}
 
 	/** Set Print Paper.
 		@param AD_PrintPaper_ID 

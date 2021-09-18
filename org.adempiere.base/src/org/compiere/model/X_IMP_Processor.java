@@ -20,17 +20,20 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for IMP_Processor
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="IMP_Processor")
 public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_IMP_Processor (Properties ctx, int IMP_Processor_ID, String trxName)
@@ -164,12 +167,12 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** FrequencyType AD_Reference_ID=221 */
 	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
 	/** Day = D */
 	public static final String FREQUENCYTYPE_Day = "D";
+	/** Hour = H */
+	public static final String FREQUENCYTYPE_Hour = "H";
+	/** Minute = M */
+	public static final String FREQUENCYTYPE_Minute = "M";
 	/** Set Frequency Type.
 		@param FrequencyType 
 		Frequency of event
@@ -240,9 +243,10 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	}
 
 	public org.compiere.model.I_IMP_Processor_Type getIMP_Processor_Type() throws RuntimeException
-    {
-		return (org.compiere.model.I_IMP_Processor_Type)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor_Type.Table_Name)
-			.getPO(getIMP_Processor_Type_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_IMP_Processor_Type)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor_Type.Table_ID)
+			.getPO(getIMP_Processor_Type_ID(), get_TrxName());
+	}
 
 	/** Set Import Processor Type.
 		@param IMP_Processor_Type_ID Import Processor Type	  */

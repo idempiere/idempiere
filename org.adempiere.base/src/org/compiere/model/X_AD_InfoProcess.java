@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoProcess
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_InfoProcess")
 public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -42,7 +45,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 			setAD_InfoProcess_UU (null);
 			setAD_Process_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setLayoutType (null);
 // B
 			setSeqNo (0);
@@ -79,9 +82,10 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
     }
 
 	public org.compiere.model.I_AD_InfoColumn getAD_InfoColumn() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
-			.getPO(getAD_InfoColumn_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
+			.getPO(getAD_InfoColumn_ID(), get_TrxName());
+	}
 
 	/** Set Info Column.
 		@param AD_InfoColumn_ID 
@@ -141,9 +145,10 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -169,9 +174,10 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -262,10 +268,10 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	public static final int LAYOUTTYPE_AD_Reference_ID=200083;
 	/** Button = B */
 	public static final String LAYOUTTYPE_Button = "B";
-	/** Menu = M */
-	public static final String LAYOUTTYPE_Menu = "M";
 	/** List = L */
 	public static final String LAYOUTTYPE_List = "L";
+	/** Menu = M */
+	public static final String LAYOUTTYPE_Menu = "M";
 	/** Set LayoutType.
 		@param LayoutType 
 		Layout type of info process

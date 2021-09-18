@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_Chart
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Chart")
 public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Chart (Properties ctx, int AD_Chart_ID, String trxName)
@@ -42,7 +45,7 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 // V
 			setChartType (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsDisplayLegend (true);
 // 'Y'
 			setIsTimeSeries (false);
@@ -141,28 +144,28 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 	public static final int CHARTTYPE_AD_Reference_ID=53377;
 	/** Area Chart = AC */
 	public static final String CHARTTYPE_AreaChart = "AC";
-	/** Bar Chart = BC */
-	public static final String CHARTTYPE_BarChart = "BC";
 	/** Stacked Area Chart = AS */
 	public static final String CHARTTYPE_StackedAreaChart = "AS";
 	/** 3D Bar Chart = B3 */
 	public static final String CHARTTYPE_3DBarChart = "B3";
-	/** Stacked Bar Chart = BS */
-	public static final String CHARTTYPE_StackedBarChart = "BS";
 	/** 3D Stacked Bar Chart = B4 */
 	public static final String CHARTTYPE_3DStackedBarChart = "B4";
-	/** Line Chart = LC */
-	public static final String CHARTTYPE_LineChart = "LC";
+	/** Bar Chart = BC */
+	public static final String CHARTTYPE_BarChart = "BC";
+	/** Stacked Bar Chart = BS */
+	public static final String CHARTTYPE_StackedBarChart = "BS";
 	/** 3D Line Chart = L3 */
 	public static final String CHARTTYPE_3DLineChart = "L3";
-	/** Waterfall Chart = WC */
-	public static final String CHARTTYPE_WaterfallChart = "WC";
-	/** Pie Chart = PC */
-	public static final String CHARTTYPE_PieChart = "PC";
+	/** Line Chart = LC */
+	public static final String CHARTTYPE_LineChart = "LC";
 	/** 3D Pie Chart = P3 */
 	public static final String CHARTTYPE_3DPieChart = "P3";
+	/** Pie Chart = PC */
+	public static final String CHARTTYPE_PieChart = "PC";
 	/** Ring Chart = RC */
 	public static final String CHARTTYPE_RingChart = "RC";
+	/** Waterfall Chart = WC */
+	public static final String CHARTTYPE_WaterfallChart = "WC";
 	/** Set Chart Type.
 		@param ChartType 
 		Type of chart to render
@@ -341,12 +344,12 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 	public static final int TIMEUNIT_AD_Reference_ID=53376;
 	/** Day = D */
 	public static final String TIMEUNIT_Day = "D";
-	/** Week = W */
-	public static final String TIMEUNIT_Week = "W";
 	/** Month = M */
 	public static final String TIMEUNIT_Month = "M";
 	/** Quarter = Q */
 	public static final String TIMEUNIT_Quarter = "Q";
+	/** Week = W */
+	public static final String TIMEUNIT_Week = "W";
 	/** Year = Y */
 	public static final String TIMEUNIT_Year = "Y";
 	/** Set Time Unit.

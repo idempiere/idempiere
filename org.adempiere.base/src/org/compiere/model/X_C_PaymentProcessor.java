@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentProcessor
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_PaymentProcessor")
 public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName)
@@ -329,9 +332,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	}
 
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getAD_Sequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getAD_Sequence_ID(), get_TrxName());
+	}
 
 	/** Set Sequence.
 		@param AD_Sequence_ID 
@@ -357,9 +361,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
@@ -385,9 +390,10 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -702,16 +708,16 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 
 	/** TrxType AD_Reference_ID=215 */
 	public static final int TRXTYPE_AD_Reference_ID=215;
-	/** Sales = S */
-	public static final String TRXTYPE_Sales = "S";
-	/** Delayed Capture = D */
-	public static final String TRXTYPE_DelayedCapture = "D";
-	/** Credit (Payment) = C */
-	public static final String TRXTYPE_CreditPayment = "C";
-	/** Voice Authorization = F */
-	public static final String TRXTYPE_VoiceAuthorization = "F";
 	/** Authorization = A */
 	public static final String TRXTYPE_Authorization = "A";
+	/** Credit (Payment) = C */
+	public static final String TRXTYPE_CreditPayment = "C";
+	/** Delayed Capture = D */
+	public static final String TRXTYPE_DelayedCapture = "D";
+	/** Voice Authorization = F */
+	public static final String TRXTYPE_VoiceAuthorization = "F";
+	/** Sales = S */
+	public static final String TRXTYPE_Sales = "S";
 	/** Void = V */
 	public static final String TRXTYPE_Void = "V";
 	/** Set Transaction Type.

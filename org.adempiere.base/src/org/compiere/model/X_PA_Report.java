@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Report
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PA_Report")
 public class X_PA_Report extends PO implements I_PA_Report, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210910L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -109,9 +113,10 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -137,9 +142,10 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
 		@param C_Calendar_ID 
@@ -181,11 +187,13 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** ExcludeAdjustmentPeriods AD_Reference_ID=200198 */
+	public static final int EXCLUDEADJUSTMENTPERIODS_AD_Reference_ID=200198;
 	/** No = 0 */
 	public static final String EXCLUDEADJUSTMENTPERIODS_No = "0";
 	/** Only Report Period = 1 */
 	public static final String EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod = "1";
-	/** All adjustment periods = 2 */
+	/** All Adjustment Periods = 2 */
 	public static final String EXCLUDEADJUSTMENTPERIODS_AllAdjustmentPeriods = "2";
 	/** Set Exclude Adjustment Periods.
 		@param ExcludeAdjustmentPeriods Exclude Adjustment Periods	  */
@@ -203,9 +211,10 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getJasperProcess() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getJasperProcess_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getJasperProcess_ID(), get_TrxName());
+	}
 
 	/** Set Jasper Process.
 		@param JasperProcess_ID 
@@ -342,9 +351,10 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
     }
 
 	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_Name)
-			.getPO(getPA_ReportColumnSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_ID)
+			.getPO(getPA_ReportColumnSet_ID(), get_TrxName());
+	}
 
 	/** Set Report Column Set.
 		@param PA_ReportColumnSet_ID 
@@ -370,9 +380,10 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportCube)MTable.get(getCtx(), org.compiere.model.I_PA_ReportCube.Table_Name)
-			.getPO(getPA_ReportCube_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportCube)MTable.get(getCtx(), org.compiere.model.I_PA_ReportCube.Table_ID)
+			.getPO(getPA_ReportCube_ID(), get_TrxName());
+	}
 
 	/** Set Report Cube.
 		@param PA_ReportCube_ID 
@@ -421,9 +432,10 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_Name)
-			.getPO(getPA_ReportLineSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_ID)
+			.getPO(getPA_ReportLineSet_ID(), get_TrxName());
+	}
 
 	/** Set Report Line Set.
 		@param PA_ReportLineSet_ID Report Line Set	  */
