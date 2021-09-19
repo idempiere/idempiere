@@ -23,7 +23,6 @@ import java.util.Properties;
 
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Wlistbox_Customization;
-import org.compiere.util.Util;
 
 public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 
@@ -32,16 +31,34 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	 */
 	private static final long serialVersionUID = -3220641197739038436L;
 
+	/**
+	 * @param ctx
+	 * @param AD_WListboxName
+	 * @param AD_Wlistbox_Customization_ID
+	 * @param trxName
+	 * @return
+	 */
 	public MWlistboxCustomization(Properties ctx, int AD_Wlistbox_Customization_ID, String trxName) {
 		super(ctx, AD_Wlistbox_Customization_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 * @return
+	 */	
 	public MWlistboxCustomization(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
-	
+
+	/**
+	 * @param ctx
+	 * @param AD_User_ID
+	 * @param AD_WListboxName
+	 * @param trxName
+	 * @return
+	 */	
 	public static MWlistboxCustomization get(Properties 	ctx, 
 											 int 			AD_User_ID, 
 											 String 		AD_WListboxName, 
@@ -61,12 +78,12 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 		return new ArrayList<String>(Arrays.asList(CustomizationNew)); 
 	}	
 
-	private static int columnExists(String 				searchColumnName, 
+	private static int columnIndex(String 				searchColumnName, 
 								   ArrayList<String> 	columnList)
 	{
 		for (int i = 0; i < columnList.size(); i++)
 		{
-			if (columnList.get(i).toString().equals(searchColumnName))
+			if (columnList.get(i).equals(searchColumnName))
 			{
 				return i;
 			}
@@ -84,11 +101,11 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	 * @return
 	 */
 	
-	public static boolean saveData(Properties 	ctx,  
-								   String 		AD_WListboxName, 
-								   int 			AD_User_ID, 
-								   String 		Custom, 
-								   String 		trxName) 
+	public static void saveData(Properties  ctx,
+								String      AD_WListboxName, 
+								int         AD_User_ID, 
+								String      Custom, 
+								String      trxName) 
 	{	
 		MWlistboxCustomization WlistBoxCust = get(ctx, AD_User_ID, AD_WListboxName, trxName);
 	
@@ -105,15 +122,15 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 				
 				for (int i = 0; i < newColumnList.size(); i++)
 				{
-					String searchColumnName = newColumnList.get(i).toString().substring(0,newColumnList.get(i).toString().indexOf("="));
-					int n = columnExists(searchColumnName, columnSearch);
+					String searchColumnName = newColumnList.get(i).substring(0,newColumnList.get(i).indexOf("="));
+					int n = columnIndex(searchColumnName, columnSearch);
 					if(n > -1)
 					{
-						orgColumnList.set(n, newColumnList.get(i).toString().stripLeading());
+						orgColumnList.set(n, newColumnList.get(i).stripLeading());
 					}
 					else
 					{ 
-						addColumn.add(newColumnList.get(i).toString().stripLeading());
+						addColumn.add(newColumnList.get(i).stripLeading());
 					}
 				}
 				if (addColumn.size() > 0)
@@ -130,9 +147,6 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 			WlistBoxCust.setAD_User_ID(AD_User_ID);
 			WlistBoxCust.setCustom(Custom);
 		}
-		if (Util.isEmpty(WlistBoxCust.getCustom(), true)) {
-			return WlistBoxCust.delete(true);
-		}
-		return WlistBoxCust.save();
+		WlistBoxCust.saveEx();
 	}  // saveData
 }
