@@ -1106,7 +1106,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	{
 	    // create header (if needed)
 	    initialiseHeader();
-	    renderHeaderColumnWidth();
+	    renderCustomHeaderWidth();
 	    invalidate();
 	}
 
@@ -1305,7 +1305,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      * Render the header of the WListbox with the columns width of the saved column width
      * 
      */
-	public void renderHeaderColumnWidth () 
+	public void renderCustomHeaderWidth () 
 	{
 		if (wListBoxName != null && getListHead() != null) 
 		{
@@ -1328,7 +1328,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 					{
 						Listheader header = (Listheader) obj;
 						String columnWidth = this.getColumnWidth(Columns[i].getColumnName(), columnList);
-						if (!("null".equals(columnWidth)) || !Util.isEmpty(columnWidth))	
+						if (!("null".equals(columnWidth)))	
 							ZKUpdateUtil.setWidth(header, columnWidth);
 						i++; 
 					}
@@ -1340,15 +1340,14 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	/**
      * Save the width of all the columns in the WLsitbox  
      */
-	public boolean saveColumnWidth() 
+	public void saveColumnWidth() 
 	{
-		boolean ok = false;
 		StringBuilder custom = new StringBuilder(); 
 		String width = "";
 		String colName = "";
 		Listhead listHead = getListHead();
 		ColumnInfo[] layout = getLayout();
-		if (listHead != null && layout != null) 
+		if (listHead != null && layout != null && !Util.isEmpty(getwListBoxName())) 
 		{
 			List<?> headers = listHead.getChildren();
 			int i = 0;
@@ -1368,9 +1367,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 			}
 			if (custom.length() > 0)
 				custom.deleteCharAt(custom.length() - 1);
-			ok = MWlistboxCustomization.saveData(Env.getCtx(), getwListBoxName(), Env.getAD_User_ID(Env.getCtx()), custom.toString(), null);
+			MWlistboxCustomization.saveData(Env.getCtx(), getwListBoxName(), Env.getAD_User_ID(Env.getCtx()), custom.toString(), null);
 		}			
-		return ok;
+
 	}
 
 }
