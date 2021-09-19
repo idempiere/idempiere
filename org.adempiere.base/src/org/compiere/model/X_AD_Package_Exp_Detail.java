@@ -924,8 +924,6 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final int TYPE_AD_Reference_ID=50004;
 	/** Workbench = B */
 	public static final String TYPE_Workbench = "B";
-	/** File - Code or other = C */
-	public static final String TYPE_File_CodeOrOther = "C";
 	/** Data = D */
 	public static final String TYPE_Data = "D";
 	/** Data Single = DS */
@@ -954,8 +952,6 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String TYPE_Reference = "REF";
 	/** Role = S */
 	public static final String TYPE_Role = "S";
-	/** Code Snipit = SNI */
-	public static final String TYPE_CodeSnipit = "SNI";
 	/** SQL Statement = SQL */
 	public static final String TYPE_SQLStatement = "SQL";
 	/** SQL Mandatory = SQM */
