@@ -307,4 +307,6 @@
 .z-icon-SequenceChange:before {
 	content: "\f14d";
 }
-
+.z-icon-Translate:before {
+	content: "\f11e";
+}
