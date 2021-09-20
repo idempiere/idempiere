@@ -27,7 +27,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -95,22 +94,27 @@ public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
 
 		String key = new StringBuilder().append(clientID).append("_").append(from).toString();
 
-		MSMTP retValue = s_cache.get(ctx, key, e -> new MSMTP(ctx, e));
-		if (retValue != null)
+		MSMTP retValue = null;
+		if (s_cache.containsKey(key) ) {
+			retValue = s_cache.get(ctx, key, e -> new MSMTP(ctx, e));
 			return retValue;
-
-		// Try with email address first
-		String sql = "SELECT AD_SMTP_ID FROM AD_SMTP WHERE AD_Client_ID IN (0, ?) AND IsActive = 'Y' AND UPPER(UsedByEmailOrDomain) = ? ORDER BY AD_Client_ID DESC, AD_SMTP_ID";
-		int smtpID = DB.getSQLValueEx(trxName, sql, clientID, from.toUpperCase());
-
-		if (smtpID <= 0) {
-			String domain = from.substring(from.indexOf("@") + 1);
-			smtpID = DB.getSQLValueEx(trxName, sql, clientID, domain.toUpperCase());
 		}
 
-		if (smtpID > 0) {
-			MSMTP smtp = new MSMTP(ctx, smtpID, trxName);
-			s_cache.put (key, smtp, e -> new MSMTP(Env.getCtx(), smtp));
+		Query query = new Query(ctx, MSMTP.Table_Name, "AD_Client_ID IN (0, ?) AND UPPER(UsedByEmailOrDomain) = UPPER(?)", trxName)
+				.setOnlyActiveRecords(true)
+				.setOrderBy("AD_Client_ID DESC, AD_SMTP_ID");
+		retValue = query.setParameters(clientID, from).first();
+
+		if (retValue == null) {
+			String domain = from.substring(from.indexOf("@") + 1);
+			retValue = query.setParameters(clientID, domain).first();
+		}
+
+		if (retValue == null) {
+			s_cache.put (key, null);
+		} else {
+			final MSMTP smtp = retValue;
+			s_cache.put (key, retValue, e -> new MSMTP(Env.getCtx(), smtp));
 		}
 
 		return retValue;

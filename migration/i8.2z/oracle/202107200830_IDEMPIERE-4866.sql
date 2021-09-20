@@ -479,5 +479,17 @@ UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y', Updated=getDate(), Updated
 UPDATE AD_Field SET SeqNoGrid=120,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=0 WHERE AD_Field_ID=206725
 ;
 
+-- Sep 17, 2021, 2:41:31 PM CEST
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_DATE('2021-09-17 14:41:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200280
+;
+
+-- Sep 17, 2021, 3:21:51 PM CEST
+UPDATE AD_Column SET IsAllowLogging='N', IsSecure='Y',Updated=TO_DATE('2021-09-17 15:21:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214560
+;
+
+-- Sep 17, 2021, 3:21:56 PM CEST
+UPDATE AD_Field SET IsEncrypted='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-09-17 15:21:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206729
+;
+
 SELECT Register_Migration_Script ('202107200830_IDEMPIERE-4866.sql') FROM DUAL
 ;

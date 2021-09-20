@@ -88,7 +88,7 @@ public class EMailTest extends SvrProcess
 			
 			String systemName = MSystem.get(getCtx()).getName();
 			StringBuilder subject = new StringBuilder(systemName).append(" EMail Test");
-			StringBuilder msgce = new StringBuilder(systemName).append(" EMail Test: ").append(toString());
+			StringBuilder msgce = new StringBuilder(systemName).append(" EMail Test");
 			
 			int mailtextID = MSysConfig.getIntValue(MSysConfig.EMAIL_TEST_MAILTEXT_ID, 0, getAD_Client_ID());
 			if (mailtextID > 0) {
@@ -105,6 +105,10 @@ public class EMailTest extends SvrProcess
 			}	
 			try
 			{
+				String from = smtp.getUsedByEmailOrDomain();
+				if (! from.contains("@"))
+					from = "test@" + from;
+				email.setFrom(from);
 				String msg = email.send();
 				if (EMail.SENT_OK.equals (msg))
 				{
@@ -114,7 +118,7 @@ public class EMailTest extends SvrProcess
 				else
 				{
 					log.warning("Could NOT send Test EMail from "
-						+ smtp.getSMTPHost() + ": " //+ smtp.getRequestEMail()
+						+ smtp.getSMTPHost() + ": "
 						+ " (" + smtp.getRequestUser()
 						+ ") to " + client.getRequestEMail() + ": " + msg);
 					return "@Error@" + msg;

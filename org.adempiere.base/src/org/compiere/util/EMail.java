@@ -255,7 +255,8 @@ public final class EMail implements Serializable
 				setSmtpHost(smtp.getSMTPHost());
 				setSmtpPort(smtp.getSMTPPort());
 				setSecureSmtp(smtp.isSecureSMTP());
-				if (log.isLoggable(Level.FINE)) log.fine("sending email using from " + getFrom().getAddress() + " usin " + smtp.toString());
+				createAuthenticator(smtp.getRequestUser(), smtp.getRequestUserPW());
+				if (log.isLoggable(Level.FINE)) log.fine("sending email using from " + getFrom().getAddress() + " using " + smtp.toString());
 			}
 		}
 
@@ -613,7 +614,7 @@ public final class EMail implements Serializable
 	{
 		if (username == null || password == null)
 		{
-			log.warning("Ignored - " +  username + "/" + password);
+			log.fine("Ignored - " +  username + "/" + password);
 			m_auth = null;
 		}
 		else
