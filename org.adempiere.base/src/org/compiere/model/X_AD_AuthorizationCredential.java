@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AuthorizationCredential
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_AuthorizationCredential")
 public class X_AD_AuthorizationCredential extends PO implements I_AD_AuthorizationCredential, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210224L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationCredential (Properties ctx, int AD_AuthorizationCredential_ID, String trxName)
@@ -40,6 +43,10 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
         {
 			setAD_AuthorizationCredential_ID (0);
 			setAD_AuthorizationProvider_ID (0);
+			setAD_AuthorizationScopeList (null);
+			setAuthorizationClientId (null);
+			setAuthorizationClientSecret (null);
+			setAuthorizationRedirectURL (null);
 			setName (null);
         } */
     }
@@ -107,9 +114,10 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	}
 
 	public org.compiere.model.I_AD_AuthorizationProvider getAD_AuthorizationProvider() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AuthorizationProvider)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationProvider.Table_Name)
-			.getPO(getAD_AuthorizationProvider_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AuthorizationProvider)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationProvider.Table_ID)
+			.getPO(getAD_AuthorizationProvider_ID(), get_TrxName());
+	}
 
 	/** Set Authorization Provider.
 		@param AD_AuthorizationProvider_ID Authorization Provider	  */
@@ -135,10 +143,10 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	public static final int AD_AUTHORIZATIONSCOPELIST_AD_Reference_ID=200185;
 	/** Calendar = Calendar */
 	public static final String AD_AUTHORIZATIONSCOPELIST_Calendar = "Calendar";
-	/** EMail = EMail */
-	public static final String AD_AUTHORIZATIONSCOPELIST_EMail = "EMail";
 	/** Document = Document */
 	public static final String AD_AUTHORIZATIONSCOPELIST_Document = "Document";
+	/** EMail = EMail */
+	public static final String AD_AUTHORIZATIONSCOPELIST_EMail = "EMail";
 	/** Profile = Profile */
 	public static final String AD_AUTHORIZATIONSCOPELIST_Profile = "Profile";
 	/** Storage = Storage */

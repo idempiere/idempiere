@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for A_RegistrationProduct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="A_RegistrationProduct")
 public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProduct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_RegistrationProduct (Properties ctx, int A_RegistrationProduct_ID, String trxName)
@@ -71,9 +74,10 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
     }
 
 	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_RegistrationAttribute)MTable.get(getCtx(), org.compiere.model.I_A_RegistrationAttribute.Table_Name)
-			.getPO(getA_RegistrationAttribute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_RegistrationAttribute)MTable.get(getCtx(), org.compiere.model.I_A_RegistrationAttribute.Table_ID)
+			.getPO(getA_RegistrationAttribute_ID(), get_TrxName());
+	}
 
 	/** Set Registration Attribute.
 		@param A_RegistrationAttribute_ID 
@@ -130,9 +134,10 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

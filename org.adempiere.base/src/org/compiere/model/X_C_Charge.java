@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Charge
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_Charge")
 public class X_C_Charge extends PO implements I_C_Charge, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName)
@@ -80,9 +83,10 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -131,9 +135,10 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ChargeType)MTable.get(getCtx(), org.compiere.model.I_C_ChargeType.Table_Name)
-			.getPO(getC_ChargeType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ChargeType)MTable.get(getCtx(), org.compiere.model.I_C_ChargeType.Table_ID)
+			.getPO(getC_ChargeType_ID(), get_TrxName());
+	}
 
 	/** Set Charge Type.
 		@param C_ChargeType_ID Charge Type	  */
@@ -190,9 +195,10 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_Name)
-			.getPO(getC_TaxCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
+			.getPO(getC_TaxCategory_ID(), get_TrxName());
+	}
 
 	/** Set Tax Category.
 		@param C_TaxCategory_ID 

@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ServiceLevel
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_ServiceLevel")
 public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ServiceLevel (Properties ctx, int C_ServiceLevel_ID, String trxName)
@@ -77,9 +80,10 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
     }
 
 	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RevenueRecognition_Plan)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition_Plan.Table_Name)
-			.getPO(getC_RevenueRecognition_Plan_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RevenueRecognition_Plan)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition_Plan.Table_ID)
+			.getPO(getC_RevenueRecognition_Plan_ID(), get_TrxName());
+	}
 
 	/** Set Revenue Recognition Plan.
 		@param C_RevenueRecognition_Plan_ID 
@@ -167,9 +171,10 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
     }
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Forecast
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="A_Depreciation_Forecast")
 public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Forecast, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Forecast (Properties ctx, int A_Depreciation_Forecast_ID, String trxName)
@@ -118,9 +121,10 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	}
 
 	public org.compiere.model.I_A_Asset getA_End_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_End_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_End_Asset_ID(), get_TrxName());
+	}
 
 	/** Set To Asset.
 		@param A_End_Asset_ID To Asset	  */
@@ -143,9 +147,10 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	}
 
 	public org.compiere.model.I_A_Asset getA_Start_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Start_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Start_Asset_ID(), get_TrxName());
+	}
 
 	/** Set From Asset.
 		@param A_Start_Asset_ID From Asset	  */
@@ -192,10 +197,10 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
 		@param PostingType 
 		The type of posted amount for the transaction

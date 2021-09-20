@@ -20,19 +20,22 @@ package org.eevolution.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListVersion
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="HR_ListVersion")
 public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName)
@@ -94,9 +97,10 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 	}
 
 	public org.eevolution.model.I_HR_List getHR_ListBase() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_List)MTable.get(getCtx(), org.eevolution.model.I_HR_List.Table_Name)
-			.getPO(getHR_ListBase_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_List)MTable.get(getCtx(), org.eevolution.model.I_HR_List.Table_ID)
+			.getPO(getHR_ListBase_ID(), get_TrxName());
+	}
 
 	/** Set Payroll List Base.
 		@param HR_ListBase_ID Payroll List Base	  */
@@ -119,9 +123,10 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 	}
 
 	public org.eevolution.model.I_HR_List getHR_List() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_List)MTable.get(getCtx(), org.eevolution.model.I_HR_List.Table_Name)
-			.getPO(getHR_List_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_List)MTable.get(getCtx(), org.eevolution.model.I_HR_List.Table_ID)
+			.getPO(getHR_List_ID(), get_TrxName());
+	}
 
 	/** Set Payroll List.
 		@param HR_List_ID Payroll List	  */

@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for DD_NetworkDistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="DD_NetworkDistributionLine")
 public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDistributionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistributionLine (Properties ctx, int DD_NetworkDistributionLine_ID, String trxName)
@@ -79,9 +82,10 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
     }
 
 	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException
-    {
-		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_Name)
-			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_ID)
+			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());
+	}
 
 	/** Set Network Distribution.
 		@param DD_NetworkDistribution_ID Network Distribution	  */
@@ -138,9 +142,10 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 	}
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
 
 	/** Set Shipper.
 		@param M_Shipper_ID 
@@ -166,9 +171,10 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -194,9 +200,10 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_WarehouseSource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_WarehouseSource_ID(), get_TrxName());
+	}
 
 	/** Set Source Warehouse.
 		@param M_WarehouseSource_ID 

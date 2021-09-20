@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_Product")
 public class X_M_Product extends PO implements I_M_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210209L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -145,9 +148,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_Name)
-			.getPO(getC_RevenueRecognition_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
+			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
+	}
 
 	/** Set Revenue Recognition.
 		@param C_RevenueRecognition_ID 
@@ -173,9 +177,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SubscriptionType)MTable.get(getCtx(), org.compiere.model.I_C_SubscriptionType.Table_Name)
-			.getPO(getC_SubscriptionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SubscriptionType)MTable.get(getCtx(), org.compiere.model.I_C_SubscriptionType.Table_ID)
+			.getPO(getC_SubscriptionType_ID(), get_TrxName());
+	}
 
 	/** Set Subscription Type.
 		@param C_SubscriptionType_ID 
@@ -201,9 +206,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_Name)
-			.getPO(getC_TaxCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
+			.getPO(getC_TaxCategory_ID(), get_TrxName());
+	}
 
 	/** Set Tax Category.
 		@param C_TaxCategory_ID 
@@ -229,9 +235,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 
@@ -869,9 +876,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_Name)
-			.getPO(getM_AttributeSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)
+			.getPO(getM_AttributeSet_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set.
 		@param M_AttributeSet_ID 
@@ -897,9 +905,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -925,9 +934,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_M_FreightCategory getM_FreightCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_Name)
-			.getPO(getM_FreightCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_ID)
+			.getPO(getM_FreightCategory_ID(), get_TrxName());
+	}
 
 	/** Set Freight Category.
 		@param M_FreightCategory_ID 
@@ -953,9 +963,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -981,9 +992,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_M_PartType getM_PartType() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PartType)MTable.get(getCtx(), org.compiere.model.I_M_PartType.Table_Name)
-			.getPO(getM_PartType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PartType)MTable.get(getCtx(), org.compiere.model.I_M_PartType.Table_ID)
+			.getPO(getM_PartType_ID(), get_TrxName());
+	}
 
 	/** Set Part Type.
 		@param M_PartType_ID Part Type	  */
@@ -1006,9 +1018,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_ID(), get_TrxName());
+	}
 
 	/** Set Product Category.
 		@param M_Product_Category_ID 
@@ -1110,18 +1123,18 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 
 	/** ProductType AD_Reference_ID=270 */
 	public static final int PRODUCTTYPE_AD_Reference_ID=270;
-	/** Item = I */
-	public static final String PRODUCTTYPE_Item = "I";
-	/** Service = S */
-	public static final String PRODUCTTYPE_Service = "S";
-	/** Resource = R */
-	public static final String PRODUCTTYPE_Resource = "R";
-	/** Expense type = E */
-	public static final String PRODUCTTYPE_ExpenseType = "E";
-	/** Online = O */
-	public static final String PRODUCTTYPE_Online = "O";
 	/** Asset = A */
 	public static final String PRODUCTTYPE_Asset = "A";
+	/** Expense type = E */
+	public static final String PRODUCTTYPE_ExpenseType = "E";
+	/** Item = I */
+	public static final String PRODUCTTYPE_Item = "I";
+	/** Online = O */
+	public static final String PRODUCTTYPE_Online = "O";
+	/** Resource = R */
+	public static final String PRODUCTTYPE_Resource = "R";
+	/** Service = S */
+	public static final String PRODUCTTYPE_Service = "S";
 	/** Set Product Type.
 		@param ProductType 
 		Type of product
@@ -1141,9 +1154,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Mail Template.
 		@param R_MailText_ID 
@@ -1169,9 +1183,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
 		@param SalesRep_ID 
@@ -1197,9 +1212,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_S_ExpenseType getS_ExpenseType() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_ExpenseType)MTable.get(getCtx(), org.compiere.model.I_S_ExpenseType.Table_Name)
-			.getPO(getS_ExpenseType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_ExpenseType)MTable.get(getCtx(), org.compiere.model.I_S_ExpenseType.Table_ID)
+			.getPO(getS_ExpenseType_ID(), get_TrxName());
+	}
 
 	/** Set Expense Type.
 		@param S_ExpenseType_ID 
@@ -1302,9 +1318,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
 		@param S_Resource_ID 

@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_TreeNodeCMC
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_TreeNodeCMC")
 public class X_AD_TreeNodeCMC extends PO implements I_AD_TreeNodeCMC, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeCMC (Properties ctx, int AD_TreeNodeCMC_ID, String trxName)
@@ -73,9 +76,10 @@ public class X_AD_TreeNodeCMC extends PO implements I_AD_TreeNodeCMC, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
-			.getPO(getAD_Tree_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_ID)
+			.getPO(getAD_Tree_ID(), get_TrxName());
+	}
 
 	/** Set Tree.
 		@param AD_Tree_ID 

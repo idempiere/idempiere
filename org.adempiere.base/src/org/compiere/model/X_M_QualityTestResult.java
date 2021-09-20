@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for M_QualityTestResult
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_QualityTestResult")
 public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_QualityTestResult (Properties ctx, int M_QualityTestResult_ID, String trxName)
@@ -126,9 +129,10 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -154,9 +158,10 @@ public class X_M_QualityTestResult extends PO implements I_M_QualityTestResult, 
 	}
 
 	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_Name)
-			.getPO(getM_QualityTest_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_ID)
+			.getPO(getM_QualityTest_ID(), get_TrxName());
+	}
 
 	/** Set Quality Test.
 		@param M_QualityTest_ID Quality Test	  */

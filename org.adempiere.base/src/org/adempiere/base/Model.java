@@ -1,6 +1,5 @@
 /******************************************************************************
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 2010 Heng Sin Low                							  *
+ * Product: iDempiere ERP & CRM Smart Business Solution                       *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
  * by the Free Software Foundation. This program is distributed in the hope   *
@@ -11,17 +10,27 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.pipo2;
+package org.adempiere.base;
+
+import static java.lang.annotation.ElementType.TYPE;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.atteo.classindex.IndexAnnotated;
 
 /**
- *
- * @author hengsin
- *
+ * Automatic model class registration
+ * @author Saulo Gil
  */
-public interface CodeSnippetElementParameters {
-	public final static String DESTINATION_DIRECTORY = "DestinationDirectory";
-	public final static String DESTINATION_FILE_NAME = "DestinationFileName";
-	public final static String AD_Package_Code_Old = "AD_Package_Code_Old";
-	public final static String AD_Package_Code_New = "AD_Package_Code_New";
-	public final static String RELEASE_NO = "ReleaseNo";
+@Target(TYPE)
+@IndexAnnotated
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Model {
+
+	/**
+	 * Table name
+	 * @return
+	 */
+	String table();
+
 }

@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication_Run
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Replication_Run")
 public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Replication_Run (Properties ctx, int AD_Replication_Run_ID, String trxName)
@@ -75,9 +78,10 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
     }
 
 	public org.compiere.model.I_AD_Replication getAD_Replication() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Replication)MTable.get(getCtx(), org.compiere.model.I_AD_Replication.Table_Name)
-			.getPO(getAD_Replication_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Replication)MTable.get(getCtx(), org.compiere.model.I_AD_Replication.Table_ID)
+			.getPO(getAD_Replication_ID(), get_TrxName());
+	}
 
 	/** Set Replication.
 		@param AD_Replication_ID 

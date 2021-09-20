@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Status
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="R_Status")
 public class X_R_Status extends PO implements I_R_Status, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_R_Status (Properties ctx, int R_Status_ID, String trxName)
@@ -253,9 +256,10 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	public org.compiere.model.I_R_Status getNext_Status() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_Name)
-			.getPO(getNext_Status_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_ID)
+			.getPO(getNext_Status_ID(), get_TrxName());
+	}
 
 	/** Set Next Status.
 		@param Next_Status_ID 
@@ -281,9 +285,10 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	public org.compiere.model.I_R_StatusCategory getR_StatusCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_StatusCategory)MTable.get(getCtx(), org.compiere.model.I_R_StatusCategory.Table_Name)
-			.getPO(getR_StatusCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_StatusCategory)MTable.get(getCtx(), org.compiere.model.I_R_StatusCategory.Table_ID)
+			.getPO(getR_StatusCategory_ID(), get_TrxName());
+	}
 
 	/** Set Status Category.
 		@param R_StatusCategory_ID 
@@ -394,9 +399,10 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	public org.compiere.model.I_R_Status getUpdate_Status() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_Name)
-			.getPO(getUpdate_Status_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_ID)
+			.getPO(getUpdate_Status_ID(), get_TrxName());
+	}
 
 	/** Set Update Status.
 		@param Update_Status_ID 

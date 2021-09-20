@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCost
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_LandedCost")
 public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_LandedCost (Properties ctx, int C_LandedCost_ID, String trxName)
@@ -75,9 +78,10 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
     }
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
 		@param C_InvoiceLine_ID 
@@ -166,16 +170,16 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 
 	/** LandedCostDistribution AD_Reference_ID=339 */
 	public static final int LANDEDCOSTDISTRIBUTION_AD_Reference_ID=339;
-	/** Quantity = Q */
-	public static final String LANDEDCOSTDISTRIBUTION_Quantity = "Q";
+	/** Costs = C */
+	public static final String LANDEDCOSTDISTRIBUTION_Costs = "C";
 	/** Line = L */
 	public static final String LANDEDCOSTDISTRIBUTION_Line = "L";
+	/** Quantity = Q */
+	public static final String LANDEDCOSTDISTRIBUTION_Quantity = "Q";
 	/** Volume = V */
 	public static final String LANDEDCOSTDISTRIBUTION_Volume = "V";
 	/** Weight = W */
 	public static final String LANDEDCOSTDISTRIBUTION_Weight = "W";
-	/** Costs = C */
-	public static final String LANDEDCOSTDISTRIBUTION_Costs = "C";
 	/** Set Cost Distribution.
 		@param LandedCostDistribution 
 		Landed Cost Distribution
@@ -195,9 +199,10 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 	}
 
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_Name)
-			.getPO(getM_CostElement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
+			.getPO(getM_CostElement_ID(), get_TrxName());
+	}
 
 	/** Set Cost Element.
 		@param M_CostElement_ID 
@@ -223,9 +228,10 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_Name)
-			.getPO(getM_InOut_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
+			.getPO(getM_InOut_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt.
 		@param M_InOut_ID 
@@ -251,9 +257,10 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
 		@param M_InOutLine_ID 
@@ -279,9 +286,10 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

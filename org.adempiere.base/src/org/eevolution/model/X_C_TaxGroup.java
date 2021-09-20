@@ -19,19 +19,22 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxGroup
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_TaxGroup")
 public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_TaxGroup (Properties ctx, int C_TaxGroup_ID, String trxName)

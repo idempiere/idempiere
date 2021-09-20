@@ -20,19 +20,22 @@ package org.eevolution.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_List
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="HR_List")
 public class X_HR_List extends PO implements I_HR_List, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_List (Properties ctx, int HR_List_ID, String trxName)
@@ -91,9 +94,10 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_Name)
-			.getPO(getHR_Department_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
+			.getPO(getHR_Department_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Department.
 		@param HR_Department_ID Payroll Department	  */
@@ -116,9 +120,10 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Employee getHR_Employee() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Employee)MTable.get(getCtx(), org.eevolution.model.I_HR_Employee.Table_Name)
-			.getPO(getHR_Employee_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Employee)MTable.get(getCtx(), org.eevolution.model.I_HR_Employee.Table_ID)
+			.getPO(getHR_Employee_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Employee.
 		@param HR_Employee_ID Payroll Employee	  */
@@ -161,9 +166,10 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_ListType getHR_ListType() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_ListType)MTable.get(getCtx(), org.eevolution.model.I_HR_ListType.Table_Name)
-			.getPO(getHR_ListType_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_ListType)MTable.get(getCtx(), org.eevolution.model.I_HR_ListType.Table_ID)
+			.getPO(getHR_ListType_ID(), get_TrxName());
+	}
 
 	/** Set Payroll List Type.
 		@param HR_ListType_ID Payroll List Type	  */
@@ -200,9 +206,10 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_Name)
-			.getPO(getHR_Payroll_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
+			.getPO(getHR_Payroll_ID(), get_TrxName());
+	}
 
 	/** Set Payroll.
 		@param HR_Payroll_ID Payroll	  */

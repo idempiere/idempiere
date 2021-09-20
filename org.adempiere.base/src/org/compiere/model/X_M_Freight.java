@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Freight
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_Freight")
 public class X_M_Freight extends PO implements I_M_Freight, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Freight (Properties ctx, int M_Freight_ID, String trxName)
@@ -79,9 +82,10 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
     }
 
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
-			.getPO(getC_Country_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
+			.getPO(getC_Country_ID(), get_TrxName());
+	}
 
 	/** Set Country.
 		@param C_Country_ID 
@@ -107,9 +111,10 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -135,9 +140,10 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
-			.getPO(getC_Region_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
+			.getPO(getC_Region_ID(), get_TrxName());
+	}
 
 	/** Set Region.
 		@param C_Region_ID 
@@ -217,9 +223,10 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	}
 
 	public org.compiere.model.I_M_FreightCategory getM_FreightCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_Name)
-			.getPO(getM_FreightCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_ID)
+			.getPO(getM_FreightCategory_ID(), get_TrxName());
+	}
 
 	/** Set Freight Category.
 		@param M_FreightCategory_ID 
@@ -282,9 +289,10 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
 
 	/** Set Shipper.
 		@param M_Shipper_ID 
@@ -341,9 +349,10 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Region getTo_Region() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
-			.getPO(getTo_Region_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
+			.getPO(getTo_Region_ID(), get_TrxName());
+	}
 
 	/** Set To.
 		@param To_Region_ID 

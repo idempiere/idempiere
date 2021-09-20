@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_Package_Imp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Package_Imp_Detail")
 public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Detail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Detail (Properties ctx, int AD_Package_Imp_Detail_ID, String trxName)
@@ -143,9 +146,10 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	}
 
 	public org.compiere.model.I_AD_Package_Imp getAD_Package_Imp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Package_Imp)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp.Table_Name)
-			.getPO(getAD_Package_Imp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Package_Imp)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp.Table_ID)
+			.getPO(getAD_Package_Imp_ID(), get_TrxName());
+	}
 
 	/** Set Package Imp..
 		@param AD_Package_Imp_ID Package Imp.	  */
@@ -168,9 +172,10 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 

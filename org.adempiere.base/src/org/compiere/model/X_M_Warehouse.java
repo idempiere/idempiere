@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Warehouse
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_Warehouse")
 public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)
@@ -78,9 +81,10 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
     }
 
 	public I_C_Location getC_Location() throws RuntimeException
-    {
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
-			.getPO(getC_Location_ID(), get_TrxName());	}
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
 
 	/** Set Address.
 		@param C_Location_ID 
@@ -171,9 +175,10 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Locator getM_ReserveLocator() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_Name)
-			.getPO(getM_ReserveLocator_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_ID)
+			.getPO(getM_ReserveLocator_ID(), get_TrxName());
+	}
 
 	/** Set Reservation Locator.
 		@param M_ReserveLocator_ID 
@@ -222,9 +227,10 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_WarehouseSource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_WarehouseSource_ID(), get_TrxName());
+	}
 
 	/** Set Source Warehouse.
 		@param M_WarehouseSource_ID 

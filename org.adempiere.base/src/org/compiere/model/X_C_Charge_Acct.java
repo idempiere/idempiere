@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_Charge_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_Charge_Acct")
 public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Charge_Acct (Properties ctx, int C_Charge_Acct_ID, String trxName)
@@ -72,9 +75,10 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -114,9 +118,10 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -142,9 +147,10 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 	}
 
 	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getCh_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCh_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Charge Account.
 		@param Ch_Expense_Acct 

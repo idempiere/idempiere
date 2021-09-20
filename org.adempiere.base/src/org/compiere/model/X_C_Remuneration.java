@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Remuneration
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_Remuneration")
 public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Remuneration (Properties ctx, int C_Remuneration_ID, String trxName)
@@ -257,18 +260,18 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 
 	/** RemunerationType AD_Reference_ID=346 */
 	public static final int REMUNERATIONTYPE_AD_Reference_ID=346;
-	/** Hourly = H */
-	public static final String REMUNERATIONTYPE_Hourly = "H";
+	/** Bi-Weekly = B */
+	public static final String REMUNERATIONTYPE_Bi_Weekly = "B";
 	/** Daily = D */
 	public static final String REMUNERATIONTYPE_Daily = "D";
-	/** Weekly = W */
-	public static final String REMUNERATIONTYPE_Weekly = "W";
+	/** Hourly = H */
+	public static final String REMUNERATIONTYPE_Hourly = "H";
 	/** Monthly = M */
 	public static final String REMUNERATIONTYPE_Monthly = "M";
 	/** Twice Monthly = T */
 	public static final String REMUNERATIONTYPE_TwiceMonthly = "T";
-	/** Bi-Weekly = B */
-	public static final String REMUNERATIONTYPE_Bi_Weekly = "B";
+	/** Weekly = W */
+	public static final String REMUNERATIONTYPE_Weekly = "W";
 	/** Set Remuneration Type.
 		@param RemunerationType 
 		Type of Remuneration

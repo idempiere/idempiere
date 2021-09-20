@@ -19,18 +19,21 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 
 /** Generated Model for PP_Order_Node_Asset
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PP_Order_Node_Asset")
 public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Asset (Properties ctx, int PP_Order_Node_Asset_ID, String trxName)
@@ -75,9 +78,10 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
     }
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
 		@param A_Asset_ID 
@@ -103,9 +107,10 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_Name)
-			.getPO(getPP_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
+			.getPO(getPP_Order_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order.
 		@param PP_Order_ID 
@@ -165,9 +170,10 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_Name)
-			.getPO(getPP_Order_Node_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_ID)
+			.getPO(getPP_Order_Node_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Activity.
 		@param PP_Order_Node_ID 
@@ -193,9 +199,10 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_Workflow)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Workflow.Table_Name)
-			.getPO(getPP_Order_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_Workflow)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Workflow.Table_ID)
+			.getPO(getPP_Order_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Workflow.
 		@param PP_Order_Workflow_ID Manufacturing Order Workflow	  */

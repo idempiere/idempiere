@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_LdapProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_LdapProcessorLog")
 public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_LdapProcessorLog (Properties ctx, int AD_LdapProcessorLog_ID, String trxName)
@@ -72,9 +75,10 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
     }
 
 	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_LdapProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_LdapProcessor.Table_Name)
-			.getPO(getAD_LdapProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_LdapProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_LdapProcessor.Table_ID)
+			.getPO(getAD_LdapProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Ldap Processor.
 		@param AD_LdapProcessor_ID 

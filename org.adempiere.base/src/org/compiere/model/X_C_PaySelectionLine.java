@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaySelectionLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_PaySelectionLine")
 public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName)
@@ -89,9 +92,10 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
     }
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -117,9 +121,10 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	public org.compiere.model.I_C_PaySelectionCheck getC_PaySelectionCheck() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaySelectionCheck)MTable.get(getCtx(), org.compiere.model.I_C_PaySelectionCheck.Table_Name)
-			.getPO(getC_PaySelectionCheck_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaySelectionCheck)MTable.get(getCtx(), org.compiere.model.I_C_PaySelectionCheck.Table_ID)
+			.getPO(getC_PaySelectionCheck_ID(), get_TrxName());
+	}
 
 	/** Set Pay Selection Check.
 		@param C_PaySelectionCheck_ID 
@@ -145,9 +150,10 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaySelection)MTable.get(getCtx(), org.compiere.model.I_C_PaySelection.Table_Name)
-			.getPO(getC_PaySelection_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaySelection)MTable.get(getCtx(), org.compiere.model.I_C_PaySelection.Table_ID)
+			.getPO(getC_PaySelection_ID(), get_TrxName());
+	}
 
 	/** Set Payment Selection.
 		@param C_PaySelection_ID 
@@ -386,18 +392,18 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
 	public static final String PAYMENTRULE_Cash = "B";
-	/** Credit Card = K */
-	public static final String PAYMENTRULE_CreditCard = "K";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULE_DirectDeposit = "T";
-	/** Check = S */
-	public static final String PAYMENTRULE_Check = "S";
-	/** On Credit = P */
-	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULE_CreditCard = "K";
 	/** Mixed POS Payment = M */
 	public static final String PAYMENTRULE_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULE_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULE_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULE_DirectDeposit = "T";
 	/** Set Payment Rule.
 		@param PaymentRule 
 		How you pay the invoice

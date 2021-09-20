@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Fact_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="Fact_Acct")
 public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_Fact_Acct (Properties ctx, int Fact_Acct_ID, String trxName)
@@ -157,9 +160,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -265,9 +269,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -293,9 +298,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -321,9 +327,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -349,9 +356,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -377,9 +385,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -405,9 +414,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocFrom_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocFrom_ID(), get_TrxName());
+	}
 
 	/** Set Location From.
 		@param C_LocFrom_ID 
@@ -433,9 +443,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocTo_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocTo_ID(), get_TrxName());
+	}
 
 	/** Set Location To.
 		@param C_LocTo_ID 
@@ -461,9 +472,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getC_Period_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
 
 	/** Set Period.
 		@param C_Period_ID 
@@ -489,9 +501,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -517,9 +530,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_Name)
-			.getPO(getC_ProjectPhase_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
+			.getPO(getC_ProjectPhase_ID(), get_TrxName());
+	}
 
 	/** Set Project Phase.
 		@param C_ProjectPhase_ID 
@@ -545,9 +559,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_Name)
-			.getPO(getC_ProjectTask_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
+			.getPO(getC_ProjectTask_ID(), get_TrxName());
+	}
 
 	/** Set Project Task.
 		@param C_ProjectTask_ID 
@@ -573,9 +588,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_Name)
-			.getPO(getC_SalesRegion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
+			.getPO(getC_SalesRegion_ID(), get_TrxName());
+	}
 
 	/** Set Sales Region.
 		@param C_SalesRegion_ID 
@@ -601,9 +617,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_SubAcct getC_SubAcct() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SubAcct)MTable.get(getCtx(), org.compiere.model.I_C_SubAcct.Table_Name)
-			.getPO(getC_SubAcct_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SubAcct)MTable.get(getCtx(), org.compiere.model.I_C_SubAcct.Table_ID)
+			.getPO(getC_SubAcct_ID(), get_TrxName());
+	}
 
 	/** Set Sub Account.
 		@param C_SubAcct_ID 
@@ -629,9 +646,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_Name)
-			.getPO(getC_Tax_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
+			.getPO(getC_Tax_ID(), get_TrxName());
+	}
 
 	/** Set Tax.
 		@param C_Tax_ID 
@@ -657,9 +675,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 
@@ -778,9 +797,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_Name)
-			.getPO(getGL_Budget_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)
+			.getPO(getGL_Budget_ID(), get_TrxName());
+	}
 
 	/** Set Budget.
 		@param GL_Budget_ID 
@@ -806,9 +826,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
-			.getPO(getGL_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
+			.getPO(getGL_Category_ID(), get_TrxName());
+	}
 
 	/** Set GL Category.
 		@param GL_Category_ID 
@@ -857,9 +878,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -885,9 +907,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -920,10 +943,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
 		@param PostingType 
 		The type of posted amount for the transaction
@@ -986,9 +1009,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -1014,9 +1038,10 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

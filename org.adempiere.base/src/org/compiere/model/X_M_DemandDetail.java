@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DemandDetail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_DemandDetail")
 public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_DemandDetail (Properties ctx, int M_DemandDetail_ID, String trxName)
@@ -72,9 +75,10 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
     }
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
 		@param C_OrderLine_ID 
@@ -145,9 +149,10 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	public org.compiere.model.I_M_DemandLine getM_DemandLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DemandLine)MTable.get(getCtx(), org.compiere.model.I_M_DemandLine.Table_Name)
-			.getPO(getM_DemandLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DemandLine)MTable.get(getCtx(), org.compiere.model.I_M_DemandLine.Table_ID)
+			.getPO(getM_DemandLine_ID(), get_TrxName());
+	}
 
 	/** Set Demand Line.
 		@param M_DemandLine_ID 
@@ -173,9 +178,10 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_Name)
-			.getPO(getM_ForecastLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_ID)
+			.getPO(getM_ForecastLine_ID(), get_TrxName());
+	}
 
 	/** Set Forecast Line.
 		@param M_ForecastLine_ID 
@@ -201,9 +207,10 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	public org.compiere.model.I_M_RequisitionLine getM_RequisitionLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_RequisitionLine)MTable.get(getCtx(), org.compiere.model.I_M_RequisitionLine.Table_Name)
-			.getPO(getM_RequisitionLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_RequisitionLine)MTable.get(getCtx(), org.compiere.model.I_M_RequisitionLine.Table_ID)
+			.getPO(getM_RequisitionLine_ID(), get_TrxName());
+	}
 
 	/** Set Requisition Line.
 		@param M_RequisitionLine_ID 

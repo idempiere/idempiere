@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionDetail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_CommissionDetail")
 public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_CommissionDetail (Properties ctx, int C_CommissionDetail_ID, String trxName)
@@ -118,9 +121,10 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	public org.compiere.model.I_C_CommissionAmt getC_CommissionAmt() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CommissionAmt)MTable.get(getCtx(), org.compiere.model.I_C_CommissionAmt.Table_Name)
-			.getPO(getC_CommissionAmt_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CommissionAmt)MTable.get(getCtx(), org.compiere.model.I_C_CommissionAmt.Table_ID)
+			.getPO(getC_CommissionAmt_ID(), get_TrxName());
+	}
 
 	/** Set Commission Amount.
 		@param C_CommissionAmt_ID 
@@ -183,9 +187,10 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -211,9 +216,10 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
 		@param C_InvoiceLine_ID 
@@ -259,9 +265,10 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
 		@param C_OrderLine_ID 

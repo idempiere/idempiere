@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_OrgInfo
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_OrgInfo")
 public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_OrgInfo (Properties ctx, int AD_OrgInfo_ID, String trxName)
@@ -87,9 +90,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_OrgType getAD_OrgType() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_OrgType)MTable.get(getCtx(), org.compiere.model.I_AD_OrgType.Table_Name)
-			.getPO(getAD_OrgType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_OrgType)MTable.get(getCtx(), org.compiere.model.I_AD_OrgType.Table_ID)
+			.getPO(getAD_OrgType_ID(), get_TrxName());
+	}
 
 	/** Set Organization Type.
 		@param AD_OrgType_ID 
@@ -115,9 +119,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
 		@param C_Calendar_ID 
@@ -143,9 +148,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public I_C_Location getC_Location() throws RuntimeException
-    {
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
-			.getPO(getC_Location_ID(), get_TrxName());	}
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
 
 	/** Set Address.
 		@param C_Location_ID 
@@ -171,9 +177,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getDropShip_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getDropShip_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getDropShip_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Drop Ship Warehouse.
 		@param DropShip_Warehouse_ID 
@@ -270,9 +277,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -372,9 +380,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
 		@param Supervisor_ID 
@@ -417,9 +426,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Bank getTransferBank() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_Name)
-			.getPO(getTransferBank_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_ID)
+			.getPO(getTransferBank_ID(), get_TrxName());
+	}
 
 	/** Set Bank for transfers.
 		@param TransferBank_ID 
@@ -445,9 +455,10 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CashBook getTransferCashBook() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
-			.getPO(getTransferCashBook_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)
+			.getPO(getTransferCashBook_ID(), get_TrxName());
+	}
 
 	/** Set CashBook for transfers.
 		@param TransferCashBook_ID CashBook for transfers	  */

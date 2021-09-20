@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for MFA_Rule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="MFA_Rule")
 public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210605L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_MFA_Rule (Properties ctx, int MFA_Rule_ID, String trxName)
@@ -88,9 +91,10 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	}
 
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
-    {
-		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_Name)
-			.getPO(getMFA_Method_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_ID)
+			.getPO(getMFA_Method_ID(), get_TrxName());
+	}
 
 	/** Set MFA Method.
 		@param MFA_Method_ID 

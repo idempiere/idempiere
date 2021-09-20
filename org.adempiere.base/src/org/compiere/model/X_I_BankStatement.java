@@ -21,18 +21,21 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for I_BankStatement
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="I_BankStatement")
 public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_I_BankStatement (Properties ctx, int I_BankStatement_ID, String trxName)
@@ -108,9 +111,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
@@ -136,9 +140,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_BankStatement getC_BankStatement() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankStatement)MTable.get(getCtx(), org.compiere.model.I_C_BankStatement.Table_Name)
-			.getPO(getC_BankStatement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankStatement)MTable.get(getCtx(), org.compiere.model.I_C_BankStatement.Table_ID)
+			.getPO(getC_BankStatement_ID(), get_TrxName());
+	}
 
 	/** Set Bank Statement.
 		@param C_BankStatement_ID 
@@ -164,9 +169,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_BankStatementLine getC_BankStatementLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankStatementLine)MTable.get(getCtx(), org.compiere.model.I_C_BankStatementLine.Table_Name)
-			.getPO(getC_BankStatementLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankStatementLine)MTable.get(getCtx(), org.compiere.model.I_C_BankStatementLine.Table_ID)
+			.getPO(getC_BankStatementLine_ID(), get_TrxName());
+	}
 
 	/** Set Bank statement line.
 		@param C_BankStatementLine_ID 
@@ -192,9 +198,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -220,9 +227,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -248,9 +256,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -313,9 +322,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -341,9 +351,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 
@@ -1070,16 +1081,16 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 
 	/** TrxType AD_Reference_ID=215 */
 	public static final int TRXTYPE_AD_Reference_ID=215;
-	/** Sales = S */
-	public static final String TRXTYPE_Sales = "S";
-	/** Delayed Capture = D */
-	public static final String TRXTYPE_DelayedCapture = "D";
-	/** Credit (Payment) = C */
-	public static final String TRXTYPE_CreditPayment = "C";
-	/** Voice Authorization = F */
-	public static final String TRXTYPE_VoiceAuthorization = "F";
 	/** Authorization = A */
 	public static final String TRXTYPE_Authorization = "A";
+	/** Credit (Payment) = C */
+	public static final String TRXTYPE_CreditPayment = "C";
+	/** Delayed Capture = D */
+	public static final String TRXTYPE_DelayedCapture = "D";
+	/** Voice Authorization = F */
+	public static final String TRXTYPE_VoiceAuthorization = "F";
+	/** Sales = S */
+	public static final String TRXTYPE_Sales = "S";
 	/** Void = V */
 	public static final String TRXTYPE_Void = "V";
 	/** Set Transaction Type.

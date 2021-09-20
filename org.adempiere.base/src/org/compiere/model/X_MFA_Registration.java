@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Registration
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="MFA_Registration")
 public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210607L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_MFA_Registration (Properties ctx, int MFA_Registration_ID, String trxName)
@@ -78,9 +81,10 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -244,9 +248,10 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	}
 
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
-    {
-		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_Name)
-			.getPO(getMFA_Method_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_ID)
+			.getPO(getMFA_Method_ID(), get_TrxName());
+	}
 
 	/** Set MFA Method.
 		@param MFA_Method_ID 

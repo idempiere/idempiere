@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="CM_ChatType")
 public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName)
@@ -73,9 +76,10 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -156,12 +160,12 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 
 	/** ModerationType AD_Reference_ID=395 */
 	public static final int MODERATIONTYPE_AD_Reference_ID=395;
-	/** Not moderated = N */
-	public static final String MODERATIONTYPE_NotModerated = "N";
-	/** Before Publishing = B */
-	public static final String MODERATIONTYPE_BeforePublishing = "B";
 	/** After Publishing = A */
 	public static final String MODERATIONTYPE_AfterPublishing = "A";
+	/** Before Publishing = B */
+	public static final String MODERATIONTYPE_BeforePublishing = "B";
+	/** Not moderated = N */
+	public static final String MODERATIONTYPE_NotModerated = "N";
 	/** Set Moderation Type.
 		@param ModerationType 
 		Type of moderation

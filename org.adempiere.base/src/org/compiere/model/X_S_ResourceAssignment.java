@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceAssignment
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="S_ResourceAssignment")
 public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName)
@@ -227,9 +230,10 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
 		@param S_Resource_ID 

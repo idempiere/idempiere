@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Achievement
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PA_Achievement")
 public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)
@@ -236,9 +239,10 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	}
 
 	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_Measure)MTable.get(getCtx(), org.compiere.model.I_PA_Measure.Table_Name)
-			.getPO(getPA_Measure_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_Measure)MTable.get(getCtx(), org.compiere.model.I_PA_Measure.Table_ID)
+			.getPO(getPA_Measure_ID(), get_TrxName());
+	}
 
 	/** Set Measure.
 		@param PA_Measure_ID 

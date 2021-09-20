@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition_Plan
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_RevenueRecognition_Plan")
 public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecognition_Plan, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Plan (Properties ctx, int C_RevenueRecognition_Plan_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -109,9 +113,10 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -137,9 +142,10 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 	}
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
 		@param C_InvoiceLine_ID 
@@ -165,9 +171,10 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 	}
 
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_Name)
-			.getPO(getC_RevenueRecognition_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
+			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
+	}
 
 	/** Set Revenue Recognition.
 		@param C_RevenueRecognition_ID 
@@ -238,9 +245,10 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 	}
 
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Revenue_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Revenue_Acct(), get_TrxName());
+	}
 
 	/** Set Product Revenue.
 		@param P_Revenue_Acct 
@@ -300,9 +308,10 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 	}
 
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getUnEarnedRevenue_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getUnEarnedRevenue_Acct(), get_TrxName());
+	}
 
 	/** Set Unearned Revenue.
 		@param UnEarnedRevenue_Acct 

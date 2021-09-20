@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_EDI
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_BP_EDI")
 public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BP_EDI (Properties ctx, int C_BP_EDI_ID, String trxName)
@@ -85,9 +88,10 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getAD_Sequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getAD_Sequence_ID(), get_TrxName());
+	}
 
 	/** Set Sequence.
 		@param AD_Sequence_ID 
@@ -113,9 +117,10 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -213,12 +218,12 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 
 	/** EDIType AD_Reference_ID=201 */
 	public static final int EDITYPE_AD_Reference_ID=201;
-	/** ASC X12  = X */
-	public static final String EDITYPE_ASCX12 = "X";
 	/** EDIFACT = E */
 	public static final String EDITYPE_EDIFACT = "E";
 	/** Email EDI = M */
 	public static final String EDITYPE_EmailEDI = "M";
+	/** ASC X12  = X */
+	public static final String EDITYPE_ASCX12 = "X";
 	/** Set EDI Type.
 		@param EDIType EDI Type	  */
 	public void setEDIType (String EDIType)
@@ -385,9 +390,10 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 

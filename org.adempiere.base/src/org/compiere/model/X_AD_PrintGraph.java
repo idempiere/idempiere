@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintGraph
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_PrintGraph")
 public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PrintGraph (Properties ctx, int AD_PrintGraph_ID, String trxName)
@@ -77,9 +80,10 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -142,9 +146,10 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormatItem getData1_PrintFormatItem() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_Name)
-			.getPO(getData1_PrintFormatItem_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
+			.getPO(getData1_PrintFormatItem_ID(), get_TrxName());
+	}
 
 	/** Set Data Column 2.
 		@param Data1_PrintFormatItem_ID 
@@ -170,9 +175,10 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormatItem getData2_PrintFormatItem() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_Name)
-			.getPO(getData2_PrintFormatItem_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
+			.getPO(getData2_PrintFormatItem_ID(), get_TrxName());
+	}
 
 	/** Set Data Column 3.
 		@param Data2_PrintFormatItem_ID 
@@ -198,9 +204,10 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormatItem getData3_PrintFormatItem() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_Name)
-			.getPO(getData3_PrintFormatItem_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
+			.getPO(getData3_PrintFormatItem_ID(), get_TrxName());
+	}
 
 	/** Set Data Column 4.
 		@param Data3_PrintFormatItem_ID 
@@ -226,9 +233,10 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormatItem getData4_PrintFormatItem() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_Name)
-			.getPO(getData4_PrintFormatItem_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
+			.getPO(getData4_PrintFormatItem_ID(), get_TrxName());
+	}
 
 	/** Set Data Column 5.
 		@param Data4_PrintFormatItem_ID 
@@ -254,9 +262,10 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormatItem getData_PrintFormatItem() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_Name)
-			.getPO(getData_PrintFormatItem_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
+			.getPO(getData_PrintFormatItem_ID(), get_TrxName());
+	}
 
 	/** Set Data Column.
 		@param Data_PrintFormatItem_ID 
@@ -299,9 +308,10 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormatItem getDescription_PrintFormatItem() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_Name)
-			.getPO(getDescription_PrintFormatItem_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
+			.getPO(getDescription_PrintFormatItem_ID(), get_TrxName());
+	}
 
 	/** Set Description Column.
 		@param Description_PrintFormatItem_ID 
@@ -328,12 +338,12 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 
 	/** GraphType AD_Reference_ID=265 */
 	public static final int GRAPHTYPE_AD_Reference_ID=265;
-	/** Pie Chart = P */
-	public static final String GRAPHTYPE_PieChart = "P";
-	/** Line Chart = L */
-	public static final String GRAPHTYPE_LineChart = "L";
 	/** Bar Chart = B */
 	public static final String GRAPHTYPE_BarChart = "B";
+	/** Line Chart = L */
+	public static final String GRAPHTYPE_LineChart = "L";
+	/** Pie Chart = P */
+	public static final String GRAPHTYPE_PieChart = "P";
 	/** Set Graph Type.
 		@param GraphType 
 		Type of graph to be painted

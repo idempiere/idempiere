@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeUse
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="M_AttributeUse")
 public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName)
@@ -74,9 +77,10 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
     }
 
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
-			.getPO(getM_Attribute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
 
 	/** Set Attribute.
 		@param M_Attribute_ID 
@@ -102,9 +106,10 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	}
 
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_Name)
-			.getPO(getM_AttributeSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)
+			.getPO(getM_AttributeSet_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set.
 		@param M_AttributeSet_ID 

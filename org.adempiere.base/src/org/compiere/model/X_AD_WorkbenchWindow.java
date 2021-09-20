@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WorkbenchWindow
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_WorkbenchWindow")
 public class X_AD_WorkbenchWindow extends PO implements I_AD_WorkbenchWindow, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WorkbenchWindow (Properties ctx, int AD_WorkbenchWindow_ID, String trxName)
@@ -41,7 +44,7 @@ public class X_AD_WorkbenchWindow extends PO implements I_AD_WorkbenchWindow, I_
 			setAD_Workbench_ID (0);
 			setAD_WorkbenchWindow_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsPrimary (false);
 			setSeqNo (0);
         } */
@@ -76,9 +79,10 @@ public class X_AD_WorkbenchWindow extends PO implements I_AD_WorkbenchWindow, I_
     }
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
 		@param AD_Form_ID 
@@ -104,9 +108,10 @@ public class X_AD_WorkbenchWindow extends PO implements I_AD_WorkbenchWindow, I_
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -132,9 +137,10 @@ public class X_AD_WorkbenchWindow extends PO implements I_AD_WorkbenchWindow, I_
 	}
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
 		@param AD_Task_ID 
@@ -160,9 +166,10 @@ public class X_AD_WorkbenchWindow extends PO implements I_AD_WorkbenchWindow, I_
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -188,9 +195,10 @@ public class X_AD_WorkbenchWindow extends PO implements I_AD_WorkbenchWindow, I_
 	}
 
 	public org.compiere.model.I_AD_Workbench getAD_Workbench() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workbench)MTable.get(getCtx(), org.compiere.model.I_AD_Workbench.Table_Name)
-			.getPO(getAD_Workbench_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workbench)MTable.get(getCtx(), org.compiere.model.I_AD_Workbench.Table_ID)
+			.getPO(getAD_Workbench_ID(), get_TrxName());
+	}
 
 	/** Set Workbench.
 		@param AD_Workbench_ID 

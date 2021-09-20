@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_BenchmarkData
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PA_BenchmarkData")
 public class X_PA_BenchmarkData extends PO implements I_PA_BenchmarkData, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_BenchmarkData (Properties ctx, int PA_BenchmarkData_ID, String trxName)
@@ -194,9 +197,10 @@ public class X_PA_BenchmarkData extends PO implements I_PA_BenchmarkData, I_Pers
 	}
 
 	public org.compiere.model.I_PA_Benchmark getPA_Benchmark() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_Benchmark)MTable.get(getCtx(), org.compiere.model.I_PA_Benchmark.Table_Name)
-			.getPO(getPA_Benchmark_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_Benchmark)MTable.get(getCtx(), org.compiere.model.I_PA_Benchmark.Table_ID)
+			.getPO(getPA_Benchmark_ID(), get_TrxName());
+	}
 
 	/** Set Benchmark.
 		@param PA_Benchmark_ID 

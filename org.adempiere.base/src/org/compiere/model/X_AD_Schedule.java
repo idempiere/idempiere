@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Schedule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_Schedule")
 public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Schedule (Properties ctx, int AD_Schedule_ID, String trxName)
@@ -164,12 +167,12 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 
 	/** FrequencyType AD_Reference_ID=221 */
 	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
 	/** Day = D */
 	public static final String FREQUENCYTYPE_Day = "D";
+	/** Hour = H */
+	public static final String FREQUENCYTYPE_Hour = "H";
+	/** Minute = M */
+	public static final String FREQUENCYTYPE_Minute = "M";
 	/** Set Frequency Type.
 		@param FrequencyType 
 		Frequency of event
@@ -297,14 +300,14 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 
 	/** ScheduleType AD_Reference_ID=318 */
 	public static final int SCHEDULETYPE_AD_Reference_ID=318;
-	/** Frequency = F */
-	public static final String SCHEDULETYPE_Frequency = "F";
-	/** Week Day = W */
-	public static final String SCHEDULETYPE_WeekDay = "W";
-	/** Month Day = M */
-	public static final String SCHEDULETYPE_MonthDay = "M";
 	/** Cron Scheduling Pattern = C */
 	public static final String SCHEDULETYPE_CronSchedulingPattern = "C";
+	/** Frequency = F */
+	public static final String SCHEDULETYPE_Frequency = "F";
+	/** Month Day = M */
+	public static final String SCHEDULETYPE_MonthDay = "M";
+	/** Week Day = W */
+	public static final String SCHEDULETYPE_WeekDay = "W";
 	/** Set Schedule Type.
 		@param ScheduleType 
 		Type of schedule
@@ -325,8 +328,6 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 
 	/** WeekDay AD_Reference_ID=167 */
 	public static final int WEEKDAY_AD_Reference_ID=167;
-	/** Sunday = 7 */
-	public static final String WEEKDAY_Sunday = "7";
 	/** Monday = 1 */
 	public static final String WEEKDAY_Monday = "1";
 	/** Tuesday = 2 */
@@ -339,6 +340,8 @@ public class X_AD_Schedule extends PO implements I_AD_Schedule, I_Persistent
 	public static final String WEEKDAY_Friday = "5";
 	/** Saturday = 6 */
 	public static final String WEEKDAY_Saturday = "6";
+	/** Sunday = 7 */
+	public static final String WEEKDAY_Sunday = "7";
 	/** Set Day of the Week.
 		@param WeekDay 
 		Day of the Week

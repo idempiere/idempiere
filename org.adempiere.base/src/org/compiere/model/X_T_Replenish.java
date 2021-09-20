@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for T_Replenish
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="T_Replenish")
 public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_T_Replenish (Properties ctx, int T_Replenish_ID, String trxName)
@@ -78,9 +81,10 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_Name)
-			.getPO(getAD_PInstance_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
+			.getPO(getAD_PInstance_ID(), get_TrxName());
+	}
 
 	/** Set Process Instance.
 		@param AD_PInstance_ID 
@@ -106,9 +110,10 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -134,9 +139,10 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
 
 	/** Set Document Type.
 		@param C_DocType_ID 
@@ -202,9 +208,10 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -230,9 +237,10 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -258,9 +266,10 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_WarehouseSource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_WarehouseSource_ID(), get_TrxName());
+	}
 
 	/** Set Source Warehouse.
 		@param M_WarehouseSource_ID 
@@ -404,14 +413,14 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 
 	/** ReplenishmentCreate AD_Reference_ID=329 */
 	public static final int REPLENISHMENTCREATE_AD_Reference_ID=329;
+	/** Distribution Order = DOO */
+	public static final String REPLENISHMENTCREATE_DistributionOrder = "DOO";
+	/** Inventory Move = MMM */
+	public static final String REPLENISHMENTCREATE_InventoryMove = "MMM";
 	/** Purchase Order = POO */
 	public static final String REPLENISHMENTCREATE_PurchaseOrder = "POO";
 	/** Requisition = POR */
 	public static final String REPLENISHMENTCREATE_Requisition = "POR";
-	/** Inventory Move = MMM */
-	public static final String REPLENISHMENTCREATE_InventoryMove = "MMM";
-	/** Distribution Order = DOO */
-	public static final String REPLENISHMENTCREATE_DistributionOrder = "DOO";
 	/** Set Create.
 		@param ReplenishmentCreate 
 		Create from Replenishment
@@ -432,12 +441,12 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 
 	/** ReplenishType AD_Reference_ID=164 */
 	public static final int REPLENISHTYPE_AD_Reference_ID=164;
-	/** Maintain Maximum Level = 2 */
-	public static final String REPLENISHTYPE_MaintainMaximumLevel = "2";
 	/** Manual = 0 */
 	public static final String REPLENISHTYPE_Manual = "0";
 	/** Reorder below Minimum Level = 1 */
 	public static final String REPLENISHTYPE_ReorderBelowMinimumLevel = "1";
+	/** Maintain Maximum Level = 2 */
+	public static final String REPLENISHTYPE_MaintainMaximumLevel = "2";
 	/** Custom = 9 */
 	public static final String REPLENISHTYPE_Custom = "9";
 	/** Set Replenish Type.

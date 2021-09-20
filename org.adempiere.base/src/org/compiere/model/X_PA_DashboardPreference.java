@@ -20,18 +20,21 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for PA_DashboardPreference
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PA_DashboardPreference")
 public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPreference, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_DashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -109,9 +113,10 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -225,9 +230,10 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_Name)
-			.getPO(getPA_DashboardContent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_ID)
+			.getPO(getPA_DashboardContent_ID(), get_TrxName());
+	}
 
 	/** Set Dashboard Content.
 		@param PA_DashboardContent_ID Dashboard Content	  */

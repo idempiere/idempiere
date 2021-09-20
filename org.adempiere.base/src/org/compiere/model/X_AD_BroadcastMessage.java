@@ -20,17 +20,20 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_BroadcastMessage")
 public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
@@ -112,9 +115,10 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -140,9 +144,10 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -169,12 +174,12 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 
 	/** BroadcastFrequency AD_Reference_ID=200020 */
 	public static final int BROADCASTFREQUENCY_AD_Reference_ID=200020;
-	/** Just Once = J */
-	public static final String BROADCASTFREQUENCY_JustOnce = "J";
-	/** Until Expiration = E */
-	public static final String BROADCASTFREQUENCY_UntilExpiration = "E";
 	/** Until Acknowledge = A */
 	public static final String BROADCASTFREQUENCY_UntilAcknowledge = "A";
+	/** Until Expiration = E */
+	public static final String BROADCASTFREQUENCY_UntilExpiration = "E";
+	/** Just Once = J */
+	public static final String BROADCASTFREQUENCY_JustOnce = "J";
 	/** Until Expiration or Acknowledge = O */
 	public static final String BROADCASTFREQUENCY_UntilExpirationOrAcknowledge = "O";
 	/** Set Broadcast Frequency.

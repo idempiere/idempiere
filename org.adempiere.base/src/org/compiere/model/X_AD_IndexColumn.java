@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_IndexColumn
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_IndexColumn")
 public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_IndexColumn (Properties ctx, int AD_IndexColumn_ID, String trxName)
@@ -40,7 +43,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 			setAD_IndexColumn_ID (0);
 			setAD_TableIndex_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
         } */
     }
 
@@ -73,9 +76,10 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -135,9 +139,10 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_TableIndex getAD_TableIndex() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_TableIndex)MTable.get(getCtx(), org.compiere.model.I_AD_TableIndex.Table_Name)
-			.getPO(getAD_TableIndex_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_TableIndex)MTable.get(getCtx(), org.compiere.model.I_AD_TableIndex.Table_ID)
+			.getPO(getAD_TableIndex_ID(), get_TrxName());
+	}
 
 	/** Set Table Index.
 		@param AD_TableIndex_ID Table Index	  */

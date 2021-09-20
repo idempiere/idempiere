@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_UserDef_Info
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="AD_UserDef_Info")
 public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -39,6 +42,8 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
         {
 			setAD_InfoWindow_ID (0);
 			setAD_UserDef_Info_ID (0);
+			setSeqNo (0);
+// 0
         } */
     }
 
@@ -71,9 +76,10 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
     }
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -119,9 +125,10 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -181,9 +188,10 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -242,6 +250,47 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	/** Set Image URL.
+		@param ImageURL 
+		URL of  image
+	  */
+	public void setImageURL (String ImageURL)
+	{
+		set_Value (COLUMNNAME_ImageURL, ImageURL);
+	}
+
+	/** Get Image URL.
+		@return URL of  image
+	  */
+	public String getImageURL () 
+	{
+		return (String)get_Value(COLUMNNAME_ImageURL);
+	}
+
+	/** IsShowInDashboard AD_Reference_ID=319 */
+	public static final int ISSHOWINDASHBOARD_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISSHOWINDASHBOARD_No = "N";
+	/** Yes = Y */
+	public static final String ISSHOWINDASHBOARD_Yes = "Y";
+	/** Set Show in Dashboard.
+		@param IsShowInDashboard 
+		Show the dashlet in the dashboard
+	  */
+	public void setIsShowInDashboard (String IsShowInDashboard)
+	{
+
+		set_Value (COLUMNNAME_IsShowInDashboard, IsShowInDashboard);
+	}
+
+	/** Get Show in Dashboard.
+		@return Show the dashlet in the dashboard
+	  */
+	public String getIsShowInDashboard () 
+	{
+		return (String)get_Value(COLUMNNAME_IsShowInDashboard);
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -257,5 +306,25 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Sequence.
+		@param SeqNo 
+		Method of ordering records; lowest number comes first
+	  */
+	public void setSeqNo (int SeqNo)
+	{
+		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
+	}
+
+	/** Get Sequence.
+		@return Method of ordering records; lowest number comes first
+	  */
+	public int getSeqNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

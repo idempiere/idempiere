@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestProcessor_Route
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="R_RequestProcessor_Route")
 public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcessor_Route, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor_Route (Properties ctx, int R_RequestProcessor_Route_ID, String trxName)
@@ -74,9 +77,10 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -119,9 +123,10 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 	}
 
 	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_RequestProcessor)MTable.get(getCtx(), org.compiere.model.I_R_RequestProcessor.Table_Name)
-			.getPO(getR_RequestProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_RequestProcessor)MTable.get(getCtx(), org.compiere.model.I_R_RequestProcessor.Table_ID)
+			.getPO(getR_RequestProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Request Processor.
 		@param R_RequestProcessor_ID 
@@ -184,9 +189,10 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 	}
 
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_Name)
-			.getPO(getR_RequestType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_ID)
+			.getPO(getR_RequestType_ID(), get_TrxName());
+	}
 
 	/** Set Request Type.
 		@param R_RequestType_ID 

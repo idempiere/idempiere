@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for ASP_Task
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="ASP_Task")
 public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Task (Properties ctx, int ASP_Task_ID, String trxName)
@@ -73,9 +76,10 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
 		@param AD_Task_ID 
@@ -101,9 +105,10 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_Name)
-			.getPO(getASP_Level_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)
+			.getPO(getASP_Level_ID(), get_TrxName());
+	}
 
 	/** Set ASP Level.
 		@param ASP_Level_ID ASP Level	  */

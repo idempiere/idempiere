@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Level
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="ASP_Level")
 public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Level (Properties ctx, int ASP_Level_ID, String trxName)
@@ -108,9 +111,10 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Module getASP_Module() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Module)MTable.get(getCtx(), org.compiere.model.I_ASP_Module.Table_Name)
-			.getPO(getASP_Module_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Module)MTable.get(getCtx(), org.compiere.model.I_ASP_Module.Table_ID)
+			.getPO(getASP_Module_ID(), get_TrxName());
+	}
 
 	/** Set ASP Module.
 		@param ASP_Module_ID ASP Module	  */

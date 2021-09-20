@@ -21,20 +21,23 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Workflow
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="PP_Order_Workflow")
 public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_Order_Workflow (Properties ctx, int PP_Order_Workflow_ID, String trxName)
@@ -96,16 +99,16 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	public static final int ACCESSLEVEL_AD_Reference_ID=5;
 	/** Organization = 1 */
 	public static final String ACCESSLEVEL_Organization = "1";
+	/** Client only = 2 */
+	public static final String ACCESSLEVEL_ClientOnly = "2";
 	/** Client+Organization = 3 */
 	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
 	/** System only = 4 */
 	public static final String ACCESSLEVEL_SystemOnly = "4";
-	/** All = 7 */
-	public static final String ACCESSLEVEL_All = "7";
 	/** System+Client = 6 */
 	public static final String ACCESSLEVEL_SystemPlusClient = "6";
-	/** Client only = 2 */
-	public static final String ACCESSLEVEL_ClientOnly = "2";
+	/** All = 7 */
+	public static final String ACCESSLEVEL_All = "7";
 	/** Set Data Access Level.
 		@param AccessLevel 
 		Access Level required
@@ -125,9 +128,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -153,9 +157,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
 		@param AD_WF_Node_ID 
@@ -181,9 +186,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
-			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
+			.getPO(getAD_WF_Responsible_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Responsible.
 		@param AD_WF_Responsible_ID 
@@ -209,9 +215,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 
@@ -237,9 +244,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WorkflowProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_WorkflowProcessor.Table_Name)
-			.getPO(getAD_WorkflowProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WorkflowProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_WorkflowProcessor.Table_ID)
+			.getPO(getAD_WorkflowProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Processor.
 		@param AD_WorkflowProcessor_ID 
@@ -357,18 +365,18 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** DurationUnit AD_Reference_ID=299 */
 	public static final int DURATIONUNIT_AD_Reference_ID=299;
-	/** Year = Y */
-	public static final String DURATIONUNIT_Year = "Y";
-	/** Month = M */
-	public static final String DURATIONUNIT_Month = "M";
 	/** Day = D */
 	public static final String DURATIONUNIT_Day = "D";
 	/** hour = h */
 	public static final String DURATIONUNIT_Hour = "h";
 	/** minute = m */
 	public static final String DURATIONUNIT_Minute = "m";
+	/** Month = M */
+	public static final String DURATIONUNIT_Month = "M";
 	/** second = s */
 	public static final String DURATIONUNIT_Second = "s";
+	/** Year = Y */
+	public static final String DURATIONUNIT_Year = "Y";
 	/** Set Duration Unit.
 		@param DurationUnit 
 		Unit of Duration
@@ -531,9 +539,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_Name)
-			.getPO(getPP_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
+			.getPO(getPP_Order_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order.
 		@param PP_Order_ID 
@@ -559,9 +568,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_Name)
-			.getPO(getPP_Order_Node_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_ID)
+			.getPO(getPP_Order_Node_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Activity.
 		@param PP_Order_Node_ID 
@@ -755,9 +765,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
 		@param S_Resource_ID 
@@ -909,14 +920,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** WorkflowType AD_Reference_ID=108 */
 	public static final int WORKFLOWTYPE_AD_Reference_ID=108;
-	/** Single Record = S */
-	public static final String WORKFLOWTYPE_SingleRecord = "S";
 	/** Maintain = M */
 	public static final String WORKFLOWTYPE_Maintain = "M";
-	/** Transaction = T */
-	public static final String WORKFLOWTYPE_Transaction = "T";
 	/** Query Only = Q */
 	public static final String WORKFLOWTYPE_QueryOnly = "Q";
+	/** Single Record = S */
+	public static final String WORKFLOWTYPE_SingleRecord = "S";
+	/** Transaction = T */
+	public static final String WORKFLOWTYPE_Transaction = "T";
 	/** Set Workflow Type.
 		@param WorkflowType 
 		Type of Workflow

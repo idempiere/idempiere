@@ -19,18 +19,21 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_TopicType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="B_TopicType")
 public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_B_TopicType (Properties ctx, int B_TopicType_ID, String trxName)
@@ -161,9 +164,10 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	}
 
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
-			.getPO(getM_PriceList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
+			.getPO(getM_PriceList_ID(), get_TrxName());
+	}
 
 	/** Set Price List.
 		@param M_PriceList_ID 
@@ -189,9 +193,10 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -217,9 +222,10 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_ProductMember() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_ProductMember_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_ProductMember_ID(), get_TrxName());
+	}
 
 	/** Set Membership.
 		@param M_ProductMember_ID 

@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for A_FundingMode_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="A_FundingMode_Acct")
 public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_FundingMode_Acct (Properties ctx, int A_FundingMode_Acct_ID, String trxName)
@@ -72,9 +75,10 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
     }
 
 	public I_C_ValidCombination getA_FundingMode_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_FundingMode_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_FundingMode_Acct(), get_TrxName());
+	}
 
 	/** Set Funding Mode Account.
 		@param A_FundingMode_Acct Funding Mode Account	  */
@@ -108,9 +112,10 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	}
 
 	public org.compiere.model.I_A_FundingMode getA_FundingMode() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_FundingMode)MTable.get(getCtx(), org.compiere.model.I_A_FundingMode.Table_Name)
-			.getPO(getA_FundingMode_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_FundingMode)MTable.get(getCtx(), org.compiere.model.I_A_FundingMode.Table_ID)
+			.getPO(getA_FundingMode_ID(), get_TrxName());
+	}
 
 	/** Set Asset Funding Mode.
 		@param A_FundingMode_ID Asset Funding Mode	  */
@@ -133,9 +138,10 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 

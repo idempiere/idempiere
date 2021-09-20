@@ -19,19 +19,22 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Payroll
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="HR_Payroll")
 public class X_HR_Payroll extends PO implements I_HR_Payroll, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_Payroll (Properties ctx, int HR_Payroll_ID, String trxName)
@@ -75,9 +78,10 @@ public class X_HR_Payroll extends PO implements I_HR_Payroll, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -103,9 +107,10 @@ public class X_HR_Payroll extends PO implements I_HR_Payroll, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -148,9 +153,10 @@ public class X_HR_Payroll extends PO implements I_HR_Payroll, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Contract getHR_Contract() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Contract)MTable.get(getCtx(), org.eevolution.model.I_HR_Contract.Table_Name)
-			.getPO(getHR_Contract_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Contract)MTable.get(getCtx(), org.eevolution.model.I_HR_Contract.Table_ID)
+			.getPO(getHR_Contract_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Contract.
 		@param HR_Contract_ID Payroll Contract	  */
@@ -233,14 +239,14 @@ public class X_HR_Payroll extends PO implements I_HR_Payroll, I_Persistent
 
 	/** PaymentRule AD_Reference_ID=214 */
 	public static final int PAYMENTRULE_AD_Reference_ID=214;
-	/** Credit Card = C */
-	public static final String PAYMENTRULE_CreditCard = "C";
-	/** Check = K */
-	public static final String PAYMENTRULE_Check = "K";
 	/** Direct Deposit = A */
 	public static final String PAYMENTRULE_DirectDeposit = "A";
+	/** Credit Card = C */
+	public static final String PAYMENTRULE_CreditCard = "C";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Check = K */
+	public static final String PAYMENTRULE_Check = "K";
 	/** Account = T */
 	public static final String PAYMENTRULE_Account = "T";
 	/** Cash = X */

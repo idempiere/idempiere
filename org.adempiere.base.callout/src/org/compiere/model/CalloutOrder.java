@@ -120,7 +120,7 @@ public class CalloutOrder extends CalloutEngine
 				if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS))
 					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_Force);
 				else if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_Prepay))
-					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_AfterReceipt);
+					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_AfterPayment);
 				else
 					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_Availability);
 				
@@ -396,7 +396,7 @@ public class CalloutOrder extends CalloutEngine
 				if (OrderType.equals(MOrder.DocSubTypeSO_Prepay))
 				{
 					mTab.setValue("InvoiceRule", X_C_Order.INVOICERULE_Immediate);
-					mTab.setValue("DeliveryRule", X_C_Order.DELIVERYRULE_AfterReceipt);
+					mTab.setValue("DeliveryRule", X_C_Order.DELIVERYRULE_AfterPayment);
 				}
 				else if (OrderType.equals(MOrder.DocSubTypeSO_POS))	//  for POS
 					mTab.setValue("PaymentRule", X_C_Order.PAYMENTRULE_Cash);

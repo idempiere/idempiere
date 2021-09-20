@@ -20,19 +20,22 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceSchedule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_InvoiceSchedule")
 public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_InvoiceSchedule (Properties ctx, int C_InvoiceSchedule_ID, String trxName)
@@ -222,12 +225,12 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	public static final int INVOICEFREQUENCY_AD_Reference_ID=168;
 	/** Daily = D */
 	public static final String INVOICEFREQUENCY_Daily = "D";
-	/** Weekly = W */
-	public static final String INVOICEFREQUENCY_Weekly = "W";
 	/** Monthly = M */
 	public static final String INVOICEFREQUENCY_Monthly = "M";
 	/** Twice Monthly = T */
 	public static final String INVOICEFREQUENCY_TwiceMonthly = "T";
+	/** Weekly = W */
+	public static final String INVOICEFREQUENCY_Weekly = "W";
 	/** Set Invoice Frequency.
 		@param InvoiceFrequency 
 		How often invoices will be generated
@@ -248,8 +251,6 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 
 	/** InvoiceWeekDay AD_Reference_ID=167 */
 	public static final int INVOICEWEEKDAY_AD_Reference_ID=167;
-	/** Sunday = 7 */
-	public static final String INVOICEWEEKDAY_Sunday = "7";
 	/** Monday = 1 */
 	public static final String INVOICEWEEKDAY_Monday = "1";
 	/** Tuesday = 2 */
@@ -262,6 +263,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	public static final String INVOICEWEEKDAY_Friday = "5";
 	/** Saturday = 6 */
 	public static final String INVOICEWEEKDAY_Saturday = "6";
+	/** Sunday = 7 */
+	public static final String INVOICEWEEKDAY_Sunday = "7";
 	/** Set Invoice Week Day.
 		@param InvoiceWeekDay 
 		Day to generate invoices
@@ -282,8 +285,6 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 
 	/** InvoiceWeekDayCutoff AD_Reference_ID=167 */
 	public static final int INVOICEWEEKDAYCUTOFF_AD_Reference_ID=167;
-	/** Sunday = 7 */
-	public static final String INVOICEWEEKDAYCUTOFF_Sunday = "7";
 	/** Monday = 1 */
 	public static final String INVOICEWEEKDAYCUTOFF_Monday = "1";
 	/** Tuesday = 2 */
@@ -296,6 +297,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	public static final String INVOICEWEEKDAYCUTOFF_Friday = "5";
 	/** Saturday = 6 */
 	public static final String INVOICEWEEKDAYCUTOFF_Saturday = "6";
+	/** Sunday = 7 */
+	public static final String INVOICEWEEKDAYCUTOFF_Sunday = "7";
 	/** Set Invoice weekday cutoff.
 		@param InvoiceWeekDayCutoff 
 		Last day in the week for shipments to be included

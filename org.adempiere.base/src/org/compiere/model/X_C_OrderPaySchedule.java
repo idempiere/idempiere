@@ -21,19 +21,22 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_OrderPaySchedule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_OrderPaySchedule")
 public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_OrderPaySchedule (Properties ctx, int C_OrderPaySchedule_ID, String trxName)
@@ -81,9 +84,10 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
     }
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -143,9 +147,10 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 	}
 
 	public org.compiere.model.I_C_PaySchedule getC_PaySchedule() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_PaySchedule.Table_Name)
-			.getPO(getC_PaySchedule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_PaySchedule.Table_ID)
+			.getPO(getC_PaySchedule_ID(), get_TrxName());
+	}
 
 	/** Set Payment Schedule.
 		@param C_PaySchedule_ID 

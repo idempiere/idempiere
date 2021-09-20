@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_BP_Customer_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_BP_Customer_Acct")
 public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BP_Customer_Acct (Properties ctx, int C_BP_Customer_Acct_ID, String trxName)
@@ -74,9 +77,10 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -102,9 +106,10 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -144,9 +149,10 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Prepayment_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Prepayment_Acct(), get_TrxName());
+	}
 
 	/** Set Customer Prepayment.
 		@param C_Prepayment_Acct 
@@ -169,9 +175,10 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Receivable_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Receivable_Acct(), get_TrxName());
+	}
 
 	/** Set Customer Receivables.
 		@param C_Receivable_Acct 
@@ -194,9 +201,10 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Receivable_Services_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Receivable_Services_Acct(), get_TrxName());
+	}
 
 	/** Set Receivable Services.
 		@param C_Receivable_Services_Acct 

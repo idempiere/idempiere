@@ -19,17 +19,20 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_BP_ShippingAcct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@IndexSubclasses
+@org.adempiere.base.Model(table="C_BP_ShippingAcct")
 public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BP_ShippingAcct (Properties ctx, int C_BP_ShippingAcct_ID, String trxName)
@@ -71,9 +74,10 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -99,9 +103,10 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
 
 	/** Set Partner Location.
 		@param C_BPartner_Location_ID 
@@ -175,9 +180,10 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 	}
 
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_Name)
-			.getPO(getM_ShippingProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)
+			.getPO(getM_ShippingProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Shipping Processor.
 		@param M_ShippingProcessor_ID Shipping Processor	  */
