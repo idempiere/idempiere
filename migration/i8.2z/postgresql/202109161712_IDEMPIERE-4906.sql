@@ -8,7 +8,7 @@ UPDATE AD_Tab SET DisplayLogic=NULL,Updated=TO_TIMESTAMP('2021-09-16 17:07:40','
 ;
 
 -- Sep 16, 2021, 5:10:34 PM CEST
-INSERT INTO PA_DashboardContent (Name,AD_Org_ID,Created,CreatedBy,UpdatedBy,IsActive,Line,Updated,AD_Client_ID,PA_DashboardContent_ID,ColumnNo,IsCollapsible,GoalDisplay,PA_DashboardContent_UU,IsShowInDashboard,IsEmbedReportContent,IsCollapsedByDefault,AD_User_ID,AD_Role_ID,IsShowinLogin,HTML) VALUES ('Donate',0,TO_TIMESTAMP('2021-09-16 17:10:33','YYYY-MM-DD HH24:MI:SS'),100,100,'Y',0,TO_TIMESTAMP('2021-09-16 17:10:33','YYYY-MM-DD HH24:MI:SS'),0,200005,1,'N','T','961920e4-bf1d-492a-98a7-783c6f7c1d75','Y','N','N',0,0,'Y','<iframe src="https://www.idempiere.org/short-donate/" style="border-top-width: 0px;border-bottom-width: 0px;border-right-width: 0px;border-left-width: 0px;width: 100%;height: 450px;"></iframe>')
+INSERT INTO PA_DashboardContent (Name,AD_Org_ID,Created,CreatedBy,UpdatedBy,IsActive,Line,Updated,AD_Client_ID,PA_DashboardContent_ID,ColumnNo,IsCollapsible,GoalDisplay,PA_DashboardContent_UU,IsShowInDashboard,IsEmbedReportContent,IsCollapsedByDefault,AD_User_ID,AD_Role_ID,IsShowinLogin,HTML) VALUES ('Donate',0,TO_TIMESTAMP('2021-09-16 17:10:33','YYYY-MM-DD HH24:MI:SS'),100,100,'Y',0,TO_TIMESTAMP('2021-09-16 17:10:33','YYYY-MM-DD HH24:MI:SS'),0,200005,1,'Y','T','961920e4-bf1d-492a-98a7-783c6f7c1d75','Y','N','N',0,0,'Y','<iframe src="https://www.idempiere.org/short-donate/" style="border-top-width: 0px;border-bottom-width: 0px;border-right-width: 0px;border-left-width: 0px;width: 100%;height: 450px;"></iframe>')
 ;
 
 -- Sep 16, 2021, 5:10:40 PM CEST
