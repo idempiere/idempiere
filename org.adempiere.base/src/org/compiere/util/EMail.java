@@ -46,7 +46,9 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
+import org.compiere.model.MSMTP;
 import org.compiere.model.MSysConfig;
 
 import com.sun.mail.smtp.SMTPMessage;
@@ -238,12 +240,26 @@ public final class EMail implements Serializable
 	/**	Logger							*/
 	protected transient static CLogger		log = CLogger.getCLogger (EMail.class);
 
+	/** Set it to true if you need to use the SMTP defined at tenant level - otherwise will try to use a SMTP from AD_SMTP table */
+	private boolean m_forceUseTenantSmtp = false; 
+
 	/**
 	 *	Send Mail direct
 	 *	@return OK or error message
 	 */
 	public String send ()
 	{
+		if (!m_forceUseTenantSmtp && getFrom() != null) {
+			MSMTP smtp = MSMTP.get(m_ctx, Env.getAD_Client_ID(m_ctx), getFrom().getAddress());
+			if (smtp != null) {
+				setSmtpHost(smtp.getSMTPHost());
+				setSmtpPort(smtp.getSMTPPort());
+				setSecureSmtp(smtp.isSecureSMTP());
+				createAuthenticator(smtp.getRequestUser(), smtp.getRequestUserPW());
+				if (log.isLoggable(Level.FINE)) log.fine("sending email using from " + getFrom().getAddress() + " using " + smtp.toString());
+			}
+		}
+
 		if (log.isLoggable(Level.INFO)){
 			log.info("(" + m_smtpHost + ") " + m_from + " -> " + m_to);
 			log.info("(m_auth) " + m_auth);
@@ -272,6 +288,13 @@ public final class EMail implements Serializable
 			props.put("mail.debug", "true");
 		//
 
+		MAuthorizationAccount authAccount = null;
+		boolean isOAuth2 = false;
+		if (m_auth != null) {
+			authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
+			isOAuth2 = (authAccount != null);
+		}
+
 		Session session = null;
 		try
 		{
@@ -289,12 +312,13 @@ public final class EMail implements Serializable
 			{
 				props.put("mail.smtp.starttls.enable", "true");
 			}
-			if (m_auth != null && m_auth.isOAuth2()) {
+			if (isOAuth2) {
 				props.put("mail.smtp.auth.mechanisms", "XOAUTH2");
 			    props.put("mail.smtp.starttls.required", "true");
 			    props.put("mail.smtp.auth.login.disable","true");
 			    props.put("mail.smtp.auth.plain.disable","true");
 			    props.put("mail.debug.auth", "true");
+				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.refreshAndGetAccessToken());
 			}
 			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());
@@ -588,13 +612,14 @@ public final class EMail implements Serializable
 	 */
 	public EMailAuthenticator createAuthenticator (String username, String password)
 	{
-		if (username == null)
+		if (username == null || password == null)
 		{
-			log.warning("Ignored - username null");
+			log.fine("Ignored - " +  username + "/" + password);
 			m_auth = null;
 		}
 		else
 		{
+		//	log.fine("setEMailUser: " + username + "/" + password);
 			m_auth = new EMailAuthenticator (username, password);
 		}
 		return m_auth;
@@ -1258,4 +1283,7 @@ public final class EMail implements Serializable
 		return ia;
 	}
 
+	public void setForTenantSmtp(boolean forceTenantSmtp) {
+		m_forceUseTenantSmtp = forceTenantSmtp;	
+	}
 }	//	EMail
