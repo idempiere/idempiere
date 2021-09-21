@@ -308,5 +308,5 @@
 	content: "\f14d";
 }
 .z-icon-Translate:before {
-	content: "\f11e";
+	content: "\f1ab";
 }
