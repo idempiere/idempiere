@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ManageImageCache;
 import org.compiere.model.MImage;
 import org.compiere.model.MInfoWindow;
@@ -99,9 +100,14 @@ public class Tab extends org.zkoss.zul.Tab
 		
 		public void decorate (LabelImageElement comp){
 			if (imageIntenalUrl != null) {
-				Image image = ManageImageCache.instance().getImage(imageIntenalUrl);
-				if (image != null)
-					comp.setImageContent(image);
+				if (ThemeManager.isUseFontIconForImage()) {
+					String iconClass = imageIntenalUrl.getFile().replace("16.png", "").replaceAll(".*\\/", "");
+					comp.setIconSclass("z-icon-" + iconClass);
+				} else {
+					Image image = ManageImageCache.instance().getImage(imageIntenalUrl);
+					if (image != null)
+						comp.setImageContent(image);
+				}
 			} else if (imageKey != null){
 				Image ico = ManageImageCache.instance().getImage(imageKey);
 				if (ico != null)
