@@ -19,13 +19,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Type
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="A_Asset_Type")
 public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent 
 {

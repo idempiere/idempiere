@@ -19,13 +19,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Attribute
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="M_Attribute")
 public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent 
 {

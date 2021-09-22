@@ -19,13 +19,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LabelPrinter
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="AD_LabelPrinter")
 public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persistent 
 {

@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for M_PromotionGroupLine
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="M_PromotionGroupLine")
 public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine, I_Persistent 
 {

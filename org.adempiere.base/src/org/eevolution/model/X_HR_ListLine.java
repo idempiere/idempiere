@@ -20,7 +20,6 @@ package org.eevolution.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -28,7 +27,6 @@ import org.compiere.util.KeyNamePair;
 /** Generated Model for HR_ListLine
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="HR_ListLine")
 public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent 
 {

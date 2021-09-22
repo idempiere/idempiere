@@ -19,13 +19,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintGraph
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="AD_PrintGraph")
 public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent 
 {

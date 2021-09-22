@@ -20,14 +20,12 @@ package org.eevolution.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for PP_WF_Node_Product
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="PP_WF_Node_Product")
 public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_Persistent 
 {

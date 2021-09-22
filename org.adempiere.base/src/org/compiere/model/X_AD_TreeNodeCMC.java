@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_TreeNodeCMC
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="AD_TreeNodeCMC")
 public class X_AD_TreeNodeCMC extends PO implements I_AD_TreeNodeCMC, I_Persistent 
 {

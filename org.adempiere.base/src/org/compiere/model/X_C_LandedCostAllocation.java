@@ -20,14 +20,12 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCostAllocation
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="C_LandedCostAllocation")
 public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAllocation, I_Persistent 
 {

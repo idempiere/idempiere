@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for ASP_Workflow
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="ASP_Workflow")
 public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent 
 {

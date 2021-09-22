@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_TaxProviderCfg
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="C_TaxProviderCfg")
 public class X_C_TaxProviderCfg extends PO implements I_C_TaxProviderCfg, I_Persistent 
 {

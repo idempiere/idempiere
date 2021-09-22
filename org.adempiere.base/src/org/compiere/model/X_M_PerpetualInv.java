@@ -20,13 +20,11 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PerpetualInv
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="M_PerpetualInv")
 public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persistent 
 {

@@ -20,13 +20,11 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for M_ShipperPackaging
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="M_ShipperPackaging")
 public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_Persistent 
 {

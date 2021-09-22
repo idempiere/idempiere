@@ -19,13 +19,11 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 
 /** Generated Model for T_MRP_CRP
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="T_MRP_CRP")
 public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent 
 {

@@ -20,12 +20,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for U_POSTerminal
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="U_POSTerminal")
 public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent 
 {

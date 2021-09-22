@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for AD_User_OrgAccess
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="AD_User_OrgAccess")
 public class X_AD_User_OrgAccess extends PO implements I_AD_User_OrgAccess, I_Persistent 
 {

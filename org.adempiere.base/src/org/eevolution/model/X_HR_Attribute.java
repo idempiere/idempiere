@@ -21,14 +21,12 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for HR_Attribute
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="HR_Attribute")
 public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent 
 {

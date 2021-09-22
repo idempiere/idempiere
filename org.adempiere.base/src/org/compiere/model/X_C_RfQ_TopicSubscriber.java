@@ -20,13 +20,11 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_TopicSubscriber
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="C_RfQ_TopicSubscriber")
 public class X_C_RfQ_TopicSubscriber extends PO implements I_C_RfQ_TopicSubscriber, I_Persistent 
 {

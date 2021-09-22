@@ -20,14 +20,12 @@ package org.eevolution.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for T_BOMLine
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="T_BOMLine")
 public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent 
 {
