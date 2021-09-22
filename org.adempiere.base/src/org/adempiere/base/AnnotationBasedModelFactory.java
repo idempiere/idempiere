@@ -80,14 +80,31 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 		long start = System.currentTimeMillis();
 		ClassLoader classLoader = context.getBundleContext().getBundle().adapt(BundleWiring.class).getClassLoader();
 
-		try (ScanResult scanResult =
-		        initClassGraph(new ClassGraph())
-		            .enableAnnotationInfo()
-		            .overrideClassLoaders(classLoader)
-		            .disableJarScanning()
-		            .disableNestedJarScanning()
-		            .disableModuleScanning()
-		            .scan())
+		ClassGraph graph = new ClassGraph()
+				.enableAnnotationInfo()
+				.overrideClassLoaders(classLoader)
+				.disableJarScanning()
+				.disableNestedJarScanning()
+				.disableModuleScanning();
+
+		// narrow search to a list of packages
+		if(isAtCore())
+			graph.acceptPackagesNonRecursive(CORE_PACKAGES);
+		else
+		{
+			String[] packages = getPackages();
+			if(packages==null || packages.length==0)
+				s_log.warning(this.getClass().getSimpleName() + " should override the getPackages method");
+			else
+				graph.acceptPackagesNonRecursive(packages);
+		}
+
+		// narrow search to class names matching a set of patterns
+		String[] acceptClasses = getAcceptClassesPatterns();
+		if(acceptClasses!=null && acceptClasses.length > 0)
+			graph.acceptClasses(acceptClasses);
+
+		try (ScanResult scanResult = graph.scan())
 		{
 
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Model.class)) {
@@ -140,20 +157,6 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 	 */
 	private boolean isAtCore() {
 		return getClass().equals(AnnotationBasedModelFactory.class);
-	}
-
-	private ClassGraph initClassGraph(ClassGraph graph) {
-		// narrow search to a list of packages
-		String[] packages = isAtCore() ? CORE_PACKAGES : getPackages();
-		if(packages!=null && packages.length>0)
-			graph.acceptPackagesNonRecursive(packages);
-
-		// narrow search to class names matching a set of patterns
-		String[] acceptClasses = getAcceptClassesPatterns();
-		if(acceptClasses!=null && acceptClasses.length > 0)
-			graph.acceptClasses(acceptClasses);
-
-		return graph;
 	}
 
 }
