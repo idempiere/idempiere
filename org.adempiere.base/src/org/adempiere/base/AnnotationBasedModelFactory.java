@@ -12,8 +12,8 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
@@ -42,7 +42,7 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 	/**
 	 * Table name to class cache
 	 */
-	private Map<String,Class<?>> classCache = new ConcurrentHashMap<>();
+	private Map<String,Class<?>> classCache = new HashMap<>();
 
 	private final static CLogger s_log = CLogger.getCLogger(AnnotationBasedModelFactory.class);
 
