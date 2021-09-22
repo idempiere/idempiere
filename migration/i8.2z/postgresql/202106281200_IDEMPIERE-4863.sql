@@ -15,7 +15,7 @@ CREATE TABLE adempiere.AD_Wlistbox_Customization
     UpdatedBy numeric(10,0) NOT NULL,
     AD_Wlistbox_Customization_UU character varying(36) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
     CONSTRAINT AD_Wlistbox_Customization_key PRIMARY KEY (AD_Wlistbox_Customization_ID),
-    CONSTRAINT AD_Wlistbox_Customization_UU UNIQUE (AD_Client_ID,AD_User_ID,WlistboxName),
+    CONSTRAINT AD_WlistboxName_Customization UNIQUE (AD_Client_ID,AD_User_ID,WlistboxName),
     CONSTRAINT AD_User_AD_WlistboxCustomization FOREIGN KEY (AD_User_ID)
         REFERENCES adempiere.AD_User (AD_User_ID) MATCH SIMPLE
         ON UPDATE NO ACTION
