@@ -19,6 +19,7 @@ package org.adempiere.model;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.Query;
@@ -69,17 +70,17 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	}
 
 
-	private static ArrayList<String> cleanCustomization (String[] CustomizationNew)
+	private static List<String> cleanCustomization (String[] CustomizationNew)
 	{
 		for (int i = 0; i < CustomizationNew.length; i++ )
 		{
 			CustomizationNew[i] = CustomizationNew[i].substring(0, CustomizationNew[i].indexOf("=") );
 		}
-		return new ArrayList<String>(Arrays.asList(CustomizationNew)); 
+		return Arrays.asList(CustomizationNew); 
 	}	
 
 	private static int columnIndex(String 				searchColumnName, 
-								   ArrayList<String> 	columnList)
+								   List<String> 	    columnList)
 	{
 		for (int i = 0; i < columnList.size(); i++)
 		{
@@ -112,13 +113,13 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 		if (WlistBoxCust != null && WlistBoxCust.getAD_Wlistbox_Customization_ID()> 0)
 		{
 			String[] custOrg = WlistBoxCust.getCustom().split(",");
-			ArrayList<String> newColumnList = new ArrayList<>( Arrays.asList(Custom.trim().split(",")) );
-			ArrayList<String> orgColumnList  = new ArrayList<>( Arrays.asList(WlistBoxCust.getCustom().trim().split(",")) );
+			List<String> newColumnList =  Arrays.asList(Custom.trim().split(","));
+			List<String> orgColumnList  = Arrays.asList(WlistBoxCust.getCustom().trim().split(",")) ;
 			//only run through this if the with has changed for a column
 			if (!orgColumnList.equals(newColumnList))
 			{
-				ArrayList<String> columnSearch = cleanCustomization (custOrg);
-				ArrayList<String> addColumn = new ArrayList<String>();
+				List<String> columnSearch = cleanCustomization (custOrg);
+				List<String> addColumn = new ArrayList<String>();
 				
 				for (int i = 0; i < newColumnList.size(); i++)
 				{
