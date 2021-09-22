@@ -73,7 +73,7 @@ public class JavaShellScriptElementHandler extends AbstractElementHandler implem
 			throw new AdempiereException("Script engine not supported, just groovy and beanshell");
 		}
 		ScriptEngine engine = Core.getScriptEngine(engineName);
-		engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", ctx);
+		engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", ctx.ctx);
 		engine.put(MRule.ARGUMENTS_PREFIX + "Trx", ctx.trx);
 		engine.put(MRule.ARGUMENTS_PREFIX + "TrxName", ctx.trx.getTrxName());
 		engine.put(MRule.ARGUMENTS_PREFIX + "AD_Client_ID", Env.getAD_Client_ID(ctx.ctx));

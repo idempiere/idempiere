@@ -4,10 +4,6 @@ INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,
 ;
 
 -- Sep 17, 2021, 6:07:23 PM CEST
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200520,'Java Class',50004,'JCL',0,0,'Y',TO_TIMESTAMP('2021-09-17 18:07:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-09-17 18:07:22','YYYY-MM-DD HH24:MI:SS'),100,'D','c4173f8f-64b9-4487-8836-cd3ee95c9f73')
-;
-
--- Sep 17, 2021, 6:07:23 PM CEST
 INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200521,'Shell Script',50004,'SH',0,0,'Y',TO_TIMESTAMP('2021-09-17 18:07:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-09-17 18:07:22','YYYY-MM-DD HH24:MI:SS'),100,'D','48522ab7-f47c-4ee9-a6b3-21fb762b3e1a')
 ;
 
@@ -24,7 +20,7 @@ ALTER TABLE AD_Package_Exp_Detail ADD COLUMN ExecCode TEXT DEFAULT NULL
 ;
 
 -- Sep 17, 2021, 6:29:54 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLogic,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206750,'Execution Code',50006,214590,'Y','@Type@=JSH | @Type@=JCL | @Type@=SH',0,340,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2021-09-17 18:29:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-09-17 18:29:53','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f0e80eea-0c09-46a6-b69a-a0a796448e84','Y',340,1,1,1,'N','N','N','N')
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLogic,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (206750,'Execution Code',50006,214590,'Y','@Type@=JSH | @Type@=SH',0,340,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2021-09-17 18:29:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-09-17 18:29:53','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f0e80eea-0c09-46a6-b69a-a0a796448e84','Y',340,1,1,1,'N','N','N','N')
 ;
 
 -- Sep 17, 2021, 6:30:23 PM CEST

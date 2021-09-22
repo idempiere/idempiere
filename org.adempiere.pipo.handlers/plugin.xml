@@ -236,10 +236,6 @@
             class="org.adempiere.pipo2.handler.JavaShellScriptElementHandler"
             id="JavaShellScript">
       </handler>
-      <handler
-            class="org.adempiere.pipo2.handler.JavaClassElementHandler"
-            id="JavaClass">
-      </handler>
    </extension>
 
 </plugin>
