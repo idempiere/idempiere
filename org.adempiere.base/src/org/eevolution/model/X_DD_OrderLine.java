@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -29,7 +28,6 @@ import org.compiere.util.KeyNamePair;
 /** Generated Model for DD_OrderLine
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="DD_OrderLine")
 public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent 
 {

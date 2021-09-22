@@ -20,12 +20,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_OrgAssignment
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="C_OrgAssignment")
 public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persistent 
 {

@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for IMP_Processor_Type
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="IMP_Processor_Type")
 public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_Persistent 
 {

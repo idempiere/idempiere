@@ -12,13 +12,21 @@
  *****************************************************************************/
 package org.adempiere.base;
 
-import org.atteo.classindex.ClassIndex;
-import org.compiere.util.CCache;
-import org.osgi.framework.Bundle;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
+import org.compiere.util.CLogger;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+
+import io.github.classgraph.AnnotationInfo;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ClassInfoList;
+import io.github.classgraph.ScanResult;
 
 /**
  * Translates table names into model classes having the {@link Model} annotation. Relies on
@@ -26,56 +34,129 @@ import org.osgi.service.component.annotations.Component;
  * This factory is designed to have a service rank higher than {@link DefaultModelFactory}, as class
  * discovery using SPI is preferred over reflection-based methods.
  * @author Saulo Gil
+ * @author Heng Sin
  */
-@Component(immediate = true, service = IModelFactory.class, property = {"service.ranking:Integer=-1"})
+@Component(immediate = true, service = IModelFactory.class, property = {"service.ranking:Integer=0"})
 public class AnnotationBasedModelFactory extends AbstractModelFactory implements IModelFactory
 {
+	/**
+	 * Table name to class cache
+	 */
+	private Map<String,Class<?>> classCache = new HashMap<>();
 
-	private Bundle usingBundle;
+	private final static CLogger s_log = CLogger.getCLogger(AnnotationBasedModelFactory.class);
 
-	private CCache<String,Class<?>> classCache = new CCache<String,Class<?>>(null, "ABMF", 100, 120, false, 2000);
-
-	@Activate
-	void activate(ComponentContext context)
-	{
-		this.usingBundle = context.getUsingBundle();
+	/**
+	 * Packages to scan for Core X* classes
+	 */
+	private final static String[] CORE_PACKAGES = new String[] {
+		"org.compiere.model",  "compiere.model", "adempiere.model", "org.adempiere.model",
+		"org.compiere.wf", "org.compiere.print", "org.compiere.impexp",
+		"org.eevolution.model"
+	};
+	
+	/**
+	 * Extension point. Subclasses might override this method in order to have faster
+	 * model class scanning.
+	 * @return array of packages to be accepted during class scanning
+	 * @see ClassGraph#acceptPackagesNonRecursive(String...)
+	 */
+	protected String[] getPackages() {
+		return new String[]{};
 	}
 
-	@Override
-	public Class<?> getClass(String tableName) 
-	{
-		// search first into cache
-		Class<?> candidate = classCache.get(tableName);
-		if (candidate != null)
+	/**
+	 * Extension point. Provide a list of patterns to match against class names.
+	 * @return array of strings containing patterns
+	 * @see ClassGraph#acceptClasses(String...)
+	 */
+	protected String[] getAcceptClassesPatterns() {
+		String[] patterns = new String[] {"*.X_*"};
+		return patterns;
+	}
+	
+	@Activate
+	public void activate(ComponentContext context) throws ClassNotFoundException {
+		long start = System.currentTimeMillis();
+		ClassLoader classLoader = context.getBundleContext().getBundle().adapt(BundleWiring.class).getClassLoader();
+
+		ClassGraph graph = new ClassGraph()
+				.enableAnnotationInfo()
+				.overrideClassLoaders(classLoader)
+				.disableJarScanning()
+				.disableNestedJarScanning()
+				.disableModuleScanning();
+
+		// narrow search to a list of packages
+		if(isAtCore())
+			graph.acceptPackagesNonRecursive(CORE_PACKAGES);
+		else
 		{
-			// Object.class indicate no generated PO class for tableName
-			if (candidate.equals(Object.class))
-				return null;
+			String[] packages = getPackages();
+			if(packages==null || packages.length==0)
+				s_log.warning(this.getClass().getSimpleName() + " should override the getPackages method");
 			else
-				return candidate;
+				graph.acceptPackagesNonRecursive(packages);
 		}
 
-		// scan model annotations
-		BundleWiring wiring = usingBundle.adapt(BundleWiring.class);
-		for(Class<?> xClass : ClassIndex.getAnnotated(Model.class, wiring.getClassLoader()))
+		// narrow search to class names matching a set of patterns
+		String[] acceptClasses = getAcceptClassesPatterns();
+		if(acceptClasses!=null && acceptClasses.length > 0)
+			graph.acceptClasses(acceptClasses);
+
+		try (ScanResult scanResult = graph.scan())
 		{
-			Model annotation = xClass.getAnnotation(Model.class);
-			if(annotation.table().equalsIgnoreCase(tableName))
-			{
-				candidate = xClass;
-				for(Class<?> mClass : ClassIndex.getSubclasses(xClass, wiring.getClassLoader())) {
-					if(!mClass.equals(candidate) && candidate.isAssignableFrom(mClass))
-						// favoring candidates higher in the class hierarchy
-						candidate = mClass;
-				}
-				break;
-			}
+
+		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Model.class)) {
+		        String className = classInfo.getName();
+		        AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(Model.class);
+		        String tableName = (String) annotationInfo.getParameterValues().getValue("table");
+
+		        Class<?> existing = classCache.get(tableName);
+
+		        // try to detect M classes only if we found an X class
+		        if(existing == null && className.substring(className.lastIndexOf(".")).startsWith(".X")) {
+			        ClassInfoList subclasses = classInfo.getSubclasses().directOnly();
+			        while(!subclasses.isEmpty()) {
+			        	className = subclasses.get(0).getName();
+			        	subclasses = subclasses.get(0).getSubclasses().directOnly();
+			        }
+		        }
+		        
+		        if(existing==null) {
+		        	classCache.put(tableName, classLoader.loadClass(className));
+		        } else if (className.substring(className.lastIndexOf(".")).startsWith(".M")) {
+		        	if(existing.getSimpleName().startsWith("X_")) {
+		        		classCache.put(tableName, classLoader.loadClass(className));
+		        	} else {
+		        		Class<?> found = classLoader.loadClass(className);
+			        	// replace existing entries only if found class has a lower hierarchy
+			        	if(existing.isAssignableFrom(found))
+			        		classCache.put(tableName, classLoader.loadClass(className));
+		        	}
+		        }
+		    }
 		}
+		long end = System.currentTimeMillis();
+		if (s_log.isLoggable(Level.INFO))
+			s_log.info(this.getClass().getSimpleName() + " loaded "+classCache.size() +" classes in "
+					+((end-start)/1000f) + "s");
+	}
 
-		//Object.class to indicate no PO class for tableName
-		classCache.put(tableName, candidate == null ? Object.class : candidate);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Class<?> getClass(String tableName) {
+		return classCache.get(tableName);
+	}
 
-		return candidate;
+	/**
+	 * Tells whether we're executing code from a subclass of {@link AnnotationBasedModelFactory}.
+	 * @return
+	 */
+	private boolean isAtCore() {
+		return getClass().equals(AnnotationBasedModelFactory.class);
 	}
 
 }
