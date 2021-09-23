@@ -93,11 +93,34 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID,
     		String action) throws SAXException{
-		String result = success == 1 ? "Success" : "Failure";
+    	logImportDetail (ctx, detail, success, objectName, objectID, action, null, null);
+    }
+
+	/**
+     *	Write results to log and records in history table
+     *
+     *		@param ctx
+     *      @param success
+     *      @param detail
+     *      @param objectName
+     *      @param objectID
+     *      @param action
+     *      @param execCode
+     *      @param result
+     * 		@throws SAXException
+     *
+     */
+    public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID,
+    		String action, String execCode, String result) throws SAXException{
+		String msgSuccess = success == 1 ? "Success" : "Failure";
 
 		detail.setName(objectName);
 		detail.setAction(action);
-		detail.setSuccess(result);
+		detail.setSuccess(msgSuccess);
+		if (execCode != null)
+			detail.setExecCode(execCode);
+		if (result != null)
+			detail.setResult(result);
 		if (objectID >= 0)
 			detail.setRecord_ID(objectID);
 		ctx.packIn.addImportDetail(detail);

@@ -51,13 +51,13 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class ScriptJSR223ElementHandler extends AbstractElementHandler implements ElementHandler {
 
-	private static final String JAVA_SHELL_SCRIPT = "ScriptJSR223";
+	private static final String SCRIPT_JSR223 = "ScriptJSR223";
 
 	@Override
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
 		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, "", 0);
 
-		String script = getStringValue(element, JAVA_SHELL_SCRIPT);
+		String script = getStringValue(element, SCRIPT_JSR223);
 
 		String engineName = "beanshell";  // the default
 		if (script.contains("@script:")) {
@@ -83,14 +83,14 @@ public class ScriptJSR223ElementHandler extends AbstractElementHandler implement
 		try {
 			msg = engine.eval(script).toString();
 		} catch (ScriptException e) {
-			ctx.packIn.getNotifier().addFailureLine("Java Shell Script failed, error (" + e.getLocalizedMessage() + "):");
-			logImportDetail(ctx, impDetail, 0, JAVA_SHELL_SCRIPT, -1, "Execute");
+			ctx.packIn.getNotifier().addFailureLine("Script JSR223 failed, error (" + e.getLocalizedMessage() + "):");
+			logImportDetail(ctx, impDetail, 0, SCRIPT_JSR223, -1, "Execute", script, e.getLocalizedMessage() + "\n -> " + msg);
 			ctx.packIn.getNotifier().addFailureLine("-> " + msg);
-			log.log(Level.SEVERE, JAVA_SHELL_SCRIPT, e);
+			log.log(Level.SEVERE, SCRIPT_JSR223, e);
 			throw new AdempiereException(e);
 		}
 
-		logImportDetail(ctx, impDetail, 1, JAVA_SHELL_SCRIPT, 0, "Execute");
+		logImportDetail(ctx, impDetail, 1, SCRIPT_JSR223, 0, "Execute", script, msg);
 		ctx.packIn.getNotifier().addSuccessLine("out -> " + msg);
 	}
 
@@ -102,18 +102,18 @@ public class ScriptJSR223ElementHandler extends AbstractElementHandler implement
 		String execCode = Env.getContext(ctx.ctx, MPackageExpDetail.COLUMNNAME_ExecCode);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "custom");
-		document.startElement("","",JAVA_SHELL_SCRIPT,atts);
+		document.startElement("","",SCRIPT_JSR223,atts);
 		createShellScriptBinding(document, execCode);
-		document.endElement("","",JAVA_SHELL_SCRIPT);
+		document.endElement("","",SCRIPT_JSR223);
 	}
 
 	private void createShellScriptBinding( TransformerHandler document, String execCode) throws SAXException {
-		document.startElement("","",JAVA_SHELL_SCRIPT, new AttributesImpl());
+		document.startElement("","",SCRIPT_JSR223, new AttributesImpl());
 		char [] contents = execCode.toCharArray();
 		document.startCDATA();
 		document.characters(contents,0,contents.length);
 		document.endCDATA();
-		document.endElement("","",JAVA_SHELL_SCRIPT);
+		document.endElement("","",SCRIPT_JSR223);
 	}
 
 	@Override

@@ -91,7 +91,7 @@ public class ShellScriptElementHandler extends AbstractElementHandler implements
 		}
 		catch (IOException | InterruptedException e) {
 			ctx.packIn.getNotifier().addFailureLine("Shell Script failed, error (" + e.getLocalizedMessage() + "):");
-			logImportDetail(ctx, impDetail, 0, SHELL_SCRIPT, exitCode, "Execute");
+			logImportDetail(ctx, impDetail, 0, SHELL_SCRIPT, exitCode, "Execute", script, e.getLocalizedMessage() + "\nout -> " + out.toString() + "\nerr -> " + err.toString());
 			if (out.length() > 0) ctx.packIn.getNotifier().addFailureLine("out -> " + out.toString());
 			if (err.length() > 0) ctx.packIn.getNotifier().addFailureLine("err -> " + err.toString());
 			log.log(Level.SEVERE, SHELL_SCRIPT, e);
@@ -100,12 +100,12 @@ public class ShellScriptElementHandler extends AbstractElementHandler implements
 		if (out.length() > 0 && log.isLoggable(Level.INFO)) log.info("Executed Shell Script with stdout: " + out.toString());
 		if (err.length() > 0 &&  log.isLoggable(Level.WARNING)) log.warning("Executed Shell Script with stderr: " + err.toString());
 		if (exitCode != 0) {
-			logImportDetail(ctx, impDetail, 0, SHELL_SCRIPT, exitCode, "Execute");
+			logImportDetail(ctx, impDetail, 0, SHELL_SCRIPT, exitCode, "Execute", script, "exitCode -> " + exitCode + "\nout -> " + out.toString() + "\nerr -> " + err.toString());
 			if (out.length() > 0) ctx.packIn.getNotifier().addFailureLine("out -> " + out.toString());
 			if (err.length() > 0) ctx.packIn.getNotifier().addFailureLine("err -> " + err.toString());
 			throw new AdempiereException("Failed execution of shell script");
 		}
-		logImportDetail(ctx, impDetail, 1, SHELL_SCRIPT, exitCode, "Execute");
+		logImportDetail(ctx, impDetail, 1, SHELL_SCRIPT, exitCode, "Execute", script, "exitCode -> " + exitCode + "\nout -> " + out.toString() + "\nerr -> " + err.toString());
 		if (out.length() > 0) ctx.packIn.getNotifier().addSuccessLine("out -> " + out.toString());
 		if (err.length() > 0) ctx.packIn.getNotifier().addSuccessLine("err -> " + err.toString());
 	}
