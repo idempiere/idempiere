@@ -624,7 +624,7 @@ public class ModelClassGenerator
 			.append(AD_Reference_ID);
 		StringBuilder statement = new StringBuilder();
 		//
-		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? ORDER BY Value";
+		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? AND IsActive='Y' ORDER BY Value";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
