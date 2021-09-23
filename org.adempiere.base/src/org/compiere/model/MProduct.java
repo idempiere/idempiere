@@ -456,7 +456,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public boolean setResource (MResourceType parent)
 	{
 		boolean changed = false;
-		if (PRODUCTTYPE_Resource.equals(getProductType()))
+		if (!PRODUCTTYPE_Resource.equals(getProductType()))
 		{
 			setProductType(PRODUCTTYPE_Resource);
 			changed = true;
