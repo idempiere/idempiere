@@ -71,7 +71,7 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 	 * @see ClassGraph#acceptClasses(String...)
 	 */
 	protected String[] getAcceptClassesPatterns() {
-		String[] patterns = new String[] {"*.X_*"};
+		String[] patterns = new String[] {"*.X_*","*.M*"};
 		return patterns;
 	}
 	
@@ -83,26 +83,33 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 		ClassGraph graph = new ClassGraph()
 				.enableAnnotationInfo()
 				.overrideClassLoaders(classLoader)
-				.disableJarScanning()
 				.disableNestedJarScanning()
+				.rejectJars(getRejectJars())
 				.disableModuleScanning();
 
 		// narrow search to a list of packages
+		String[] packages = null;
 		if(isAtCore())
-			graph.acceptPackagesNonRecursive(CORE_PACKAGES);
+			packages = CORE_PACKAGES;
 		else
 		{
-			String[] packages = getPackages();
+			packages = getPackages();
 			if(packages==null || packages.length==0)
-				s_log.warning(this.getClass().getSimpleName() + " should override the getPackages method");
-			else
-				graph.acceptPackagesNonRecursive(packages);
+				s_log.warning(this.getClass().getSimpleName() + " should override the getPackages method");				
 		}
 
-		// narrow search to class names matching a set of patterns
-		String[] acceptClasses = getAcceptClassesPatterns();
-		if(acceptClasses!=null && acceptClasses.length > 0)
-			graph.acceptClasses(acceptClasses);
+		//acceptClasses has no effect when acceptPackagesNonRecursive is use
+		if (packages != null && packages.length > 0)
+		{
+			graph.acceptPackagesNonRecursive(packages);
+		}
+		else
+		{
+			// narrow search to class names matching a set of patterns
+			String[] acceptClasses = getAcceptClassesPatterns();
+			if(acceptClasses!=null && acceptClasses.length > 0)
+				graph.acceptClasses(acceptClasses);
+		}
 
 		try (ScanResult scanResult = graph.scan())
 		{
@@ -141,6 +148,29 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 		if (s_log.isLoggable(Level.INFO))
 			s_log.info(this.getClass().getSimpleName() + " loaded "+classCache.size() +" classes in "
 					+((end-start)/1000f) + "s");
+	}
+
+	/**
+	 * Skip scanning some well known jars
+	 * @return list of jar names
+	 */
+	protected String[] getRejectJars() {
+		return new String[] {
+				"ant-*.jar", "commons-*.jar",
+				"javax.*.jar", "jakarta.*.jar",
+				"com.microsoft.*.jar",
+				"com.sun.*.jar",
+				"com.google.*.jar", "google-*.jar",
+				"com.fasterxml.*.jar", "jackson-*.jar",
+				"groovy*.jar",
+				"org.apache.*.jar",
+				"org.eclipse.*.jar", "jetty.*.jar",
+				"org.glassfish.*.jar",
+				"org.junit.*.jar",
+				"org.w3c.*.jar",
+				"org.springframework.*.jar",
+				"wrapped.*.jar"				
+		};
 	}
 
 	/**
