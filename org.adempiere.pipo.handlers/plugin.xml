@@ -233,8 +233,8 @@
             id="ShellScript">
       </handler>
       <handler
-            class="org.adempiere.pipo2.handler.JavaShellScriptElementHandler"
-            id="JavaShellScript">
+            class="org.adempiere.pipo2.handler.ScriptJSR223ElementHandler"
+            id="ScriptJSR223">
       </handler>
    </extension>
 

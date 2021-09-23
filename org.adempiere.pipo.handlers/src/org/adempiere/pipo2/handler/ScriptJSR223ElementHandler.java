@@ -49,9 +49,9 @@ import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class JavaShellScriptElementHandler extends AbstractElementHandler implements ElementHandler {
+public class ScriptJSR223ElementHandler extends AbstractElementHandler implements ElementHandler {
 
-	private static final String JAVA_SHELL_SCRIPT = "JavaShellScript";
+	private static final String JAVA_SHELL_SCRIPT = "ScriptJSR223";
 
 	@Override
 	public void startElement(PIPOContext ctx, Element element) throws SAXException {
