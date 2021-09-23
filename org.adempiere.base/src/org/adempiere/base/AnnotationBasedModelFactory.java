@@ -71,7 +71,7 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 	 * @see ClassGraph#acceptClasses(String...)
 	 */
 	protected String[] getAcceptClassesPatterns() {
-		String[] patterns = new String[] {"*.X_*"};
+		String[] patterns = new String[] {"*.X_*","*.M*"};
 		return patterns;
 	}
 	
@@ -83,26 +83,28 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 		ClassGraph graph = new ClassGraph()
 				.enableAnnotationInfo()
 				.overrideClassLoaders(classLoader)
-				.disableJarScanning()
 				.disableNestedJarScanning()
 				.disableModuleScanning();
 
 		// narrow search to a list of packages
+		String[] packages = null;
 		if(isAtCore())
-			graph.acceptPackagesNonRecursive(CORE_PACKAGES);
+			packages = CORE_PACKAGES;
+		else
+			packages = getPackages();
+
+		//acceptClasses has no effect when acceptPackagesNonRecursive is use
+		if (packages != null && packages.length > 0)
+		{
+			graph.acceptPackagesNonRecursive(packages);
+		}
 		else
 		{
-			String[] packages = getPackages();
-			if(packages==null || packages.length==0)
-				s_log.warning(this.getClass().getSimpleName() + " should override the getPackages method");
-			else
-				graph.acceptPackagesNonRecursive(packages);
+			// narrow search to class names matching a set of patterns
+			String[] acceptClasses = getAcceptClassesPatterns();
+			if(acceptClasses!=null && acceptClasses.length > 0)
+				graph.acceptClasses(acceptClasses);
 		}
-
-		// narrow search to class names matching a set of patterns
-		String[] acceptClasses = getAcceptClassesPatterns();
-		if(acceptClasses!=null && acceptClasses.length > 0)
-			graph.acceptClasses(acceptClasses);
 
 		try (ScanResult scanResult = graph.scan())
 		{
