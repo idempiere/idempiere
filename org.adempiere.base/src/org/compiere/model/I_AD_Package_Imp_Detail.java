@@ -144,6 +144,15 @@ public interface I_AD_Package_Imp_Detail
 	  */
 	public int getCreatedBy();
 
+    /** Column name ExecCode */
+    public static final String COLUMNNAME_ExecCode = "ExecCode";
+
+	/** Set Execution Code	  */
+	public void setExecCode (String ExecCode);
+
+	/** Get Execution Code	  */
+	public String getExecCode();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -182,6 +191,19 @@ public interface I_AD_Package_Imp_Detail
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
+
+    /** Column name Result */
+    public static final String COLUMNNAME_Result = "Result";
+
+	/** Set Result.
+	  * Result of the action taken
+	  */
+	public void setResult (String Result);
+
+	/** Get Result.
+	  * Result of the action taken
+	  */
+	public String getResult();
 
     /** Column name Success */
     public static final String COLUMNNAME_Success = "Success";
