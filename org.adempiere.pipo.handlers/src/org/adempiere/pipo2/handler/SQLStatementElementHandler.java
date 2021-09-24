@@ -90,7 +90,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 					stmt = null;
 				}
 			}						
-			logImportDetail (ctx, impDetail, 1, "SQLStatement",count,"Execute");
+			logImportDetail (ctx, impDetail, 1, "SQLStatement",count,"Execute", sql, String.valueOf(count));
 			ctx.packIn.getNotifier().addSuccessLine("-> " + sql);
 			// Cache Reset when deleting records via SQL
 			if (sql.toLowerCase().startsWith("delete from ")) {
@@ -117,7 +117,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 				savepoint = null;
 			}
 			ctx.packIn.getNotifier().addFailureLine("SQL statement failed but ignored, error (" + e.getLocalizedMessage() + "): ");
-			logImportDetail (ctx, impDetail, 0, "SQLStatement",-1,"Execute");
+			logImportDetail (ctx, impDetail, 0, "SQLStatement",-1,"Execute", sql, e.getLocalizedMessage());
 			ctx.packIn.getNotifier().addFailureLine("-> " + sql);
 			log.log(Level.SEVERE,"SQLStatement", e);
 		} finally {
