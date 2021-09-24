@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for CM_ChatUpdate
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="CM_ChatUpdate")
 public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent 
 {

@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -29,7 +28,6 @@ import org.compiere.util.KeyNamePair;
 /** Generated Model for PP_MRP
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="PP_MRP")
 public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent 
 {

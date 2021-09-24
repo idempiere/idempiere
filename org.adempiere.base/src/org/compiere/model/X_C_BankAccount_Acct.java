@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for C_BankAccount_Acct
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="C_BankAccount_Acct")
 public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_Persistent 
 {

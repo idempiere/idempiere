@@ -161,7 +161,6 @@ public class ModelClassGenerator
 
 		addImportClass(java.util.Properties.class);
 		addImportClass(java.sql.ResultSet.class);
-		addImportClass("org.atteo.classindex.IndexSubclasses");
 		if (!packageName.equals("org.compiere.model"))
 			addImportClass("org.compiere.model.*");
 		createImports(start);
@@ -169,7 +168,6 @@ public class ModelClassGenerator
 		start.append("/** Generated Model for ").append(tableName).append(NL)
 			 .append(" *  @author iDempiere (generated) ").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
-			 .append("@IndexSubclasses").append(NL)
 			 .append("@org.adempiere.base.Model(table=\"").append(tableName).append("\")").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")
@@ -626,7 +624,7 @@ public class ModelClassGenerator
 			.append(AD_Reference_ID);
 		StringBuilder statement = new StringBuilder();
 		//
-		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? ORDER BY Value";
+		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? AND IsActive='Y' ORDER BY Value";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

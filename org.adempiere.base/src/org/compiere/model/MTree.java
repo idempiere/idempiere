@@ -64,6 +64,18 @@ public class MTree extends MTree_Base
 	}   //  MTree
 
 	/**
+	 * Resultset constructor for model factory.
+	 * Need to call loadNodes explicitly
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */	
+	public MTree (Properties ctx, ResultSet rs, String trxName) 
+	{
+		super(ctx, rs, trxName);
+	}
+
+	/**
 	 *  Construct & Load Tree
 	 *  @param AD_Tree_ID   The tree to build
 	 *  @param editable     True, if tree can be modified

@@ -20,13 +20,11 @@ package org.eevolution.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 
 /** Generated Model for HR_Year
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="HR_Year")
 public class X_HR_Year extends PO implements I_HR_Year, I_Persistent 
 {

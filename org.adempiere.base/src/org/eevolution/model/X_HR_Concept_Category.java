@@ -19,14 +19,12 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept_Category
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="HR_Concept_Category")
 public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, I_Persistent 
 {

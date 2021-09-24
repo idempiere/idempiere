@@ -20,13 +20,11 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCost
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="C_OrderLandedCost")
 public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Persistent 
 {

@@ -19,14 +19,12 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Payroll
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="HR_Payroll")
 public class X_HR_Payroll extends PO implements I_HR_Payroll, I_Persistent 
 {
