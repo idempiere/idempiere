@@ -48,6 +48,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @author Carlos Ruiz
  *  @author Deepak Pansheriya - Updated to support CreateUpdate service
  */
+@org.adempiere.base.Model(table = X_WS_WebServiceType.Table_Name)
 public class MWebServiceType extends X_WS_WebServiceType implements ImmutablePOSupport
 {
 	/**

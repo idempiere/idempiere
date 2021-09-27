@@ -67,6 +67,7 @@ Import-Package: javax.activation,
  org.apache.xerces.xs.datatypes;version="2.9.0",
  org.apache.xml.serialize;version="2.9.0",
  org.osgi.framework;version="1.6.0",
+ org.osgi.service.component.annotations;version="1.3.0",
  org.w3c.dom
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.ui;bundle-version="0.0.0",
