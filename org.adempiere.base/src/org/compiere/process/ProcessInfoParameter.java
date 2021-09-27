@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.compiere.util.DB;
+
 
 /**
  * 	Process Parameter
@@ -32,10 +34,11 @@ import java.sql.Timestamp;
  */
 public class ProcessInfoParameter implements Serializable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8571973325856537109L;
+	private static final long serialVersionUID = -5396796617617359891L;
 
 	/**
 	 *  Construct Parameter
@@ -280,6 +283,80 @@ public class ProcessInfoParameter implements Serializable
 	public void setParameterName (String ParameterName)
 	{
 		m_ParameterName = ParameterName;
+	}
+
+	/**
+	 * Return the value of the parameter as a validated String (all values between commas must be integer)
+	 * @return String
+	 */
+	public String getParameterAsMultipleInt() {
+		return getParameterMultipleInt(m_Parameter);
+	}
+
+	/**
+	 * Return the value of the parameter To as a validated String (all values between commas must be integer)
+	 * @return String
+	 */
+	public String getParameter_ToAsMultipleInt() {
+		return getParameterMultipleInt(m_Parameter_To);
+	}
+
+	/**
+	 * Return the value of the parameter as a validated String (all values between commas must be integer)
+	 * @return String
+	 */
+	private String getParameterMultipleInt(Object param) {
+
+		if (param == null || !(param instanceof String))
+			return "";
+
+		String[] strarr = ((String) param).split(",");
+
+		StringBuilder whereValidated = new StringBuilder();
+		for (String par : strarr) {
+			int val = Integer.valueOf(par);
+			if (whereValidated.length() > 0)
+				whereValidated.append(",");
+			whereValidated.append(val);
+		}
+
+		return whereValidated.toString();
+	}
+
+	/**
+	 * Return the value of the parameter as a validated String (all values between commas are surrounded by '')
+	 * @return String
+	 */
+	public String getParameterAsMultipleString() {
+		return getParameterMultipleString(m_Parameter);
+	}
+
+	/**
+	 * Return the value of the parameter To as a validated String (all values between commas are surrounded by '')
+	 * @return String
+	 */
+	public String getParameter_ToAsMultipleString() {
+		return getParameterMultipleString(m_Parameter_To);
+	}
+
+	/**
+	 * Return the value of the parameter as a validated String (all values between commas are surrounded by '')
+	 * @return String
+	 */
+	private String getParameterMultipleString(Object param) {
+		if (param == null || !(param instanceof String))
+			return "";
+
+		String[] strarr = ((String) param).split(",");
+
+		StringBuilder whereValidated = new StringBuilder();
+		for (String par : strarr) {
+			if (whereValidated.length() > 0)
+				whereValidated.append(",");
+			whereValidated.append(DB.TO_STRING(par));
+		}
+
+		return whereValidated.toString();
 	}
 
 }   //  ProcessInfoParameter
