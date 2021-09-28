@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Wlistbox_Customization
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Wlistbox_Customization")
 public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Customization, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210704L;
+	private static final long serialVersionUID = 20210927L;
 
     /** Standard Constructor */
     public X_AD_Wlistbox_Customization (Properties ctx, int AD_Wlistbox_Customization_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
