@@ -1,45 +1,4 @@
--- Table: adempiere.AD_Wlistbox_Customization
-
-CREATE TABLE adempiere.AD_Wlistbox_Customization
-(
-    AD_Client_ID numeric(10,0) NOT NULL,
-    AD_Org_ID numeric(10,0) NOT NULL,
-    AD_Wlistbox_Customization_ID numeric(10,0) NOT NULL DEFAULT NULL::numeric,
-    WlistboxName varchar(255) NOT NULL,
-    AD_User_ID numeric(10,0) NOT NULL,
-    Created timestamp without time zone NOT NULL DEFAULT statement_timestamp(),
-    CreatedBy numeric(10,0) NOT NULL,
-    Custom character varying(2000) COLLATE pg_catalog."default" NOT NULL,
-    IsActive character(1) COLLATE pg_catalog."default" NOT NULL,
-    Updated timestamp without time zone NOT NULL DEFAULT statement_timestamp(),
-    UpdatedBy numeric(10,0) NOT NULL,
-    AD_Wlistbox_Customization_UU character varying(36) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
-    CONSTRAINT AD_Wlistbox_Customization_key PRIMARY KEY (AD_Wlistbox_Customization_ID),
-    CONSTRAINT AD_WlistboxName_Customization UNIQUE (AD_Client_ID,AD_User_ID,WlistboxName),
-    CONSTRAINT AD_User_AD_WlistboxCustomization FOREIGN KEY (AD_User_ID)
-        REFERENCES adempiere.AD_User (AD_User_ID) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE CASCADE
-        DEFERRABLE INITIALLY DEFERRED,
-    CONSTRAINT AD_Wlistbox_Customization_IsActive_check CHECK (IsActive = ANY (ARRAY['Y'::bpchar, 'N'::bpchar]))
-)
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE adempiere.AD_Wlistbox_Customization
-    OWNER to adempiere;
--- Index: ad_info_customization_uu_idx
-
---DROP INDEX adempiere.ad_info_customization_uu_idx;
-
-CREATE UNIQUE INDEX ad_wlistbox_customization_uu_idx
-    ON adempiere.ad_wlistbox_customization USING btree
-    (ad_wlistbox_customization_uu COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;
-	
-
+-- IDEMPIERE-4863 Enable save column width in WListBox
 -- Jul 3, 2021, 11:06:24 PM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable) VALUES (200279,'Customization of the Wlistbox','AD_Wlistbox_Customization',0,'4',0,0,'Y',TO_TIMESTAMP('2021-07-03 23:06:23','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-07-03 23:06:23','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','ecb85e34-2b9f-4265-9dbd-5c4ae7a83641','N','N','N','N')
 ;
@@ -111,5 +70,29 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (214544,0.0,'AD_Wlistbox_Customization_UU',200279,'AD_Wlistbox_Customization_UU',36,'N','N','N','N','N','N',10,0,0,'Y',TO_TIMESTAMP('2021-07-03 23:08:01','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-07-03 23:08:01','YYYY-MM-DD HH24:MI:SS'),100,203523,'N','N','D','N','71dec96d-d4d6-4e4e-b6c9-3091a6784973','N')
 ;
 
-	
+-- Table: AD_Wlistbox_Customization
+-- Sep 27, 2021, 11:54:39 AM CEST
+UPDATE AD_Column SET FKConstraintName='ADUser_ADWlistboxCustomization', FKConstraintType='N',Updated=TO_TIMESTAMP('2021-09-27 11:54:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214537
+;
+
+-- Sep 27, 2021, 11:54:39 AM CEST
+CREATE TABLE AD_Wlistbox_Customization (AD_Client_ID NUMERIC(10) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, AD_User_ID NUMERIC(10) NOT NULL, AD_Wlistbox_Customization_ID NUMERIC(10) NOT NULL, AD_Wlistbox_Customization_UU VARCHAR(36) DEFAULT NULL , Created TIMESTAMP DEFAULT statement_timestamp() NOT NULL, CreatedBy NUMERIC(10) NOT NULL, Custom VARCHAR(2000) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Updated TIMESTAMP DEFAULT statement_timestamp() NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, WlistboxName VARCHAR(60) NOT NULL, CONSTRAINT AD_Wlistbox_Customization_Key PRIMARY KEY (AD_Wlistbox_Customization_ID), CONSTRAINT AD_Wlistbox_Customizationuuidx UNIQUE (AD_Wlistbox_Customization_UU))
+;
+
+-- Sep 27, 2021, 11:54:39 AM CEST
+ALTER TABLE AD_Wlistbox_Customization ADD CONSTRAINT ADUser_ADWlistboxCustomization FOREIGN KEY (AD_User_ID) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Sep 27, 2021, 11:57:43 AM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201090,'663c5e7b-9a1c-46c5-ab61-5a67c0605d17',TO_TIMESTAMP('2021-09-27 11:57:43','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_wlistbox_customization_uu_idx',TO_TIMESTAMP('2021-09-27 11:57:43','YYYY-MM-DD HH24:MI:SS'),100,200279,'N','Y','N','N','N')
+;
+
+-- Sep 27, 2021, 11:57:53 AM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201430,'7bfe450f-6651-4331-97f2-2c66a8699dd8',TO_TIMESTAMP('2021-09-27 11:57:53','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2021-09-27 11:57:53','YYYY-MM-DD HH24:MI:SS'),100,214544,201090,10)
+;
+
+-- Sep 27, 2021, 11:58:00 AM CEST
+CREATE UNIQUE INDEX ad_wlistbox_customization_uu_idx ON AD_Wlistbox_Customization (AD_Wlistbox_Customization_UU)
+;
+
 SELECT register_migration_script('202106281200_IDEMPIERE-4863.sql') FROM dual;	
