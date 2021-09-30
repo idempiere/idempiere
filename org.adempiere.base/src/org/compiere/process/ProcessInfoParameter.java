@@ -304,23 +304,23 @@ public class ProcessInfoParameter implements Serializable
 	 * Return the value of the parameter as a comma separated integer string. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
 	 * @return String
 	 */
-	public String getParameterAsMultipleInt() {
-		return getParameterMultipleInt(getParameterAsString());
+	public String getParameterAsCSVInt() {
+		return getParameterAsCSVInt(getParameterAsString());
 	}
 
 	/**
 	 * Return the value of the parameter To as a comma separated integer string. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
 	 * @return String
 	 */
-	public String getParameter_ToAsMultipleInt() {
-		return getParameterMultipleInt(getParameter_ToAsString());
+	public String getParameter_ToAsCSVInt() {
+		return getParameterAsCSVInt(getParameter_ToAsString());
 	}
 
 	/**
 	 * Return the value of the parameter as a validated String (all values between commas must be integer)
 	 * @return String
 	 */
-	private String getParameterMultipleInt(String param) {
+	private String getParameterAsCSVInt(String param) {
 
 		if (Util.isEmpty(param))
 			return "";
@@ -337,23 +337,23 @@ public class ProcessInfoParameter implements Serializable
 	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
 	 * @return String
 	 */
-	public String getParameterAsMultipleString() {
-		return getParameterMultipleString(getParameterAsString());
+	public String getParameterAsCSVString() {
+		return getParameterAsCSVString(getParameterAsString());
 	}
 
 	/**
 	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
 	 * @return String
 	 */
-	public String getParameter_ToAsMultipleString() {
-		return getParameterMultipleString(getParameter_ToAsString());
+	public String getParameter_ToAsCSVString() {
+		return getParameterAsCSVString(getParameter_ToAsString());
 	}
 
 	/**
 	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
 	 * @return String
 	 */
-	private String getParameterMultipleString(String param) {
+	private String getParameterAsCSVString(String param) {
 		if (Util.isEmpty(param))
 			return "";
 
@@ -373,23 +373,23 @@ public class ProcessInfoParameter implements Serializable
 	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
 	 * @return String
 	 */
-	public int[] getParameterAsMultipleIntArray() {
-		return getParameterAsMultipleIntArray(getParameterAsString());
+	public int[] getParameterAsIntArray() {
+		return getParameterAsIntArray(getParameterAsString());
 	}
 
 	/**
 	 * Return the value of the parameter To as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
 	 * @return String
 	 */
-	public int[] getParameterToAsMultipleIntArray() {
-		return getParameterAsMultipleIntArray(getParameter_ToAsString());
+	public int[] getParameterToAsIntArray() {
+		return getParameterAsIntArray(getParameter_ToAsString());
 	}
 
 	/**
 	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
 	 * @return String
 	 */
-	private int[] getParameterAsMultipleIntArray(String param) {
+	private int[] getParameterAsIntArray(String param) {
 
 		if (Util.isEmpty(param))
 			return new int[0];
@@ -398,26 +398,26 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter as an array of String. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * Return the value of the parameter as an array of String.
 	 * @return String
 	 */
-	public String[] getParameterAsMultipleStringArray() {
-		return getParameterAsMultipleStringArray(getParameterAsString());
+	public String[] getParameterAsStringArray() {
+		return getParameterAsStringArray(getParameterAsString());
 	}
 
 	/**
-	 * Return the value of the parameter To as an array of String. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * Return the value of the parameter To as an array of String.
 	 * @return String
 	 */
-	public String[] getParameterToAsMultipleStringArray() {
-		return getParameterAsMultipleStringArray(getParameter_ToAsString());
+	public String[] getParameterToAsStringArray() {
+		return getParameterAsStringArray(getParameter_ToAsString());
 	}
 
 	/**
-	 * Return the value of the parameter as an array of String. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * Return the value of the parameter as an array of String.
 	 * @return String
 	 */
-	private String[] getParameterAsMultipleStringArray(String param) {
+	private String[] getParameterAsStringArray(String param) {
 
 		ArrayList<String> list = new ArrayList<String>();
 
