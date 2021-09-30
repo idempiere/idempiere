@@ -89,7 +89,7 @@ public class SQLMandatoryElementHandler extends AbstractElementHandler {
 					stmt = null;
 				}
 			}
-			logImportDetail (ctx, impDetail, 1, "SQLMandatory",count,"Execute");
+			logImportDetail (ctx, impDetail, 1, "SQLMandatory",count,"Execute", sql, String.valueOf(count));
 			ctx.packIn.getNotifier().addSuccessLine("-> " + sql);
 			// Cache Reset when deleting records via SQL
 			if (sql.toLowerCase().startsWith("delete from ")) {
@@ -102,7 +102,7 @@ public class SQLMandatoryElementHandler extends AbstractElementHandler {
 			}
 		} catch (Exception e)	{
 			ctx.packIn.getNotifier().addFailureLine("SQL Mandatory failed, error (" + e.getLocalizedMessage() + "):");
-			logImportDetail (ctx, impDetail, 0, "SQLMandatory",-1,"Execute");
+			logImportDetail (ctx, impDetail, 0, "SQLMandatory",-1,"Execute", sql, e.getLocalizedMessage());
 			ctx.packIn.getNotifier().addFailureLine("-> " + sql);
 			log.log(Level.SEVERE,"SQLMandatory", e);
 			throw new AdempiereException(e);

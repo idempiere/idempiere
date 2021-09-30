@@ -196,6 +196,10 @@ public class PackOutProcess extends SvrProcess
 			return I_AD_EntityType.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_InfoWindow.equals(type))
 			return I_AD_InfoWindow.Table_Name;
+		else if (X_AD_Package_Exp_Detail.TYPE_ShellScript.equals(type))
+			return "ShellScript";
+		else if (X_AD_Package_Exp_Detail.TYPE_ScriptJSR223.equals(type))
+			return "ScriptJSR223";
 		return type;
 	}
 
@@ -208,6 +212,8 @@ public class PackOutProcess extends SvrProcess
 		} else if (MPackageExpDetail.TYPE_SQLStatement.equals(type) || MPackageExpDetail.TYPE_SQLMandatory.equals(type)) {
 			properties.put(SQLElementParameters.SQL_STATEMENT, dtl.getSQLStatement());
 			properties.put(SQLElementParameters.DB_TYPE, dtl.getDBType());
+		} else if (MPackageExpDetail.TYPE_ShellScript.equals(type) || MPackageExpDetail.TYPE_ScriptJSR223.equals(type)) {
+			properties.put(MPackageExpDetail.COLUMNNAME_ExecCode, dtl.getExecCode());
 		}
 		return properties;
 	}

@@ -19,13 +19,11 @@ package org.eevolution.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.model.*;
 
 /** Generated Model for PP_Order_NodeNext
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="PP_Order_NodeNext")
 public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Persistent 
 {

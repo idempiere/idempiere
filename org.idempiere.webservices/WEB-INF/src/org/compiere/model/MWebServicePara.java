@@ -39,6 +39,7 @@ import org.compiere.util.Env;
  *	
  *  @author Carlos Ruiz
  */
+@org.adempiere.base.Model(table = X_WS_WebService_Para.Table_Name)
 public class MWebServicePara extends X_WS_WebService_Para
 {
 	/**

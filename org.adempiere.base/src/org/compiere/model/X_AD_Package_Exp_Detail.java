@@ -19,13 +19,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Exp_Detail
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="AD_Package_Exp_Detail")
 public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Detail, I_Persistent 
 {
@@ -33,7 +31,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20210923L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -737,6 +735,20 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 		return (String)get_Value(COLUMNNAME_Destination_FileName);
 	}
 
+	/** Set Execution Code.
+		@param ExecCode Execution Code	  */
+	public void setExecCode (String ExecCode)
+	{
+		set_Value (COLUMNNAME_ExecCode, ExecCode);
+	}
+
+	/** Get Execution Code.
+		@return Execution Code	  */
+	public String getExecCode () 
+	{
+		return (String)get_Value(COLUMNNAME_ExecCode);
+	}
+
 	/** Set File_Directory.
 		@param File_Directory File_Directory	  */
 	public void setFile_Directory (String File_Directory)
@@ -922,8 +934,6 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 
 	/** Type AD_Reference_ID=50004 */
 	public static final int TYPE_AD_Reference_ID=50004;
-	/** Workbench = B */
-	public static final String TYPE_Workbench = "B";
 	/** Data = D */
 	public static final String TYPE_Data = "D";
 	/** Data Single = DS */
@@ -952,6 +962,10 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String TYPE_Reference = "REF";
 	/** Role = S */
 	public static final String TYPE_Role = "S";
+	/** Script JSR223 = SCJ */
+	public static final String TYPE_ScriptJSR223 = "SCJ";
+	/** Shell Script = SH */
+	public static final String TYPE_ShellScript = "SH";
 	/** SQL Statement = SQL */
 	public static final String TYPE_SQLStatement = "SQL";
 	/** SQL Mandatory = SQM */

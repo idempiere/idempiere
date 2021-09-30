@@ -19,12 +19,10 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.atteo.classindex.IndexSubclasses;
 
 /** Generated Model for A_FundingMode_Acct
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@IndexSubclasses
 @org.adempiere.base.Model(table="A_FundingMode_Acct")
 public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_Persistent 
 {
