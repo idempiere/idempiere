@@ -371,7 +371,7 @@ public class ProcessInfoParameter implements Serializable
 
 	/**
 	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
-	 * @return String
+	 * @return array of int
 	 */
 	public int[] getParameterAsIntArray() {
 		return getParameterAsIntArray(getParameterAsString());
@@ -379,7 +379,7 @@ public class ProcessInfoParameter implements Serializable
 
 	/**
 	 * Return the value of the parameter To as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
-	 * @return String
+	 * @return array of int
 	 */
 	public int[] getParameterToAsIntArray() {
 		return getParameterAsIntArray(getParameter_ToAsString());
@@ -387,7 +387,7 @@ public class ProcessInfoParameter implements Serializable
 
 	/**
 	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
-	 * @return String
+	 * @return array of int
 	 */
 	private int[] getParameterAsIntArray(String param) {
 
@@ -399,7 +399,7 @@ public class ProcessInfoParameter implements Serializable
 
 	/**
 	 * Return the value of the parameter as an array of String.
-	 * @return String
+	 * @return array of String
 	 */
 	public String[] getParameterAsStringArray() {
 		return getParameterAsStringArray(getParameterAsString());
@@ -407,7 +407,7 @@ public class ProcessInfoParameter implements Serializable
 
 	/**
 	 * Return the value of the parameter To as an array of String.
-	 * @return String
+	 * @return array of String
 	 */
 	public String[] getParameterToAsStringArray() {
 		return getParameterAsStringArray(getParameter_ToAsString());
@@ -415,7 +415,7 @@ public class ProcessInfoParameter implements Serializable
 
 	/**
 	 * Return the value of the parameter as an array of String.
-	 * @return String
+	 * @return array of String
 	 */
 	private String[] getParameterAsStringArray(String param) {
 
