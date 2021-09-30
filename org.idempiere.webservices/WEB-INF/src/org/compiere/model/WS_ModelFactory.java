@@ -25,50 +25,22 @@
 
 package org.compiere.model;
 
-import java.sql.ResultSet;
-
+import org.adempiere.base.AnnotationBasedModelFactory;
 import org.adempiere.base.IModelFactory;
-import org.compiere.util.Env;
+import org.osgi.service.component.annotations.Component;
 
-public class WS_ModelFactory implements IModelFactory {
-
-	@Override
-	public Class<?> getClass(String tableName) {
-		if (X_WS_WebService_Para.Table_Name.equals(tableName))
-			return MWebServicePara.class;
-		if (X_WS_WebServiceType.Table_Name.equals(tableName))
-			return MWebServiceType.class;
-		if (X_WS_WebService.Table_Name.equals(tableName))
-			return MWebService.class;
-		if (MWebServiceMethod.Table_Name.equals(tableName))
-			return MWebServiceMethod.class;
-		return null;
-	}
+/**
+ * 
+ * @author globalqss
+ * @author hengsin
+ *
+ */
+@Component(immediate = true, service = IModelFactory.class, property = "service.ranking:Integer=1")
+public class WS_ModelFactory extends AnnotationBasedModelFactory {
 
 	@Override
-	public PO getPO(String tableName, int Record_ID, String trxName) {
-		if (X_WS_WebService_Para.Table_Name.equals(tableName))
-			return new MWebServicePara(Env.getCtx(), Record_ID, trxName);
-		if (X_WS_WebServiceType.Table_Name.equals(tableName))
-			return new MWebServiceType(Env.getCtx(), Record_ID, trxName);
-		if (X_WS_WebService.Table_Name.equals(tableName))
-			return new MWebService(Env.getCtx(), Record_ID, trxName);
-		if (MWebServiceMethod.Table_Name.equals(tableName))
-			return new MWebServiceMethod(Env.getCtx(), Record_ID, trxName);
-		return null;
+	protected String[] getPackages() {
+		return new String[] {MWebService.class.getPackageName()};
 	}
-
-	@Override
-	public PO getPO(String tableName, ResultSet rs, String trxName) {
-		if (X_WS_WebService_Para.Table_Name.equals(tableName))
-			return new MWebServicePara(Env.getCtx(), rs, trxName);
-		if (X_WS_WebServiceType.Table_Name.equals(tableName))
-			return new MWebServiceType(Env.getCtx(), rs, trxName);
-		if (X_WS_WebService.Table_Name.equals(tableName))
-			return new MWebService(Env.getCtx(), rs, trxName);
-		if (MWebServiceMethod.Table_Name.equals(tableName))
-			return new MWebServiceMethod(Env.getCtx(), rs, trxName);
-		return null;
-	}
-
+	
 }

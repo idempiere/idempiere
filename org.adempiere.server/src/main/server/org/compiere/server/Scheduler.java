@@ -95,6 +95,8 @@ public class Scheduler extends AdempiereServer
 	protected Trx					m_trx = null;
 
 	protected int AD_Scheduler_ID;
+	
+	protected ProcessInfo pi;
 
 	private static ImmutableIntPOCache<Integer,MScheduler> s_cache = new ImmutableIntPOCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60);
 
@@ -106,6 +108,7 @@ public class Scheduler extends AdempiereServer
 		MScheduler scheduler = get(getCtx(), AD_Scheduler_ID);
 		m_summary = new StringBuffer(scheduler.toString())
 			.append(" - ");
+		pi = null;
 
 		// Prepare a ctx for the report/process - BF [1966880]
 		MClient schedclient = MClient.get(getCtx(), scheduler.getAD_Client_ID());
@@ -160,7 +163,9 @@ public class Scheduler extends AdempiereServer
 		//
 		MSchedulerLog pLog = new MSchedulerLog(scheduler, m_summary.toString());
 		pLog.setReference("#" + String.valueOf(p_runCount)
-			+ " - " + TimeUtil.formatElapsed(new Timestamp(p_startWork)));
+			+ " - " + TimeUtil.formatElapsed(new Timestamp(p_startWork))
+			+ (pi != null ? " AD_PInstance_ID="+pi.getAD_PInstance_ID() : ""));
+		pi = null;
 		pLog.saveEx();
 	}	//	doWork
 
@@ -185,7 +190,7 @@ public class Scheduler extends AdempiereServer
 		MPInstance pInstance = new MPInstance(process, Record_ID);
 		fillParameter(pInstance);
 		//
-		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
+		pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
 		pi.setAD_User_ID(getAD_User_ID());
 		pi.setAD_Client_ID(scheduler.getAD_Client_ID());
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
