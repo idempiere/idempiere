@@ -23,7 +23,7 @@ import java.util.Properties;
 /** Generated Model for AD_Wlistbox_Customization
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@org.adempiere.base.Model(table="AD_Wlistbox_Customization")
+
 public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Customization, I_Persistent 
 {
 
