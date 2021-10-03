@@ -28,7 +28,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Jul 3, 2021, 11:07:59 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (214536,0.0,'WlistboxName',200279,'WlistboxName',60,'N','N','Y','N','N','N',10,0,0,'Y',TO_TIMESTAMP('2021-07-03 23:07:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-07-03 23:07:58','YYYY-MM-DD HH24:MI:SS'),100,203522,'Y','N','D','N','093a2a9a-f52c-4812-aa2d-65abacc2460b','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (214536,0.0,'WlistboxName',200279,'WlistboxName',80,'N','N','Y','N','N','N',10,0,0,'Y',TO_TIMESTAMP('2021-07-03 23:07:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-07-03 23:07:58','YYYY-MM-DD HH24:MI:SS'),100,203522,'Y','N','D','N','093a2a9a-f52c-4812-aa2d-65abacc2460b','N')
 ;
 
 -- Jul 3, 2021, 11:07:59 PM CEST
@@ -76,7 +76,7 @@ UPDATE AD_Column SET FKConstraintName='ADUser_ADWlistboxCustomization', FKConstr
 ;
 
 -- Sep 27, 2021, 11:54:39 AM CEST
-CREATE TABLE AD_Wlistbox_Customization (AD_Client_ID NUMERIC(10) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, AD_User_ID NUMERIC(10) NOT NULL, AD_Wlistbox_Customization_ID NUMERIC(10) NOT NULL, AD_Wlistbox_Customization_UU VARCHAR(36) DEFAULT NULL , Created TIMESTAMP DEFAULT statement_timestamp() NOT NULL, CreatedBy NUMERIC(10) NOT NULL, Custom VARCHAR(2000) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Updated TIMESTAMP DEFAULT statement_timestamp() NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, WlistboxName VARCHAR(60) NOT NULL, CONSTRAINT AD_Wlistbox_Customization_Key PRIMARY KEY (AD_Wlistbox_Customization_ID), CONSTRAINT AD_Wlistbox_Customizationuuidx UNIQUE (AD_Wlistbox_Customization_UU))
+CREATE TABLE AD_Wlistbox_Customization (AD_Client_ID NUMERIC(10) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, AD_User_ID NUMERIC(10) NOT NULL, AD_Wlistbox_Customization_ID NUMERIC(10) NOT NULL, AD_Wlistbox_Customization_UU VARCHAR(36) DEFAULT NULL , Created TIMESTAMP DEFAULT statement_timestamp() NOT NULL, CreatedBy NUMERIC(10) NOT NULL, Custom VARCHAR(2000) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Updated TIMESTAMP DEFAULT statement_timestamp() NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, WlistboxName VARCHAR(80) NOT NULL, CONSTRAINT AD_Wlistbox_Customization_Key PRIMARY KEY (AD_Wlistbox_Customization_ID), CONSTRAINT AD_Wlistbox_Customizationuuidx UNIQUE (AD_Wlistbox_Customization_UU))
 ;
 
 -- Sep 27, 2021, 11:54:39 AM CEST
