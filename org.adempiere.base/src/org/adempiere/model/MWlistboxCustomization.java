@@ -114,7 +114,7 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 		{
 			String[] custOrg = WlistBoxCust.getCustom().split(",");
 			List<String> newColumnList =  Arrays.asList(Custom.trim().split(","));
-			List<String> orgColumnList  = Arrays.asList(WlistBoxCust.getCustom().trim().split(",")) ;
+			ArrayList<String> orgColumnList  = new ArrayList<>( Arrays.asList(WlistBoxCust.getCustom().trim().split(",")) );
 			//only run through this if the with has changed for a column
 			if (!orgColumnList.equals(newColumnList))
 			{
