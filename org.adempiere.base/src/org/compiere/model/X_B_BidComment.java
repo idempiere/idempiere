@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for B_BidComment
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="B_BidComment")
 public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_B_BidComment (Properties ctx, int B_BidComment_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -138,9 +140,10 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	}
 
 	public org.compiere.model.I_B_Topic getB_Topic() throws RuntimeException
-    {
-		return (org.compiere.model.I_B_Topic)MTable.get(getCtx(), org.compiere.model.I_B_Topic.Table_Name)
-			.getPO(getB_Topic_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_B_Topic)MTable.get(getCtx(), org.compiere.model.I_B_Topic.Table_ID)
+			.getPO(getB_Topic_ID(), get_TrxName());
+	}
 
 	/** Set Topic.
 		@param B_Topic_ID 

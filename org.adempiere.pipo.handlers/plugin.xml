@@ -9,10 +9,6 @@
             id="AD_Element">
       </handler>
       <handler
-            class="org.adempiere.pipo2.handler.CodeSnippetElementHandler"
-            id="Code_Snippet">
-      </handler>
-      <handler
             class="org.adempiere.pipo2.handler.ColumnElementHandler"
             id="AD_Column">
       </handler>
@@ -125,10 +121,6 @@
             id="AD_Task_Access">
       </handler>
       <handler
-            class="org.adempiere.pipo2.handler.DistFileElementHandler"
-            id="Dist_File">
-      </handler>
-      <handler
             class="org.adempiere.pipo2.handler.ReportViewElementHandler"
             id="AD_ReportView">
       </handler>
@@ -235,6 +227,14 @@
       <handler
             class="org.adempiere.pipo2.handler.InfoWindowAccessElementHandler"
             id="AD_InfoWindow_Access">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.ShellScriptElementHandler"
+            id="ShellScript">
+      </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.ScriptJSR223ElementHandler"
+            id="ScriptJSR223">
       </handler>
    </extension>
 

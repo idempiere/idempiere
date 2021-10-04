@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportSource
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PA_ReportSource")
 public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_ReportSource (Properties ctx, int PA_ReportSource_ID, String trxName)
@@ -120,9 +121,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -148,9 +150,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -176,9 +179,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -204,9 +208,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Account Element.
 		@param C_ElementValue_ID 
@@ -232,9 +237,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public I_C_Location getC_Location() throws RuntimeException
-    {
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
-			.getPO(getC_Location_ID(), get_TrxName());	}
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
 
 	/** Set Address.
 		@param C_Location_ID 
@@ -260,9 +266,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -288,9 +295,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_Name)
-			.getPO(getC_SalesRegion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
+			.getPO(getC_SalesRegion_ID(), get_TrxName());
+	}
 
 	/** Set Sales Region.
 		@param C_SalesRegion_ID 
@@ -340,6 +348,8 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	public static final String ELEMENTTYPE_Activity = "AY";
 	/** BPartner = BP */
 	public static final String ELEMENTTYPE_BPartner = "BP";
+	/** Combination = CO */
+	public static final String ELEMENTTYPE_Combination = "CO";
 	/** Location From = LF */
 	public static final String ELEMENTTYPE_LocationFrom = "LF";
 	/** Location To = LT */
@@ -366,8 +376,6 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	public static final String ELEMENTTYPE_UserColumn1 = "X1";
 	/** User Column 2 = X2 */
 	public static final String ELEMENTTYPE_UserColumn2 = "X2";
-	/** Combination = CO */
-	public static final String ELEMENTTYPE_Combination = "CO";
 	/** Set Type.
 		@param ElementType 
 		Element Type (account or user defined)
@@ -683,9 +691,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -734,9 +743,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_Name)
-			.getPO(getPA_ReportLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_ID)
+			.getPO(getPA_ReportLine_ID(), get_TrxName());
+	}
 
 	/** Set Report Line.
 		@param PA_ReportLine_ID Report Line	  */

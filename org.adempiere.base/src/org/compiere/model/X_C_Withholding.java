@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Withholding
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Withholding")
 public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Withholding (Properties ctx, int C_Withholding_ID, String trxName)
@@ -80,9 +81,10 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getBenefici() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getBeneficiary(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getBeneficiary(), get_TrxName());
+	}
 
 	/** Set Beneficiary.
 		@param Beneficiary 
@@ -105,9 +107,10 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_Name)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
 
 	/** Set Payment Term.
 		@param C_PaymentTerm_ID 

@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Find
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Find")
 public class X_AD_Find extends PO implements I_AD_Find, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
@@ -80,9 +81,10 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -192,24 +194,24 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 
 	/** Operation AD_Reference_ID=205 */
 	public static final int OPERATION_AD_Reference_ID=205;
+	/** != = != */
+	public static final String OPERATION_NotEq = "!=";
+	/** < = << */
+	public static final String OPERATION_Le = "<<";
+	/** <= = <= */
+	public static final String OPERATION_LeEq = "<=";
 	/**  = = == */
 	public static final String OPERATION_Eq = "==";
 	/** >= = >= */
 	public static final String OPERATION_GtEq = ">=";
 	/** > = >> */
 	public static final String OPERATION_Gt = ">>";
-	/** < = << */
-	public static final String OPERATION_Le = "<<";
 	/**  ~ = ~~ */
 	public static final String OPERATION_Like = "~~";
-	/** <= = <= */
-	public static final String OPERATION_LeEq = "<=";
 	/** |<x>| = AB */
 	public static final String OPERATION_X = "AB";
 	/** sql = SQ */
 	public static final String OPERATION_Sql = "SQ";
-	/** != = != */
-	public static final String OPERATION_NotEq = "!=";
 	/** Set Operation.
 		@param Operation 
 		Compare Operation

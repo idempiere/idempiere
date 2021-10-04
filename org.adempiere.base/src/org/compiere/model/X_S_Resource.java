@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Resource
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="S_Resource")
 public class X_S_Resource extends PO implements I_S_Resource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_S_Resource (Properties ctx, int S_Resource_ID, String trxName)
@@ -81,9 +82,10 @@ public class X_S_Resource extends PO implements I_S_Resource, I_Persistent
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -230,9 +232,10 @@ public class X_S_Resource extends PO implements I_S_Resource, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -363,9 +366,10 @@ public class X_S_Resource extends PO implements I_S_Resource, I_Persistent
 	}
 
 	public org.compiere.model.I_S_ResourceType getS_ResourceType() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_ResourceType)MTable.get(getCtx(), org.compiere.model.I_S_ResourceType.Table_Name)
-			.getPO(getS_ResourceType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_ResourceType)MTable.get(getCtx(), org.compiere.model.I_S_ResourceType.Table_ID)
+			.getPO(getS_ResourceType_ID(), get_TrxName());
+	}
 
 	/** Set Resource Type.
 		@param S_ResourceType_ID Resource Type	  */

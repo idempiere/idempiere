@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Field
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Field")
 public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Field (Properties ctx, int ASP_Field_ID, String trxName)
@@ -71,9 +72,10 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
-			.getPO(getAD_Field_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
+			.getPO(getAD_Field_ID(), get_TrxName());
+	}
 
 	/** Set Field.
 		@param AD_Field_ID 
@@ -156,9 +158,10 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Tab getASP_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Tab)MTable.get(getCtx(), org.compiere.model.I_ASP_Tab.Table_Name)
-			.getPO(getASP_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Tab)MTable.get(getCtx(), org.compiere.model.I_ASP_Tab.Table_ID)
+			.getPO(getASP_Tab_ID(), get_TrxName());
+	}
 
 	/** Set ASP Tab.
 		@param ASP_Tab_ID ASP Tab	  */

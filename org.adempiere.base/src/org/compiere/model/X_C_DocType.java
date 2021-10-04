@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -93,9 +94,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -121,9 +123,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeDifference() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeDifference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeDifference_ID(), get_TrxName());
+	}
 
 	/** Set Difference Document.
 		@param C_DocTypeDifference_ID 
@@ -172,9 +175,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeInvoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeInvoice_ID(), get_TrxName());
+	}
 
 	/** Set Document Type for Invoice.
 		@param C_DocTypeInvoice_ID 
@@ -200,9 +204,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeProforma() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeProforma_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeProforma_ID(), get_TrxName());
+	}
 
 	/** Set Document Type for ProForma.
 		@param C_DocTypeProforma_ID 
@@ -228,9 +233,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeShipment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeShipment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeShipment_ID(), get_TrxName());
+	}
 
 	/** Set Document Type for Shipment.
 		@param C_DocTypeShipment_ID 
@@ -270,9 +276,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Sequence getDefiniteSequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getDefiniteSequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getDefiniteSequence_ID(), get_TrxName());
+	}
 
 	/** Set Definite Sequence.
 		@param DefiniteSequence_ID Definite Sequence	  */
@@ -313,70 +320,70 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** DocBaseType AD_Reference_ID=183 */
 	public static final int DOCBASETYPE_AD_Reference_ID=183;
-	/** GL Journal = GLJ */
-	public static final String DOCBASETYPE_GLJournal = "GLJ";
-	/** GL Document = GLD */
-	public static final String DOCBASETYPE_GLDocument = "GLD";
+	/** AP Credit Memo = APC */
+	public static final String DOCBASETYPE_APCreditMemo = "APC";
 	/** AP Invoice = API */
 	public static final String DOCBASETYPE_APInvoice = "API";
 	/** AP Payment = APP */
 	public static final String DOCBASETYPE_APPayment = "APP";
+	/** AR Credit Memo = ARC */
+	public static final String DOCBASETYPE_ARCreditMemo = "ARC";
+	/** AR Pro Forma Invoice = ARF */
+	public static final String DOCBASETYPE_ARProFormaInvoice = "ARF";
 	/** AR Invoice = ARI */
 	public static final String DOCBASETYPE_ARInvoice = "ARI";
 	/** AR Receipt = ARR */
 	public static final String DOCBASETYPE_ARReceipt = "ARR";
-	/** Sales Order = SOO */
-	public static final String DOCBASETYPE_SalesOrder = "SOO";
-	/** AR Pro Forma Invoice = ARF */
-	public static final String DOCBASETYPE_ARProFormaInvoice = "ARF";
-	/** Material Delivery = MMS */
-	public static final String DOCBASETYPE_MaterialDelivery = "MMS";
-	/** Material Receipt = MMR */
-	public static final String DOCBASETYPE_MaterialReceipt = "MMR";
-	/** Material Movement = MMM */
-	public static final String DOCBASETYPE_MaterialMovement = "MMM";
-	/** Purchase Order = POO */
-	public static final String DOCBASETYPE_PurchaseOrder = "POO";
-	/** Purchase Requisition = POR */
-	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
-	/** Material Physical Inventory = MMI */
-	public static final String DOCBASETYPE_MaterialPhysicalInventory = "MMI";
-	/** AP Credit Memo = APC */
-	public static final String DOCBASETYPE_APCreditMemo = "APC";
-	/** AR Credit Memo = ARC */
-	public static final String DOCBASETYPE_ARCreditMemo = "ARC";
+	/** Payment Allocation = CMA */
+	public static final String DOCBASETYPE_PaymentAllocation = "CMA";
 	/** Bank Statement = CMB */
 	public static final String DOCBASETYPE_BankStatement = "CMB";
 	/** Cash Journal = CMC */
 	public static final String DOCBASETYPE_CashJournal = "CMC";
-	/** Payment Allocation = CMA */
-	public static final String DOCBASETYPE_PaymentAllocation = "CMA";
-	/** Material Production = MMP */
-	public static final String DOCBASETYPE_MaterialProduction = "MMP";
-	/** Match Invoice = MXI */
-	public static final String DOCBASETYPE_MatchInvoice = "MXI";
-	/** Match PO = MXP */
-	public static final String DOCBASETYPE_MatchPO = "MXP";
-	/** Project Issue = PJI */
-	public static final String DOCBASETYPE_ProjectIssue = "PJI";
-	/** Maintenance Order = MOF */
-	public static final String DOCBASETYPE_MaintenanceOrder = "MOF";
-	/** Manufacturing Order = MOP */
-	public static final String DOCBASETYPE_ManufacturingOrder = "MOP";
-	/** Quality Order = MQO */
-	public static final String DOCBASETYPE_QualityOrder = "MQO";
-	/** Payroll = HRP */
-	public static final String DOCBASETYPE_Payroll = "HRP";
 	/** Distribution Order = DOO */
 	public static final String DOCBASETYPE_DistributionOrder = "DOO";
-	/** Manufacturing Cost Collector = MCC */
-	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
 	/** Fixed Assets Addition = FAA */
 	public static final String DOCBASETYPE_FixedAssetsAddition = "FAA";
 	/** Fixed Assets Disposal = FAD */
 	public static final String DOCBASETYPE_FixedAssetsDisposal = "FAD";
 	/** Fixed Assets Depreciation = FDP */
 	public static final String DOCBASETYPE_FixedAssetsDepreciation = "FDP";
+	/** GL Document = GLD */
+	public static final String DOCBASETYPE_GLDocument = "GLD";
+	/** GL Journal = GLJ */
+	public static final String DOCBASETYPE_GLJournal = "GLJ";
+	/** Payroll = HRP */
+	public static final String DOCBASETYPE_Payroll = "HRP";
+	/** Manufacturing Cost Collector = MCC */
+	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
+	/** Material Physical Inventory = MMI */
+	public static final String DOCBASETYPE_MaterialPhysicalInventory = "MMI";
+	/** Material Movement = MMM */
+	public static final String DOCBASETYPE_MaterialMovement = "MMM";
+	/** Material Production = MMP */
+	public static final String DOCBASETYPE_MaterialProduction = "MMP";
+	/** Material Receipt = MMR */
+	public static final String DOCBASETYPE_MaterialReceipt = "MMR";
+	/** Material Delivery = MMS */
+	public static final String DOCBASETYPE_MaterialDelivery = "MMS";
+	/** Maintenance Order = MOF */
+	public static final String DOCBASETYPE_MaintenanceOrder = "MOF";
+	/** Manufacturing Order = MOP */
+	public static final String DOCBASETYPE_ManufacturingOrder = "MOP";
+	/** Quality Order = MQO */
+	public static final String DOCBASETYPE_QualityOrder = "MQO";
+	/** Match Invoice = MXI */
+	public static final String DOCBASETYPE_MatchInvoice = "MXI";
+	/** Match PO = MXP */
+	public static final String DOCBASETYPE_MatchPO = "MXP";
+	/** Project Issue = PJI */
+	public static final String DOCBASETYPE_ProjectIssue = "PJI";
+	/** Purchase Order = POO */
+	public static final String DOCBASETYPE_PurchaseOrder = "POO";
+	/** Purchase Requisition = POR */
+	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
+	/** Sales Order = SOO */
+	public static final String DOCBASETYPE_SalesOrder = "SOO";
 	/** Set Document BaseType.
 		@param DocBaseType 
 		Logical type of document
@@ -396,9 +403,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getDocNoSequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getDocNoSequence_ID(), get_TrxName());
+	}
 
 	/** Set Document Sequence.
 		@param DocNoSequence_ID 
@@ -425,12 +433,12 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** DocSubTypeInv AD_Reference_ID=200068 */
 	public static final int DOCSUBTYPEINV_AD_Reference_ID=200068;
-	/** Physical Inventory = PI */
-	public static final String DOCSUBTYPEINV_PhysicalInventory = "PI";
-	/** Internal Use Inventory = IU */
-	public static final String DOCSUBTYPEINV_InternalUseInventory = "IU";
 	/** Cost Adjustment = CA */
 	public static final String DOCSUBTYPEINV_CostAdjustment = "CA";
+	/** Internal Use Inventory = IU */
+	public static final String DOCSUBTYPEINV_InternalUseInventory = "IU";
+	/** Physical Inventory = PI */
+	public static final String DOCSUBTYPEINV_PhysicalInventory = "PI";
 	/** Set Inv Sub Type.
 		@param DocSubTypeInv 
 		Inventory Sub Type
@@ -451,22 +459,22 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** DocSubTypeSO AD_Reference_ID=148 */
 	public static final int DOCSUBTYPESO_AD_Reference_ID=148;
-	/** On Credit Order = WI */
-	public static final String DOCSUBTYPESO_OnCreditOrder = "WI";
-	/** POS Order = WR */
-	public static final String DOCSUBTYPESO_POSOrder = "WR";
-	/** Warehouse Order = WP */
-	public static final String DOCSUBTYPESO_WarehouseOrder = "WP";
-	/** Standard Order = SO */
-	public static final String DOCSUBTYPESO_StandardOrder = "SO";
-	/** Proposal = ON */
-	public static final String DOCSUBTYPESO_Proposal = "ON";
 	/** Quotation = OB */
 	public static final String DOCSUBTYPESO_Quotation = "OB";
-	/** Return Material = RM */
-	public static final String DOCSUBTYPESO_ReturnMaterial = "RM";
+	/** Proposal = ON */
+	public static final String DOCSUBTYPESO_Proposal = "ON";
 	/** Prepay Order = PR */
 	public static final String DOCSUBTYPESO_PrepayOrder = "PR";
+	/** Return Material = RM */
+	public static final String DOCSUBTYPESO_ReturnMaterial = "RM";
+	/** Standard Order = SO */
+	public static final String DOCSUBTYPESO_StandardOrder = "SO";
+	/** On Credit Order = WI */
+	public static final String DOCSUBTYPESO_OnCreditOrder = "WI";
+	/** Warehouse Order = WP */
+	public static final String DOCSUBTYPESO_WarehouseOrder = "WP";
+	/** POS Order = WR */
+	public static final String DOCSUBTYPESO_POSOrder = "WR";
 	/** Set SO Sub Type.
 		@param DocSubTypeSO 
 		Sales Order Sub Type
@@ -523,9 +531,10 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
-			.getPO(getGL_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
+			.getPO(getGL_Category_ID(), get_TrxName());
+	}
 
 	/** Set GL Category.
 		@param GL_Category_ID 

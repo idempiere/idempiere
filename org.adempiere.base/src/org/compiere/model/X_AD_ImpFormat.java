@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImpFormat
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_ImpFormat")
 public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat (Properties ctx, int AD_ImpFormat_ID, String trxName)
@@ -109,9 +110,10 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -155,16 +157,16 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 
 	/** FormatType AD_Reference_ID=209 */
 	public static final int FORMATTYPE_AD_Reference_ID=209;
-	/** Fixed Position = F */
-	public static final String FORMATTYPE_FixedPosition = "F";
 	/** Comma Separated = C */
 	public static final String FORMATTYPE_CommaSeparated = "C";
+	/** Fixed Position = F */
+	public static final String FORMATTYPE_FixedPosition = "F";
 	/** Tab Separated = T */
 	public static final String FORMATTYPE_TabSeparated = "T";
-	/** XML = X */
-	public static final String FORMATTYPE_XML = "X";
 	/** Custom Separator Char = U */
 	public static final String FORMATTYPE_CustomSeparatorChar = "U";
+	/** XML = X */
+	public static final String FORMATTYPE_XML = "X";
 	/** Set Format.
 		@param FormatType 
 		Format of the data

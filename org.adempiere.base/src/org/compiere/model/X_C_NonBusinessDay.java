@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_NonBusinessDay
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_NonBusinessDay")
 public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_NonBusinessDay (Properties ctx, int C_NonBusinessDay_ID, String trxName)
@@ -74,9 +75,10 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
     }
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
 		@param C_Calendar_ID 
@@ -102,9 +104,10 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	}
 
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
-			.getPO(getC_Country_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
+			.getPO(getC_Country_ID(), get_TrxName());
+	}
 
 	/** Set Country.
 		@param C_Country_ID 

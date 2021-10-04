@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Recurring
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Recurring")
 public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Recurring (Properties ctx, int C_Recurring_ID, String trxName)
@@ -79,9 +80,10 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
     }
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -107,9 +109,10 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -135,9 +138,10 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 
@@ -163,9 +167,10 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -191,9 +196,10 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_RecurringGroup getC_RecurringGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RecurringGroup)MTable.get(getCtx(), org.compiere.model.I_C_RecurringGroup.Table_Name)
-			.getPO(getC_RecurringGroup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RecurringGroup)MTable.get(getCtx(), org.compiere.model.I_C_RecurringGroup.Table_ID)
+			.getPO(getC_RecurringGroup_ID(), get_TrxName());
+	}
 
 	/** Set Recurring Group.
 		@param C_RecurringGroup_ID Recurring Group	  */
@@ -327,12 +333,12 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	public static final int FREQUENCYTYPE_AD_Reference_ID=283;
 	/** Daily = D */
 	public static final String FREQUENCYTYPE_Daily = "D";
-	/** Weekly = W */
-	public static final String FREQUENCYTYPE_Weekly = "W";
 	/** Monthly = M */
 	public static final String FREQUENCYTYPE_Monthly = "M";
 	/** Quarterly = Q */
 	public static final String FREQUENCYTYPE_Quarterly = "Q";
+	/** Weekly = W */
+	public static final String FREQUENCYTYPE_Weekly = "W";
 	/** Set Frequency Type.
 		@param FrequencyType 
 		Frequency of event
@@ -352,9 +358,10 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_Name)
-			.getPO(getGL_JournalBatch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_ID)
+			.getPO(getGL_JournalBatch_ID(), get_TrxName());
+	}
 
 	/** Set Journal Batch.
 		@param GL_JournalBatch_ID 
@@ -444,14 +451,14 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 
 	/** RecurringType AD_Reference_ID=282 */
 	public static final int RECURRINGTYPE_AD_Reference_ID=282;
-	/** Invoice = I */
-	public static final String RECURRINGTYPE_Invoice = "I";
-	/** Order = O */
-	public static final String RECURRINGTYPE_Order = "O";
 	/** GL Journal = G */
 	public static final String RECURRINGTYPE_GLJournal = "G";
+	/** Invoice = I */
+	public static final String RECURRINGTYPE_Invoice = "I";
 	/** Project = J */
 	public static final String RECURRINGTYPE_Project = "J";
+	/** Order = O */
+	public static final String RECURRINGTYPE_Order = "O";
 	/** Payment = P */
 	public static final String RECURRINGTYPE_Payment = "P";
 	/** Set Recurring Type.

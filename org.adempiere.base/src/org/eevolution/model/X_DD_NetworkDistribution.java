@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for DD_NetworkDistribution
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="DD_NetworkDistribution")
 public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribution, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistribution (Properties ctx, int DD_NetworkDistribution_ID, String trxName)
@@ -177,9 +178,10 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	}
 
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
-			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
+			.getPO(getM_ChangeNotice_ID(), get_TrxName());
+	}
 
 	/** Set Change Notice.
 		@param M_ChangeNotice_ID 

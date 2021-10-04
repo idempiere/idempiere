@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_BOM
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PP_Order_BOM")
 public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_Order_BOM (Properties ctx, int PP_Order_BOM_ID, String trxName)
@@ -82,22 +83,22 @@ public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent
 	public static final int BOMTYPE_AD_Reference_ID=347;
 	/** Current Active = A */
 	public static final String BOMTYPE_CurrentActive = "A";
+	/** Product Configure = C */
+	public static final String BOMTYPE_ProductConfigure = "C";
+	/** Future = F */
+	public static final String BOMTYPE_Future = "F";
+	/** Make-To-Kit = K */
+	public static final String BOMTYPE_Make_To_Kit = "K";
+	/** Maintenance = M */
+	public static final String BOMTYPE_Maintenance = "M";
 	/** Make-To-Order = O */
 	public static final String BOMTYPE_Make_To_Order = "O";
 	/** Previous = P */
 	public static final String BOMTYPE_Previous = "P";
-	/** Previous, Spare = S */
-	public static final String BOMTYPE_PreviousSpare = "S";
-	/** Future = F */
-	public static final String BOMTYPE_Future = "F";
-	/** Maintenance = M */
-	public static final String BOMTYPE_Maintenance = "M";
 	/** Repair = R */
 	public static final String BOMTYPE_Repair = "R";
-	/** Product Configure = C */
-	public static final String BOMTYPE_ProductConfigure = "C";
-	/** Make-To-Kit = K */
-	public static final String BOMTYPE_Make_To_Kit = "K";
+	/** Previous, Spare = S */
+	public static final String BOMTYPE_PreviousSpare = "S";
 	/** Set BOM Type.
 		@param BOMType 
 		Type of BOM
@@ -164,9 +165,10 @@ public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 
@@ -243,9 +245,10 @@ public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -271,9 +274,10 @@ public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
-			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
+			.getPO(getM_ChangeNotice_ID(), get_TrxName());
+	}
 
 	/** Set Change Notice.
 		@param M_ChangeNotice_ID 
@@ -299,9 +303,10 @@ public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -386,9 +391,10 @@ public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent
 	}
 
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_Name)
-			.getPO(getPP_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
+			.getPO(getPP_Order_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order.
 		@param PP_Order_ID 

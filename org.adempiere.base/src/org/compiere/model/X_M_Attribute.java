@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Attribute
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_Attribute")
 public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
@@ -76,9 +77,10 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -104,9 +106,10 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -132,9 +135,10 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -161,16 +165,16 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 
 	/** AttributeValueType AD_Reference_ID=326 */
 	public static final int ATTRIBUTEVALUETYPE_AD_Reference_ID=326;
-	/** String (max 40) = S */
-	public static final String ATTRIBUTEVALUETYPE_StringMax40 = "S";
-	/** Number = N */
-	public static final String ATTRIBUTEVALUETYPE_Number = "N";
-	/** List = L */
-	public static final String ATTRIBUTEVALUETYPE_List = "L";
 	/** Date = D */
 	public static final String ATTRIBUTEVALUETYPE_Date = "D";
+	/** List = L */
+	public static final String ATTRIBUTEVALUETYPE_List = "L";
+	/** Number = N */
+	public static final String ATTRIBUTEVALUETYPE_Number = "N";
 	/** Reference = R */
 	public static final String ATTRIBUTEVALUETYPE_Reference = "R";
+	/** String (max 40) = S */
+	public static final String ATTRIBUTEVALUETYPE_StringMax40 = "S";
 	/** Set Attribute Value Type.
 		@param AttributeValueType 
 		Type of Attribute Value
@@ -295,9 +299,10 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	public org.compiere.model.I_M_AttributeSearch getM_AttributeSearch() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_AttributeSearch)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSearch.Table_Name)
-			.getPO(getM_AttributeSearch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_AttributeSearch)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSearch.Table_ID)
+			.getPO(getM_AttributeSearch_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Search.
 		@param M_AttributeSearch_ID 

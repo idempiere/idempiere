@@ -159,6 +159,7 @@
         <setEntry value="org.apache.xml.serializer@default:default"/>
         <setEntry value="org.apiguardian@default:default"/>
         <setEntry value="org.atmosphere.runtime@default:default"/>
+        <setEntry value="org.codehaus.jettison.jettison@default:default"/>
         <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
         <setEntry value="org.eclipse.core.commands@default:default"/>
@@ -343,6 +344,7 @@
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.test@default:default"/>
+        <setEntry value="org.idempiere.webservices@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
     <stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>

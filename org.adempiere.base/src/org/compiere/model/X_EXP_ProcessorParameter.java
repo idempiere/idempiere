@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for EXP_ProcessorParameter
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="EXP_ProcessorParameter")
 public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParameter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_EXP_ProcessorParameter (Properties ctx, int EXP_ProcessorParameter_ID, String trxName)
@@ -90,9 +91,10 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
 	}
 
 	public org.compiere.model.I_EXP_Processor getEXP_Processor() throws RuntimeException
-    {
-		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_Name)
-			.getPO(getEXP_Processor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_ID)
+			.getPO(getEXP_Processor_ID(), get_TrxName());
+	}
 
 	/** Set Export Processor.
 		@param EXP_Processor_ID Export Processor	  */

@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaySchedule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_PaySchedule")
 public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_PaySchedule (Properties ctx, int C_PaySchedule_ID, String trxName)
@@ -80,9 +81,10 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
     }
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_Name)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
 
 	/** Set Payment Term.
 		@param C_PaymentTerm_ID 
@@ -238,8 +240,6 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 
 	/** NetDay AD_Reference_ID=167 */
 	public static final int NETDAY_AD_Reference_ID=167;
-	/** Sunday = 7 */
-	public static final String NETDAY_Sunday = "7";
 	/** Monday = 1 */
 	public static final String NETDAY_Monday = "1";
 	/** Tuesday = 2 */
@@ -252,6 +252,8 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	public static final String NETDAY_Friday = "5";
 	/** Saturday = 6 */
 	public static final String NETDAY_Saturday = "6";
+	/** Sunday = 7 */
+	public static final String NETDAY_Sunday = "7";
 	/** Set Net Day.
 		@param NetDay 
 		Day when payment is due net

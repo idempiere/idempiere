@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_CashLine")
 public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_CashLine (Properties ctx, int C_CashLine_ID, String trxName)
@@ -101,18 +102,18 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 
 	/** CashType AD_Reference_ID=217 */
 	public static final int CASHTYPE_AD_Reference_ID=217;
-	/** Bank Account Transfer = T */
-	public static final String CASHTYPE_BankAccountTransfer = "T";
-	/** Invoice = I */
-	public static final String CASHTYPE_Invoice = "I";
-	/** General Expense = E */
-	public static final String CASHTYPE_GeneralExpense = "E";
-	/** General Receipts = R */
-	public static final String CASHTYPE_GeneralReceipts = "R";
 	/** Charge = C */
 	public static final String CASHTYPE_Charge = "C";
 	/** Difference = D */
 	public static final String CASHTYPE_Difference = "D";
+	/** General Expense = E */
+	public static final String CASHTYPE_GeneralExpense = "E";
+	/** Invoice = I */
+	public static final String CASHTYPE_Invoice = "I";
+	/** General Receipts = R */
+	public static final String CASHTYPE_GeneralReceipts = "R";
+	/** Bank Account Transfer = T */
+	public static final String CASHTYPE_BankAccountTransfer = "T";
 	/** Set Cash Type.
 		@param CashType 
 		Source of Cash
@@ -132,9 +133,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
@@ -160,9 +162,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Cash getC_Cash() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Cash)MTable.get(getCtx(), org.compiere.model.I_C_Cash.Table_Name)
-			.getPO(getC_Cash_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Cash)MTable.get(getCtx(), org.compiere.model.I_C_Cash.Table_ID)
+			.getPO(getC_Cash_ID(), get_TrxName());
+	}
 
 	/** Set Cash Journal.
 		@param C_Cash_ID 
@@ -233,9 +236,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -261,9 +265,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -289,9 +294,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -317,9 +323,10 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 

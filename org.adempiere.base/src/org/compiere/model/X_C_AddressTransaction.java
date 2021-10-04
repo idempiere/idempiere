@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressTransaction
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_AddressTransaction")
 public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_AddressTransaction (Properties ctx, int C_AddressTransaction_ID, String trxName)
@@ -195,9 +196,10 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 	}
 
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AddressValidation)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidation.Table_Name)
-			.getPO(getC_AddressValidation_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AddressValidation)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidation.Table_ID)
+			.getPO(getC_AddressValidation_ID(), get_TrxName());
+	}
 
 	/** Set Address Validation.
 		@param C_AddressValidation_ID Address Validation	  */
@@ -245,9 +247,10 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
     }
 
 	public I_C_Location getC_Location() throws RuntimeException
-    {
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
-			.getPO(getC_Location_ID(), get_TrxName());	}
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
 
 	/** Set Address.
 		@param C_Location_ID 

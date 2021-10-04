@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSetInstance
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_AttributeSetInstance")
 public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_AttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName)
@@ -124,9 +125,10 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	}
 
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_Name)
-			.getPO(getM_AttributeSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)
+			.getPO(getM_AttributeSet_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set.
 		@param M_AttributeSet_ID 
@@ -197,9 +199,10 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	}
 
 	public org.compiere.model.I_M_Lot getM_Lot() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Lot)MTable.get(getCtx(), org.compiere.model.I_M_Lot.Table_Name)
-			.getPO(getM_Lot_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Lot)MTable.get(getCtx(), org.compiere.model.I_M_Lot.Table_ID)
+			.getPO(getM_Lot_ID(), get_TrxName());
+	}
 
 	/** Set Lot.
 		@param M_Lot_ID 

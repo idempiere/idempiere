@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Withholding
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_BP_Withholding")
 public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BP_Withholding (Properties ctx, int C_BP_Withholding_ID, String trxName)
@@ -74,9 +75,10 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -124,9 +126,10 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 	}
 
 	public org.compiere.model.I_C_Withholding getC_Withholding() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Withholding)MTable.get(getCtx(), org.compiere.model.I_C_Withholding.Table_Name)
-			.getPO(getC_Withholding_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Withholding)MTable.get(getCtx(), org.compiere.model.I_C_Withholding.Table_ID)
+			.getPO(getC_Withholding_ID(), get_TrxName());
+	}
 
 	/** Set Withholding.
 		@param C_Withholding_ID 

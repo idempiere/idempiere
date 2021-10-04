@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQResponseLineQty
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_RfQResponseLineQty")
 public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLineQty (Properties ctx, int C_RfQResponseLineQty_ID, String trxName)
@@ -76,9 +77,10 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
     }
 
 	public org.compiere.model.I_C_RfQLineQty getC_RfQLineQty() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RfQLineQty)MTable.get(getCtx(), org.compiere.model.I_C_RfQLineQty.Table_Name)
-			.getPO(getC_RfQLineQty_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RfQLineQty)MTable.get(getCtx(), org.compiere.model.I_C_RfQLineQty.Table_ID)
+			.getPO(getC_RfQLineQty_ID(), get_TrxName());
+	}
 
 	/** Set RfQ Line Quantity.
 		@param C_RfQLineQty_ID 
@@ -104,9 +106,10 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	}
 
 	public org.compiere.model.I_C_RfQResponseLine getC_RfQResponseLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RfQResponseLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQResponseLine.Table_Name)
-			.getPO(getC_RfQResponseLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RfQResponseLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQResponseLine.Table_ID)
+			.getPO(getC_RfQResponseLine_ID(), get_TrxName());
+	}
 
 	/** Set RfQ Response Line.
 		@param C_RfQResponseLine_ID 

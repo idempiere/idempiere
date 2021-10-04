@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="WS_WebServiceType")
 public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_WS_WebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName)
@@ -75,9 +76,10 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -193,9 +195,10 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	public org.compiere.model.I_WS_WebService getWS_WebService() throws RuntimeException
-    {
-		return (org.compiere.model.I_WS_WebService)MTable.get(getCtx(), org.compiere.model.I_WS_WebService.Table_Name)
-			.getPO(getWS_WebService_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_WS_WebService)MTable.get(getCtx(), org.compiere.model.I_WS_WebService.Table_ID)
+			.getPO(getWS_WebService_ID(), get_TrxName());
+	}
 
 	/** Set Web Service.
 		@param WS_WebService_ID Web Service	  */
@@ -218,9 +221,10 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	public org.compiere.model.I_WS_WebServiceMethod getWS_WebServiceMethod() throws RuntimeException
-    {
-		return (org.compiere.model.I_WS_WebServiceMethod)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceMethod.Table_Name)
-			.getPO(getWS_WebServiceMethod_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_WS_WebServiceMethod)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceMethod.Table_ID)
+			.getPO(getWS_WebServiceMethod_ID(), get_TrxName());
+	}
 
 	/** Set Web Service Method.
 		@param WS_WebServiceMethod_ID Web Service Method	  */

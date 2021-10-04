@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Order")
 public class X_C_Order extends PO implements I_C_Order, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -157,9 +158,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -219,9 +221,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getBill_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getBill_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getBill_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Partner.
 		@param Bill_BPartner_ID 
@@ -247,9 +250,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getBill_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getBill_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getBill_Location_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Location.
 		@param Bill_Location_ID 
@@ -275,9 +279,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getBill_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getBill_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getBill_User_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Contact.
 		@param Bill_User_ID 
@@ -303,9 +308,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -331,9 +337,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -359,9 +366,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
 
 	/** Set Partner Location.
 		@param C_BPartner_Location_ID 
@@ -387,9 +395,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -415,9 +424,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CashLine getC_CashLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CashLine)MTable.get(getCtx(), org.compiere.model.I_C_CashLine.Table_Name)
-			.getPO(getC_CashLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CashLine)MTable.get(getCtx(), org.compiere.model.I_C_CashLine.Table_ID)
+			.getPO(getC_CashLine_ID(), get_TrxName());
+	}
 
 	/** Set Cash Journal Line.
 		@param C_CashLine_ID 
@@ -443,9 +453,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CashPlanLine getC_CashPlanLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CashPlanLine)MTable.get(getCtx(), org.compiere.model.I_C_CashPlanLine.Table_Name)
-			.getPO(getC_CashPlanLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CashPlanLine)MTable.get(getCtx(), org.compiere.model.I_C_CashPlanLine.Table_ID)
+			.getPO(getC_CashPlanLine_ID(), get_TrxName());
+	}
 
 	/** Set Cash Plan Line.
 		@param C_CashPlanLine_ID Cash Plan Line	  */
@@ -468,9 +479,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -496,9 +508,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
-			.getPO(getC_ConversionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
 
 	/** Set Currency Type.
 		@param C_ConversionType_ID 
@@ -524,9 +537,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -552,9 +566,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
 
 	/** Set Document Type.
 		@param C_DocType_ID 
@@ -580,9 +595,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeTarget_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeTarget_ID(), get_TrxName());
+	}
 
 	/** Set Target Document Type.
 		@param C_DocTypeTarget_ID 
@@ -628,9 +644,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_Name)
-			.getPO(getC_Opportunity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_ID)
+			.getPO(getC_Opportunity_ID(), get_TrxName());
+	}
 
 	/** Set Sales Opportunity.
 		@param C_Opportunity_ID Sales Opportunity	  */
@@ -693,9 +710,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderSource)MTable.get(getCtx(), org.compiere.model.I_C_OrderSource.Table_Name)
-			.getPO(getC_OrderSource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderSource)MTable.get(getCtx(), org.compiere.model.I_C_OrderSource.Table_ID)
+			.getPO(getC_OrderSource_ID(), get_TrxName());
+	}
 
 	/** Set Order Source.
 		@param C_OrderSource_ID Order Source	  */
@@ -732,9 +750,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 
@@ -760,9 +779,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_Name)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
 
 	/** Set Payment Term.
 		@param C_PaymentTerm_ID 
@@ -788,9 +808,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_POS getC_POS() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_POS)MTable.get(getCtx(), org.compiere.model.I_C_POS.Table_Name)
-			.getPO(getC_POS_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_POS)MTable.get(getCtx(), org.compiere.model.I_C_POS.Table_ID)
+			.getPO(getC_POS_ID(), get_TrxName());
+	}
 
 	/** Set POS Terminal.
 		@param C_POS_ID 
@@ -816,9 +837,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -913,18 +935,18 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 
 	/** DeliveryRule AD_Reference_ID=151 */
 	public static final int DELIVERYRULE_AD_Reference_ID=151;
-	/** After Receipt = R */
-	public static final String DELIVERYRULE_AfterReceipt = "R";
 	/** Availability = A */
 	public static final String DELIVERYRULE_Availability = "A";
-	/** Complete Line = L */
-	public static final String DELIVERYRULE_CompleteLine = "L";
-	/** Complete Order = O */
-	public static final String DELIVERYRULE_CompleteOrder = "O";
 	/** Force = F */
 	public static final String DELIVERYRULE_Force = "F";
+	/** Complete Line = L */
+	public static final String DELIVERYRULE_CompleteLine = "L";
 	/** Manual = M */
 	public static final String DELIVERYRULE_Manual = "M";
+	/** Complete Order = O */
+	public static final String DELIVERYRULE_CompleteOrder = "O";
+	/** After Payment = R */
+	public static final String DELIVERYRULE_AfterPayment = "R";
 	/** Set Delivery Rule.
 		@param DeliveryRule 
 		Defines the timing of Delivery
@@ -945,10 +967,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 
 	/** DeliveryViaRule AD_Reference_ID=152 */
 	public static final int DELIVERYVIARULE_AD_Reference_ID=152;
-	/** Pickup = P */
-	public static final String DELIVERYVIARULE_Pickup = "P";
 	/** Delivery = D */
 	public static final String DELIVERYVIARULE_Delivery = "D";
+	/** Pickup = P */
+	public static final String DELIVERYVIARULE_Pickup = "P";
 	/** Shipper = S */
 	public static final String DELIVERYVIARULE_Shipper = "S";
 	/** Set Delivery Via.
@@ -988,34 +1010,34 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -1036,30 +1058,30 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -1104,9 +1126,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getDropShip_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getDropShip_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getDropShip_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Drop Ship Business Partner.
 		@param DropShip_BPartner_ID 
@@ -1132,9 +1155,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getDropShip_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getDropShip_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getDropShip_Location_ID(), get_TrxName());
+	}
 
 	/** Set Drop Shipment Location.
 		@param DropShip_Location_ID 
@@ -1160,9 +1184,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getDropShip_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getDropShip_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getDropShip_User_ID(), get_TrxName());
+	}
 
 	/** Set Drop Shipment Contact.
 		@param DropShip_User_ID 
@@ -1209,12 +1234,12 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 
 	/** FreightCostRule AD_Reference_ID=153 */
 	public static final int FREIGHTCOSTRULE_AD_Reference_ID=153;
-	/** Freight included = I */
-	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
-	/** Fix price = F */
-	public static final String FREIGHTCOSTRULE_FixPrice = "F";
 	/** Calculated = C */
 	public static final String FREIGHTCOSTRULE_Calculated = "C";
+	/** Fix price = F */
+	public static final String FREIGHTCOSTRULE_FixPrice = "F";
+	/** Freight included = I */
+	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
 	/** Line = L */
 	public static final String FREIGHTCOSTRULE_Line = "L";
 	/** Set Freight Cost Rule.
@@ -1257,14 +1282,14 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 
 	/** InvoiceRule AD_Reference_ID=150 */
 	public static final int INVOICERULE_AD_Reference_ID=150;
-	/** After Order delivered = O */
-	public static final String INVOICERULE_AfterOrderDelivered = "O";
 	/** After Delivery = D */
 	public static final String INVOICERULE_AfterDelivery = "D";
-	/** Customer Schedule after Delivery = S */
-	public static final String INVOICERULE_CustomerScheduleAfterDelivery = "S";
 	/** Immediate = I */
 	public static final String INVOICERULE_Immediate = "I";
+	/** After Order delivered = O */
+	public static final String INVOICERULE_AfterOrderDelivered = "O";
+	/** Customer Schedule after Delivery = S */
+	public static final String INVOICERULE_CustomerScheduleAfterDelivery = "S";
 	/** Set Invoice Rule.
 		@param InvoiceRule 
 		Frequency and method of invoicing 
@@ -1611,9 +1636,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getLink_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getLink_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getLink_Order_ID(), get_TrxName());
+	}
 
 	/** Set Linked Order.
 		@param Link_Order_ID 
@@ -1639,9 +1665,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_M_FreightCategory getM_FreightCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_Name)
-			.getPO(getM_FreightCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_ID)
+			.getPO(getM_FreightCategory_ID(), get_TrxName());
+	}
 
 	/** Set Freight Category.
 		@param M_FreightCategory_ID 
@@ -1667,9 +1694,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
-			.getPO(getM_PriceList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
+			.getPO(getM_PriceList_ID(), get_TrxName());
+	}
 
 	/** Set Price List.
 		@param M_PriceList_ID 
@@ -1695,9 +1723,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
 
 	/** Set Shipper.
 		@param M_Shipper_ID 
@@ -1723,9 +1752,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -1800,18 +1830,18 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
 	public static final String PAYMENTRULE_Cash = "B";
-	/** Credit Card = K */
-	public static final String PAYMENTRULE_CreditCard = "K";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULE_DirectDeposit = "T";
-	/** Check = S */
-	public static final String PAYMENTRULE_Check = "S";
-	/** On Credit = P */
-	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULE_CreditCard = "K";
 	/** Mixed POS Payment = M */
 	public static final String PAYMENTRULE_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULE_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULE_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULE_DirectDeposit = "T";
 	/** Set Payment Rule.
 		@param PaymentRule 
 		How you pay the invoice
@@ -1873,14 +1903,14 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 
 	/** PriorityRule AD_Reference_ID=154 */
 	public static final int PRIORITYRULE_AD_Reference_ID=154;
+	/** Urgent = 1 */
+	public static final String PRIORITYRULE_Urgent = "1";
 	/** High = 3 */
 	public static final String PRIORITYRULE_High = "3";
 	/** Medium = 5 */
 	public static final String PRIORITYRULE_Medium = "5";
 	/** Low = 7 */
 	public static final String PRIORITYRULE_Low = "7";
-	/** Urgent = 1 */
-	public static final String PRIORITYRULE_Urgent = "1";
 	/** Minor = 9 */
 	public static final String PRIORITYRULE_Minor = "9";
 	/** Set Priority.
@@ -1984,9 +2014,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getQuotationOrder() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getQuotationOrder_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getQuotationOrder_ID(), get_TrxName());
+	}
 
 	/** Set Quotation.
 		@param QuotationOrder_ID 
@@ -2012,9 +2043,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getRef_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getRef_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getRef_Order_ID(), get_TrxName());
+	}
 
 	/** Set Referenced Order.
 		@param Ref_Order_ID 
@@ -2040,9 +2072,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
 		@param SalesRep_ID 
@@ -2126,9 +2159,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -2154,9 +2188,10 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

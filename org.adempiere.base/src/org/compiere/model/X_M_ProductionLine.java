@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_ProductionLine")
 public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName)
@@ -142,9 +143,10 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -170,9 +172,10 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	public I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -218,9 +221,10 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -246,9 +250,10 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_Name)
-			.getPO(getM_Production_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_ID)
+			.getPO(getM_Production_ID(), get_TrxName());
+	}
 
 	/** Set Production.
 		@param M_Production_ID 
@@ -319,9 +324,10 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	public org.compiere.model.I_M_ProductionPlan getM_ProductionPlan() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ProductionPlan)MTable.get(getCtx(), org.compiere.model.I_M_ProductionPlan.Table_Name)
-			.getPO(getM_ProductionPlan_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ProductionPlan)MTable.get(getCtx(), org.compiere.model.I_M_ProductionPlan.Table_ID)
+			.getPO(getM_ProductionPlan_ID(), get_TrxName());
+	}
 
 	/** Set Production Plan.
 		@param M_ProductionPlan_ID 

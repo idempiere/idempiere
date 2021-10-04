@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Job
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="HR_Job")
 public class X_HR_Job extends PO implements I_HR_Job, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_Job (Properties ctx, int HR_Job_ID, String trxName)
@@ -90,9 +91,10 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_Name)
-			.getPO(getHR_Department_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
+			.getPO(getHR_Department_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Department.
 		@param HR_Department_ID Payroll Department	  */
@@ -215,9 +217,10 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
     }
 
 	public org.eevolution.model.I_HR_Job getNext_Job() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_Name)
-			.getPO(getNext_Job_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_ID)
+			.getPO(getNext_Job_ID(), get_TrxName());
+	}
 
 	/** Set Next Job.
 		@param Next_Job_ID Next Job	  */
@@ -240,9 +243,10 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
 		@param Supervisor_ID 

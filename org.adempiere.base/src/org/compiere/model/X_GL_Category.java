@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Category
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="GL_Category")
 public class X_GL_Category extends PO implements I_GL_Category, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_GL_Category (Properties ctx, int GL_Category_ID, String trxName)
@@ -76,12 +77,12 @@ public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
 
 	/** CategoryType AD_Reference_ID=207 */
 	public static final int CATEGORYTYPE_AD_Reference_ID=207;
-	/** Manual = M */
-	public static final String CATEGORYTYPE_Manual = "M";
-	/** Import = I */
-	public static final String CATEGORYTYPE_Import = "I";
 	/** Document = D */
 	public static final String CATEGORYTYPE_Document = "D";
+	/** Import = I */
+	public static final String CATEGORYTYPE_Import = "I";
+	/** Manual = M */
+	public static final String CATEGORYTYPE_Manual = "M";
 	/** System generated = S */
 	public static final String CATEGORYTYPE_SystemGenerated = "S";
 	/** Set Category Type.

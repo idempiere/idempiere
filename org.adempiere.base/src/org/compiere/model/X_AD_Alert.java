@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Alert
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Alert")
 public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Alert (Properties ctx, int AD_Alert_ID, String trxName)
@@ -104,9 +105,10 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_Name)
-			.getPO(getAD_AlertProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_ID)
+			.getPO(getAD_AlertProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Alert Processor.
 		@param AD_AlertProcessor_ID 

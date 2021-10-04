@@ -331,7 +331,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 	private String isValidTabToExport(GridTab gridTab){
 	    String result=null;
 	    
-	    MTab tab = new MTab(Env.getCtx(), gridTab.getAD_Tab_ID(), null);
+	    MTab tab = MTab.get(gridTab.getAD_Tab_ID());
 
 		if (tab.isReadOnly())
 		   result = Msg.getMsg(Env.getCtx(),"FieldIsReadOnly", new Object[] {gridTab.getName()});

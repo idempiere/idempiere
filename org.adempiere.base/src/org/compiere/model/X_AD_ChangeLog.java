@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ChangeLog
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_ChangeLog")
 public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ChangeLog (Properties ctx, int AD_ChangeLog_ID, String trxName)
@@ -113,9 +114,10 @@ public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -141,9 +143,10 @@ public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Session getAD_Session() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Session)MTable.get(getCtx(), org.compiere.model.I_AD_Session.Table_Name)
-			.getPO(getAD_Session_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Session)MTable.get(getCtx(), org.compiere.model.I_AD_Session.Table_ID)
+			.getPO(getAD_Session_ID(), get_TrxName());
+	}
 
 	/** Set Session.
 		@param AD_Session_ID 
@@ -177,9 +180,10 @@ public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -223,10 +227,10 @@ public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent
 
 	/** EventChangeLog AD_Reference_ID=53238 */
 	public static final int EVENTCHANGELOG_AD_Reference_ID=53238;
-	/** Insert = I */
-	public static final String EVENTCHANGELOG_Insert = "I";
 	/** Delete = D */
 	public static final String EVENTCHANGELOG_Delete = "D";
+	/** Insert = I */
+	public static final String EVENTCHANGELOG_Insert = "I";
 	/** Update = U */
 	public static final String EVENTCHANGELOG_Update = "U";
 	/** Set Event Change Log.

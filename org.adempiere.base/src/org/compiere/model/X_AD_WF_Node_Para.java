@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Node_Para
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_Node_Para")
 public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WF_Node_Para (Properties ctx, int AD_WF_Node_Para_ID, String trxName)
@@ -42,7 +43,7 @@ public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persis
 // @1|AD_WF_Node_ID@
 			setAD_WF_Node_Para_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
         } */
     }
 
@@ -75,9 +76,10 @@ public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persis
     }
 
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_Name)
-			.getPO(getAD_Process_Para_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
+			.getPO(getAD_Process_Para_ID(), get_TrxName());
+	}
 
 	/** Set Process Parameter.
 		@param AD_Process_Para_ID Process Parameter	  */
@@ -100,9 +102,10 @@ public class X_AD_WF_Node_Para extends PO implements I_AD_WF_Node_Para, I_Persis
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
 		@param AD_WF_Node_ID 

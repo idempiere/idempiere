@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Role_Included
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Role_Included")
 public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Role_Included (Properties ctx, int AD_Role_Included_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -115,9 +117,10 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	}
 
 	public org.compiere.model.I_AD_Role getIncluded_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getIncluded_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getIncluded_Role_ID(), get_TrxName());
+	}
 
 	/** Set Included Role.
 		@param Included_Role_ID Included Role	  */

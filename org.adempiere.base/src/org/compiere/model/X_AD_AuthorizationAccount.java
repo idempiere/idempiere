@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for AD_AuthorizationAccount
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_AuthorizationAccount")
 public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationAccount, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210511L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
@@ -139,9 +140,10 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	public org.compiere.model.I_AD_AuthorizationCredential getAD_AuthorizationCredential() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AuthorizationCredential)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationCredential.Table_Name)
-			.getPO(getAD_AuthorizationCredential_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AuthorizationCredential)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationCredential.Table_ID)
+			.getPO(getAD_AuthorizationCredential_ID(), get_TrxName());
+	}
 
 	/** Set Authorization Credential.
 		@param AD_AuthorizationCredential_ID Authorization Credential	  */
@@ -167,10 +169,10 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	public static final int AD_AUTHORIZATIONSCOPES_AD_Reference_ID=200185;
 	/** Calendar = Calendar */
 	public static final String AD_AUTHORIZATIONSCOPES_Calendar = "Calendar";
-	/** EMail = EMail */
-	public static final String AD_AUTHORIZATIONSCOPES_EMail = "EMail";
 	/** Document = Document */
 	public static final String AD_AUTHORIZATIONSCOPES_Document = "Document";
+	/** EMail = EMail */
+	public static final String AD_AUTHORIZATIONSCOPES_EMail = "EMail";
 	/** Profile = Profile */
 	public static final String AD_AUTHORIZATIONSCOPES_Profile = "Profile";
 	/** Storage = Storage */
@@ -191,9 +193,10 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 

@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Scheduler
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Scheduler")
 public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -78,9 +79,10 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -106,9 +108,10 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -134,9 +137,10 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
-			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_ID)
+			.getPO(getAD_Schedule_ID(), get_TrxName());
+	}
 
 	/** Set Schedule.
 		@param AD_Schedule_ID Schedule	  */
@@ -196,9 +200,10 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -365,14 +370,14 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 
 	/** ReportOutputType AD_Reference_ID=200169 */
 	public static final int REPORTOUTPUTTYPE_AD_Reference_ID=200169;
-	/** PDF = PDF */
-	public static final String REPORTOUTPUTTYPE_PDF = "PDF";
-	/** HTML = HTML */
-	public static final String REPORTOUTPUTTYPE_HTML = "HTML";
-	/** XLS = XLS */
-	public static final String REPORTOUTPUTTYPE_XLS = "XLS";
 	/** CSV = CSV */
 	public static final String REPORTOUTPUTTYPE_CSV = "CSV";
+	/** HTML = HTML */
+	public static final String REPORTOUTPUTTYPE_HTML = "HTML";
+	/** PDF = PDF */
+	public static final String REPORTOUTPUTTYPE_PDF = "PDF";
+	/** XLS = XLS */
+	public static final String REPORTOUTPUTTYPE_XLS = "XLS";
 	/** XLSX = XLSX */
 	public static final String REPORTOUTPUTTYPE_XLSX = "XLSX";
 	/** Set Report Output Type.
@@ -391,9 +396,10 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Mail Template.
 		@param R_MailText_ID 
@@ -435,9 +441,10 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
 		@param Supervisor_ID 

@@ -66,6 +66,8 @@ public class CacheMgt
 	private ArrayList<String>	m_tableNames = new ArrayList<String>();
 	/** Logger							*/
 	private static CLogger		log = CLogger.getCLogger(CacheMgt.class);
+	/** Cache change listeners **/
+	private List<CacheChangeListener> m_listeners = new ArrayList<CacheChangeListener>();
 
 	public static int MAX_SIZE = 1000;
 	static 
@@ -103,6 +105,12 @@ public class CacheMgt
 			m_tableNames.add(tableName);
 		
 		m_instances.add (instance);
+		
+		if (tableName == null && instance instanceof CacheChangeListener)
+		{
+			m_listeners.add((CacheChangeListener) instance);
+		}
+		
 		Map<K, V> map = null;
 		if (distributed) 
 		{
@@ -305,6 +313,15 @@ public class CacheMgt
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(tableName + ": #" + counter + " (" + total + ")");
 
+		CacheChangeListener[] listeners = m_listeners.toArray(new CacheChangeListener[0]);
+		for(CacheChangeListener listener : listeners)
+		{
+			if (Record_ID == -1)
+				listener.reset(tableName);
+			else
+				listener.reset(tableName, Record_ID);
+		}
+		
 		return total;
 	}
 	
@@ -335,7 +352,7 @@ public class CacheMgt
 					}
 				}
 			}
-		}
+		}		
 	}
 	
 	/**

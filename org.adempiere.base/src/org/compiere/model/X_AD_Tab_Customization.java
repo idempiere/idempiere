@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tab_Customization
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Tab_Customization")
 public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210619L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -105,9 +106,10 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
 		@param AD_Tab_ID 
@@ -133,9 +135,10 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -176,10 +179,10 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 
 	/** IsAutoHideEmptyColumn AD_Reference_ID=319 */
 	public static final int ISAUTOHIDEEMPTYCOLUMN_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISAUTOHIDEEMPTYCOLUMN_Yes = "Y";
 	/** No = N */
 	public static final String ISAUTOHIDEEMPTYCOLUMN_No = "N";
+	/** Yes = Y */
+	public static final String ISAUTOHIDEEMPTYCOLUMN_Yes = "Y";
 	/** Set Auto Hide Empty Column.
 		@param IsAutoHideEmptyColumn Auto Hide Empty Column	  */
 	public void setIsAutoHideEmptyColumn (String IsAutoHideEmptyColumn)
@@ -197,10 +200,10 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 
 	/** IsDisplayedGrid AD_Reference_ID=319 */
 	public static final int ISDISPLAYEDGRID_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDISPLAYEDGRID_Yes = "Y";
 	/** No = N */
 	public static final String ISDISPLAYEDGRID_No = "N";
+	/** Yes = Y */
+	public static final String ISDISPLAYEDGRID_Yes = "Y";
 	/** Set Show in Grid.
 		@param IsDisplayedGrid Show in Grid	  */
 	public void setIsDisplayedGrid (String IsDisplayedGrid)

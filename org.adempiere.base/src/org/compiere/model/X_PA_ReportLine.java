@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PA_ReportLine")
 public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -83,12 +84,12 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public static final int CALCULATIONTYPE_AD_Reference_ID=236;
 	/** Add (Op1+Op2) = A */
 	public static final String CALCULATIONTYPE_AddOp1PlusOp2 = "A";
-	/** Subtract (Op1-Op2) = S */
-	public static final String CALCULATIONTYPE_SubtractOp1_Op2 = "S";
 	/** Percentage (Op1 of Op2) = P */
 	public static final String CALCULATIONTYPE_PercentageOp1OfOp2 = "P";
 	/** Add Range (Op1 to Op2) = R */
 	public static final String CALCULATIONTYPE_AddRangeOp1ToOp2 = "R";
+	/** Subtract (Op1-Op2) = S */
+	public static final String CALCULATIONTYPE_SubtractOp1_Op2 = "S";
 	/** Set Calculation.
 		@param CalculationType Calculation	  */
 	public void setCalculationType (String CalculationType)
@@ -122,9 +123,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_Name)
-			.getPO(getGL_Budget_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)
+			.getPO(getGL_Budget_ID(), get_TrxName());
+	}
 
 	/** Set Budget.
 		@param GL_Budget_ID 
@@ -223,12 +225,12 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** LineType AD_Reference_ID=241 */
 	public static final int LINETYPE_AD_Reference_ID=241;
-	/** Segment Value = S */
-	public static final String LINETYPE_SegmentValue = "S";
-	/** Calculation = C */
-	public static final String LINETYPE_Calculation = "C";
 	/** Blank line = B */
 	public static final String LINETYPE_BlankLine = "B";
+	/** Calculation = C */
+	public static final String LINETYPE_Calculation = "C";
+	/** Segment Value = S */
+	public static final String LINETYPE_SegmentValue = "S";
 	/** Set Line Type.
 		@param LineType Line Type	  */
 	public void setLineType (String LineType)
@@ -270,9 +272,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
     }
 
 	public org.compiere.model.I_PA_ReportLine getOper_1() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_Name)
-			.getPO(getOper_1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_ID)
+			.getPO(getOper_1_ID(), get_TrxName());
+	}
 
 	/** Set Operand 1.
 		@param Oper_1_ID 
@@ -298,9 +301,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_ReportLine getOper_2() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_Name)
-			.getPO(getOper_2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_ID)
+			.getPO(getOper_2_ID(), get_TrxName());
+	}
 
 	/** Set Operand 2.
 		@param Oper_2_ID 
@@ -327,16 +331,16 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** OverlineStrokeType AD_Reference_ID=200174 */
 	public static final int OVERLINESTROKETYPE_AD_Reference_ID=200174;
-	/** Dotted = DT */
-	public static final String OVERLINESTROKETYPE_Dotted = "DT";
-	/** Dashed = DS */
-	public static final String OVERLINESTROKETYPE_Dashed = "DS";
-	/** Double Dotted = DDT */
-	public static final String OVERLINESTROKETYPE_DoubleDotted = "DDT";
 	/** Double Dashed = DDS */
 	public static final String OVERLINESTROKETYPE_DoubleDashed = "DDS";
+	/** Double Dotted = DDT */
+	public static final String OVERLINESTROKETYPE_DoubleDotted = "DDT";
+	/** Dashed = DS */
+	public static final String OVERLINESTROKETYPE_Dashed = "DS";
 	/** Double Solid = DSD */
 	public static final String OVERLINESTROKETYPE_DoubleSolid = "DSD";
+	/** Dotted = DT */
+	public static final String OVERLINESTROKETYPE_Dotted = "DT";
 	/** Solid = SD */
 	public static final String OVERLINESTROKETYPE_Solid = "SD";
 	/** Set Overline Stroke Type.
@@ -364,10 +368,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public static final String PAAMOUNTTYPE_DebitOnly = "D";
 	/** Quantity (expected sign) = Q */
 	public static final String PAAMOUNTTYPE_QuantityExpectedSign = "Q";
-	/** Balance (accounted sign) = S */
-	public static final String PAAMOUNTTYPE_BalanceAccountedSign = "S";
 	/** Quantity (accounted sign) = R */
 	public static final String PAAMOUNTTYPE_QuantityAccountedSign = "R";
+	/** Balance (accounted sign) = S */
+	public static final String PAAMOUNTTYPE_BalanceAccountedSign = "S";
 	/** Set Amount Type.
 		@param PAAmountType 
 		PA Amount Type for reporting
@@ -388,14 +392,14 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** PAPeriodType AD_Reference_ID=53327 */
 	public static final int PAPERIODTYPE_AD_Reference_ID=53327;
+	/** Natural = N */
+	public static final String PAPERIODTYPE_Natural = "N";
+	/** Period = P */
+	public static final String PAPERIODTYPE_Period = "P";
 	/** Total = T */
 	public static final String PAPERIODTYPE_Total = "T";
 	/** Year = Y */
 	public static final String PAPERIODTYPE_Year = "Y";
-	/** Period = P */
-	public static final String PAPERIODTYPE_Period = "P";
-	/** Natural = N */
-	public static final String PAPERIODTYPE_Natural = "N";
 	/** Set Period Type.
 		@param PAPeriodType 
 		PA Period Type
@@ -435,9 +439,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_Name)
-			.getPO(getPA_ReportLineSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_ID)
+			.getPO(getPA_ReportLineSet_ID(), get_TrxName());
+	}
 
 	/** Set Report Line Set.
 		@param PA_ReportLineSet_ID Report Line Set	  */
@@ -481,10 +486,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
 		@param PostingType 
 		The type of posted amount for the transaction
@@ -525,16 +530,16 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** UnderlineStrokeType AD_Reference_ID=200174 */
 	public static final int UNDERLINESTROKETYPE_AD_Reference_ID=200174;
-	/** Dotted = DT */
-	public static final String UNDERLINESTROKETYPE_Dotted = "DT";
-	/** Dashed = DS */
-	public static final String UNDERLINESTROKETYPE_Dashed = "DS";
-	/** Double Dotted = DDT */
-	public static final String UNDERLINESTROKETYPE_DoubleDotted = "DDT";
 	/** Double Dashed = DDS */
 	public static final String UNDERLINESTROKETYPE_DoubleDashed = "DDS";
+	/** Double Dotted = DDT */
+	public static final String UNDERLINESTROKETYPE_DoubleDotted = "DDT";
+	/** Dashed = DS */
+	public static final String UNDERLINESTROKETYPE_Dashed = "DS";
 	/** Double Solid = DSD */
 	public static final String UNDERLINESTROKETYPE_DoubleSolid = "DSD";
+	/** Dotted = DT */
+	public static final String UNDERLINESTROKETYPE_Dotted = "DT";
 	/** Solid = SD */
 	public static final String UNDERLINESTROKETYPE_Solid = "SD";
 	/** Set Underline Stroke Type.

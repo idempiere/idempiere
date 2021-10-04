@@ -27,14 +27,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_BOMLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PP_Product_BOMLine")
 public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_Product_BOMLine (Properties ctx, int PP_Product_BOMLine_ID, String trxName)
@@ -125,6 +126,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	public static final String COMPONENTTYPE_By_Product = "BY";
 	/** Component = CO */
 	public static final String COMPONENTTYPE_Component = "CO";
+	/** Co-Product = CP */
+	public static final String COMPONENTTYPE_Co_Product = "CP";
+	/** Option = OP */
+	public static final String COMPONENTTYPE_Option = "OP";
 	/** Phantom = PH */
 	public static final String COMPONENTTYPE_Phantom = "PH";
 	/** Packing = PK */
@@ -133,12 +138,8 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	public static final String COMPONENTTYPE_Planning = "PL";
 	/** Tools = TL */
 	public static final String COMPONENTTYPE_Tools = "TL";
-	/** Option = OP */
-	public static final String COMPONENTTYPE_Option = "OP";
 	/** Variant = VA */
 	public static final String COMPONENTTYPE_Variant = "VA";
-	/** Co-Product = CP */
-	public static final String COMPONENTTYPE_Co_Product = "CP";
 	/** Set Component Type.
 		@param ComponentType 
 		Component Type for a Bill of Material or Formula
@@ -178,9 +179,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 
@@ -391,9 +393,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -419,9 +422,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	}
 
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
-			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
+			.getPO(getM_ChangeNotice_ID(), get_TrxName());
+	}
 
 	/** Set Change Notice.
 		@param M_ChangeNotice_ID 
@@ -447,9 +451,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -483,9 +488,10 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
     }
 
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_Name)
-			.getPO(getPP_Product_BOM_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
+	}
 
 	/** Set BOM & Formula.
 		@param PP_Product_BOM_ID 

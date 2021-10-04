@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_FundRestriction
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="GL_FundRestriction")
 public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_GL_FundRestriction (Properties ctx, int GL_FundRestriction_ID, String trxName)
@@ -74,9 +75,10 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
     }
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Account Element.
 		@param C_ElementValue_ID 
@@ -119,9 +121,10 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 	}
 
 	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Fund)MTable.get(getCtx(), org.compiere.model.I_GL_Fund.Table_Name)
-			.getPO(getGL_Fund_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Fund)MTable.get(getCtx(), org.compiere.model.I_GL_Fund.Table_ID)
+			.getPO(getGL_Fund_ID(), get_TrxName());
+	}
 
 	/** Set GL Fund.
 		@param GL_Fund_ID 

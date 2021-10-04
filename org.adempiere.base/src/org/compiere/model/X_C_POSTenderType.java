@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSTenderType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_POSTenderType")
 public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_POSTenderType (Properties ctx, int C_POSTenderType_ID, String trxName)
@@ -216,14 +217,14 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
 
 	/** TenderType AD_Reference_ID=214 */
 	public static final int TENDERTYPE_AD_Reference_ID=214;
-	/** Credit Card = C */
-	public static final String TENDERTYPE_CreditCard = "C";
-	/** Check = K */
-	public static final String TENDERTYPE_Check = "K";
 	/** Direct Deposit = A */
 	public static final String TENDERTYPE_DirectDeposit = "A";
+	/** Credit Card = C */
+	public static final String TENDERTYPE_CreditCard = "C";
 	/** Direct Debit = D */
 	public static final String TENDERTYPE_DirectDebit = "D";
+	/** Check = K */
+	public static final String TENDERTYPE_Check = "K";
 	/** Account = T */
 	public static final String TENDERTYPE_Account = "T";
 	/** Cash = X */

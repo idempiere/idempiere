@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ShippingTransaction
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_ShippingTransaction")
 public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransaction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_ShippingTransaction (Properties ctx, int M_ShippingTransaction_ID, String trxName)
@@ -114,12 +115,12 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 
 	/** Action AD_Reference_ID=200042 */
 	public static final int ACTION_AD_Reference_ID=200042;
+	/** Process Shipment = PS */
+	public static final String ACTION_ProcessShipment = "PS";
 	/** Rate Inquiry = RI */
 	public static final String ACTION_RateInquiry = "RI";
 	/** Void Shipment = VS */
 	public static final String ACTION_VoidShipment = "VS";
-	/** Process Shipment = PS */
-	public static final String ACTION_ProcessShipment = "PS";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
@@ -139,9 +140,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -167,9 +169,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getBill_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getBill_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getBill_Location_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Location.
 		@param Bill_Location_ID 
@@ -233,9 +236,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -261,9 +265,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
 
 	/** Set Partner Location.
 		@param C_BPartner_Location_ID 
@@ -289,9 +294,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_Name)
-			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_ID)
+			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner Shipping Account.
 		@param C_BP_ShippingAcct_ID Business Partner Shipping Account	  */
@@ -314,9 +320,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -342,9 +349,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -387,9 +395,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -415,9 +424,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_Length_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_Length_ID(), get_TrxName());
+	}
 
 	/** Set UOM for Length.
 		@param C_UOM_Length_ID 
@@ -443,9 +453,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_Weight_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_Weight_ID(), get_TrxName());
+	}
 
 	/** Set UOM for Weight.
 		@param C_UOM_Weight_ID 
@@ -785,9 +796,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getHoldAddress_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getHoldAddress_ID(), get_TrxName());
+	}
 
 	/** Set Hold Address.
 		@param HoldAddress_ID Hold Address	  */
@@ -1266,9 +1278,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_Name)
-			.getPO(getM_InOut_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
+			.getPO(getM_InOut_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt.
 		@param M_InOut_ID 
@@ -1294,9 +1307,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Package)MTable.get(getCtx(), org.compiere.model.I_M_Package.Table_Name)
-			.getPO(getM_Package_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Package)MTable.get(getCtx(), org.compiere.model.I_M_Package.Table_ID)
+			.getPO(getM_Package_ID(), get_TrxName());
+	}
 
 	/** Set Package.
 		@param M_Package_ID 
@@ -1322,9 +1336,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
 
 	/** Set Shipper.
 		@param M_Shipper_ID 
@@ -1350,9 +1365,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_Name)
-			.getPO(getM_ShipperLabels_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_ID)
+			.getPO(getM_ShipperLabels_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Labels.
 		@param M_ShipperLabels_ID Shipper Labels	  */
@@ -1375,9 +1391,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackaging.Table_Name)
-			.getPO(getM_ShipperPackaging_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackaging.Table_ID)
+			.getPO(getM_ShipperPackaging_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Packaging.
 		@param M_ShipperPackaging_ID Shipper Packaging	  */
@@ -1400,9 +1417,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypes.Table_Name)
-			.getPO(getM_ShipperPickupTypes_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypes.Table_ID)
+			.getPO(getM_ShipperPickupTypes_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Pickup Types.
 		@param M_ShipperPickupTypes_ID Shipper Pickup Types	  */
@@ -1425,9 +1443,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_Name)
-			.getPO(getM_ShippingProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)
+			.getPO(getM_ShippingProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Shipping Processor.
 		@param M_ShippingProcessor_ID Shipping Processor	  */
@@ -1484,9 +1503,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -1555,18 +1575,18 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
 	public static final String PAYMENTRULE_Cash = "B";
-	/** Credit Card = K */
-	public static final String PAYMENTRULE_CreditCard = "K";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULE_DirectDeposit = "T";
-	/** Check = S */
-	public static final String PAYMENTRULE_Check = "S";
-	/** On Credit = P */
-	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULE_CreditCard = "K";
 	/** Mixed POS Payment = M */
 	public static final String PAYMENTRULE_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULE_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULE_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULE_DirectDeposit = "T";
 	/** Set Payment Rule.
 		@param PaymentRule 
 		How you pay the invoice
@@ -1684,9 +1704,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_BPartner getReturnBPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getReturnBPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getReturnBPartner_ID(), get_TrxName());
+	}
 
 	/** Set Return Partner.
 		@param ReturnBPartner_ID Return Partner	  */
@@ -1709,9 +1730,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getReturnLocation() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getReturnLocation_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getReturnLocation_ID(), get_TrxName());
+	}
 
 	/** Set Return Location.
 		@param ReturnLocation_ID Return Location	  */
@@ -1734,9 +1756,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_AD_User getReturnUser() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getReturnUser_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getReturnUser_ID(), get_TrxName());
+	}
 
 	/** Set Return User/Contact.
 		@param ReturnUser_ID Return User/Contact	  */
@@ -1759,9 +1782,10 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
 		@param SalesRep_ID 

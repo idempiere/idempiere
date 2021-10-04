@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Field")
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210604L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -44,7 +45,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			setAD_Field_ID (0);
 			setAD_Tab_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCentrallyMaintained (true);
 // Y
 			setIsDefaultFocus (false);
@@ -93,9 +94,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -121,9 +123,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
-			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());
+	}
 
 	/** Set Field Group.
 		@param AD_FieldGroup_ID 
@@ -143,34 +146,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public int getAD_FieldGroup_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
-			.getPO(getAD_FieldStyle_ID(), get_TrxName());	}
-
-	/** Set Field Style.
-		@param AD_FieldStyle_ID 
-		Field CSS Style 
-	  */
-	public void setAD_FieldStyle_ID (int AD_FieldStyle_ID)
-	{
-		if (AD_FieldStyle_ID < 1) 
-			set_Value (COLUMNNAME_AD_FieldStyle_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_FieldStyle_ID, Integer.valueOf(AD_FieldStyle_ID));
-	}
-
-	/** Get Field Style.
-		@return Field CSS Style 
-	  */
-	public int getAD_FieldStyle_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldStyle_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -199,6 +174,35 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_FieldStyle_ID(), get_TrxName());
+	}
+
+	/** Set Field Style.
+		@param AD_FieldStyle_ID 
+		Field CSS Style 
+	  */
+	public void setAD_FieldStyle_ID (int AD_FieldStyle_ID)
+	{
+		if (AD_FieldStyle_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, Integer.valueOf(AD_FieldStyle_ID));
+	}
+
+	/** Get Field Style.
+		@return Field CSS Style 
+	  */
+	public int getAD_FieldStyle_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldStyle_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set AD_Field_UU.
 		@param AD_Field_UU AD_Field_UU	  */
 	public void setAD_Field_UU (String AD_Field_UU)
@@ -214,9 +218,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
-			.getPO(getAD_LabelStyle_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_LabelStyle_ID(), get_TrxName());
+	}
 
 	/** Set Label Style.
 		@param AD_LabelStyle_ID 
@@ -242,9 +247,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -270,9 +276,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -298,9 +305,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
 		@param AD_Tab_ID 
@@ -326,9 +334,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -354,9 +363,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation (Lookup).
 		@param AD_Val_Rule_Lookup_ID 
@@ -381,23 +391,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Column SQL.
-		@param ColumnSQL 
-		Virtual Column (r/o)
-	  */
-	public void setColumnSQL (String ColumnSQL)
-	{
-		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
-	}
-
-	/** Get Column SQL.
-		@return Virtual Column (r/o)
-	  */
-	public String getColumnSQL () 
-	{
-		return (String)get_Value(COLUMNNAME_ColumnSQL);
-	}
-
 	/** Set Column Span.
 		@param ColumnSpan 
 		Number of column for a box of field
@@ -416,6 +409,23 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Column SQL.
+		@param ColumnSQL 
+		Virtual Column (r/o)
+	  */
+	public void setColumnSQL (String ColumnSQL)
+	{
+		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
+	}
+
+	/** Get Column SQL.
+		@return Virtual Column (r/o)
+	  */
+	public String getColumnSQL () 
+	{
+		return (String)get_Value(COLUMNNAME_ColumnSQL);
 	}
 
 	/** Set Default Logic.
@@ -527,9 +537,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Tab getIncluded_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getIncluded_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getIncluded_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Included Tab.
 		@param Included_Tab_ID 
@@ -577,10 +588,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 
 	/** IsAllowCopy AD_Reference_ID=319 */
 	public static final int ISALLOWCOPY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISALLOWCOPY_Yes = "Y";
 	/** No = N */
 	public static final String ISALLOWCOPY_No = "N";
+	/** Yes = Y */
+	public static final String ISALLOWCOPY_Yes = "Y";
 	/** Set Allow Copy.
 		@param IsAllowCopy 
 		Determine if a column must be copied when pushing the button to copy record
@@ -601,10 +612,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 
 	/** IsAlwaysUpdateable AD_Reference_ID=319 */
 	public static final int ISALWAYSUPDATEABLE_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISALWAYSUPDATEABLE_Yes = "Y";
 	/** No = N */
 	public static final String ISALWAYSUPDATEABLE_No = "N";
+	/** Yes = Y */
+	public static final String ISALWAYSUPDATEABLE_Yes = "Y";
 	/** Set Always Updatable.
 		@param IsAlwaysUpdateable 
 		The column is always updateable, even if the record is not active or processed
@@ -787,10 +798,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 
 	/** IsMandatory AD_Reference_ID=319 */
 	public static final int ISMANDATORY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISMANDATORY_Yes = "Y";
 	/** No = N */
 	public static final String ISMANDATORY_No = "N";
+	/** Yes = Y */
+	public static final String ISMANDATORY_Yes = "Y";
 	/** Set Mandatory.
 		@param IsMandatory 
 		Data entry is required in this column
@@ -904,10 +915,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 
 	/** IsSelectionColumn AD_Reference_ID=319 */
 	public static final int ISSELECTIONCOLUMN_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISSELECTIONCOLUMN_Yes = "Y";
 	/** No = N */
 	public static final String ISSELECTIONCOLUMN_No = "N";
+	/** Yes = Y */
+	public static final String ISSELECTIONCOLUMN_Yes = "Y";
 	/** Set Selection Column.
 		@param IsSelectionColumn 
 		Is this column used for finding rows in windows
@@ -928,12 +939,12 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 
 	/** IsToolbarButton AD_Reference_ID=200099 */
 	public static final int ISTOOLBARBUTTON_AD_Reference_ID=200099;
-	/** Toolbar = Y */
-	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
-	/** Window = N */
-	public static final String ISTOOLBARBUTTON_Window = "N";
 	/** Both = B */
 	public static final String ISTOOLBARBUTTON_Both = "B";
+	/** Window = N */
+	public static final String ISTOOLBARBUTTON_Window = "N";
+	/** Toolbar = Y */
+	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
 	/** Set Toolbar Button.
 		@param IsToolbarButton 
 		Show the button on the toolbar, the window, or both
@@ -954,10 +965,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 
 	/** IsUpdateable AD_Reference_ID=319 */
 	public static final int ISUPDATEABLE_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISUPDATEABLE_Yes = "Y";
 	/** No = N */
 	public static final String ISUPDATEABLE_No = "N";
+	/** Yes = Y */
+	public static final String ISUPDATEABLE_Yes = "Y";
 	/** Set Updatable.
 		@param IsUpdateable 
 		Determines, if the field can be updated
@@ -1041,10 +1052,10 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public static final String OBSCURETYPE_ObscureDigitsButLast4 = "904";
 	/** Obscure Digits but first/last 4 = 944 */
 	public static final String OBSCURETYPE_ObscureDigitsButFirstLast4 = "944";
-	/** Obscure AlphaNumeric but first/last 4 = A44 */
-	public static final String OBSCURETYPE_ObscureAlphaNumericButFirstLast4 = "A44";
 	/** Obscure AlphaNumeric but last 4 = A04 */
 	public static final String OBSCURETYPE_ObscureAlphaNumericButLast4 = "A04";
+	/** Obscure AlphaNumeric but first/last 4 = A44 */
+	public static final String OBSCURETYPE_ObscureAlphaNumericButFirstLast4 = "A44";
 	/** Set Obscure.
 		@param ObscureType 
 		Type of obscuring the data (limiting the display)

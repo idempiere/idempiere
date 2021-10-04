@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Table")
 public class X_AD_Table extends PO implements I_AD_Table, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -42,7 +43,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 // 4
 			setAD_Table_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsChangeLog (true);
 // Y
 			setIsDeleteable (true);
@@ -90,16 +91,16 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	public static final int ACCESSLEVEL_AD_Reference_ID=5;
 	/** Organization = 1 */
 	public static final String ACCESSLEVEL_Organization = "1";
+	/** Client only = 2 */
+	public static final String ACCESSLEVEL_ClientOnly = "2";
 	/** Client+Organization = 3 */
 	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
 	/** System only = 4 */
 	public static final String ACCESSLEVEL_SystemOnly = "4";
-	/** All = 7 */
-	public static final String ACCESSLEVEL_All = "7";
 	/** System+Client = 6 */
 	public static final String ACCESSLEVEL_SystemPlusClient = "6";
-	/** Client only = 2 */
-	public static final String ACCESSLEVEL_ClientOnly = "2";
+	/** All = 7 */
+	public static final String ACCESSLEVEL_All = "7";
 	/** Set Data Access Level.
 		@param AccessLevel 
 		Access Level required
@@ -156,9 +157,10 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -184,9 +186,10 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -517,9 +520,10 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getPO_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getPO_Window_ID(), get_TrxName());
+	}
 
 	/** Set PO Window.
 		@param PO_Window_ID 
@@ -567,14 +571,14 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 
 	/** ReplicationType AD_Reference_ID=126 */
 	public static final int REPLICATIONTYPE_AD_Reference_ID=126;
+	/** Broadcast = B */
+	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Local = L */
 	public static final String REPLICATIONTYPE_Local = "L";
 	/** Merge = M */
 	public static final String REPLICATIONTYPE_Merge = "M";
 	/** Reference = R */
 	public static final String REPLICATIONTYPE_Reference = "R";
-	/** Broadcast = B */
-	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Set Replication Type.
 		@param ReplicationType 
 		Type of Data Replication

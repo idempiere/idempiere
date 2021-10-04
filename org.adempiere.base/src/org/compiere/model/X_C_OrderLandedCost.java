@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCost
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_OrderLandedCost")
 public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCost (Properties ctx, int C_OrderLandedCost_ID, String trxName)
@@ -100,9 +101,10 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -180,16 +182,16 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 
 	/** LandedCostDistribution AD_Reference_ID=339 */
 	public static final int LANDEDCOSTDISTRIBUTION_AD_Reference_ID=339;
-	/** Quantity = Q */
-	public static final String LANDEDCOSTDISTRIBUTION_Quantity = "Q";
+	/** Costs = C */
+	public static final String LANDEDCOSTDISTRIBUTION_Costs = "C";
 	/** Line = L */
 	public static final String LANDEDCOSTDISTRIBUTION_Line = "L";
+	/** Quantity = Q */
+	public static final String LANDEDCOSTDISTRIBUTION_Quantity = "Q";
 	/** Volume = V */
 	public static final String LANDEDCOSTDISTRIBUTION_Volume = "V";
 	/** Weight = W */
 	public static final String LANDEDCOSTDISTRIBUTION_Weight = "W";
-	/** Costs = C */
-	public static final String LANDEDCOSTDISTRIBUTION_Costs = "C";
 	/** Set Cost Distribution.
 		@param LandedCostDistribution 
 		Landed Cost Distribution
@@ -209,9 +211,10 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	}
 
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_Name)
-			.getPO(getM_CostElement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
+			.getPO(getM_CostElement_ID(), get_TrxName());
+	}
 
 	/** Set Cost Element.
 		@param M_CostElement_ID 

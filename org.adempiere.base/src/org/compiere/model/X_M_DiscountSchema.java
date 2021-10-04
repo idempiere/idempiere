@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchema
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_DiscountSchema")
 public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_DiscountSchema (Properties ctx, int M_DiscountSchema_ID, String trxName)
@@ -120,14 +121,14 @@ public class X_M_DiscountSchema extends PO implements I_M_DiscountSchema, I_Pers
 
 	/** DiscountType AD_Reference_ID=247 */
 	public static final int DISCOUNTTYPE_AD_Reference_ID=247;
-	/** Flat Percent = F */
-	public static final String DISCOUNTTYPE_FlatPercent = "F";
-	/** Formula = S */
-	public static final String DISCOUNTTYPE_Formula = "S";
 	/** Breaks = B */
 	public static final String DISCOUNTTYPE_Breaks = "B";
+	/** Flat Percent = F */
+	public static final String DISCOUNTTYPE_FlatPercent = "F";
 	/** Pricelist = P */
 	public static final String DISCOUNTTYPE_Pricelist = "P";
+	/** Formula = S */
+	public static final String DISCOUNTTYPE_Formula = "S";
 	/** Set Discount Type.
 		@param DiscountType 
 		Type of trade discount calculation

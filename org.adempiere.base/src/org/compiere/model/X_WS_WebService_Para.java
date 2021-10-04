@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for WS_WebService_Para
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="WS_WebService_Para")
 public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName)
@@ -158,9 +159,10 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	}
 
 	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
-    {
-		return (org.compiere.model.I_WS_WebServiceType)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceType.Table_Name)
-			.getPO(getWS_WebServiceType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_WS_WebServiceType)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceType.Table_ID)
+			.getPO(getWS_WebServiceType_ID(), get_TrxName());
+	}
 
 	/** Set Web Service Type.
 		@param WS_WebServiceType_ID Web Service Type	  */

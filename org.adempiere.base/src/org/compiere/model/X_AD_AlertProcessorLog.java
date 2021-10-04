@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_AlertProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_AlertProcessorLog")
 public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessorLog (Properties ctx, int AD_AlertProcessorLog_ID, String trxName)
@@ -72,9 +73,10 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
     }
 
 	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_Name)
-			.getPO(getAD_AlertProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_ID)
+			.getPO(getAD_AlertProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Alert Processor.
 		@param AD_AlertProcessor_ID 

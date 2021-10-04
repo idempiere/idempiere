@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PackageLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_PackageLine")
 public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_PackageLine (Properties ctx, int M_PackageLine_ID, String trxName)
@@ -93,9 +94,10 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
 		@param M_InOutLine_ID 
@@ -121,9 +123,10 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Package)MTable.get(getCtx(), org.compiere.model.I_M_Package.Table_Name)
-			.getPO(getM_Package_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Package)MTable.get(getCtx(), org.compiere.model.I_M_Package.Table_ID)
+			.getPO(getM_Package_ID(), get_TrxName());
+	}
 
 	/** Set Package.
 		@param M_Package_ID 
@@ -194,9 +197,10 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PackageMPS)MTable.get(getCtx(), org.compiere.model.I_M_PackageMPS.Table_Name)
-			.getPO(getM_PackageMPS_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PackageMPS)MTable.get(getCtx(), org.compiere.model.I_M_PackageMPS.Table_ID)
+			.getPO(getM_PackageMPS_ID(), get_TrxName());
+	}
 
 	/** Set Package MPS.
 		@param M_PackageMPS_ID Package MPS	  */
@@ -219,9 +223,10 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_BankAccount_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_BankAccount_Acct")
 public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Acct (Properties ctx, int C_BankAccount_Acct_ID, String trxName)
@@ -77,9 +78,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
     }
 
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Bank Asset.
 		@param B_Asset_Acct 
@@ -102,9 +104,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_InterestExp_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestExp_Acct(), get_TrxName());
+	}
 
 	/** Set Bank Interest Expense.
 		@param B_InterestExp_Acct 
@@ -127,9 +130,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_InterestRev_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestRev_Acct(), get_TrxName());
+	}
 
 	/** Set Bank Interest Revenue.
 		@param B_InterestRev_Acct 
@@ -152,9 +156,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_InTransit_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InTransit_Acct(), get_TrxName());
+	}
 
 	/** Set Bank In Transit.
 		@param B_InTransit_Acct 
@@ -177,9 +182,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_PaymentSelect_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_PaymentSelect_Acct(), get_TrxName());
+	}
 
 	/** Set Payment Selection.
 		@param B_PaymentSelect_Acct 
@@ -202,9 +208,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getB_UnallocatedCash_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_UnallocatedCash_Acct(), get_TrxName());
+	}
 
 	/** Set Unallocated Cash.
 		@param B_UnallocatedCash_Acct 
@@ -227,9 +234,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -269,9 +277,10 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 

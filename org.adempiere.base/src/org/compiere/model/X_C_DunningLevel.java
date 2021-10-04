@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningLevel
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_DunningLevel")
 public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_DunningLevel (Properties ctx, int C_DunningLevel_ID, String trxName)
@@ -86,9 +87,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
     }
 
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_Name)
-			.getPO(getC_Dunning_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
+			.getPO(getC_Dunning_ID(), get_TrxName());
+	}
 
 	/** Set Dunning.
 		@param C_Dunning_ID 
@@ -196,9 +198,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_Name)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
 
 	/** Set Payment Term.
 		@param C_PaymentTerm_ID 
@@ -281,9 +284,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getDunning_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getDunning_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getDunning_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Dunning Print Format.
 		@param Dunning_PrintFormat_ID 
@@ -350,10 +354,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 
 	/** InvoiceCollectionType AD_Reference_ID=394 */
 	public static final int INVOICECOLLECTIONTYPE_AD_Reference_ID=394;
-	/** Dunning = D */
-	public static final String INVOICECOLLECTIONTYPE_Dunning = "D";
 	/** Collection Agency = C */
 	public static final String INVOICECOLLECTIONTYPE_CollectionAgency = "C";
+	/** Dunning = D */
+	public static final String INVOICECOLLECTIONTYPE_Dunning = "D";
 	/** Legal Procedure = L */
 	public static final String INVOICECOLLECTIONTYPE_LegalProcedure = "L";
 	/** Uncollectable = U */

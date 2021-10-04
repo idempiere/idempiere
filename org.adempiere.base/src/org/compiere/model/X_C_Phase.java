@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Phase
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Phase")
 public class X_C_Phase extends PO implements I_C_Phase, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Phase (Properties ctx, int C_Phase_ID, String trxName)
@@ -116,9 +117,10 @@ public class X_C_Phase extends PO implements I_C_Phase, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ProjectType getC_ProjectType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectType)MTable.get(getCtx(), org.compiere.model.I_C_ProjectType.Table_Name)
-			.getPO(getC_ProjectType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectType)MTable.get(getCtx(), org.compiere.model.I_C_ProjectType.Table_ID)
+			.getPO(getC_ProjectType_ID(), get_TrxName());
+	}
 
 	/** Set Project Type.
 		@param C_ProjectType_ID 
@@ -178,9 +180,10 @@ public class X_C_Phase extends PO implements I_C_Phase, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

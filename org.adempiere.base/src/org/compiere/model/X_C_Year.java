@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Year
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Year")
 public class X_C_Year extends PO implements I_C_Year, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Year (Properties ctx, int C_Year_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
     }
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
 		@param C_Calendar_ID 

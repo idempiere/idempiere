@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Reference")
 public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
         {
 			setAD_Reference_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setValidationType (null);
         } */
@@ -75,9 +76,10 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
-			.getPO(getAD_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
+			.getPO(getAD_Element_ID(), get_TrxName());
+	}
 
 	/** Set System Element.
 		@param AD_Element_ID 
@@ -244,10 +246,10 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 
 	/** ValidationType AD_Reference_ID=2 */
 	public static final int VALIDATIONTYPE_AD_Reference_ID=2;
-	/** List Validation = L */
-	public static final String VALIDATIONTYPE_ListValidation = "L";
 	/** DataType = D */
 	public static final String VALIDATIONTYPE_DataType = "D";
+	/** List Validation = L */
+	public static final String VALIDATIONTYPE_ListValidation = "L";
 	/** Table Validation = T */
 	public static final String VALIDATIONTYPE_TableValidation = "T";
 	/** Set Validation type.

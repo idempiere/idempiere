@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_ProjectType")
 public class X_C_ProjectType extends PO implements I_C_ProjectType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ProjectType (Properties ctx, int C_ProjectType_ID, String trxName)
@@ -171,14 +172,14 @@ public class X_C_ProjectType extends PO implements I_C_ProjectType, I_Persistent
 
 	/** ProjectCategory AD_Reference_ID=288 */
 	public static final int PROJECTCATEGORY_AD_Reference_ID=288;
-	/** General = N */
-	public static final String PROJECTCATEGORY_General = "N";
 	/** Asset Project = A */
 	public static final String PROJECTCATEGORY_AssetProject = "A";
-	/** Work Order (Job) = W */
-	public static final String PROJECTCATEGORY_WorkOrderJob = "W";
+	/** General = N */
+	public static final String PROJECTCATEGORY_General = "N";
 	/** Service (Charge) Project = S */
 	public static final String PROJECTCATEGORY_ServiceChargeProject = "S";
+	/** Work Order (Job) = W */
+	public static final String PROJECTCATEGORY_WorkOrderJob = "W";
 	/** Set Project Category.
 		@param ProjectCategory 
 		Project Category

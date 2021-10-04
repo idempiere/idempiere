@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpMsg
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_CtxHelpMsg")
 public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpMsg (Properties ctx, int AD_CtxHelpMsg_ID, String trxName)
@@ -72,9 +73,10 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
     }
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
 
 	/** Set Context Help.
 		@param AD_CtxHelp_ID Context Help	  */

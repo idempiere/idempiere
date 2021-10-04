@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" immediate="true" name="org.adempiere.base.AnnotationBasedModelFactory">
+   <property name="service.ranking" type="Integer" value="0"/>
+   <service>
+      <provide interface="org.adempiere.base.IModelFactory"/>
+   </service>
+   <implementation class="org.adempiere.base.AnnotationBasedModelFactory"/>
+</scr:component>

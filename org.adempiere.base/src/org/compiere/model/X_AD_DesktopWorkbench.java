@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_DesktopWorkbench
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_DesktopWorkbench")
 public class X_AD_DesktopWorkbench extends PO implements I_AD_DesktopWorkbench, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_DesktopWorkbench (Properties ctx, int AD_DesktopWorkbench_ID, String trxName)
@@ -74,9 +75,10 @@ public class X_AD_DesktopWorkbench extends PO implements I_AD_DesktopWorkbench, 
     }
 
 	public org.compiere.model.I_AD_Desktop getAD_Desktop() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Desktop)MTable.get(getCtx(), org.compiere.model.I_AD_Desktop.Table_Name)
-			.getPO(getAD_Desktop_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Desktop)MTable.get(getCtx(), org.compiere.model.I_AD_Desktop.Table_ID)
+			.getPO(getAD_Desktop_ID(), get_TrxName());
+	}
 
 	/** Set Desktop.
 		@param AD_Desktop_ID 
@@ -136,9 +138,10 @@ public class X_AD_DesktopWorkbench extends PO implements I_AD_DesktopWorkbench, 
 	}
 
 	public org.compiere.model.I_AD_Workbench getAD_Workbench() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workbench)MTable.get(getCtx(), org.compiere.model.I_AD_Workbench.Table_Name)
-			.getPO(getAD_Workbench_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workbench)MTable.get(getCtx(), org.compiere.model.I_AD_Workbench.Table_ID)
+			.getPO(getAD_Workbench_ID(), get_TrxName());
+	}
 
 	/** Set Workbench.
 		@param AD_Workbench_ID 

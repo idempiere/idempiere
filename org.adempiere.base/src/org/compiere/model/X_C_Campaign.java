@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Campaign
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Campaign")
 public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Campaign (Properties ctx, int C_Campaign_ID, String trxName)
@@ -115,9 +116,10 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Channel getC_Channel() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Channel)MTable.get(getCtx(), org.compiere.model.I_C_Channel.Table_Name)
-			.getPO(getC_Channel_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Channel)MTable.get(getCtx(), org.compiere.model.I_C_Channel.Table_ID)
+			.getPO(getC_Channel_ID(), get_TrxName());
+	}
 
 	/** Set Channel.
 		@param C_Channel_ID 

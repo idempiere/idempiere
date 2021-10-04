@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Menu
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Menu")
 public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210219L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
         {
 			setAD_Menu_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsReadOnly (false);
 // N
 			setIsSOTrx (true);
@@ -80,24 +81,24 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 
 	/** Action AD_Reference_ID=104 */
 	public static final int ACTION_AD_Reference_ID=104;
-	/** Window = W */
-	public static final String ACTION_Window = "W";
-	/** Task = T */
-	public static final String ACTION_Task = "T";
+	/** Workbench = B */
+	public static final String ACTION_Workbench = "B";
+	/** Detail = D */
+	public static final String ACTION_Detail = "D";
 	/** WorkFlow = F */
 	public static final String ACTION_WorkFlow = "F";
+	/** Info = I */
+	public static final String ACTION_Info = "I";
 	/** Process = P */
 	public static final String ACTION_Process = "P";
 	/** Report = R */
 	public static final String ACTION_Report = "R";
+	/** Task = T */
+	public static final String ACTION_Task = "T";
+	/** Window = W */
+	public static final String ACTION_Window = "W";
 	/** Form = X */
 	public static final String ACTION_Form = "X";
-	/** Workbench = B */
-	public static final String ACTION_Workbench = "B";
-	/** Info = I */
-	public static final String ACTION_Info = "I";
-	/** Detail = D */
-	public static final String ACTION_Detail = "D";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
@@ -117,9 +118,10 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
 		@param AD_Form_ID 
@@ -145,9 +147,10 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -210,9 +213,10 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -238,9 +242,10 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
 		@param AD_Task_ID 
@@ -266,9 +271,10 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -294,9 +300,10 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 

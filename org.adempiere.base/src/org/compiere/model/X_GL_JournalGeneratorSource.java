@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for GL_JournalGeneratorSource
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="GL_JournalGeneratorSource")
 public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGeneratorSource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorSource (Properties ctx, int GL_JournalGeneratorSource_ID, String trxName)
@@ -96,9 +97,10 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 	}
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Account Element.
 		@param C_ElementValue_ID 
@@ -124,9 +126,10 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 	}
 
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
-			.getPO(getGL_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
+			.getPO(getGL_Category_ID(), get_TrxName());
+	}
 
 	/** Set GL Category.
 		@param GL_Category_ID 
@@ -152,9 +155,10 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 	}
 
 	public org.compiere.model.I_GL_JournalGeneratorLine getGL_JournalGeneratorLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_JournalGeneratorLine)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGeneratorLine.Table_Name)
-			.getPO(getGL_JournalGeneratorLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_JournalGeneratorLine)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGeneratorLine.Table_ID)
+			.getPO(getGL_JournalGeneratorLine_ID(), get_TrxName());
+	}
 
 	/** Set Generator Line.
 		@param GL_JournalGeneratorLine_ID Generator Line	  */

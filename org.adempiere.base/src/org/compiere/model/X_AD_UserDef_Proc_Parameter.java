@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc_Parameter
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_UserDef_Proc_Parameter")
 public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc_Parameter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210723L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc_Parameter (Properties ctx, int AD_UserDef_Proc_Parameter_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
     }
 
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_Name)
-			.getPO(getAD_FieldGroup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());
+	}
 
 	/** Set Field Group.
 		@param AD_FieldGroup_ID 
@@ -101,9 +103,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_Name)
-			.getPO(getAD_Process_Para_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
+			.getPO(getAD_Process_Para_ID(), get_TrxName());
+	}
 
 	/** Set Process Parameter.
 		@param AD_Process_Para_ID Process Parameter	  */
@@ -126,9 +129,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -154,9 +158,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -182,9 +187,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	public org.compiere.model.I_AD_UserDef_Proc getAD_UserDef_Proc() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_UserDef_Proc)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Proc.Table_Name)
-			.getPO(getAD_UserDef_Proc_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_UserDef_Proc)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Proc.Table_ID)
+			.getPO(getAD_UserDef_Proc_ID(), get_TrxName());
+	}
 
 	/** Set User defined Process.
 		@param AD_UserDef_Proc_ID 
@@ -247,9 +253,10 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 

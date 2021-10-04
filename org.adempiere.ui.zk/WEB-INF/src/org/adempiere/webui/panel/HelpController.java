@@ -285,7 +285,7 @@ public class HelpController
 
     		if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Tab))
         	{
-        		MTab tab = new MTab(Env.getCtx(), recordId, null);
+        		MTab tab = MTab.get(recordId);
         		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Tab")) {
 
 					nameMsg = tab.get_Translation("Name", false);
@@ -380,7 +380,7 @@ public class HelpController
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Form))
         	{
-        		MForm form = new MForm(Env.getCtx(), recordId, null);
+        		MForm form = MForm.get(recordId);
         		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Form")) {
 
 					nameMsg = form.get_Translation("Name",false);
@@ -427,7 +427,7 @@ public class HelpController
         	}
         	else if (ctxType.equals(X_AD_CtxHelp.CTXTYPE_Info))
         	{
-        		MInfoWindow info = new MInfoWindow(Env.getCtx(), recordId, null);
+        		MInfoWindow info = MInfoWindow.getInfoWindow(recordId);
         		// Load User Def
     			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
 

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Scheduler_Para
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Scheduler_Para")
 public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Scheduler_Para (Properties ctx, int AD_Scheduler_Para_ID, String trxName)
@@ -71,9 +72,10 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
     }
 
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_Name)
-			.getPO(getAD_Process_Para_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
+			.getPO(getAD_Process_Para_ID(), get_TrxName());
+	}
 
 	/** Set Process Parameter.
 		@param AD_Process_Para_ID Process Parameter	  */
@@ -96,9 +98,10 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	}
 
 	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_Name)
-			.getPO(getAD_Scheduler_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_ID)
+			.getPO(getAD_Scheduler_ID(), get_TrxName());
+	}
 
 	/** Set Scheduler.
 		@param AD_Scheduler_ID 

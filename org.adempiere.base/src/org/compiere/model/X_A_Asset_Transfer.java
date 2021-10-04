@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Transfer
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="A_Asset_Transfer")
 public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_Asset_Transfer (Properties ctx, int A_Asset_Transfer_ID, String trxName)
@@ -102,9 +103,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
     }
 
 	public I_C_ValidCombination getA_Accumdepreciation_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Accumdepreciation_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Accumdepreciation_Acct(), get_TrxName());
+	}
 
 	/** Set Accumulated Depreciation Account.
 		@param A_Accumdepreciation_Acct Accumulated Depreciation Account	  */
@@ -138,9 +140,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Accumdepreciation_New_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Accumdepreciation_New_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Accumdepreciation_New_Acct(), get_TrxName());
+	}
 
 	/** Set Accumulated Depreciation Account (new).
 		@param A_Accumdepreciation_New_Acct Accumulated Depreciation Account (new)	  */
@@ -177,9 +180,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Asset Acct.
 		@param A_Asset_Acct Asset Acct	  */
@@ -233,9 +237,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
 		@param A_Asset_ID 
@@ -261,9 +266,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Asset_New_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Asset_New_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Asset_New_Acct(), get_TrxName());
+	}
 
 	/** Set Asset Acct (new).
 		@param A_Asset_New_Acct Asset Acct (new)	  */
@@ -346,9 +352,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Depreciation_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Depreciation_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Depreciation_Acct(), get_TrxName());
+	}
 
 	/** Set Depreciation Account.
 		@param A_Depreciation_Acct Depreciation Account	  */
@@ -382,9 +389,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Depreciation_New_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Depreciation_New_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Depreciation_New_Acct(), get_TrxName());
+	}
 
 	/** Set Depreciation Acct (new).
 		@param A_Depreciation_New_Acct Depreciation Acct (new)	  */
@@ -421,9 +429,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Disposal_Loss_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Loss_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Disposal_Loss_Acct(), get_TrxName());
+	}
 
 	/** Set Disposal Loss Acct.
 		@param A_Disposal_Loss_Acct Disposal Loss Acct	  */
@@ -443,9 +452,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Disposal_Loss_New_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Loss_New_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Disposal_Loss_New_Acct(), get_TrxName());
+	}
 
 	/** Set Disposal Loss Acct (new).
 		@param A_Disposal_Loss_New_Acct Disposal Loss Acct (new)	  */
@@ -496,9 +506,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Disposal_Revenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Revenue_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Disposal_Revenue_Acct(), get_TrxName());
+	}
 
 	/** Set Disposal Revenue Acct.
 		@param A_Disposal_Revenue_Acct Disposal Revenue Acct	  */
@@ -518,9 +529,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public I_C_ValidCombination getA_Disposal_Revenue_New_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getA_Disposal_Revenue_New_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getA_Disposal_Revenue_New_Acct(), get_TrxName());
+	}
 
 	/** Set Disposal Revenue Acct (new).
 		@param A_Disposal_Revenue_New_Acct Disposal Revenue Acct (new)	  */
@@ -647,9 +659,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -675,9 +688,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	}
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getC_Period_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
 
 	/** Set Period.
 		@param C_Period_ID 
@@ -738,34 +752,34 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -786,30 +800,30 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -877,10 +891,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
 		@param PostingType 
 		The type of posted amount for the transaction

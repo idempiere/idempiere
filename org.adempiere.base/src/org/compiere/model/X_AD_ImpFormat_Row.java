@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImpFormat_Row
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_ImpFormat_Row")
 public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210323L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat_Row (Properties ctx, int AD_ImpFormat_Row_ID, String trxName)
@@ -80,9 +81,10 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -108,9 +110,10 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	}
 
 	public org.compiere.model.I_AD_ImpFormat getAD_ImpFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ImpFormat)MTable.get(getCtx(), org.compiere.model.I_AD_ImpFormat.Table_Name)
-			.getPO(getAD_ImpFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ImpFormat)MTable.get(getCtx(), org.compiere.model.I_AD_ImpFormat.Table_ID)
+			.getPO(getAD_ImpFormat_ID(), get_TrxName());
+	}
 
 	/** Set Import Format.
 		@param AD_ImpFormat_ID Import Format	  */
@@ -219,14 +222,14 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 
 	/** DataType AD_Reference_ID=210 */
 	public static final int DATATYPE_AD_Reference_ID=210;
-	/** String = S */
-	public static final String DATATYPE_String = "S";
-	/** Number = N */
-	public static final String DATATYPE_Number = "N";
-	/** Date = D */
-	public static final String DATATYPE_Date = "D";
 	/** Constant = C */
 	public static final String DATATYPE_Constant = "C";
+	/** Date = D */
+	public static final String DATATYPE_Date = "D";
+	/** Number = N */
+	public static final String DATATYPE_Number = "N";
+	/** String = S */
+	public static final String DATATYPE_String = "S";
 	/** Set Data Type.
 		@param DataType 
 		Type of data

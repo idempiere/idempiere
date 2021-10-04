@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_MigrationScript
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_MigrationScript")
 public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_MigrationScript (Properties ctx, int AD_MigrationScript_ID, String trxName)
@@ -291,12 +292,12 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 
 	/** Status AD_Reference_ID=53239 */
 	public static final int STATUS_AD_Reference_ID=53239;
-	/** In Progress = IP */
-	public static final String STATUS_InProgress = "IP";
 	/** Completed = CO */
 	public static final String STATUS_Completed = "CO";
 	/** Error = ER */
 	public static final String STATUS_Error = "ER";
+	/** In Progress = IP */
+	public static final String STATUS_InProgress = "IP";
 	/** Set Status.
 		@param Status 
 		Status of the currently running check

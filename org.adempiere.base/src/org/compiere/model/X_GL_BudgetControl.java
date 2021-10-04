@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_BudgetControl
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="GL_BudgetControl")
 public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_GL_BudgetControl (Properties ctx, int GL_BudgetControl_ID, String trxName)
@@ -81,10 +82,10 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	public static final int BUDGETCONTROLSCOPE_AD_Reference_ID=361;
 	/** Period only = P */
 	public static final String BUDGETCONTROLSCOPE_PeriodOnly = "P";
-	/** Year To Date = Y */
-	public static final String BUDGETCONTROLSCOPE_YearToDate = "Y";
 	/** Total = T */
 	public static final String BUDGETCONTROLSCOPE_Total = "T";
+	/** Year To Date = Y */
+	public static final String BUDGETCONTROLSCOPE_YearToDate = "Y";
 	/** Set Control Scope.
 		@param BudgetControlScope 
 		Scope of the Budget Control
@@ -104,9 +105,10 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -133,18 +135,18 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 
 	/** CommitmentType AD_Reference_ID=359 */
 	public static final int COMMITMENTTYPE_AD_Reference_ID=359;
-	/** PO Commitment only = C */
-	public static final String COMMITMENTTYPE_POCommitmentOnly = "C";
-	/** PO Commitment & Reservation = B */
-	public static final String COMMITMENTTYPE_POCommitmentReservation = "B";
-	/** None = N */
-	public static final String COMMITMENTTYPE_None = "N";
 	/** PO/SO Commitment & Reservation = A */
 	public static final String COMMITMENTTYPE_POSOCommitmentReservation = "A";
-	/** SO Commitment only = S */
-	public static final String COMMITMENTTYPE_SOCommitmentOnly = "S";
+	/** PO Commitment & Reservation = B */
+	public static final String COMMITMENTTYPE_POCommitmentReservation = "B";
+	/** PO Commitment only = C */
+	public static final String COMMITMENTTYPE_POCommitmentOnly = "C";
+	/** None = N */
+	public static final String COMMITMENTTYPE_None = "N";
 	/** PO/SO Commitment = O */
 	public static final String COMMITMENTTYPE_POSOCommitment = "O";
+	/** SO Commitment only = S */
+	public static final String COMMITMENTTYPE_SOCommitmentOnly = "S";
 	/** Set Commitment Type.
 		@param CommitmentType 
 		Create Commitment and/or Reservations for Budget Control
@@ -218,9 +220,10 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	}
 
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_Name)
-			.getPO(getGL_Budget_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)
+			.getPO(getGL_Budget_ID(), get_TrxName());
+	}
 
 	/** Set Budget.
 		@param GL_Budget_ID 

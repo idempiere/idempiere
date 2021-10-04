@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ElementValue
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_ElementValue")
 public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ElementValue (Properties ctx, int C_ElementValue_ID, String trxName)
@@ -93,12 +94,12 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 
 	/** AccountSign AD_Reference_ID=118 */
 	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
-	/** Natural = N */
-	public static final String ACCOUNTSIGN_Natural = "N";
-	/** Debit = D */
-	public static final String ACCOUNTSIGN_Debit = "D";
 	/** Credit = C */
 	public static final String ACCOUNTSIGN_Credit = "C";
+	/** Debit = D */
+	public static final String ACCOUNTSIGN_Debit = "D";
+	/** Natural = N */
+	public static final String ACCOUNTSIGN_Natural = "N";
 	/** Set Account Sign.
 		@param AccountSign 
 		Indicates the Natural Sign of the Account as a Debit or Credit
@@ -121,16 +122,16 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public static final int ACCOUNTTYPE_AD_Reference_ID=117;
 	/** Asset = A */
 	public static final String ACCOUNTTYPE_Asset = "A";
-	/** Liability = L */
-	public static final String ACCOUNTTYPE_Liability = "L";
-	/** Revenue = R */
-	public static final String ACCOUNTTYPE_Revenue = "R";
 	/** Expense = E */
 	public static final String ACCOUNTTYPE_Expense = "E";
-	/** Owner's Equity = O */
-	public static final String ACCOUNTTYPE_OwnerSEquity = "O";
+	/** Liability = L */
+	public static final String ACCOUNTTYPE_Liability = "L";
 	/** Memo = M */
 	public static final String ACCOUNTTYPE_Memo = "M";
+	/** Owner's Equity = O */
+	public static final String ACCOUNTTYPE_OwnerSEquity = "O";
+	/** Revenue = R */
+	public static final String ACCOUNTTYPE_Revenue = "R";
 	/** Set Account Type.
 		@param AccountType 
 		Indicates the type of account
@@ -153,10 +154,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public static final int BPARTNERTYPE_AD_Reference_ID=200076;
 	/** Customer = C */
 	public static final String BPARTNERTYPE_Customer = "C";
-	/** Vendor = V */
-	public static final String BPARTNERTYPE_Vendor = "V";
 	/** Employee = E */
 	public static final String BPARTNERTYPE_Employee = "E";
+	/** Vendor = V */
+	public static final String BPARTNERTYPE_Vendor = "V";
 	/** Set Business Partner Type.
 		@param BPartnerType Business Partner Type	  */
 	public void setBPartnerType (String BPartnerType)
@@ -173,9 +174,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
@@ -201,9 +203,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -229,9 +232,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_Name)
-			.getPO(getC_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
+			.getPO(getC_Element_ID(), get_TrxName());
+	}
 
 	/** Set Element.
 		@param C_Element_ID 

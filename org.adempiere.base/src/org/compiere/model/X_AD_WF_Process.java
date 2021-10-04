@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Process
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_Process")
 public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WF_Process (Properties ctx, int AD_WF_Process_ID, String trxName)
@@ -77,9 +78,10 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_Name)
-			.getPO(getAD_Message_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
+			.getPO(getAD_Message_ID(), get_TrxName());
+	}
 
 	/** Set Message.
 		@param AD_Message_ID 
@@ -105,9 +107,10 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -133,9 +136,10 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -198,9 +202,10 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
-			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
+			.getPO(getAD_WF_Responsible_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Responsible.
 		@param AD_WF_Responsible_ID 
@@ -226,9 +231,10 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 
@@ -368,18 +374,18 @@ public class X_AD_WF_Process extends PO implements I_AD_WF_Process, I_Persistent
 
 	/** WFState AD_Reference_ID=305 */
 	public static final int WFSTATE_AD_Reference_ID=305;
+	/** Aborted = CA */
+	public static final String WFSTATE_Aborted = "CA";
+	/** Completed = CC */
+	public static final String WFSTATE_Completed = "CC";
+	/** Terminated = CT */
+	public static final String WFSTATE_Terminated = "CT";
 	/** Not Started = ON */
 	public static final String WFSTATE_NotStarted = "ON";
 	/** Running = OR */
 	public static final String WFSTATE_Running = "OR";
 	/** Suspended = OS */
 	public static final String WFSTATE_Suspended = "OS";
-	/** Completed = CC */
-	public static final String WFSTATE_Completed = "CC";
-	/** Aborted = CA */
-	public static final String WFSTATE_Aborted = "CA";
-	/** Terminated = CT */
-	public static final String WFSTATE_Terminated = "CT";
 	/** Set Workflow State.
 		@param WFState 
 		State of the execution of the workflow

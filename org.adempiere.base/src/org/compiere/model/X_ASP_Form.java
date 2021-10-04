@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Form
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Form")
 public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Form (Properties ctx, int ASP_Form_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
 		@param AD_Form_ID 
@@ -135,9 +137,10 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_Name)
-			.getPO(getASP_Level_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)
+			.getPO(getASP_Level_ID(), get_TrxName());
+	}
 
 	/** Set ASP Level.
 		@param ASP_Level_ID ASP Level	  */

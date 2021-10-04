@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance_Para
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_PInstance_Para")
 public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Para (Properties ctx, int AD_PInstance_Para_ID, String trxName)
@@ -75,9 +76,10 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
     }
 
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_Name)
-			.getPO(getAD_PInstance_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
+			.getPO(getAD_PInstance_ID(), get_TrxName());
+	}
 
 	/** Set Process Instance.
 		@param AD_PInstance_ID 

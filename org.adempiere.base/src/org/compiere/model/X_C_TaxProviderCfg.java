@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_TaxProviderCfg
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_TaxProviderCfg")
 public class X_C_TaxProviderCfg extends PO implements I_C_TaxProviderCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_TaxProviderCfg (Properties ctx, int C_TaxProviderCfg_ID, String trxName)

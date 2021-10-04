@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_InvoiceTax
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_InvoiceTax")
 public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_InvoiceTax (Properties ctx, int C_InvoiceTax_ID, String trxName)
@@ -77,9 +78,10 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
     }
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -119,9 +121,10 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_Name)
-			.getPO(getC_Tax_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
+			.getPO(getC_Tax_ID(), get_TrxName());
+	}
 
 	/** Set Tax.
 		@param C_Tax_ID 
@@ -147,9 +150,10 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_Name)
-			.getPO(getC_TaxProvider_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_ID)
+			.getPO(getC_TaxProvider_ID(), get_TrxName());
+	}
 
 	/** Set Tax Provider.
 		@param C_TaxProvider_ID Tax Provider	  */

@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_DistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="GL_DistributionLine")
 public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_GL_DistributionLine (Properties ctx, int GL_DistributionLine_ID, String trxName)
@@ -136,9 +137,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -164,9 +166,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -192,9 +195,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -220,9 +224,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocFrom_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocFrom_ID(), get_TrxName());
+	}
 
 	/** Set Location From.
 		@param C_LocFrom_ID 
@@ -248,9 +253,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocTo_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocTo_ID(), get_TrxName());
+	}
 
 	/** Set Location To.
 		@param C_LocTo_ID 
@@ -276,9 +282,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -304,9 +311,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_Name)
-			.getPO(getC_SalesRegion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
+			.getPO(getC_SalesRegion_ID(), get_TrxName());
+	}
 
 	/** Set Sales Region.
 		@param C_SalesRegion_ID 
@@ -349,9 +357,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_GL_Distribution getGL_Distribution() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Distribution)MTable.get(getCtx(), org.compiere.model.I_GL_Distribution.Table_Name)
-			.getPO(getGL_Distribution_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Distribution)MTable.get(getCtx(), org.compiere.model.I_GL_Distribution.Table_ID)
+			.getPO(getGL_Distribution_ID(), get_TrxName());
+	}
 
 	/** Set GL Distribution.
 		@param GL_Distribution_ID 
@@ -442,9 +451,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
     }
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -825,9 +835,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -853,9 +864,10 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

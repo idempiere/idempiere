@@ -27,14 +27,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Node
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PP_Order_Node")
 public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
@@ -98,32 +99,32 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 
 	/** Action AD_Reference_ID=302 */
 	public static final int ACTION_AD_Reference_ID=302;
-	/** Wait (Sleep) = Z */
-	public static final String ACTION_WaitSleep = "Z";
+	/** User Workbench = B */
+	public static final String ACTION_UserWorkbench = "B";
 	/** User Choice = C */
 	public static final String ACTION_UserChoice = "C";
+	/** Document Action = D */
+	public static final String ACTION_DocumentAction = "D";
 	/** Sub Workflow = F */
 	public static final String ACTION_SubWorkflow = "F";
+	/** User Info = I */
+	public static final String ACTION_UserInfo = "I";
+	/** EMail = M */
+	public static final String ACTION_EMail = "M";
+	/** Apps Process = P */
+	public static final String ACTION_AppsProcess = "P";
+	/** Apps Report = R */
+	public static final String ACTION_AppsReport = "R";
+	/** Apps Task = T */
+	public static final String ACTION_AppsTask = "T";
 	/** Set Variable = V */
 	public static final String ACTION_SetVariable = "V";
 	/** User Window = W */
 	public static final String ACTION_UserWindow = "W";
 	/** User Form = X */
 	public static final String ACTION_UserForm = "X";
-	/** Apps Task = T */
-	public static final String ACTION_AppsTask = "T";
-	/** Apps Report = R */
-	public static final String ACTION_AppsReport = "R";
-	/** Apps Process = P */
-	public static final String ACTION_AppsProcess = "P";
-	/** Document Action = D */
-	public static final String ACTION_DocumentAction = "D";
-	/** EMail = M */
-	public static final String ACTION_EMail = "M";
-	/** User Workbench = B */
-	public static final String ACTION_UserWorkbench = "B";
-	/** User Info = I */
-	public static final String ACTION_UserInfo = "I";
+	/** Wait (Sleep) = Z */
+	public static final String ACTION_WaitSleep = "Z";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
@@ -143,9 +144,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -171,9 +173,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
 		@param AD_Form_ID 
@@ -199,9 +202,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_Name)
-			.getPO(getAD_Image_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
+			.getPO(getAD_Image_ID(), get_TrxName());
+	}
 
 	/** Set Image.
 		@param AD_Image_ID 
@@ -227,9 +231,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -255,9 +260,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
 		@param AD_Task_ID 
@@ -283,9 +289,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_WF_Block getAD_WF_Block() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Block)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Block.Table_Name)
-			.getPO(getAD_WF_Block_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Block)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Block.Table_ID)
+			.getPO(getAD_WF_Block_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Block.
 		@param AD_WF_Block_ID 
@@ -311,9 +318,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
 		@param AD_WF_Node_ID 
@@ -339,9 +347,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
-			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
+			.getPO(getAD_WF_Responsible_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Responsible.
 		@param AD_WF_Responsible_ID 
@@ -367,9 +376,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -395,9 +405,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 
@@ -457,9 +468,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -591,34 +603,34 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -639,30 +651,30 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -969,9 +981,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_Name)
-			.getPO(getPP_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
+			.getPO(getPP_Order_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order.
 		@param PP_Order_ID 
@@ -1034,9 +1047,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_Workflow)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Workflow.Table_Name)
-			.getPO(getPP_Order_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_Workflow)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Workflow.Table_ID)
+			.getPO(getPP_Order_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Workflow.
 		@param PP_Order_Workflow_ID Manufacturing Order Workflow	  */
@@ -1251,9 +1265,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
 		@param S_Resource_ID 
@@ -1418,9 +1433,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getWorkflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getWorkflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getWorkflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param Workflow_ID 

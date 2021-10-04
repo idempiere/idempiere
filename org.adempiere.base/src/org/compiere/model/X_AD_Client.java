@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Client
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Client")
 public class X_AD_Client extends PO implements I_AD_Client, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -121,9 +122,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PasswordRule getAD_PasswordRule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PasswordRule)MTable.get(getCtx(), org.compiere.model.I_AD_PasswordRule.Table_Name)
-			.getPO(getAD_PasswordRule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PasswordRule)MTable.get(getCtx(), org.compiere.model.I_AD_PasswordRule.Table_ID)
+			.getPO(getAD_PasswordRule_ID(), get_TrxName());
+	}
 
 	/** Set Password Policies.
 		@param AD_PasswordRule_ID Password Policies	  */
@@ -146,9 +148,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_Name)
-			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_ID)
+			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());
+	}
 
 	/** Set Replication Strategy.
 		@param AD_ReplicationStrategy_ID 
@@ -175,14 +178,14 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 
 	/** AutoArchive AD_Reference_ID=334 */
 	public static final int AUTOARCHIVE_AD_Reference_ID=334;
-	/** None = N */
-	public static final String AUTOARCHIVE_None = "N";
 	/** All (Reports, Documents) = 1 */
 	public static final String AUTOARCHIVE_AllReportsDocuments = "1";
 	/** Documents = 2 */
 	public static final String AUTOARCHIVE_Documents = "2";
 	/** External Documents = 3 */
 	public static final String AUTOARCHIVE_ExternalDocuments = "3";
+	/** None = N */
+	public static final String AUTOARCHIVE_None = "N";
 	/** Set Auto Archive.
 		@param AutoArchive 
 		Enable and level of automatic Archive of documents
@@ -395,10 +398,10 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 
 	/** MMPolicy AD_Reference_ID=335 */
 	public static final int MMPOLICY_AD_Reference_ID=335;
-	/** LiFo = L */
-	public static final String MMPOLICY_LiFo = "L";
 	/** FiFo = F */
 	public static final String MMPOLICY_FiFo = "F";
+	/** LiFo = L */
+	public static final String MMPOLICY_LiFo = "L";
 	/** Set Material Policy.
 		@param MMPolicy 
 		Material Movement Policy

@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaBreak
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_DiscountSchemaBreak")
 public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBreak, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaBreak (Properties ctx, int M_DiscountSchemaBreak_ID, String trxName)
@@ -181,9 +182,10 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 	}
 
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_Name)
-			.getPO(getM_DiscountSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
+			.getPO(getM_DiscountSchema_ID(), get_TrxName());
+	}
 
 	/** Set Discount Schema.
 		@param M_DiscountSchema_ID 
@@ -209,9 +211,10 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_ID(), get_TrxName());
+	}
 
 	/** Set Product Category.
 		@param M_Product_Category_ID 
@@ -237,9 +240,10 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

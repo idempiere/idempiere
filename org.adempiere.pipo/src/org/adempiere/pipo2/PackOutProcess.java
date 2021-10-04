@@ -158,16 +158,12 @@ public class PackOutProcess extends SvrProcess
 	private String getTypeName(String type) {
 		if (X_AD_Package_Exp_Detail.TYPE_ApplicationOrModule.equals(type))
 			return I_AD_Menu.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_CodeSnipit.equals(type))
-			return "Code_Snipit";
 		else if (X_AD_Package_Exp_Detail.TYPE_Data.equals(type))
 			return IHandlerRegistry.TABLE_GENERIC_HANDLER;
 		else if (X_AD_Package_Exp_Detail.TYPE_DataSingle.equals(type))
 			return IHandlerRegistry.TABLE_GENERIC_SINGLE_HANDLER;
 		else if (X_AD_Package_Exp_Detail.TYPE_DynamicValidationRule.equals(type))
 			return I_AD_Val_Rule.Table_Name;
-		else if (X_AD_Package_Exp_Detail.TYPE_File_CodeOrOther.equals(type))
-			return "Dist_File";
 		else if (X_AD_Package_Exp_Detail.TYPE_Form.equals(type))
 			return I_AD_Form.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_ImportFormat.equals(type))
@@ -200,6 +196,10 @@ public class PackOutProcess extends SvrProcess
 			return I_AD_EntityType.Table_Name;
 		else if (X_AD_Package_Exp_Detail.TYPE_InfoWindow.equals(type))
 			return I_AD_InfoWindow.Table_Name;
+		else if (X_AD_Package_Exp_Detail.TYPE_ShellScript.equals(type))
+			return "ShellScript";
+		else if (X_AD_Package_Exp_Detail.TYPE_ScriptJSR223.equals(type))
+			return "ScriptJSR223";
 		return type;
 	}
 
@@ -212,19 +212,8 @@ public class PackOutProcess extends SvrProcess
 		} else if (MPackageExpDetail.TYPE_SQLStatement.equals(type) || MPackageExpDetail.TYPE_SQLMandatory.equals(type)) {
 			properties.put(SQLElementParameters.SQL_STATEMENT, dtl.getSQLStatement());
 			properties.put(SQLElementParameters.DB_TYPE, dtl.getDBType());
-		} else if (MPackageExpDetail.TYPE_File_CodeOrOther.equals(type)) {
-			properties.put(FileElementParameters.TARGET_DIRECTORY, dtl.getTarget_Directory());
-			properties.put(FileElementParameters.SOURCE_DIRECTORY, dtl.getFile_Directory());
-			properties.put(FileElementParameters.FILE_NAME, dtl.getFileName());
-			properties.put(FileElementParameters.DESTINATION_DIRECTORY, dtl.getDestination_Directory());
-			properties.put(FileElementParameters.DESCRIPTION, dtl.getDescription());
-			properties.put(FileElementParameters.RELEASE_NO, dtl.getReleaseNo());
-		} else if (MPackageExpDetail.TYPE_CodeSnipit.equals(type)) {
-			properties.put(CodeSnippetElementParameters.DESTINATION_DIRECTORY, dtl.getDestination_Directory());
-			properties.put(CodeSnippetElementParameters.DESTINATION_FILE_NAME, dtl.getDestination_FileName());
-			properties.put(CodeSnippetElementParameters.RELEASE_NO, dtl.getReleaseNo());
-			properties.put(CodeSnippetElementParameters.AD_Package_Code_Old, dtl.getAD_Package_Code_Old());
-			properties.put(CodeSnippetElementParameters.AD_Package_Code_New, dtl.getAD_Package_Code_New());
+		} else if (MPackageExpDetail.TYPE_ShellScript.equals(type) || MPackageExpDetail.TYPE_ScriptJSR223.equals(type)) {
+			properties.put(MPackageExpDetail.COLUMNNAME_ExecCode, dtl.getExecCode());
 		}
 		return properties;
 	}

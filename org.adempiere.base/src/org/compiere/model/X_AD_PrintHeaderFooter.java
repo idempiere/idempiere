@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintHeaderFooter
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_PrintHeaderFooter")
 public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210728L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PrintHeaderFooter (Properties ctx, int AD_PrintHeaderFooter_ID, String trxName)
@@ -40,6 +41,7 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
         {
 			setAD_PrintHeaderFooter_ID (0);
 			setName (null);
+			setSourceClassName (null);
         } */
     }
 

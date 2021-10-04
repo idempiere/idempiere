@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeValue
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_AttributeValue")
 public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_AttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName)
@@ -91,9 +92,10 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
-			.getPO(getM_Attribute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
 
 	/** Set Attribute.
 		@param M_Attribute_ID 
