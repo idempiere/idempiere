@@ -92,6 +92,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -618,6 +619,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         String sql =contentPanel.prepareTable(layout, from,
                 where,p_multipleSelection,
                 getTableName(),false);
+        contentPanel.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() );
         p_layout = contentPanel.getLayout();
 		m_sqlMain = sql;
 		m_sqlCount = "SELECT COUNT(*) FROM " + from + " WHERE " + where;
@@ -897,6 +899,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             model.addTableModelListener(this);
             model.setMultiple(p_multipleSelection);
             contentPanel.setData(model, null);
+            contentPanel.renderCustomHeaderWidth();
         }
         autoHideEmptyColumns();
         restoreSelectedInPage();
@@ -1943,29 +1946,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (m_SO_Window_ID > 0)
 			return m_SO_Window_ID;
 		//
-		String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table != null)
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, tableName);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				m_SO_Window_ID = rs.getInt(1);
-				m_PO_Window_ID = rs.getInt(2);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
+			m_SO_Window_ID = table.getAD_Window_ID();
+			m_PO_Window_ID = table.getPO_Window_ID();
 		}
 		//
 		if (!isSOTrx && m_PO_Window_ID > 0)
@@ -2655,7 +2640,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
         m_ok = ok;
-
+        saveWlistBoxColumnWidth(this.getFirstChild());
         //  End Worker
         if (isLookup())
         {
@@ -2667,6 +2652,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        this.detach();
     }   //  dispose
 
+    private void saveWlistBoxColumnWidth(Component comp){
+
+        if(comp instanceof WListbox){
+        	((WListbox)comp).saveColumnWidth();
+        }
+
+        List<Component> list = comp.getChildren();
+        for(Component child:list){
+        	saveWlistBoxColumnWidth(child);
+        }
+     } 
+    
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		updateListSelected();
 		WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;
