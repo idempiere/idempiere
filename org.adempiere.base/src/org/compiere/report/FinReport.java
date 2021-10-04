@@ -197,7 +197,7 @@ public class FinReport extends SvrProcess
 		sb.append(" - ").append(m_report);
 
 		// Exclude adjustment period(s) ?
-		if (m_report.getExcludeAdjustmentPeriods().equals(MReport.EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod)) { // if the report period is standard and there is an adjustment period with the same end date (on the same year) 
+		if (p_C_Period_ID > 0 && m_report.getExcludeAdjustmentPeriods().equals(MReport.EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod)) { // if the report period is standard and there is an adjustment period with the same end date (on the same year) 
 			MPeriod per = MPeriod.get(getCtx(), p_C_Period_ID);
 			if (MPeriod.PERIODTYPE_StandardCalendarPeriod.equals(per.getPeriodType())) {
 				int adjPeriodToExclude_ID = DB.getSQLValue(get_TrxName(),
