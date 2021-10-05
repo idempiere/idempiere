@@ -19,6 +19,11 @@ package org.compiere.process;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -32,10 +37,11 @@ import java.sql.Timestamp;
  */
 public class ProcessInfoParameter implements Serializable
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8571973325856537109L;
+	private static final long serialVersionUID = -5396796617617359891L;
 
 	/**
 	 *  Construct Parameter
@@ -199,6 +205,18 @@ public class ProcessInfoParameter implements Serializable
 
 	
 	/**
+	 * Method getParameter To as String
+	 * @return Object
+	 */
+	public String getParameter_ToAsString()
+	{
+		if (m_Parameter_To == null)
+			return null;
+		return m_Parameter_To.toString();
+	}	//	getParameter_ToAsString
+	
+	
+	/**
 	 * Method getParameter as String
 	 * @return Object
 	 */
@@ -282,4 +300,134 @@ public class ProcessInfoParameter implements Serializable
 		m_ParameterName = ParameterName;
 	}
 
+	/**
+	 * Return the value of the parameter as a comma separated integer string. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @return String
+	 */
+	public String getParameterAsCSVInt() {
+		return getParameterAsCSVInt(getParameterAsString());
+	}
+
+	/**
+	 * Return the value of the parameter To as a comma separated integer string. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @return String
+	 */
+	public String getParameter_ToAsCSVInt() {
+		return getParameterAsCSVInt(getParameter_ToAsString());
+	}
+
+	/**
+	 * Return the value of the parameter as a validated String (all values between commas must be integer)
+	 * @return String
+	 */
+	private String getParameterAsCSVInt(String param) {
+
+		if (Util.isEmpty(param))
+			return "";
+
+		String[] strarr = param.split(",");
+
+		for (String par : strarr)
+			Integer.valueOf(par);
+
+		return param;
+	}
+
+	/**
+	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
+	 * @return String
+	 */
+	public String getParameterAsCSVString() {
+		return getParameterAsCSVString(getParameterAsString());
+	}
+
+	/**
+	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
+	 * @return String
+	 */
+	public String getParameter_ToAsCSVString() {
+		return getParameterAsCSVString(getParameter_ToAsString());
+	}
+
+	/**
+	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
+	 * @return String
+	 */
+	private String getParameterAsCSVString(String param) {
+		if (Util.isEmpty(param))
+			return "";
+
+		String[] strarr = ((String) param).split(",");
+
+		StringBuilder whereValidated = new StringBuilder();
+		for (String par : strarr) {
+			if (whereValidated.length() > 0)
+				whereValidated.append(",");
+			whereValidated.append(DB.TO_STRING(par));
+		}
+
+		return whereValidated.toString();
+	}
+
+	/**
+	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @return array of int
+	 */
+	public int[] getParameterAsIntArray() {
+		return getParameterAsIntArray(getParameterAsString());
+	}
+
+	/**
+	 * Return the value of the parameter To as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @return array of int
+	 */
+	public int[] getParameterToAsIntArray() {
+		return getParameterAsIntArray(getParameter_ToAsString());
+	}
+
+	/**
+	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @return array of int
+	 */
+	private int[] getParameterAsIntArray(String param) {
+
+		if (Util.isEmpty(param))
+			return new int[0];
+
+		return Arrays.stream(param.split(",")).mapToInt(Integer::parseInt).toArray();  
+	}
+
+	/**
+	 * Return the value of the parameter as an array of String.
+	 * @return array of String
+	 */
+	public String[] getParameterAsStringArray() {
+		return getParameterAsStringArray(getParameterAsString());
+	}
+
+	/**
+	 * Return the value of the parameter To as an array of String.
+	 * @return array of String
+	 */
+	public String[] getParameterToAsStringArray() {
+		return getParameterAsStringArray(getParameter_ToAsString());
+	}
+
+	/**
+	 * Return the value of the parameter as an array of String.
+	 * @return array of String
+	 */
+	private String[] getParameterAsStringArray(String param) {
+
+		ArrayList<String> list = new ArrayList<String>();
+
+		if (!Util.isEmpty(param)) {
+			for (String par : param.split(","))
+				list.add(par);
+		}
+
+		String[] retValue = new String[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}
 }   //  ProcessInfoParameter
