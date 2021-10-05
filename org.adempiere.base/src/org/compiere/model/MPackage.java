@@ -27,6 +27,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 
 
 /**
@@ -70,13 +72,14 @@ public class MPackage extends X_M_Package
 				MProduct product = new MProduct(shipment.getCtx(), sLine.getM_Product_ID(), shipment.get_TrxName());
 				if(product.isBOM() && product.isVerified() && product.isPickListPrintDetails())
 				{
-					MProductBOM[] bomLines = MProductBOM.getBOMLines(product);
-					for(MProductBOM bomLine : bomLines)
+					MPPProductBOM bom = MPPProductBOM.getDefault(product, shipment.get_TrxName());
+					MPPProductBOMLine[] bomLines = bom.getLines();
+					for(MPPProductBOMLine bomLine : bomLines)
 					{
 						MPackageLine pLine = new MPackageLine(retValue);
 						pLine.setInOutLine(sLine);
-						pLine.setM_Product_ID(bomLine.getM_ProductBOM_ID());
-						pLine.setQty(sLine.getQtyEntered().multiply(bomLine.getBOMQty()));
+						pLine.setM_Product_ID(bomLine.getM_Product_ID());
+						pLine.setQty(sLine.getQtyEntered().multiply(bomLine.getQtyBOM()));
 						pLine.setM_PackageMPS_ID(packageMPS.getM_PackageMPS_ID());
 						pLine.saveEx();
 					}

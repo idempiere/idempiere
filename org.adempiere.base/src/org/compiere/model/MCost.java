@@ -63,6 +63,21 @@ public class MCost extends X_M_Cost
 	private static final long serialVersionUID = -9054858267574839079L;
 
 	/**
+	 * 
+	 * @param product
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @return current product cost
+	 */
+	public static BigDecimal getCurrentCost(MProduct product, int M_AttributeSetInstance_ID, String trxName)
+	{
+		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
+		MAcctSchema as = MClient.get(Env.getAD_Client_ID(Env.getCtx())).getAcctSchema();
+		String costingMethod = product.getCostingMethod(as);
+		return getCurrentCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID, costingMethod, new BigDecimal("1"), 0, true, trxName); 
+	}
+	
+	/**
 	 * 	Retrieve/Calculate Current Cost Price
 	 *	@param product product
 	 *	@param M_AttributeSetInstance_ID real asi

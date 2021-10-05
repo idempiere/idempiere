@@ -30,6 +30,8 @@ import org.compiere.util.Env;
  *	M_Product_BOM_ID = the BOM line
  *	M_ProductBOM_ID = the BOM line product
  *	
+ *  Replace by MPPProductBOM and MPPProductBOMLine since version 9
+ *  @deprecated
  *  @author Jorg Janke
  *  @version $Id: MProductBOM.java,v 1.5 2006/07/30 00:51:02 jjanke Exp $
  */

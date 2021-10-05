@@ -39,12 +39,18 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.editor.WSearchEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.model.MColumn;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
@@ -54,6 +60,7 @@ import org.compiere.model.MProjectLine;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -77,7 +84,7 @@ import org.zkoss.zul.Vlayout;
 
 
 
-public class WBOMDrop extends ADForm implements EventListener<Event>
+public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChangeListener
 {
 	/**
 	 * 
@@ -119,7 +126,6 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Grid selectionPanel = GridFactory.newGridLayout();
-	private Listbox productField = new Listbox();
 	private Decimalbox productQty = new Decimalbox();
 	private Listbox orderField = new Listbox();
 	private Listbox invoiceField = new Listbox();
@@ -129,6 +135,8 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	
 	private Groupbox grpSelectProd = new Groupbox();
 	private int indend = 20;
+
+	private WSearchEditor fieldProduct;
 	public WBOMDrop()
 	{}
 	
@@ -208,41 +216,39 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 	 *	@param order
 	 *	@param invoice
 	 *	@param project
+	 * @throws Exception 
 	 */
 	
-	private void createSelectionPanel (boolean order, boolean invoice, boolean project)
+	private void createSelectionPanel (boolean order, boolean invoice, boolean project) throws Exception
 	{
 		Caption caption = new Caption(Msg.translate(Env.getCtx(), "Selection"));
 
-//		grpSelectionPanel.setWidth("100%");
 		grpSelectionPanel.appendChild(caption);
 		grpSelectionPanel.appendChild(selectionPanel);
 		
-		productField.setRows(1);
-		productField.setMold("select");
+		MLookup productLookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
+				MColumn.getColumn_ID(MProduct.Table_Name, "M_Product_ID"),
+				DisplayType.Search, Env.getLanguage(Env.getCtx()), MProduct.COLUMNNAME_M_Product_ID, 0, false,
+				"M_Product.IsBOM='Y' AND M_Product.IsVerified='Y' AND M_Product.IsActive='Y' ");
 		
-		KeyNamePair[] keyNamePair = getProducts();
-		
-		for (int i = 0; i < keyNamePair.length; i++)
-		{
-			productField.addItem(keyNamePair[i]);
-		}
-		
+		fieldProduct = new WSearchEditor("M_Product_ID", true, false, true, productLookup);
+		fieldProduct.addValueChangeListener(this);
+				
 		Rows rows = selectionPanel.newRows();
 		Row boxProductQty = rows.newRow();
 		
 		Label lblProduct = new Label(Msg.translate(Env.getCtx(), "M_Product_ID"));
 		Label lblQty = new Label(Msg.translate(Env.getCtx(), "Qty"));
 		productQty.setValue(Env.ONE);
-		productField.addEventListener(Events.ON_SELECT, this);
 		productQty.addEventListener(Events.ON_CHANGE, this);
 		
-		ZKUpdateUtil.setWidth(productField, "99%");
+		fieldProduct.fillHorizontal();
 		boxProductQty.appendChild(lblProduct.rightAlign());
-		boxProductQty.appendChild(productField);
+		boxProductQty.appendChild(fieldProduct.getComponent());
 		boxProductQty.appendChild(lblQty.rightAlign());
 		boxProductQty.appendChild(productQty);
 		
+		KeyNamePair[] keyNamePair = null;
 		if (order)
 		{
 			keyNamePair = getOrders();
@@ -322,22 +328,6 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		confirmPanel.setEnabled("Ok", false);
 	}	//	createSelectionPanel
 
-	/**
-	 * 	Get Array of BOM Products
-	 *	@return products
-	 */
-	
-	private KeyNamePair[] getProducts()
-	{
-		String sql = "SELECT M_Product_ID, Name "
-			+ "FROM M_Product "
-			+ "WHERE IsBOM='Y' AND IsVerified='Y' AND IsActive='Y' "
-			+ "ORDER BY Name";
-	
-		return DB.getKeyNamePairs(MRole.getDefault().addAccessSQL(
-			sql, "M_Product", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO), true);
-	}	//	getProducts
-	
 	/**
 	 * 	Get Array of open Orders
 	 *	@return orders
@@ -684,19 +674,11 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 			updateBomList();
 		}	//	JCheckBox or JRadioButton
 		//	Product / Qty
-		else if (source == productField || source == productQty)
+		else if (source == productQty)
 		{
 			m_qty = productQty.getValue();
-			
-			ListItem listitem = productField.getSelectedItem();
-			
-			KeyNamePair pp = null;
-			
-			if (listitem != null)
-				pp = listitem.toKeyNamePair();
-			
-			m_product = pp!= null ? MProduct.get (Env.getCtx(), pp.getKey()) : null;
-			createMainPanel();
+			if (m_product != null && m_product.get_ID() > 0)
+				createMainPanel();
 			//sizeIt();
 		}
 		
@@ -800,6 +782,13 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		
 		confirmPanel.setEnabled("Ok", OK);
 	}	//	actionPerformed
+
+	private void onProductChanged(Object productFieldValue) {		
+		int id = (productFieldValue != null && productFieldValue instanceof Integer) ? (Integer)productFieldValue : 0;
+		if (m_product == null || m_product.get_ID() != id)
+			m_product = id > 0 ? MProduct.get (Env.getCtx(), id) : null;
+		createMainPanel();
+	}
 
 	/**
 	 * update display of bom tree
@@ -1069,4 +1058,9 @@ public class WBOMDrop extends ADForm implements EventListener<Event>
 		if (log.isLoggable(Level.CONFIG)) log.config("#" + lineCount);
 		return true;
 	}	//	cmd_saveProject
+
+	@Override
+	public void valueChange(ValueChangeEvent evt) {
+		onProductChanged(evt.getNewValue());
+	}
 }

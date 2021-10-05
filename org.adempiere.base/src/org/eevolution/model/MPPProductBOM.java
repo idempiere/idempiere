@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import org.compiere.model.MProduct;
 import org.compiere.model.Query;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
@@ -47,7 +48,28 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	private static ImmutableIntPOCache<Integer,MPPProductBOM> s_cache = new ImmutableIntPOCache<Integer,MPPProductBOM>(Table_Name, 40, 5);
 	/** BOM Lines					*/
 	private List<MPPProductBOMLine> m_lines = null;
-	
+
+	/**
+	 * Is Product Make to Order
+	 * @param ctx
+	 * @param productId
+	 * @param trxName
+     * @return
+     */
+	public static boolean isProductMakeToOrder(Properties ctx,int productId , String trxName) {
+		final String whereClause = MPPProductBOM.COLUMNNAME_BOMType+" IN (?,?)"
+				+" AND "+MPPProductBOM.COLUMNNAME_BOMUse+"=?"
+				+" AND "+MPPProductBOM.COLUMNNAME_M_Product_ID+"=?";
+		return new Query(ctx, MPPProductBOM.Table_Name, whereClause,trxName)
+				.setClient_ID()
+				.setParameters(
+						MPPProductBOM.BOMTYPE_Make_To_Order,
+						MPPProductBOM.BOMTYPE_Make_To_Kit,
+						MPPProductBOM.BOMUSE_Manufacturing,
+						productId)
+				.match();
+	}
+
 	/**
 	 * get the Product BOM for a product
 	 * @param product
@@ -55,10 +77,11 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	 */
 	public static List<MPPProductBOM> getProductBOMs(MProduct product)
 	{
-		String whereClause = MPPProductBOM.COLUMNNAME_Value+"=? AND M_Product_ID=?";
+		String whereClause = "M_Product_ID=?";
 		return new Query (product.getCtx(), X_PP_Product_BOM.Table_Name, whereClause, product.get_TrxName())
 					.setClient_ID()
-					.setParameters(product.getValue(), product.getM_Product_ID())
+					.setParameters(product.getM_Product_ID())
+					.setOnlyActiveRecords(true)
 					.list();
 		
 	}
@@ -131,10 +154,28 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	 */
 	public static MPPProductBOM getDefault(MProduct product, String trxName)
 	{
-		MPPProductBOM bom = new Query(Env.getCtx(), Table_Name, "M_Product_ID=? AND Value=?", trxName)
-				.setParameters(new Object[]{product.getM_Product_ID(), product.getValue()})
-				.setClient_ID()
-				.firstOnly();
+		MPPProductBOM bom = null;
+		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
+		String filter = "M_Product_ID=? AND "+COLUMNNAME_BOMUse+"=? AND "+COLUMNNAME_BOMType+"=? ";
+		if (AD_Org_ID > 0) 
+		{
+			filter += "AND AD_Org_ID IN (0, "+AD_Org_ID+") ";
+		}
+		Query query = new Query(product.getCtx(), Table_Name, filter, trxName)
+				.setParameters(new Object[]{product.getM_Product_ID(), BOMUSE_Master, BOMTYPE_CurrentActive})
+				.setOnlyActiveRecords(true)
+				.setClient_ID();
+		if (AD_Org_ID > 0)
+			query.setOrderBy("AD_Org_ID Desc");
+				
+		List<MPPProductBOM> list = query.list();
+		if (!list.isEmpty())
+		{
+			if (AD_Org_ID > 0 || list.size() == 1)
+			{
+				bom = list.get(0);
+			}
+		}
 		// If outside trx, then cache it
 		if (bom != null && trxName == null)
 		{
@@ -166,7 +207,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		}	
 		if (bom == null)
 		{
-			//Find BOM with Default Logic where product = bom product and bom value = value 
+			//Find BOM with Default Logic where product = bom product, BOMUse=A and BOMType=A
 			bom = getDefault(product, trxName);
 		}	
 
@@ -274,6 +315,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 			final String whereClause = MPPProductBOMLine.COLUMNNAME_PP_Product_BOM_ID+"=?";
 			this.m_lines = new Query(getCtx(), MPPProductBOMLine.Table_Name, whereClause, get_TrxName())
 											.setParameters(new Object[]{getPP_Product_BOM_ID()})
+											.setClient_ID()
 											.setOnlyActiveRecords(true)
 											.setOrderBy(MPPProductBOMLine.COLUMNNAME_Line)
 											.list();
@@ -305,6 +347,28 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.compiere.model.PO#beforeSave(boolean)
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		boolean b = super.beforeSave(newRecord);
+		if (b) {
+			if (BOMTYPE_CurrentActive.equals(getBOMType()) && BOMUSE_Master.equals(getBOMUse()) && isActive()) {
+				if (newRecord || is_ValueChanged(COLUMNNAME_BOMType) || is_ValueChanged(COLUMNNAME_BOMUse) 
+						|| is_ValueChanged(COLUMNNAME_IsActive) || is_ValueChanged(COLUMNNAME_M_Product_ID)) {
+					int id = DB.getSQLValue(get_TrxName(), "SELECT PP_Product_BOM_ID FROM PP_Product_BOM WHERE M_Product_ID=? AND BOMType='A' AND BOMUse='A' AND IsActive='Y'  AND PP_Product_BOM_ID != ? AND AD_Org_ID=?", 
+							getM_Product_ID(), getPP_Product_BOM_ID(), getAD_Org_ID());
+					if (id > 0) {
+						b = false;
+						CLogger.getCLogger(getClass()).saveError("OnlyOneCurrentActiveMasterBOM", "");
+					}
+				}
+			}
+		}
+		return b;
+	}
+
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success)
 	{
@@ -315,6 +379,20 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		{
 			updateProduct();
 		}
+		
+		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
+		if (product.isBOM() && product.isVerified())
+		{
+			if ((BOMTYPE_CurrentActive.equals(getBOMType()) && BOMUSE_Master.equals(getBOMUse()))
+				|| (BOMTYPE_CurrentActive.equals(get_ValueOld(COLUMNNAME_BOMType)) && BOMUSE_Master.equals(get_ValueOld(COLUMNNAME_BOMUse))))
+			{
+				if (is_ValueChanged(COLUMNNAME_IsActive) || is_ValueChanged(COLUMNNAME_BOMType) || is_ValueChanged(COLUMNNAME_BOMUse) || newRecord)
+				{
+					product.setIsVerified(false);
+					product.saveEx();
+				}
+			}
+		}
 		return true;
 	}
 	
@@ -322,6 +400,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	{
 		int count = new Query(getCtx(), Table_Name, COLUMNNAME_M_Product_ID+"=?", get_TrxName())
 							.setParameters(new Object[]{getM_Product_ID()})
+							.setClient_ID()
 							.setOnlyActiveRecords(true)
 							.count();
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
@@ -345,9 +424,8 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	@Override
 	public String toString ()
 	{
-		StringBuilder sb = new StringBuilder ("MPPProductBOM[")
-		.append(get_ID()).append("-").append(getDocumentNo())
-		.append(", Value=").append(getValue())
+		StringBuffer sb = new StringBuffer ("MPPProductBOM[")
+		.append(get_ID()).append("-").append(getValue())
 		.append ("]");
 		return sb.toString ();
 	}
