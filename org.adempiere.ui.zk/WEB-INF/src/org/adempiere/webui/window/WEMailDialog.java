@@ -32,6 +32,9 @@ import java.util.regex.Pattern;
 
 import javax.activation.DataSource;
 
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.IEventTopics;
+import org.adempiere.base.event.ReportSendEMailEventData;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -60,6 +63,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MMailText;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
+import org.compiere.model.PrintInfo;
 import org.compiere.util.ByteArrayDataSource;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -101,7 +105,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3675260492572002393L;
+	private static final long serialVersionUID = 8285375732312262880L;
 
 	/**
 	 * 	EMail Dialog
@@ -871,6 +875,76 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		if (fUser != null)
 			fUser.getComponent().focus();
 	}
-	
-	
+
+	/**
+	 * Set the user to editor and trigger the event change
+	 * @param newUserTo
+	 */
+	public void setUserTo(int newUserTo) {
+		ValueChangeEvent vce = new ValueChangeEvent(fUser, fUser.getColumnName(), fUser.getValue(), newUserTo);
+		fUser.valueChange(vce);
+	}
+
+	/**
+	 * Set the user Cc editor and trigger the event change
+	 * @param newUserCc
+	 */
+	public void setUserCc(int newUserCc) {
+		ValueChangeEvent vce = new ValueChangeEvent(fCcUser, fCcUser.getColumnName(), fCc.getValue(), newUserCc);
+		fUser.valueChange(vce);
+	}
+
+	/**
+	 * Clear the window context variables to prefill the dialog
+	 * @param m_WindowNo
+	 */
+	public void clearEMailContext(int m_WindowNo) {
+		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_TO, "");
+		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_USER_TO, "");
+		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_CC, "");
+		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_USER_CC, "");
+		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_SUBJECT, "");
+		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_MESSAGE, "");
+	}
+
+	/**
+	 * Send the event to listeners that prefill dialog variables
+	 * @param windowNo
+	 * @param tableId
+	 * @param recordId
+	 * @param printInfo
+	 * @param subject
+	 */
+	public void sendEvent(int windowNo, int tableId, int recordId, PrintInfo printInfo, String subject) {
+		ReportSendEMailEventData eventData = new ReportSendEMailEventData(windowNo, tableId, recordId, printInfo,
+				subject);
+		org.osgi.service.event.Event event = EventManager.newEvent(IEventTopics.REPORT_SEND_EMAIL, eventData);
+		EventManager.getInstance().sendEvent(event);
+	}
+
+	/**
+	 * Set the default dialog values from context
+	 * @param windowNo
+	 */
+	public void setValuesFromContext(int windowNo) {
+		String newTo = Env.getContext(Env.getCtx(), windowNo, ReportSendEMailEventData.CONTEXT_EMAIL_TO);
+		if (!Util.isEmpty(newTo))
+			setTo(newTo);
+		int newUserTo = Env.getContextAsInt(Env.getCtx(), windowNo, ReportSendEMailEventData.CONTEXT_EMAIL_USER_TO);
+		if (newUserTo > 0)
+			setUserTo(newUserTo);
+		String newCc = Env.getContext(Env.getCtx(), windowNo, ReportSendEMailEventData.CONTEXT_EMAIL_CC);
+		if (!Util.isEmpty(newCc))
+			setCc(newCc);
+		int newUserCc = Env.getContextAsInt(Env.getCtx(), windowNo, ReportSendEMailEventData.CONTEXT_EMAIL_USER_CC);
+		if (newUserCc > 0)
+			setUserCc(newUserCc);
+		String newSubject = Env.getContext(Env.getCtx(), windowNo, ReportSendEMailEventData.CONTEXT_EMAIL_SUBJECT);
+		if (!Util.isEmpty(newSubject))
+			setSubject(newSubject);
+		String newMessage = Env.getContext(Env.getCtx(), windowNo, ReportSendEMailEventData.CONTEXT_EMAIL_MESSAGE);
+		if (!Util.isEmpty(newMessage))
+			setMessage(newMessage);
+	}
+
 }	//	WEMailDialog
