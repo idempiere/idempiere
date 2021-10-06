@@ -35,7 +35,7 @@ INSERT INTO PP_PRODUCT_BOM
              NAME, description, help, revision, copyfrom,
              m_changenotice_id, processing, validfrom, validto,
              m_attributesetinstance_id, bomuse, c_uom_id, pp_product_bom_uu)
-   SELECT Nextid (53015, 'N'), ad_client_id, ad_org_id, isactive, created,
+   SELECT Nextidfunc (53015, 'N'), ad_client_id, ad_org_id, isactive, created,
           createdby, updated, updatedby, m_product_id, 'A', VALUE, 
           cast(NAME as character varying(60)), description, help,
           NULL, NULL, NULL, NULL, created, NULL, NULL, 'A', c_uom_id, generate_uuid()
@@ -53,7 +53,7 @@ INSERT INTO PP_PRODUCT_BOMLINE
              isqtypercentage, issuemethod, leadtimeoffset,
              m_attributesetinstance_id, m_changenotice_id, qtybatch, scrap,
              validfrom, validto, pp_product_bomline_uu)
-   SELECT Nextid (53016, 'N'), mpb.ad_client_id, mpb.ad_org_id, mpb.isactive,
+   SELECT Nextidfunc (53016, 'N'), mpb.ad_client_id, mpb.ad_org_id, mpb.isactive,
           mpb.created, mpb.createdby, mpb.updated, mpb.updatedby, mpb.line,
           mpb.m_productbom_id, ppb.pp_product_bom_id, mpb.bomqty,
           mpb.description, NULL, NULL, 0, NULL, mp.c_uom_id, 'CO', 0, 'N',
