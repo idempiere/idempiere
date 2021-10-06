@@ -54,7 +54,6 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
-import org.compiere.model.MProductBOM;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
 import org.compiere.model.MRole;
@@ -65,6 +64,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
@@ -430,11 +431,13 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	private int getDeepBom (MProduct product, int curentBomDeep) {
 		int bomDeep = curentBomDeep;
 		if (product.isBOM()) {
-			MProductBOM[] bomLines = MProductBOM.getBOMLines(product);
-			for (MProductBOM bomLine : bomLines) {
-				int testBomDeep = getDeepBom(bomLine.getProduct(), curentBomDeep + 1);
-				if (testBomDeep > bomDeep) {
-					bomDeep = testBomDeep;
+			MPPProductBOM bom = MPPProductBOM.getDefault(product, (String)null);
+			if (bom != null) {
+				for (MPPProductBOMLine bomLine : bom.getLines()) {
+					int testBomDeep = getDeepBom(bomLine.getProduct(), curentBomDeep + 1);
+					if (testBomDeep > bomDeep) {
+						bomDeep = testBomDeep;
+					}
 				}
 			}
 		}
@@ -450,26 +453,26 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	
 	private void addBOMLines (MProduct product, BigDecimal qty, Component parentPanel, int bomLevel)
 	{
-		MProductBOM[] bomLines = MProductBOM.getBOMLines(product);
+		MPPProductBOM bom = MPPProductBOM.getDefault(product, (String)null);
+		MPPProductBOMLine[] bomLines = bom.getLines();
 		//sort, gourp alter product with together
-		Arrays.sort(bomLines, new Comparator<MProductBOM>() {
+		Arrays.sort(bomLines, new Comparator<MPPProductBOMLine>() {
 			@Override
-			public int compare(MProductBOM arg0, MProductBOM arg1) {
-				return arg0.getBOMType().compareTo(arg1.getBOMType());
+			public int compare(MPPProductBOMLine arg0, MPPProductBOMLine arg1) {
+				return arg0.getComponentType().compareTo(arg1.getComponentType());
 			}
 		});
 
-	        // 2nd sort by Line Number in order to correspond with BOM Structure, patch 2015-03-31
-	        Arrays.sort(bomLines, new Comparator<MProductBOM>() {
-	                @Override
-	                public int compare(MProductBOM arg0, MProductBOM arg1) {
-	                        String t1 = String.valueOf(arg0.getLine()+100000);
-	                        String t2 = String.valueOf(arg1.getLine()+100000);
-	                        return t1.compareTo(t2);
-	                		}
-			});
-			
-		
+        // 2nd sort by Line Number in order to correspond with BOM Structure, patch 2015-03-31
+        Arrays.sort(bomLines, new Comparator<MPPProductBOMLine>() {
+                @Override
+                public int compare(MPPProductBOMLine arg0, MPPProductBOMLine arg1) {
+                        String t1 = String.valueOf(arg0.getLine()+100000);
+                        String t2 = String.valueOf(arg1.getLine()+100000);
+                        return t1.compareTo(t2);
+                		}
+		});
+					
 		for (int i = 0; i < bomLines.length; i++)
 		{
 			addBOMLine (bomLines[i], qty, parentPanel, bomLevel);
@@ -485,15 +488,14 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	 * 	@param qty quantity
 	 */
 	
-	private void addBOMLine (MProductBOM line, BigDecimal qty, Component parentPanel, int bomLevel)
+	private void addBOMLine (MPPProductBOMLine line, BigDecimal qty, Component parentPanel, int bomLevel)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine(line.toString());
-		String bomType = line.getBOMType();
+		String bomType = line.getComponentType();
 		
 		if (bomType == null)
-			bomType = MProductBOM.BOMTYPE_StandardPart;
-		//
-		BigDecimal lineQty = line.getBOMQty().multiply(qty);
+			bomType = MPPProductBOMLine.COMPONENTTYPE_Component;	//
+		BigDecimal lineQty = line.getQtyBOM().multiply(qty);
 		MProduct product = line.getProduct();
 		
 		if (product == null)
@@ -542,9 +544,9 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		// checkbox or radio button for select product
 		Div selectPanel = createDivPanel(25);
 		org.zkoss.zul.Checkbox rd = null;
-		boolean isStandard = MProductBOM.BOMTYPE_StandardPart.equals(bomType);
+		boolean isStandard = MPPProductBOMLine.COMPONENTTYPE_Component.equals(bomType);
 		
-		if (MProductBOM.BOMTYPE_StandardPart.equals(bomType) || MProductBOM.BOMTYPE_OptionalPart.equals(bomType))
+		if (MPPProductBOMLine.COMPONENTTYPE_Component.equals(bomType) || MPPProductBOMLine.COMPONENTTYPE_Option.equals(bomType))
 		{
 			rd = new Checkbox();
 			rd.setChecked(isStandard);
@@ -592,7 +594,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 		}
 
 		// add product panel to parent, with radio, add to radio group
-		if (MProductBOM.BOMTYPE_StandardPart.equals(bomType) || MProductBOM.BOMTYPE_OptionalPart.equals(bomType)) {
+		if (MPPProductBOMLine.COMPONENTTYPE_Component.equals(bomType) || MPPProductBOMLine.COMPONENTTYPE_Option.equals(bomType)) {
 			outerContainer.appendChild(outerProductPanel);
 		} else {
 			// String groupName = String.valueOf(parentM_Product_ID) + "_" + bomType;
