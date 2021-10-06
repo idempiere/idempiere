@@ -215,6 +215,7 @@ public class Doc_Production extends Doc
 			MProductionLineMA mas[] = MProductionLineMA.get(getCtx(), prodline.get_ID(), getTrxName());
 			MProduct product = (MProduct) prodline.getM_Product();
 			String CostingLevel = product.getCostingLevel(as);
+			String costingMethod = product.getCostingMethod(as);
 
 			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel) ) 
 			{
@@ -277,16 +278,16 @@ public class Doc_Production extends Doc
 			if (line.isProductionBOM())
 			{
 				X_M_ProductionLine endProLine = (X_M_ProductionLine)line.getPO();
-				Object parentEndPro = prod.isUseProductionPlan()?endProLine.getM_ProductionPlan_ID():endProLine.getM_Production_ID();
+				int parentEndPro = prod.isUseProductionPlan()?endProLine.getM_ProductionPlan_ID():endProLine.getM_Production_ID();
 				
 				//	Get BOM Cost - Sum of individual lines				
 				for (int ii = 0; ii < p_lines.length; ii++)
 				{
 					DocLine line0 = p_lines[ii];
 					X_M_ProductionLine bomProLine = (X_M_ProductionLine)line0.getPO();
-					Object parentBomPro = prod.isUseProductionPlan()?bomProLine.getM_ProductionPlan_ID():bomProLine.getM_Production_ID();
+					int parentBomPro = prod.isUseProductionPlan()?bomProLine.getM_ProductionPlan_ID():bomProLine.getM_Production_ID();
 					
-					if (!parentBomPro.equals(parentEndPro))
+					if (parentBomPro != parentEndPro)
 						continue;
 					if (!line0.isProductionBOM()) {
 						MProduct product0 = (MProduct) bomProLine.getM_Product();
@@ -384,8 +385,8 @@ public class Doc_Production extends Doc
 					}
 					fl.setQty(qtyProduced);				
 				} 
-				else
-				{
+				else if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+				{					
 					int precision = as.getStdPrecision();
 					BigDecimal variance = (costs.setScale(precision, RoundingMode.HALF_UP)).subtract(bomCost.negate());
 					// only post variance if it's not zero 
@@ -409,9 +410,14 @@ public class Doc_Production extends Doc
 			//  Inventory       DR      CR
 			if (!(line.isProductionBOM() && MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel)))
 			{
+				BigDecimal factLineAmt = costs;
+				if (line.isProductionBOM() && !(MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
+				{
+					factLineAmt = bomCost.negate();
+				}
 				fl = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getC_Currency_ID(), costs);
+					as.getC_Currency_ID(), factLineAmt);
 				if (fl == null)
 				{
 					p_Error = "No Costs for Line " + line.getLine() + " - " + line;
@@ -473,15 +479,30 @@ public class Doc_Production extends Doc
 				 }
 			} 
 			else
-			{			 
-				if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
-					line.get_ID(), 0,
-					costs, line.getQty(),
-					description, getTrxName()))
+			{		
+				if (line.isProductionBOM() && !(MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
 				{
-					p_Error = "Failed to create cost detail record";
-					return null;
+					if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
+							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+							line.get_ID(), 0,
+							bomCost.negate(), line.getQty(),
+							description, getTrxName()))
+						{
+							p_Error = "Failed to create cost detail record";
+							return null;
+						}
+				}
+				else
+				{
+					if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
+						line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+						line.get_ID(), 0,
+						costs, line.getQty(),
+						description, getTrxName()))
+					{
+						p_Error = "Failed to create cost detail record";
+						return null;
+					}
 				}
 			}
 		}
