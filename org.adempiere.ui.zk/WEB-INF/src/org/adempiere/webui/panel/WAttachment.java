@@ -41,6 +41,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
@@ -123,7 +124,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	private Borderlayout mainPanel = new Borderlayout();
 
-	private Hbox toolBar = new Hbox();
+	private ToolBar toolBar = new ToolBar();
 
 	private Hlayout confirmPanel = new Hlayout();
 
@@ -274,7 +275,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		cbContent.addEventListener(Events.ON_SELECT, this);
 
 		toolBar.setAlign("center");
-		toolBar.setPack("start");
+		toolBar.setOverflowPopup(true);
 		toolBar.appendChild(bLoad);
 		toolBar.appendChild(bDelete);
 		toolBar.appendChild(bSave);
