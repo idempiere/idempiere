@@ -105,7 +105,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8285375732312262880L;
+	private static final long serialVersionUID = 556391720307848225L;
 
 	/**
 	 * 	EMail Dialog
@@ -119,7 +119,27 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	public WEMailDialog (String title, MUser from, String to, 
 		String subject, String message, DataSource attachment)
 	{
+		this(title, from, to, subject, message, attachment, -1, -1, -1, null);
+	}	//	EmailDialog
+
+	/**
+	 * EMail Dialog
+	 * @param title title
+	 * @param from from
+	 * @param to to 
+	 * @param subject subject
+	 * @param message message
+	 * @param attachment optional attachment
+	 * @param m_WindowNo
+	 * @param ad_Table_ID
+	 * @param record_ID
+	 * @param printInfo
+	 */
+	public WEMailDialog(String title, MUser from, String to, String subject, String message, DataSource attachment,
+			int m_WindowNo, int ad_Table_ID, int record_ID, PrintInfo printInfo) {
 		super();
+		this.m_AD_Table_ID = ad_Table_ID;
+		this.m_Record_ID = record_ID;
         this.setTitle(title);
         this.setSclass("popup-dialog email-dialog");
 		this.setClosable(true);
@@ -143,8 +163,12 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lang.put("language", Language.getLoginLanguage().getAD_Language());
 		fMessage.setConfig(lang);
 
-		commonInit(from, to, subject, message, attachment);				
-	}	//	EmailDialog
+		commonInit(from, to, subject, message, attachment);	
+
+		clearEMailContext(m_WindowNo);
+		sendEvent(m_WindowNo, m_AD_Table_ID, m_Record_ID, null, "");
+		setValuesFromContext(m_WindowNo);
+	}
 
 	/**
 	 * 	Common Init
@@ -196,6 +220,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	private String  m_cc;
 	private String  m_subject;
 	private String  m_message;
+	private int m_Record_ID;
+	private int m_AD_Table_ID;
 	/**	File to be optionally attached	*/
 	private DataSource	m_attachment;
 	
@@ -898,7 +924,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 * Clear the window context variables to prefill the dialog
 	 * @param m_WindowNo
 	 */
-	public void clearEMailContext(int m_WindowNo) {
+	private void clearEMailContext(int m_WindowNo) {
 		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_TO, "");
 		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_USER_TO, "");
 		Env.setContext(Env.getCtx(), m_WindowNo, ReportSendEMailEventData.CONTEXT_EMAIL_CC, "");
@@ -915,7 +941,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 * @param printInfo
 	 * @param subject
 	 */
-	public void sendEvent(int windowNo, int tableId, int recordId, PrintInfo printInfo, String subject) {
+	private void sendEvent(int windowNo, int tableId, int recordId, PrintInfo printInfo, String subject) {
 		ReportSendEMailEventData eventData = new ReportSendEMailEventData(windowNo, tableId, recordId, printInfo,
 				subject);
 		org.osgi.service.event.Event event = EventManager.newEvent(IEventTopics.REPORT_SEND_EMAIL, eventData);
@@ -926,7 +952,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 * Set the default dialog values from context
 	 * @param windowNo
 	 */
-	public void setValuesFromContext(int windowNo) {
+	private void setValuesFromContext(int windowNo) {
 		String newTo = Env.getContext(Env.getCtx(), windowNo, ReportSendEMailEventData.CONTEXT_EMAIL_TO);
 		if (!Util.isEmpty(newTo))
 			setTo(newTo);
