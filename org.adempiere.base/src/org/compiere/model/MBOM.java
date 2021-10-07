@@ -28,6 +28,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	BOM Model
+ * 
+ *  Never leave beta and drop
+ *  @deprecated
  *  @author Jorg Janke
  *  @version $Id: MBOM.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */

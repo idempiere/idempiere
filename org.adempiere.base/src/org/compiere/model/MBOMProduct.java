@@ -28,6 +28,8 @@ import org.compiere.util.Msg;
 /**
  * 	BOM Product/Component Model
  *	
+ *  Never leave beta and drop
+ *  @deprecated
  *  @author Jorg Janke
  *  @version $Id: MBOMProduct.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */

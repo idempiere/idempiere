@@ -111,7 +111,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 				if (userDef != null) {
 
-					if ((info.isShowInDashboard() && Util.isEmpty(userDef.getIsShowInDashboard())) || userDef.getIsShowInDashboard().equals(MUserDefInfo.ISSHOWINDASHBOARD_Yes)) {
+					if ((info.isShowInDashboard() && Util.isEmpty(userDef.getIsShowInDashboard())) || (!Util.isEmpty(userDef.getIsShowInDashboard()) && userDef.getIsShowInDashboard().equals(MUserDefInfo.ISSHOWINDASHBOARD_Yes))) {
 						int seqNo = userDef.getSeqNo() > 0 ? userDef.getSeqNo() : info.getSeqNo();
 						selectedInfoWindows.add(new ListInfoWindow(info, seqNo));
 					}

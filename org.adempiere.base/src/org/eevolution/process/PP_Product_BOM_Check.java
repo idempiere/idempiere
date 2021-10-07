@@ -123,4 +123,4 @@ public class PP_Product_BOM_Check extends SvrProcess
 		throw new AdempiereUserError(msg);
 	}
 
-} //	M_Product_BOM_Check
+} //	PP_Product_BOM_Check

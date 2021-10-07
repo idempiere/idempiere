@@ -47,6 +47,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 
 
 /**
@@ -1647,14 +1649,17 @@ public class MInvoice extends X_C_Invoice implements DocAction
 				//	New Lines
 				int lineNo = line.getLine ();
 
-				for (MProductBOM bom : MProductBOM.getBOMLines(product))
+				MPPProductBOM bom = MPPProductBOM.getDefault(product, get_TrxName());
+				if (bom == null)
+					continue;
+				for (MPPProductBOMLine bomLine : bom.getLines())
 				{
 					MInvoiceLine newLine = new MInvoiceLine(this);
 					newLine.setLine(++lineNo);
-					newLine.setM_Product_ID(bom.getM_ProductBOM_ID(), true);
-					newLine.setQty(line.getQtyInvoiced().multiply(bom.getBOMQty()));
-					if (bom.getDescription() != null)
-						newLine.setDescription(bom.getDescription());
+					newLine.setM_Product_ID(bomLine.getM_Product_ID(), true);
+					newLine.setQty(line.getQtyInvoiced().multiply(bomLine.getQtyBOM()));
+					if (bomLine.getDescription() != null)
+						newLine.setDescription(bomLine.getDescription());
 					newLine.setPrice();
 					newLine.saveEx(get_TrxName());
 				}
