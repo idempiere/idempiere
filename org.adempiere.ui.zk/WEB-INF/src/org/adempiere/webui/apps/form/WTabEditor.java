@@ -921,26 +921,13 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		editorColumn.setValue(MColumn.getColumnName(Env.getCtx(), field.getAD_Column_ID()));
 
 		GridField gridField = getGridField(field);
-		String fieldGroup = "";
-		String fieldGroupType = "";
-    	if (field.getAD_FieldGroup_ID() > 0) {
-    		if (isBaseLang) 
-    		{
-				fieldGroup = field.getAD_FieldGroup().getName();
-			}
-    		else
-    		{
-				fieldGroup  = ((X_AD_FieldGroup) field.getAD_FieldGroup()).get_Translation(X_AD_FieldGroup.COLUMNNAME_Name);
-			}
-			fieldGroupType = field.getAD_FieldGroup().getFieldGroupType();
-		}
     	gridField.getVO().Header = field.getName();
 		gridField.getVO().Description = field.getDescription();
 		gridField.getVO().Help = field.getHelp();
 		gridField.getVO().Placeholder = field.getPlaceholder();
 		gridField.getVO().IsDisplayed = field.isDisplayed();
-		gridField.getVO().FieldGroup = fieldGroup;
-		gridField.getVO().FieldGroupType = fieldGroupType;
+		gridField.getVO().FieldGroup = getFieldGroup(field);
+		gridField.getVO().FieldGroupType = getFieldGroupType(field);
 		gridField.getVO().XPosition = field.getXPosition();
 		gridField.getVO().ColumnSpan = field.getColumnSpan();
 		gridField.getVO().NumLines = field.getNumLines();
