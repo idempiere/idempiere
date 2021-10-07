@@ -196,8 +196,11 @@ public class FinReport extends SvrProcess
 		m_report = new MReport (getCtx(), getRecord_ID(), null);
 		sb.append(" - ").append(m_report);
 
+		setPeriods();
+		sb.append(" - C_Period_ID=").append(p_C_Period_ID).append(" - ").append(m_parameterWhere);
+
 		// Exclude adjustment period(s) ?
-		if (p_C_Period_ID > 0 && m_report.getExcludeAdjustmentPeriods().equals(MReport.EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod)) { // if the report period is standard and there is an adjustment period with the same end date (on the same year) 
+		if (m_report.getExcludeAdjustmentPeriods().equals(MReport.EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod)) { // if the report period is standard and there is an adjustment period with the same end date (on the same year) 
 			MPeriod per = MPeriod.get(getCtx(), p_C_Period_ID);
 			if (MPeriod.PERIODTYPE_StandardCalendarPeriod.equals(per.getPeriodType())) {
 				int adjPeriodToExclude_ID = DB.getSQLValue(get_TrxName(),
@@ -214,12 +217,6 @@ public class FinReport extends SvrProcess
 					.append(m_report.getC_Calendar_ID()).append(" AND PeriodType = 'A') AND ").toString();
 		}
 
-		//
-		setPeriods();
-		sb.append(" - C_Period_ID=").append(p_C_Period_ID)
-			.append(" - ").append(m_parameterWhere);
-		//
-		
 		if ( p_PA_ReportCube_ID > 0)
 			m_parameterWhere.append(" AND PA_ReportCube_ID=").append(p_PA_ReportCube_ID);
 		
