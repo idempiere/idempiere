@@ -204,6 +204,7 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String getConnectionURL (CConnection connection)
     {
+        System.setProperty("oracle.jdbc.v$session.program", "iDempiere");
         StringBuilder sb = null;
         //  Server Connections (bequeath)
         if (connection.isBequeath())
