@@ -138,7 +138,6 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202106020316
 location "https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0" {
     com.jaspersoft.studio.bundles.barbecue
     com.jaspersoft.studio.bundles.itext
-    com.jaspersoft.studio.bundles.commons-digester
     org.w3c.dom.svg.patch
     org.krysalis.barcode4j
 }
