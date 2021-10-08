@@ -232,18 +232,20 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 	{
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String whereAttributeSet;
+		String joinAttributeSet;
 		if (p_M_AttributeSet_ID > 0)
-			whereAttributeSet = "AND M_Attribute_ID IN (SELECT M_Attribute_ID FROM M_AttributeUse WHERE M_AttributeSet_ID="+p_M_AttributeSet_ID+")";
+			joinAttributeSet = "JOIN M_AttributeUse mau ON (a.M_Attribute_ID = mau.M_Attribute_ID AND mau.M_AttributeSet_ID="+p_M_AttributeSet_ID+")";
 		else
-			whereAttributeSet = "";
+			joinAttributeSet = "";
 		String sql = MRole.getDefault().addAccessSQL(
-			"SELECT M_Attribute_ID, Name, Description, AttributeValueType, IsInstanceAttribute "
-			+ "FROM M_Attribute "
-			+ "WHERE IsActive='Y' "
-			+ whereAttributeSet
-			+ " ORDER BY IsInstanceAttribute, Name", 
-			"M_Attribute", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+			"SELECT a.M_Attribute_ID, a.Name, a.Description, a.AttributeValueType, a.IsInstanceAttribute "
+			+ "FROM M_Attribute a "
+			+ joinAttributeSet
+			+ " WHERE a.IsActive='Y' "
+			+ " ORDER BY "
+			+ (p_M_AttributeSet_ID > 0 ? "mau.SeqNo, " : "")
+			+ "a.IsInstanceAttribute, a.Name", 
+			"a", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		boolean instanceLine = false;
 		try
 		{
