@@ -1071,7 +1071,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
-			from, to, subject, message, new FileDataSource(attachment));
+			from, to, subject, message, new FileDataSource(attachment),
+			m_WindowNo, m_reportEngine.getPrintInfo().getAD_Table_ID(),
+			m_reportEngine.getPrintInfo().getRecord_ID(), m_reportEngine.getPrintInfo());
+
 		AEnv.showWindow(dialog);
 	}	//	cmd_sendMail
 
