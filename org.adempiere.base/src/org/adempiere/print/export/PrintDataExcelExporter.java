@@ -271,12 +271,6 @@ extends AbstractExcelExporter
 		else if (MediaSizeName.NA_NUMBER_10_ENVELOPE.equals(mediaSizeName)) {
 			paperSize = HSSFPrintSetup.ENVELOPE_10_PAPERSIZE;
 		}
-//		else if (MediaSizeName..equals(mediaSizeName)) {
-//			paperSize = HSSFPrintSetup.ENVELOPE_DL_PAPERSIZE;
-//		}
-//		else if (MediaSizeName..equals(mediaSizeName)) {
-//			paperSize = HSSFPrintSetup.ENVELOPE_CS_PAPERSIZE;
-//		}
 		else if (MediaSizeName.MONARCH_ENVELOPE.equals(mediaSizeName)) {
 			paperSize = HSSFPrintSetup.ENVELOPE_MONARCH_PAPERSIZE;
 		}
