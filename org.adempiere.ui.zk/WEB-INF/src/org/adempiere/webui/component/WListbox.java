@@ -875,7 +875,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	}   //  setRowCount
 
 	/*
-	 * Set the name of the wListbox
+	 * Set the name of the wListbox. This is use to save the width of columns
+	 * into ad_wlistbox_customization.
 	 */
 	public void setwListBoxName(String wListBoxName) {
 		this.wListBoxName = wListBoxName;
@@ -1342,34 +1343,37 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      */
 	public void saveColumnWidth() 
 	{
-		StringBuilder custom = new StringBuilder(); 
-		String width = "";
-		String colName = "";
-		Listhead listHead = getListHead();
-		ColumnInfo[] layout = getLayout();
-		if (listHead != null && layout != null && !Util.isEmpty(getwListBoxName())) 
+		if (!Util.isEmpty(getwListBoxName()))
 		{
-			List<?> headers = listHead.getChildren();
-			int i = 0;
-			for(Object obj : headers)
+			StringBuilder custom = new StringBuilder(); 
+			Listhead listHead = getListHead();
+			ColumnInfo[] layout = getLayout();
+			if (listHead != null && layout != null) 
 			{
-				Listheader header = (Listheader) obj;
-				width = header.getWidth();
-				colName = layout[i].getColumnName();
-				custom.append (colName + "=");
-				if (width == null)
+				List<?> headers = listHead.getChildren();
+				int i = 0;
+				for(Object obj : headers)
 				{
-					width = "null";
+					Listheader header = (Listheader) obj;
+					String width = header.getWidth();
+					String colName = layout[i].getColumnName();
+					if (colName != null && !colName.isEmpty())
+					{
+						custom.append (colName + "=");
+						if (width == null)
+						{
+							width = "null";
+						}
+						custom.append(width);
+						custom.append(",");					
+					}				
+					i++;
 				}
-				custom.append(width);
-				custom.append(",");
-				i++;
-			}
-			if (custom.length() > 0)
-				custom.deleteCharAt(custom.length() - 1);
-			MWlistboxCustomization.saveData(Env.getCtx(), getwListBoxName(), Env.getAD_User_ID(Env.getCtx()), custom.toString(), null);
-		}			
-
+				if (custom.length() > 0)
+					custom.deleteCharAt(custom.length() - 1);
+				MWlistboxCustomization.saveData(Env.getCtx(), getwListBoxName(), Env.getAD_User_ID(Env.getCtx()), custom.toString(), null);
+			}			
+		}						
 	}
 
 }
