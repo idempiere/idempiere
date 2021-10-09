@@ -639,6 +639,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	protected void executeQuery()
 	{
+		saveWlistBoxColumnWidth(this.getFirstChild());
 		line = new ArrayList<Object>();
 		setCacheStart(-1);
 		cacheEnd = -1;
@@ -2640,7 +2641,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
         m_ok = ok;
-        saveWlistBoxColumnWidth(this.getFirstChild());
         //  End Worker
         if (isLookup())
         {
@@ -2784,4 +2784,3 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return pageSize;
 	}
 }	//	Info
-
