@@ -619,7 +619,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         String sql =contentPanel.prepareTable(layout, from,
                 where,p_multipleSelection,
                 getTableName(),false);
-        contentPanel.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() );
+	if (infoWindow != null)	
+        	contentPanel.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() );
         p_layout = contentPanel.getLayout();
 		m_sqlMain = sql;
 		m_sqlCount = "SELECT COUNT(*) FROM " + from + " WHERE " + where;
