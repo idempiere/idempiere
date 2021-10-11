@@ -360,7 +360,6 @@ public abstract class AbstractExcelExporter
 				colnum++;
 			}	//	printed
 		}	//	for all columns
-//		m_workbook.setRepeatingRowsAndColumns(m_sheetCount, 0, 0, 0, 0);
 	}
 
 	protected int getNoOfParameter()

@@ -37,7 +37,6 @@ public class ShippingUtil
 			 + " WHERE C_BPartner_ID = ? "
 			 + "   AND AD_Org_ID = " + ad_org_id
 			 + " AND M_ShippingProcessor_ID IN (SELECT DISTINCT M_ShippingProcessor_ID FROM M_Shipper WHERE M_Shipper_ID = " + shipper_id + ")"
-//			 + "   AND M_Shipper_ID = " + shipper_id
 			 + "   AND C_BPartner_Location_ID Is Not Null", c_bpartner_id);
 		if (accountLocationId <= 0) 
 		{
@@ -47,7 +46,6 @@ public class ShippingUtil
 		   		 + "  FROM C_BP_ShippingAcct bps, C_BPartner_Location bpl, C_Location l "
 		   		 + " WHERE bps.C_BPartner_ID = ? "
 				 + " AND bps.M_ShippingProcessor_ID IN (SELECT DISTINCT M_ShippingProcessor_ID FROM M_Shipper WHERE M_Shipper_ID = " + shipper_id + ")"
-//		   		 + "   AND bps.M_Shipper_ID = " + shipper_id
 		   		 + "   AND bps.C_BPartner_Location_ID = bpl.C_BPartner_Location_ID "
 		   		 + "   AND bpl.C_Location_ID = l.C_Location_ID "
 		   		 + "   AND l.Postal IS NOT NULL ", c_bpartner_id);

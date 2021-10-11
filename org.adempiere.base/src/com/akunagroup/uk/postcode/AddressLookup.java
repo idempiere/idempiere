@@ -152,8 +152,6 @@ public class AddressLookup implements AddressLookupInterface {
 		// Get the root element.
 		Element doc = xmlDoc.getDocumentElement();
 		
-		//System.out.println("Root Node: " + doc.getNodeName());
-		
 		// Get the children.
 		NodeList DataElements = doc.getElementsByTagName("DataElement"); 
 		System.out.println("Number of DataElements: " + DataElements.getLength());
@@ -317,10 +315,6 @@ public class AddressLookup implements AddressLookupInterface {
 			postcodeData.put(postcode.getPostcode(), postcode);
 		} else
 			log.log(Level.WARNING, "Postcode lookup error: " + postcode.getPostcode());
-		
-		//if (postcode.getPostcode().length()==0)
-		//	System.out.println("Postcode NOT found! ");
-		//else
 		
 		return returnValue;
 	}

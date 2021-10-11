@@ -214,17 +214,13 @@ public class ModelInterfaceGenerator
 		else
 			start.append("    public static final int Table_ID = MTable.getTable_ID(Table_Name);\n");
 
-			 //.append("    protected KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);\n")
 		start.append("    KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);\n") // INFO - Should this be here???
 
 			 .append("    /** AccessLevel = ").append(accessLevelInfo).append("\n")
 			 .append("     */\n")
-			 //.append("    protected BigDecimal AccessLevel = new BigDecimal(").append(accessLevel).append(");\n")
 			 .append("    BigDecimal accessLevel = BigDecimal.valueOf(").append(accessLevel).append(");\n") // INFO - Should this be here???
 
 			 .append("    /** Load Meta Data */\n")
-			 //.append("    protected POInfo initPO (Properties ctx);")
-			 //.append("    POInfo initPO (Properties ctx);") // INFO - Should this be here???
 		;
 
 		String end = "}";
@@ -252,11 +248,6 @@ public class ModelInterfaceGenerator
 				+ "FROM AD_Column c "
 				+ "WHERE c.AD_Table_ID=?"
 
-//				+ " AND c.ColumnName <> 'AD_Client_ID'"
-//				+ " AND c.ColumnName <> 'AD_Org_ID'"
-//				+ " AND c.ColumnName <> 'IsActive'"
-//				+ " AND c.ColumnName NOT LIKE 'Created%'"
-//				+ " AND c.ColumnName NOT LIKE 'Updated%' "
 				+ " AND c.IsActive='Y'"
 				+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 				+ " ORDER BY c.ColumnName";
@@ -273,7 +264,6 @@ public class ModelInterfaceGenerator
 				int displayType = rs.getInt(4);
 				int AD_Reference_Value_ID = rs.getInt(5);
 				String defaultValue = rs.getString(6);
-				//int seqNo = rs.getInt(7);
 				int fieldLength = rs.getInt(8);
 				String ValueMin = rs.getString(9);
 				String ValueMax = rs.getString(10);
@@ -575,8 +565,6 @@ public class ModelInterfaceGenerator
 	{
 		return
 			!"AD_Client_ID".equals(columnName)
-			//&& !"AD_Org_ID".equals(columnName)
-			//&& !"IsActive".equals(columnName)
 			&& !"Created".equals(columnName)
 			&& !"CreatedBy".equals(columnName)
 			&& !"Updated".equals(columnName)
@@ -747,7 +735,6 @@ public class ModelInterfaceGenerator
 		else
 		{
 			// TODO - Handle other types
-			//sb.append("\tpublic I_"+columnName+" getI_").append(columnName).append("(){return null; };");
 		}
 		//
 		return referenceClassName;
