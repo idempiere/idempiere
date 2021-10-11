@@ -2765,7 +2765,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
-		} catch (Exception e){}
+			if (infoWindow != null && getFirstChild() != null)
+				saveWlistBoxColumnWidth(getFirstChild());
+		} catch (Exception e){
+			log.log(Level.WARNING, e.getMessage(), e);
+		}
 	}
 
 	/**
