@@ -1079,6 +1079,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		return false;
 	}
 	
+	/**
+	 * refresh current row of parent tabs
+	 */
 	public void refreshParentTabs() {
 		refreshParentTabs(false);
 	}
