@@ -532,6 +532,11 @@ public class MInOutLine extends X_M_InOutLine
 						)
 					{
 						// OK to save qty=0 when voiding
+					} else if (   MInOut.DOCACTION_Complete.equals(docAction)
+							   && MInOut.DOCSTATUS_InProgress.equals(docStatus))
+					{
+						// IDEMPIERE-2624 Cant confirm 0 qty on Movement Confirmation
+						// zero allowed in this case (action Complete and status In Progress)
 					} else {
 						log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@Open@: @M_InOutConfirm_ID@"));
 						return false;
