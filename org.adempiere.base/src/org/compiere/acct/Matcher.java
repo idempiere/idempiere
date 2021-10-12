@@ -154,7 +154,6 @@ public class Matcher
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("InvLine=" + C_InvoiceLine_ID + ",Rec=" + M_InOutLine_ID + ", Qty=" + Qty + ", " + DateTrx);
 		
-	//	MMatchInv inv = new MMatchInv ();
 		int M_MatchInv_ID = DB.getNextID (AD_Client_ID, "M_MatchInv", m_trxName);
 		//
 		StringBuilder sql = new StringBuilder("INSERT INTO M_MatchInv (")
