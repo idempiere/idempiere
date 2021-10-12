@@ -28,6 +28,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Util;
 
 /**
  *	System Configuration
@@ -43,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2454757193097243912L;
+	private static final long serialVersionUID = -7342115034093804064L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -815,7 +816,7 @@ public class MSysConfig extends X_AD_SysConfig
 				// fix possible wrong config level
 				if (getAD_Org_ID() != 0)
 					setConfigurationLevel(CONFIGURATIONLEVEL_Organization);
-				else if (getAD_Client_ID() != 0 && getConfigurationLevel().equals(MSysConfig.CONFIGURATIONLEVEL_System))
+				else if (getAD_Client_ID() != 0 && Util.isEmpty(getConfigurationLevel()) || getConfigurationLevel().equals(MSysConfig.CONFIGURATIONLEVEL_System))
 					setConfigurationLevel(CONFIGURATIONLEVEL_Client);
 				
 			}
