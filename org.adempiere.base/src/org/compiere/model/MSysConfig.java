@@ -816,7 +816,7 @@ public class MSysConfig extends X_AD_SysConfig
 				// fix possible wrong config level
 				if (getAD_Org_ID() != 0)
 					setConfigurationLevel(CONFIGURATIONLEVEL_Organization);
-				else if (getAD_Client_ID() != 0 && Util.isEmpty(getConfigurationLevel()) || getConfigurationLevel().equals(MSysConfig.CONFIGURATIONLEVEL_System))
+				else if (getAD_Client_ID() != 0 && (Util.isEmpty(getConfigurationLevel()) || getConfigurationLevel().equals(MSysConfig.CONFIGURATIONLEVEL_System)))
 					setConfigurationLevel(CONFIGURATIONLEVEL_Client);
 				
 			}
