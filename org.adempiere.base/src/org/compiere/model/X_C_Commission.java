@@ -31,7 +31,7 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211011L;
 
     /** Standard Constructor */
     public X_C_Commission (Properties ctx, int C_Commission_ID, String trxName)
@@ -40,7 +40,6 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
       /** if (C_Commission_ID == 0)
         {
 			setC_BPartner_ID (0);
-			setC_Charge_ID (0);
 			setC_Commission_ID (0);
 			setC_Currency_ID (0);
 			setDocBasisType (null);
@@ -328,6 +327,35 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
+
+	/** Set Product.
+		@param M_Product_ID 
+		Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1) 
+			set_Value (COLUMNNAME_M_Product_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.

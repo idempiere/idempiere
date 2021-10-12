@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.Msg;
+
 /**
  *	Model for Commission.
  *	(has Lines)
@@ -36,7 +38,7 @@ public class MCommission extends X_C_Commission
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1786202619739310928L;
+	private static final long serialVersionUID = 2702487404398723180L;
 
 	/**
 	 * 	Standard Constructor
@@ -124,5 +126,17 @@ public class MCommission extends X_C_Commission
 			log.log(Level.SEVERE, "copyLinesFrom - Line difference - From=" + fromLines.length + " <> Saved=" + count);
 		return count;
 	}	//	copyLinesFrom
+
+	/**
+	 * Validations before saving record
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getC_Charge_ID() == 0 && getM_Product_ID() == 0) {
+			log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
+			return false;
+		}
+		return true;
+	}
 
 }	//	MCommission

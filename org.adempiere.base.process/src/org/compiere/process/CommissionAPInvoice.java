@@ -69,8 +69,8 @@ public class CommissionAPInvoice extends SvrProcess
 		MCommission com = new MCommission (getCtx(), comRun.getC_Commission_ID(), get_TrxName());
 		if (com.get_ID() == 0)
 			throw new IllegalArgumentException("CommissionAPInvoice - No Commission");
-		if (com.getC_Charge_ID() == 0)
-			throw new IllegalArgumentException("CommissionAPInvoice - No Charge on Commission");
+		if (com.getC_Charge_ID() == 0 && com.getM_Product_ID() == 0)
+			throw new IllegalArgumentException("CommissionAPInvoice - No Charge or Product on Commission");
 		MBPartner bp = new MBPartner (getCtx(), com.getC_BPartner_ID(), get_TrxName());
 		if (bp.get_ID() == 0)
 			throw new IllegalArgumentException("CommissionAPInvoice - No BPartner");
@@ -91,7 +91,10 @@ public class CommissionAPInvoice extends SvrProcess
 			
  		//	Create Invoice Line
  		MInvoiceLine iLine = new MInvoiceLine(invoice);
-		iLine.setC_Charge_ID(com.getC_Charge_ID());
+ 		if (com.getC_Charge_ID() > 0)
+ 			iLine.setC_Charge_ID(com.getC_Charge_ID());
+ 		else
+ 			iLine.setM_Product_ID(com.getM_Product_ID());
  		iLine.setQty(1);
  		iLine.setPrice(comRun.getGrandTotal());
 		iLine.setTax();
