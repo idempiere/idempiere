@@ -167,8 +167,6 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 		checkChange(r, ra, "C_Payment_ID");
 		checkChange(r, ra, "M_InOut_ID");
 		checkChange(r, ra, "M_RMA_ID");
-	//	checkChange(ra, "C_Campaign_ID");
-	//	checkChange(ra, "RequestAmt");
 		checkChange(r, ra, "IsInvoiced");
 		checkChange(r, ra, "C_Activity_ID");
 		checkChange(r, ra, "DateNextAction");
@@ -204,15 +202,11 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 			r.setLastResult(r.getResult());
 			//	Reset
 			r.setConfidentialTypeEntry (r.getConfidentialType());
-			// r.setStartDate(null);  //red1 - bug [ 1743159 ] Requests - Start Date is not retained.
+
 			r.setEndTime(null);
 			r.setR_StandardResponse_ID(0);
 			r.setR_MailText_ID(0);
 			r.setResult(null);
-			// globalqss - these fields must be cleared (waiting to open bug in sf)
-		//	r.setM_ProductSpent_ID(0);
-		//	r.setQtySpent(null);
-		//	r.setQtyInvoiced(null);
 		}
 		
 		return null;
@@ -332,10 +326,6 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 				int AD_Role_ID = rs.getInt(5);
 				if (rs.wasNull())
 					AD_Role_ID = -1;
-				
-				//	Don't send mail to oneself
-		//		if (AD_User_ID == UpdatedBy)
-		//			continue;
 				
 				//	No confidential to externals
 				if (AD_Role_ID == -1 

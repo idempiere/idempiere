@@ -92,6 +92,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -618,6 +619,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         String sql =contentPanel.prepareTable(layout, from,
                 where,p_multipleSelection,
                 getTableName(),false);
+	if (infoWindow != null)	
+        	contentPanel.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() );
         p_layout = contentPanel.getLayout();
 		m_sqlMain = sql;
 		m_sqlCount = "SELECT COUNT(*) FROM " + from + " WHERE " + where;
@@ -637,6 +640,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	protected void executeQuery()
 	{
+		saveWlistBoxColumnWidth(this.getFirstChild());
 		line = new ArrayList<Object>();
 		setCacheStart(-1);
 		cacheEnd = -1;
@@ -897,6 +901,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             model.addTableModelListener(this);
             model.setMultiple(p_multipleSelection);
             contentPanel.setData(model, null);
+            contentPanel.renderCustomHeaderWidth();
         }
         autoHideEmptyColumns();
         restoreSelectedInPage();
@@ -2637,7 +2642,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
         m_ok = ok;
-
         //  End Worker
         if (isLookup())
         {
@@ -2649,6 +2653,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        this.detach();
     }   //  dispose
 
+    private void saveWlistBoxColumnWidth(Component comp){
+
+        if(comp instanceof WListbox){
+        	((WListbox)comp).saveColumnWidth();
+        }
+
+        List<Component> list = comp.getChildren();
+        for(Component child:list){
+        	saveWlistBoxColumnWidth(child);
+        }
+     } 
+    
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		updateListSelected();
 		WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;
@@ -2749,7 +2765,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
-		} catch (Exception e){}
+			if (infoWindow != null && getFirstChild() != null)
+				saveWlistBoxColumnWidth(getFirstChild());
+		} catch (Exception e){
+			log.log(Level.WARNING, e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -2769,4 +2789,3 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return pageSize;
 	}
 }	//	Info
-

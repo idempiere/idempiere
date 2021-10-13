@@ -43,7 +43,6 @@ class Base
 		System.out.println("** Before Init **"); //$NON-NLS-1$
 		getMemoryUsed();
 		Properties ctx = Login.initTest(false);
-	//	Log.printProperties(System.getProperties(), "System", false);
 		//
 		System.gc();    //  cleanup Init
 		//
@@ -59,12 +58,7 @@ class Base
 		GridWindow w = new GridWindow(vo);
 		long endDef = System.currentTimeMillis();
 		System.out.println("Load Definition Time in ms = " + String.valueOf(endDef-startTime));
-		/*if (1==2)   //  optional step
-		{
-			w.loadCompete();
-			long endDefComplete = System.currentTimeMillis();
-			System.out.println("Load Definition Complete Time in ms = " + String.valueOf(endDefComplete-startTime));
-		}*/
+
 		w.query();
 		long endData = System.currentTimeMillis();
 		System.out.println("Load Data Time in ms = " + String.valueOf(endData-startTime));
@@ -126,7 +120,6 @@ class Base
 	private static void listThreads()
 	{
 		Thread[] list = new Thread[Thread.activeCount()];
-	//	int no = Thread.currentThread().enumerate(list);
 		for (int i = 0; i < list.length; i++)
 		{
 			if (list[i] != null)

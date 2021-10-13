@@ -855,7 +855,9 @@ public class WAttachment extends Window implements EventListener<Event>
 		m_attachment.getEntryFile(index, attachment);
 
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
-			from, "", "", "", new FileDataSource(attachment));
+			from, "", "", "", new FileDataSource(attachment),
+			m_WindowNo, m_attachment.getAD_Table_ID(), m_attachment.getRecord_ID(), null);
+
 		AEnv.showWindow(dialog);
 	}
 }
