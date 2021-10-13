@@ -290,9 +290,6 @@ public class DocLine
 		m_DiscountAmt = m_ListAmt.subtract(m_LineNetAmt);
 		//
 		setAmount (m_ListAmt, m_DiscountAmt);
-	//	Log.trace(this,Log.l6_Database, "DocLine_Invoice.setAmount",
-	//		"LineNet=" + m_LineNetAmt + ", List=" + m_ListAmt + ", Discount=" + m_DiscountAmt
-	//		+ " => Amount=" + getAmount());
 	}   //  setAmounts
 
 	/**
