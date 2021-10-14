@@ -33,6 +33,7 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: OrderBatchProcess.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class OrderBatchProcess extends SvrProcess
 {
 	private int			p_C_DocTypeTarget_ID = 0;

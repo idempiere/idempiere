@@ -52,6 +52,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 
+@org.adempiere.base.annotation.Process
 public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 
 	private InputStream m_file_istream = null;

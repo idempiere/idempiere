@@ -29,6 +29,7 @@ import org.compiere.process.SvrProcess;
  *  @author Jorg Janke
  *  @version $Id: WFProcessManage.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class WFProcessManage extends SvrProcess
 {
 	/**	Abort It				*/	

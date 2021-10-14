@@ -54,6 +54,7 @@ import org.compiere.wf.MWorkflow;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class RollUpCosts extends SvrProcess {
 	private int category = 0;
 	private int product_id = 0;

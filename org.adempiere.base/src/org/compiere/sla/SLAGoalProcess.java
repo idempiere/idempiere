@@ -33,6 +33,7 @@ import org.compiere.util.AdempiereUserError;
  *  @author Jorg Janke
  *  @version $Id: SLAGoalProcess.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class SLAGoalProcess extends SvrProcess
 {
 	/** Goal					*/

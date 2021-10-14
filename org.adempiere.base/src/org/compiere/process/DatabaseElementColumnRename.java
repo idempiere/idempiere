@@ -33,6 +33,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+@org.adempiere.base.annotation.Process
 public class DatabaseElementColumnRename extends SvrProcess {
 
 	private int p_AD_Element_ID = 0;

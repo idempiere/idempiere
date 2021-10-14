@@ -45,6 +45,7 @@ import org.compiere.util.Trx;
  *  @author Diego Ruiz - BX Service GmbH
  *  @contributor Andreas Sumerauer IDEMPIERE-4745
  */
+@org.adempiere.base.annotation.Process
 public class CreateWindowFromTable extends SvrProcess
 {
 	/** Table		*/

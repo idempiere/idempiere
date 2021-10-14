@@ -37,6 +37,7 @@ import org.compiere.util.Env;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 1895317 ] InvoiceCreateInOut: you can create many receipts
  */
+@org.adempiere.base.annotation.Process
 public class InvoiceCreateInOut extends SvrProcess
 {
 	public static final String PARAM_M_Warehouse_ID = MInOut.COLUMNNAME_M_Warehouse_ID;

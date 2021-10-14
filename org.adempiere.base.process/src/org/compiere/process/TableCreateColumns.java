@@ -43,6 +43,7 @@ import org.compiere.util.DisplayType;
  *  @author Jorg Janke
  *  @version $Id: TableCreateColumns.java,v 1.3 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class TableCreateColumns extends SvrProcess
 {
 	/** Entity Type			*/

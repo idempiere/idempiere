@@ -49,6 +49,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Util;
 
+@org.adempiere.base.annotation.Process
 public class MoveClient extends SvrProcess {
 
 	// Process to move a client from a external database to current, or copy a template in current database

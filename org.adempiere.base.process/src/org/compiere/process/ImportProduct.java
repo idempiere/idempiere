@@ -41,6 +41,7 @@ import org.compiere.util.DB;
  * 			<li>FR [ 2788278 ] Data Import Validator - migrate core processes
  * 				https://sourceforge.net/tracker/?func=detail&aid=2788278&group_id=176962&atid=879335
  */
+@org.adempiere.base.annotation.Process
 public class ImportProduct extends SvrProcess implements ImportProcess
 {
 	/**	Client to be imported to		*/

@@ -20,6 +20,7 @@ import org.compiere.util.Util;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class AcceptFieldSuggestion extends SvrProcess {
 
 	private boolean p_updateBaseLanguage;

@@ -41,6 +41,7 @@ import org.compiere.util.Env;
  *  
  *  FR 2872010 - Dunning Run for a complete Dunning (not just level) - Developer: Carlos Ruiz - globalqss - Sponsor: Metas
  */
+@org.adempiere.base.annotation.Process
 public class DunningRunCreate extends SvrProcess
 {
 	private boolean 	p_IncludeInDispute = false;

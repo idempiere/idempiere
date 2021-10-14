@@ -43,6 +43,7 @@ import org.compiere.util.Language;
  *  @author Jorg Janke
  *  @version $Id: CommissionCalc.java,v 1.3 2006/09/25 00:59:41 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class CommissionCalc extends SvrProcess
 {
 	private Timestamp		p_StartDate;

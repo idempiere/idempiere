@@ -24,10 +24,22 @@
  **********************************************************************/
 package org.idempiere.process;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
+
 import org.adempiere.base.IProcessFactory;
 import org.adempiere.base.MappedByNameFactory;
+import org.adempiere.base.annotation.Process;
 import org.compiere.process.ProcessCall;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.annotations.Component;
+
+import io.github.classgraph.AnnotationInfo;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 /**
  * @author hengsin
@@ -48,5 +60,60 @@ public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> imple
 	@Override
 	public ProcessCall newProcessInstance(String className) {
 		return newInstance(className);				
+	}
+	
+	@Override
+	public void scan(BundleContext context, String... packages) {
+		ClassLoader classLoader = context.getBundle().adapt(BundleWiring.class).getClassLoader();
+		ClassGraph graph = new ClassGraph()
+				.enableAnnotationInfo()
+				.overrideClassLoaders(classLoader)
+				.disableNestedJarScanning()
+				.disableModuleScanning()
+				.acceptPackagesNonRecursive(packages);
+		
+		try (ScanResult scanResult = graph.scan()) {
+		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Process.class)) {
+		    	if (classInfo.isAbstract())
+		    		continue;
+		        String className = classInfo.getName();	
+		        try {
+			        @SuppressWarnings("unchecked")
+					Class<? extends ProcessCall> clazz = (Class<? extends ProcessCall>) classInfo.loadClass();
+			        Constructor<? extends ProcessCall> constructor = clazz.getConstructor();
+			        ProcessCallSupplier supplier = new ProcessCallSupplier(constructor);
+			        AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(Process.class);
+			        String alternateName = null;
+			        if (annotationInfo != null)
+			        	alternateName = (String) annotationInfo.getParameterValues().getValue("name");
+			        
+			        addMapping(className, supplier);
+			        if (alternateName != null)
+			        	addMapping(alternateName, supplier);
+		        } catch (Exception e) {
+		        	
+		        }
+		    }
+		}
+	}
+	
+	private static final class ProcessCallSupplier implements Supplier<ProcessCall> {
+		
+		private Constructor<? extends ProcessCall> constructor;
+
+		private ProcessCallSupplier(Constructor<? extends ProcessCall> constructor) {
+			this.constructor = constructor;
+		}
+		
+		@Override
+		public ProcessCall get() {
+			try {
+				return constructor.newInstance();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}		
 	}
 }

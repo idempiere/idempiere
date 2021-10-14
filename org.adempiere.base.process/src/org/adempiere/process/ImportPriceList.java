@@ -45,6 +45,7 @@ import org.compiere.util.Env;
  *
  * 	@author 	Carlos Ruiz
  */
+@org.adempiere.base.annotation.Process
 public class ImportPriceList extends SvrProcess
 {
 	/**	Client to be imported to		*/

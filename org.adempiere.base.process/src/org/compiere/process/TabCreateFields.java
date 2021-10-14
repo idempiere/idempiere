@@ -47,6 +47,7 @@ import org.compiere.util.Util;
  *      <li>BF [ 2891218] Wrong behavior in entity type settings for customization entity types
  *        https://sourceforge.net/tracker/?func=detail&aid=2891218&group_id=176962&atid=879332 
  */
+@org.adempiere.base.annotation.Process
 public class TabCreateFields extends SvrProcess
 {
 	/**	Tab Number				*/

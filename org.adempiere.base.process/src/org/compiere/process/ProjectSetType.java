@@ -28,6 +28,7 @@ import org.compiere.model.MProjectType;
  *	@author Jorg Janke
  *	@version $Id: ProjectSetType.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ProjectSetType extends SvrProcess
 {
 	/**	Project directly from Project	*/

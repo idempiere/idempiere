@@ -32,6 +32,7 @@ import org.compiere.util.AdempiereUserError;
  *  @author Armen Rizal, Goodwill Consulting
  *  	<li>BF [ 2215840 ] MatchPO Bug Collection
  */
+@org.adempiere.base.annotation.Process
 public class MatchPODelete extends SvrProcess
 {
 	/**	ID					*/

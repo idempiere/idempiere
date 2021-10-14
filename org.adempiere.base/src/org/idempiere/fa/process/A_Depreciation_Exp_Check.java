@@ -23,6 +23,7 @@ import org.compiere.util.TimeUtil;
  * @author Anca Bradau www.arhipac.ro
  *
  */
+@org.adempiere.base.annotation.Process
 public class A_Depreciation_Exp_Check extends SvrProcess
 {
 	private boolean p_IsTest = true;

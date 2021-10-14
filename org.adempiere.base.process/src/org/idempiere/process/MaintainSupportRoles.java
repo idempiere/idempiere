@@ -39,6 +39,7 @@ import org.compiere.util.DB;
 /**
  * @author Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class MaintainSupportRoles extends SvrProcess {
 
 	private String p_IsActive;

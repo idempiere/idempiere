@@ -68,7 +68,6 @@
         <setEntry value="com.google.zxing.core@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
-        <setEntry value="org.apache.commons.digester@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.itext@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.mail.gimap@default:default"/>
@@ -117,6 +116,7 @@
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-net@default:default"/>
         <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.digester@default:default"/>
         <setEntry value="org.apache.commons.discovery@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.lang@default:default"/>
@@ -324,7 +324,17 @@
         <setEntry value="wrapped.org.springframework.spring-web@default:default"/>
         <setEntry value="wrapped.wsdl4j.wsdl4j@default:default"/>
         <setEntry value="xstream@default:default"/>
+        <setEntry value="zcommon@default:default"/>
+        <setEntry value="zel@default:default"/>
+        <setEntry value="zhtml@default:default"/>
         <setEntry value="zjavassist@default:default"/>
+        <setEntry value="zk@default:default"/>
+        <setEntry value="zkbind@default:default"/>
+        <setEntry value="zkplus@default:default"/>
+        <setEntry value="zkwebfragment@default:default"/>
+        <setEntry value="zul@default:default"/>
+        <setEntry value="zweb-dsp@default:false"/>
+        <setEntry value="zweb@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.adempiere.base.callout@default:default"/>
@@ -336,8 +346,11 @@
         <setEntry value="org.adempiere.pipo.handlers@default:default"/>
         <setEntry value="org.adempiere.pipo@default:true"/>
         <setEntry value="org.adempiere.plugin.utils@default:default"/>
+        <setEntry value="org.adempiere.replication@default:default"/>
         <setEntry value="org.adempiere.report.jasper.library@default:false"/>
         <setEntry value="org.adempiere.report.jasper@default:default"/>
+        <setEntry value="org.adempiere.server@default:default"/>
+        <setEntry value="org.adempiere.ui.zk@default:default"/>
         <setEntry value="org.adempiere.ui@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
@@ -345,6 +358,7 @@
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.test@default:default"/>
         <setEntry value="org.idempiere.webservices@default:default"/>
+        <setEntry value="org.idempiere.zk.extra@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
     <stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>

@@ -57,6 +57,7 @@ import org.osgi.service.event.Event;
  *			<li>FR [ 2788006 ] SvrProcess: change access to some methods
  *				https://sourceforge.net/tracker/?func=detail&aid=2788006&group_id=176962&atid=879335
  */
+@org.adempiere.base.annotation.Process
 public abstract class SvrProcess implements ProcessCall
 {
 	public static final String PROCESS_INFO_CTX_KEY = "ProcessInfo";

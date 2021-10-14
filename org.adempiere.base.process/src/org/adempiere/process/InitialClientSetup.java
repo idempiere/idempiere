@@ -54,6 +54,7 @@ import org.compiere.util.Util;
  *  @author Carlos Ruiz
  *    [ 2598506 ] FR - Implement Initial Client Setup
  */
+@org.adempiere.base.annotation.Process
 public class InitialClientSetup extends SvrProcess
 {
 	

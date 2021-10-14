@@ -65,6 +65,7 @@ import org.compiere.wf.MWorkflow;
  * 	@author 	Carlos Ruiz
  * 	@author 	Nicolas Micoud - TGI
  */
+@org.adempiere.base.annotation.Process
 public class CreateTable extends SvrProcess {
 
 	private String	p_tableName = "";

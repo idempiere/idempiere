@@ -31,11 +31,8 @@ package org.adempiere.process.rpl.imp;
 import java.util.logging.Level;
 
 import org.adempiere.process.rpl.XMLHelper;
-import org.compiere.Adempiere;
-import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.w3c.dom.Document;
@@ -48,6 +45,7 @@ import org.w3c.dom.Document;
  * @see  http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1963487&group_id=176962
  * @version $Id:$
  */
+@org.adempiere.base.annotation.Process
 public class ModelImporter extends SvrProcess {
 
 	/** Client Parameter */
@@ -134,21 +132,4 @@ public class ModelImporter extends SvrProcess {
 		addLog(0, null, null, Msg.getMsg(getCtx(), "ImportModelProcessResult") + "\n" + result.toString());
 		return result.toString();
 	}
-	
-	public static void main(String[] args) 
-	{
-		CLogMgt.setLoggerLevel(Level.INFO, null);
-		CLogMgt.setLevel(Level.INFO);
-		
-		Adempiere.startupEnvironment(false);
-		ProcessInfo pi = new ProcessInfo("Test Import Model", 1000000);
-		pi.setAD_Client_ID(11);
-		pi.setAD_User_ID(100);
-		
-		ModelImporter modelImporter = new ModelImporter();
-		modelImporter.startProcess(Env.getCtx(), pi, null);
-		
-		System.out.println("Process=" + pi.getTitle() + " Error="+pi.isError() + " Summary=" + pi.getSummary());
-	}
-
 }

@@ -60,6 +60,7 @@ import org.compiere.util.Env;
  *
  * @author Daniel Tamm
  */
+@org.adempiere.base.annotation.Process
 public class ExpenseTypesFromAccounts extends SvrProcess {
 
     private int m_clientId;

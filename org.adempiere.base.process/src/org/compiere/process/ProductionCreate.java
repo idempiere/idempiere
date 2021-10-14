@@ -19,6 +19,7 @@ import org.compiere.util.Util;
  * @author Paul Bowden
  *
  */
+@org.adempiere.base.annotation.Process
 public class ProductionCreate extends SvrProcess {
 
 	private int p_M_Production_ID=0;

@@ -15,6 +15,7 @@ import org.compiere.util.DB;
  * Create Depreciation
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
+@org.adempiere.base.annotation.Process
 public class A_Depreciation_Workfile_Build extends SvrProcess
 {
 	private int A_Depreciation_Workfile_ID = 0;

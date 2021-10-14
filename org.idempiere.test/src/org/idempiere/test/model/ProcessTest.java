@@ -25,12 +25,15 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
+import org.adempiere.base.Core;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutConfirm;
@@ -39,7 +42,9 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
+import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.Env;
@@ -272,4 +277,15 @@ public class ProcessTest extends AbstractTestCase {
 			processNode.deleteEx(true);
 		}
 	}
+
+	@Test
+	public void testCoreJavaProcessMapping() {
+		Query query = new Query(Env.getCtx(), MProcess.Table_Name, "AD_Process_ID < 1000000 AND ClassName IS NOT NULL "
+				+ " AND EXISTS (select 1 from ad_menu where isactive='Y' and ad_process_id=ad_process.ad_process_id)", getTrxName());
+		List<MProcess> processes = query.setOnlyActiveRecords(true).list();
+		for (MProcess process : processes) {
+			ProcessCall pc = Core.getProcess(process.getClassname());
+			assertNotNull(pc, "Failed to load ProcessCall instance for " + process.toString() + ", " + process.getClassname());
+		}
+	}	
 }

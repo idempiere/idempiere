@@ -25,6 +25,7 @@ import org.compiere.util.Env;
  * @author Deepak Pansheriya
  *
  */
+@org.adempiere.base.annotation.Process
 public class ExpireBrodcastMessage extends SvrProcess{
 
 	@Override

@@ -29,6 +29,7 @@ import org.compiere.model.MOrder;
  *  @author Jorg Janke
  *  @version $Id: CopyOrder.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class CopyOrder extends SvrProcess
 {
 	/** Order to Copy				*/

@@ -38,6 +38,7 @@ import org.compiere.util.Util;
 
 /**
  */
+@org.adempiere.base.annotation.Process
 public class RevenueRecognition extends SvrProcess
 {
 	/** The date to calculate the days due from			*/

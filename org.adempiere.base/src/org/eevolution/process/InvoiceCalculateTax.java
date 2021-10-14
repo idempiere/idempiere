@@ -33,6 +33,7 @@ import org.compiere.process.SvrProcess;
  * 				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
  * @author Teo Sarca, www.arhipac.ro
  */
+@org.adempiere.base.annotation.Process
 public class InvoiceCalculateTax extends SvrProcess
 {
 	public static final String PARAM_C_Invoice_ID = "C_Invoice_ID";

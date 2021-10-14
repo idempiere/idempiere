@@ -31,6 +31,7 @@ import org.compiere.util.Env;
  *	@author Jorg Janke
  *	@version $Id: ProjectGenOrder.java,v 1.3 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ProjectGenOrder extends SvrProcess
 {
 	/**	Project ID from project directly		*/

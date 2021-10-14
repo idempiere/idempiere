@@ -46,6 +46,7 @@ import org.compiere.util.Msg;
  *	IDEMPIERE-918 Generate credit memo from invoice
  * 	@author 	Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class InvoiceCreateCreditMemo extends SvrProcess {
 	/* The document type for the credit memo */
 	private int p_C_DocType_ID = 0;

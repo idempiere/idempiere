@@ -35,6 +35,7 @@ import org.compiere.model.MPInstance;
  *	IDEMPIERE-3101
  * 	@author Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class AddAuthorizationProcess extends SvrProcess {
 
 	/* Authorization Scopes */
