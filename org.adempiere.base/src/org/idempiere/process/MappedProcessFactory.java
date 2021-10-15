@@ -27,11 +27,13 @@ package org.idempiere.process;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import org.adempiere.base.IProcessFactory;
 import org.adempiere.base.MappedByNameFactory;
 import org.adempiere.base.annotation.Process;
 import org.compiere.process.ProcessCall;
+import org.compiere.util.CLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.annotations.Component;
@@ -51,6 +53,8 @@ import io.github.classgraph.ScanResult;
 	property = {"service.ranking:Integer=1"})
 public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> implements IProcessFactory, IMappedProcessFactory {
 
+	private static final CLogger s_log = CLogger.getCLogger(MappedProcessFactory.class);
+	
 	/**
 	 * default constructor
 	 */
@@ -91,7 +95,8 @@ public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> imple
 			        if (alternateName != null)
 			        	addMapping(alternateName, supplier);
 		        } catch (Exception e) {
-		        	
+		        	if (s_log.isLoggable(Level.INFO))
+		        		s_log.log(Level.INFO, e.getMessage(), e);
 		        }
 		    }
 		}
@@ -107,11 +112,14 @@ public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> imple
 		
 		@Override
 		public ProcessCall get() {
-			try {
-				return constructor.newInstance();
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e) {
-				e.printStackTrace();
+			if (constructor != null) {
+				try {
+					return constructor.newInstance();
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					s_log.log(Level.WARNING, e.getMessage(), e);
+					constructor = null;
+				}
 			}
 			return null;
 		}		
