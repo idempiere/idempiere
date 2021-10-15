@@ -104,7 +104,7 @@ public class MRMALine extends X_M_RMALine
             {
                 MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getInvoiceLineId(), get_TrxName());
                 precision = invoiceLine.getPrecision();
-                unitAmount = invoiceLine.getPriceEntered();
+                unitAmount = invoiceLine.getPriceActual();
                 originalQty = invoiceLine.getQtyInvoiced();
                 taxId = invoiceLine.getC_Tax_ID();
             }
@@ -112,7 +112,7 @@ public class MRMALine extends X_M_RMALine
             {
                 MOrderLine orderLine = new MOrderLine (getCtx(), m_ioLine.getC_OrderLine_ID(), get_TrxName());
                 precision = orderLine.getPrecision();
-                unitAmount = orderLine.getPriceEntered();
+                unitAmount = orderLine.getPriceActual();
                 originalQty = orderLine.getQtyDelivered();
                 taxId = orderLine.getC_Tax_ID();
             }
