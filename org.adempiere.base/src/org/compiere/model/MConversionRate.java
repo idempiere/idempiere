@@ -144,7 +144,7 @@ public class MConversionRate extends X_C_Conversion_Rate
 		int stdPrecision = isCosting ? MCurrency.getCostingPrecision(ctx, CurTo_ID): MCurrency.getStdPrecision(ctx, CurTo_ID);		
 
 		if (retValue.scale() > stdPrecision)
-			retValue = retValue.setScale(stdPrecision, RoundingMode.HALF_UP);
+			retValue = retValue.setScale(stdPrecision, RoundingMode.FLOOR);
 			
 		return retValue;
 	}	//	convert
