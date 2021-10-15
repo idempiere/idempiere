@@ -85,6 +85,7 @@ public class WFActivityManage extends SvrProcess
 			// will leave the activity in an "unmanagable" state
 			activity.setProcessed(true);
 			activity.setWFState(StateEngine.STATE_Aborted);
+			activity.saveEx();
 			return msg;
 		}
 		String msg = null;
