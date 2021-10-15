@@ -29,12 +29,12 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true)
 /**
  * 
  * @author hengsin
  *
  */
+@Component(immediate = true, service = {})
 public class ActivatorImpl implements BundleActivator {
 
 	@Override
