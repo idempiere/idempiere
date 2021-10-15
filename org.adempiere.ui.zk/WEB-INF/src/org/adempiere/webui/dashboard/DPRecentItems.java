@@ -310,7 +310,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	@Override
 	public void updateUI() {
 		refresh();
-		bxRecentItems.invalidate();
+		if (bxRecentItems != null)
+			bxRecentItems.invalidate();
 		updateDesktopReference();
 		
 	}

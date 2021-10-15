@@ -224,7 +224,8 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	public void updateUI() 
 	{
 		refresh();
-		bxJobs.invalidate();
+		if (bxJobs != null)
+			bxJobs.invalidate();
 		updateDesktopReference();
 	}
 
