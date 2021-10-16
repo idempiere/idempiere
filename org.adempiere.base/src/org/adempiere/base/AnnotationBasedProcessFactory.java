@@ -51,7 +51,7 @@ import io.github.classgraph.ScanResult;
  * @author hengsin
  *
  */
-public abstract class ScanBasedProcessFactory implements IProcessFactory
+public abstract class AnnotationBasedProcessFactory implements IProcessFactory
 {
 	/**
 	 * Name to class cache
@@ -62,7 +62,7 @@ public abstract class ScanBasedProcessFactory implements IProcessFactory
 
 	private BundleContext bundleContext = null;
 	
-	private final static CLogger s_log = CLogger.getCLogger(ScanBasedProcessFactory.class);
+	private final static CLogger s_log = CLogger.getCLogger(AnnotationBasedProcessFactory.class);
 
 	/**
 	 * Subclasses must override this method in order to provide packages to 

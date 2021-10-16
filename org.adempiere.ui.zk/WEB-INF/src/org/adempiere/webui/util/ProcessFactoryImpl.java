@@ -13,8 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.util;
 
+import org.adempiere.base.AnnotationBasedProcessFactory;
 import org.adempiere.base.IProcessFactory;
-import org.adempiere.base.ScanBasedProcessFactory;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
  *
  */
 @Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=1"})
-public class ProcessFactoryImpl extends ScanBasedProcessFactory {
+public class ProcessFactoryImpl extends AnnotationBasedProcessFactory {
 
 	/**
 	 * default constructor 

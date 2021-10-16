@@ -32,9 +32,9 @@ import org.osgi.service.component.annotations.Component;
  *
  */
 @Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=-1"})
-public final class DefaultScanBasedProcessFactory extends ScanBasedProcessFactory {
+public final class DefaultAnnotationBasedProcessFactory extends AnnotationBasedProcessFactory {
 
-	public DefaultScanBasedProcessFactory() {
+	public DefaultAnnotationBasedProcessFactory() {
 	}
 
 	@Override
