@@ -1043,6 +1043,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         // And / Or / And Not / Or Not
     	ValueNamePair[]	andOr = new ValueNamePair[] {
+    		new ValueNamePair ("",			""),	
     		new ValueNamePair ("AND",		Msg.getMsg(Env.getCtx(),"AND")),
     		new ValueNamePair ("OR",		Msg.getMsg(Env.getCtx(),"OR")),
     		new ValueNamePair ("AND NOT",	Msg.getMsg(Env.getCtx(),"ANDNOT")),
@@ -1051,10 +1052,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
     	for (ValueNamePair item: andOr)
             listAndOr.appendItem(item.getName(), item.getValue());
-    	listAndOr.setSelectedIndex(0); //And - default
     	if (row<=0){ // don't show item on the first row.
+        	listAndOr.setSelectedIndex(0);
     		listAndOr.setVisible(false);
     	} else {
+    		listAndOr.setSelectedIndex(1); //And - default
     		listAndOr.setVisible(true);
     	}
 
