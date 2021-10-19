@@ -391,10 +391,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	}	//	actionPerformed
 
 	public void onEvent(Event event) throws Exception {
-		if (event.getTarget() == confirmPanel.getOKButton())
-			actionPerformed(event);
-		else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
+		if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
 			onCancel();
+		else
+			actionPerformed(event);
 	}
 
 	private void onCancel() {
