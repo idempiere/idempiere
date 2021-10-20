@@ -379,7 +379,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 			if (m_tree.getTreechildren() != null)
 				m_tree.getTreechildren().detach();
 			
-			for (MPPProductBOM bom : MPPProductBOM.getProductBOMs(product))
+			for (MPPProductBOMLine bom : MPPProductBOMLine.getBOMLines(product))
 			{
 				addChild(bom, m_root);
 			}
@@ -425,7 +425,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		else
 		{
 
-			for (MPPProductBOM bom : MPPProductBOM.getProductBOMs(MProduct.get(M_Product_ID)))
+			for (MPPProductBOMLine bom : MPPProductBOMLine.getBOMLines(product))
 			{
 				addChild(bom, m_selectedNode);                    
 			}      
@@ -436,10 +436,8 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 	}
 
 	
-	public void addChild(MPPProductBOM bom, mySimpleTreeNode parent) throws Exception 
+	public void addChild(MPPProductBOMLine bomline, mySimpleTreeNode parent) throws Exception
 	{
-		for (MPPProductBOMLine bomline : bom.getLines())
-		{
 			MProduct M_Product = MProduct.get(getCtx(), bomline.getM_Product_ID());
 
 			Vector<Object> line = new Vector<Object>(10);
@@ -456,16 +454,15 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 			if (!reload)
 				parent.getChildren().add(child);
 		
-			if (m_selected_id == bomline.getM_Product_ID() || getM_Product_ID() == bomline.getM_Product_ID())		
+			if (m_selected_id == bomline.getParent().getM_Product_ID() || getM_Product_ID() == bomline.getParent().getM_Product_ID())
 				dataBOM.add(line);
 		
 			if (reload) return;
 
-			for (MPPProductBOMLine bl : MPPProductBOMLine.getByProduct(M_Product))
+			for (MPPProductBOMLine bom : MPPProductBOMLine.getBOMLines(M_Product))
 			{
-				addParent(bl, child);
+				addChild(bom, child);
 			}
-		}
 	}
 
 	public void addParent(MPPProductBOMLine bomline, mySimpleTreeNode parent) throws Exception 
@@ -483,7 +480,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		line.add(uom); //  3 C_UOM_ID
 		line.add((BigDecimal) ((bomline.getQtyBOM()!=null) ? bomline.getQtyBOM() : Env.ZERO).setScale(4, RoundingMode.HALF_UP).stripTrailingZeros());  //  4 QtyBOM
 
-		if(m_selected_id == bom.getM_Product_ID() || getM_Product_ID() == bomline.getM_Product_ID())		
+		if(m_selected_id == bomline.getM_Product_ID() || getM_Product_ID() == bomline.getM_Product_ID())
 			dataBOM.add(line);
 
 		mySimpleTreeNode child = new mySimpleTreeNode(line,new ArrayList<TreeNode<Object>>());
