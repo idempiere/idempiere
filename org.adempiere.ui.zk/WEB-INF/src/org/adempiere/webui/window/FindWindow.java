@@ -1926,16 +1926,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                if (!(parsedValue instanceof Integer)) {
 	                    continue;
 	                }
-	                m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue()), andOr, openBrackets);
+	                m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue()), openBrackets, andOr);
 	            }
 	            else if ((field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
 	            		(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
 	            {
 	            	String clause = DB.intersectClauseForCSV(ColumnSQL, parsedValue.toString());
 	            	if (MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator))
-	            		m_query.addRestriction(clause, andOr, openBrackets);
+	            		m_query.addRestriction(clause, openBrackets, andOr);
 	            	else
-	            		m_query.addRestriction("NOT (" + clause + ")", andOr, openBrackets);
+	            		m_query.addRestriction("NOT (" + clause + ")", openBrackets, andOr);
 	            }
 	            else
 	            	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
