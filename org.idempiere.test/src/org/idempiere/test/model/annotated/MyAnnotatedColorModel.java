@@ -22,43 +22,31 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.idempiere.model;
+package org.idempiere.test.model.annotated;
 
 import java.sql.ResultSet;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
+import java.util.Properties;
 
-import org.compiere.model.PO;
-import org.osgi.framework.BundleContext;
+import org.compiere.model.MColor;
 
 /**
  * 
  * @author hengsin
  *
  */
-public interface IMappedModelFactory {
+@org.adempiere.base.Model(table = MColor.Table_Name)
+public class MyAnnotatedColorModel extends MColor {
 
 	/**
-	 * add table name to class mapping
-	 * @param tableName
-	 * @param classSupplier
-	 * @param recordIdFunction
-	 * @param resultSetFunction
+	 * 
 	 */
-	void addMapping(String tableName, Supplier<Class<?>> classSupplier,
-			BiFunction<Integer, String, ? extends PO> recordIdFunction,
-			BiFunction<ResultSet, String, ? extends PO> resultSetFunction);
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * remove table name to class mapping
-	 * @param tableName
-	 */
-	void removeMapping(String tableName);
+	public MyAnnotatedColorModel(Properties ctx, int Test_ID, String trxName) {
+		super(ctx, Test_ID, trxName);
+	}
 
-	/**
-	 * Scan packages for class with {@link org.adempiere.base.Model} annotation and add mapping for it
-	 * @param context
-	 * @param packages
-	 */
-	public void scan(BundleContext context, String... packages);
+	public MyAnnotatedColorModel(Properties ctx, ResultSet rs, String trxName) {
+		super(ctx, rs, trxName);
+	}	
 }

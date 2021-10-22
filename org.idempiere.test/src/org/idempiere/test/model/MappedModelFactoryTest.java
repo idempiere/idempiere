@@ -33,6 +33,7 @@ import java.util.Properties;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IModelFactory;
+import org.compiere.model.MColor;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.X_Test;
@@ -42,6 +43,7 @@ import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.model.MappedModelFactory;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.TestActivator;
+import org.idempiere.test.model.annotated.MyAnnotatedColorModel;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -81,6 +83,16 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 		CacheMgt.get().reset();
 		PO po = MTable.get(MyTest2.Table_ID).getPO(0, getTrxName());
 		assertTrue(po instanceof MyTest2, "PO not instanceof MyTest2. PO.className="+po.getClass().getName());
+	}
+	
+	@Test
+	@Order(3)
+	public void testAnnotatedModelMapping() {
+		BundleContext bc = TestActivator.context;
+		Core.getMappedModelFactory().scan(bc, "org.idempiere.test.model.annotated");
+		CacheMgt.get().reset();
+		PO po = MTable.get(MColor.Table_ID).getPO(0, getTrxName());
+		assertTrue(po instanceof MyAnnotatedColorModel, "PO not instanceof MyAnnotatedColorModel. PO.className="+po.getClass().getName());
 	}
 	
 	private final static class MyFactory extends MappedModelFactory {
