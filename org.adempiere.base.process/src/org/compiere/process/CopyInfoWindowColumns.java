@@ -38,6 +38,7 @@ import org.compiere.util.AdempiereSystemError;
  *  @author Hideaki Hagiwara
  *  @version $Id: CopyInfoWindowColumns v 1.0 2013/12/4
  */
+@org.adempiere.base.annotation.Process
 public class CopyInfoWindowColumns extends SvrProcess
 {
 	/** Target Info Window		*/

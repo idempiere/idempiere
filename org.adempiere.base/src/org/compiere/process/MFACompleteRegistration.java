@@ -40,6 +40,7 @@ import org.compiere.util.Util;
  *	IDEMPIERE-4782
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
+@org.adempiere.base.annotation.Process
 public class MFACompleteRegistration extends SvrProcess {
 	/* MFA Registration */
 	private int p_MFA_Registration_ID = 0;

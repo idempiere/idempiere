@@ -44,6 +44,7 @@ import org.compiere.util.ValueNamePair;
  *	IDEMPIERE-2395
  * 	@author 	Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class CleanOrphanCascade extends SvrProcess
 {
 

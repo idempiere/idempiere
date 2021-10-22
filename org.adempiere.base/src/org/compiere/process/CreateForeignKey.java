@@ -34,6 +34,7 @@ import org.compiere.util.Trx;
  * @author Elaine
  *
  */
+@org.adempiere.base.annotation.Process
 public class CreateForeignKey extends SvrProcess {
 
 	/** Table 			*/

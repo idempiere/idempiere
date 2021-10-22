@@ -47,6 +47,7 @@ import org.compiere.util.ValueNamePair;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class UUIDGenerator extends SvrProcess {
 
 	private String tableName;

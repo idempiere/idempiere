@@ -53,6 +53,7 @@ import org.eevolution.model.X_PP_Order;
  *  @author Jorg Janke
  *  @version $Id: FactAcctReset.java,v 1.5 2006/09/21 21:05:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class FactAcctReset extends SvrProcess
 {
 	/**	Client Parameter		*/

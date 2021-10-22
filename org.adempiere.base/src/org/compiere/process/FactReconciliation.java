@@ -13,6 +13,7 @@ import org.compiere.util.Msg;
 /**
  * 
  */
+@org.adempiere.base.annotation.Process
 public class FactReconciliation extends SvrProcess
 {
 	private Timestamp			p_DateAcct_From = null;

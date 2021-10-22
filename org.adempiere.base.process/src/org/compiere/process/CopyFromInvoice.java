@@ -27,6 +27,7 @@ import org.compiere.model.MInvoice;
  *	@author Jorg Janke
  *	@version $Id: CopyFromInvoice.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class CopyFromInvoice extends SvrProcess
 {
 	private int		m_C_Invoice_ID = 0;

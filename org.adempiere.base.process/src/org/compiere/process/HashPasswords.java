@@ -29,6 +29,7 @@ import org.compiere.util.CacheMgt;
  *	Hash existing passwords
  *	
  */
+@org.adempiere.base.annotation.Process
 public class HashPasswords extends SvrProcess
 {
 	/**

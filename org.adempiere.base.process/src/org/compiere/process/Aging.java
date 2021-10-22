@@ -39,6 +39,7 @@ import org.compiere.util.TimeUtil;
  *  @see https://sourceforge.net/tracker2/?func=detail&aid=2655587&group_id=176962&atid=879332 
  *  @version $Id: Aging.java,v 1.5 2006/10/07 00:58:44 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class Aging extends SvrProcess
 {
 	/** The date to calculate the days due from			*/

@@ -30,6 +30,7 @@ import org.compiere.util.Trx;
  *	
  *  @author Marek Mosiewicz http://www.jotel.com.pl
  */
+@org.adempiere.base.annotation.Process
 public class SynchronizeTerminology extends SvrProcess
 {
 	/**	Static Logger	*/

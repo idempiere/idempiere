@@ -28,6 +28,7 @@ import org.compiere.util.Msg;
  * @author Elaine
  *
  */
+@org.adempiere.base.annotation.Process
 public class ValidateTaxProviderConnection extends SvrProcess 
 {
 	@Override

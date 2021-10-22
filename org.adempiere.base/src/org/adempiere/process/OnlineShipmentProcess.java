@@ -28,6 +28,7 @@ import org.compiere.process.SvrProcess;
  * @author Low Heng Sin
  *
  */
+@org.adempiere.base.annotation.Process
 public class OnlineShipmentProcess extends SvrProcess 
 {
 	@Override

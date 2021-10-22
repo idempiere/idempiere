@@ -14,6 +14,7 @@ import org.idempiere.fa.exceptions.AssetException;
  * Create asset from match invoice process
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
+@org.adempiere.base.annotation.Process
 public class A_Asset_CreateFromMatchInv extends SvrProcess {
 	private int p_M_MatchInv_ID = -1;
 	

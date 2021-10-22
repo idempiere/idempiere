@@ -32,6 +32,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+@org.adempiere.base.annotation.Process
 public class DatabaseConstraintDrop extends SvrProcess {
 
 	private int p_AD_Column_ID = 0;

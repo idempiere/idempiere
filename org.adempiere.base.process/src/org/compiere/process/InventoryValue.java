@@ -34,6 +34,7 @@ import org.compiere.util.DB;
  *  @author 	Michael Judd (mjudd) Akuna Ltd - BF [ 2685127 ]
  *  
  */
+@org.adempiere.base.annotation.Process
 public class InventoryValue extends SvrProcess
 {
 	/** Price List Used         */

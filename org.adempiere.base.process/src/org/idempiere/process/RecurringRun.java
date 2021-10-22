@@ -50,6 +50,7 @@ import org.compiere.util.ValueNamePair;
  *
  * 	@author 	Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class RecurringRun extends SvrProcess
 {
 	/* The recurring group */

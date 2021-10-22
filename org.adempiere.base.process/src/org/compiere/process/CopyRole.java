@@ -37,6 +37,7 @@ import org.compiere.util.Env;
  *  
  */
 
+@org.adempiere.base.annotation.Process
 public class CopyRole extends SvrProcess
 {
 	private int m_AD_Role_ID_From = 0;

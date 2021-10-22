@@ -39,6 +39,7 @@ import org.compiere.util.Env;
  *	IDEMPIERE-4782
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
+@org.adempiere.base.annotation.Process
 public class MFARevokeDevice extends SvrProcess {
 
 	/* Revoke All */

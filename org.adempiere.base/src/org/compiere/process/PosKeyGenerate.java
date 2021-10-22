@@ -26,6 +26,7 @@ import org.compiere.model.Query;
 import org.compiere.util.Env;
 
 
+@org.adempiere.base.annotation.Process
 public class PosKeyGenerate extends SvrProcess {
 
 	private int posKeyLayoutId = 0;

@@ -39,6 +39,7 @@ import org.compiere.util.Msg;
  *  Contributor: Carlos Ruiz - globalqss
  *      Fix [1709952] - Process: "Generate PO from Sales order" bug
  */
+@org.adempiere.base.annotation.Process
 public class OrderPOCreate extends SvrProcess
 {
 	/**	Order Date From		*/

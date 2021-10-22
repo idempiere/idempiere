@@ -62,6 +62,7 @@ import org.eevolution.model.MDDOrderLine;
  *  Carlos Ruiz globalqss - integrate bug fixing from Chris Farley
  *    [ 1619517 ] Replenish report fails when no records in m_storage
  */
+@org.adempiere.base.annotation.Process
 public class ReplenishReportProduction extends SvrProcess
 {
 	/** Warehouse				*/

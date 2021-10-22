@@ -31,6 +31,7 @@ import org.compiere.process.SvrProcess;
  *  @author Ashley Ramdass
  */
 
+@org.adempiere.base.annotation.Process
 public class RMACreateOrder extends SvrProcess
 {
 	

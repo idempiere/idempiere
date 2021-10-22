@@ -39,6 +39,7 @@ import org.compiere.util.Env;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ImportInvoice.java,v 1.1 2007/09/05 09:27:31 cruiz Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ImportInvoice extends SvrProcess
 {
 	/**	Client to be imported to		*/

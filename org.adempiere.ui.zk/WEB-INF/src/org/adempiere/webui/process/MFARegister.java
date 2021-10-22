@@ -40,6 +40,7 @@ import org.zkoss.zk.ui.Desktop;
  *	IDEMPIERE-4782
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
+@org.adempiere.base.annotation.Process
 public class MFARegister extends org.compiere.process.MFARegister implements IServerPushCallback {
 
 	/**

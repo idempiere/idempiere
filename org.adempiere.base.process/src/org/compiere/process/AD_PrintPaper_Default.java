@@ -27,6 +27,7 @@ import org.compiere.util.DB;
  *  @author Carlos Ruiz (globalqss)
  *  @version $Id: AD_PrintPaper_Default.java,v 1.0 2005/09/14 22:29:00 globalqss Exp $
  */
+@org.adempiere.base.annotation.Process
 public class AD_PrintPaper_Default extends SvrProcess
 {
 

@@ -39,6 +39,7 @@ import org.compiere.util.Util;
  *
  * 	@author 	Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class ChangeBaseLanguage extends SvrProcess
 {
 	/* The new language */

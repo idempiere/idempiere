@@ -25,6 +25,7 @@ import org.idempiere.broadcast.BroadcastMsgUtil;
  * @author Deepak Pansheriya
  *
  */
+@org.adempiere.base.annotation.Process
 public class KillCurrentSession extends SvrProcess {
 
 	private int scndTimeout = 0;

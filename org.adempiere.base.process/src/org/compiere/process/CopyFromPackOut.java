@@ -31,6 +31,7 @@ import org.compiere.model.MPackageExp;
 /**
  * Copy Package Details from another Pack Out
  */
+@org.adempiere.base.annotation.Process
 public class CopyFromPackOut extends SvrProcess {
 
 	/* Package Exp. */

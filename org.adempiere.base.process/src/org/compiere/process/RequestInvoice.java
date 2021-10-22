@@ -38,6 +38,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: RequestInvoice.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class RequestInvoice extends SvrProcess
 {
 	/** Request Type				*/

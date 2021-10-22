@@ -44,6 +44,7 @@ import org.compiere.util.Env;
  *  @author Carlos Ruiz - globalqss - Quality Systems & Solutions - http://globalqss.com
  *  @version  $Id: CashFlow
  */
+@org.adempiere.base.annotation.Process
 public class CashFlow  extends SvrProcess {
 
 	private Timestamp p_dateFrom;

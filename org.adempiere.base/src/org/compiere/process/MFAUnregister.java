@@ -36,6 +36,7 @@ import org.compiere.model.MMFARegistration;
  *	IDEMPIERE-4782
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
+@org.adempiere.base.annotation.Process
 public class MFAUnregister extends SvrProcess {
 
 	/* MFA Registration */

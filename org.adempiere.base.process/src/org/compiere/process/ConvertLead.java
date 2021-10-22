@@ -43,6 +43,7 @@ import org.compiere.util.Util;
  * @author Paul Bowden, Adaxa Pty Ltd
  *
  */
+@org.adempiere.base.annotation.Process
 public class ConvertLead extends SvrProcess {
 
 	private boolean p_createOpportunity = true;
