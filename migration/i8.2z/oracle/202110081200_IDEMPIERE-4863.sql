@@ -94,8 +94,9 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 ;
 
 -- Sep 27, 2021, 11:58:00 AM CEST
-CREATE UNIQUE INDEX ad_wlistbox_customization_uu_idx ON AD_Wlistbox_Customization (AD_Wlistbox_Customization_UU)
-;
+-- index is created automatically in oracle with the unique constraint
+-- CREATE UNIQUE INDEX ad_wlistbox_customization_uu_idx ON AD_Wlistbox_Customization (AD_Wlistbox_Customization_UU)
+-- ;
 
 -- Oct 8, 2021, 9:36:28 PM MYT
 INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201095,'358b9fa7-8229-4076-b330-7914e9e46c22',TO_DATE('2021-10-08 21:36:27','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_wlistbox_custom_name_idx',TO_DATE('2021-10-08 21:36:27','YYYY-MM-DD HH24:MI:SS'),100,200279,'N','Y','N','N','N')
