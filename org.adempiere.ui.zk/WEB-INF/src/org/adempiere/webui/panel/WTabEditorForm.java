@@ -16,6 +16,7 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.apps.form.WTabEditor;
 
+@org.idempiere.ui.zk.annotation.Form
 public class WTabEditorForm extends ADForm
 {
 	/**

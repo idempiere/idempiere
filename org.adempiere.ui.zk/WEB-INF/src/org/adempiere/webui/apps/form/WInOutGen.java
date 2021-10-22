@@ -52,6 +52,7 @@ import org.zkoss.zul.North;
  * Generate Shipment (manual) view class
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInOutGen")
 public class WInOutGen extends InOutGen implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private WGenForm form;

@@ -62,6 +62,7 @@ import org.zkoss.zul.Hbox;
  * @author Elaine
  *
  */
+@org.idempiere.ui.zk.annotation.Form
 public class WStatementCreateFromBatch extends StatementCreateFromBatch implements IFormController, EventListener<Event>
 {
 	private WCreateFromForm form;

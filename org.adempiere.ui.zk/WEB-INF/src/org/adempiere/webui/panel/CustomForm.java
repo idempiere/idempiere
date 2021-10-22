@@ -1,5 +1,6 @@
 package org.adempiere.webui.panel;
 
+@org.idempiere.ui.zk.annotation.Form
 public class CustomForm extends ADForm
 {
 
