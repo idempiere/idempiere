@@ -239,7 +239,8 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 				desktop.get().removeListener(listener);
 			
 			desktop = new WeakReference<Desktop>(getDesktop());
-			desktop.get().addListener(listener);
+			if (desktop != null && desktop.get() != null)
+				desktop.get().addListener(listener);
 		}
 	}
 
