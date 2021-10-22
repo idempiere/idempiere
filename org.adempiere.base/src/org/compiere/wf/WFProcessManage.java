@@ -81,6 +81,7 @@ public class WFProcessManage extends SvrProcess
 			process.setTextMsg(msg);
 			process.setAD_User_ID(getAD_User_ID());
 			process.setWFState(StateEngine.STATE_Aborted);
+			process.saveEx();
 			return msg;
 		}
 		String msg = null;
