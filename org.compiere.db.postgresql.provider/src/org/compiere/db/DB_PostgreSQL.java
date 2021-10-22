@@ -1390,6 +1390,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			
 		//	Default
 		String defaultValue = column.getDefaultValue();
+		String originalDefaultValue = defaultValue;
 		if (defaultValue != null 
 			&& defaultValue.length() > 0
 			&& defaultValue.indexOf('@') == -1		//	no variables
@@ -1404,6 +1405,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		else
 		{
 			sql.append("null");
+			defaultValue = null;
 		}
 		sql.append(")");
 		
@@ -1411,6 +1413,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		//	Null Values
 		if (column.isMandatory() && defaultValue != null && defaultValue.length() > 0)
 		{
+			if (!(DisplayType.isText(column.getAD_Reference_ID()) 
+					|| DisplayType.isList(column.getAD_Reference_ID())
+					|| column.getAD_Reference_ID() == DisplayType.YesNo
+					|| column.getAD_Reference_ID() == DisplayType.Payment
+					// Two special columns: Defined as Table but DB Type is String 
+					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
+					|| (column.getAD_Reference_ID() == DisplayType.Button &&
+							!(column.getColumnName().endsWith("_ID")))))
+			{
+				defaultValue = originalDefaultValue;
+			}
 			StringBuilder sqlSet = new StringBuilder("UPDATE ")
 				.append(table.getTableName())
 				.append(" SET ").append(quoteColumnName(column.getColumnName()))
