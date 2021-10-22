@@ -55,7 +55,7 @@ public class MQuery implements Serializable, Cloneable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4726305684993324747L;
+	private static final long serialVersionUID = -8671209250739719461L;
 
 	/**
 	 *	Get Query from Parameter
@@ -805,6 +805,8 @@ public class MQuery implements Serializable, Cloneable
 	/**
 	 * 	Add Restriction
 	 * 	@param whereClause SQL WHERE clause
+	 *  @param andCondition
+	 *  @param joinDepth
 	 */
 	public void addRestriction (String whereClause, boolean andCondition, int joinDepth)
 	{
@@ -814,6 +816,22 @@ public class MQuery implements Serializable, Cloneable
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
 	}	//	addRestriction
+	
+	/**
+	 * 	Add Restriction
+	 * 	@param whereClause SQL WHERE clause
+	 *  @param joinDepth
+	 *  @param andOrCondition
+	 */
+	public void addRestriction (String whereClause, int joinDepth, String andOrCondition)
+	{
+		if (whereClause == null || whereClause.trim().length() == 0)
+			return;
+		Restriction r = new Restriction (whereClause, andOrCondition, joinDepth);
+		m_list.add(r);
+		m_newRecord = whereClause.equals(NEWRECORD);
+	}	//	addRestriction
+	
 	/**
 	 * 	Add Restriction
 	 * 	@param whereClause SQL WHERE clause
