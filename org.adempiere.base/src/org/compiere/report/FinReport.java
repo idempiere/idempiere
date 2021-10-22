@@ -1382,16 +1382,18 @@ public class FinReport extends SvrProcess
 				unionInsert.append("1 ");
 		}
 
+		String numericType = DB.getDatabase().getNumericDataType();
+		
 		//	for all columns create select statement
 		for (int col = 0; col < m_columns.length; col++)
 		{
 			insert.append(", ");
 			if (listSourceNoTrx)
-				unionInsert.append(", Cast(NULL AS NUMBER)");
+				unionInsert.append(", Cast(NULL AS ").append(numericType).append(")");
 			//	No calculation
 			if (m_columns[col].isColumnTypeCalculation())
 			{
-				insert.append("Cast(NULL AS NUMBER)");
+				insert.append("Cast(NULL AS ").append(numericType).append(")");
 				continue;
 			}
 
@@ -1403,7 +1405,7 @@ public class FinReport extends SvrProcess
 				select.append (m_columns[col].getSelectClause (true));
 			else
 			{
-				insert.append("Cast(NULL AS NUMBER)");
+				insert.append("Cast(NULL AS ").append(numericType).append(")");
 				continue;
 			}
 
@@ -1613,6 +1615,8 @@ public class FinReport extends SvrProcess
 		else
 			insert.append("2 ");
 
+		String numericType = DB.getDatabase().getNumericDataType();
+		
 		//	for all columns create select statement
 		for (int col = 0; col < m_columns.length; col++)
 		{
@@ -1620,7 +1624,7 @@ public class FinReport extends SvrProcess
 			//	No calculation
 			if (m_columns[col].isColumnTypeCalculation())
 			{
-				insert.append("Cast(NULL AS NUMBER)");
+				insert.append("Cast(NULL AS ").append(numericType).append(")");
 				continue;
 			}
 
@@ -1632,7 +1636,7 @@ public class FinReport extends SvrProcess
 				select.append (m_columns[col].getSelectClause (false));
 			else
 			{
-				insert.append("Cast(NULL AS NUMBER)");
+				insert.append("Cast(NULL AS ").append(numericType).append(")");
 				continue;
 			}
 
