@@ -250,6 +250,10 @@ public class SessionContextListener implements ExecutionInit,
     	}
 		int AD_Session_ID = Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID");
 		if (AD_Session_ID > 0) {
+			
+			//sleep 1s to avoid timing issue with login and logout (both uses redirect call)
+			Thread.sleep(1000);
+			
 			String key = getSessionDesktopListKey(AD_Session_ID);
 			@SuppressWarnings("unchecked")
 			List<String> list = (List<String>) Env.getCtx().get(key);
