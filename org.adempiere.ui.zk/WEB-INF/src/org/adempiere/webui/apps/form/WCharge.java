@@ -67,6 +67,7 @@ import org.zkoss.zul.Separator;
  * @author Andrew Kimball
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VCharge")
 public class WCharge extends Charge implements IFormController, EventListener<Event>
 {
     /**

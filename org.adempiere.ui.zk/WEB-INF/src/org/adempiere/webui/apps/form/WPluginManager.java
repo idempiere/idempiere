@@ -64,6 +64,7 @@ import org.zkoss.zul.Vbox;
  * @author Carlos Ruiz - globalqss - bxservice
  *
  */
+@org.idempiere.ui.zk.annotation.Form
 public class WPluginManager extends ADForm implements EventListener<Event> {
 	/**
 	 * 

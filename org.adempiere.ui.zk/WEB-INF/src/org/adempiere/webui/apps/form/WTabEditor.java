@@ -90,6 +90,7 @@ import org.zkoss.zul.West;
  * @author Carlos Ruiz
  *
  */
+@org.idempiere.ui.zk.annotation.Form
 public class WTabEditor extends TabEditor implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	// TODO: create messages Property, VisibleFields, NonVisibleField

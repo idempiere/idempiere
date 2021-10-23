@@ -61,6 +61,7 @@ import org.zkoss.zul.South;
  * @author Elaine
  * @date September 18, 2012
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VResetPassword")
 public class WResetPassword implements IFormController, EventListener<Event>, ValueChangeListener {
 
 	private static final CLogger log = CLogger.getCLogger(WResetPassword.class);

@@ -76,6 +76,7 @@ import org.zkoss.zul.Html;
  * @author hengsin
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.wf.WFActivity")
 public class WWFActivity extends ADForm implements EventListener<Event>
 {
 	/**

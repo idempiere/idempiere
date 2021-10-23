@@ -42,6 +42,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Vlayout;
 
+@org.idempiere.ui.zk.annotation.Form
 public class WProcessParameterForm extends ADForm
 {
 	/**

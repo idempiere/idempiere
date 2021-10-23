@@ -40,6 +40,7 @@ import org.zkoss.zul.Vlayout;
  * @author hengsin
  *
  */
+@org.idempiere.ui.zk.annotation.Form
 public class CompareCtxHelpSuggestion extends ADForm {
 
 	private static final String NEW_VALUE = "newValue";

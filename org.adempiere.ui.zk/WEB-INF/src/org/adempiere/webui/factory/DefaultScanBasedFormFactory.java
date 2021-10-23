@@ -20,25 +20,27 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - matheus.marcelino                         								   *
+ * - hengsin                         								   *
  **********************************************************************/
 package org.adempiere.webui.factory;
 
-import org.adempiere.base.IMappedByNameFactory;
-import org.adempiere.webui.panel.ADForm;
-import org.idempiere.ui.zk.annotation.Form;
-import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Component;
 
 /**
- *
- * @author matheus.marcelino
+ * 
+ * @author hengsin
  *
  */
-public interface IMappedFormFactory extends IMappedByNameFactory<ADForm> {
-	/**
-	 * Scan packages for class with {@link Form} annotation and add mapping for it
-	 * @param context
-	 * @param packages
-	 */
-	public void scan(BundleContext context, String... packages);
+@Component(immediate = true, service = IFormFactory.class, property = {"service.ranking:Integer=0"})
+public final class DefaultScanBasedFormFactory extends ScanBasedFormFactory {
+
+	public DefaultScanBasedFormFactory() {
+	}
+
+	@Override
+	protected String[] getPackages() {
+		return new String[] {"org.adempiere.webui.apps.form", "org.adempiere.webui.apps.graph", "org.adempiere.webui.apps.wf",
+							 "org.adempiere.webui.panel"};
+	}
+
 }
