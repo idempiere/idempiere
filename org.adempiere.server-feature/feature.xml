@@ -645,4 +645,11 @@
          fragment="true"
          unpack="false"/>
 
+   <plugin
+         id="jakarta.validation.jakarta.validation-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
