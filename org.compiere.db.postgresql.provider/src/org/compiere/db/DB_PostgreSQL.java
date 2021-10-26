@@ -1399,7 +1399,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			if (defaultValue.equalsIgnoreCase("sysdate"))
 				defaultValue = "getDate()";
 			if (!defaultValue.startsWith("'") && !defaultValue.endsWith("'"))
-				defaultValue = "'" + defaultValue + "'";
+				defaultValue = DB.TO_STRING(defaultValue);
 			sql.append(defaultValue);
 		}
 		else
@@ -1423,6 +1423,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 							!(column.getColumnName().endsWith("_ID")))))
 			{
 				defaultValue = originalDefaultValue;
+				if (defaultValue.equalsIgnoreCase("sysdate"))
+					defaultValue = "getDate()";
 			}
 			StringBuilder sqlSet = new StringBuilder("UPDATE ")
 				.append(table.getTableName())
