@@ -20,25 +20,28 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - matheus.marcelino                         								   *
+ * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.webui.factory;
+package org.idempiere.ui.zk.annotation;
 
-import org.adempiere.base.IMappedByNameFactory;
-import org.adempiere.webui.panel.ADForm;
-import org.idempiere.ui.zk.annotation.Form;
-import org.osgi.framework.BundleContext;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+@Retention(RUNTIME)
+@Target(ElementType.TYPE)
 /**
- *
- * @author matheus.marcelino
+ * Annotation for web ui form
+ * @author hengsin
  *
  */
-public interface IMappedFormFactory extends IMappedByNameFactory<ADForm> {
+public @interface Form {
+
 	/**
-	 * Scan packages for class with {@link Form} annotation and add mapping for it
-	 * @param context
-	 * @param packages
+	 * Optional alternate name for form (in addition to class name)
+	 * @return alternate name
 	 */
-	public void scan(BundleContext context, String... packages);
+	String name() default "String";
 }

@@ -53,6 +53,7 @@ import org.zkoss.zul.Timer;
  *	IDEMPIERE-3101
  * 	@author Carlos Ruiz - globalqss
  */
+@org.idempiere.ui.zk.annotation.Form
 public class AddAuthorizationForm extends ADForm {
 	/**
 	 * 

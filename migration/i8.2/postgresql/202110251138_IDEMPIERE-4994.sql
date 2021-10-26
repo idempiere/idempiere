@@ -1,0 +1,16 @@
+-- IDEMPIERE-4994 Generate invoice (manual) tries to look for vendors
+-- Oct 25, 2021, 11:35:58 AM CEST
+UPDATE AD_Menu SET IsSOTrx='Y',Updated=TO_TIMESTAMP('2021-10-25 11:35:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=346
+;
+
+-- Oct 25, 2021, 11:36:12 AM CEST
+UPDATE AD_Menu SET IsSOTrx='Y',Updated=TO_TIMESTAMP('2021-10-25 11:36:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=53132
+;
+
+-- Oct 25, 2021, 11:36:38 AM CEST
+UPDATE AD_Menu SET IsSOTrx='Y',Updated=TO_TIMESTAMP('2021-10-25 11:36:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=217
+;
+
+SELECT register_migration_script('202110251138_IDEMPIERE-4994.sql') FROM dual
+;
+

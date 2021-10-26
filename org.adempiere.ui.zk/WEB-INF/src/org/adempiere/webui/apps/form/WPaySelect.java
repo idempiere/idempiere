@@ -90,6 +90,7 @@ import org.zkoss.zul.Space;
  *  @author Jorg Janke
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPaySelect")
 public class WPaySelect extends PaySelect
 	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI, ValueChangeListener
 {

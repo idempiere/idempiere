@@ -55,6 +55,7 @@ import org.zkoss.zul.South;
  *	@author Jorg Janke
  *	@version $Id: VMerge.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VMerge")
 public class WMerge extends Merge implements IFormController, EventListener<Event>
 {
 	/**
