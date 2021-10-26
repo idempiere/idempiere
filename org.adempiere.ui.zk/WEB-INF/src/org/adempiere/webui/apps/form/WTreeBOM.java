@@ -70,6 +70,7 @@ import org.zkoss.zul.Treecols;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.West;
 
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VTreeBOM")
 public class WTreeBOM extends TreeBOM implements IFormController, EventListener<Event> {
 	
 	private int         	m_WindowNo = 0;

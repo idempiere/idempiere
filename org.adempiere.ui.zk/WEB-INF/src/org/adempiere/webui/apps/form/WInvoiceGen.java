@@ -52,6 +52,7 @@ import org.zkoss.zul.North;
  * Generate Invoice (manual) view class
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInvoiceGen")
 public class WInvoiceGen extends InvoiceGen implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private WGenForm form;

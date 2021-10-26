@@ -74,6 +74,7 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vbox;
 
 
+@org.idempiere.ui.zk.annotation.Form
 public class WReportCustomization  implements IFormController,EventListener<Event> {
 	
 	private CustomForm form = new CustomForm();	

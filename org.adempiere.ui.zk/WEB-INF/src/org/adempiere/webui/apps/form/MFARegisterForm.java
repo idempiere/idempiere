@@ -57,6 +57,7 @@ import org.zkoss.zul.Space;
  *	IDEMPIERE-4782
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
+@org.idempiere.ui.zk.annotation.Form
 public class MFARegisterForm extends ADForm {
 	/**
 	 * 
