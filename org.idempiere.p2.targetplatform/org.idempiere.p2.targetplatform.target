@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-210901" sequenceNumber="1633490563">
+<target name="idempiere-210901" sequenceNumber="1635250903">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.0.1"/>
@@ -468,6 +468,12 @@ Export-Package:        *;-noimport:=true
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <version>2.3.3</version>
+	  <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>2.0.2</version>
 	  <type>jar</type>
     </location>				
 	<!-- org.bouncycastle -->
