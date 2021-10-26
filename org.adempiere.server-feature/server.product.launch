@@ -105,7 +105,6 @@
         <setEntry value="com.google.zxing.core@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
-        <setEntry value="org.apache.commons.digester@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.itext@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.istack.commons-runtime@default:default"/>
@@ -131,6 +130,7 @@
         <setEntry value="jakarta.jws-api@default:default"/>
         <setEntry value="jakarta.persistence-api@default:default"/>
         <setEntry value="jakarta.transaction-api@default:default"/>
+        <setEntry value="jakarta.validation.jakarta.validation-api@default:default"/>
         <setEntry value="jakarta.ws.rs-api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.soap-api@default:default"/>
@@ -158,6 +158,7 @@
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-net@default:default"/>
         <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.digester@default:default"/>
         <setEntry value="org.apache.commons.discovery@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.lang@default:default"/>
