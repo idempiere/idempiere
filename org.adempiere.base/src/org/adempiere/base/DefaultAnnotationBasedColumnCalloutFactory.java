@@ -24,37 +24,22 @@
  **********************************************************************/
 package org.adempiere.base;
 
-import java.util.function.Supplier;
-
-import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * 
  * @author hengsin
  *
  */
-public interface IMappedColumnCalloutFactory {
+@Component(immediate = true, service = IColumnCalloutFactory.class)
+public class DefaultAnnotationBasedColumnCalloutFactory extends AnnotationBasedColumnCalloutFactory {
 
-	/**
-	 * add mapping for callout
-	 * @param tableName case insensitive table name or * to match all table
-	 * @param columnName case insensitive column name or * to match all column
-	 * @param supplier supplier for {@link IColumnCallout} instance
-	 */
-	public void addMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
+	public DefaultAnnotationBasedColumnCalloutFactory() {
+	}
 
-	/**
-	 * remove mapping for callout
-	 * @param tableName case insensitive table name or * to match all table
-	 * @param columnName case insensitive column name or * to match all column
-	 * @param supplier supplier for {@link IColumnCallout} instance
-	 */
-	public void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
+	@Override
+	protected String[] getPackages() {
+		return new String[] {"org.adempiere.model"};
+	}
 
-	/**
-	 * scan, discover and register classes with Callout annotation
-	 * @param context
-	 * @param packages
-	 */
-	public void scan(BundleContext context, String... packages);
 }

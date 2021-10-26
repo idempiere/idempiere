@@ -22,39 +22,35 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.base;
+package org.adempiere.base.annotation;
 
-import java.util.function.Supplier;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.osgi.framework.BundleContext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * 
+ * Annotation for Column Callout. This should only be used with class that implements the IColumnCallout interface.
+ * You can repeat the annotation multiple time for different table and column name combination
+ * Note that you can't use * for both tableName and columnName attribute.
  * @author hengsin
  *
  */
-public interface IMappedColumnCalloutFactory {
-
+@Retention(RUNTIME)
+@Target(ElementType.TYPE)
+@Repeatable(Callouts.class)
+public @interface Callout {
 	/**
-	 * add mapping for callout
-	 * @param tableName case insensitive table name or * to match all table
-	 * @param columnName case insensitive column name or * to match all column
-	 * @param supplier supplier for {@link IColumnCallout} instance
+	 * 
+	 * @return table names or * to match all tables
 	 */
-	public void addMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
-
+	String[] tableName();
+	
 	/**
-	 * remove mapping for callout
-	 * @param tableName case insensitive table name or * to match all table
-	 * @param columnName case insensitive column name or * to match all column
-	 * @param supplier supplier for {@link IColumnCallout} instance
+	 * 
+	 * @return column names or * to match all columns
 	 */
-	public void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
-
-	/**
-	 * scan, discover and register classes with Callout annotation
-	 * @param context
-	 * @param packages
-	 */
-	public void scan(BundleContext context, String... packages);
+	String[] columnName();	
 }
