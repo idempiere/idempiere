@@ -22,7 +22,8 @@ public class BPartnerCalloutFactory implements IColumnCalloutFactory {
 
 	@Override
 	public IColumnCallout[] getColumnCallouts(String tableName, String columnName) {
-		if (tableName.equalsIgnoreCase(MBPartner.Table_Name)) { 
+		if (tableName.equalsIgnoreCase(MBPartner.Table_Name)
+			&& MBPartner.COLUMNNAME_C_BPartner_ID.equalsIgnoreCase(columnName)) { 
 			return new IColumnCallout[]{new CalloutBPartnerQuickEntry()};
 		}
 		return null;
