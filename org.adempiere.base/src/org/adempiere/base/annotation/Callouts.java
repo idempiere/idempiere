@@ -22,39 +22,21 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.base;
+package org.adempiere.base.annotation;
 
-import java.util.function.Supplier;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.osgi.framework.BundleContext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * 
  * @author hengsin
  *
  */
-public interface IMappedColumnCalloutFactory {
-
-	/**
-	 * add mapping for callout
-	 * @param tableName case insensitive table name or * to match all table
-	 * @param columnName case insensitive column name or * to match all column
-	 * @param supplier supplier for {@link IColumnCallout} instance
-	 */
-	public void addMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
-
-	/**
-	 * remove mapping for callout
-	 * @param tableName case insensitive table name or * to match all table
-	 * @param columnName case insensitive column name or * to match all column
-	 * @param supplier supplier for {@link IColumnCallout} instance
-	 */
-	public void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
-
-	/**
-	 * scan, discover and register classes with Callout annotation
-	 * @param context
-	 * @param packages
-	 */
-	public void scan(BundleContext context, String... packages);
+@Retention(RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Callouts {
+	Callout[] value() default {};
 }

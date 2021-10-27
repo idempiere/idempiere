@@ -16,12 +16,14 @@ package org.adempiere.model;
 import java.util.Properties;
 
 import org.adempiere.base.IColumnCallout;
+import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBPartner;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
+@Callout(tableName = MBPartner.Table_Name, columnName = "*")
 public class CalloutBPartnerQuickEntry implements IColumnCallout {
 
 	@Override

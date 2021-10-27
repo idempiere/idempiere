@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.base.IColumnCallout;
+import org.adempiere.base.annotation.Callout;
 import org.compiere.model.AccessSqlParser;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
@@ -35,6 +36,8 @@ import org.compiere.util.Env;
  * @author hengsin
  *
  */
+@Callout(tableName = "AD_InfoWindow", columnName = "AD_Table_ID")
+@Callout(tableName = "AD_InfoColumn", columnName = {"AD_Element_ID","AD_Reference_ID"})
 public class CalloutInfoWindow implements IColumnCallout {
 
 	/**
