@@ -1351,6 +1351,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 			if (listHead != null && layout != null) 
 			{
 				List<?> headers = listHead.getChildren();
+				if (headers.size() != layout.length)
+					return;
+				
 				int i = 0;
 				for(Object obj : headers)
 				{
