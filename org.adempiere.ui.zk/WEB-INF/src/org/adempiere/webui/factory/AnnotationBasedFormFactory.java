@@ -50,7 +50,7 @@ import io.github.classgraph.ScanResult;
  * @author hengsin
  *
  */
-public abstract class ScanBasedFormFactory implements IFormFactory {
+public abstract class AnnotationBasedFormFactory implements IFormFactory {
 
 	private final Map<String, String> classCache = new HashMap<>();
 	
@@ -58,9 +58,9 @@ public abstract class ScanBasedFormFactory implements IFormFactory {
 
 	private BundleContext bundleContext = null;
 	
-	private static final CLogger s_log = CLogger.getCLogger(ScanBasedFormFactory.class);
+	private static final CLogger s_log = CLogger.getCLogger(AnnotationBasedFormFactory.class);
 	
-	public ScanBasedFormFactory() {
+	public AnnotationBasedFormFactory() {
 	}
 
 	@Override
