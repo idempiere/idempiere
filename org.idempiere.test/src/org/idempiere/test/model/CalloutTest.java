@@ -131,9 +131,9 @@ public class CalloutTest extends AbstractTestCase {
 				+I_M_InventoryLine.COLUMNNAME_M_AttributeSetInstance_ID);
 		
 		calloutClass = "org.adempiere.model.CalloutBPartnerQuickEntry";
-		callouts = ColumnCalloutManager.findCallout(MBPartner.Table_Name, MBPartner.COLUMNNAME_Name);
-		assertNotNull(callouts, "Null column callouts for "+MBPartner.Table_Name+"."+MBPartner.COLUMNNAME_Name);
-		assertTrue(callouts.size() > 0, "Empty column callouts for "+MBPartner.Table_Name+"."+MBPartner.COLUMNNAME_Name);		
+		callouts = ColumnCalloutManager.findCallout(MBPartner.Table_Name, MBPartner.COLUMNNAME_C_BPartner_ID);
+		assertNotNull(callouts, "Null column callouts for "+MBPartner.Table_Name+"."+MBPartner.COLUMNNAME_C_BPartner_ID);
+		assertTrue(callouts.size() > 0, "Empty column callouts for "+MBPartner.Table_Name+"."+MBPartner.COLUMNNAME_C_BPartner_ID);		
 		found = 0;
 		for(IColumnCallout callout : callouts) {
 			if (callout.getClass().getName().equals(calloutClass)) {
