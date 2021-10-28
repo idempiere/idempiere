@@ -22,36 +22,29 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.base.event.annotations;
+package org.adempiere.base.annotation;
 
-import org.osgi.service.event.Event;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import org.adempiere.base.event.annotations.ModelEventDelegate;
+import org.compiere.model.PO;
 
 /**
- * 
- * Annotation driven event delegate base class that works together with {@link BaseEventHandler}.
- * Subclass implementation doesn't have to be thread safe as event delegate is create and throw away for each event call.
- * Subclass should use {@link EventTopic} or one of its derived annotation to define the event topic to handle
+ * Specify parameter for {@link ModelEventDelegate}
+ * Works with classes with {@link EventTopicDelegate} annotation
  * @author hengsin
  *
  */
-public class EventDelegate {
-
-	protected Event event;
-
+@Retention(RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ModelEventTopic {
 	/**
-	 * 
-	 * @param event
+	 * Model class (M* or X_*) for {@link ModelEventDelegate}
+	 * @return model class
 	 */
-	public EventDelegate(Event event) {
-		this.event = event;
-	}
-
-	/**
-	 * 
-	 * @return {@link Event}
-	 */
-	protected Event getEvent() {
-		return event;
-	}
-
+	Class<? extends PO> modelClass();
 }

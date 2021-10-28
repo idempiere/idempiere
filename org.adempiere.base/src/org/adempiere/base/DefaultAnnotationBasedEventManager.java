@@ -22,36 +22,22 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.base.event.annotations;
+package org.adempiere.base;
 
-import org.osgi.service.event.Event;
+import org.osgi.service.component.annotations.Component;
 
-/**
- * 
- * Annotation driven event delegate base class that works together with {@link BaseEventHandler}.
- * Subclass implementation doesn't have to be thread safe as event delegate is create and throw away for each event call.
- * Subclass should use {@link EventTopic} or one of its derived annotation to define the event topic to handle
- * @author hengsin
- *
- */
-public class EventDelegate {
-
-	protected Event event;
+@Component(immediate = true, service = {})
+public class DefaultAnnotationBasedEventManager extends AnnotationBasedEventManager {
 
 	/**
-	 * 
-	 * @param event
+	 * default constructor
 	 */
-	public EventDelegate(Event event) {
-		this.event = event;
+	public DefaultAnnotationBasedEventManager() {
 	}
 
-	/**
-	 * 
-	 * @return {@link Event}
-	 */
-	protected Event getEvent() {
-		return event;
+	@Override
+	public String[] getPackages() {
+		return new String[] {"org.adempiere.base.event.delegate"};
 	}
 
 }
