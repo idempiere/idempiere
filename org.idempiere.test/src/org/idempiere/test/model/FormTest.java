@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
-import org.adempiere.webui.factory.DefaultScanBasedFormFactory;
+import org.adempiere.webui.factory.DefaultAnnotationBasedFormFactory;
 import org.adempiere.webui.factory.IFormFactory;
 import org.compiere.model.MForm;
 import org.compiere.model.Query;
@@ -51,19 +51,19 @@ public class FormTest extends AbstractTestCase {
 
 	@Test
 	public void testCoreFormMapping() {
-		DefaultScanBasedFormFactory formFactory = null;
+		DefaultAnnotationBasedFormFactory formFactory = null;
 		List<IServiceReferenceHolder<IFormFactory>> factories = Service.locator().list(IFormFactory.class).getServiceReferences();
 		if (factories != null) {
 			for(IServiceReferenceHolder<IFormFactory> factory : factories) {
 				IFormFactory service = factory.getService();
-				if (service != null && service instanceof DefaultScanBasedFormFactory) {
-					formFactory = (DefaultScanBasedFormFactory) service;
+				if (service != null && service instanceof DefaultAnnotationBasedFormFactory) {
+					formFactory = (DefaultAnnotationBasedFormFactory) service;
 					break;
 				}
 			}
 		}
 		
-		assertNotNull(formFactory, "Failed to locate DefaultScanBasedFormFactory");
+		assertNotNull(formFactory, "Failed to locate DefaultAnnotationBasedFormFactory");
 		
 		Query query = new Query(Env.getCtx(), MForm.Table_Name, "AD_Form_ID < 1000000 AND ClassName IS NOT NULL "
 				+ " AND EXISTS (select 1 from ad_menu where isactive='Y' and ad_form_id=ad_form.ad_form_id)", getTrxName());
