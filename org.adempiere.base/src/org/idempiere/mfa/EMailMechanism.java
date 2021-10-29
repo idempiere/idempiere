@@ -77,6 +77,8 @@ public class EMailMechanism implements IMFAMechanism {
 
 		MUser user = MUser.get(ctx);
 		MMFARegistration reg = new MMFARegistration(ctx, 0, trxName);
+		reg.set_ValueOfColumn(MMFARegistration.COLUMNNAME_AD_Client_ID, user.getAD_Client_ID());
+		reg.setAD_Org_ID(0);
 		reg.setName(obfuscateEMail(prm));
 		reg.setParameterValue(prm);
 		reg.setMFA_Method_ID(method.getMFA_Method_ID());
@@ -85,7 +87,7 @@ public class EMailMechanism implements IMFAMechanism {
 		reg.setIsValid(false);
 		reg.setIsUserMFAPreferred(false);
 		reg.setExpiration(new Timestamp(System.currentTimeMillis() + (expireMinutes * 60000)));
-		reg.saveEx();
+		saveRegistration(reg);
 
 		// send the email
 		MClient client = MClient.get(ctx);
@@ -148,12 +150,7 @@ public class EMailMechanism implements IMFAMechanism {
 		if (! valid) {
 			reg.setLastFailure(new Timestamp(System.currentTimeMillis()));
 			reg.setFailedLoginCount(reg.getFailedLoginCount() + 1);
-			try {
-				PO.setCrossTenantSafe();
-				reg.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			saveRegistration(reg);
 			throw new AdempiereException(Msg.getMsg(ctx, "MFACodeInvalid"));
 		}
 
@@ -168,12 +165,7 @@ public class EMailMechanism implements IMFAMechanism {
 			reg.setName(name);
 		if (preferred)
 			reg.setIsUserMFAPreferred(true);
-		try {
-			PO.setCrossTenantSafe();
-			reg.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		saveRegistration(reg);
 
 		return Msg.getMsg(ctx, "MFARegistrationCompleted");
 	}
@@ -198,12 +190,7 @@ public class EMailMechanism implements IMFAMechanism {
 		MUser user = MUser.get(reg.getCtx());
 		reg.setMFASecret(otp);
 		reg.setExpiration(new Timestamp(System.currentTimeMillis() + (expireMinutes * 60000)));
-		try {
-			PO.setCrossTenantSafe();
-			reg.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		saveRegistration(reg);
 
 		String mail_to = reg.getParameterValue();
 		// send the email
@@ -268,7 +255,7 @@ public class EMailMechanism implements IMFAMechanism {
 		if (! valid) {
 			reg.setLastFailure(new Timestamp(System.currentTimeMillis()));
 			reg.setFailedLoginCount(reg.getFailedLoginCount() + 1);
-			reg.saveEx();
+			saveRegistration(reg);
 			return Msg.getMsg(ctx, "MFACodeInvalid");
 		}
 
@@ -277,14 +264,22 @@ public class EMailMechanism implements IMFAMechanism {
 		reg.setFailedLoginCount(0);
 		if (setPreferred)
 			reg.setIsUserMFAPreferred(true);
+		saveRegistration(reg);
+
+		return null;
+	}
+
+	/**
+	 * Save the registration record allowing cross-tenant (saving for a user in System tenant)
+	 * @param reg
+	 */
+	private void saveRegistration(MMFARegistration reg) {
 		try {
 			PO.setCrossTenantSafe();
 			reg.saveEx();
 		} finally {
 			PO.clearCrossTenantSafe();
 		}
-		
-		return null;
 	}
 
 }
