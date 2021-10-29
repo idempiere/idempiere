@@ -56,6 +56,7 @@ import org.compiere.model.MMFARegisteredDevice;
 import org.compiere.model.MMFARegistration;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -82,7 +83,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5521412080450156787L;
+	private static final long serialVersionUID = -2347409338340527333L;
 
 	private static final CLogger logger = CLogger.getCLogger(ValidateMFAPanel.class);
 
@@ -121,11 +122,10 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		this.m_orgKNPair = orgKNPair;
 		this.component = this;
 
-		String cookieName = Env.getAD_User_ID(m_ctx) + "|" + Env.getAD_Client_ID(m_ctx);
-		String registerCookie = getCookie(cookieName);
+		String registerCookie = getCookie(getCookieName());
 		login = new Login(ctx);
 		if (login.isMFARequired(registerCookie)) {
-			initComponents();
+			initComponents(registerCookie != null);
 			init();
 			this.setId("validateMFAPanel");
 			this.setSclass("login-box");
@@ -242,7 +242,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		this.appendChild(div);
 	}
 
-	private void initComponents() {
+	private void initComponents(boolean hasCookie) {
 		lblMFAMechanism = new Label();
 		lblMFAMechanism.setId("lblMFAMechanism");
 		lblMFAMechanism.setValue(Msg.getMsg(m_ctx, "MFALoginMechanism"));
@@ -288,7 +288,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		chkRegisterDevice.setId("chkRegisterDevice");
 		boolean enableRegisterDevice = (daysExpire > 0);
 		chkRegisterDevice.setVisible(enableRegisterDevice);
-		chkRegisterDevice.setChecked(false);
+		chkRegisterDevice.setChecked(hasCookie);
 
 		txtValidationCode = new Textbox();
 		txtValidationCode.setId("txtValidationCode");
@@ -358,17 +358,24 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		}
 
 		if (chkRegisterDevice != null && chkRegisterDevice.isChecked()) {
-			String cookieName = Env.getAD_User_ID(m_ctx) + "|" + Env.getAD_Client_ID(m_ctx);
 			// TODO: generate the random cookie if possible with some fingerprint of the device
 			String cookieValue = UUID.randomUUID().toString();
-			setCookie(cookieName, cookieValue);
+			setCookie(getCookieName(), cookieValue);
+			MUser user = MUser.get(Env.getCtx());
 			MMFARegisteredDevice rd = new MMFARegisteredDevice(m_ctx, 0, null);
-			rd.setAD_User_ID(Env.getAD_User_ID(m_ctx));
+			rd.set_ValueOfColumn(MMFARegistration.COLUMNNAME_AD_Client_ID, user.getAD_Client_ID());
+			rd.setAD_Org_ID(0);
+			rd.setAD_User_ID(user.getAD_User_ID());
 			rd.setMFADeviceIdentifier(cookieValue);
 			long daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
 			rd.setExpiration(new Timestamp(System.currentTimeMillis() + (daysExpire * 86400000L)));
 			// TODO: rd.setHelp -> add information about the browser, device and IP address (fingerprint)
-			rd.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				rd.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 		}
 
 		Session currSess = Executions.getCurrent().getDesktop().getSession();
@@ -406,6 +413,16 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 		Env.setContext(m_ctx, "#MFA_Registration_ID", registrationId);
 		wndLogin.loginCompleted();
+	}
+
+	/**
+	 * The cookie name for the MFA registered device
+	 * @return
+	 */
+	private String getCookieName() {
+		StringBuilder sb = new StringBuilder("UD_") // User Device
+				.append(Env.getAD_User_ID(m_ctx));
+		return sb.toString();
 	}
 
 	/**
