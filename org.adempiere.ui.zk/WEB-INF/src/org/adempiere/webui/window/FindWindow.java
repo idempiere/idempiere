@@ -727,8 +727,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         winAdvanced = new Window();
         winLookupRecord = new Window();
         Tabpanel tabPanel = new Tabpanel();
-//        tabPanel.setStyle("height: 100%; width: 100%;");
-        tabPanel.setStyle("height: 100%; width: 100%; padding-right: 2px; margin: auto;");
+        tabPanel.setStyle("height: 100%; width: 100%;");
         tabPanel.appendChild(winLookupRecord);
         tabPanel.setId("simpleSearch");
         winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", ""),false, true);
