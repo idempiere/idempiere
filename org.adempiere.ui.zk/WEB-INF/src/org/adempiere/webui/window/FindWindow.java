@@ -1383,8 +1383,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	        updateColumnListModel(listColumn, cols);
 	        if (!isFilterColumnList()) {
 		        listColumn.addScrollSelectedIntoViewListener();
-	        }
-	        Events.sendEvent("onInitRender", listColumn, null);
+	        }	        
 	        
 	        if(fields == null)
 	        {
@@ -1468,6 +1467,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			columnListModel = new ListModelList<ValueNamePair>(cols);
 		}
 		listColumn.setModel(columnListModel);
+		Events.sendEvent("onInitRender", listColumn, null);
 	}
 
     private boolean isFilterColumnList() {
@@ -1709,7 +1709,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
    	                Component componentTo = getAttributeValuesListComponent(row, true);
 	                componentTo.setId("searchFieldTo"+row.getId());	               
 
-   	                Listbox listOp = (Listbox) row.getFellow("listOperator"+row.getId());
+   	                Combobox listOp = (Combobox) row.getFellow("listOperator"+row.getId());
    	                String betweenValue = listOp.getSelectedItem().getValue().toString();
 
    	                if (betweenValue.equals(MQuery.NULL) || betweenValue.equals(MQuery.NOT_NULL))
@@ -2296,7 +2296,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                	where_rest="EXISTS("+where_rest+")";
 	                m_query.addRestriction(where_rest, and, not, isExistCondition, openBrackets);
 	            }
-	            else if ((field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
+	            else if (field != null && (field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
 	            		(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
 	            {
 	            	String clause = DB.intersectClauseForCSV(ColumnSQL, parsedValue.toString());
@@ -3455,7 +3455,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		{
 
 		boolean between = false;
-        Listbox listOp = (Listbox) listItem.getFellow("listOperator"+listItem.getId());
+        Combobox listOp = (Combobox) listItem.getFellow("listOperator"+listItem.getId());
         String betweenValue = listOp.getSelectedItem().getValue().toString();
         String opValue = MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue();
         if (isValueTo &&  betweenValue != null
@@ -3556,7 +3556,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      	listColumn.getChildren().clear();
 
         ArrayList<ValueNamePair> items = new ArrayList<ValueNamePair>();
-
+        items.add(new ValueNamePair("", " "));
 
 		List<MAttribute> attributes = new Query(Env.getCtx(), MAttribute.Table_Name, " AD_Client_ID IN (? , ?) " , null)
 						.setParameters(new Object[]{0, Env.getAD_Client_ID(Env.getCtx()) })
@@ -3577,28 +3577,24 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         if(fields == null)
         {
-            listColumn.appendItem("","" );
-            for (ValueNamePair item: cols)
-            	listColumn.appendItem(item.getName(), item.getValue());
+            updateColumnListModel(listColumn, cols);
             listColumn.setSelectedIndex(0);
 
             listOperator.getItems().clear(); //clear operand
             for (ValueNamePair item: op)
-            	listOperator.appendItem(item.getName(), item.getValue());
+            	listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()).trim(), item.getValue());
             listOperator.setSelectedIndex(0);
         }
         else
         {
         	boolean selected = false;
-        	listColumn.appendItem("","");
+        	updateColumnListModel(listColumn, cols);
             for (int i = 0; i < cols.length; i++)
             {
             	ValueNamePair item = cols[i];
-            	listColumn.appendItem(item.getName(), item.getValue());
-                Comboitem li = listColumn.getItemAtIndex(listColumn.getItemCount()-1); 
                 if(item.getValue().equals(columnName))
             	{
-                	listColumn.setSelectedItem(li);
+                	listColumn.setSelectedIndex(i);
             		selected = true;
             	}
             }
@@ -3608,7 +3604,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             for (int i = 0; i < op.length; i++)
             {
             	ValueNamePair item = op[i];
-            	listOperator.appendItem(item.getName(), item.getValue());
+            	listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()).trim(), item.getValue());
             	Comboitem li = listOperator.getItemAtIndex(listOperator.getItemCount()-1); 
             	if(item.getValue().equals(operator))
             	{
@@ -3657,7 +3653,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         if(columnName == null || columnName.isEmpty()) return new Label("");
 
         boolean between = false;
-        Listbox listOp = (Listbox) row.getFellow("listOperator"+row.getId());
+        Combobox listOp = (Combobox) row.getFellow("listOperator"+row.getId());
         String betweenValue = listOp.getSelectedItem().getValue().toString();
         String opValue = MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue();
         if (isValueTo &&  betweenValue != null
