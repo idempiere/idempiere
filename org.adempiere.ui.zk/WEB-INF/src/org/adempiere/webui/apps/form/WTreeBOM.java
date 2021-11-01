@@ -251,7 +251,8 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 		
 		if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
 		{
-			if(m_selected_id > 0 || getM_Product_ID() > 0) action_loadBOM();
+			if(getM_Product_ID() > 0)
+				action_loadBOM();
 		}
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) 
 		{
@@ -319,6 +320,7 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener<
 			return;
 		MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
 		treeInfo.setText (Msg.getElement(Env.getCtx(), "Sel_Product_ID")+": "+product.getValue());
+		m_selected_id = M_Product_ID;
 
 		Vector<Object> line = new Vector<Object>(10);
 		line.add( Boolean.valueOf(product.isActive()));   //  0 IsActive
