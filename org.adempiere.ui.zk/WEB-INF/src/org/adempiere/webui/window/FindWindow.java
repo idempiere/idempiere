@@ -41,6 +41,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -64,6 +65,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
@@ -82,7 +84,10 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
+import org.compiere.model.I_AD_Tab;
 import org.compiere.model.Lookup;
+import org.compiere.model.MAttribute;
+import org.compiere.model.MAttributeValue;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -91,8 +96,10 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
@@ -198,6 +205,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private boolean         initialSlowQuery = false;
     private PreparedStatement   m_pstmt;
     //
+    private MTab[] m_tabs;
+    
     /** List of WEditors            */
     private ArrayList<WEditor>          m_sEditors = new ArrayList<WEditor>();
     private ArrayList<ToolBarButton>    m_sEditorsFlag = new ArrayList<ToolBarButton>();
@@ -208,6 +217,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     public static final int     FIELDLENGTH = 20;
 
     private int m_AD_Tab_ID = 0;
+    private String m_AD_Tab_UU = null;
 	private MUserQuery[] userQueries;
 	private Rows contentSimpleRows;
 	private boolean m_createNew = false;
@@ -235,6 +245,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	public static final int		INDEX_RIGHTBRACKET = 6;
 	/** Index History		*/
 	public static final int		INDEX_HISTORY = 1;
+	/** Index Table		*/
+	public static final int		INDEX_TABLE = 7;
 	
 	/** Search messages using translation */
 	private String				m_sNew;	
@@ -266,9 +278,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**IDEMPIERE-4085*/
     private int m_AD_UserQuery_ID = 0;    
 
+	private AbstractADWindowContent m_windowPanel;
+
+	/** Columname attribute set instance */
+	private static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+
     /**
      * FindPanel Constructor
      * @param targetWindowNo targetWindowNo
+     * @param targetTabNo
      * @param title title
      * @param AD_Table_ID AD_Table_ID
      * @param tableName tableName
@@ -280,6 +298,26 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
  	public FindWindow (int targetWindowNo, int targetTabNo, String title,
             int AD_Table_ID, String tableName, String whereExtended,
             GridField[] findFields, int minRecords, int adTabId)
+ 	{
+    	this(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, whereExtended, findFields, minRecords, adTabId, null);
+    }
+
+    /**
+     * FindPanel Constructor
+     * @param targetWindowNo targetWindowNo
+     * @param targetTabNo
+     * @param title title
+     * @param AD_Table_ID AD_Table_ID
+     * @param tableName tableName
+     * @param whereExtended whereExtended
+     * @param findFields findFields
+     * @param minRecords minRecords
+     * @param adTabId
+     * @param AbstractADWindowContent windowPanel
+    **/
+    public FindWindow (int targetWindowNo, int targetTabNo, String title,
+            int AD_Table_ID, String tableName, String whereExtended,
+            GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel)
     {
         m_targetWindowNo = targetWindowNo;
         m_targetTabNo = targetTabNo;
@@ -292,8 +330,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	m_gridTab = findFields[0].getGridTab();
         m_sNew = "** ".concat(Msg.getMsg(Env.getCtx(), "New Query")).concat(" **");		
         m_AD_Tab_ID = adTabId;
+        m_AD_Tab_UU = MTab.get(adTabId).getAD_Tab_UU();
         m_minRecords = minRecords;
         m_isCancel = true;
+        m_windowPanel = windowPanel;
         //
         m_simpleCtx = new Properties(Env.getCtx());
         m_advanceCtx = new Properties(Env.getCtx());
@@ -522,9 +562,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         lstHLeftBracket.setAlign("center");
         ZKUpdateUtil.setWidth(lstHLeftBracket, "50px");
 
+        ListHeader lstHTable = new ListHeader();
+		lstHTable.setLabel(Msg.translate(Env.getCtx(), "AD_Tab_ID"));
+		ZKUpdateUtil.setWidth(lstHTable, "12%");
+		
         ListHeader lstHColumn = new ListHeader();
-        lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Column_ID"));
-        ZKUpdateUtil.setWidth(lstHColumn, "30%");
+        lstHColumn.setLabel(Msg.translate(Env.getCtx(), "AD_Field_ID"));
+        ZKUpdateUtil.setWidth(lstHColumn, "18%");
 
         ListHeader lstHOperator = new ListHeader();
         lstHOperator.setLabel(Msg.getMsg(Env.getCtx(), "Operator"));
@@ -552,6 +596,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listhead.appendChild(lstHAndOr);
         listhead.appendChild(lstHLeftBracket);
 
+        listhead.appendChild(lstHTable);
         listhead.appendChild(lstHColumn);
         listhead.appendChild(lstHOperator);
         listhead.appendChild(lstHQueryValue);
@@ -988,6 +1033,31 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ListItem listItem = new ListItem();
         listItem.setId("Row"+ rowCount++);
 
+        int id = 0;
+
+        if(advancedPanel.getItemCount()>0){
+			String previousID = advancedPanel.getItems().get(advancedPanel.getItemCount()-1).getId();
+			previousID = previousID.substring(3, previousID.length());
+			id = Integer.valueOf(previousID);
+			id++;
+        }
+
+        listItem.setId("Row"+id);
+
+        Combobox listTable = new Combobox();
+        listTable.setId("listTable"+listItem.getId());
+        listTable.setName("listTable");
+		listTable.addEventListener(Events.ON_SELECT,this);
+		ZKUpdateUtil.setHflex(listTable, "true");
+		listTable.setAutodrop(true);
+		listTable.setAutocomplete(true);		
+		listTable.setInstantSelect(false);
+		listTable.addEventListener(Events.ON_BLUR, e -> {
+        	if (listTable.getSelectedItem() == null) {
+        		listTable.setValue(null);
+        	}
+        });
+        
         Combobox listColumn = new Combobox();        
         listColumn.setId("listColumn"+listItem.getId());
         listColumn.setName("listColumn");
@@ -1000,7 +1070,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	if (listColumn.getSelectedItem() == null) {
         		listColumn.setValue(null);
         	}
-        });        
+        });     
+        listColumn.addEventListener(Events.ON_FOCUS, e -> {
+        	listColumn.select();
+        }); 
         
         Combobox listOperator = new Combobox();
         listOperator.setId("listOperator"+listItem.getId());
@@ -1039,7 +1112,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         listRightBracket.addEventListener(Events.ON_SELECT,this);
         ZKUpdateUtil.setHflex(listRightBracket, "true");
 
-        setValues(listColumn, listOperator, fields);
+        setValues(m_findFields, listTable, listColumn, listOperator, fields);
 
         // And / Or / And Not / Or Not
     	ValueNamePair[]	andOr = new ValueNamePair[] {
@@ -1082,6 +1155,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             listRightBracket.appendItem(item.getName(), item.getValue());
     	listRightBracket.setSelectedIndex(0);
         
+    	ListCell cellTable = new ListCell();
+    	cellTable.appendChild(listTable);
+    	cellTable.setId("cellTable"+listItem.getId());
+    	
         ListCell cellColumn = new ListCell();
         cellColumn.appendChild(listColumn);
         cellColumn.setId("cellColumn"+listItem.getId());
@@ -1110,6 +1187,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         listItem.appendChild(cellAndOr);
         listItem.appendChild(cellLeftBracket);
+        listItem.appendChild(cellTable);
         listItem.appendChild(cellColumn);
         listItem.appendChild(cellOperator);
         listItem.appendChild(cellQueryFrom);
@@ -1134,20 +1212,29 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	// QueryFrom
         	ValueNamePair selected = listColumn.getSelectedItem().getValue();
 	        String columnName = selected.getValue();
+	        String tableName = listTable.getSelectedItem().getValue();
 	        if (columnName == null || columnName == "")
 	        	return;
 	    	String value = fields.length > INDEX_VALUE ? fields[INDEX_VALUE] : "";
 	    	if(value.length() > 0)
 	    	{
 	    		cellQueryFrom.setAttribute("value", value); // Elaine 2009/03/16 - set attribute value
-		        cellQueryFrom.appendChild(parseString(getTargetMField(columnName), value, listItem, false));
+	    		//Attribute Values Parsing
+	    		if(tableName.equals(MAttribute.COLUMNNAME_M_Attribute_ID))	    			
+	    			cellQueryFrom.appendChild(parseAttributeString( Integer.valueOf(columnName), value, listItem, false));
+	    		else	    			
+	    			 cellQueryFrom.appendChild(parseString(getTargetMField(columnName), value, listItem, false));
 	    	}
 	    	// QueryTo
 	    	String value2 = fields.length > INDEX_VALUE2 ? fields[INDEX_VALUE2] : "";
 	    	if(value2.length() > 0)
 	    	{
 	    		cellQueryTo.setAttribute("value", value2); // Elaine 2009/03/16 - set attribute value
-	    		cellQueryTo.appendChild(parseString(getTargetMField(columnName), value2, listItem, true));
+	    		// Attribute Parsing
+	    		if(tableName.equals(MAttribute.COLUMNNAME_M_Attribute_ID))
+	    			cellQueryTo.appendChild(parseAttributeString( Integer.valueOf(columnName), value2, listItem, true));
+		    	else
+	    			cellQueryTo.appendChild(parseString(getTargetMField(columnName), value2, listItem, true));
 	    	}
 	    	
 	    	// AndOr
@@ -1190,46 +1277,176 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
    }    // createFields
 
-    private void setValues(Combobox listColumn, Combobox listOperator, String[] fields)
+    private void setValues(GridField[] findFields, Combobox listTable, Combobox listColumn, Combobox listOperator, String[] fields)
     {
-        //  0 = Columns
-        ArrayList<ValueNamePair> items = new ArrayList<ValueNamePair>();
-        items.add(new ValueNamePair("", " "));
-        for (int c = 0; c < m_findFields.length; c++)
-        {
-            GridField field = m_findFields[c];
-            if (field == null || field.isVirtualUIColumn()
-            	|| ! hasAccessSpecialFields(field))
-            	continue;
+    	ArrayList<ValueNamePair> tables = new ArrayList<ValueNamePair>();
+    	String columnName =  "";
+    	String operator =  "";
+    	String tableName= "";
+    	
+    	 //  0 = Tables
+    	if (m_tabs==null||listTable.getItemCount()==0)
+	    {
+    		initTabs();
 
-			boolean IsLookupOnlySelection = !MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx())).isAccessAdvanced()
-											&& "Y".equals(Env.getContext(Env.getCtx(), m_targetWindowNo, m_targetTabNo, GridTab.CTX_IsLookupOnlySelection));
-			if (IsLookupOnlySelection && !field.isSelectionColumn())
-				continue;
-            String columnName = field.getColumnName();
-            String header = field.getHeader();
-            if (header == null || header.length() == 0)
-            {
-                header = Msg.translate(Env.getCtx(), columnName);
+	        for (int c = 0; c < m_tabs.length; c++)
+	        {
+	            String header = m_tabs[c].get_Translation("Name", Env.getAD_Language(Env.getCtx()));
+	            ValueNamePair pp = new ValueNamePair(m_tabs[c].getAD_Tab_UU(), header);
+	            tables.add(pp);
+	        }
 
-                if (header == null || header.length() == 0)
-                    continue;
-            }
-            if (field.isKey())
-                header += (" (ID)");
-            ValueNamePair pp = new ValueNamePair(columnName, header.toString());
-            items.add(pp);
+	        //Add Attribute
+	        if(isAttributeTable()){
+
+	        	String header = Msg.translate(Env.getCtx(), MAttribute.COLUMNNAME_M_Attribute_ID);
+	        	ValueNamePair pp = new ValueNamePair(MAttribute.COLUMNNAME_M_Attribute_ID , header);
+	            tables.add(pp);	        	
+	        }
+	    }
+        ValueNamePair[] tabs = new ValueNamePair[tables.size()];
+        tables.toArray(tabs);
+        //Arrays.sort(tabs);      
+
+        if(fields != null)
+        {    
+	    	boolean selected = false;
+
+	    	tableName = fields.length > INDEX_TABLE ? fields[INDEX_TABLE] : "";
+	    	columnName = fields.length > INDEX_COLUMNNAME ? fields[INDEX_COLUMNNAME] : "";
+        	operator = fields.length > INDEX_OPERATOR ? fields[INDEX_OPERATOR] : ""; 
+
+
+        	//listTable.appendItem("","" );
+	        for (int i = 0; i < tabs.length; i++)
+	        {
+	        	ValueNamePair item = tabs[i];
+	            listTable.appendItem(item.getName(), item.getValue());
+
+	            if (item.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+	            	if(item.getValue().equals(tableName))
+		 	        {
+		 	           	listTable.setSelectedIndex(listTable.getItemCount()-1);
+		 	        	selected = true;		 	        	
+		 	        }
+
+	            } else {
+	 	            if (item.getValue().equals(tableName))
+	 	        	{
+	 	            	GridTab mtab = m_windowPanel.getGridWindow().getGridTab(tableName);
+	 	            	listTable.setSelectedIndex(listTable.getItemCount()-1);
+	 	        		selected = true;
+	 	        		findFields=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID()).getFields();
+	 	        		m_gridTab=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID());
+	 	        	}
+
+
+	            }	           
+	        }
+	        if(!selected) listTable.setSelectedIndex(0);
         }
-        ValueNamePair[] cols = new ValueNamePair[items.size()];
-        items.toArray(cols);
-        Arrays.sort(cols);      //  sort alpha
-        ValueNamePair[] op = MQuery.OPERATORS;
+        
+        //  0 = Columns
+        if(!tableName.equals(MAttribute.COLUMNNAME_M_Attribute_ID)){
+	     	ArrayList<ValueNamePair> items = new ArrayList<ValueNamePair>();
+	     	items.add(new ValueNamePair("", " "));
+	     	for (int c = 0; c < findFields.length; c++)
+	     	{
+	     		GridField field = findFields[c];
+	            if (field == null || field.isVirtualUIColumn()
+	            	|| ! hasAccessSpecialFields(field))
+	            	continue;
 
-        AbstractListModel<ValueNamePair> columnListModel = null;
-        if (isFilterColumnList()) {
-	        columnListModel = new SimpleListModel<ValueNamePair>(cols, true) {
-				private static final long serialVersionUID = -8319240524315831047L;
+				boolean IsLookupOnlySelection = !MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx())).isAccessAdvanced()
+												&& "Y".equals(Env.getContext(Env.getCtx(), m_targetWindowNo, m_targetTabNo, GridTab.CTX_IsLookupOnlySelection));
+				if (IsLookupOnlySelection && !field.isSelectionColumn())
+					continue;
+				String l_columnName = field.getColumnName();
+				String header = field.getHeader();
+	            if (header == null || header.length() == 0)
+	            {
+	                header = Msg.translate(Env.getCtx(), l_columnName);
 	
+	                if (header == null || header.length() == 0)
+	                    continue;
+	            }
+	            if (field.isKey())
+	                header += (" (ID)");
+	            ValueNamePair pp = new ValueNamePair(l_columnName, header.toString());
+	            items.add(pp);
+	     	}
+	     	ValueNamePair[] cols = new ValueNamePair[items.size()];
+	        items.toArray(cols);
+	        Arrays.sort(cols);      //  sort alpha
+	        ValueNamePair[] op = MQuery.OPERATORS;
+	        
+	        updateColumnListModel(listColumn, cols);
+	        if (!isFilterColumnList()) {
+		        listColumn.addScrollSelectedIntoViewListener();
+	        }	        
+	        
+	        if(fields == null)
+	        {
+	        	if (listTable.getItemCount()==0){        		
+	        		for (ValueNamePair item: tabs)
+	        			listTable.appendItem(item.getName(), item.getValue());
+	        		listTable.setSelectedIndex(0);
+	        	}
+	        	listColumn.setSelectedIndex(0);
+
+	            for (ValueNamePair item: op)
+	                listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()).trim(), item.getValue());
+	            listOperator.setSelectedIndex(0);
+	        }
+	        else
+	        {
+	        	columnName = fields.length > INDEX_COLUMNNAME ? fields[INDEX_COLUMNNAME] : "";
+	        	operator = fields.length > INDEX_OPERATOR ? fields[INDEX_OPERATOR] : "";
+
+	        	boolean selected = false;
+	            Comboitem liCol = null;
+	            for (int i = 0; i < cols.length; i++)
+	            {
+	            	ValueNamePair item = cols[i];
+	                if(item.getValue().equals(columnName))
+	            	{
+	                	listColumn.setSelectedIndex(i);
+	                	Comboitem li = listColumn.getItemAtIndex(i);
+	            		selected = true;
+	            		liCol = li;
+	            	}
+	            }
+	            if(!selected) listColumn.setSelectedIndex(0);
+
+	            if (liCol != null)
+	            	addOperators(liCol, listOperator);
+
+	            selected = false;
+	            for (int i = 0; i < op.length; i++)
+	            {
+	            	ValueNamePair item = op[i];
+	            	ComboItem li = new ComboItem(Msg.getMsg(Env.getCtx(), item.getName()), item.getValue()); 
+	            	listOperator.appendChild(li);
+	            	if(item.getValue().equals(operator))
+	            	{
+	            		listOperator.setSelectedItem(li);
+	            		selected = true;
+	            	}
+	            }
+	            if(!selected) listOperator.setSelectedIndex(0);
+	        }
+        } else {
+        	setAttributes(listColumn, listOperator, fields);	    	
+
+	    }
+    }   // setValues
+
+	private void updateColumnListModel(Combobox listColumn, ValueNamePair[] cols) {
+		AbstractListModel<ValueNamePair> columnListModel = null;
+		if (isFilterColumnList()) {
+		    columnListModel = new SimpleListModel<ValueNamePair>(cols, true) {
+				private static final long serialVersionUID = -8319240524315831047L;
+
 				@Override
 				protected boolean inSubModel(Object key, Object value) {
 					if (key == null) {
@@ -1244,62 +1461,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				protected int getMaxNumberInSubModel(int nRows) {
 					return Integer.MAX_VALUE;			
 				}
-	        	
-	        };
-        } else {
-        	columnListModel = new ListModelList<ValueNamePair>(cols);
-        }
-        listColumn.setModel(columnListModel);
-        if (!isFilterColumnList()) {
-	        listColumn.addScrollSelectedIntoViewListener();
-        }
-        Events.sendEvent("onInitRender", listColumn, null);
-        if(fields == null)
-        {
-        	listColumn.setSelectedIndex(0);
-
-            for (ValueNamePair item: op)
-                listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()).trim(), item.getValue());
-            listOperator.setSelectedIndex(0);
-        }
-        else
-        {
-        	String columnName = fields.length > INDEX_COLUMNNAME ? fields[INDEX_COLUMNNAME] : "";
-        	String operator = fields.length > INDEX_OPERATOR ? fields[INDEX_OPERATOR] : "";
-
-            boolean selected = false;
-            Comboitem liCol = null;
-            for (int i = 0; i < cols.length; i++)
-            {
-            	ValueNamePair item = cols[i];
-                if(item.getValue().equals(columnName))
-            	{
-                	listColumn.setSelectedIndex(i);
-                	Comboitem li = listColumn.getItemAtIndex(i);
-            		selected = true;
-            		liCol = li;
-            	}
-            }
-            if(!selected) listColumn.setSelectedIndex(0);
-
-            if (liCol != null)
-            	addOperators(liCol, listOperator);
-
-            selected = false;
-            for (int i = 0; i < op.length; i++)
-            {
-            	ValueNamePair item = op[i];
-            	ComboItem li = new ComboItem(Msg.getMsg(Env.getCtx(), item.getName()), item.getValue()); 
-            	listOperator.appendChild(li);
-            	if(item.getValue().equals(operator))
-            	{
-            		listOperator.setSelectedItem(li);
-            		selected = true;
-            	}
-            }
-            if(!selected) listOperator.setSelectedIndex(0);
-        }
-    }   // setValues
+		    	
+		    };
+		} else {
+			columnListModel = new ListModelList<ValueNamePair>(cols);
+		}
+		listColumn.setModel(columnListModel);
+		Events.sendEvent("onInitRender", listColumn, null);
+	}
 
     private boolean isFilterColumnList() {
 		return MSysConfig.getBooleanValue(MSysConfig.ZK_ADVANCE_FIND_FILTER_COLUMN_LIST, false, Env.getAD_Client_ID(Env.getCtx()));
@@ -1443,7 +1612,28 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         {
         	if (event.getTarget() == fQueryName)
             {
-            	onSelectedQueryChanged();
+            	int index = fQueryName.getSelectedIndex();
+            	if(index < 0) return;
+            	if (winMain.getComponent().getSelectedIndex() != 1) 
+            	{
+            		winMain.getComponent().setSelectedIndex(1);
+            		btnSave.setDisabled(m_AD_Tab_ID <= 0);
+            		historyCombo.setSelectedItem(null);
+            		fQueryName.setReadonly(false); 
+            	}
+            	msgLabel.setText("");
+
+            	if(index == 0) 
+            	{ // no query - wipe and start over.
+            		List<?> rowList = advancedPanel.getChildren();
+            		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
+            			rowList.remove(rowIndex);
+            		createFields();  
+            	}
+    			else
+    			{
+    				parseUserQuery(userQueries[index-1]);
+    			}
     		}
         	else if (event.getTarget() instanceof Combobox)
             {
@@ -1452,36 +1642,106 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 advancedPanel.setSelectedItem(row);
                 Combobox listColumn = (Combobox)row.getFellow("listColumn"+row.getId());
                 Combobox listOperator = (Combobox)row.getFellow("listOperator"+row.getId());
-
-                if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId()))
+                Combobox listTable = (Combobox)row.getFellow("listTable"+row.getId());
+                
+                if (listbox.getId().equals(listTable .getId()))
                 {
-                	if (listbox.getId().equals(listColumn.getId()))
-                	{
-                		Comboitem column = listColumn.getSelectedItem();
-                		ValueNamePair selected = column.getValue();
-                		if (column != null && selected.getValue().length() > 0)
-                		{
-                			addOperators(column, listOperator);
-                		}
+               		Comboitem table = listTable.getSelectedItem();
+               		//Attribute
+               		if (table.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+               			setAttributes(listColumn, listOperator, null);
+               		} else {
+               			if (table != null && table.getValue().toString().length() > 0)
+               			{
+               				m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getValue());
+               			} 
+               			else
+               			{
+               				m_gridTab=m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
+               			}
+
+               			setValues(m_gridTab.getFields(), listTable, listColumn, listOperator, null);  
+               		}
+                }
+                else if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId()))
+                {
+                	Comboitem table = listTable.getSelectedItem();
+
+                	//Attribute
+                	if (table.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {	
+                		if (listbox.getId().equals(listColumn.getId()))
+	                	{
+	                		Comboitem column = listColumn.getSelectedItem();
+	                		ValueNamePair selected = column.getValue();
+	                		if (column != null && selected.getValue().length() > 0)
+	                		{
+	                			addOperatorsAttribute(column, listOperator);
+	                		}
+	                	}
+                	} else {
+	                	if (table != null && table.getValue().toString().length() > 0)
+	                	{
+	                		m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getValue());
+	                	} 
+	                	else
+	                	{
+	                		m_gridTab=m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
+	                	}
+	                	
+	                	if (listbox.getId().equals(listColumn.getId()))
+	                	{
+	                		Comboitem column = listColumn.getSelectedItem();
+	                		ValueNamePair selected = column != null ? column.getValue() : null;
+	                		if (column != null && selected.getValue().length() > 0)
+	                		{
+	                			addOperators(column, listOperator);
+	                		}
+	                	}
                 	}
                 }
-                Component componentFrom = getEditorCompQueryFrom(row);
-                componentFrom.setId("searchFieldFrom"+row.getId());
-                Component componentTo = getEditorCompQueryTo(row);
-                componentTo.setId("searchFieldTo"+row.getId());
-                Combobox listOp = (Combobox) row.getFellow("listOperator"+row.getId());
-                String betweenValue = listOp.getSelectedItem() != null ? listOp.getSelectedItem().getValue().toString() : "";
                 
-                if(betweenValue.equals(MQuery.NULL) || betweenValue.equals(MQuery.NOT_NULL))
-                {
-                	// to not display any editor
-                	row.getFellow("cellQueryFrom"+row.getId()).getChildren().clear();
-                	row.getFellow("cellQueryTo"+row.getId()).getChildren().clear();
-                }
-                else if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId())) 
-                {
-                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
-                	addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+                // Attribute
+                Comboitem table = listTable.getSelectedItem();
+                if (table.getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+            		Component componentFrom = getAttributeValuesListComponent(row, false);
+   	                componentFrom.setId("searchFieldFrom"+row.getId());
+
+   	                Component componentTo = getAttributeValuesListComponent(row, true);
+	                componentTo.setId("searchFieldTo"+row.getId());	               
+
+   	                Combobox listOp = (Combobox) row.getFellow("listOperator"+row.getId());
+   	                String betweenValue = listOp.getSelectedItem().getValue().toString();
+
+   	                if (betweenValue.equals(MQuery.NULL) || betweenValue.equals(MQuery.NOT_NULL))
+   	                {
+   	                	// to not display any editor
+   	                	row.getFellow("cellQueryFrom"+row.getId()).getChildren().clear();
+   	                	row.getFellow("cellQueryTo"+row.getId()).getChildren().clear();
+   	                }
+   	                else if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId())) 
+   	                {
+   	                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
+   	                	addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));   		               
+   	                }
+                } else {
+	                Component componentFrom = getEditorCompQueryFrom(row);
+	                componentFrom.setId("searchFieldFrom"+row.getId());
+	                Component componentTo = getEditorCompQueryTo(row);
+	                componentTo.setId("searchFieldTo"+row.getId());
+	                Combobox listOp = (Combobox) row.getFellow("listOperator"+row.getId());
+	                String betweenValue = listOp.getSelectedItem() != null ? listOp.getSelectedItem().getValue().toString() : "";
+	                
+	                if(betweenValue.equals(MQuery.NULL) || betweenValue.equals(MQuery.NOT_NULL))
+	                {
+	                	// to not display any editor
+	                	row.getFellow("cellQueryFrom"+row.getId()).getChildren().clear();
+	                	row.getFellow("cellQueryTo"+row.getId()).getChildren().clear();
+	                }
+	                else if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId())) 
+	                {
+	                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
+	                	addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+	                }
                 }
             }
     		else if (event.getTarget() instanceof Tab) {
@@ -1538,6 +1798,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 {
                     fQueryName.setSelectedIndex(0);
                     cmd_ok_Simple();
+                    fQueryName.setValue("");
                 }
                 else if ("btnOkAdv".equals(btn.getName()))
                 {
@@ -1807,12 +2068,31 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			
 			int openBrackets = 0;
 
+			boolean isCompositeExists = false;		// if we will have composite exists query		
 	        List<?> rowList = advancedPanel.getChildren();
 
 	        for (int rowIndex = 1; rowIndex < rowList.size() ; rowIndex++)
 	        {
 	            //  Column
 	            ListItem row = (ListItem)rowList.get(rowIndex);
+	            Combobox table = (Combobox)row.getFellow("listTable"+row.getId());
+    	        String exists="";  
+
+    	        boolean isExists = false;
+    	        boolean isExistCondition = false;
+    	        boolean isRightBracketCompositeExists = false;
+
+				if(!table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+					if (table != null && !table.getSelectedItem().getValue().toString().isEmpty())
+					{
+						m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getSelectedItem().getValue());
+					} 
+					else
+					{
+						m_gridTab=m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
+					}
+				}
+				
 	            Combobox column = (Combobox)row.getFellow("listColumn"+row.getId());
 	            if (column == null)
 	                continue;
@@ -1823,28 +2103,66 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            }
 	            ValueNamePair vnp = column.getSelectedItem().getValue();
 	            String ColumnName = vnp.getValue();
+	            String TableName = table.getSelectedItem().getValue().toString();
 	            String infoName = column.toString();
-	            //
-	            GridField field = getTargetMField(ColumnName);
-	            if (field == null || field.isVirtualUIColumn())
-	            	continue;
-	            boolean isProductCategoryField = isProductCategoryField(field.getColumnName());
-	            String ColumnSQL = field.getSearchColumnSQL();
+	            
+	            GridField field = null;
+				boolean isProductCategoryField = false;
+				String ColumnSQL = null;
+
+				if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {					
+					ColumnSQL = getAttributeSQL(Integer.valueOf(ColumnName));            	
+				} else {
+					//
+					field = getTargetMField(ColumnName);
+		            if (field == null || field.isVirtualUIColumn())
+		            	continue;
+		            isProductCategoryField = isProductCategoryField(field.getColumnName());
+		            ColumnSQL = field.getColumnSQL(false);
+		            if (!table.getSelectedItem().getValue().equals(m_AD_Tab_UU))
+					{       
+						if (!isCompositeExists) {
+							exists ="SELECT 1 FROM "+m_gridTab.getTableName()+" WHERE "+m_gridTab.getTableName()+"."+m_gridTab.getLinkColumnName()+" = "+m_tableName+"."+m_tableName+"_ID ";//  "+tab.getTableName()+".";
+							ColumnSQL = exists+" AND " + ColumnSQL;
+						}         
+
+						isExists = true;
+					}
+				}
 	            // Left brackets
 	            Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
 	            String lBrackets = listLeftBracket.getSelectedItem().getValue().toString();
-				if ( lBrackets != null )
+				if (lBrackets != null) {
 					openBrackets += lBrackets.length();
-				else lBrackets = "";
+					if (isExists && !lBrackets.isEmpty()) {
+						isCompositeExists = true;
+						isExistCondition = true;
+					}
+				} else {
+					lBrackets = "";
+				}
 				// Right brackets
 	            Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
 	            String rBrackets = listRightBracket.getSelectedItem().getValue().toString();
-				if ( rBrackets != null )
+				if (rBrackets != null) {
 					openBrackets -= rBrackets.length();
-				else rBrackets = "";
+					if(isCompositeExists && !rBrackets.isEmpty())				
+						isRightBracketCompositeExists = true;	// Reset isCompositeExists at end
+				} else {
+					rBrackets = "";
+				}
 				// And Or
 	            Listbox listAndOr = (Listbox)row.getFellow("listAndOr"+row.getId());
 	            String andOr = listAndOr.getSelectedItem().getValue().toString();
+	            boolean and = true;
+				boolean not = false;
+				if (rowIndex > 1) {
+					and = !"OR".contains(andOr);  	//if contains OR
+				}
+				// NOT
+				if (andOr.contains("NOT")) {
+					not = true;
+				}
 	            //  Op
 				Combobox op = (Combobox)row.getFellow("listOperator"+row.getId());
 	            if (op == null)
@@ -1875,20 +2193,46 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            {
 	            	if(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))
 	            	{
-	            		m_query.addRestriction(ColumnSQL, Operator, null,
-	            				infoName, null, andOr, openBrackets);
-	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets);
+	            		//Foreign Table for OPERAND NULL/NOT NULL
+	            		if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
+	                   			|| isExists) {
+	    					String where = "";	
+
+	    					if(!isCompositeExists)
+	    						where += "EXISTS(";	
+
+	    					where += m_query.getRestrictionSQL  (ColumnSQL, Operator, null,
+	    							infoName, null, and, openBrackets);
+
+	    					if(!isCompositeExists)
+	    						where += ")";
+
+	    					m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
+	            		} else {
+		            		m_query.addRestriction(ColumnSQL, Operator, null,
+		            				infoName, null, andOr, openBrackets);
+	            		}
+	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, TableName);
 	            	}
 	            	continue;
 	            }
-	            Object parsedValue = parseValue(field, value);
+	            Object parsedValue = null;
+	            //Parse AttributeValue
+	            if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
+	            	parsedValue = parseAttributeValue(Integer.valueOf(ColumnName), value);
+	            else            	
+	            	parsedValue = parseValue(field, value);
 	            if (parsedValue == null)
 	                continue;
 	            String infoDisplay = (value == null ? "" : value.toString());
-	            if (field.isLookup())
-	                infoDisplay = field.getLookup().getDisplay(value);
-	            else if (field.getDisplayType() == DisplayType.YesNo)
-	                infoDisplay = Msg.getMsg(Env.getCtx(), infoDisplay);
+	            // When Atribute is set Field is null
+	            if(!table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
+	            {
+		            if (field.isLookup())
+		                infoDisplay = field.getLookup().getDisplay(value);
+		            else if (field.getDisplayType() == DisplayType.YesNo)
+		                infoDisplay = Msg.getMsg(Env.getCtx(), infoDisplay);
+	            }
 	            //  Value2  ******
 	            Object value2 = null;
 	            if (MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue().equals(Operator))
@@ -1915,20 +2259,44 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                value2 = cellQueryTo.getAttribute("value");
 	                if (value2 == null)
 	                    continue;
-	                Object parsedValue2 = parseValue(field, value2);
+	                Object parsedValue2 = null;
+	                //Parse Attribute Value 2 by field/Attribute
+	                if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
+	                	parsedValue2 = parseAttributeValue(Integer.valueOf(ColumnName), value2);
+	                else
+	                	parsedValue2 = parseValue(field, value2);
 	                String infoDisplay_to = value2.toString();
 	                if (parsedValue2 == null)
 	                    continue;
-	                m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
-	                    infoName, infoDisplay, infoDisplay_to, andOr, openBrackets);
-	            }
-	            else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator)) {
+	                if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
+	               			|| isExists) {
+
+	                	String where = ""; 
+
+	                	if(!isCompositeExists)
+							where += "EXISTS(";	
+
+	                	where +=  m_query.getRestrictionSQL(ColumnSQL, parsedValue, parsedValue2, 
+	                    				 infoName, infoDisplay, infoDisplay_to, and, openBrackets);
+
+	                	if(!isCompositeExists)
+							where += ")";
+
+	               	 	m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
+	                } else {
+		                m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
+		                    infoName, infoDisplay, infoDisplay_to, andOr, openBrackets);
+	                }
+	            } else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator)) {
 	                if (!(parsedValue instanceof Integer)) {
 	                    continue;
 	                }
-	                m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue()), openBrackets, andOr);
+	                String where_rest= getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue());
+	                if (isExists && !isCompositeExists)
+	                	where_rest="EXISTS("+where_rest+")";
+	                m_query.addRestriction(where_rest, and, not, isExistCondition, openBrackets);
 	            }
-	            else if ((field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
+	            else if (field != null && (field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
 	            		(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
 	            {
 	            	String clause = DB.intersectClauseForCSV(ColumnSQL, parsedValue.toString());
@@ -1936,12 +2304,33 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            		m_query.addRestriction(clause, openBrackets, andOr);
 	            	else
 	            		m_query.addRestriction("NOT (" + clause + ")", openBrackets, andOr);
-	            }
-	            else
-	            	m_query.addRestriction(ColumnSQL, Operator, parsedValue,
-	            			infoName, infoDisplay, andOr, openBrackets);
+	            } else {
+	            	if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
+	               			|| isExists) {
 
-	            appendCode(code, ColumnName, Operator, value != null ? value.toString() : "", value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets);
+	                	String where = "";
+
+	                	if(!isCompositeExists)
+							where += "EXISTS(";	
+
+	                	where += m_query.getRestrictionSQL  (ColumnSQL, Operator, parsedValue,
+	    						infoName, infoDisplay, and, openBrackets);
+
+	                	if(!isCompositeExists)
+							where += ")";
+
+						m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
+					} else {
+						m_query.addRestriction  (ColumnSQL, Operator, parsedValue,
+								infoName, infoDisplay, and, not, openBrackets);
+					}
+	            }
+
+	            if (isRightBracketCompositeExists) {
+	            	isCompositeExists = false;
+	            }
+
+	            appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets, TableName);
 	        }
 	        
 	        saveQuery(saveQuery, code, shareAllUsers);			
@@ -1953,7 +2342,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
     private void appendCode(StringBuilder code, String columnName,
 			String operator, String value1, String value2, String andOr,
-			String lBrackets, String rBrackets) {
+			String lBrackets, String rBrackets, String tableUID) {
 		if (code.length() > 0)
 			code.append(SEGMENT_SEPARATOR);
 		code.append(columnName)
@@ -1968,7 +2357,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			.append(FIELD_SEPARATOR)
 			.append(lBrackets)
 			.append(FIELD_SEPARATOR)
-			.append(rBrackets);
+			.append(rBrackets)
+			.append(FIELD_SEPARATOR)
+			.append(tableUID);
 	}
 
 	private void saveQuery(boolean saveQuery, StringBuilder code, boolean shareAllUsers) {
@@ -2064,7 +2455,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     StringBuilder ColumnSQL = new StringBuilder(field.getSearchColumnSQL());
                     m_query.addRangeRestriction(ColumnSQL.toString(), value, valueTo,
                     		ColumnName, wed.getDisplay(), wedTo.getDisplay(), true, 0);
-                    appendCode(code, ColumnName, MQuery.BETWEEN, value.toString(), valueTo.toString(), "AND", "", "");
+                    appendCode(code, ColumnName, MQuery.BETWEEN, value.toString(), valueTo.toString(), "AND", "", "", m_AD_Tab_UU);
             	} else {
                     if (log.isLoggable(Level.FINE)) {
                         StringBuilder msglog = new StringBuilder(ColumnName).append("=").append(value);
@@ -2086,7 +2477,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     	}
                     	m_query.addRestriction(ColumnSQL.toString(), Operator, null,
                     			ColumnName, wed.getDisplay());
-                    	appendCode(code, ColumnName, Operator, "", "", "AND", "", "");
+                    	appendCode(code, ColumnName, Operator, "", "", "AND", "", "", m_AD_Tab_UU);
                     	continue;
                     }
 
@@ -2097,11 +2488,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     	continue;
                     }
                     
+                    isProductCategoryField = isProductCategoryField(field.getColumnName());
+                    ColumnSQL = new StringBuilder(field.getColumnSQL(false));
                     //
                     // Be more permissive for String columns
                     if (isSearchLike(field))
                     {
-                    	StringBuilder valueStr = new StringBuilder(value.toString());
+                    	StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
                         if (!valueStr.toString().endsWith("%"))
                             valueStr.append("%");
                         //
@@ -2111,10 +2504,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     //
                     if (value.toString().indexOf('%') != -1) {
                         m_query.addRestriction(ColumnSQL.toString(), MQuery.LIKE, value, ColumnName, wed.getDisplay());
-                        appendCode(code, ColumnName, MQuery.LIKE, value.toString(), "", "AND", "", "");
+                        appendCode(code, ColumnName, MQuery.LIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     } else if (isProductCategoryField && value instanceof Integer) {
                         m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) value).intValue()));
-                        appendCode(code, ColumnName, MQuery.EQUAL, value.toString(), "", "AND", "", "");
+                        appendCode(code, ColumnName, MQuery.EQUAL, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     } else {
                     	String oper = MQuery.EQUAL;
                     	if (wedTo != null) {
@@ -2123,7 +2516,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                             	oper = MQuery.GREATER_EQUAL;
                     	}
                         m_query.addRestriction(ColumnSQL.toString(), oper, value, ColumnName, wed.getDisplay());
-                        appendCode(code, ColumnName, oper, value.toString(), "", "AND", "", "");
+                        appendCode(code, ColumnName, oper, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     }
                     
                     /*
@@ -2145,11 +2538,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 StringBuilder ColumnSQL = new StringBuilder(field.getSearchColumnSQL());
                 //
                 m_query.addRestriction(ColumnSQL.toString(), MQuery.LESS_EQUAL, valueTo, ColumnName, wed.getDisplay());
-                appendCode(code, ColumnName, MQuery.LESS_EQUAL, valueTo.toString(), "", "AND", "", "");
+                appendCode(code, ColumnName, MQuery.LESS_EQUAL, valueTo.toString(), "", "AND", "", "", m_AD_Tab_UU);
             }
         }   //  editors
         
-        if(historyCombo.getSelectedItem()!=null)
+        if (historyCombo.getSelectedItem()!=null)
         {
         	addHistoryRestriction(historyCombo.getSelectedItem());
         }
@@ -2246,7 +2639,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	int referenceType = -1;
 		boolean isEncrypted = false;
     	if (columnName != null) {
-    		MTable table = MTable.get(Env.getCtx(), m_tableName);
+    		MTable table = MTable.get(Env.getCtx(), m_gridTab.getTableName());
     		MColumn col = table.getColumn(columnName);
     		referenceType = col.getAD_Reference_ID();
     		GridField field = getTargetMField(columnName);
@@ -2407,9 +2800,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         if (columnName == null)
             return null;
-        for (int c = 0; c < m_findFields.length; c++)
+        for (int c = 0; c < m_gridTab.getFields().length; c++)
         {
-            GridField field = m_findFields[c];
+            GridField field = m_gridTab.getFields()[c];
             if (field != null && columnName.equals(field.getColumnName()))
                 return field;
         }
@@ -2994,4 +3387,446 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			}
 		}
 	}
+	
+	/**
+     * 
+     * @param M_Attribute_ID 
+     * @return
+     */
+    private String getAttributeSQL(Integer M_Attribute_ID) {
+		StringBuilder attributeSQL = new StringBuilder();
+
+		MAttribute attribute = new MAttribute(Env.getCtx(), M_Attribute_ID, null);
+
+		attributeSQL.append(" SELECT 1 FROM M_AttributeInstance ")
+			.append(" WHERE ")
+			.append(" M_AttributeInstance.M_AttributeSetInstance_ID = "  )
+			.append( m_tableName + ".M_AttributeSetInstance_ID " );	
+
+		attributeSQL.append(" AND ")
+			.append(" M_AttributeInstance.M_Attribute_ID  = ")
+			.append( M_Attribute_ID );
+
+		  if(attribute.getAttributeValueType().equals(String.valueOf(MAttribute.ATTRIBUTEVALUETYPE_AD_Reference_ID))) {	        	
+	        	//TODO Reference        	
+
+	        }
+	        else if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_Date)) {	        	
+
+	        	attributeSQL.append(" AND datevalue ");
+
+	        }
+	        else if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_List)) {	        	
+
+	        	attributeSQL.append(" AND M_AttributeValue_ID ");
+
+	        }
+	        else if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_Number)) {
+
+	        	attributeSQL.append(" AND valuenumber ");	        	
+
+	        }
+	        else if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_StringMax40)) {        	
+
+	        	attributeSQL.append(" AND value ");
+
+	        }
+//	        else if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
+//	        	
+//	        	attributeSQL.append(" AND record_ID ");
+//	        }   
+
+		return attributeSQL.toString();
+	}	// getAttributeSQL
+
+	/**
+	 * 	Parse Attribute String
+	 * 	@param field column
+	 * 	@param value value
+	 *  @param isValueTo
+	 *  @param listItem
+	 * 	@return data type corected value
+	 */
+	private Component parseAttributeString(int M_Attribute_ID, String value, ListItem listItem, boolean isValueTo)
+	{
+		if (value == null)
+			return null;
+		try
+		{
+
+		boolean between = false;
+        Combobox listOp = (Combobox) listItem.getFellow("listOperator"+listItem.getId());
+        String betweenValue = listOp.getSelectedItem().getValue().toString();
+        String opValue = MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue();
+        if (isValueTo &&  betweenValue != null
+            && betweenValue.equals(opValue))
+            between = true;
+
+        boolean enabled = !isValueTo || (isValueTo && between); 
+
+
+		MAttribute attribute = new MAttribute(Env.getCtx(), M_Attribute_ID, null);
+
+		//  Create Editor
+	    WEditor editor = null;  
+
+	    String attributeValue = attribute.getAttributeValueType();
+
+	    if(attributeValue.equals(String.valueOf(MAttribute.ATTRIBUTEVALUETYPE_AD_Reference_ID))) {
+
+	    	editor = new WNumberEditor();
+
+	    	int i = Integer.parseInt(value);
+	       	editor.setValue(i);
+
+
+	    }
+	    else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_Date)) {
+
+	       	editor = new WDateEditor(); 	      
+
+            long time = DisplayType.getDateFormat_JDBC().parse(value.toString()).getTime();
+
+	       	editor.setValue(new Timestamp(time));
+
+	    }
+	    else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_List)) {
+
+	       	int AD_Column_ID = MColumn.getColumn_ID(MAttributeValue.Table_Name, MAttributeValue.COLUMNNAME_M_AttributeValue_ID);
+	    	MLookup attributeValues = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
+	    			MAttributeValue.COLUMNNAME_M_AttributeValue_ID, 0, true, 
+	    			" M_AttributeValue.M_Attribute_ID = " + attribute.get_ID());
+	    	editor = new WTableDirEditor("M_AttributeValue_ID", true, false, true, attributeValues); 
+
+	    	editor.setValue(Integer.valueOf(value));	
+
+	    }
+	    else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_Number)) {
+
+	       	editor = new WNumberEditor();
+	       	//BigDecimal
+	       	editor.setValue(new BigDecimal(value));
+
+	    }
+	    else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_StringMax40)) {        	
+
+	       	editor = new WStringEditor("Test", true, false, true, 40, 40, null, null);
+	       	//String
+	       	editor.setValue(value);
+	    }
+//	    else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
+//	       	
+//	       	int AD_Column_ID = attribute.getAD_Column_ID();
+//	    	MLookup attributes = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
+//	    			attribute.getAD_Column().getColumnName(), 0, true, null);
+//	    	editor = new WTableDirEditor(attribute.getAD_Column().getName(), true, false, true, attributes);    
+//	    	
+//	    	editor.setValue(Integer.valueOf(in));	
+//	    }     
+	 	        //
+	    editor.addValueChangeListener(this);	       
+	    editor.setReadWrite(enabled);
+	    editor.setVisible(enabled);
+
+	    return editor.getComponent();	
+		}
+		catch (Exception ex)
+		{
+			log.log(Level.SEVERE, "Object=" + value, ex);
+			return null;
+		}
+
+	}	//	parseAttributeString
+
+	/**
+     * 
+     * @param listColumn
+     * @param listOperator
+	 * @param fields 
+     */
+	private void setAttributes(Combobox listColumn, Combobox listOperator, String[] fields) {
+
+		String columnName = null;
+		String operator = null;
+		if(fields != null) {
+			columnName = fields.length > INDEX_COLUMNNAME ? fields[INDEX_COLUMNNAME] : "";
+			operator  = fields.length > INDEX_OPERATOR ? fields[INDEX_OPERATOR] : ""; 
+		}
+		   //  0 = Columns
+     	listColumn.getChildren().clear();
+
+        ArrayList<ValueNamePair> items = new ArrayList<ValueNamePair>();
+        items.add(new ValueNamePair("", " "));
+
+		List<MAttribute> attributes = new Query(Env.getCtx(), MAttribute.Table_Name, " AD_Client_ID IN (? , ?) " , null)
+						.setParameters(new Object[]{0, Env.getAD_Client_ID(Env.getCtx()) })
+						.list();
+
+        for (MAttribute attribute:attributes)
+        { 
+            String l_columnName = attribute.getName();
+            String header = String.valueOf(attribute.get_ID());           
+
+            ValueNamePair pp = new ValueNamePair(header, l_columnName);
+            items.add(pp);
+        }
+        ValueNamePair[] cols = new ValueNamePair[items.size()];
+        items.toArray(cols);
+        Arrays.sort(cols);      //  sort alpha
+        ValueNamePair[] op = MQuery.OPERATORS;   
+
+        if(fields == null)
+        {
+            updateColumnListModel(listColumn, cols);
+            listColumn.setSelectedIndex(0);
+
+            listOperator.getItems().clear(); //clear operand
+            for (ValueNamePair item: op)
+            	listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()).trim(), item.getValue());
+            listOperator.setSelectedIndex(0);
+        }
+        else
+        {
+        	boolean selected = false;
+        	updateColumnListModel(listColumn, cols);
+            for (int i = 0; i < cols.length; i++)
+            {
+            	ValueNamePair item = cols[i];
+                if(item.getValue().equals(columnName))
+            	{
+                	listColumn.setSelectedIndex(i);
+            		selected = true;
+            	}
+            }
+            if(!selected) listColumn.setSelectedIndex(0);
+
+            selected = false;
+            for (int i = 0; i < op.length; i++)
+            {
+            	ValueNamePair item = op[i];
+            	listOperator.appendItem(Msg.getMsg(Env.getCtx(), item.getName()).trim(), item.getValue());
+            	Comboitem li = listOperator.getItemAtIndex(listOperator.getItemCount()-1); 
+            	if(item.getValue().equals(operator))
+            	{
+            		listOperator.setSelectedItem(li);
+            		selected = true;
+            	}
+            }
+            if(!selected) listOperator.setSelectedIndex(0);
+        }	
+
+	} //setAttributes
+
+
+	/**
+     * 
+     * @param column
+     * @param listOperator
+     */
+    private void addOperatorsAttribute(Comboitem column, Combobox listOperator) {
+
+    	ValueNamePair pair = column.getValue();
+    	MAttribute attribute = new MAttribute(Env.getCtx(), Integer.valueOf(pair.getID()), null);
+
+		if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_Date) ||
+				attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_Number)) {
+
+			addOperators(MQuery.OPERATORS_NUMBERS, listOperator);          	
+		}
+		else {
+
+			addOperators(MQuery.OPERATORS_LOOKUP, listOperator);          	
+		} 
+  	} // addOperatorsAttribute
+
+    /**
+     * Get Attribute Component
+     * @param row
+     * @param isValueTo
+     * @return
+     * @throws Exception
+     */
+    public Component getAttributeValuesListComponent(ListItem row, boolean isValueTo) throws Exception
+    {
+        String columnName = getColumnName(row);        
+
+        if(columnName == null || columnName.isEmpty()) return new Label("");
+
+        boolean between = false;
+        Combobox listOp = (Combobox) row.getFellow("listOperator"+row.getId());
+        String betweenValue = listOp.getSelectedItem().getValue().toString();
+        String opValue = MQuery.OPERATORS[MQuery.BETWEEN_INDEX].getValue();
+        if (isValueTo &&  betweenValue != null
+            && betweenValue.equals(opValue))
+            between = true;
+
+        boolean enabled = !isValueTo || (isValueTo && between);
+
+        MAttribute attribute = new MAttribute(Env.getCtx(), Integer.valueOf(columnName), null);
+
+        //  Create Editor
+        WEditor editor = null;  
+
+        String attributeValue = attribute.getAttributeValueType();
+
+        if(attributeValue.equals(String.valueOf(MAttribute.ATTRIBUTEVALUETYPE_AD_Reference_ID))) {
+
+        	editor = new WNumberEditor();
+
+
+        }
+        else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_Date)) {
+
+        	editor = new WDateEditor();
+
+        }
+        else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_List)) {
+
+        	int AD_Column_ID = MColumn.getColumn_ID(MAttributeValue.Table_Name, MAttributeValue.COLUMNNAME_M_AttributeValue_ID);
+    		MLookup attributeValues = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
+    				MAttributeValue.COLUMNNAME_M_AttributeValue_ID, 0, true, 
+    				" M_AttributeValue.M_Attribute_ID = " + attribute.get_ID());
+    		editor = new WTableDirEditor("M_AttributeValue_ID", true, false, true, attributeValues);     
+
+        }
+        else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_Number)) {
+
+        	editor = new WNumberEditor();
+
+        }
+        else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_StringMax40)) {        	
+
+        	editor = new WStringEditor("Test", true, false, true, 40, 40, null, null);
+        }
+//        else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
+//        	
+//        	int AD_Column_ID = attribute.getAD_Column_ID();
+//    		MLookup orders = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
+//    				attribute.getAD_Column().getColumnName(), 0, true, null);
+//    		editor = new WTableDirEditor(attribute.getAD_Column().getName(), true, false, true, orders);    
+//    		 	
+//        }     
+
+        //
+        editor.addValueChangeListener(this);
+        editor.setValue(null);
+        editor.setReadWrite(enabled);
+        editor.setVisible(enabled);
+        //editor.dynamicDisplay();
+
+        return editor.getComponent();
+
+    }   //  getTableCellEditorComponent
+
+
+    /**
+     * Parse Right Attribute value
+     * @param M_Attribute_ID
+     * @param value
+     * @return attribute Value
+     */
+    private Object parseAttributeValue (int M_Attribute_ID, Object value)
+    {
+    	MAttribute attribute = new MAttribute(Env.getCtx(), M_Attribute_ID, null);
+        if (value == null)
+            return null;
+
+        String dt = attribute.getAttributeValueType();   
+        try
+        {
+            //  Return Integer
+            if (dt.equals(String.valueOf(MAttribute.ATTRIBUTEVALUETYPE_AD_Reference_ID))
+            		|| dt.equals(MAttribute.ATTRIBUTEVALUETYPE_List))
+//            		|| dt.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect))
+            {
+                if (value instanceof Integer)
+                    return value;
+                int i = Integer.parseInt(value.toString());
+                return Integer.valueOf(i);
+            }
+            //  Return BigDecimal
+            else if (dt.equals(MAttribute.ATTRIBUTEVALUETYPE_Number))
+            {
+                if (value instanceof BigDecimal)
+                    return value;
+                return  new BigDecimal(value.toString());
+            }
+            //  Return Timestamp
+            else if (dt.equals(MAttribute.ATTRIBUTEVALUETYPE_Date))
+            {
+                if (value instanceof Timestamp)
+                    return value;
+                long time = 0;
+                try
+                {
+                    time = DisplayType.getDateFormat_JDBC().parse(value.toString()).getTime();
+                    return new Timestamp(time);
+                }
+                catch (Exception e)
+                {
+                    StringBuilder msglog = new StringBuilder(value.toString()).append("(").append(value.getClass()).append(")").append(e);
+                	log.log(Level.SEVERE, msglog.toString());                    
+                }
+                return new Timestamp(time);
+            }
+            //  Return Y/N for Boolean
+            else if (value instanceof Boolean)
+                return ((Boolean)value).booleanValue() ? "Y" : "N";
+        }
+        catch (Exception ex)
+        {
+            log.log(Level.SEVERE, "Object=" + value, ex);
+            String error = ex.getLocalizedMessage();
+            if (error == null || error.length() == 0)
+                error = ex.toString();
+            StringBuilder errMsg = new StringBuilder();
+            errMsg.append(attribute.getName()).append(" = ").append(value).append(" - ").append(error);
+            //
+            FDialog.error(0, this, "ValidationError", errMsg.toString());
+            return null;
+        }
+
+        return value;
+    }   //  parseAttributeValue
+
+	/**
+     * Get All connected Tables via Window
+     */
+	private void initTabs ()
+	{
+		MTab tab= new MTab(Env.getCtx(), m_AD_Tab_ID, null);
+		String whereClause = I_AD_Tab.COLUMNNAME_AD_Window_ID+"=?";
+		String whereID = " OR AD_Tab_ID = " +m_AD_Tab_ID;
+	    if (tab.getTabLevel()>0) 
+	    {
+	    	MTab nextSameLevelTab = new Query(Env.getCtx(),I_AD_Tab.Table_Name,whereClause + " AND TabLevel=? AND SeqNo>?",null)
+			.setParameters(tab.getAD_Window_ID(),tab.getTabLevel(),tab.getSeqNo())
+			.setOrderBy(I_AD_Tab.COLUMNNAME_SeqNo)
+			.first();
+
+	    	if (nextSameLevelTab != null){
+	    		whereClause = whereClause+" AND SeqNo<"+nextSameLevelTab.getSeqNo();
+	    	}
+	    }
+
+		List<MTab> list = new Query(Env.getCtx(),I_AD_Tab.Table_Name," ( " + whereClause + " AND TabLevel=? )" + whereID,null)
+		.setParameters(tab.getAD_Window_ID(),tab.getTabLevel()+1)
+		.setOnlyActiveRecords(true)
+		.setOrderBy(I_AD_Tab.COLUMNNAME_SeqNo + " ASC")
+		.list();
+
+		m_tabs = new MTab[list.size ()];
+		list.toArray (m_tabs);
+
+	}	//	initTabs
+
+    /**
+     * Add attribute tab if table contains column M_AttributeSetInstance_ID
+     * @param tab 
+     * 
+     */
+	 private boolean isAttributeTable() {	        
+	   	MTable table = new MTable(Env.getCtx(), m_AD_Table_ID, null);
+    	return table.getColumnIndex(COLUMNNAME_M_AttributeSetInstance_ID) > 0? true:false; 
+	}	// isAttributeTable
 }   //  FindPanel

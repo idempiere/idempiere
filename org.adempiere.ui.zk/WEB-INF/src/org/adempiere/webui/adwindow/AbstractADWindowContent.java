@@ -764,7 +764,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             GridField[] findFields = mTab.getFields();
             FindWindow findWindow = new FindWindow(curWindowNo, mTab.getTabNo(),
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
-                    where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
+                    where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this); // no query below 10
            	tabFindWindowHashMap.put(mTab, findWindow);
             setupEmbeddedFindwindow(findWindow);
             if (findWindow.initialize())
@@ -3748,7 +3748,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		} else {
 			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
 
 			setupEmbeddedFindwindow(findWindow);
 			if (!findWindow.initialize()) {
@@ -3885,4 +3885,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		return true;
 	} // registerQuickFormTab
+	
+	/**
+	 * 
+	 * @return {@link GridWindow}
+	 */
+	public GridWindow getGridWindow() {
+		return gridWindow;
+	}
 }
