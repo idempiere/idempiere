@@ -206,7 +206,6 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 				((North)comp).setOpen(false);
 		}
 		form.getMiniTable().repaint();
-		form.invalidate();
 	}   //  executeQuery
 
 	protected void onClientInfo()

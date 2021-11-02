@@ -205,7 +205,6 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 				((North)comp).setOpen(false);
 		}
 		form.getMiniTable().repaint();
-		form.invalidate();
 	}   //  executeQuery
 
 	protected void onClientInfo()
