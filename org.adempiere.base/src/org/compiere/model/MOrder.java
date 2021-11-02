@@ -37,6 +37,8 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -1756,11 +1758,19 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				if (product.isStocked())
 				{
+					IReservationTracer tracer = null;
+					IReservationTracerFactory factory = Core.getReservationTracerFactory();
+					if (factory != null) {
+						tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), line.getLine(), 
+								line.get_Table_ID(), line.get_ID(), line.getM_Warehouse_ID(), 
+								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), isSOTrx(), 
+								get_TrxName());
+					}
 					//	Update Reservation Storage
 					if (!MStorageReservation.add(getCtx(), line.getM_Warehouse_ID(), 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(),
-						difference, isSOTrx, get_TrxName()))
+						difference, isSOTrx, get_TrxName(), tracer))
 						return false;
 				}	//	stocked
 				//	update line
