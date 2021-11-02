@@ -81,7 +81,8 @@ public class ReservationLogTracer implements IReservationTracer {
 	public void trace(BigDecimal originalQty, BigDecimal diffQty) {
 		MStorageReservationLog log = new MStorageReservationLog(Env.getCtx(), 0, trxName);
 		log.setAD_Table_ID(AD_Table_ID);
-		log.setC_DocType_ID(C_DocType_ID);
+		if (C_DocType_ID > 0)
+			log.setC_DocType_ID(C_DocType_ID);
 		log.setDeltaQty(diffQty);
 		log.setDocumentNo(documentNo);
 		log.setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);

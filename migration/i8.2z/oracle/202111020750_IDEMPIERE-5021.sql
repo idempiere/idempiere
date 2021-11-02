@@ -677,6 +677,14 @@ UPDATE AD_Tab SET OrderByClause='M_StorageReservationLog.M_Warehouse_ID, M_Stora
 UPDATE AD_Tab SET OrderByClause='M_StorageReservationLog.M_Warehouse_ID, M_StorageReservationLog.M_AttributeSetInstance_ID, M_StorageReservationLog.M_StorageReservationLog_ID Desc',Updated=TO_DATE('2021-11-01 18:17:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200300
 ;
 
+-- Nov 2, 2021, 9:31:23 PM MYT
+UPDATE AD_Column SET FieldLength=255,Updated=TO_DATE('2021-11-02 21:31:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214607
+;
+
+-- Nov 2, 2021, 9:31:28 PM MYT
+ALTER TABLE M_StorageReservationLog MODIFY DocumentNo VARCHAR2(255 CHAR) DEFAULT NULL 
+;
+
 SELECT register_migration_script('202111020750_IDEMPIERE-5021.sql') FROM dual
 ;
 
