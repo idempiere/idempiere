@@ -762,7 +762,7 @@ public abstract class SvrProcess implements ProcessCall
             if(field==null) {
             	String candidate = "p_" + name;
                 field = map.get(candidate);
-                toField = map.containsKey(candidate + "to") ? map.get(candidate + "to") : null;
+                toField = map.containsKey(candidate + "_to") ? map.get(candidate + "_to") : null;
             }
 
             // try to match fields with same name as metadata declaration after stripping "_"
@@ -797,7 +797,7 @@ public abstract class SvrProcess implements ProcessCall
                 	continue;
                 }
             }catch(Exception e){
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
 	}
