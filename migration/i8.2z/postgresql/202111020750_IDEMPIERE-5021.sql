@@ -169,7 +169,7 @@ UPDATE AD_Column SET FKConstraintName='MProduct_MStorageReservationLo', FKConstr
 ;
 
 -- Nov 1, 2021, 4:20:27 PM MYT
-UPDATE AD_Column SET FKConstraintName='MWarehouse_MStorageReservation', FKConstraintType='N',Updated=TO_TIMESTAMP('2021-11-01 16:20:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214611
+UPDATE AD_Column SET FKConstraintName='MWH_MSTORAGERESERVATIONLOG', FKConstraintType='N',Updated=TO_TIMESTAMP('2021-11-01 16:20:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214611
 ;
 
 -- Nov 1, 2021, 4:21:34 PM MYT
