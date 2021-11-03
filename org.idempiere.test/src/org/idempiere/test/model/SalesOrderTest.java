@@ -27,6 +27,7 @@ package org.idempiere.test.model;
 import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE_MANUAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -47,8 +48,11 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPayment;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MStorageReservation;
+import org.compiere.model.MStorageReservationLog;
 import org.compiere.model.MUOM;
 import org.compiere.model.MWarehouse;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
@@ -764,4 +768,63 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(MUOM.getDefault_UOM_ID(Env.getCtx()), line2.getC_UOM_ID());
 	}
 
+	@Test
+	public void testQtyReservedLog() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		//Joe Block
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		//Azalea Bush
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue());
+		
+		Query query = new Query(Env.getCtx(), MStorageReservationLog.Table_Name, "M_Product_ID=? AND IsSOTrx='Y' AND M_Warehouse_ID=?", getTrxName());
+		MStorageReservationLog log = query.setOrderBy(MStorageReservationLog.COLUMNNAME_M_StorageReservationLog_ID+" Desc")
+				.setParameters(PRODUCT_AZALEA, line1.getM_Warehouse_ID()).first();
+		assertNotNull(log, "MStorageReservationLog not created after completion of sales order");
+		assertTrue(log.getDeltaQty().intValue() == 1, "Delta quantity of MStorageReservationLog != 1 ("+log.getDeltaQty().toPlainString()+")");
+		MStorageReservation reservation = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_AZALEA, 0, true, getTrxName());
+		assertTrue(log.getNewQty().equals(reservation.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
+		
+		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+		
+		//shipment
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+		shipmentLine.setQty(new BigDecimal("1"));
+		shipmentLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+		
+		log = query.first();
+		assertNotNull(log, "MStorageReservationLog not created after completion of shipment");
+		assertTrue(log.getDeltaQty().intValue() == -1, "Delta quantity of MStorageReservationLog != -1 ("+log.getDeltaQty().toPlainString()+")");
+		reservation = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_AZALEA, 0, true, getTrxName());
+		assertTrue(log.getNewQty().equals(reservation.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
+	}
 }

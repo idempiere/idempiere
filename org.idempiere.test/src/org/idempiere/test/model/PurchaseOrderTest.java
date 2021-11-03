@@ -26,6 +26,8 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -43,6 +45,8 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
+import org.compiere.model.MStorageReservationLog;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
@@ -419,4 +423,62 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		}
 	}
 
+	@Test
+	public void testQtyOrderedLog() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, BP_PATIO));
+		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, PRODUCT_WEEDER));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+		Query query = new Query(Env.getCtx(), MStorageReservationLog.Table_Name, "M_Product_ID=? AND IsSOTrx='N' AND M_Warehouse_ID=?", getTrxName());
+		MStorageReservationLog log = query.setOrderBy(MStorageReservationLog.COLUMNNAME_M_StorageReservationLog_ID+" Desc")
+				.setParameters(PRODUCT_WEEDER, line1.getM_Warehouse_ID()).first();
+		assertNotNull(log, "MStorageReservationLog not created after completion of purchase order");
+		assertTrue(log.getDeltaQty().intValue() == 1, "Delta quantity of MStorageReservationLog != 1 ("+log.getDeltaQty().toPlainString()+")");
+		MStorageReservation ordered = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_WEEDER, 0, false, getTrxName());
+		assertTrue(log.getNewQty().equals(ordered.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
+		
+		MInOut receipt = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.saveEx();
+
+		MInOutLine receiptLine1 = new MInOutLine(receipt);
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
+		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		receipt.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		log = query.first();
+		assertNotNull(log, "MStorageReservationLog not created after completion of material receipt");
+		assertTrue(log.getDeltaQty().intValue() == -1, "Delta quantity of MStorageReservationLog != -1 ("+log.getDeltaQty().toPlainString()+")");
+		ordered = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_WEEDER, 0, false, getTrxName());
+		assertTrue(log.getNewQty().equals(ordered.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
+	}
 }
