@@ -80,7 +80,6 @@ import org.zkoss.zul.South;
  * Generate custom form window
  * 
  */
-@org.idempiere.ui.zk.annotation.Form
 public class WGenForm extends ADForm implements EventListener<Event>, WTableModelListener
 {
 	/**
