@@ -103,9 +103,9 @@ public abstract class CreateFromInvoice extends CreateFrom
 				sql.append(" LEFT OUTER JOIN M_MatchInv mi ON (sl.M_InOutLine_ID=mi.M_InOutLine_ID) "
 					+ " JOIN M_InOut s2 ON (sl.M_InOut_ID=s2.M_InOut_ID) "
 					+ " WHERE s2.C_BPartner_ID=? AND s2.IsSOTrx=? AND s2.DocStatus IN ('CL','CO') "
-					+ " GROUP BY sl.M_InOut_ID,sl.MovementQty,mi.M_InOutLine_ID"
-					+ " HAVING (sl.MovementQty<>SUM(mi.Qty) AND mi.M_InOutLine_ID IS NOT NULL)"
-					+ " OR mi.M_InOutLine_ID IS NULL ");
+					+ " GROUP BY sl.M_InOut_ID,sl.MovementQty,s2.MovementType,mi.M_InOutLine_ID"
+					+ " HAVING (sl.MovementQty * CASE WHEN s2.MovementType = 'V-' THEN -1 ELSE 1 END <> SUM(mi.Qty)"
+					+ " AND mi.M_InOutLine_ID IS NOT NULL) OR mi.M_InOutLine_ID IS NULL ");
 			else
 				sql.append(" INNER JOIN M_InOut s2 ON (sl.M_InOut_ID=s2.M_InOut_ID)"
 					+ " LEFT JOIN C_InvoiceLine il ON sl.M_InOutLine_ID = il.M_InOutLine_ID"
