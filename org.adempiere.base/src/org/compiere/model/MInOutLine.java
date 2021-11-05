@@ -575,7 +575,7 @@ public class MInOutLine extends X_M_InOutLine
 		{
 			if (getParent().isSOTrx())
 			{
-				log.saveError("FillMandatory", Msg.translate(getCtx(), "C_Order_ID"));
+				log.saveError("FillMandatory", Msg.translate(getCtx(), "C_OrderLine_ID"));
 				return false;
 			}
 		}
@@ -623,6 +623,15 @@ public class MInOutLine extends X_M_InOutLine
 		if (getParent().getC_DocType().isChargeOrProductMandatory()) {
 			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0) {
 				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
+				return false;
+			}
+		}
+				
+		if (getC_OrderLine_ID() > 0 && is_ValueChanged(COLUMNNAME_M_Product_ID)) {
+			MOrderLine orderLine = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
+			if (orderLine.getM_Product_ID() > 0 && orderLine.getM_Product_ID() != getM_Product_ID()) {
+				log.saveError("MInOutLineAndOrderLineProductDifferent", (getM_Product_ID() > 0 ? MProduct.get(getM_Product_ID()).getValue() : "")
+						+ " <> " + MProduct.get(orderLine.getM_Product_ID()).getValue());
 				return false;
 			}
 		}
