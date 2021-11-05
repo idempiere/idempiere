@@ -90,6 +90,8 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 	@Override
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 		MTableIndex mTableIndex = findPO(ctx, element);
+		if (element.defer && mTableIndex == null)
+			return;
 		int success = validateTableIndex(ctx, mTableIndex);
 		X_AD_Package_Imp_Detail dbDetail = createImportDetail(ctx, "dbIndex", MTableIndex.Table_Name, MTableIndex.Table_ID);
 		if (success == 1) {
