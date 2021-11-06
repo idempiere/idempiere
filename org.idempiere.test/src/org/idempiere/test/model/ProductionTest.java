@@ -26,27 +26,38 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MFactAcct;
+import org.compiere.model.MInOut;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
+import org.compiere.model.MOrder;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
+import org.compiere.model.MPriceList;
+import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
+import org.compiere.model.MProductPrice;
 import org.compiere.model.MProduction;
+import org.compiere.model.MProductionLine;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
@@ -55,6 +66,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
@@ -367,6 +379,109 @@ public class ProductionTest extends AbstractTestCase {
 		} finally {
 			getTrx().rollback();
 			category.deleteEx(true);
+		}
+	}
+	
+	@Test
+	public void testAutoProduce() {
+		int mulchId = 137;
+		int joeBlock = 118;
+		MProduct mulch = MProduct.get(mulchId);
+		
+		MProduct mulchX = new MProduct(Env.getCtx(), 0, null);
+		mulchX.setName("MulchX2");
+		mulchX.setIsBOM(true);
+		mulchX.setIsStocked(true);
+		mulchX.setC_UOM_ID(mulch.getC_UOM_ID());
+		mulchX.setM_Product_Category_ID(mulch.getM_Product_Category_ID());
+		mulchX.setProductType(mulch.getProductType());
+		mulchX.setM_AttributeSet_ID(mulch.getM_AttributeSet_ID());
+		mulchX.setC_TaxCategory_ID(mulch.getC_TaxCategory_ID());
+		mulchX.setIsAutoProduce(true);
+		mulchX.saveEx();
+		
+		try {
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(mulchX.get_ID());		
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(mulchX.getName());
+			bom.saveEx();
+			
+			MPPProductBOMLine line = new MPPProductBOMLine(bom);
+			line.setM_Product_ID(mulchId);
+			line.setQtyBOM(new BigDecimal("2"));
+			line.saveEx();
+	
+			mulchX.load(getTrxName());
+			mulchX.setIsVerified(true);
+			mulchX.saveEx();
+			
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			//Joe Block
+			order.setBPartner(MBPartner.get(Env.getCtx(), joeBlock));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.saveEx();
+			
+			MPriceList priceList = MPriceList.get(order.getM_PriceList_ID());
+			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
+			MProductPrice productPrice = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			productPrice.setM_PriceList_Version_ID(priceListVersion.get_ID());
+			productPrice.setM_Product_ID(mulchX.get_ID());
+			productPrice.setPriceLimit(new BigDecimal("5.00"));
+			productPrice.setPriceStd(new BigDecimal("5.00"));
+			productPrice.saveEx();
+			MOrderLine line1 = new MOrderLine(order);
+			line1.setLine(10);
+			line1.setProduct(mulchX);
+			line1.setQty(new BigDecimal("1"));
+			line1.setDatePromised(today);
+			line1.saveEx();		
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError());
+			order.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			line1.load(getTrxName());
+			assertEquals(1, line1.getQtyReserved().intValue());
+			
+			MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+			
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+			shipmentLine.setQty(new BigDecimal("1"));
+			shipmentLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+			
+			shipmentLine.load(getTrxName());
+			assertTrue(shipmentLine.isAutoProduce(), "Shipment Line Auto Produce is False");
+			
+			Query query = new Query(Env.getCtx(), MProduction.Table_Name, "M_InOutLine_ID=?", getTrxName());
+			MProduction production  = query.setParameters(shipmentLine.get_ID()).first();
+			assertNotNull(production, "Can't find production for auto produce shipment line");
+			assertEquals(DocAction.STATUS_Completed, production.getDocStatus());
+			MProductionLine[] productionLines = production.getLines();
+			assertNotNull(productionLines, "Can't find production line for auto produce shipment line");
+			assertTrue(productionLines.length==2,"Number of production line is not 2 as expected ("+productionLines.length+")");
+			assertTrue(productionLines[0].getM_Product_ID()==shipmentLine.getM_Product_ID(), "Production Line Production <> Shipment Line Product");
+			assertTrue(productionLines[0].getMovementQty().equals(shipmentLine.getMovementQty()), "Production Line Qty <> Shipment Line Qty");
+			assertTrue(productionLines[1].getM_Product_ID()==mulchId,"Production Line 2 Product is not the expected component product");
+			assertTrue(productionLines[1].getMovementQty().intValue()==-2,"Production Line 2 Qty is not the expected component qty");
+		} finally {
+			mulchX.deleteEx(true);
 		}
 	}
 }

@@ -34,7 +34,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211106L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -44,6 +44,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
         {
 			setC_TaxCategory_ID (0);
 			setC_UOM_ID (0);
+			setIsAutoProduce (false);
+// N
 			setIsBOM (false);
 // N
 			setIsDropShip (false);
@@ -470,6 +472,30 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public String getImageURL () 
 	{
 		return (String)get_Value(COLUMNNAME_ImageURL);
+	}
+
+	/** Set Auto Produce.
+		@param IsAutoProduce 
+		Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce)
+	{
+		set_Value (COLUMNNAME_IsAutoProduce, Boolean.valueOf(IsAutoProduce));
+	}
+
+	/** Get Auto Produce.
+		@return Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoProduce);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Bill of Materials.
@@ -1127,8 +1153,6 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public static final String PRODUCTTYPE_ExpenseType = "E";
 	/** Item = I */
 	public static final String PRODUCTTYPE_Item = "I";
-	/** Online = O */
-	public static final String PRODUCTTYPE_Online = "O";
 	/** Resource = R */
 	public static final String PRODUCTTYPE_Resource = "R";
 	/** Service = S */
