@@ -1434,7 +1434,7 @@ public class MInOut extends X_M_InOut implements DocAction
 											get_TrxName());
 								}
 								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
-										sLine.getM_Product_ID(),
+										oLine.getM_Product_ID(),
 										oLine.getM_AttributeSetInstance_ID(),
 										orderedQtyToUpdate.negate(),
 										isSOTrx(),

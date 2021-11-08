@@ -626,16 +626,19 @@ public class MInOutLine extends X_M_InOutLine
 				return false;
 			}
 		}
-				
-		if (getC_OrderLine_ID() > 0 && is_ValueChanged(COLUMNNAME_M_Product_ID)) {
-			MOrderLine orderLine = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
-			if (orderLine.getM_Product_ID() > 0 && orderLine.getM_Product_ID() != getM_Product_ID()) {
-				log.saveError("MInOutLineAndOrderLineProductDifferent", (getM_Product_ID() > 0 ? MProduct.get(getM_Product_ID()).getValue() : "")
-						+ " <> " + MProduct.get(orderLine.getM_Product_ID()).getValue());
-				return false;
+
+		if (MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT, true, Env.getAD_Client_ID(getCtx()))) {
+			if (getC_OrderLine_ID() > 0) {
+				MOrderLine orderLine = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
+				if (orderLine.getM_Product_ID() != getM_Product_ID()) {
+					log.saveError("MInOutLineAndOrderLineProductDifferent", (getM_Product_ID() > 0 ? MProduct.get(getM_Product_ID()).getValue() : "")
+							+ " <> " + (orderLine.getM_Product_ID() > 0 ? MProduct.get(orderLine.getM_Product_ID()).getValue() : ""));
+					return false;
+				}
 			}
+			
 		}
-		
+
 		return true;
 	}	//	beforeSave
 
