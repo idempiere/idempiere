@@ -322,7 +322,12 @@ public class MAttachment extends X_AD_Attachment
 		if (m_items == null)
 			loadLOBData();
 		for (int i = 0; i < m_items.size(); i++) {
-			if (m_items.get(i).getName().equals(item.getName()) ) {
+			String itemName = m_items.get(i).getName();
+			// Filesystem (and store other plugins can) mark not found files surrounding it with ~
+			// avoid duplicating the file in this case
+			if (itemName.startsWith("~") && itemName.endsWith("~"))
+				itemName = itemName.substring(1, itemName.length()-1);
+			if (itemName.equals(item.getName()) ) {
 				m_items.set(i, item);
 				replaced = true;
 			}
