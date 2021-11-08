@@ -65,6 +65,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
@@ -413,7 +414,7 @@ public class ProductionTest extends AbstractTestCase {
 			line.setQtyBOM(new BigDecimal("2"));
 			line.saveEx();
 	
-			mulchX.load(getTrxName());
+			mulchX.load((String)null);
 			mulchX.setIsVerified(true);
 			mulchX.saveEx();
 			
@@ -481,6 +482,8 @@ public class ProductionTest extends AbstractTestCase {
 			assertTrue(productionLines[1].getM_Product_ID()==mulchId,"Production Line 2 Product is not the expected component product");
 			assertTrue(productionLines[1].getMovementQty().intValue()==-2,"Production Line 2 Qty is not the expected component qty");
 		} finally {
+			rollback();
+			DB.executeUpdateEx("delete from m_cost where m_product_id=?", new Object[] {mulchX.get_ID()}, null);
 			mulchX.deleteEx(true);
 		}
 	}
