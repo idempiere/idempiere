@@ -33,7 +33,7 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211106L;
 
     /** Standard Constructor */
     public X_M_InOutLine (Properties ctx, int M_InOutLine_ID, String trxName)
@@ -377,6 +377,30 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Auto Produce.
+		@param IsAutoProduce 
+		Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce)
+	{
+		set_ValueNoCheck (COLUMNNAME_IsAutoProduce, Boolean.valueOf(IsAutoProduce));
+	}
+
+	/** Get Auto Produce.
+		@return Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoProduce);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Description Only.

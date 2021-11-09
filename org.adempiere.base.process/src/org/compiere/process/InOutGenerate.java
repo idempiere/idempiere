@@ -323,8 +323,9 @@ public class InOutGenerate extends SvrProcess
 						MStorageOnHand storage = storages[j];
 						onHand = onHand.add(storage.getQtyOnHand());
 					}
+					boolean autoProduce = product.isBOM() && product.isVerified() && product.isAutoProduce();
 					boolean fullLine = onHand.compareTo(toDeliver) >= 0
-						|| toDeliver.signum() < 0;
+						|| toDeliver.signum() < 0 || autoProduce;
 					
 					//	Complete Order
 					if (completeOrder && !fullLine)
@@ -347,10 +348,10 @@ public class InOutGenerate extends SvrProcess
 					//	Availability
 					else if ((MOrder.DELIVERYRULE_Availability.equals(order.getDeliveryRule()) || MOrder.DELIVERYRULE_AfterPayment.equals(order.getDeliveryRule()))
 						&& (onHand.signum() > 0
-							|| toDeliver.signum() < 0))
+							|| toDeliver.signum() < 0 || autoProduce))
 					{
 						BigDecimal deliver = toDeliver;
-						if (deliver.compareTo(onHand) > 0)
+						if (deliver.compareTo(onHand) > 0 && !autoProduce)
 							deliver = onHand;
 						if (log.isLoggable(Level.FINE)) log.fine("Available - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
@@ -530,8 +531,10 @@ public class InOutGenerate extends SvrProcess
 				break;
 		}		
 		if (toDeliver.signum() != 0)
-		{	 
-			if (!force)
+		{	
+			MProduct product = MProduct.get(orderLine.getM_Product_ID());
+			boolean autoProduce = product.isBOM() && product.isVerified() && product.isAutoProduce();
+			if (!force && toDeliver.signum() > 0 && !autoProduce)
 			{
 				throw new IllegalStateException("Not All Delivered - Remainder=" + toDeliver);
 			}
