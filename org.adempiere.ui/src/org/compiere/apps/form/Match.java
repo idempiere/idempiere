@@ -530,14 +530,14 @@ public class Match
 						IReservationTracerFactory factory = Core.getReservationTracerFactory();
 						if (factory != null) {
 							tracer = factory.newTracer(sLine.getParent().getC_DocType_ID(), sLine.getParent().getDocumentNo(), sLine.getLine(), 
-									sLine.get_Table_ID(), sLine.get_ID(), sLine.getM_Warehouse_ID(), 
-									oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), sLine.getParent().isSOTrx(), 
+									sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+									oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
 									trxName);
 						}
-						success = MStorageReservation.add (Env.getCtx(), sLine.getM_Warehouse_ID(),
+						success = MStorageReservation.add (Env.getCtx(), oLine.getM_Warehouse_ID(),
 							oLine.getM_Product_ID(),
 							oLine.getM_AttributeSetInstance_ID(),
-							qty.negate(), false, trxName, tracer);
+							qty.negate(), oLine.getParent().isSOTrx(), trxName, tracer);
 					}
 				}
 			}
