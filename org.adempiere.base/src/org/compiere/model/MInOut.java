@@ -1430,7 +1430,7 @@ public class MInOut extends X_M_InOut implements DocAction
 								if (factory != null) {
 									tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
 											sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
-											sLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
+											oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
 											get_TrxName());
 								}
 								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
@@ -1517,7 +1517,7 @@ public class MInOut extends X_M_InOut implements DocAction
 							if (factory != null) {
 								tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
 										sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
-										sLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
+										oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
 										get_TrxName());
 							}
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
