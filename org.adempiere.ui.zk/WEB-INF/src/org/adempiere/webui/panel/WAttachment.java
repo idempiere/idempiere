@@ -113,6 +113,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	private Button bDeleteAll = new Button();
 	private Button bLoad = new Button();
 	private Button bCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, false, true);
+	private boolean bCancelClicked = false;
 	private Button bOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, false, true);
 	private Button bPreview = new Button();
 	private Button bEmail = new Button();
@@ -582,7 +583,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			}
 			clearPreview();
 			autoPreview (cbContent.getSelectedIndex(), false);
-		} else if (e.getTarget() == bOk || DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {
+		} else if (e.getTarget() == bOk || (!bCancelClicked && DialogEvents.ON_WINDOW_CLOSE.equals(e.getName()))) {
 			if (m_attachment != null) {
 				String newText = text.getText();
 				if (newText == null)
@@ -610,6 +611,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			}
 		} else if (e.getTarget() == bCancel) {
 			//	Cancel
+			bCancelClicked = true;
 			dispose();
 		} else if (e.getTarget() == bDeleteAll) {
 			//	Delete Attachment
