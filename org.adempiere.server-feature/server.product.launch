@@ -13,19 +13,19 @@
         <setEntry value="org.eclipse.equinox.event:1.6.0.v20210212-1143:default:true:2:true"/>
         <setEntry value="org.eclipse.equinox.http.registry:1.2.0.v20200614-1851:default:true:default:true"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator:1.4.0.v20210315-2228:default:true:1:true"/>
-        <setEntry value="org.eclipse.jetty.annotations:10.0.6:default:true:default:true"/>
-        <setEntry value="org.eclipse.jetty.apache-jsp:10.0.6:default:true:default:true"/>
-        <setEntry value="org.eclipse.jetty.http:10.0.6:default:true:default:true"/>
-        <setEntry value="org.eclipse.jetty.osgi.boot:10.0.6:default:true:default:true"/>
-        <setEntry value="org.eclipse.jetty.osgi.httpservice:10.0.6:default:true:default:true"/>
-        <setEntry value="org.eclipse.jetty.websocket.common:10.0.6:default:true:3:true"/>
-        <setEntry value="org.eclipse.jetty.websocket.core.server:10.0.6:default:true:3:true"/>
-        <setEntry value="org.eclipse.jetty.websocket.javax.common:10.0.6:default:true:3:true"/>
-        <setEntry value="org.eclipse.jetty.websocket.javax.server:10.0.6:default:true:3:true"/>
-        <setEntry value="org.eclipse.jetty.websocket.server:10.0.6:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.annotations:10.0.7:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.apache-jsp:10.0.7:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.http:10.0.7:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.osgi.boot:10.0.7:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.osgi.httpservice:10.0.7:default:true:default:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.common:10.0.7:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.core.server:10.0.7:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.javax.common:10.0.7:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.javax.server:10.0.7:default:true:3:true"/>
+        <setEntry value="org.eclipse.jetty.websocket.server:10.0.7:default:true:3:true"/>
         <setEntry value="org.idempiere.felix.webconsole:9.0.0.qualifier:default:true:default:true"/>
-        <setEntry value="org.mortbay.jasper.apache-el:9.0.29:default:true:default:true"/>
-        <setEntry value="org.mortbay.jasper.apache-jsp:9.0.29:default:true:default:true"/>
+        <setEntry value="org.mortbay.jasper.apache-el:9.0.52:default:true:default:true"/>
+        <setEntry value="org.mortbay.jasper.apache-jsp:9.0.52:default:true:default:true"/>
     </setAttribute>
     <booleanAttribute key="append.args" value="true"/>
     <stringAttribute key="application" value="org.adempiere.server.application"/>

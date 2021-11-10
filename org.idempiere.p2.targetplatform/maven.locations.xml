@@ -282,9 +282,21 @@ Export-Package:        *;-noimport:=true
       <version>4.0.3</version>
       <type>jar</type>
     </location>	
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.glassfish.pfl</groupId>
       <artifactId>pfl-tf</artifactId>
+      <version>4.1.2</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.pfl</groupId>
+      <artifactId>pfl-dynamic</artifactId>
+      <version>4.1.2</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.pfl</groupId>
+      <artifactId>pfl-basic</artifactId>
       <version>4.1.2</version>
       <type>jar</type>
     </location>
@@ -562,7 +574,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>
 	<!-- org.apache.aries -->
-	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.aries.spifly</groupId>
       <artifactId>org.apache.aries.spifly.dynamic.bundle</artifactId>
       <version>1.3.3</version>
@@ -1161,133 +1173,139 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jsp</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jstl</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.mortbay.jasper</groupId>
       <artifactId>apache-el</artifactId>
-      <version>9.0.29</version>
+      <version>9.0.52</version>
 	  <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-client</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-deploy</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jaas</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-slf4j-impl</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot-jsp</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot-warurl</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot-warurl</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-httpservice</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-jetty-server</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-javax-server</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-javax-common</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-core-server</artifactId>
-      <version>10.0.6</version>
+      <version>10.0.7</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-util</artifactId>
+      <version>9.2</version>
       <type>jar</type>
 	</location>	
 	<!-- org.slf4j -->
