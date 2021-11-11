@@ -525,19 +525,19 @@ public class Match
 				{
 					success = true;
 					//	Correct Ordered Qty for Stocked Products (see MOrder.reserveStock / MInOut.processIt)
-					if (sLine.getProduct() != null && sLine.getProduct().isStocked()) {
+					if (oLine.get_ID() > 0 && oLine.getM_Product_ID() > 0 && oLine.getProduct().isStocked()) {
 						IReservationTracer tracer = null;
 						IReservationTracerFactory factory = Core.getReservationTracerFactory();
 						if (factory != null) {
 							tracer = factory.newTracer(sLine.getParent().getC_DocType_ID(), sLine.getParent().getDocumentNo(), sLine.getLine(), 
-									sLine.get_Table_ID(), sLine.get_ID(), sLine.getM_Warehouse_ID(), 
-									sLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), sLine.getParent().isSOTrx(), 
+									sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+									oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
 									trxName);
 						}
-						success = MStorageReservation.add (Env.getCtx(), sLine.getM_Warehouse_ID(),
-							sLine.getM_Product_ID(),
-							sLine.getM_AttributeSetInstance_ID(),
-							qty.negate(), false, trxName, tracer);
+						success = MStorageReservation.add (Env.getCtx(), oLine.getM_Warehouse_ID(),
+							oLine.getM_Product_ID(),
+							oLine.getM_AttributeSetInstance_ID(),
+							qty.negate(), oLine.getParent().isSOTrx(), trxName, tracer);
 					}
 				}
 			}

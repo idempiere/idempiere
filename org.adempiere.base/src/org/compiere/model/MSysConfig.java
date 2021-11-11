@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2487508787436200753L;
+	private static final long serialVersionUID = 4071371201535378277L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -168,6 +168,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String USER_LOCKING_MAX_PASSWORD_AGE_DAY = "USER_LOCKING_MAX_PASSWORD_AGE_DAY";
     public static final String USER_LOCKING_PASSWORD_NOTIFY_DAY = "USER_LOCKING_PASSWORD_NOTIFY_DAY";
     public static final String USER_PASSWORD_HASH = "USER_PASSWORD_HASH";
+    public static final String VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT = "VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT";
     public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
     public static final String ZK_ADVANCE_FIND_FILTER_COLUMN_LIST = "ZK_ADVANCE_FIND_FILTER_COLUMN_LIST";
