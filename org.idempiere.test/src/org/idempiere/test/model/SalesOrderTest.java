@@ -827,4 +827,105 @@ public class SalesOrderTest extends AbstractTestCase {
 		reservation = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_AZALEA, 0, true, getTrxName());
 		assertTrue(log.getNewQty().equals(reservation.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
 	}
+	
+	@Test
+	public void testQtyLostSales() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue());		
+		
+		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+		
+		//over shipment
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("2"));
+		shipmentLine.setQty(new BigDecimal("2"));
+		shipmentLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
+		assertFalse(info.isError());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(0, line1.getQtyLostSales().intValue());
+		
+		order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setQty(new BigDecimal("2"));
+		line1.setDatePromised(today);
+		line1.saveEx();		
+		
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(2, line1.getQtyReserved().intValue());		
+		
+		shipment = new MInOut(order, 120, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+		
+		//under shipment
+		shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+		shipmentLine.setQty(new BigDecimal("1"));
+		shipmentLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
+		assertFalse(info.isError());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyLostSales().intValue());
+		assertEquals(line1.getQtyDelivered().intValue(), line1.getQtyOrdered().intValue());
+	}
 }
