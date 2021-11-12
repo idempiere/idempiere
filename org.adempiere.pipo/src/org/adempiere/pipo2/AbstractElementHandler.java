@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -29,11 +31,11 @@ import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.model.X_AD_EntityType;
 import org.compiere.model.X_AD_Package_Imp_Backup;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.CLogger;
@@ -42,11 +44,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-
-import org.adempiere.pipo2.exception.DatabaseAccessException;
 
 /**
  *
@@ -315,7 +312,11 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @return boolean
      */
     protected boolean isProcessElement(Properties ctx, String entityType) {
-    	if ("D".equals(entityType) || "C".equals(entityType)) {
+		if (PO.ENTITYTYPE_Dictionary.equals(entityType)
+				|| "EE01".equals(entityType)
+				|| "EE02".equals(entityType)
+				|| "EE04".equals(entityType)
+				|| "EE05".equals(entityType)) {
     		return "Y".equalsIgnoreCase(getUpdateMode(ctx));
     	} else {
     		return true;
@@ -551,7 +552,11 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		}
 		if (!ctx.packOut.isExportDictionaryEntity() && element.get_ColumnIndex("EntityType") >= 0) {
 			Object entityType = element.get_Value("EntityType");
-			if (X_AD_EntityType.ENTITYTYPE_Dictionary.equals(entityType)) {
+			if (PO.ENTITYTYPE_Dictionary.equals(entityType)
+				|| "EE01".equals(entityType)
+				|| "EE02".equals(entityType)
+				|| "EE04".equals(entityType)
+				|| "EE05".equals(entityType)) {
 				return false;
 			}
 		}
