@@ -99,6 +99,31 @@ public class CalloutMovement extends CalloutEngine
 		checkQtyAvailable(ctx, mTab, WindowNo, M_Product_ID, null);
 		return "";
 	}
+	
+	/** 
+	 * Movement - Warehouse To field value as Warehouse if Warehouse To is blank
+	 * 
+	 * @param ctx      Context
+	 * @param WindowNo current Window No
+	 * @param GridTab     Model Tab
+	 * @param GridField   Model Field
+	 * @param value    The new value
+	 * @return Error message or ""
+	 */
+	public String warehouse (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		Integer M_Warehouse_ID = (Integer) value;
+		if (M_Warehouse_ID == null || M_Warehouse_ID.intValue() == 0)
+			return "";
+
+		Integer M_WarehouseTo_ID = (Integer) mTab.getValue("M_WarehouseTo_ID");
+		if (M_WarehouseTo_ID == null || M_WarehouseTo_ID.intValue() == 0)
+		{
+			mTab.setValue("M_WarehouseTo_ID", M_Warehouse_ID);
+		}
+
+		return "";
+	}
 
 	/**
 	 * Check available qty
