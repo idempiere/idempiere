@@ -1194,7 +1194,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			//
 			if (line.getM_AttributeSetInstance_ID() != 0)
 				continue;
-			if (product != null && product.isASIMandatory(isSOTrx()))
+			if (product != null && product.isASIMandatoryFor(MAttributeSet.MANDATORYTYPE_WhenShipping,isSOTrx()))
 			{
 				if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInOutLine.Table_ID, isSOTrx())) {
 					BigDecimal qtyDiff = line.getMovementQty();
