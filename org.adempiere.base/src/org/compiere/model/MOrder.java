@@ -2593,8 +2593,15 @@ public class MOrder extends X_C_Order implements DocAction
 			BigDecimal old = line.getQtyOrdered();
 			if (old.compareTo(line.getQtyDelivered()) != 0)
 			{
-				line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));
 				line.setQtyOrdered(line.getQtyDelivered());
+				if (line.getQtyOrdered().compareTo(line.getQtyDelivered()) > 0)
+				{
+					line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));					
+				}
+				else
+				{
+					line.setQtyLostSales(Env.ZERO);
+				}
 				//	QtyEntered unchanged
 				line.addDescription("Close (" + old + ")");
 				line.saveEx(get_TrxName());
