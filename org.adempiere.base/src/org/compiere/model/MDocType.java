@@ -42,7 +42,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7313617271586412889L;
+	private static final long serialVersionUID = 1830844263371227816L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
