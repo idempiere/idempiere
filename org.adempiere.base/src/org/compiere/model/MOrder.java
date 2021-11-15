@@ -1725,9 +1725,8 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 			//	Binding
 			BigDecimal target = binding ? line.getQtyOrdered() : Env.ZERO; 
-			BigDecimal difference = target
-				.subtract(line.getQtyReserved())
-				.subtract(line.getQtyDelivered()); 
+			BigDecimal difference = target.compareTo(line.getQtyDelivered()) > 0 ? target.subtract(line.getQtyDelivered()) : Env.ZERO;
+			difference = difference.subtract(line.getQtyReserved()); 
 
 			if (difference.signum() == 0 || line.getQtyOrdered().signum() < 0)
 			{
@@ -2592,9 +2591,16 @@ public class MOrder extends X_C_Order implements DocAction
 			MOrderLine line = lines[i];
 			BigDecimal old = line.getQtyOrdered();
 			if (old.compareTo(line.getQtyDelivered()) != 0)
-			{
-				line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));
-				line.setQtyOrdered(line.getQtyDelivered());
+			{				
+				if (line.getQtyOrdered().compareTo(line.getQtyDelivered()) > 0)
+				{
+					line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));
+					line.setQtyOrdered(line.getQtyDelivered());
+				}
+				else
+				{
+					line.setQtyLostSales(Env.ZERO);
+				}
 				//	QtyEntered unchanged
 				line.addDescription("Close (" + old + ")");
 				line.saveEx(get_TrxName());
