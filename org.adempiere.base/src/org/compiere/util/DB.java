@@ -2606,8 +2606,11 @@ public final class DB
 	 * @return true if it is query sql statement
 	 */
 	public static boolean isQueryStatement(String sql) {
-		sql = sql.trim().toLowerCase();
-		if(sql.matches("^select\s.*$"))
+		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
+		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
+		String removeLeadingSpaces = "^\\s+";
+		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
+		if(cleanSql.matches("^select\s.*$") && !cleanSql.contains(";"))
 			return true;
 		else
 			return false;
@@ -2619,7 +2622,13 @@ public final class DB
 	 * @return true if it is update sql statement
 	 */
 	public static boolean isUpdateStatement(String sql) {
-		sql = sql.trim().toLowerCase();
+		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
+		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
+		String removeLeadingSpaces = "^\\s+";
+		sql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
+		//can't validate multiple statement
+		if (sql.contains(";"))
+			return true;
 		if(sql.matches("^update\s.*$") || sql.matches("^delete\s.*$") || sql.matches("^alter\s.*") || sql.matches("^drop\s.*") 
 				|| sql.matches("^insert\s.*$") || sql.matches("^call\s.*$") || sql.matches("^copy\s.*$") || sql.matches("^create\s.*$")
 				|| sql.matches("^grant\s.*$") || sql.matches("^lock\s.*$") || sql.matches("^revoke\s.*$") || sql.matches("^set\s.*$")

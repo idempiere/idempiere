@@ -39,7 +39,7 @@ ALTER TABLE AD_WF_NextCondition MODIFY AD_Column_ID NULL
 
 INSERT INTO AD_Message 
 (MsgType,MsgText,AD_Message_ID,EntityType,AD_Message_UU,Value,IsActive,Updated,CreatedBy,UpdatedBy,Created,AD_Client_ID,AD_Org_ID) 
-VALUES ('E','Please enter read-only SQL expression or statement',200259,'U','49c3be7e-16de-46ff-a2a9-f9411a6a4982','SQLReadOnly','Y',
+VALUES ('E','Please enter read-only SQL expression or statement',200259,'D','49c3be7e-16de-46ff-a2a9-f9411a6a4982','SQLReadOnly','Y',
 TO_DATE('2021-11-14 17:45:57','YYYY-MM-DD HH24:MI:SS'),100,100,TO_DATE('2021-11-14 17:45:57','YYYY-MM-DD HH24:MI:SS'),0,0)
 ;
 
