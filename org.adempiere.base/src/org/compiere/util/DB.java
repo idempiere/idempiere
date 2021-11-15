@@ -2599,4 +2599,33 @@ public final class DB
 	{
 		return getDatabase().intersectClauseForCSV(columnName, csv);
 	}
+	
+	/**
+	 * 
+	 * @param sql
+	 * @return true if it is query sql statement
+	 */
+	public static boolean isQueryStatement(String sql) {
+		sql = sql.trim().toLowerCase();
+		if(sql.matches("^select\s.*$"))
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * 
+	 * @param sql
+	 * @return true if it is update sql statement
+	 */
+	public static boolean isUpdateStatement(String sql) {
+		sql = sql.trim().toLowerCase();
+		if(sql.matches("^update\s.*$") || sql.matches("^delete\s.*$") || sql.matches("^alter\s.*") || sql.matches("^drop\s.*") 
+				|| sql.matches("^insert\s.*$") || sql.matches("^call\s.*$") || sql.matches("^copy\s.*$") || sql.matches("^create\s.*$")
+				|| sql.matches("^grant\s.*$") || sql.matches("^lock\s.*$") || sql.matches("^revoke\s.*$") || sql.matches("^set\s.*$")
+				|| sql.matches("^vacuum\s.*$"))
+			return true;
+		else
+			return false;
+	}
 }	//	DB

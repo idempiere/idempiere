@@ -31,7 +31,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211114L;
 
     /** Standard Constructor */
     public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName)
@@ -39,7 +39,6 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
       super (ctx, AD_WF_NextCondition_ID, trxName);
       /** if (AD_WF_NextCondition_ID == 0)
         {
-			setAD_Column_ID (0);
 			setAD_WF_NextCondition_ID (0);
 			setAD_WF_NodeNext_ID (0);
 // @4|AD_WF_NodeNext_ID@
@@ -277,6 +276,20 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set SQLStatement.
+		@param SQLStatement SQLStatement	  */
+	public void setSQLStatement (String SQLStatement)
+	{
+		set_Value (COLUMNNAME_SQLStatement, SQLStatement);
+	}
+
+	/** Get SQLStatement.
+		@return SQLStatement	  */
+	public String getSQLStatement () 
+	{
+		return (String)get_Value(COLUMNNAME_SQLStatement);
 	}
 
 	/** Set Search Key.
