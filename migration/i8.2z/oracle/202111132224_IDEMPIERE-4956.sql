@@ -21,7 +21,7 @@ UPDATE AD_Field SET DisplayLogic='@Processed@=Y', Updated=getDate(), UpdatedBy=1
 UPDATE AD_Field SET DisplayLogic='@Type@=''D''|@Type@=''SQL''', Updated=getDate(), UpdatedBy=100 WHERE DisplayLogic='@Type@=''D''|Type@=''SQL''' AND AD_Field_ID = 50135
 ;
 
-UPDATE AD_Column SET ReadOnlyLogic='', Updated=getDate(), UpdatedBy=100 WHERE ReadOnlyLogic='N' AND AD_Column_ID = 200452
+UPDATE AD_Column SET ReadOnlyLogic=NULL, Updated=getDate(), UpdatedBy=100 WHERE ReadOnlyLogic='N' AND AD_Column_ID = 200452
 ;
 
 SELECT Register_Migration_Script ('202111132224_IDEMPIERE-4956.sql') FROM DUAL
