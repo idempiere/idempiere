@@ -1054,7 +1054,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		listTable.setInstantSelect(false);
 		listTable.addEventListener(Events.ON_BLUR, e -> {
         	if (listTable.getSelectedItem() == null) {
-        		listTable.setValue(null);
+        		listTable.setSelectedIndex(0);
         	}
         });
         
@@ -1648,7 +1648,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 {
                		Comboitem table = listTable.getSelectedItem();
                		//Attribute
-               		if (table.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+               		if (table != null && table.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
                			setAttributes(listColumn, listOperator, null);
                		} else {
                			if (table != null && table.getValue().toString().length() > 0)
@@ -1668,7 +1668,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 	Comboitem table = listTable.getSelectedItem();
 
                 	//Attribute
-                	if (table.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {	
+                	if (table != null && table.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {	
                 		if (listbox.getId().equals(listColumn.getId()))
 	                	{
 	                		Comboitem column = listColumn.getSelectedItem();
@@ -1702,7 +1702,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                 
                 // Attribute
                 Comboitem table = listTable.getSelectedItem();
-                if (table.getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+                if (table != null && table.getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
             		Component componentFrom = getAttributeValuesListComponent(row, false);
    	                componentFrom.setId("searchFieldFrom"+row.getId());
 
@@ -2082,8 +2082,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	        boolean isExistCondition = false;
     	        boolean isRightBracketCompositeExists = false;
 
-				if(!table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
-					if (table != null && !table.getSelectedItem().getValue().toString().isEmpty())
+				if(table.getSelectedItem() != null && !table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+					if (!table.getSelectedItem().getValue().toString().isEmpty())
 					{
 						m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getSelectedItem().getValue());
 					} 
@@ -2103,14 +2103,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            }
 	            ValueNamePair vnp = column.getSelectedItem().getValue();
 	            String ColumnName = vnp.getValue();
-	            String TableName = table.getSelectedItem().getValue().toString();
+	            String tableUID = table.getSelectedItem() != null ? table.getSelectedItem().getValue().toString() : "";
 	            String infoName = column.toString();
 	            
 	            GridField field = null;
 				boolean isProductCategoryField = false;
 				String ColumnSQL = null;
 
-				if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {					
+				if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {					
 					ColumnSQL = getAttributeSQL(Integer.valueOf(ColumnName));            	
 				} else {
 					//
@@ -2119,7 +2119,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		            	continue;
 		            isProductCategoryField = isProductCategoryField(field.getColumnName());
 		            ColumnSQL = field.getColumnSQL(false);
-		            if (!table.getSelectedItem().getValue().equals(m_AD_Tab_UU))
+		            if (table.getSelectedItem() != null && !table.getSelectedItem().getValue().equals(m_AD_Tab_UU))
 					{       
 						if (!isCompositeExists) {
 							exists ="SELECT 1 FROM "+m_gridTab.getTableName()+" WHERE "+m_gridTab.getTableName()+"."+m_gridTab.getLinkColumnName()+" = "+m_tableName+"."+m_tableName+"_ID ";//  "+tab.getTableName()+".";
@@ -2212,13 +2212,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		            		m_query.addRestriction(ColumnSQL, Operator, null,
 		            				infoName, null, andOr, openBrackets);
 	            		}
-	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, TableName);
+	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, tableUID);
 	            	}
 	            	continue;
 	            }
 	            Object parsedValue = null;
 	            //Parse AttributeValue
-	            if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
+	            if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
 	            	parsedValue = parseAttributeValue(Integer.valueOf(ColumnName), value);
 	            else            	
 	            	parsedValue = parseValue(field, value);
@@ -2226,7 +2226,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                continue;
 	            String infoDisplay = (value == null ? "" : value.toString());
 	            // When Atribute is set Field is null
-	            if(!table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
+	            if(table.getSelectedItem() != null && !table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
 	            {
 		            if (field.isLookup())
 		                infoDisplay = field.getLookup().getDisplay(value);
@@ -2261,14 +2261,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                    continue;
 	                Object parsedValue2 = null;
 	                //Parse Attribute Value 2 by field/Attribute
-	                if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
+	                if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
 	                	parsedValue2 = parseAttributeValue(Integer.valueOf(ColumnName), value2);
 	                else
 	                	parsedValue2 = parseValue(field, value2);
 	                String infoDisplay_to = value2.toString();
 	                if (parsedValue2 == null)
 	                    continue;
-	                if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
+	                if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
 	               			|| isExists) {
 
 	                	String where = ""; 
@@ -2305,7 +2305,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	else
 	            		m_query.addRestriction("NOT (" + clause + ")", openBrackets, andOr);
 	            } else {
-	            	if (table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
+	            	if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
 	               			|| isExists) {
 
 	                	String where = "";
@@ -2330,7 +2330,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	isCompositeExists = false;
 	            }
 
-	            appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets, TableName);
+	            appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets, tableUID);
 	        }
 	        
 	        saveQuery(saveQuery, code, shareAllUsers);			
