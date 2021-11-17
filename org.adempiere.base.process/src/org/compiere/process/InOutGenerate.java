@@ -161,7 +161,6 @@ public class InOutGenerate extends SvrProcess
 				//	No Offer,POS
 				.append(" AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
 					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR'))")
-				.append("	AND o.IsDropShip='N'")
 				//	No Manual
 				.append(" AND o.DeliveryRule<>'M'")
 				//	Open Order Lines with Warehouse
