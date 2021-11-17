@@ -2599,4 +2599,21 @@ public final class DB
 	{
 		return getDatabase().intersectClauseForCSV(columnName, csv);
 	}
+	
+	/**
+	 * 
+	 * @param sql
+	 * @return true if it is select sql statement
+	 */
+	public static boolean isSelectStatement(String sql) {
+		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
+		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
+		String removeLeadingSpaces = "^\\s+";
+		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
+		if(cleanSql.matches("^select\s.*$") && !cleanSql.contains(";"))
+			return true;
+		else
+			return false;
+	}
+
 }	//	DB
