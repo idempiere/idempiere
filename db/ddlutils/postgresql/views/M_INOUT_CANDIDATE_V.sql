@@ -22,7 +22,6 @@ WHERE	(o.DocStatus = 'CO' AND o.IsDelivered='N')  --  Status must be CO - not CL
         WHERE l.M_Product_ID=p.M_Product_ID AND p.IsExcludeAutoDelivery='N'))
 	--	we need to ship
 	AND	l.QtyOrdered <> l.QtyDelivered
-	AND o.IsDropShip='N'
     AND (l.M_Product_ID IS NOT NULL OR l.C_Charge_ID IS NOT NULL)
     --  Not confirmed shipment
     AND NOT EXISTS (SELECT * FROM M_InOutLine iol 
