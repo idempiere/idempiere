@@ -2603,9 +2603,9 @@ public final class DB
 	/**
 	 * 
 	 * @param sql
-	 * @return true if it is query sql statement
+	 * @return true if it is select sql statement
 	 */
-	public static boolean isQueryStatement(String sql) {
+	public static boolean isSelectStatement(String sql) {
 		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
 		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
 		String removeLeadingSpaces = "^\\s+";
@@ -2615,26 +2615,5 @@ public final class DB
 		else
 			return false;
 	}
-	
-	/**
-	 * 
-	 * @param sql
-	 * @return true if it is update sql statement
-	 */
-	public static boolean isUpdateStatement(String sql) {
-		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
-		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
-		String removeLeadingSpaces = "^\\s+";
-		sql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
-		//can't validate multiple statement
-		if (sql.contains(";"))
-			return true;
-		if(sql.matches("^update\s.*$") || sql.matches("^delete\s.*$") || sql.matches("^alter\s.*") || sql.matches("^drop\s.*") 
-				|| sql.matches("^insert\s.*$") || sql.matches("^call\s.*$") || sql.matches("^copy\s.*$") || sql.matches("^create\s.*$")
-				|| sql.matches("^grant\s.*$") || sql.matches("^lock\s.*$") || sql.matches("^revoke\s.*$") || sql.matches("^set\s.*$")
-				|| sql.matches("^vacuum\s.*$"))
-			return true;
-		else
-			return false;
-	}
+
 }	//	DB

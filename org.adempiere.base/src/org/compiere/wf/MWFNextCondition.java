@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.compiere.model.X_AD_WF_NextCondition;
@@ -45,7 +44,7 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1694467559057544172L;
+	private static final long serialVersionUID = 3119863973003103716L;
 
 	/**
 	 * 	Default Constructor
@@ -405,17 +404,6 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (!Util.isEmpty(getSQLStatement(), true)) {
-			if (getOperation().equals(OPERATION_Sql)) {
-				if (!DB.isQueryStatement(getSQLStatement())) {
-					log.saveError("SQLReadOnly", Msg.getElement(getCtx(), COLUMNNAME_SQLStatement));
-					return false;
-				}
-			} else {
-				if (DB.isUpdateStatement(getSQLStatement())) {
-					log.saveError("SQLReadOnly", Msg.getElement(getCtx(), COLUMNNAME_SQLStatement));
-					return false;
-				}
-			}
 			setAD_Column_ID(0);
 		}
 		return true;
