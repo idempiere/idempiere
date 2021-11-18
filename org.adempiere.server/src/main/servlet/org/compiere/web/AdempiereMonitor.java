@@ -779,9 +779,16 @@ public class AdempiereMonitor extends HttpServlet
 			para.addElement(link);
 			font status = null;
 			if (server.isStarted())
-				status = new font().setColor(HtmlColor.GREEN).addElement(" (Running)");
+			{
+				if (server.isSleeping())
+					status = new font().setColor(HtmlColor.GREEN).addElement(" (Started)");
+				else
+					status = new font().setColor(HtmlColor.GREEN).addElement(" (Running)");
+			}
 			else
+			{
 				status = new font().setColor(HtmlColor.RED).addElement(" (Stopped)");
+			}
 			para.addElement(status);
 		}
 		bb.addElement(para);
@@ -910,7 +917,7 @@ public class AdempiereMonitor extends HttpServlet
 		
 		if (serverCount != null) {
 			builder.append(serverCount.getStarted()+serverCount.getStopped())
-				.append(" - Running=")
+				.append(" - Started=")
 				.append(serverCount.getStarted())
 				.append(" - Stopped=")
 				.append(serverCount.getStopped());
@@ -1525,20 +1532,45 @@ public class AdempiereMonitor extends HttpServlet
 		{		
 			if (ccache.getName().endsWith("|CCacheListener"))
 				continue;
-			line = new tr();
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getHit())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMiss())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
-			if (ccache.getNodeId() != null)
+			if (ccache.getSize() > 0)
 			{
-				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getNodeId())));
+				line = new tr();
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getHit())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMiss())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
+				if (ccache.getNodeId() != null)
+				{
+					line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getNodeId())));
+				}
+				table.addElement(line);
 			}
-			table.addElement(line);
+		}
+		for (CacheInfo ccache : instances)
+		{		
+			if (ccache.getName().endsWith("|CCacheListener"))
+				continue;
+			if (ccache.getSize() == 0)
+			{
+				line = new tr();
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getHit())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMiss())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
+				if (ccache.getNodeId() != null)
+				{
+					line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getNodeId())));
+				}
+				table.addElement(line);
+			}
 		}
 		//
 		b.addElement(table);

@@ -55,9 +55,9 @@ public class MLookupFactory
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MLookupFactory.class);
 	/** Table Reference Cache				*/
-	private static CCache<String,MLookupInfo> s_cacheRefTable = new CCache<String,MLookupInfo>(I_AD_Ref_Table.Table_Name, 30, 60);	//	1h
+	private static CCache<String,MLookupInfo> s_cacheRefTable = new CCache<String,MLookupInfo>(I_AD_Ref_Table.Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);	//	1h
 	/** List Reference Cache				*/
-	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, 60);	//	1h
+	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);	//	1h
 
 
 	/**

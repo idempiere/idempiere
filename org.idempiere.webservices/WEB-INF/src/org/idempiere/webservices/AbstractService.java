@@ -209,7 +209,7 @@ public class AbstractService {
 	}
 
 	private static ImmutablePOCache<String,MWebServiceType> s_WebServiceTypeCache	= new ImmutablePOCache<String,MWebServiceType>(MWebServiceType.Table_Name, 10, 60);	//60 minutes
-	private static CCache<String,Boolean> s_RoleAccessCache = new CCache<>(X_WS_WebServiceTypeAccess.Table_Name, 60, 60);
+	private static CCache<String,Boolean> s_RoleAccessCache = new CCache<>(X_WS_WebServiceTypeAccess.Table_Name, 60, CCache.DEFAULT_EXPIRE_MINUTE);
 
 	/**
 	 * Authenticate user for requested service type
