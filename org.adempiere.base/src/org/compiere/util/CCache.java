@@ -454,19 +454,43 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public void newRecord(int record_ID) {
 	}
 
+	/**
+	 * 
+	 * @return max size of cache
+	 */
 	public int getMaxSize() {
 		return m_maxSize;
 	}
 	
+	/**
+	 * 
+	 * @return true if cache is distributed (using hazelcast)
+	 */
 	public boolean isDistributed() {
 		return m_distributed;
 	}
 	
+	/**
+	 * 
+	 * @return cache hit count
+	 */
 	public long getHit() {
 		return m_hit.get();
 	}
 	
+	/**
+	 * 
+	 * @return cache miss count
+	 */
 	public long getMiss() {
 		return m_miss.get();
 	}	
+	
+	/**
+	 * 
+	 * @return true if cache has expire
+	 */
+	public boolean isExpire() {
+		return m_expire > 0 && m_timeExp > 0 && m_timeExp < System.currentTimeMillis();
+	}
 }	//	CCache
