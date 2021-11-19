@@ -34,7 +34,7 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211005L;
+	private static final long serialVersionUID = 20211106L;
 
     /** Standard Constructor */
     public X_M_Production (Properties ctx, int M_Production_ID, String trxName)
@@ -545,6 +545,35 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 		return false;
 	}
 
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
+
+	/** Set Shipment/Receipt Line.
+		@param M_InOutLine_ID 
+		Line on Shipment or Receipt document
+	  */
+	public void setM_InOutLine_ID (int M_InOutLine_ID)
+	{
+		if (M_InOutLine_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
+	}
+
+	/** Get Shipment/Receipt Line.
+		@return Line on Shipment or Receipt document
+	  */
+	public int getM_InOutLine_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -699,9 +728,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_Name)
-			.getPO(getPP_Product_BOM_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
+	}
 
 	/** Set BOM & Formula.
 		@param PP_Product_BOM_ID 

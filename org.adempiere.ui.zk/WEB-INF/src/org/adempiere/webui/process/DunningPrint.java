@@ -46,6 +46,7 @@ import org.compiere.util.EMail;
  *  
  *  FR 2872010 - Dunning Run for a complete Dunning (not just level) - Developer: Carlos Ruiz - globalqss - Sponsor: Metas
  */
+@org.adempiere.base.annotation.Process
 public class DunningPrint extends SvrProcess
 {
 	/**	Mail PDF				*/

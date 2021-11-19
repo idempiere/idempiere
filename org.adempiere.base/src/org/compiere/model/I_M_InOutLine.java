@@ -250,6 +250,19 @@ public interface I_M_InOutLine
 	  */
 	public boolean isActive();
 
+    /** Column name IsAutoProduce */
+    public static final String COLUMNNAME_IsAutoProduce = "IsAutoProduce";
+
+	/** Set Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce);
+
+	/** Get Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce();
+
     /** Column name IsDescription */
     public static final String COLUMNNAME_IsDescription = "IsDescription";
 

@@ -45,10 +45,10 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	</component>
 
 	<javascript-module name="org.idempiere.websocket" version="202011211500"/>	
-	<javascript-module name="jawwa.atmosphere" version="202102091500"/>
+	<javascript-module name="jawwa.atmosphere" version="202110220730"/>
 	<javascript-module name="adempiere.local.storage" version="202011151100"/>
 	<javascript-moudle name="html2canvas" version="1.3.1"/>
-	<javascript-module name="org.idempiere.commons" version="202107060204"/>
+	<javascript-module name="org.idempiere.commons" version="202111051000"/>
 	<javascript-module name="jquery.maskedinput" version="1.4.1" />
 	<javascript-module name="photobooth"	version="0.7-rsd3" />
 	<javascript-module name="chosenbox" version="202012041500"/>

@@ -40,6 +40,7 @@ import org.compiere.util.DisplayType;
  *  @author Victor Perez www.e-evolution.com
  *  @version $Id: ExportFormatGenerator.java,v 1.0 
  */
+@org.adempiere.base.annotation.Process
 public class ExportFormatGenerator extends SvrProcess
 {
 

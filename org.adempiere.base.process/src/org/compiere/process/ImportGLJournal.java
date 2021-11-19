@@ -39,6 +39,7 @@ import org.compiere.util.TimeUtil;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ImportGLJournal.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ImportGLJournal extends SvrProcess
 {
 	/**	Client to be imported to		*/

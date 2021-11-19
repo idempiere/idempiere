@@ -318,6 +318,21 @@ public interface I_M_Production
 	/** Get Use Production Plan	  */
 	public boolean isUseProductionPlan();
 
+    /** Column name M_InOutLine_ID */
+    public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
+
+	/** Set Shipment/Receipt Line.
+	  * Line on Shipment or Receipt document
+	  */
+	public void setM_InOutLine_ID (int M_InOutLine_ID);
+
+	/** Get Shipment/Receipt Line.
+	  * Line on Shipment or Receipt document
+	  */
+	public int getM_InOutLine_ID();
+
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
+
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
 

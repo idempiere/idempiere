@@ -28,6 +28,7 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
+@org.adempiere.base.annotation.Process
 public class CopyFromCashPlan  extends SvrProcess {
 
 	private int p_C_CashPlanSource_ID = 0;

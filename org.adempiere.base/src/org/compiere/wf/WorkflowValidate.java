@@ -29,6 +29,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: WorkflowValidate.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class WorkflowValidate extends SvrProcess
 {
 	private int		p_AD_Worlflow_ID = 0;

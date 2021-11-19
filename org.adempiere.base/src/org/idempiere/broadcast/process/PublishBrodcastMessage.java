@@ -22,6 +22,7 @@ import org.compiere.process.SvrProcess;
  * @author Deepak Pansheriya
  *
  */
+@org.adempiere.base.annotation.Process
 public class PublishBrodcastMessage extends SvrProcess
 {
 

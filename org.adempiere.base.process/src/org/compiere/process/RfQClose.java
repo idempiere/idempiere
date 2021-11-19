@@ -32,6 +32,7 @@ import org.compiere.model.MRfQResponse;
  *  	<li>BF [ 2892585 ] When closing an RfQ we need to mark the responses as process
  *  		https://sourceforge.net/tracker/?func=detail&aid=2892585&group_id=176962&atid=879332
  */
+@org.adempiere.base.annotation.Process
 public class RfQClose extends SvrProcess
 {
 	/**	RfQ 			*/

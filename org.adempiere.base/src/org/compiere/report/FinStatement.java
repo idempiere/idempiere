@@ -53,6 +53,7 @@ import org.compiere.util.Msg;
  *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/tracker/?func=detail&aid=2857076&group_id=176962&atid=879335
  *   
  */
+@org.adempiere.base.annotation.Process
 public class FinStatement extends SvrProcess
 {
 	/** AcctSchame Parameter			*/

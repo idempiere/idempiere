@@ -55,6 +55,7 @@ import org.compiere.util.DB;
  * @author Carlos Ruiz (globalqss)
  *         Make T_Selection tables permanent
  */
+@org.adempiere.base.annotation.Process
 public class M_PriceList_Create extends SvrProcess {
 
 	/** Price List Version			*/

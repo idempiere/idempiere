@@ -76,6 +76,7 @@ import org.zkoss.zul.Vbox;
  * @author Carlos Ruiz
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VSetupWizard")
 public class WSetupWizard extends SetupWizard implements IFormController, EventListener<Event>
 {
 	private CustomForm form = null;

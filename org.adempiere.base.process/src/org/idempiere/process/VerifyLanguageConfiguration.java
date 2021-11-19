@@ -35,6 +35,7 @@ import org.compiere.process.SvrProcess;
  *
  * 	@author 	Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class VerifyLanguageConfiguration extends SvrProcess
 {
 	/**

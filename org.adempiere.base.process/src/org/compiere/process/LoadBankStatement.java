@@ -30,6 +30,7 @@ import org.compiere.util.Env;
  *	@author Maarten Klinker, Eldir Tomassen
  *	@version $Id: LoadBankStatement.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class LoadBankStatement extends SvrProcess
 {
 	public LoadBankStatement()

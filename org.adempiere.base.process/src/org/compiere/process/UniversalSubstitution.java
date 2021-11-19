@@ -37,6 +37,7 @@ import org.eevolution.model.MPPProductBOMLine;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class UniversalSubstitution extends SvrProcess {
 
 	int productId = 0;

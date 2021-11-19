@@ -31,6 +31,7 @@ import org.compiere.util.DB;
  *	Suspense account reconciliation report
  *  @author Paul Bowden (phib)
  */
+@org.adempiere.base.annotation.Process
 public class FactReconcile extends SvrProcess
 {
 	private MElementValue account;

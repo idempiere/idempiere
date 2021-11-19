@@ -13,3 +13,4 @@ Export-Package: org.compiere.model
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.base.callout
 Bundle-Vendor: iDempiere Community
+Import-Package: org.osgi.service.component.annotations;version="1.3.0"

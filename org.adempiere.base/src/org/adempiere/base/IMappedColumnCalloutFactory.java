@@ -26,6 +26,8 @@ package org.adempiere.base;
 
 import java.util.function.Supplier;
 
+import org.osgi.framework.BundleContext;
+
 /**
  * 
  * @author hengsin
@@ -49,4 +51,10 @@ public interface IMappedColumnCalloutFactory {
 	 */
 	public void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier);
 
+	/**
+	 * scan, discover and register classes with Callout annotation
+	 * @param context
+	 * @param packages
+	 */
+	public void scan(BundleContext context, String... packages);
 }

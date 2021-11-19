@@ -177,16 +177,12 @@ public class Doc_Cash extends Doc
 				//  CashAsset               CR
 				fact.createLine(line, getAccount(Doc.ACCTTYPE_CashExpense, as),
 					getC_Currency_ID(), line.getAmount().negate(), null);
-			//	fact.createLine(line, getAccount(Doc.ACCTTYPE_CashAsset, as),
-			//		p_vo.C_Currency_ID, null, line.getAmount().negate());
 				assetAmt = assetAmt.subtract(line.getAmount().negate());
 			}
 			else if (CashType.equals(DocLine_Cash.CASHTYPE_RECEIPT))
 			{   //  amount is positive
 				//  CashAsset       DR
 				//  CashReceipt             CR
-			//	fact.createLine(line, getAccount(Doc.ACCTTYPE_CashAsset, as),
-			//		p_vo.C_Currency_ID, line.getAmount(), null);
 				assetAmt = assetAmt.add(line.getAmount());
 				fact.createLine(line, getAccount(Doc.ACCTTYPE_CashReceipt, as),
 					getC_Currency_ID(), null, line.getAmount());
@@ -197,8 +193,6 @@ public class Doc_Cash extends Doc
 				//  CashAsset               CR
 				fact.createLine(line, line.getChargeAccount(as, line.getAmount().negate()),
 					getC_Currency_ID(), line.getAmount().negate());
-			//	fact.createLine(line, getAccount(Doc.ACCTTYPE_CashAsset, as),
-			//		p_vo.C_Currency_ID, null, line.getAmount().negate());
 				assetAmt = assetAmt.subtract(line.getAmount().negate());
 			}
 			else if (CashType.equals(DocLine_Cash.CASHTYPE_DIFFERENCE))
@@ -207,8 +201,6 @@ public class Doc_Cash extends Doc
 				//  CashAsset               CR
 				fact.createLine(line, getAccount(Doc.ACCTTYPE_CashDifference, as),
 					getC_Currency_ID(), line.getAmount().negate());
-			//	fact.createLine(line, getAccount(Doc.ACCTTYPE_CashAsset, as),
-			//		p_vo.C_Currency_ID, line.getAmount());
 				assetAmt = assetAmt.add(line.getAmount());
 			}
 			else if (CashType.equals(DocLine_Cash.CASHTYPE_INVOICE))

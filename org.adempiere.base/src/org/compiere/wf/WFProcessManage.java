@@ -29,6 +29,7 @@ import org.compiere.process.SvrProcess;
  *  @author Jorg Janke
  *  @version $Id: WFProcessManage.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class WFProcessManage extends SvrProcess
 {
 	/**	Abort It				*/	
@@ -81,6 +82,7 @@ public class WFProcessManage extends SvrProcess
 			process.setTextMsg(msg);
 			process.setAD_User_ID(getAD_User_ID());
 			process.setWFState(StateEngine.STATE_Aborted);
+			process.saveEx();
 			return msg;
 		}
 		String msg = null;

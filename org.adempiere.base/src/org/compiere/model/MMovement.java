@@ -294,7 +294,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			//      Mandatory Instance
 			MProduct product = line.getProduct();
 			if (line.getM_AttributeSetInstance_ID() == 0) {
-				if (product != null && product.isASIMandatory(true)) {
+				if (product != null && product.isASIMandatoryFor(null, true)) {
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, true)) {  // outgoing
 						BigDecimal qtyDiff = line.getMovementQty();
 						// verify if the ASIs are captured on lineMA
@@ -315,7 +315,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			}
 			if (line.getM_AttributeSetInstanceTo_ID() == 0)
 			{
-				if (product != null && product.isASIMandatory(false) && line.getM_AttributeSetInstanceTo_ID() == 0)
+				if (product != null && product.isASIMandatoryFor(null, false) && line.getM_AttributeSetInstanceTo_ID() == 0)
 				{
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, false)) { // incoming
 						m_processMsg = "@Line@ " + line.getLine() + ": @FillMandatory@ @M_AttributeSetInstanceTo_ID@";

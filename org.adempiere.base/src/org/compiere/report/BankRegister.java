@@ -35,6 +35,7 @@ import org.compiere.util.Msg;
  *
  */
 
+@org.adempiere.base.annotation.Process
 public class BankRegister extends SvrProcess
 {
 	/**	Bank Parameter				*/

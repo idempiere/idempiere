@@ -31,6 +31,7 @@ import org.idempiere.broadcast.BroadcastMsgUtil;
  * @author Deepak Pansheriya
  *
  */
+@org.adempiere.base.annotation.Process
 public class KillAllSession extends SvrProcess {
 	private static final CLogger logger = CLogger
 			.getCLogger(KillAllSession.class);

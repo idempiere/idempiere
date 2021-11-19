@@ -55,6 +55,7 @@ import org.zkoss.zul.Center;
  * @author Andrew Kimball
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VSQLProcess")
 public class WSQLProcess extends ADForm implements EventListener<Event>
 {
     /**

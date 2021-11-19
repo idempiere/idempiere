@@ -26,6 +26,7 @@ import org.compiere.process.SvrProcess;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class CostAdjustmentLineRefreshCost extends SvrProcess {
 
 	/**

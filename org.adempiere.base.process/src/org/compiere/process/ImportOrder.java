@@ -41,6 +41,7 @@ import org.compiere.util.Env;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ImportOrder.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ImportOrder extends SvrProcess
 {
 	/**	Client to be imported to		*/

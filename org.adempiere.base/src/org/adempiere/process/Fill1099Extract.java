@@ -27,6 +27,7 @@ import org.compiere.util.*;
  *  @author Carlos Ruiz
  *  @version $Id: Fill1099Extract.java
  */
+@org.adempiere.base.annotation.Process
 public class Fill1099Extract extends SvrProcess
 {
 	private Timestamp	p_Cut_Date = null;

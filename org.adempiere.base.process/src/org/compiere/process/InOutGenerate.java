@@ -48,6 +48,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: InOutGenerate.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class InOutGenerate extends SvrProcess
 {
 	/**	Manual Selection		*/
@@ -119,15 +120,14 @@ public class InOutGenerate extends SvrProcess
                 p_DateShipped = (Timestamp)para[i].getParameter();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
-			
-			//  juddm - added ability to specify a shipment date from Generate Shipments
-			if (p_DateShipped == null) {
-				m_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
-				if (m_movementDate == null)
-					m_movementDate = new Timestamp(System.currentTimeMillis());
-			} else
-				m_movementDate = p_DateShipped;
 		}
+		//  juddm - added ability to specify a shipment date from Generate Shipments
+		if (p_DateShipped == null) {
+			m_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
+			if (m_movementDate == null)
+				m_movementDate = new Timestamp(System.currentTimeMillis());
+		} else
+			m_movementDate = p_DateShipped;
 	}	//	prepare
 
 	/**
@@ -161,7 +161,6 @@ public class InOutGenerate extends SvrProcess
 				//	No Offer,POS
 				.append(" AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
 					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR'))")
-				.append("	AND o.IsDropShip='N'")
 				//	No Manual
 				.append(" AND o.DeliveryRule<>'M'")
 				//	Open Order Lines with Warehouse
@@ -322,8 +321,9 @@ public class InOutGenerate extends SvrProcess
 						MStorageOnHand storage = storages[j];
 						onHand = onHand.add(storage.getQtyOnHand());
 					}
+					boolean autoProduce = product.isBOM() && product.isVerified() && product.isAutoProduce();
 					boolean fullLine = onHand.compareTo(toDeliver) >= 0
-						|| toDeliver.signum() < 0;
+						|| toDeliver.signum() < 0 || autoProduce;
 					
 					//	Complete Order
 					if (completeOrder && !fullLine)
@@ -346,10 +346,10 @@ public class InOutGenerate extends SvrProcess
 					//	Availability
 					else if ((MOrder.DELIVERYRULE_Availability.equals(order.getDeliveryRule()) || MOrder.DELIVERYRULE_AfterPayment.equals(order.getDeliveryRule()))
 						&& (onHand.signum() > 0
-							|| toDeliver.signum() < 0))
+							|| toDeliver.signum() < 0 || autoProduce))
 					{
 						BigDecimal deliver = toDeliver;
-						if (deliver.compareTo(onHand) > 0)
+						if (deliver.compareTo(onHand) > 0 && !autoProduce)
 							deliver = onHand;
 						if (log.isLoggable(Level.FINE)) log.fine("Available - OnHand=" + onHand 
 							+ " (Unconfirmed=" + unconfirmedShippedQty
@@ -493,16 +493,14 @@ public class InOutGenerate extends SvrProcess
 			int M_Locator_ID = storage.getM_Locator_ID();
 			//
 			MInOutLine line = null;
-			if (orderLine.getM_AttributeSetInstance_ID() == 0)      //      find line with Locator
+			int olAsiID = orderLine.getM_AttributeSetInstance_ID();
+			for (int ll = 0; ll < list.size(); ll++)
 			{
-				for (int ll = 0; ll < list.size(); ll++)
+				MInOutLine test = (MInOutLine)list.get(ll);
+				if (test.getM_Locator_ID() == M_Locator_ID && test.getM_AttributeSetInstance_ID() == olAsiID)
 				{
-					MInOutLine test = (MInOutLine)list.get(ll);
-					if (test.getM_Locator_ID() == M_Locator_ID && test.getM_AttributeSetInstance_ID() == 0)
-					{
-						line = test;
-						break;
-					}
+					line = test;
+					break;
 				}
 			}
 			if (line == null)	//	new line
@@ -529,8 +527,10 @@ public class InOutGenerate extends SvrProcess
 				break;
 		}		
 		if (toDeliver.signum() != 0)
-		{	 
-			if (!force)
+		{	
+			MProduct product = MProduct.get(orderLine.getM_Product_ID());
+			boolean autoProduce = product.isBOM() && product.isVerified() && product.isAutoProduce();
+			if (!force && toDeliver.signum() > 0 && !autoProduce)
 			{
 				throw new IllegalStateException("Not All Delivered - Remainder=" + toDeliver);
 			}

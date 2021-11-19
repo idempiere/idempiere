@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7342115034093804064L;
+	private static final long serialVersionUID = 4071371201535378277L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -106,6 +106,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
     public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
     public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
+	public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
     public static final String LASTRUN_RECORD_COUNT = "LASTRUN_RECORD_COUNT";
@@ -167,6 +168,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String USER_LOCKING_MAX_PASSWORD_AGE_DAY = "USER_LOCKING_MAX_PASSWORD_AGE_DAY";
     public static final String USER_LOCKING_PASSWORD_NOTIFY_DAY = "USER_LOCKING_PASSWORD_NOTIFY_DAY";
     public static final String USER_PASSWORD_HASH = "USER_PASSWORD_HASH";
+    public static final String VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT = "VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT";
     public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
     public static final String ZK_ADVANCE_FIND_FILTER_COLUMN_LIST = "ZK_ADVANCE_FIND_FILTER_COLUMN_LIST";

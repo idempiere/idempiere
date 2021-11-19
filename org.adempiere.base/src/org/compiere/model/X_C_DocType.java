@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = -5399795467312254567L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -763,6 +763,27 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isInTransit () 
 	{
 		Object oo = get_Value(COLUMNNAME_IsInTransit);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Allow Product Without Pricelist.
+		@param isNoPriceListCheck Allow Product Without Pricelist	  */
+	public void setIsNoPriceListCheck (boolean IsNoPriceListCheck)
+	{
+		set_Value (COLUMNNAME_IsNoPriceListCheck, Boolean.valueOf(IsNoPriceListCheck));
+	}
+
+	/** Get Allow Product Without Pricelist.
+		@return Allow Product Without Pricelist	  */
+	public boolean IsNoPriceListCheck () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsNoPriceListCheck);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

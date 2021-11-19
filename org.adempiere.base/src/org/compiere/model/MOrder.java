@@ -37,6 +37,8 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -1371,7 +1373,7 @@ public class MOrder extends X_C_Order implements DocAction
 		for (MOrderLine line : getLines()) {
 			if (line.getM_Product_ID() > 0 && line.getM_AttributeSetInstance_ID() == 0) {
 				MProduct product = line.getProduct();
-				if (product.isASIMandatory(isSOTrx())) {
+				if (product.isASIMandatoryFor(null, isSOTrx())) {
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MOrderLine.Table_ID, isSOTrx())) {
 						StringBuilder msg = new StringBuilder("@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #")
 							.append(line.getLine())
@@ -1723,9 +1725,8 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 			//	Binding
 			BigDecimal target = binding ? line.getQtyOrdered() : Env.ZERO; 
-			BigDecimal difference = target
-				.subtract(line.getQtyReserved())
-				.subtract(line.getQtyDelivered()); 
+			BigDecimal difference = target.compareTo(line.getQtyDelivered()) > 0 ? target.subtract(line.getQtyDelivered()) : Env.ZERO;
+			difference = difference.subtract(line.getQtyReserved()); 
 
 			if (difference.signum() == 0 || line.getQtyOrdered().signum() < 0)
 			{
@@ -1756,11 +1757,19 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				if (product.isStocked())
 				{
+					IReservationTracer tracer = null;
+					IReservationTracerFactory factory = Core.getReservationTracerFactory();
+					if (factory != null) {
+						tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), line.getLine(), 
+								line.get_Table_ID(), line.get_ID(), line.getM_Warehouse_ID(), 
+								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), isSOTrx(), 
+								get_TrxName());
+					}
 					//	Update Reservation Storage
 					if (!MStorageReservation.add(getCtx(), line.getM_Warehouse_ID(), 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(),
-						difference, isSOTrx, get_TrxName()))
+						difference, isSOTrx, get_TrxName(), tracer))
 						return false;
 				}	//	stocked
 				//	update line
@@ -2582,9 +2591,16 @@ public class MOrder extends X_C_Order implements DocAction
 			MOrderLine line = lines[i];
 			BigDecimal old = line.getQtyOrdered();
 			if (old.compareTo(line.getQtyDelivered()) != 0)
-			{
-				line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));
-				line.setQtyOrdered(line.getQtyDelivered());
+			{				
+				if (line.getQtyOrdered().compareTo(line.getQtyDelivered()) > 0)
+				{
+					line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));
+					line.setQtyOrdered(line.getQtyDelivered());
+				}
+				else
+				{
+					line.setQtyLostSales(Env.ZERO);
+				}
 				//	QtyEntered unchanged
 				line.addDescription("Close (" + old + ")");
 				line.saveEx(get_TrxName());

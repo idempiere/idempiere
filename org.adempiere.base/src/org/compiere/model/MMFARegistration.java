@@ -95,7 +95,7 @@ public class MMFARegistration extends X_MFA_Registration {
 		List<Object> params = new ArrayList<Object>();
 		params.add(Env.getAD_User_ID(method.getCtx()));
 		params.add(method.getMFA_Method_ID());
-		params.add(Env.getAD_Client_ID(method.getCtx()));
+		params.add(reg.getAD_Client_ID());
 		params.add(reg.getMFA_Registration_ID());
 		StringBuilder sql = new StringBuilder();
 		sql.append("UPDATE MFA_Registration"

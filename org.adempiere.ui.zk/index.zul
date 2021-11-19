@@ -74,28 +74,6 @@ Copyright (C) 2007 Ashley G Ramdass.
 			});
 		});
 			
-		zk.afterLoad(function() {
-			jq(window).on("unload", function () {
-				//rmDesktop not call in window.onbeforeunload (mount.js) when zk.confirmClose is not null								
-				if (!zk.ie && zk.confirmClose){						
-					rmDesktop();
-				} 
-			});						
-			
-			//function rmDesktop duplicated from mount.js ( zk.jar 7.0.3 )
-			function rmDesktop() {
-				var bRmDesktop = !zk.opera && !zk.keepDesktop;
-				if (bRmDesktop || zk.pfmeter) {
-					try {
-						var dts = zk.Desktop.all;
-						for (var dtid in dts)
-							zAu._rmDesktop(dts[dtid], !bRmDesktop);
-					} catch (e) { 
-					}
-				}
-			}
-		});								
-		
 		zk.afterLoad('zul.inp', function () {
 			
 			// should filter out for only component inside standard window or component wish fire this event, 

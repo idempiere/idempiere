@@ -28,10 +28,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -1191,7 +1194,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			//
 			if (line.getM_AttributeSetInstance_ID() != 0)
 				continue;
-			if (product != null && product.isASIMandatory(isSOTrx()))
+			if (product != null && product.isASIMandatoryFor(MAttributeSet.MANDATORYTYPE_WhenShipping,isSOTrx()))
 			{
 				if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInOutLine.Table_ID, isSOTrx())) {
 					BigDecimal qtyDiff = line.getMovementQty();
@@ -1420,14 +1423,22 @@ public class MInOut extends X_M_InOut implements DocAction
 						
 						if (oLine!=null && mtrx!=null && oLine.getQtyOrdered().signum() >= 0)
 						{					
-							if (sLine.getC_OrderLine_ID() != 0)
+							if (sLine.getC_OrderLine_ID() != 0 && oLine.getM_Product_ID() > 0)
 							{
+								IReservationTracer tracer = null;
+								IReservationTracerFactory factory = Core.getReservationTracerFactory();
+								if (factory != null) {
+									tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
+											sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+											oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
+											get_TrxName());
+								}
 								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
-										sLine.getM_Product_ID(),
+										oLine.getM_Product_ID(),
 										oLine.getM_AttributeSetInstance_ID(),
 										orderedQtyToUpdate.negate(),
 										isSOTrx(),
-										get_TrxName()))
+										get_TrxName(), tracer))
 								{
 									String lastError = CLogger.retrieveErrorString("");
 									m_processMsg = "Cannot correct Inventory " + (isSOTrx()? "Reserved" : "Ordered") + " (MA) - [" + product.getValue() + "] - " + lastError;
@@ -1499,12 +1510,20 @@ public class MInOut extends X_M_InOut implements DocAction
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-						if (oLine!=null && oLine.getQtyOrdered().signum() >= 0)  
+						if (oLine!=null && oLine.getQtyOrdered().signum() >= 0 && oLine.getM_Product_ID() > 0)  
 						{
+							IReservationTracer tracer = null;
+							IReservationTracerFactory factory = Core.getReservationTracerFactory();
+							if (factory != null) {
+								tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
+										sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+										oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
+										get_TrxName());
+							}
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
-									sLine.getM_Product_ID(),
+									oLine.getM_Product_ID(),
 									oLine.getM_AttributeSetInstance_ID(),
-									orderedQtyToUpdate.negate(), isSOTrx(), get_TrxName()))
+									orderedQtyToUpdate.negate(), isSOTrx(), get_TrxName(), tracer))
 							{
 								m_processMsg = "Cannot correct Inventory Reserved " + (isSOTrx()? "Reserved [" :"Ordered [") + product.getValue() + "]";
 								return DocAction.STATUS_Invalid;

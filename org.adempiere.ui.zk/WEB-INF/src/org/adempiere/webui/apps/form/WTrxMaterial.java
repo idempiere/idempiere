@@ -63,6 +63,7 @@ import org.zkoss.zul.South;
  * @author Jorg Janke
  * @version $Id: VTrxMaterial.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VTrxMaterial")
 public class WTrxMaterial extends TrxMaterial
 	implements IFormController, EventListener<Event>, ValueChangeListener
 {

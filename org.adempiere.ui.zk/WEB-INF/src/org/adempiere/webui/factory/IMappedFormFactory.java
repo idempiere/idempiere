@@ -26,6 +26,8 @@ package org.adempiere.webui.factory;
 
 import org.adempiere.base.IMappedByNameFactory;
 import org.adempiere.webui.panel.ADForm;
+import org.idempiere.ui.zk.annotation.Form;
+import org.osgi.framework.BundleContext;
 
 /**
  *
@@ -33,4 +35,10 @@ import org.adempiere.webui.panel.ADForm;
  *
  */
 public interface IMappedFormFactory extends IMappedByNameFactory<ADForm> {
+	/**
+	 * Scan packages for class with {@link Form} annotation and add mapping for it
+	 * @param context
+	 * @param packages
+	 */
+	public void scan(BundleContext context, String... packages);
 }

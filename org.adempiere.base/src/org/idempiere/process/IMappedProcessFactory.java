@@ -26,6 +26,7 @@ package org.idempiere.process;
 
 import org.adempiere.base.IMappedByNameFactory;
 import org.compiere.process.ProcessCall;
+import org.osgi.framework.BundleContext;
 
 /**
  * 
@@ -33,4 +34,11 @@ import org.compiere.process.ProcessCall;
  *
  */
 public interface IMappedProcessFactory extends IMappedByNameFactory<ProcessCall> {
+
+	/**
+	 * Scan packages for class with {@link org.adempiere.base.annotation.Process} annotation and add mapping for it
+	 * @param context
+	 * @param packages
+	 */
+	public void scan(BundleContext context, String... packages);
 }

@@ -49,6 +49,7 @@ import org.compiere.util.CacheMgt;
  *	IDEMPIERE-4191
  * 	@author 	Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class MigrateStorageProvider extends SvrProcess {
 	private int p_AD_Client_ID = -1;
 	private int p_Actual_StorageProvider_ID = 0;

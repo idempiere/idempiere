@@ -45,6 +45,7 @@ import org.compiere.util.Env;
  *  @author Victor Perez, e-Evolution, S.C.
  *  @author Teo Sarca, teo.sarca@gmail.com
  */
+@org.adempiere.base.annotation.Process
 public class EnableNativeSequence extends SvrProcess
 {
 

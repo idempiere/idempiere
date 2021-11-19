@@ -30,6 +30,7 @@ import org.eevolution.model.MPPProductBOMLine;
  *  @author Jorg Janke
  *  @version $Id: BOMVerify.java,v 1.1 2007/07/23 05:34:35 mfuggle Exp $
  */
+@org.adempiere.base.annotation.Process
 public class BOMVerify extends SvrProcess
 {
 	/**	The Product			*/

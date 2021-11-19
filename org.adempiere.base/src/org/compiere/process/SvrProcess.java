@@ -16,17 +16,25 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
+import org.adempiere.base.annotation.Parameter;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.EventProperty;
 import org.adempiere.base.event.IEventManager;
@@ -57,6 +65,7 @@ import org.osgi.service.event.Event;
  *			<li>FR [ 2788006 ] SvrProcess: change access to some methods
  *				https://sourceforge.net/tracker/?func=detail&aid=2788006&group_id=176962&atid=879335
  */
+@org.adempiere.base.annotation.Process
 public abstract class SvrProcess implements ProcessCall
 {
 	public static final String PROCESS_INFO_CTX_KEY = "ProcessInfo";
@@ -233,6 +242,7 @@ public abstract class SvrProcess implements ProcessCall
 		boolean success = true;
 		try
 		{
+			autoFillParameters();
 			prepare();
 
 			// event before process
@@ -718,4 +728,92 @@ public abstract class SvrProcess implements ProcessCall
 			processUI.statusUpdate(message);
 		}
 	}
+
+	/**
+	 * Attempts to initialize class fields having the {@link Parameter} annotation
+	 * with the values received by this process instance.
+	 */
+	private void autoFillParameters(){
+	    Map<String,Field> map = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+	    // detects annotated fields in this class and its super classes
+	    Class<?> target = getClass();
+	    while(target != null && !target.equals(SvrProcess.class)) {
+		    for (Field field: getFieldsWithParameters(target)) {
+		        field.setAccessible(true);
+		        Parameter pa = field.getAnnotation(Parameter.class);
+		        if(map.containsValue(field))
+		        	continue;
+		        String name = pa.name().isEmpty() ? field.getName() : pa.name();
+		        map.put(name.toLowerCase(), field);
+		    }
+	    	target = target.getSuperclass();
+	    }
+
+	    if(map.size()==0)
+	        return;
+
+        for(ProcessInfoParameter parameter : getParameter()){
+            String name = parameter.getParameterName().trim().toLowerCase();
+            Field field = map.get(name);
+            Field toField = map.containsKey(name + "_to") ? map.get(name + "_to") : null;
+
+            // try to match fields using the "p_" prefix convention
+            if(field==null) {
+            	String candidate = "p_" + name;
+                field = map.get(candidate);
+                toField = map.containsKey(candidate + "_to") ? map.get(candidate + "_to") : null;
+            }
+
+            // try to match fields with same name as metadata declaration after stripping "_"
+            if(field==null) {
+            	String candidate = name.replace("_", "");
+                field = map.get(candidate);
+                toField = map.containsKey(candidate + "to") ? map.get(candidate + "to") : null;
+            }
+
+            if(field==null)
+                continue;
+
+            Type type = field.getType();
+            try{
+                if (type.equals(Integer.TYPE) || type.equals(Integer.class)) {
+                    field.set(this, parameter.getParameterAsInt());
+                    if(parameter.getParameter_To()!=null && toField != null)
+                    	toField.set(this, parameter.getParameter_ToAsInt());
+                } else if (type.equals(String.class)) {
+                    field.set(this, (String) parameter.getParameter());
+                } else if (type.equals(java.sql.Timestamp.class)) {
+                    field.set(this, (Timestamp) parameter.getParameter());
+                    if(parameter.getParameter_To()!=null && toField != null)
+                    	toField.set(this, (Timestamp) parameter.getParameter_To());
+                } else if (type.equals(BigDecimal.class)) {
+                    field.set(this, (BigDecimal) parameter.getParameter());
+                } else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+                    Object tmp = parameter.getParameter();
+                    if(tmp instanceof String && tmp != null)
+                        field.set(this, "Y".equals(tmp));
+                } else {
+                	continue;
+                }
+            }catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }
+	}
+
+	/**
+	 * Tries to find all class attributes having the {@link Parameter} annotation.
+	 * @param clazz
+	 * @return a list of annotated fields
+	 */
+	private List<Field> getFieldsWithParameters(Class<?> clazz) {
+		if (clazz != null)
+			return Arrays.stream(clazz.getDeclaredFields())
+				.filter(f -> f.getAnnotation(Parameter.class) != null)
+				.collect(Collectors.toList());
+
+		return Collections.emptyList();
+	}
+
 }   //  SvrProcess

@@ -48,6 +48,7 @@ import org.compiere.util.DisplayType;
  * @author Elaine
  *
  */
+@org.adempiere.base.annotation.Process
 public class SalesOrderRateInquiryProcess extends SvrProcess 
 {
 	private boolean p_IsPriviledgedRate = false;

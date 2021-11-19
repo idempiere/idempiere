@@ -10,6 +10,7 @@ import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
+@org.adempiere.base.annotation.Process
 public class ShipperCopyFrom extends SvrProcess
 {
 	private int		p_M_ShipperCfg_ID = 0;

@@ -31,8 +31,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.EventProperty;
 import org.adempiere.base.event.FactsEventData;
 import org.adempiere.base.event.annotations.AfterLogin;
 import org.adempiere.base.event.annotations.EventDelegate;
@@ -52,12 +55,16 @@ import org.adempiere.model.ImportValidator;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MLocation;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.ModelValidator;
+import org.compiere.model.PO;
 import org.compiere.model.X_I_BPartner;
 import org.compiere.model.X_I_Product;
 import org.compiere.process.DocAction;
@@ -66,6 +73,7 @@ import org.compiere.process.ImportBPartner;
 import org.compiere.process.ImportProduct;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
@@ -313,6 +321,50 @@ public class EventHandlerTest extends AbstractTestCase {
 		
 		assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName())), 
 				"MyAfterImportDelegate not call. context="+Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName()));		
+	}
+	
+	@Test
+	@Order(8)
+	public void testAddressValidationDelegate() {
+		int addressValidationSysConfigId = 200033;
+		String delegateName = "org.adempiere.base.event.delegate.AddressValidationEventDelegate";
+		MSysConfig sysconfig = new MSysConfig(Env.getCtx(), addressValidationSysConfigId, null);
+		String currentValue = sysconfig.getValue();
+		try {
+			try {
+				PO.setCrossTenantSafe();			
+				sysconfig.setValue("US");
+				sysconfig.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
+			
+			CacheMgt.get().reset();
+			
+			MLocation location = new MLocation(Env.getCtx(), 0, getTrxName());
+			location.setC_Country_ID(100);
+			AtomicInteger count = new AtomicInteger(0);
+			Event event = EventManager.newEvent(ModelValidator.tableEventTopics[ModelValidator.TYPE_BEFORE_NEW],
+					new EventProperty(EventManager.EVENT_DATA, location), new EventProperty(EventManager.TABLE_NAME_PROPERTY, location.get_TableName()),
+					new EventProperty(delegateName, count));
+			EventManager.getInstance().sendEvent(event);			
+			assertTrue(count.get()==1, "AddressValidationEventDelegate not call for MLocation Before New Event");
+			
+			count = new AtomicInteger(0);
+			event = EventManager.newEvent(ModelValidator.tableEventTopics[ModelValidator.TYPE_BEFORE_CHANGE],
+					new EventProperty(EventManager.EVENT_DATA, location), new EventProperty(EventManager.TABLE_NAME_PROPERTY, location.get_TableName()),
+					new EventProperty(delegateName, count));
+			EventManager.getInstance().sendEvent(event);			
+			assertTrue(count.get()==1, "AddressValidationEventDelegate not call for MLocation Before Change Event");
+		} finally {
+			try {
+				PO.setCrossTenantSafe();			
+				sysconfig.setValue(currentValue);
+				sysconfig.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
+		}
 	}
 	
 	private final static class MyBPBeforeNewDelegate extends ModelEventDelegate<MBPartner> {

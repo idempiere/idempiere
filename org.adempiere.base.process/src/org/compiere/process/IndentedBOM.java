@@ -36,6 +36,7 @@ import org.eevolution.model.MPPProductBOMLine;
  * @author pbowden@adaxa.com modified for manufacturing light
  * 
  */
+@org.adempiere.base.annotation.Process
 public class IndentedBOM extends SvrProcess
 {
 	//

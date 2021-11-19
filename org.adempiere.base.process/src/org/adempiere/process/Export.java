@@ -62,6 +62,7 @@ import org.w3c.dom.Text;
  *  @author Trifon Trifonov
  *  @version $Id: $
  */
+@org.adempiere.base.annotation.Process
 public class Export extends SvrProcess
 {
 	private static final String TOTAL_SEGMENTS = "${totalSegments}";

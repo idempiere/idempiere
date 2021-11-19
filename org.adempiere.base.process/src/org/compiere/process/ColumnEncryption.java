@@ -47,6 +47,7 @@ import org.compiere.util.Trx;
  * @author Jorg Janke
  * @version $Id: ColumnEncryption.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ColumnEncryption extends SvrProcess {
 	/** Enable/Disable Encryption */
 	private boolean p_IsEncrypted = false;

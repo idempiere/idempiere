@@ -32,6 +32,7 @@ import org.compiere.util.Msg;
  * @author Elaine
  *
  */
+@org.adempiere.base.annotation.Process
 public class ValidateAddressProcess extends SvrProcess 
 {
 	private int p_C_AddressValidation_ID;

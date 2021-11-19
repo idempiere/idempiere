@@ -11,6 +11,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+@org.adempiere.base.annotation.Process
 public class ResetLockedAccount extends SvrProcess {
 
 	private int p_AD_Client_ID = 0;

@@ -44,6 +44,7 @@ import org.compiere.util.ValueNamePair;
  *  	<li>BF [ 2854358 ] SyncColumn should load table in transaction
  *  		https://sourceforge.net/tracker/?func=detail&aid=2854358&group_id=176962&atid=879332
  */
+@org.adempiere.base.annotation.Process
 public class ColumnSync extends SvrProcess
 {
 	/** The Column				*/

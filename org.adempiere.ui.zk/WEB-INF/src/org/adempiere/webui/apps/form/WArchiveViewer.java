@@ -99,7 +99,7 @@ import org.zkoss.zul.impl.XulElement;
  * @author	Niraj Sohun
  * @date	September 28, 2007
 */
-
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.ArchiveViewer")
 public class WArchiveViewer extends Archive implements IFormController, EventListener<Event>
 {
 	private static final String ONCLOSE_TIMESTAMP_ATTR = "onclose.timestamp";

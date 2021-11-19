@@ -882,8 +882,18 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param isSOTrx is outgoing trx?
 	 * @return true if ASI is mandatory, false otherwise
 	 */
+	@Deprecated
 	public boolean isASIMandatory(boolean isSOTrx) {
-		//
+		return isASIMandatoryFor(null, isSOTrx);
+	}
+	
+	/**
+	 * Check if ASI is mandatory according to mandatory type
+	 * @param mandatoryType
+	 * @param isSOTrx
+	 * @return true if ASI is mandatory, false otherwise
+	 */
+	public boolean isASIMandatoryFor(String mandatoryType, boolean isSOTrx) {
 		//	If CostingLevel is BatchLot ASI is always mandatory - check all client acct schemas
 		MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
 		for (MAcctSchema as : mass)
@@ -899,14 +909,15 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		if (M_AttributeSet_ID != 0)
 		{
 			MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
-			if (mas == null || !mas.isInstanceAttribute())
+			if (mas == null || !mas.isInstanceAttribute()){
 				return false;
-			// Outgoing transaction
-			else if (isSOTrx)
-				return mas.isMandatory();
+			} else if (isSOTrx){ // Outgoing transaction
+				return mas.isMandatoryAlways() || (mas.isMandatory() && mas.getMandatoryType().equals(mandatoryType));
+			}
 			// Incoming transaction
-			else // isSOTrx == false
+			else{ // isSOTrx == false
 				return mas.isMandatoryAlways();
+			}
 		}
 		//
 		// Default not mandatory

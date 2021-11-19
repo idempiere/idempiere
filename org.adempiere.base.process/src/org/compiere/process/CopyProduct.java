@@ -20,6 +20,7 @@ import org.compiere.model.X_M_Substitute;
  * @author Daniel Tamm (usrdno)
  *
  */
+@org.adempiere.base.annotation.Process
 public class CopyProduct extends SvrProcess {
 
 	private int m_copyFromId;
