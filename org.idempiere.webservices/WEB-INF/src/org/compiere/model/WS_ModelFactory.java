@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Component;
  * @author hengsin
  *
  */
-@Component(immediate = true, service = IModelFactory.class, property = "service.ranking:Integer=1")
+@Component(immediate = false, service = IModelFactory.class, property = "service.ranking:Integer=1")
 public class WS_ModelFactory extends AnnotationBasedModelFactory {
 
 	@Override

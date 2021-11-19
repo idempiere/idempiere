@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
  * @author hengsin
  *
  */
-@Component(immediate = true, service = IFormFactory.class, property = {"service.ranking:Integer=0"})
+@Component(immediate = false, service = IFormFactory.class, property = {"service.ranking:Integer=0"})
 public final class DefaultAnnotationBasedFormFactory extends AnnotationBasedFormFactory {
 
 	public DefaultAnnotationBasedFormFactory() {

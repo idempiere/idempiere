@@ -27,6 +27,8 @@ package org.adempiere.base;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -61,8 +63,9 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import io.github.classgraph.AnnotationClassRef;
 import io.github.classgraph.AnnotationInfo;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassGraph.FailureHandler;
+import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 
 /**
  * Scan, discover and register classes with {@link EventTopicDelegate} annotation
@@ -87,7 +90,7 @@ public abstract class AnnotationBasedEventManager {
 
 	/**
 	 * Subclass would override this to define the list of packages to perform the scan, discover and register operation
-	 * @return packages to scan
+	 * @return packages to scan for annotated classes
 	 */
 	public abstract String[] getPackages();
 	
@@ -137,21 +140,15 @@ public abstract class AnnotationBasedEventManager {
 	}
 	
 	/**
-	 * Perform scan, discover and register of annotated classes
+	 * Perform scan, discover and registration of annotated classes
 	 */
 	protected void scan() {
-		long start = System.currentTimeMillis();
 		ClassLoader classLoader = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
 
-		ClassGraph graph = new ClassGraph()
-				.enableAnnotationInfo()
-				.overrideClassLoaders(classLoader)
-				.disableNestedJarScanning()
-				.disableModuleScanning()
-				.acceptPackagesNonRecursive(getPackages());
+		ExecutorService executor = Executors.newCachedThreadPool();
 
-		try (ScanResult scanResult = graph.scan())
-		{
+		ScanResultProcessor scanResultProcessor = scanResult -> {
+			long start = System.currentTimeMillis();
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(EventTopicDelegate.class)) {
 		    	if (classInfo.isAbstract())
 		    		continue;
@@ -171,12 +168,24 @@ public abstract class AnnotationBasedEventManager {
 		        	simpleEventDelegate(classLoader, className, filter);
 		        }
 		    }
-		}
-		long end = System.currentTimeMillis();
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info(this.getClass().getSimpleName() + " loaded "+handlers.size() +" classes in "
-					+((end-start)/1000f) + "s");
-	
+			long end = System.currentTimeMillis();
+			s_log.info(() -> this.getClass().getSimpleName() + " loaded " + handlers.size() + " classes in "
+						+ ((end-start)/1000f) + "s");
+			executor.shutdown();
+		};
+
+		FailureHandler failureHandler = throwable -> {
+			s_log.severe(throwable.getMessage());
+			executor.shutdown();
+		};
+
+		new ClassGraph()
+			.enableAnnotationInfo()
+			.overrideClassLoaders(classLoader)
+			.disableNestedJarScanning()
+			.disableModuleScanning()
+			.acceptPackagesNonRecursive(getPackages())
+			.scanAsync(executor, Runtime.getRuntime().availableProcessors(), scanResultProcessor, failureHandler);		
 	}
 
 	private void simpleEventDelegate(ClassLoader classLoader, String className, String filter) {

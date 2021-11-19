@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
  * @author hengsin
  *
  */
-@Component(immediate = true, service = IColumnCalloutFactory.class)
+@Component(immediate = false, service = IColumnCalloutFactory.class)
 public class DefaultAnnotationBasedColumnCalloutFactory extends AnnotationBasedColumnCalloutFactory {
 
 	public DefaultAnnotationBasedColumnCalloutFactory() {

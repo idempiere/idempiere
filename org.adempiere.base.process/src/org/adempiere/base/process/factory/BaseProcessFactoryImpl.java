@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Component;
  * @author hengsin
  *
  */
-@Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=0"})
+@Component(immediate = false, service = IProcessFactory.class, property = {"service.ranking:Integer=0"})
 public class BaseProcessFactoryImpl extends AnnotationBasedProcessFactory {
 
 	public BaseProcessFactoryImpl() {

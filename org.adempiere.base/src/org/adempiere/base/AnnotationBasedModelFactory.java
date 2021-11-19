@@ -14,8 +14,6 @@ package org.adempiere.base;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-
 import org.compiere.util.CLogger;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
@@ -36,7 +34,7 @@ import io.github.classgraph.ScanResult;
  * @author Saulo Gil
  * @author Heng Sin
  */
-@Component(immediate = true, service = IModelFactory.class, property = {"service.ranking:Integer=0"})
+@Component(immediate = false, service = IModelFactory.class, property = {"service.ranking:Integer=0"})
 public class AnnotationBasedModelFactory extends AbstractModelFactory implements IModelFactory
 {
 	/**
@@ -140,9 +138,8 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 		    }
 		}
 		long end = System.currentTimeMillis();
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info(this.getClass().getSimpleName() + " loaded "+classCache.size() +" classes in "
-					+((end-start)/1000f) + "s");
+		s_log.info(() -> this.getClass().getSimpleName() + " loaded " + classCache.size() + " classes in "
+					+ ((end-start)/1000f) + "s");
 	}
 
 	/**

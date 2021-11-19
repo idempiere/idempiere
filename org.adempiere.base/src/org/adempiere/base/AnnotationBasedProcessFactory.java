@@ -105,9 +105,8 @@ public abstract class AnnotationBasedProcessFactory implements IProcessFactory
 		    }
 		}
 		long end = System.currentTimeMillis();
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info(this.getClass().getSimpleName() + " loaded "+classCache.size() +" classes in "
-					+((end-start)/1000f) + "s");
+		s_log.info(() -> this.getClass().getSimpleName() + " loaded " + classCache.size() + " classes in "
+					+ ((end-start)/1000f) + "s");
 	}
 
 	@SuppressWarnings("unchecked")

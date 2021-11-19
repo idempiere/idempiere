@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
  * @author hengsin
  *
  */
-@Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=1"})
+@Component(immediate = false, service = IProcessFactory.class, property = {"service.ranking:Integer=1"})
 public class ProcessFactoryImpl extends AnnotationBasedProcessFactory {
 
 	/**
