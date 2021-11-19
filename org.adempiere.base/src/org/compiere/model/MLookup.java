@@ -912,18 +912,18 @@ public final class MLookup extends Lookup implements Serializable
 	
 	
 	
-	private final static CCache<String, CCache<String, List<KeyNamePair>>> s_keyNamePairCache = new CCache<String, CCache<String, List<KeyNamePair>>>(null, "MLookup.KeyNamePairCache", 100, 60, false, 500);
-	private final static CCache<String, CCache<String, List<ValueNamePair>>> s_valueNamePairCache = new CCache<String, CCache<String, List<ValueNamePair>>>(null, "MLookup.ValueNamePairCache", 100, 60, false, 500);
+	private final static CCache<String, CCache<String, List<KeyNamePair>>> s_keyNamePairCache = new CCache<String, CCache<String, List<KeyNamePair>>>(null, "MLookup.KeyNamePairCache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 500);
+	private final static CCache<String, CCache<String, List<ValueNamePair>>> s_valueNamePairCache = new CCache<String, CCache<String, List<ValueNamePair>>>(null, "MLookup.ValueNamePairCache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 500);
 	
-	private final static CCache<String, CCache<Integer, KeyNamePair>> s_directKeyNamePairCache = new CCache<String, CCache<Integer,KeyNamePair>>(null, "MLookup.DirectKeyNamePairCache", 100, 60, false, 500);
-	private final static CCache<String, CCache<String, ValueNamePair>> s_directValueNamePairCache = new CCache<String, CCache<String,ValueNamePair>>(null, "MLookup.DirectValueNamePairCache", 100, 60, false, 500);
+	private final static CCache<String, CCache<Integer, KeyNamePair>> s_directKeyNamePairCache = new CCache<String, CCache<Integer,KeyNamePair>>(null, "MLookup.DirectKeyNamePairCache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 500);
+	private final static CCache<String, CCache<String, ValueNamePair>> s_directValueNamePairCache = new CCache<String, CCache<String,ValueNamePair>>(null, "MLookup.DirectValueNamePairCache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 500);
 	
 	private synchronized static List<KeyNamePair> getKeyNamePairCache(MLookupInfo lookupInfo, String cacheKey) 
 	{
 		CCache<String, List<KeyNamePair>> knpCache = s_keyNamePairCache.get(lookupInfo.TableName);
 		if (knpCache == null)
 		{
-			knpCache = new CCache<String, List<KeyNamePair>>(lookupInfo.TableName, lookupInfo.TableName + " KeyNamePair Cache", 100, 60, false, 500);
+			knpCache = new CCache<String, List<KeyNamePair>>(lookupInfo.TableName, cacheKey + " KeyNamePair Cache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 500);
 			s_keyNamePairCache.put(lookupInfo.TableName, knpCache);
 		}
 		List<KeyNamePair> list = knpCache.get(cacheKey);
@@ -940,7 +940,7 @@ public final class MLookup extends Lookup implements Serializable
 		CCache<String, List<ValueNamePair>> vnpCache = s_valueNamePairCache.get(lookupInfo.TableName);
 		if (vnpCache == null)
 		{
-			vnpCache = new CCache<String, List<ValueNamePair>>(lookupInfo.TableName, lookupInfo.TableName + " ValueNamePair Cache", 100, 60, false, 500);
+			vnpCache = new CCache<String, List<ValueNamePair>>(lookupInfo.TableName, cacheKey + " ValueNamePair Cache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 500);
 			s_valueNamePairCache.put(lookupInfo.TableName, vnpCache);
 		}
 		List<ValueNamePair> list = vnpCache.get(cacheKey);
@@ -957,7 +957,7 @@ public final class MLookup extends Lookup implements Serializable
 		CCache<Integer, KeyNamePair> knpCache = s_directKeyNamePairCache.get(cacheKey);
 		if (knpCache == null)
 		{
-			knpCache = new CCache<Integer, KeyNamePair>(lookupInfo.TableName, lookupInfo.TableName + " DirectKeyNamePairCache", 100, 60, false, MAX_NAMEPAIR_CACHE_SIZE);
+			knpCache = new CCache<Integer, KeyNamePair>(lookupInfo.TableName, cacheKey + " DirectKeyNamePairCache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, MAX_NAMEPAIR_CACHE_SIZE);
 			s_directKeyNamePairCache.put(cacheKey, knpCache);
 		}
 		return knpCache;
@@ -968,7 +968,7 @@ public final class MLookup extends Lookup implements Serializable
 		CCache<String, ValueNamePair> vnpCache = s_directValueNamePairCache.get(cacheKey);
 		if (vnpCache == null)
 		{
-			vnpCache = new CCache<String, ValueNamePair>(lookupInfo.TableName, lookupInfo.TableName + " DirectValueNamePairCache", 100, 60, false, MAX_NAMEPAIR_CACHE_SIZE);
+			vnpCache = new CCache<String, ValueNamePair>(lookupInfo.TableName, cacheKey + " DirectValueNamePairCache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, MAX_NAMEPAIR_CACHE_SIZE);
 			s_directValueNamePairCache.put(cacheKey, vnpCache);
 		}
 		return vnpCache;
