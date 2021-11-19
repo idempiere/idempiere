@@ -146,10 +146,15 @@ public class Version2PackActivator extends AbstractActivator{
 			}
 		});		
 				
+		MSession localSession = null;
 		try {
 			if (getDBLock()) {
 				//Create Session to be able to create records in AD_ChangeLog
-				MSession.get(Env.getCtx(), true);
+				if (Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID") <= 0) {
+					localSession = MSession.get(Env.getCtx(), true);
+					localSession.setWebSession("Version2PackActivator");
+					localSession.saveEx();
+				}
 				for(TwoPackEntry entry : list) {
 					if (!packIn(entry.url)) {
 						// stop processing further packages if one fail
@@ -163,6 +168,8 @@ public class Version2PackActivator extends AbstractActivator{
 			e.printStackTrace();
 		} finally {
 			releaseLock();
+			if (localSession != null)
+				localSession.logout();
 		}
 	}
 

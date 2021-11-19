@@ -96,11 +96,15 @@ public class PackInApplicationActivator extends AbstractActivator{
 			return;
 		}
 
+		MSession localSession = null;
 		try {
 			if (getDBLock()) {
 				//Create Session to be able to create records in AD_ChangeLog
-				if (Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID") <= 0)
-					MSession.get(Env.getCtx(), true);
+				if (Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID") <= 0) {
+					localSession = MSession.get(Env.getCtx(), true);
+					localSession.setWebSession("PackInApplicationActivator");
+					localSession.saveEx();
+				}
 				for(File zipFile : fileArray) {
 					currentFile = zipFile;
 					if (!packIn(zipFile)) {
@@ -125,6 +129,8 @@ public class PackInApplicationActivator extends AbstractActivator{
 			addLog(Level.WARNING, e.getLocalizedMessage());
 		} finally {
 			releaseLock();
+			if (localSession != null)
+				localSession.logout();
 		}
 		
 		if (filesToProcess.size() > 0) {
