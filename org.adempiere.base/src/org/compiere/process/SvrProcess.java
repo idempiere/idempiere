@@ -204,6 +204,7 @@ public abstract class SvrProcess implements ProcessCall
 							unlock();
 							
 							// outside transaction processing [ teo_sarca, 1646891 ]
+							m_trx = null;
 							postProcess(!m_pi.isError());
 							@SuppressWarnings("unused")
 							Event eventPP = sendProcessEvent(IEventTopics.POST_PROCESS);
