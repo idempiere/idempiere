@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
+import org.compiere.Adempiere;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
@@ -65,10 +67,14 @@ import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.DesktopCache;
+import org.zkoss.zk.ui.sys.SessionCtrl;
+import org.zkoss.zk.ui.sys.WebAppCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Window;
 
@@ -374,20 +380,39 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */
     public void logout()
     {
-	    Desktop desktop = Executions.getCurrent().getDesktop();
+	    final Desktop desktop = Executions.getCurrent().getDesktop();
 	    if (desktop.isServerPushEnabled())
 			desktop.enableServerPush(false);
     	
-    	Session session = logout0();
-    	
+	    final WebApp wapp = desktop.getWebApp();
+	    final DesktopCache desktopCache = ((WebAppCtrl) wapp).getDesktopCache(desktop.getSession());	    	    
+	    Adempiere.getThreadPoolExecutor().schedule(() -> {
+	    	try {
+	    		desktopCache.removeDesktop(desktop);
+	    	} catch (Throwable t) {
+	    		t.printStackTrace();
+	    	}	    	
+	    }, 5, TimeUnit.SECONDS);
+	    
+	    final Session session = logout0();
+	    
     	//clear context, invalidate session
     	Env.getCtx().clear();
-    	session.invalidate();
+    	destroySession(session);
     	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
         Executions.sendRedirect("index.zul");        
     }
+
+	private void destroySession(final Session session) {
+		try {
+    		((SessionCtrl)session).onDestroyed();
+    	} catch (Throwable t) {
+    		t.printStackTrace();
+    	}
+    	session.invalidate();
+	}
     
     public void logoutAfterTabDestroyed(){
     	Desktop desktop = Executions.getCurrent().getDesktop();
@@ -398,7 +423,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
     	//clear context, invalidate session
     	Env.getCtx().clear();
-    	session.invalidate();
+    	destroySession(session);
     }
     
 

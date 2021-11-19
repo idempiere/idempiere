@@ -23,6 +23,11 @@
 	    <listener-class>org.adempiere.webui.util.LogEventInterceptor</listener-class>
 	</listener -->
 
+	<listener>
+		<description>[Optional] Mointor the statistic</description>
+		<listener-class>org.adempiere.webui.util.Statistic</listener-class>
+	</listener>
+
 	<!--  false to use compress js which is much smaller. change to true if you need to debug -->
 	<client-config>
 		<processing-prompt-delay>500</processing-prompt-delay>
