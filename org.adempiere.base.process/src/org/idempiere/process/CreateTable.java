@@ -45,8 +45,10 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.acct.Doc;
 import org.compiere.model.MColumn;
+import org.compiere.model.MIndexColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableIndex;
 import org.compiere.model.M_Element;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
@@ -55,6 +57,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
@@ -311,8 +314,9 @@ public class CreateTable extends SvrProcess {
 		if (p_isCreateTranslationTable) {
 			MTable tableTrl = createTable(true);
 
+			int colElementID = 0;
 			if (elementID != null)
-				createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
+				colElementID = createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
 
 			M_Element elementTrlUU = M_Element.get(getCtx(), tableTrl.getTableName() + "_UU");
 			if (elementTrlUU == null) {
@@ -321,8 +325,13 @@ public class CreateTable extends SvrProcess {
 			}
 			createColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
 
-			createColumn(tableTrl, "AD_Language"); 
+			int colLanguageID = createColumn(tableTrl, "AD_Language"); 
 			createColumn(tableTrl, "IsTranslated"); 
+
+			for (MColumn column : MTable.get(getCtx(), p_tableName).getColumns(false)) {
+				if (column.isTranslated())
+					createColumn(tableTrl, column.getColumnName());		
+			}
 
 			if (p_isCreateColName)
 				createColumn(tableTrl, "Name");
@@ -331,6 +340,19 @@ public class CreateTable extends SvrProcess {
 			if (p_isCreateColHelp)
 				createColumn(tableTrl, "Help");
 
+			// Index
+			MTableIndex ti = new MTableIndex(tableTrl, tableTrl.getTableName() + "_pkey");
+			ti.setIsCreateConstraint(true);
+			ti.setIsUnique(true);
+			ti.setIsKey(true);
+			ti.saveEx();
+			
+			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 1);
+			ic.saveEx();
+			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 2);
+			ic.saveEx();
+			
+			addLog(Msg.getMsg(getCtx(), "TrlCreatedSyncColumnValidateIndex"));
 		}
 
 		return "@ProcessOK@";
@@ -404,9 +426,20 @@ public class CreateTable extends SvrProcess {
 	 * @param table
 	 * @param columnName
 	 */
-	private void createColumn(MTable table, String columnName) {
-		if (getColumn(table, columnName) != null)
-			return;
+	private int createColumn(MTable table, String columnName) {
+		MColumn columnThatExists = getColumn(table, columnName);
+		if (columnThatExists != null) {
+			if (   p_isCreateTranslationTable
+				&& !columnThatExists.isTranslated()
+				&& !table.getTableName().toUpperCase().endsWith("_TRL")
+				&& (   (p_isCreateColName && columnName.equals("Name"))
+					|| (p_isCreateColHelp && columnName.equals("Help"))
+					|| (p_isCreateColDescription && columnName.equals("Description")))) {
+				columnThatExists.setIsTranslated(true);
+				columnThatExists.saveEx();
+			}
+			return -1;
+		}
 
 		MColumn column = new MColumn(table);
 
@@ -570,9 +603,11 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_ID(DisplayType.Search);
 			column.setIsParent(true);
 			column.setIsMandatory(true);
+			column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_Cascade);
 		}
 
 		column.saveEx();
+		return column.getAD_Column_ID();
 	}
 
 	/**
