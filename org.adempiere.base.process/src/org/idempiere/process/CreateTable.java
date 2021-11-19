@@ -325,6 +325,11 @@ public class CreateTable extends SvrProcess {
 			createColumn(tableTrl, "AD_Language"); 
 			createColumn(tableTrl, "IsTranslated"); 
 
+			for (MColumn column : MTable.get(getCtx(), p_tableName).getColumns(false)) {
+				if (column.isTranslated())
+					createColumn(tableTrl, column.getColumnName());		
+			}
+
 			if (p_isCreateColName)
 				createColumn(tableTrl, "Name");
 			if (p_isCreateColDescription)
@@ -571,6 +576,7 @@ public class CreateTable extends SvrProcess {
 			column.setAD_Reference_ID(DisplayType.Search);
 			column.setIsParent(true);
 			column.setIsMandatory(true);
+			column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_Cascade);
 		}
 
 		column.saveEx();
