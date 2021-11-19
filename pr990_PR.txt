@@ -1,0 +1,81 @@
+diff --git a/migration/i8.2/oracle/202111191531_IDEMPIERE-4858.sql b/migration/i8.2/oracle/202111191531_IDEMPIERE-4858.sql
+new file mode 100644
+index 000000000..f7aac722c
+--- /dev/null
++++ b/migration/i8.2/oracle/202111191531_IDEMPIERE-4858.sql
+@@ -0,0 +1,11 @@
++SET SQLBLANKLINES ON
++SET DEFINE OFF
++
++-- IDEMPIERE-4858 Helper process "Make Table a Document"
++-- Nov 19, 2021, 3:18:02 PM CET
++INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Table Index records have been added on the Translation table - do not forget to execute ''Index Validate'' process after you run ''Sync Column''',0,0,'Y',TO_DATE('2021-11-19 15:18:01','YYYY-MM-DD HH24:MI:SS'),100,TO_DATE('2021-11-19 15:18:01','YYYY-MM-DD HH24:MI:SS'),100,200721,'TrlCreatedSyncColumnValidateIndex','D','81b87d52-17c3-46cd-bfdf-e08cdfc11851')
++;
++
++SELECT register_migration_script('202111191531_IDEMPIERE-4858.sql') FROM dual
++;
++
+diff --git a/migration/i8.2/postgresql/202111191531_IDEMPIERE-4858.sql b/migration/i8.2/postgresql/202111191531_IDEMPIERE-4858.sql
+new file mode 100644
+index 000000000..60e08c6b5
+--- /dev/null
++++ b/migration/i8.2/postgresql/202111191531_IDEMPIERE-4858.sql
+@@ -0,0 +1,8 @@
++-- IDEMPIERE-4858 Helper process "Make Table a Document"
++-- Nov 19, 2021, 3:18:02 PM CET
++INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Table Index records have been added on the Translation table - do not forget to execute ''Index Validate'' process after you run ''Sync Column''',0,0,'Y',TO_TIMESTAMP('2021-11-19 15:18:01','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-11-19 15:18:01','YYYY-MM-DD HH24:MI:SS'),100,200721,'TrlCreatedSyncColumnValidateIndex','D','81b87d52-17c3-46cd-bfdf-e08cdfc11851')
++;
++
++SELECT register_migration_script('202111191531_IDEMPIERE-4858.sql') FROM dual
++;
++
+diff --git a/org.adempiere.base.process/src/org/idempiere/process/CreateTable.java b/org.adempiere.base.process/src/org/idempiere/process/CreateTable.java
+index f4264bf21..01f14f7d6 100644
+--- a/org.adempiere.base.process/src/org/idempiere/process/CreateTable.java
++++ b/org.adempiere.base.process/src/org/idempiere/process/CreateTable.java
+@@ -57,6 +57,7 @@ import org.compiere.process.DocAction;
+ import org.compiere.process.ProcessInfoParameter;
+ import org.compiere.process.SvrProcess;
+ import org.compiere.util.DisplayType;
++import org.compiere.util.Msg;
+ import org.compiere.util.Util;
+ import org.compiere.wf.MWFNode;
+ import org.compiere.wf.MWFNodeNext;
+@@ -344,6 +345,7 @@ public class CreateTable extends SvrProcess {
+ 			MTableIndex ti = new MTableIndex(tableTrl, tableTrl.getTableName() + "_pkey");
+ 			ti.setIsCreateConstraint(true);
+ 			ti.setIsUnique(true);
++			ti.setIsKey(true);
+ 			ti.saveEx();
+ 			
+ 			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 1);
+@@ -351,7 +353,7 @@ public class CreateTable extends SvrProcess {
+ 			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 2);
+ 			ic.saveEx();
+ 			
+-			addLog("Table Index records have been added on the Translation table - do not forget to execute 'Index Validate' process after you run 'Sync Column'");
++			addLog(Msg.getMsg(getCtx(), "TrlCreatedSyncColumnValidateIndex"));
+ 		}
+ 
+ 		return "@ProcessOK@";
+@@ -426,8 +428,19 @@ public class CreateTable extends SvrProcess {
+ 	 * @param columnName
+ 	 */
+ 	private int createColumn(MTable table, String columnName) {
+-		if (getColumn(table, columnName) != null)
++		MColumn columnThatExists = getColumn(table, columnName);
++		if (columnThatExists != null) {
++			if (   p_isCreateTranslationTable
++				&& !columnThatExists.isTranslated()
++				&& !table.getTableName().toUpperCase().endsWith("_TRL")
++				&& (   (p_isCreateColName && columnName.equals("Name"))
++					|| (p_isCreateColHelp && columnName.equals("Help"))
++					|| (p_isCreateColDescription && columnName.equals("Description")))) {
++				columnThatExists.setIsTranslated(true);
++				columnThatExists.saveEx();
++			}
+ 			return -1;
++		}
+ 
+ 		MColumn column = new MColumn(table);
+ 

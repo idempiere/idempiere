@@ -57,6 +57,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
@@ -344,6 +345,7 @@ public class CreateTable extends SvrProcess {
 			MTableIndex ti = new MTableIndex(tableTrl, tableTrl.getTableName() + "_pkey");
 			ti.setIsCreateConstraint(true);
 			ti.setIsUnique(true);
+			ti.setIsKey(true);
 			ti.saveEx();
 			
 			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 1);
@@ -351,7 +353,7 @@ public class CreateTable extends SvrProcess {
 			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 2);
 			ic.saveEx();
 			
-			addLog("Table Index records have been added on the Translation table - do not forget to execute 'Index Validate' process after you run 'Sync Column'");
+			addLog(Msg.getMsg(getCtx(), "TrlCreatedSyncColumnValidateIndex"));
 		}
 
 		return "@ProcessOK@";
@@ -426,8 +428,19 @@ public class CreateTable extends SvrProcess {
 	 * @param columnName
 	 */
 	private int createColumn(MTable table, String columnName) {
-		if (getColumn(table, columnName) != null)
+		MColumn columnThatExists = getColumn(table, columnName);
+		if (columnThatExists != null) {
+			if (   p_isCreateTranslationTable
+				&& !columnThatExists.isTranslated()
+				&& !table.getTableName().toUpperCase().endsWith("_TRL")
+				&& (   (p_isCreateColName && columnName.equals("Name"))
+					|| (p_isCreateColHelp && columnName.equals("Help"))
+					|| (p_isCreateColDescription && columnName.equals("Description")))) {
+				columnThatExists.setIsTranslated(true);
+				columnThatExists.saveEx();
+			}
 			return -1;
+		}
 
 		MColumn column = new MColumn(table);
 
