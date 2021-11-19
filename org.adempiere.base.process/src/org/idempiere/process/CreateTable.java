@@ -45,8 +45,10 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.acct.Doc;
 import org.compiere.model.MColumn;
+import org.compiere.model.MIndexColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableIndex;
 import org.compiere.model.M_Element;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
@@ -312,8 +314,9 @@ public class CreateTable extends SvrProcess {
 		if (p_isCreateTranslationTable) {
 			MTable tableTrl = createTable(true);
 
+			int colElementID = 0;
 			if (elementID != null)
-				createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
+				colElementID = createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
 
 			M_Element elementTrlUU = M_Element.get(getCtx(), tableTrl.getTableName() + "_UU");
 			if (elementTrlUU == null) {
@@ -322,7 +325,7 @@ public class CreateTable extends SvrProcess {
 			}
 			createColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
 
-			createColumn(tableTrl, "AD_Language"); 
+			int colLanguageID = createColumn(tableTrl, "AD_Language"); 
 			createColumn(tableTrl, "IsTranslated"); 
 
 			for (MColumn column : MTable.get(getCtx(), p_tableName).getColumns(false)) {
@@ -337,6 +340,18 @@ public class CreateTable extends SvrProcess {
 			if (p_isCreateColHelp)
 				createColumn(tableTrl, "Help");
 
+			// Index
+			MTableIndex ti = new MTableIndex(tableTrl, tableTrl.getTableName() + "_pkey");
+			ti.setIsCreateConstraint(true);
+			ti.setIsUnique(true);
+			ti.saveEx();
+			
+			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 1);
+			ic.saveEx();
+			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 2);
+			ic.saveEx();
+			
+			addLog("Table Index records have been added on the Translation table - do not forget to execute 'Index Validate' process after you run 'Sync Column'");
 		}
 
 		return "@ProcessOK@";
@@ -410,9 +425,9 @@ public class CreateTable extends SvrProcess {
 	 * @param table
 	 * @param columnName
 	 */
-	private void createColumn(MTable table, String columnName) {
+	private int createColumn(MTable table, String columnName) {
 		if (getColumn(table, columnName) != null)
-			return;
+			return -1;
 
 		MColumn column = new MColumn(table);
 
@@ -580,6 +595,7 @@ public class CreateTable extends SvrProcess {
 		}
 
 		column.saveEx();
+		return column.getAD_Column_ID();
 	}
 
 	/**
