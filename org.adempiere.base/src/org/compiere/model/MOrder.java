@@ -2003,6 +2003,8 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
+		updateOverReceipt();
+		
 		setProcessed(true);	
 		m_processMsg = info.toString();
 		//
@@ -2010,7 +2012,15 @@ public class MOrder extends X_C_Order implements DocAction
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
 	
-	
+	private void updateOverReceipt() {
+		for(MOrderLine line : m_lines) {
+			if (line.getM_Product_ID() <= 0) continue;
+			if (line.getQtyDelivered().signum() > 0 && line.getQtyOrdered().compareTo(line.getQtyDelivered()) >= 0) {
+				DB.executeUpdateEx("UPDATE M_InOutLine Set QtyOverReceipt=0 WHERE C_OrderLine_ID=? AND QtyOverReceipt>0", 
+						new Object[] {line.getC_OrderLine_ID()}, get_TrxName());
+			}
+		}
+	}
 	
 	protected String landedCostAllocation() {
 		MOrderLandedCost[] landedCosts = MOrderLandedCost.getOfOrder(getC_Order_ID(), get_TrxName());
