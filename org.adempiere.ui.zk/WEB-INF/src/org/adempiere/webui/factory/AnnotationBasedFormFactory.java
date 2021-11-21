@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import org.adempiere.base.AnnotationBasedFactory;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.compiere.util.CLogger;
@@ -42,15 +43,15 @@ import org.osgi.service.component.annotations.Activate;
 
 import io.github.classgraph.AnnotationInfo;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 
 /**
  * Scan, discover and regiser classes with {@link Form} annotation.
  * @author hengsin
  *
  */
-public abstract class AnnotationBasedFormFactory implements IFormFactory {
+public abstract class AnnotationBasedFormFactory extends AnnotationBasedFactory implements IFormFactory {
 
 	private final Map<String, String> classCache = new HashMap<>();
 	
@@ -65,6 +66,7 @@ public abstract class AnnotationBasedFormFactory implements IFormFactory {
 
 	@Override
 	public ADForm newFormInstance(String formName) {
+		blockWhileScanning();
 		ADForm form = null;
 		String realClassName = classCache.get(formName);
 		if (realClassName != null) {
@@ -139,9 +141,7 @@ public abstract class AnnotationBasedFormFactory implements IFormFactory {
 				.disableModuleScanning()
 				.acceptPackagesNonRecursive(getPackages());
 
-		try (ScanResult scanResult = graph.scan())
-		{
-
+		ScanResultProcessor scanResultProcessor = scanResult -> {
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Form.class)) {
 		    	if (classInfo.isAbstract())
 		    		continue;
@@ -153,10 +153,13 @@ public abstract class AnnotationBasedFormFactory implements IFormFactory {
 		        if (!Util.isEmpty(alternateName, true))
 		        	classCache.put(alternateName, className);		        	
 		    }
-		}
-		long end = System.currentTimeMillis();
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info(this.getClass().getSimpleName() + " loaded "+classCache.size() +" classes in "
-					+((end-start)/1000f) + "s");
+			long end = System.currentTimeMillis();
+			s_log.info(() -> this.getClass().getSimpleName() + " loaded " + classCache.size() + " classes in "
+						+ ((end-start)/1000f) + "s");
+			signalScanCompletion(true);
+		};
+
+		graph.scanAsync(getExecutorService(), getMaxThreads(), scanResultProcessor, getScanFailureHandler());
 	}
+
 }
