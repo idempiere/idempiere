@@ -44,6 +44,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
+import org.adempiere.webui.util.DesktopWatchDog;
 import org.adempiere.webui.util.UserPreference;
 import org.compiere.Adempiere;
 import org.compiere.model.MRole;
@@ -140,12 +141,20 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	public void onCreate()
     {
-        this.getPage().setTitle(ThemeManager.getBrowserTitle());
+		String ping = Executions.getCurrent().getHeader("X-PING");
+		if (!Util.isEmpty(ping, true))
+		{
+			cleanupForPing();
+	        return;
+		}
+		
+		this.getPage().setTitle(ThemeManager.getBrowserTitle());
         
         Executions.getCurrent().getDesktop().enableServerPush(true);
+        DesktopWatchDog.addDesktop(Executions.getCurrent().getDesktop());
         
         SessionManager.setSessionApplication(this);
-        Session session = Executions.getCurrent().getDesktop().getSession();
+        final Session session = Executions.getCurrent().getDesktop().getSession();
         
         Properties ctx = Env.getCtx();
         langSession = Env.getContext(ctx, Env.LANGUAGE);
@@ -171,8 +180,27 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         Executions.getCurrent().getDesktop().addListener(new TokenCommand());
         Executions.getCurrent().getDesktop().addListener(new ZoomCommand());
         
-        eventThreadEnabled = Executions.getCurrent().getDesktop().getWebApp().getConfiguration().isEventThreadEnabled();
+        eventThreadEnabled = Executions.getCurrent().getDesktop().getWebApp().getConfiguration().isEventThreadEnabled();        
     }
+
+	private void cleanupForPing() {
+		final Desktop desktop = Executions.getCurrent().getDesktop();
+		final WebApp wapp = desktop.getWebApp();
+		final DesktopCache desktopCache = ((WebAppCtrl) wapp).getDesktopCache(desktop.getSession());	    	    
+		final Session session = desktop.getSession();
+		
+		//clear context, invalidate session
+		Env.getCtx().clear();
+		destroySession(session);
+		desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
+		Adempiere.getThreadPoolExecutor().schedule(() -> {
+		    try {
+				desktopCache.removeDesktop(desktop);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}, 1, TimeUnit.SECONDS);
+	}
 
     public void onOk()
     {
@@ -386,14 +414,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	
 	    final WebApp wapp = desktop.getWebApp();
 	    final DesktopCache desktopCache = ((WebAppCtrl) wapp).getDesktopCache(desktop.getSession());	    	    
-	    Adempiere.getThreadPoolExecutor().schedule(() -> {
-	    	try {
-	    		desktopCache.removeDesktop(desktop);
-	    	} catch (Throwable t) {
-	    		t.printStackTrace();
-	    	}	    	
-	    }, 5, TimeUnit.SECONDS);
-	    
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -402,7 +422,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
-        Executions.sendRedirect("index.zul");        
+        Executions.sendRedirect("index.zul");       
+        
+        try {
+    		desktopCache.removeDesktop(desktop);
+    		DesktopWatchDog.removeDesktop(desktop);
+    	} catch (Throwable t) {
+    		t.printStackTrace();
+    	}
     }
 
 	private void destroySession(final Session session) {
@@ -414,10 +441,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	session.invalidate();
 	}
     
+	/**
+	 * Perform logout after user close a browser tab without first logging out
+	 */
     public void logoutAfterTabDestroyed(){
     	Desktop desktop = Executions.getCurrent().getDesktop();
 	    if (desktop.isServerPushEnabled())
 			desktop.enableServerPush(false);
+	    DesktopWatchDog.removeDesktop(desktop);
 	    
        	Session session = logout0();
 
