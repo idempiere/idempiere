@@ -63,23 +63,6 @@ public class WLogin extends AbstractUIPart
         loginWindow = (LoginWindow) loginPage.getFellow("loginWindow");
         loginWindow.init(app);
 
-        /* IDEMPIERE-1022 - deprecated message
-        if (!AEnv.isBrowserSupported())
-        {
-        	//TODO: localization
-        	String msg = "You might experience slow performance and user interface anomalies using your current browser to access the application. We recommend the use of Firefox, Google Chrome or Apple Safari.";
-        	browserWarningWindow = new Window();
-        	Div div = new Div();
-        	div.setStyle("font-size: 9pt");
-        	div.appendChild(new Text(msg));
-        	browserWarningWindow.appendChild(div);
-        	browserWarningWindow.setPosition("top,right");
-        	ZKUpdateUtil.setWidth(browserWarningWindow, "550px");
-        	browserWarningWindow.setPage(page);
-        	browserWarningWindow.doOverlapped();
-        }
-        */
-        
         boolean mobile = false;        
 		if (Executions.getCurrent().getBrowser("mobile") !=null) {
 			mobile = true;

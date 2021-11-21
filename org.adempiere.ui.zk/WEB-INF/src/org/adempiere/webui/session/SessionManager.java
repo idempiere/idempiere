@@ -84,7 +84,11 @@ public class SessionManager
     	if (app != null)
     		app.logout();
     }
-
+    
+    /**
+	 * Perform logout after user close a browser tab without first logging out.
+	 * Usually this is invoke from {@link SessionContextListener} and developer shouldn't call this directly.
+	 */
     public static void logoutSessionAfterBrowserDestroyed()
     {
     	IWebClient app = getSessionApplication();
@@ -92,6 +96,10 @@ public class SessionManager
     		app.logoutAfterTabDestroyed();
     }
     
+    /**
+     * 
+     * @param user
+     */
     public static void changeRole(MUser user){
     	IWebClient app = getSessionApplication();
     	if (app != null)
