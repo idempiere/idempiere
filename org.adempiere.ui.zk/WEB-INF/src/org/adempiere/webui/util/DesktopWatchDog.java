@@ -105,12 +105,9 @@ public class DesktopWatchDog {
 		}
 		if (!toDestroy.isEmpty()) {
 			for(Session session : toDestroy) {
-				try {
-		    		((SessionCtrl)session).onDestroyed();
-		    	} catch (Throwable t) {
-		    		t.printStackTrace();
-		    	}
-		    	session.invalidate();
+				if (!((SessionCtrl)session).isInvalidated()) {
+					((SessionCtrl)session).invalidateNow();
+				}
 			}
 		}
 	}
