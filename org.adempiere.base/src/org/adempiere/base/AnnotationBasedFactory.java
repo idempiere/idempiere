@@ -59,7 +59,6 @@ public abstract class AnnotationBasedFactory {
 	};
 
 	protected void signalScanCompletion(boolean succeeded) {
-		s_log.info(this.getClass().getSimpleName() + " scan succeeded " + succeeded);
 		scanSuccessful = succeeded;
 		scanCompleted.set(true);
 		try {
