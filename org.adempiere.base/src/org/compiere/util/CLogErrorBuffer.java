@@ -225,16 +225,17 @@ public class CLogErrorBuffer extends Handler
 					&& loggerName.indexOf("CConnection") == -1
 					)
 				{
-					try
-					{
-						MIssue.create(record);
-					} 
-					catch (Throwable e)
-					{
-						//failed to save exception to db, print to console
-						System.err.println(getFormatter().format(record));
-						setIssueError(false);
-					}
+					// create issue on a separate thread in order to eventually
+					// wait until all model factories are initialized
+					new Thread(() -> {
+						try {
+							MIssue.create(record);
+						} catch (Throwable e) {
+							// failed to save exception to db, print to console
+							System.err.println(getFormatter().format(record));
+							setIssueError(false);
+						}
+					}).start();
 				}
 				else
 				{
