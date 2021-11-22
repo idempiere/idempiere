@@ -14,30 +14,30 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.webservices.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebServiceMethod
+/** Generated Interface for WS_WebServiceType
  *  @author iDempiere (generated) 
  *  @version Development 9.0
  */
-public interface I_WS_WebServiceMethod 
+public interface I_WS_WebServiceType 
 {
 
-    /** TableName=WS_WebServiceMethod */
-    public static final String Table_Name = "WS_WebServiceMethod";
+    /** TableName=WS_WebServiceType */
+    public static final String Table_Name = "WS_WebServiceType";
 
-    /** AD_Table_ID=53163 */
-    public static final int Table_ID = 53163;
+    /** AD_Table_ID=53164 */
+    public static final int Table_ID = 53164;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -61,6 +61,21 @@ public interface I_WS_WebServiceMethod
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -103,6 +118,15 @@ public interface I_WS_WebServiceMethod
 	  * Comment or Hint
 	  */
 	public String getHelp();
+
+    /** Column name InsertParameters */
+    public static final String COLUMNNAME_InsertParameters = "InsertParameters";
+
+	/** Set Create Default Parameters	  */
+	public void setInsertParameters (String InsertParameters);
+
+	/** Get Create Default Parameters	  */
+	public String getInsertParameters();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -168,7 +192,7 @@ public interface I_WS_WebServiceMethod
 	/** Get Web Service	  */
 	public int getWS_WebService_ID();
 
-	public org.compiere.model.I_WS_WebService getWS_WebService() throws RuntimeException;
+	public I_WS_WebService getWS_WebService() throws RuntimeException;
 
     /** Column name WS_WebServiceMethod_ID */
     public static final String COLUMNNAME_WS_WebServiceMethod_ID = "WS_WebServiceMethod_ID";
@@ -179,12 +203,23 @@ public interface I_WS_WebServiceMethod
 	/** Get Web Service Method	  */
 	public int getWS_WebServiceMethod_ID();
 
-    /** Column name WS_WebServiceMethod_UU */
-    public static final String COLUMNNAME_WS_WebServiceMethod_UU = "WS_WebServiceMethod_UU";
+	public I_WS_WebServiceMethod getWS_WebServiceMethod() throws RuntimeException;
 
-	/** Set WS_WebServiceMethod_UU	  */
-	public void setWS_WebServiceMethod_UU (String WS_WebServiceMethod_UU);
+    /** Column name WS_WebServiceType_ID */
+    public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
 
-	/** Get WS_WebServiceMethod_UU	  */
-	public String getWS_WebServiceMethod_UU();
+	/** Set Web Service Type	  */
+	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID);
+
+	/** Get Web Service Type	  */
+	public int getWS_WebServiceType_ID();
+
+    /** Column name WS_WebServiceType_UU */
+    public static final String COLUMNNAME_WS_WebServiceType_UU = "WS_WebServiceType_UU";
+
+	/** Set WS_WebServiceType_UU	  */
+	public void setWS_WebServiceType_UU (String WS_WebServiceType_UU);
+
+	/** Get WS_WebServiceType_UU	  */
+	public String getWS_WebServiceType_UU();
 }

@@ -55,11 +55,10 @@ import org.compiere.model.MRefTable;
 import org.compiere.model.MReference;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
-import org.compiere.model.MWebServiceType;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.model.X_WS_WebServiceFieldInput;
-import org.compiere.model.X_WS_WebService_Para;
+import org.idempiere.webservices.model.X_WS_WebServiceFieldInput;
+import org.idempiere.webservices.model.X_WS_WebService_Para;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -93,6 +92,7 @@ import org.idempiere.adInterface.x10.WindowTabDataDocument;
 import org.idempiere.webservices.AbstractService;
 import org.idempiere.webservices.IWSValidator;
 import org.idempiere.webservices.fault.IdempiereServiceFault;
+import org.idempiere.webservices.model.MWebServiceType;
 
 /*
  * ADEMPIERE/COMPIERE

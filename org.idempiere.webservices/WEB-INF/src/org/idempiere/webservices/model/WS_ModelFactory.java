@@ -20,82 +20,27 @@
 * MA 02110-1301, USA.                                                 *
 *                                                                     *
 * Contributors:                                                       *
-* - Trek Global Corporation                                           *
-* - Heng Sin Low                                                      *
+* - Carlos Ruiz - globalqss                                           *
 **********************************************************************/
-package org.compiere.model;
 
-import java.sql.ResultSet;
-import java.util.Properties;
+package org.idempiere.webservices.model;
 
-import org.compiere.util.Env;
-import org.idempiere.cache.ImmutablePOSupport;
+import org.adempiere.base.AnnotationBasedModelFactory;
+import org.adempiere.base.IModelFactory;
+import org.osgi.service.component.annotations.Component;
 
 /**
+ * 
+ * @author globalqss
  * @author hengsin
  *
  */
-@org.adempiere.base.Model(table = X_WS_WebServiceMethod.Table_Name)
-public class MWebServiceMethod extends X_WS_WebServiceMethod implements ImmutablePOSupport {
+@Component(immediate = true, service = IModelFactory.class, property = "service.ranking:Integer=1")
+public class WS_ModelFactory extends AnnotationBasedModelFactory {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6822623209157500849L;
-
-	/**
-	 * @param ctx
-	 * @param WS_WebServiceMethod_ID
-	 * @param trxName
-	 */
-	public MWebServiceMethod(Properties ctx, int WS_WebServiceMethod_ID, String trxName) {
-		super(ctx, WS_WebServiceMethod_ID, trxName);
-	}
-
-	/**
-	 * @param ctx
-	 * @param rs
-	 * @param trxName
-	 */
-	public MWebServiceMethod(Properties ctx, ResultSet rs, String trxName) {
-		super(ctx, rs, trxName);
-	}
-
-	/**
-	 * 
-	 * @param copy
-	 */
-	public MWebServiceMethod(MWebServiceMethod copy) {
-		this(Env.getCtx(), copy);
-	}
-
-	/**
-	 * 
-	 * @param ctx
-	 * @param copy
-	 */
-	public MWebServiceMethod(Properties ctx, MWebServiceMethod copy) {
-		this(ctx, copy, (String) null);
-	}
-
-	/**
-	 * 
-	 * @param ctx
-	 * @param copy
-	 * @param trxName
-	 */
-	public MWebServiceMethod(Properties ctx, MWebServiceMethod copy, String trxName) {
-		this(ctx, 0, trxName);
-		copyPO(copy);
+	@Override
+	protected String[] getPackages() {
+		return new String[] {MWebService.class.getPackageName()};
 	}
 	
-	@Override
-	public MWebServiceMethod markImmutable() {
-		if (is_Immutable())
-			return this;
-
-		makeImmutable();
-		return this;
-	}
-
 }

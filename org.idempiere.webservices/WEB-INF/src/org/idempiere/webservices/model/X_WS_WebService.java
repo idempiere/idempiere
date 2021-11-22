@@ -15,17 +15,21 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.compiere.model;
+package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.compiere.model.I_Persistent;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for WS_WebServiceMethod
+/** Generated Model for WS_WebService
  *  @author iDempiere (generated) 
  *  @version Development 9.0 - $Id$ */
-@org.adempiere.base.Model(table="WS_WebServiceMethod")
-public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, I_Persistent 
+@org.adempiere.base.Model(table="WS_WebService")
+public class X_WS_WebService extends PO implements I_WS_WebService, I_Persistent 
 {
 
 	/**
@@ -34,19 +38,19 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
-    public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName)
+    public X_WS_WebService (Properties ctx, int WS_WebService_ID, String trxName)
     {
-      super (ctx, WS_WebServiceMethod_ID, trxName);
-      /** if (WS_WebServiceMethod_ID == 0)
+      super (ctx, WS_WebService_ID, trxName);
+      /** if (WS_WebService_ID == 0)
         {
 			setName (null);
 			setValue (null);
-			setWS_WebServiceMethod_ID (0);
+			setWS_WebService_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_WS_WebServiceMethod (Properties ctx, ResultSet rs, String trxName)
+    public X_WS_WebService (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -68,7 +72,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_WS_WebServiceMethod[")
+      StringBuilder sb = new StringBuilder ("X_WS_WebService[")
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
@@ -124,6 +128,14 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getName());
+    }
+
 	/** Set Search Key.
 		@param Value 
 		Search key for the record in the format required - must be unique
@@ -139,12 +151,6 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	public String getValue () 
 	{
 		return (String)get_Value(COLUMNNAME_Value);
-	}
-
-	public org.compiere.model.I_WS_WebService getWS_WebService() throws RuntimeException
-	{
-		return (org.compiere.model.I_WS_WebService)MTable.get(getCtx(), org.compiere.model.I_WS_WebService.Table_ID)
-			.getPO(getWS_WebService_ID(), get_TrxName());
 	}
 
 	/** Set Web Service.
@@ -167,45 +173,17 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getWS_WebService_ID()));
-    }
-
-	/** Set Web Service Method.
-		@param WS_WebServiceMethod_ID Web Service Method	  */
-	public void setWS_WebServiceMethod_ID (int WS_WebServiceMethod_ID)
+	/** Set WS_WebService_UU.
+		@param WS_WebService_UU WS_WebService_UU	  */
+	public void setWS_WebService_UU (String WS_WebService_UU)
 	{
-		if (WS_WebServiceMethod_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_WS_WebServiceMethod_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_WS_WebServiceMethod_ID, Integer.valueOf(WS_WebServiceMethod_ID));
+		set_Value (COLUMNNAME_WS_WebService_UU, WS_WebService_UU);
 	}
 
-	/** Get Web Service Method.
-		@return Web Service Method	  */
-	public int getWS_WebServiceMethod_ID () 
+	/** Get WS_WebService_UU.
+		@return WS_WebService_UU	  */
+	public String getWS_WebService_UU () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceMethod_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set WS_WebServiceMethod_UU.
-		@param WS_WebServiceMethod_UU WS_WebServiceMethod_UU	  */
-	public void setWS_WebServiceMethod_UU (String WS_WebServiceMethod_UU)
-	{
-		set_Value (COLUMNNAME_WS_WebServiceMethod_UU, WS_WebServiceMethod_UU);
-	}
-
-	/** Get WS_WebServiceMethod_UU.
-		@return WS_WebServiceMethod_UU	  */
-	public String getWS_WebServiceMethod_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_WS_WebServiceMethod_UU);
+		return (String)get_Value(COLUMNNAME_WS_WebService_UU);
 	}
 }

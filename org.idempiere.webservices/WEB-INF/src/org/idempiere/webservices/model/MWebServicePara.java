@@ -27,7 +27,7 @@
  * - GlobalQSS (http://www.globalqss.com)                              *
  ***********************************************************************/
 
-package org.compiere.model;
+package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;

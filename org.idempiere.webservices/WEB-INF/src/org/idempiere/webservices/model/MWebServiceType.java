@@ -27,7 +27,7 @@
 * - GlobalQSS (http://www.globalqss.com)                              *
 ***********************************************************************/
 
-package org.compiere.model;
+package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -37,6 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;

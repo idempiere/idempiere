@@ -110,7 +110,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.codehaus.jettison.jettison;bundle-version="1.4.1"
 Bundle-ClassPath: .,
  lib/idempiere-xmlbeans.jar
-Export-Package: org.compiere.model,
+Export-Package: org.idempiere.webservices.model,
  org.idempiere.adInterface.x10,
  org.idempiere.adInterface.x10.impl,
  org.idempiere.adinterface,

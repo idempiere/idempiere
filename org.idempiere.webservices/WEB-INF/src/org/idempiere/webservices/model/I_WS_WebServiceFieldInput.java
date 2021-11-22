@@ -14,24 +14,24 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.webservices.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebServiceFieldOutput
+/** Generated Interface for WS_WebServiceFieldInput
  *  @author iDempiere (generated) 
  *  @version Development 9.0
  */
-public interface I_WS_WebServiceFieldOutput 
+public interface I_WS_WebServiceFieldInput 
 {
 
-    /** TableName=WS_WebServiceFieldOutput */
-    public static final String Table_Name = "WS_WebServiceFieldOutput";
+    /** TableName=WS_WebServiceFieldInput */
+    public static final String Table_Name = "WS_WebServiceFieldInput";
 
-    /** AD_Table_ID=53167 */
-    public static final int Table_ID = 53167;
+    /** AD_Table_ID=53166 */
+    public static final int Table_ID = 53166;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -77,6 +77,49 @@ public interface I_WS_WebServiceFieldOutput
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Reference_ID */
+    public static final String COLUMNNAME_AD_Reference_ID = "AD_Reference_ID";
+
+	/** Set Reference.
+	  * System Reference and Validation
+	  */
+	public void setAD_Reference_ID (int AD_Reference_ID);
+
+	/** Get Reference.
+	  * System Reference and Validation
+	  */
+	public int getAD_Reference_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
+
+    /** Column name AD_Reference_Value_ID */
+    public static final String COLUMNNAME_AD_Reference_Value_ID = "AD_Reference_Value_ID";
+
+	/** Set Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID);
+
+	/** Get Reference Key.
+	  * Required to specify, if data type is Table or List
+	  */
+	public int getAD_Reference_Value_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
+
+    /** Column name ColumnName */
+    public static final String COLUMNNAME_ColumnName = "ColumnName";
+
+	/** Set DB Column Name.
+	  * Name of the column in the database
+	  */
+	public void setColumnName (String ColumnName);
+
+	/** Get DB Column Name.
+	  * Name of the column in the database
+	  */
+	public String getColumnName();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -93,6 +136,15 @@ public interface I_WS_WebServiceFieldOutput
 	  */
 	public int getCreatedBy();
 
+    /** Column name IdentifierLogic */
+    public static final String COLUMNNAME_IdentifierLogic = "IdentifierLogic";
+
+	/** Set Identifier Logic	  */
+	public void setIdentifierLogic (String IdentifierLogic);
+
+	/** Get Identifier Logic	  */
+	public String getIdentifierLogic();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -105,6 +157,32 @@ public interface I_WS_WebServiceFieldOutput
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsIdentifier */
+    public static final String COLUMNNAME_IsIdentifier = "IsIdentifier";
+
+	/** Set Identifier.
+	  * This column is part of the record identifier
+	  */
+	public void setIsIdentifier (boolean IsIdentifier);
+
+	/** Get Identifier.
+	  * This column is part of the record identifier
+	  */
+	public boolean isIdentifier();
+
+    /** Column name IsNullIdentifier */
+    public static final String COLUMNNAME_IsNullIdentifier = "IsNullIdentifier";
+
+	/** Set Allow Null Value.
+	  * Should allow null value for identifiere field
+	  */
+	public void setIsNullIdentifier (boolean IsNullIdentifier);
+
+	/** Get Allow Null Value.
+	  * Should allow null value for identifiere field
+	  */
+	public boolean isNullIdentifier();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -122,23 +200,23 @@ public interface I_WS_WebServiceFieldOutput
 	  */
 	public int getUpdatedBy();
 
-    /** Column name WS_WebServiceFieldOutput_ID */
-    public static final String COLUMNNAME_WS_WebServiceFieldOutput_ID = "WS_WebServiceFieldOutput_ID";
+    /** Column name WS_WebServiceFieldInput_ID */
+    public static final String COLUMNNAME_WS_WebServiceFieldInput_ID = "WS_WebServiceFieldInput_ID";
 
-	/** Set Web Service Field Output	  */
-	public void setWS_WebServiceFieldOutput_ID (int WS_WebServiceFieldOutput_ID);
+	/** Set Web Service Field Input	  */
+	public void setWS_WebServiceFieldInput_ID (int WS_WebServiceFieldInput_ID);
 
-	/** Get Web Service Field Output	  */
-	public int getWS_WebServiceFieldOutput_ID();
+	/** Get Web Service Field Input	  */
+	public int getWS_WebServiceFieldInput_ID();
 
-    /** Column name WS_WebServiceFieldOutput_UU */
-    public static final String COLUMNNAME_WS_WebServiceFieldOutput_UU = "WS_WebServiceFieldOutput_UU";
+    /** Column name WS_WebServiceFieldInput_UU */
+    public static final String COLUMNNAME_WS_WebServiceFieldInput_UU = "WS_WebServiceFieldInput_UU";
 
-	/** Set WS_WebServiceFieldOutput_UU	  */
-	public void setWS_WebServiceFieldOutput_UU (String WS_WebServiceFieldOutput_UU);
+	/** Set WS_WebServiceFieldInput_UU	  */
+	public void setWS_WebServiceFieldInput_UU (String WS_WebServiceFieldInput_UU);
 
-	/** Get WS_WebServiceFieldOutput_UU	  */
-	public String getWS_WebServiceFieldOutput_UU();
+	/** Get WS_WebServiceFieldInput_UU	  */
+	public String getWS_WebServiceFieldInput_UU();
 
     /** Column name WS_WebServiceType_ID */
     public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
@@ -149,5 +227,5 @@ public interface I_WS_WebServiceFieldOutput
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
-	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
+	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

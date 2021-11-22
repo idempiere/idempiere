@@ -4,5 +4,5 @@
    <service>
       <provide interface="org.adempiere.base.IModelFactory"/>
    </service>
-   <implementation class="org.compiere.model.WS_ModelFactory"/>
+   <implementation class="org.idempiere.webservices.model.WS_ModelFactory"/>
 </scr:component>
