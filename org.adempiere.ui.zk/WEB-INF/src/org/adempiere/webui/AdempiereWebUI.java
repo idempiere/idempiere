@@ -190,10 +190,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		final Session session = desktop.getSession();
 		
 		//clear context, invalidate session
-		Env.getCtx().clear();
-		destroySession(session);
-		desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
+		Env.getCtx().clear();		
 		Adempiere.getThreadPoolExecutor().schedule(() -> {
+			((SessionCtrl)session).invalidateNow();
+			desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
 		    try {
 				desktopCache.removeDesktop(desktop);
 			} catch (Throwable t) {
@@ -415,7 +415,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    
     	//clear context, invalidate session
     	Env.getCtx().clear();
-    	destroySession(session);
+    	afterLogout(session);
     	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
@@ -429,7 +429,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	}
     }
 
-	private void destroySession(final Session session) {
+	private void afterLogout(final Session session) {
 		try {
     		((SessionCtrl)session).onDestroyed();
     	} catch (Throwable t) {
@@ -443,8 +443,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */
     public void logoutAfterTabDestroyed(){
     	Desktop desktop = Executions.getCurrent().getDesktop();
-	    if (desktop.isServerPushEnabled())
-			desktop.enableServerPush(false);
 	    DesktopWatchDog.removeDesktop(desktop);
 	    
        	Session session = logout0();
@@ -453,7 +451,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	Env.getCtx().clear();
     	SessionCtrl ctrl = (SessionCtrl) session;
     	if (!ctrl.isInvalidated() && session.getNativeSession() != null)
-    		destroySession(session);
+    		afterLogout(session);
     }
     
 
