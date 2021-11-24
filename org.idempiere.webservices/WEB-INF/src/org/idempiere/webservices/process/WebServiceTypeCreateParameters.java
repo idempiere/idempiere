@@ -25,8 +25,8 @@
 
 package org.idempiere.webservices.process;
 
-import org.compiere.model.MWebServiceType;
 import org.compiere.process.SvrProcess;
+import org.idempiere.webservices.model.MWebServiceType;
 
 /**
  * @author Nicolas Micoud - TGI

@@ -15,10 +15,15 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.compiere.model;
+package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldInput
@@ -280,9 +285,9 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 		return (String)get_Value(COLUMNNAME_WS_WebServiceFieldInput_UU);
 	}
 
-	public org.compiere.model.I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
+	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
 	{
-		return (org.compiere.model.I_WS_WebServiceType)MTable.get(getCtx(), org.compiere.model.I_WS_WebServiceType.Table_ID)
+		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_ID)
 			.getPO(getWS_WebServiceType_ID(), get_TrxName());
 	}
 

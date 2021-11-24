@@ -61,15 +61,15 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import io.github.classgraph.AnnotationClassRef;
 import io.github.classgraph.AnnotationInfo;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 
 /**
  * Scan, discover and register classes with {@link EventTopicDelegate} annotation
  * @author hengsin
  *
  */
-public abstract class AnnotationBasedEventManager {
+public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory {
 
 	private static final CLogger s_log = CLogger.getCLogger(AnnotationBasedEventManager.class); 
 	
@@ -150,7 +150,7 @@ public abstract class AnnotationBasedEventManager {
 				.disableModuleScanning()
 				.acceptPackagesNonRecursive(getPackages());
 
-		try (ScanResult scanResult = graph.scan())
+		ScanResultProcessor scanResultProcessor = scanResult ->
 		{
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(EventTopicDelegate.class)) {
 		    	if (classInfo.isAbstract())
@@ -171,12 +171,13 @@ public abstract class AnnotationBasedEventManager {
 		        	simpleEventDelegate(classLoader, className, filter);
 		        }
 		    }
-		}
-		long end = System.currentTimeMillis();
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info(this.getClass().getSimpleName() + " loaded "+handlers.size() +" classes in "
-					+((end-start)/1000f) + "s");
-	
+			long end = System.currentTimeMillis();
+			s_log.info(() -> this.getClass().getSimpleName() + " loaded " + handlers.size() + " classes in "
+						+ ((end-start)/1000f) + "s");
+			signalScanCompletion(true);
+		};
+
+		graph.scanAsync(getExecutorService(), getMaxThreads(), scanResultProcessor, getScanFailureHandler());
 	}
 
 	private void simpleEventDelegate(ClassLoader classLoader, String className, String filter) {

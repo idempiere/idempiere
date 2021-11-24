@@ -16,10 +16,9 @@ package org.idempiere.webservices;
 import java.util.Map;
 import java.util.Properties;
 
-import org.compiere.model.MWebServiceType;
 import org.compiere.model.PO;
 import org.idempiere.webservices.fault.IdempiereServiceFault;
-
+import org.idempiere.webservices.model.MWebServiceType;
 import org.idempiere.adInterface.x10.ADLoginRequest;
 import org.idempiere.adInterface.x10.DataField;
 
