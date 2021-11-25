@@ -22,6 +22,7 @@ package fi.jawsy.jawwa.zk.atmosphere;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.atmosphere.cpr.AtmosphereResource;
@@ -267,7 +268,8 @@ public class AtmosphereServerPush implements ServerPush {
         }
 
 	  	if (!resource.isSuspended()) {
-	  		resource.suspend(); 
+	  		//browser default timeout is 2 minutes
+	  		resource.suspend(5, TimeUnit.MINUTES); 
 	  	}
 	  	AtmosphereResource oldResource = this.resource.getAndSet(resource);
 	  	if (oldResource != null) {
