@@ -43,15 +43,15 @@ import org.osgi.service.component.annotations.Activate;
 import io.github.classgraph.AnnotationInfo;
 import io.github.classgraph.AnnotationInfoList;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 
 /**
  * 
  * @author hengsin
  *
  */
-public abstract class AnnotationBasedColumnCalloutFactory implements IColumnCalloutFactory {
+public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBasedFactory implements IColumnCalloutFactory {
 
 	private final static CLogger s_log = CLogger.getCLogger(AnnotationBasedColumnCalloutFactory.class);
 	
@@ -67,6 +67,7 @@ public abstract class AnnotationBasedColumnCalloutFactory implements IColumnCall
 
 	@Override
 	public IColumnCallout[] getColumnCallouts(String tableName, String columnName) {
+		blockWhileScanning();
 		List<IColumnCallout> callouts = new ArrayList<IColumnCallout>();
 		ClassLoader classLoader = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
 		Map<String, List<String>> columnNameMap = tableNameMap.get(tableName);
@@ -148,7 +149,7 @@ public abstract class AnnotationBasedColumnCalloutFactory implements IColumnCall
 				.disableModuleScanning()
 				.acceptPackagesNonRecursive(getPackages());
 
-		try (ScanResult scanResult = graph.scan()) {
+		ScanResultProcessor scanResultProcessor = scanResult -> {
 			List<String> processed = new ArrayList<String>();
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Callouts.class)) {
 		    	if (classInfo.isAbstract())
@@ -169,11 +170,13 @@ public abstract class AnnotationBasedColumnCalloutFactory implements IColumnCall
 		        AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(Callout.class);
 			    processAnnotation(className, annotationInfo);
 		    }
-		}
-		long end = System.currentTimeMillis();
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info(this.getClass().getSimpleName() + " loaded "+tableNameMap.size() +" classes in "
-					+((end-start)/1000f) + "s");
+		    signalScanCompletion(true);
+			long end = System.currentTimeMillis();
+			s_log.info(() -> this.getClass().getSimpleName() + " loaded "+tableNameMap.size() +" classes in "
+						+ ((end-start)/1000f) + "s");
+		};
+
+		graph.scanAsync(getExecutorService(), getMaxThreads(), scanResultProcessor, getScanFailureHandler());
 	}
 
 	private void processAnnotation(String className, AnnotationInfo annotationInfo) {

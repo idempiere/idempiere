@@ -14,30 +14,30 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.webservices.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for WS_WebService
+/** Generated Interface for WS_WebServiceTypeAccess
  *  @author iDempiere (generated) 
  *  @version Development 9.0
  */
-public interface I_WS_WebService 
+public interface I_WS_WebServiceTypeAccess 
 {
 
-    /** TableName=WS_WebService */
-    public static final String Table_Name = "WS_WebService";
+    /** TableName=WS_WebServiceTypeAccess */
+    public static final String Table_Name = "WS_WebServiceTypeAccess";
 
-    /** AD_Table_ID=53162 */
-    public static final int Table_ID = 53162;
+    /** AD_Table_ID=53168 */
+    public static final int Table_ID = 53168;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -62,6 +62,21 @@ public interface I_WS_WebService
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Role_ID */
+    public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
+
+	/** Set Role.
+	  * Responsibility Role
+	  */
+	public void setAD_Role_ID (int AD_Role_ID);
+
+	/** Get Role.
+	  * Responsibility Role
+	  */
+	public int getAD_Role_ID();
+
+	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -78,32 +93,6 @@ public interface I_WS_WebService
 	  */
 	public int getCreatedBy();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
-    /** Column name Help */
-    public static final String COLUMNNAME_Help = "Help";
-
-	/** Set Comment/Help.
-	  * Comment or Hint
-	  */
-	public void setHelp (String Help);
-
-	/** Get Comment/Help.
-	  * Comment or Hint
-	  */
-	public String getHelp();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -117,18 +106,18 @@ public interface I_WS_WebService
 	  */
 	public boolean isActive();
 
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
+    /** Column name IsReadWrite */
+    public static final String COLUMNNAME_IsReadWrite = "IsReadWrite";
 
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
+	/** Set Read Write.
+	  * Field is read / write
 	  */
-	public void setName (String Name);
+	public void setIsReadWrite (boolean IsReadWrite);
 
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
+	/** Get Read Write.
+	  * Field is read / write
 	  */
-	public String getName();
+	public boolean isReadWrite();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -146,34 +135,23 @@ public interface I_WS_WebService
 	  */
 	public int getUpdatedBy();
 
-    /** Column name Value */
-    public static final String COLUMNNAME_Value = "Value";
+    /** Column name WS_WebServiceTypeAccess_UU */
+    public static final String COLUMNNAME_WS_WebServiceTypeAccess_UU = "WS_WebServiceTypeAccess_UU";
 
-	/** Set Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public void setValue (String Value);
+	/** Set WS_WebServiceTypeAccess_UU	  */
+	public void setWS_WebServiceTypeAccess_UU (String WS_WebServiceTypeAccess_UU);
 
-	/** Get Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public String getValue();
+	/** Get WS_WebServiceTypeAccess_UU	  */
+	public String getWS_WebServiceTypeAccess_UU();
 
-    /** Column name WS_WebService_ID */
-    public static final String COLUMNNAME_WS_WebService_ID = "WS_WebService_ID";
+    /** Column name WS_WebServiceType_ID */
+    public static final String COLUMNNAME_WS_WebServiceType_ID = "WS_WebServiceType_ID";
 
-	/** Set Web Service	  */
-	public void setWS_WebService_ID (int WS_WebService_ID);
+	/** Set Web Service Type	  */
+	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID);
 
-	/** Get Web Service	  */
-	public int getWS_WebService_ID();
+	/** Get Web Service Type	  */
+	public int getWS_WebServiceType_ID();
 
-    /** Column name WS_WebService_UU */
-    public static final String COLUMNNAME_WS_WebService_UU = "WS_WebService_UU";
-
-	/** Set WS_WebService_UU	  */
-	public void setWS_WebService_UU (String WS_WebService_UU);
-
-	/** Get WS_WebService_UU	  */
-	public String getWS_WebService_UU();
+	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

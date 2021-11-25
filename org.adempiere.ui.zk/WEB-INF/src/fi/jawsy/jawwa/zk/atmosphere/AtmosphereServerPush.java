@@ -301,6 +301,14 @@ public class AtmosphereServerPush implements ServerPush {
 		startClientPush(desktop.get());
 	}
 	
+	/**
+	 * 
+	 * @return true if it is holding an atmosphere resource
+	 */
+	public boolean hasAtmosphereResource() {
+		return this.resource.get() != null;
+	}
+	
 	private class Schedule<T extends Event> {
     	private EventListener<T> task;
 		private T event;

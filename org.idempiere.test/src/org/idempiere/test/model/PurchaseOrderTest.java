@@ -293,10 +293,11 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
-		assertEquals(0, line1.getQtyReserved().compareTo(MINUS_THREE));
+		// IDEMPIERE-5039 - when reservations go negative they are changed to zero
+		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
 		newQtyOrdered = getQtyOrdered(ctx, PRODUCT_MULCH, trxName);
-		assertEquals(0, qtyOrderedOriginal.add(MINUS_THREE).compareTo(newQtyOrdered));
+		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 
 		// create a new material receipt for the -3 reversed
 		MInOut receipt2 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());

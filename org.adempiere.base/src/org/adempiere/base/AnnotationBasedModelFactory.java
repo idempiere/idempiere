@@ -12,10 +12,11 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-
+import java.util.function.BiConsumer;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
@@ -24,6 +25,7 @@ import org.osgi.service.component.annotations.Component;
 
 import io.github.classgraph.AnnotationInfo;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
@@ -37,7 +39,7 @@ import io.github.classgraph.ScanResult;
  * @author Heng Sin
  */
 @Component(immediate = true, service = IModelFactory.class, property = {"service.ranking:Integer=0"})
-public class AnnotationBasedModelFactory extends AbstractModelFactory implements IModelFactory
+public class AnnotationBasedModelFactory extends AnnotationBasedFactory implements IModelFactory
 {
 	/**
 	 * Table name to class cache
@@ -106,43 +108,75 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 				graph.acceptClasses(acceptClasses);
 		}
 
-		try (ScanResult scanResult = graph.scan())
-		{
+		ScanResultProcessor scanResultProcessor = scanResult -> {
+			try {
+				processResults(classLoader, scanResult);
+			} catch (Exception e) {
+				s_log.severe("exception found while scanning classes" + e.getMessage());
+				signalScanCompletion(false);
+				return;
+			}
+			long end = System.currentTimeMillis();
+			s_log.info(() -> this.getClass().getSimpleName() + " loaded " + classCache.size() + " classes in "
+						+ ((end-start)/1000f) + "s");
+			signalScanCompletion(true);
+		};
 
-		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Model.class)) {
-		        String className = classInfo.getName();
-		        AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(Model.class);
-		        String tableName = (String) annotationInfo.getParameterValues().getValue("table");
+		graph.scanAsync(getExecutorService(), getMaxThreads(), scanResultProcessor, getScanFailureHandler());
+	}
 
-		        Class<?> existing = classCache.get(tableName);
+	private void processResults(ClassLoader classLoader, ScanResult scanResult ) {
+        BiConsumer<String,ClassNotFoundException> exceptionHandler = (className, exception) -> 
+        	s_log.severe(String.format("exception while loading class %s - %s", className, exception.getMessage()));
 
-		        // try to detect M classes only if we found an X class
-		        if(existing == null && className.substring(className.lastIndexOf(".")).startsWith(".X")) {
-			        ClassInfoList subclasses = classInfo.getSubclasses().directOnly();
-			        while(!subclasses.isEmpty()) {
-			        	className = subclasses.get(0).getName();
-			        	subclasses = subclasses.get(0).getSubclasses().directOnly();
-			        }
+	    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Model.class)) {
+	        String className = classInfo.getName();
+
+	        AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(Model.class);
+	        String tableName = (String) annotationInfo.getParameterValues().getValue("table");
+
+	        Class<?> existing = classCache.get(tableName);
+
+	        // try to detect M classes only if we found an X class
+	        if(existing == null && className.substring(className.lastIndexOf(".")).startsWith(".X")) {
+		        ClassInfoList subclasses = classInfo.getSubclasses().directOnly();
+		        while(!subclasses.isEmpty()) {
+		        	className = subclasses.get(0).getName();
+		        	subclasses = subclasses.get(0).getSubclasses().directOnly();
 		        }
-		        
-		        if(existing==null) {
-		        	classCache.put(tableName, classLoader.loadClass(className));
-		        } else if (className.substring(className.lastIndexOf(".")).startsWith(".M")) {
-		        	if(existing.getSimpleName().startsWith("X_")) {
-		        		classCache.put(tableName, classLoader.loadClass(className));
-		        	} else {
-		        		Class<?> found = classLoader.loadClass(className);
-			        	// replace existing entries only if found class has a lower hierarchy
-			        	if(existing.isAssignableFrom(found))
-			        		classCache.put(tableName, classLoader.loadClass(className));
-		        	}
-		        }
-		    }
-		}
-		long end = System.currentTimeMillis();
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info(this.getClass().getSimpleName() + " loaded "+classCache.size() +" classes in "
-					+((end-start)/1000f) + "s");
+	        }
+
+
+	        if(existing==null) {
+	        	try {
+					classCache.put(tableName, classLoader.loadClass(className));
+				} catch (ClassNotFoundException e) {
+					exceptionHandler.accept(className, e);
+				}
+	        } else if (className.substring(className.lastIndexOf(".")).startsWith(".M")) {
+	        	if(existing.getSimpleName().startsWith("X_")) {
+	        		try {
+						classCache.put(tableName, classLoader.loadClass(className));
+					} catch (ClassNotFoundException e) {
+						exceptionHandler.accept(className, e);
+					}
+	        	} else {
+	        		Class<?> found = null;
+					try {
+						found = classLoader.loadClass(className);
+					} catch (ClassNotFoundException e) {
+						exceptionHandler.accept(className, e);
+					}
+		        	// replace existing entries only if found class has a lower hierarchy
+		        	if(found != null && existing.isAssignableFrom(found))
+						try {
+							classCache.put(tableName, classLoader.loadClass(className));
+						} catch (ClassNotFoundException e) {
+							exceptionHandler.accept(className, e);
+						}
+	        	}
+	        }
+	    }
 	}
 
 	/**
@@ -150,6 +184,7 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 	 */
 	@Override
 	public Class<?> getClass(String tableName) {
+		blockWhileScanning();
 		return classCache.get(tableName);
 	}
 
@@ -159,6 +194,22 @@ public class AnnotationBasedModelFactory extends AbstractModelFactory implements
 	 */
 	private boolean isAtCore() {
 		return getClass().equals(AnnotationBasedModelFactory.class);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PO getPO(String tableName, int Record_ID, String trxName) {
+		return AbstractModelFactory.getPO(getClass(tableName), tableName, Record_ID, trxName);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PO getPO(String tableName, ResultSet rs, String trxName) {
+		return AbstractModelFactory.getPO(getClass(tableName), tableName, rs, trxName);
 	}
 
 }
