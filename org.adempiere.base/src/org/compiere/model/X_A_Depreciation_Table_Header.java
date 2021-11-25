@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Table_Header
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="A_Depreciation_Table_Header")
 public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciation_Table_Header, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Table_Header (Properties ctx, int A_Depreciation_Table_Header_ID, String trxName)

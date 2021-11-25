@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Tax
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Tax")
 public class X_C_Tax extends PO implements I_C_Tax, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Tax (Properties ctx, int C_Tax_ID, String trxName)
@@ -87,9 +88,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_Name)
-			.getPO(getAD_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_ID)
+			.getPO(getAD_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Rule.
 		@param AD_Rule_ID Rule	  */
@@ -112,9 +114,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CountryGroup getC_CountryGroupFrom() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_Name)
-			.getPO(getC_CountryGroupFrom_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_ID)
+			.getPO(getC_CountryGroupFrom_ID(), get_TrxName());
+	}
 
 	/** Set Country Group From.
 		@param C_CountryGroupFrom_ID Country Group From	  */
@@ -137,9 +140,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CountryGroup getC_CountryGroupTo() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_Name)
-			.getPO(getC_CountryGroupTo_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_ID)
+			.getPO(getC_CountryGroupTo_ID(), get_TrxName());
+	}
 
 	/** Set Country Group To.
 		@param C_CountryGroupTo_ID Country Group To	  */
@@ -185,9 +189,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
-			.getPO(getC_Region_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
+			.getPO(getC_Region_ID(), get_TrxName());
+	}
 
 	/** Set Region.
 		@param C_Region_ID 
@@ -213,9 +218,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_Name)
-			.getPO(getC_TaxCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
+			.getPO(getC_TaxCategory_ID(), get_TrxName());
+	}
 
 	/** Set Tax Category.
 		@param C_TaxCategory_ID 
@@ -264,9 +270,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_Name)
-			.getPO(getC_TaxProvider_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_ID)
+			.getPO(getC_TaxProvider_ID(), get_TrxName());
+	}
 
 	/** Set Tax Provider.
 		@param C_TaxProvider_ID Tax Provider	  */
@@ -465,9 +472,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
     }
 
 	public org.compiere.model.I_C_Tax getParent_Tax() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_Name)
-			.getPO(getParent_Tax_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
+			.getPO(getParent_Tax_ID(), get_TrxName());
+	}
 
 	/** Set Parent Tax.
 		@param Parent_Tax_ID 
@@ -540,10 +548,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	public static final int SOPOTYPE_AD_Reference_ID=287;
 	/** Both = B */
 	public static final String SOPOTYPE_Both = "B";
-	/** Sales Tax = S */
-	public static final String SOPOTYPE_SalesTax = "S";
 	/** Purchase Tax = P */
 	public static final String SOPOTYPE_PurchaseTax = "P";
+	/** Sales Tax = S */
+	public static final String SOPOTYPE_SalesTax = "S";
 	/** Set SO/PO Type.
 		@param SOPOType 
 		Sales Tax applies to sales situations, Purchase Tax to purchase situations
@@ -603,9 +611,10 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Region getTo_Region() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_Name)
-			.getPO(getTo_Region_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
+			.getPO(getTo_Region_ID(), get_TrxName());
+	}
 
 	/** Set To.
 		@param To_Region_ID 

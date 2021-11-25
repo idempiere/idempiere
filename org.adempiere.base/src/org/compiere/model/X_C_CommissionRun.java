@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionRun
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_CommissionRun")
 public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName)
@@ -79,9 +80,10 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
     }
 
 	public org.compiere.model.I_C_Commission getC_Commission() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Commission)MTable.get(getCtx(), org.compiere.model.I_C_Commission.Table_Name)
-			.getPO(getC_Commission_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Commission)MTable.get(getCtx(), org.compiere.model.I_C_Commission.Table_ID)
+			.getPO(getC_Commission_ID(), get_TrxName());
+	}
 
 	/** Set Commission.
 		@param C_Commission_ID 

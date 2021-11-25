@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Column
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Column")
 public class X_AD_Column extends PO implements I_AD_Column, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -46,7 +47,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 			setAD_Table_ID (0);
 			setColumnName (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsAllowCopy (true);
 // Y
 			setIsAlwaysUpdateable (false);
@@ -101,9 +102,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_Name)
-			.getPO(getAD_Chart_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
+			.getPO(getAD_Chart_ID(), get_TrxName());
+	}
 
 	/** Set Chart.
 		@param AD_Chart_ID Chart	  */
@@ -163,9 +165,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
-			.getPO(getAD_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
+			.getPO(getAD_Element_ID(), get_TrxName());
+	}
 
 	/** Set System Element.
 		@param AD_Element_ID 
@@ -191,9 +194,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -219,9 +223,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -247,9 +252,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -275,9 +281,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -303,9 +310,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -331,9 +339,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_Lookup_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation (Lookup).
 		@param AD_Val_Rule_Lookup_ID 
@@ -507,16 +516,16 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 
 	/** FKConstraintType AD_Reference_ID=200075 */
 	public static final int FKCONSTRAINTTYPE_AD_Reference_ID=200075;
-	/** Do Not Create = D */
-	public static final String FKCONSTRAINTTYPE_DoNotCreate = "D";
-	/** No Action = N */
-	public static final String FKCONSTRAINTTYPE_NoAction = "N";
 	/** Cascade = C */
 	public static final String FKCONSTRAINTTYPE_Cascade = "C";
-	/** Set Null = S */
-	public static final String FKCONSTRAINTTYPE_SetNull = "S";
+	/** Do Not Create = D */
+	public static final String FKCONSTRAINTTYPE_DoNotCreate = "D";
 	/** Model Cascade = M */
 	public static final String FKCONSTRAINTTYPE_ModelCascade = "M";
+	/** No Action = N */
+	public static final String FKCONSTRAINTTYPE_NoAction = "N";
+	/** Set Null = S */
+	public static final String FKCONSTRAINTTYPE_SetNull = "S";
 	/** Set Constraint Type.
 		@param FKConstraintType Constraint Type	  */
 	public void setFKConstraintType (String FKConstraintType)
@@ -664,10 +673,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 
 	/** IsEncrypted AD_Reference_ID=354 */
 	public static final int ISENCRYPTED_AD_Reference_ID=354;
-	/** Encrypted = Y */
-	public static final String ISENCRYPTED_Encrypted = "Y";
 	/** Not Encrypted = N */
 	public static final String ISENCRYPTED_NotEncrypted = "N";
+	/** Encrypted = Y */
+	public static final String ISENCRYPTED_Encrypted = "Y";
 	/** Set Encrypted.
 		@param IsEncrypted 
 		Display or Storage is encrypted
@@ -873,12 +882,12 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 
 	/** IsToolbarButton AD_Reference_ID=200099 */
 	public static final int ISTOOLBARBUTTON_AD_Reference_ID=200099;
-	/** Toolbar = Y */
-	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
-	/** Window = N */
-	public static final String ISTOOLBARBUTTON_Window = "N";
 	/** Both = B */
 	public static final String ISTOOLBARBUTTON_Both = "B";
+	/** Window = N */
+	public static final String ISTOOLBARBUTTON_Window = "N";
+	/** Toolbar = Y */
+	public static final String ISTOOLBARBUTTON_Toolbar = "Y";
 	/** Set Toolbar Button.
 		@param IsToolbarButton 
 		Show the button on the toolbar, the window, or both
@@ -977,9 +986,10 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_Name)
-			.getPO(getPA_DashboardContent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_ID)
+			.getPO(getPA_DashboardContent_ID(), get_TrxName());
+	}
 
 	/** Set Dashboard Content.
 		@param PA_DashboardContent_ID Dashboard Content	  */

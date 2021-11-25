@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MatchInv
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_MatchInv")
 public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_MatchInv (Properties ctx, int M_MatchInv_ID, String trxName)
@@ -82,9 +83,10 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
     }
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
 		@param C_InvoiceLine_ID 
@@ -186,9 +188,10 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
     }
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -214,9 +217,10 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
 		@param M_InOutLine_ID 
@@ -279,9 +283,10 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -416,9 +421,10 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	public org.compiere.model.I_M_MatchInv getRef_MatchInv() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_Name)
-			.getPO(getRef_MatchInv_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_ID)
+			.getPO(getRef_MatchInv_ID(), get_TrxName());
+	}
 
 	/** Set Referenced Match Invoice.
 		@param Ref_MatchInv_ID Referenced Match Invoice	  */
@@ -441,9 +447,10 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	public org.compiere.model.I_M_MatchInv getReversal() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_Name)
-			.getPO(getReversal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_ID)
+			.getPO(getReversal_ID(), get_TrxName());
+	}
 
 	/** Set Reversal ID.
 		@param Reversal_ID 

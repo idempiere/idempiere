@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Cash
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Cash")
 public class X_C_Cash extends PO implements I_C_Cash, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Cash (Properties ctx, int C_Cash_ID, String trxName)
@@ -134,9 +135,10 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -162,9 +164,10 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -190,9 +193,10 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
-			.getPO(getC_CashBook_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)
+			.getPO(getC_CashBook_ID(), get_TrxName());
+	}
 
 	/** Set Cash Book.
 		@param C_CashBook_ID 
@@ -255,9 +259,10 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -318,34 +323,34 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -366,30 +371,30 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -604,9 +609,10 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -632,9 +638,10 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

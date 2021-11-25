@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRunLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_DunningRunLine")
 public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_DunningRunLine (Properties ctx, int C_DunningRunLine_ID, String trxName)
@@ -104,9 +105,10 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	public org.compiere.model.I_C_DunningRunEntry getC_DunningRunEntry() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DunningRunEntry)MTable.get(getCtx(), org.compiere.model.I_C_DunningRunEntry.Table_Name)
-			.getPO(getC_DunningRunEntry_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DunningRunEntry)MTable.get(getCtx(), org.compiere.model.I_C_DunningRunEntry.Table_ID)
+			.getPO(getC_DunningRunEntry_ID(), get_TrxName());
+	}
 
 	/** Set Dunning Run Entry.
 		@param C_DunningRunEntry_ID 
@@ -169,9 +171,10 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -205,9 +208,10 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
     }
 
 	public org.compiere.model.I_C_InvoicePaySchedule getC_InvoicePaySchedule() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoicePaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_InvoicePaySchedule.Table_Name)
-			.getPO(getC_InvoicePaySchedule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoicePaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_InvoicePaySchedule.Table_ID)
+			.getPO(getC_InvoicePaySchedule_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Payment Schedule.
 		@param C_InvoicePaySchedule_ID 
@@ -253,9 +257,10 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 

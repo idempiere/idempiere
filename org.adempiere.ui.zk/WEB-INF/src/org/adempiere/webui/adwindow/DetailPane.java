@@ -89,21 +89,21 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -6994505162094868814L;
+	private static final long serialVersionUID = 6251897492168864784L;
 
-	private static final String BTN_PROCESS_ID = "BtnProcess";
+	public static final String BTN_PROCESS_ID = "BtnProcess";
 
-	private static final String BTN_DELETE_ID = "BtnDelete";
+	public static final String BTN_DELETE_ID = "BtnDelete";
 
-	private static final String BTN_EDIT_ID = "BtnEdit";
+	public static final String BTN_EDIT_ID = "BtnEdit";
 
-	private static final String BTN_NEW_ID = "BtnNew";
+	public static final String BTN_NEW_ID = "BtnNew";
 	
-	private static final String BTN_SAVE_ID = "BtnSave";
+	public static final String BTN_SAVE_ID = "BtnSave";
 	
-	private static final String BTN_QUICK_FORM_ID = "BtnQuickForm";
+	public static final String BTN_QUICK_FORM_ID = "BtnQuickForm";
 
-	private static final String BTN_CUSTOMIZE_ID = "BtnCustomize";
+	public static final String BTN_CUSTOMIZE_ID = "BtnCustomize";
 	
 	private static final String BTN_TOGGLE_ID = "BtnToggle";
 	
@@ -456,13 +456,15 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 						String labelKey = actionId + ".label";
 						String tooltipKey = actionId + ".tooltip";
-						String label = Msg.getMsg(Env.getCtx(), labelKey);
-						String tooltiptext = Msg.getMsg(Env.getCtx(), tooltipKey);
+						String label = Msg.getMsg(Env.getCtx(), labelKey, true);
+						String tooltiptext = Msg.getMsg(Env.getCtx(), labelKey, false);
+						if (Util.isEmpty(tooltiptext, true))
+							tooltiptext = Msg.getMsg(Env.getCtx(), tooltipKey, true);
 						if ( labelKey.equals(label) ) {
 							label = toolbarButton.getName();
 						}
-						if ( tooltipKey.equals(tooltiptext) ) {
-							tooltipKey = null;
+						if ( tooltipKey.equals(tooltiptext) || labelKey.equals(tooltiptext)) {
+							tooltiptext = label;
 						}
 						ToolBarButton btn = new ToolBarButton();
 						btn.setName("Btn"+toolbarButton.getComponentName());
@@ -477,8 +479,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 							btn.setLabel(label);
 						}
 
-						ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(toolbarButton, btn, actionId, tabPanel.getGridTab().getWindowNo());
-						tp.toolbarCustomButtons.add(toolbarCustomBtn);
+						ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(toolbarButton, btn, actionId, tabPanel.getGridTab().getWindowNo(), tabPanel.getGridTab().getTabNo());
+						tp.toolbarCustomButtons.put(btn, toolbarCustomBtn);
 
 						toolbar.appendChild(btn);
 					}
@@ -535,9 +537,12 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	protected void onToggle(Event e) {
 		var adTabPanel = getSelectedADTabpanel();
 		if(!(adTabPanel instanceof ADSortTab)) {
-			adTabPanel.switchRowPresentation();	    	
-			getSelectedPanel().getToolbarButton(BTN_CUSTOMIZE_ID).setDisabled(!adTabPanel.isGridView());
-			
+			adTabPanel.switchRowPresentation();
+
+			ToolBarButton btnCustomize = getSelectedPanel().getToolbarButton(BTN_CUSTOMIZE_ID);
+			if (btnCustomize != null)
+				btnCustomize.setDisabled(!adTabPanel.isGridView());
+
 			Tabpanel tabPanel = (Tabpanel) tabbox.getSelectedTabpanel();			
 			tabPanel.setToggleToFormView(!adTabPanel.isGridView());
 			tabPanel.afterToggle();
@@ -565,8 +570,9 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 */
 	protected void onProcess(Component button) {
 		ProcessButtonPopup popup = new ProcessButtonPopup();
-		ADTabpanel adtab = (ADTabpanel) getSelectedADTabpanel();
-		popup.render(adtab.getToolbarButtons());
+		IADTabpanel adtab = getSelectedADTabpanel();
+		if (adtab.getToolbarButtons() != null && adtab.getToolbarButtons().size() > 0)
+			popup.render(adtab.getToolbarButtons());
 		if (popup.getChildren().size() > 0) {
 			popup.setPage(button.getPage());
 			popup.open(button, "after_start");
@@ -874,11 +880,17 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         			btn.setVisible(false);
         		} else if (tabRestrictList.contains(btn.getId())) {
         			btn.setVisible(false);
-        		} else {
+        		} else if (tabpanel.toolbarCustomButtons.containsKey(btn)) {
+        			ToolbarCustomButton customButton = tabpanel.toolbarCustomButtons.get(btn);
+        			customButton.dynamicDisplay();
+        		}else {
         			btn.setVisible(true);
         		}
-        	}        	
-        }               
+        	}
+        }
+
+		// update from customized implementation
+		adtab.updateDetailToolbar(toolbar);
 	}
 	
 	private void updateProcessToolbar() {
@@ -898,7 +910,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
         			if (adtab.getGridTab().isSortTab()) {
         				btn.setDisabled(true);
         			} else {
-        				btn.setDisabled(((ADTabpanel)adtab).getToolbarButtons().isEmpty());
+						boolean isToolbarDisabled = (adtab.getToolbarButtons() == null || adtab.getToolbarButtons().isEmpty());
+						btn.setDisabled(isToolbarDisabled);
         			}
         			break;
         		}
@@ -1087,7 +1100,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 
 		private IADTabpanel adTabPanel;
 		
-		private List<ToolbarCustomButton> toolbarCustomButtons = new ArrayList<ToolbarCustomButton>();
+		private HashMap<ToolBarButton, ToolbarCustomButton> toolbarCustomButtons = new HashMap<ToolBarButton, ToolbarCustomButton>();
 
 		private A overflowButton;
 
@@ -1111,8 +1124,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 					getRecordToolbar().dynamicDisplay();
 			}
 			boolean enableCustomize = !adTabPanel.getGridTab().isSortTab() && adTabPanel.isGridView();
-			List<ToolBarButton> btns = getToolbar().getChildren();
-			Optional<ToolBarButton> optional = btns.stream().filter(e -> BTN_CUSTOMIZE_ID.equals(e.getId())).findFirst();
+
+			Optional<ToolBarButton> optional = getToolbarButtons().stream().filter(e -> BTN_CUSTOMIZE_ID.equals(e.getId())).findFirst();
 			if (optional.isPresent())
 				optional.get().setDisabled(!enableCustomize);
 		}
@@ -1207,11 +1220,26 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		 * @return {@link ToolBarButton}
 		 */
 		public ToolBarButton getToolbarButton(String id) {
-			List<ToolBarButton> list = toolbar.getChildren();
-			Optional<ToolBarButton> optional = list.stream().filter(e -> e.getId().equals(id)).findFirst();
+			Optional<ToolBarButton> optional = getToolbarButtons().stream().filter(e -> e.getId().equals(id)).findFirst();
 			return optional.isPresent() ? optional.get() : null;
 		}
-		
+
+		/**
+		 * 
+		 * @return buttons from the detail toolbar
+		 */
+		private List<ToolBarButton> getToolbarButtons() {
+
+			List<ToolBarButton> list = new ArrayList<>();
+
+			for (Component c : toolbar.getChildren()) {
+				if (c instanceof ToolBarButton)
+					list.add((ToolBarButton) c);
+			}
+
+			return list;
+		}
+
 		private void createOverflowButton() {
 			overflowButton = new A();
 			overflowButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowMore"));

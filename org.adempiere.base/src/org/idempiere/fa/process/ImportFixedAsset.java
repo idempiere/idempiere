@@ -26,6 +26,7 @@ import org.compiere.util.Env;
  * 
  * 	@version 	$Id$
  */
+@org.adempiere.base.annotation.Process
 public class ImportFixedAsset extends SvrProcess
 {
 	/**	Client to be imported to		*/

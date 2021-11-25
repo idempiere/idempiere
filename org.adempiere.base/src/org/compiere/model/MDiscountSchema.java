@@ -91,13 +91,11 @@ public class MDiscountSchema extends X_M_DiscountSchema implements ImmutablePOSu
 		super (ctx, M_DiscountSchema_ID, trxName);
 		if (M_DiscountSchema_ID == 0)
 		{
-		//	setName();
 			setDiscountType (DISCOUNTTYPE_FlatPercent);
 			setFlatDiscount(Env.ZERO);
 			setIsBPartnerFlatDiscount (false);
 			setIsQuantityBased (true);	// Y
 			setCumulativeLevel(CUMULATIVELEVEL_Line);
-		//	setValidFrom (new Timestamp(System.currentTimeMillis()));
 		}	
 	}	//	MDiscountSchema
 

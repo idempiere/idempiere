@@ -1,6 +1,11 @@
-<?xml version="1.0"?><!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd">
 
-<!-- ============================================================= --><!-- Configure an HTTPS connector.                                  --><!-- This configuration must be used in conjunction with jetty.xml --><!-- and jetty-ssl.xml.                                            --><!-- ============================================================= -->
+<!-- ============================================================= -->
+<!-- Configure an HTTPS connector.                                 -->
+<!-- This configuration must be used in conjunction with jetty.xml -->
+<!-- and jetty-ssl.xml.                                            -->
+<!-- ============================================================= -->
 <Configure id="sslConnector" class="org.eclipse.jetty.server.ServerConnector">
 
   <Call name="addIfAbsentConnectionFactory">
@@ -16,7 +21,6 @@
     <Arg>
       <New class="org.eclipse.jetty.server.HttpConnectionFactory">
         <Arg name="config"><Ref refid="sslHttpConfig" /></Arg>
-        <Arg name="compliance"><Call class="org.eclipse.jetty.http.HttpCompliance" name="valueOf"><Arg><Property name="jetty.http.compliance" default="RFC7230"/></Arg></Call></Arg>
       </New>
     </Arg>
   </Call>

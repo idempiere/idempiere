@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Archive
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_AD_Archive 
 {
@@ -98,6 +98,17 @@ public interface I_AD_Archive
 	public int getAD_Process_ID();
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
+    /** Column name AD_StorageProvider_ID */
+    public static final String COLUMNNAME_AD_StorageProvider_ID = "AD_StorageProvider_ID";
+
+	/** Set Storage Provider	  */
+	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID);
+
+	/** Get Storage Provider	  */
+	public int getAD_StorageProvider_ID();
+
+	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException;
 
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";

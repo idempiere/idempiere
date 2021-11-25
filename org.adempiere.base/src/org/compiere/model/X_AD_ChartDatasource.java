@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ChartDatasource
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_ChartDatasource")
 public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 			setAD_ChartDatasource_ID (0);
 			setAD_Chart_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFromClause (null);
 			setName (null);
 			setValueColumn (null);
@@ -113,9 +114,10 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	}
 
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_Name)
-			.getPO(getAD_Chart_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
+			.getPO(getAD_Chart_ID(), get_TrxName());
+	}
 
 	/** Set Chart.
 		@param AD_Chart_ID Chart	  */
@@ -138,9 +140,10 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 

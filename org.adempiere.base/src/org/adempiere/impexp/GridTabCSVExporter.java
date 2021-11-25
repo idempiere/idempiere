@@ -136,25 +136,17 @@ public class GridTabCSVExporter implements IGridTabExporter
 			//Details up to tab level 1 
 			if(childs.size() > 0){		
 			  int specialDetDispayType = 0; 
-			  //int numOfTabs=0;
+
 			  for(GridTab detail: childs){
 				 
-				 //if(indxDetailSelected != detail.getTabNo())
-					//continue;
-				  
 				 if(!detail.isDisplayed())
 					continue;
 				 
 				 if(detail.getDisplayLogic()!=null){
-				    //if(!currentRowOnly)
-				       //numOfTabs--;
 					//TODO: it's need? DisplayLogic is evaluated when call detail.isDisplayed() 
 				    if(currentRowOnly && !Evaluator.evaluateLogic(detail,detail.getDisplayLogic()))
 					   continue;
 				 }
-				 //comment this line if you want to export all tabs
-				 //if(numOfTabs > 0) 
-					//break;
 		 		 
 				 if(detail.getTabLevel()>1) 
 	 			    continue; 
@@ -198,7 +190,6 @@ public class GridTabCSVExporter implements IGridTabExporter
 				   specialDetDispayType = 0;
 			    }				 
 			    tabMapDetails.put(detail,gridFields); 
-			    //numOfTabs++;
 			}
 				gridFields = null;
 		   }
@@ -223,7 +214,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 				int index =0;
 				int rowDetail=0;  
 				int record_Id = 0;
-//				boolean isActiveRow = true;
+
 				gridTab.setCurrentRow(idxrow);
 				for(GridField field : getFields(gridTab)){   
 					MColumn column = MColumn.get(Env.getCtx(), field.getAD_Column_ID());
@@ -240,17 +231,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 					}else{	
 					   value = resolveValue(gridTab, table, column, idxrow, headName);
 					}
-					//Ignore row 
-//					if("IsActive".equals(headName) && value!=null && Boolean.valueOf((Boolean)value)==false){
-//						isActiveRow=false;	
-//						break;
-//					}
 					row.put(headName,value);
 					idxfld++;
 					index++;
 				} 
-//			    if(!isActiveRow) 	
-//			       continue;
 			    	
 				if(specialHDispayType > 0 && record_Id > 0){
 				   switch(specialHDispayType) {
@@ -331,13 +315,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 	private String isValidTabToExport(GridTab gridTab){
 	    String result=null;
 	    
-	    MTab tab = new MTab(Env.getCtx(), gridTab.getAD_Tab_ID(), null);
+	    MTab tab = MTab.get(gridTab.getAD_Tab_ID());
 
 		if (tab.isReadOnly())
 		   result = Msg.getMsg(Env.getCtx(),"FieldIsReadOnly", new Object[] {gridTab.getName()});
-		
-//		if (gridTab.getTableName().endsWith("_Acct"))
-//		   result = "Accounting Tab are not exported by default: "+ gridTab.getName();
 		
 		return result;
 	}
@@ -354,10 +335,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 		
 		for(Map.Entry<GridTab, GridField[]> childTabDetail : tabMapDetails.entrySet()) {		
 		    GridTab childTab = childTabDetail.getKey();
-		    //String  whereCla = getWhereClause (childTab ,record_Id ,keyColumnParent);
-		    //childTab.getTableModel().dataRequery(whereCla, false, 0);
 			Map<String,Object> row = new HashMap<String,Object>();
-//			boolean isActiveRow = true;
 		    if (childTab.getRowCount() > 0) {
 		    	int specialRecordId = 0;
 		    	for(GridField field : childTabDetail.getValue()){
@@ -380,13 +358,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 				    row.put(headName,value);
 				    if(value!=null)
 				       hasDetails = true;
-					//Ignore row 
-//					if(headName.contains("IsActive")&& value!=null && Boolean.valueOf((Boolean)value)==false){
-//					   isActiveRow=false;	
-//					   break;
-//					}				    
 			    }	
-				if(/* isActiveRow && */ specialDetDispayType > 0 && specialRecordId > 0){
+				if(specialDetDispayType > 0 && specialRecordId > 0){
 					MLocation address = new MLocation (Env.getCtx(),specialRecordId,null);  
 					for(String specialHeader:resolveSpecialColumnName(specialDetDispayType)){
 						String columnName = specialHeader.substring(specialHeader.indexOf(">")+1,specialHeader.length());		
@@ -411,8 +384,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 					}	
 				}
 		    }
-//		    if(isActiveRow)
-		       activeRow.putAll(row);
+	       activeRow.putAll(row);
 		}
 		if (hasDetails)
 			return activeRow;

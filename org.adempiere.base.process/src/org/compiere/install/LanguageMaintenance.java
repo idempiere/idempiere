@@ -29,6 +29,7 @@ import org.compiere.process.SvrProcess;
  *  @author Jorg Janke
  *  @version $Id: LanguageMaintenance.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class LanguageMaintenance extends SvrProcess
 {
 	/**	The Language ID			*/

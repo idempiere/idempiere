@@ -140,14 +140,6 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	public MColorSchema (Properties ctx, int PA_ColorSchema_ID, String trxName)
 	{
 		super (ctx, PA_ColorSchema_ID, trxName);
-		if (PA_ColorSchema_ID == 0)
-		{
-		//	setName (null);
-		//	setMark1Percent (50);
-		//	setAD_PrintColor1_ID (102);		//	red
-		//	setMark2Percent (100);
-		//	setAD_PrintColor2_ID (113);		//	yellow
-		}
 	}	//	MColorSchema
 
 	/**

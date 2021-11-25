@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Substitute
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_Substitute")
 public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Substitute (Properties ctx, int M_Substitute_ID, String trxName)
@@ -90,9 +91,10 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -157,9 +159,10 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
     }
 
 	public org.compiere.model.I_M_Product getSubstitute() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getSubstitute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getSubstitute_ID(), get_TrxName());
+	}
 
 	/** Set Substitute.
 		@param Substitute_ID 

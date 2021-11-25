@@ -48,10 +48,6 @@ public class MPaySelectionLine extends X_C_PaySelectionLine
 		super(ctx, C_PaySelectionLine_ID, trxName);
 		if (C_PaySelectionLine_ID == 0)
 		{
-		//	setC_PaySelection_ID (0);
-		//	setPaymentRule (null);	// S
-		//	setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_PaySelectionLine WHERE C_PaySelection_ID=@C_PaySelection_ID@
-		//	setC_Invoice_ID (0);
 			setIsSOTrx (false);
 			setOpenAmt(Env.ZERO);
 			setPayAmt (Env.ZERO);

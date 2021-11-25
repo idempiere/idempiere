@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tree_Favorite_Node
  *  @author iDempiere (generated) 
- *  @version Release 8.1 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Tree_Favorite_Node")
 public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_Node, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201109L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Tree_Favorite_Node (Properties ctx, int AD_Tree_Favorite_Node_ID, String trxName)
@@ -78,9 +79,10 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
     }
 
 	public org.compiere.model.I_AD_Menu getAD_Menu() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Menu)MTable.get(getCtx(), org.compiere.model.I_AD_Menu.Table_Name)
-			.getPO(getAD_Menu_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Menu)MTable.get(getCtx(), org.compiere.model.I_AD_Menu.Table_ID)
+			.getPO(getAD_Menu_ID(), get_TrxName());
+	}
 
 	/** Set Menu.
 		@param AD_Menu_ID 
@@ -106,9 +108,10 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	public org.compiere.model.I_AD_Tree_Favorite getAD_Tree_Favorite() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree_Favorite)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite.Table_Name)
-			.getPO(getAD_Tree_Favorite_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree_Favorite)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite.Table_ID)
+			.getPO(getAD_Tree_Favorite_ID(), get_TrxName());
+	}
 
 	/** Set Favorite Tree.
 		@param AD_Tree_Favorite_ID Favorite Tree	  */
@@ -274,9 +277,10 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	public org.compiere.model.I_AD_Tree_Favorite_Node getParent() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree_Favorite_Node)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite_Node.Table_Name)
-			.getPO(getParent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree_Favorite_Node)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite_Node.Table_ID)
+			.getPO(getParent_ID(), get_TrxName());
+	}
 
 	/** Set Parent.
 		@param Parent_ID 

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Budget
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="GL_Budget")
 public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_GL_Budget (Properties ctx, int GL_Budget_ID, String trxName)
@@ -74,10 +75,10 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 
 	/** BudgetStatus AD_Reference_ID=178 */
 	public static final int BUDGETSTATUS_AD_Reference_ID=178;
-	/** Draft = D */
-	public static final String BUDGETSTATUS_Draft = "D";
 	/** Approved = A */
 	public static final String BUDGETSTATUS_Approved = "A";
+	/** Draft = D */
+	public static final String BUDGETSTATUS_Draft = "D";
 	/** Set Budget Status.
 		@param BudgetStatus 
 		Indicates the current status of this budget

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatementMatcher
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_BankStatementMatcher")
 public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMatcher, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BankStatementMatcher (Properties ctx, int C_BankStatementMatcher_ID, String trxName)

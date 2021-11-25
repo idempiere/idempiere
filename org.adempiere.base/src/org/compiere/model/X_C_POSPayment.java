@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_POSPayment
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_POSPayment")
 public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_POSPayment (Properties ctx, int C_POSPayment_ID, String trxName)
@@ -157,9 +158,10 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -185,9 +187,10 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 
@@ -247,9 +250,10 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_Name)
-			.getPO(getC_POSTenderType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_ID)
+			.getPO(getC_POSTenderType_ID(), get_TrxName());
+	}
 
 	/** Set POS Tender Type.
 		@param C_POSTenderType_ID POS Tender Type	  */
@@ -292,18 +296,18 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	public static final int CREDITCARDTYPE_AD_Reference_ID=149;
 	/** Amex = A */
 	public static final String CREDITCARDTYPE_Amex = "A";
-	/** MasterCard = M */
-	public static final String CREDITCARDTYPE_MasterCard = "M";
-	/** Visa = V */
-	public static final String CREDITCARDTYPE_Visa = "V";
 	/** ATM = C */
 	public static final String CREDITCARDTYPE_ATM = "C";
 	/** Diners = D */
 	public static final String CREDITCARDTYPE_Diners = "D";
+	/** MasterCard = M */
+	public static final String CREDITCARDTYPE_MasterCard = "M";
 	/** Discover = N */
 	public static final String CREDITCARDTYPE_Discover = "N";
 	/** Purchase Card = P */
 	public static final String CREDITCARDTYPE_PurchaseCard = "P";
+	/** Visa = V */
+	public static final String CREDITCARDTYPE_Visa = "V";
 	/** Set Credit Card.
 		@param CreditCardType 
 		Credit Card (Visa, MC, AmEx)
@@ -505,14 +509,14 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 
 	/** TenderType AD_Reference_ID=214 */
 	public static final int TENDERTYPE_AD_Reference_ID=214;
-	/** Credit Card = C */
-	public static final String TENDERTYPE_CreditCard = "C";
-	/** Check = K */
-	public static final String TENDERTYPE_Check = "K";
 	/** Direct Deposit = A */
 	public static final String TENDERTYPE_DirectDeposit = "A";
+	/** Credit Card = C */
+	public static final String TENDERTYPE_CreditCard = "C";
 	/** Direct Debit = D */
 	public static final String TENDERTYPE_DirectDebit = "D";
+	/** Check = K */
+	public static final String TENDERTYPE_Check = "K";
 	/** Account = T */
 	public static final String TENDERTYPE_Account = "T";
 	/** Cash = X */

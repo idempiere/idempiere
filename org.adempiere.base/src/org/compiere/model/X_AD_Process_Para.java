@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process_Para
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Process_Para")
 public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -43,7 +44,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Reference_ID (0);
 			setColumnName (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
 			setIsAutocomplete (false);
 // N
@@ -88,9 +89,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
     }
 
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
-			.getPO(getAD_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
+			.getPO(getAD_Element_ID(), get_TrxName());
+	}
 
 	/** Set System Element.
 		@param AD_Element_ID 
@@ -115,10 +117,40 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());
+	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID 
+		Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1) 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -178,9 +210,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -206,9 +239,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -234,9 +268,10 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -588,6 +623,23 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public String getPlaceholder2 () 
 	{
 		return (String)get_Value(COLUMNNAME_Placeholder2);
+	}
+
+	/** Set Query.
+		@param Query 
+		SQL
+	  */
+	public void setQuery (String Query)
+	{
+		set_Value (COLUMNNAME_Query, Query);
+	}
+
+	/** Get Query.
+		@return SQL
+	  */
+	public String getQuery () 
+	{
+		return (String)get_Value(COLUMNNAME_Query);
 	}
 
 	/** Set Read Only Logic.

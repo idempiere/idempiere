@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_BP_Vendor_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_BP_Vendor_Acct")
 public class X_C_BP_Vendor_Acct extends PO implements I_C_BP_Vendor_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BP_Vendor_Acct (Properties ctx, int C_BP_Vendor_Acct_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_C_BP_Vendor_Acct extends PO implements I_C_BP_Vendor_Acct, I_Pers
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -101,9 +103,10 @@ public class X_C_BP_Vendor_Acct extends PO implements I_C_BP_Vendor_Acct, I_Pers
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -143,9 +146,10 @@ public class X_C_BP_Vendor_Acct extends PO implements I_C_BP_Vendor_Acct, I_Pers
 	}
 
 	public I_C_ValidCombination getV_Liability_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getV_Liability_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getV_Liability_Acct(), get_TrxName());
+	}
 
 	/** Set Vendor Liability.
 		@param V_Liability_Acct 
@@ -168,9 +172,10 @@ public class X_C_BP_Vendor_Acct extends PO implements I_C_BP_Vendor_Acct, I_Pers
 	}
 
 	public I_C_ValidCombination getV_Liability_Services_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getV_Liability_Services_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getV_Liability_Services_Acct(), get_TrxName());
+	}
 
 	/** Set Vendor Service Liability.
 		@param V_Liability_Services_Acct 
@@ -193,9 +198,10 @@ public class X_C_BP_Vendor_Acct extends PO implements I_C_BP_Vendor_Acct, I_Pers
 	}
 
 	public I_C_ValidCombination getV_Prepayment_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getV_Prepayment_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getV_Prepayment_Acct(), get_TrxName());
+	}
 
 	/** Set Vendor Prepayment.
 		@param V_Prepayment_Acct 

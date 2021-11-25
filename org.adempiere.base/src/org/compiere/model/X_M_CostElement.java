@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_CostElement
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_CostElement")
 public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_CostElement (Properties ctx, int M_CostElement_ID, String trxName)
@@ -75,16 +76,16 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 
 	/** CostElementType AD_Reference_ID=338 */
 	public static final int COSTELEMENTTYPE_AD_Reference_ID=338;
+	/** Burden (M.Overhead) = B */
+	public static final String COSTELEMENTTYPE_BurdenMOverhead = "B";
 	/** Material = M */
 	public static final String COSTELEMENTTYPE_Material = "M";
 	/** Overhead = O */
 	public static final String COSTELEMENTTYPE_Overhead = "O";
-	/** Burden (M.Overhead) = B */
-	public static final String COSTELEMENTTYPE_BurdenMOverhead = "B";
-	/** Outside Processing = X */
-	public static final String COSTELEMENTTYPE_OutsideProcessing = "X";
 	/** Resource = R */
 	public static final String COSTELEMENTTYPE_Resource = "R";
+	/** Outside Processing = X */
+	public static final String COSTELEMENTTYPE_OutsideProcessing = "X";
 	/** Set Cost Element Type.
 		@param CostElementType 
 		Type of Cost Element
@@ -105,20 +106,20 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 
 	/** CostingMethod AD_Reference_ID=122 */
 	public static final int COSTINGMETHOD_AD_Reference_ID=122;
-	/** Standard Costing = S */
-	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** Average PO = A */
 	public static final String COSTINGMETHOD_AveragePO = "A";
-	/** Lifo = L */
-	public static final String COSTINGMETHOD_Lifo = "L";
 	/** Fifo = F */
 	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
-	/** Average Invoice = I */
-	public static final String COSTINGMETHOD_AverageInvoice = "I";
 	/** Last Invoice = i */
 	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Average Invoice = I */
+	public static final String COSTINGMETHOD_AverageInvoice = "I";
+	/** Lifo = L */
+	public static final String COSTINGMETHOD_Lifo = "L";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
+	/** Standard Costing = S */
+	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** User Defined = U */
 	public static final String COSTINGMETHOD_UserDefined = "U";
 	/** _ = x */

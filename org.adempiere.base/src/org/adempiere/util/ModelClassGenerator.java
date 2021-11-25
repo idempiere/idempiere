@@ -168,6 +168,7 @@ public class ModelClassGenerator
 		start.append("/** Generated Model for ").append(tableName).append(NL)
 			 .append(" *  @author iDempiere (generated) ").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
+			 .append("@org.adempiere.base.Model(table=\"").append(tableName).append("\")").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")
 			 	.append(" implements I_").append(tableName)
@@ -183,7 +184,6 @@ public class ModelClassGenerator
 			 .append("\tprivate static final long serialVersionUID = ")
 			 .append(String.format("%1$tY%1$tm%1$td", new Timestamp(System.currentTimeMillis())))
 		 	 .append("L;").append(NL)
-			 //.append("\tprivate static final long serialVersionUID = 1L;").append(NL)
 
 			//	Standard Constructor
 			 .append(NL)
@@ -193,7 +193,7 @@ public class ModelClassGenerator
 			 .append("      super (ctx, ").append(keyColumn).append(", trxName);").append(NL)
 			 .append("      /** if (").append(keyColumn).append(" == 0)").append(NL)
 			 .append("        {").append(NL)
-			 .append(mandatory) //.append(NL)
+			 .append(mandatory) 
 			 .append("        } */").append(NL)
 			 .append("    }").append(NL)
 			//	Constructor End
@@ -207,23 +207,7 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 			//	Load Constructor End
 
-			// TableName
-//			 .append(NL)
-//			 .append("    /** TableName=").append(tableName).append(" */").append(NL)
-//			 .append("    public static final String Table_Name = \"").append(tableName).append("\";").append(NL)
-
-			// AD_Table_ID
-//			 .append(NL)
-//			 .append("    /** AD_Table_ID=").append(AD_Table_ID).append(" */").append(NL)
-//			 .append("    public static final int Table_ID = MTable.getTable_ID(Table_Name);").append(NL)
-
-			// KeyNamePair
-//			 .append(NL)
-//			 .append("    protected static KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);").append(NL)
-
 			// accessLevel
-//			 .append(NL)
-//			 .append("    protected BigDecimal accessLevel = BigDecimal.valueOf(").append(accessLevel).append(");").append(NL)
 			 .append(NL)
 			 .append("    /** AccessLevel").append(NL)
 			 .append("      * @return ").append(accessLevelInfo).append(NL)
@@ -411,9 +395,9 @@ public class ModelClassGenerator
 			{
 				sb.append(NL)
 				.append("\tpublic ").append(referenceClassName).append(" get").append(fieldName).append("() throws RuntimeException").append(NL)
-				.append("    {").append(NL)
-				.append("\t\treturn (").append(referenceClassName).append(")MTable.get(getCtx(), ").append(referenceClassName).append(".Table_Name)").append(NL)
-				.append("\t\t\t.getPO(get").append(columnName).append("(), get_TrxName());")
+				.append("\t{").append(NL)
+				.append("\t\treturn (").append(referenceClassName).append(")MTable.get(getCtx(), ").append(referenceClassName).append(".Table_ID)").append(NL)
+				.append("\t\t\t.getPO(get").append(columnName).append("(), get_TrxName());").append(NL)
 				/**/
 				.append("\t}").append(NL)
 				;
@@ -623,7 +607,7 @@ public class ModelClassGenerator
 			.append(AD_Reference_ID);
 		StringBuilder statement = new StringBuilder();
 		//
-		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? ORDER BY AD_Ref_List_ID";
+		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? AND IsActive='Y' ORDER BY Value";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -710,9 +694,6 @@ public class ModelClassGenerator
 			.append("throw new IllegalArgumentException (\"").append(columnName)
 			.append(" Invalid value - \" + ").append(columnName)
 			.append(" + \" - ").append(values).append("\");");
-		// [1762461] - Remove hardcoded list items checking in generated models
-		// if (found && !columnName.equals("EntityType"))
-		//	sb.append (statement);
 		sb.append("\n");
 		return retValue.toString();
 	}	//	addListValidation
@@ -761,18 +742,11 @@ public class ModelClassGenerator
 				if (c == ';' || c == '}')
 				{
 					fw.write (c);
-					if (sb.substring(i+1).startsWith("//")) {
-						//fw.write('\t');
-					} else {
-						//fw.write(NL);
-					}
 				}
 				//	before & after
 				else if (c == '{')
 				{
-					//fw.write(NL);
 					fw.write (c);
-					//fw.write(NL);
 				}
 				else
 					fw.write (c);

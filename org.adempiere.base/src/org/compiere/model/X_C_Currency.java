@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Currency
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Currency")
 public class X_C_Currency extends PO implements I_C_Currency, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Currency (Properties ctx, int C_Currency_ID, String trxName)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Commission
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_C_Commission 
 {
@@ -235,6 +235,21 @@ public interface I_C_Commission
 	  * List document details
 	  */
 	public boolean isListDetails();
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

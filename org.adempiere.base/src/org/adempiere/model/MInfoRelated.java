@@ -21,12 +21,13 @@ import org.compiere.model.MInfoColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_InfoRelated;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
-public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
+public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, ImmutablePOSupport {	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6216174103510277333L;
+	private static final long serialVersionUID = 4000783886138460291L;
 
 	public MInfoRelated(Properties ctx, int AD_InfoRelated_ID, String trxName) {
 		super(ctx, AD_InfoRelated_ID, trxName);
@@ -77,6 +78,16 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
 	@Override
 	public MInfoColumn getAD_InfoColumn (){
 		return (MInfoColumn) getParentRelatedColumn();
+	}
+
+	@Override
+	public MInfoRelated markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		
+		return this;
 	}
 	
 }

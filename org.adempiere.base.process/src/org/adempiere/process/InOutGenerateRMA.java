@@ -46,6 +46,7 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 2818523 ] Invoice and Shipment are not matched in case of RMA
  * 				https://sourceforge.net/tracker/?func=detail&aid=2818523&group_id=176962&atid=879332
  */
+@org.adempiere.base.annotation.Process
 public class InOutGenerateRMA extends SvrProcess
 {
     /** Manual Selection        */

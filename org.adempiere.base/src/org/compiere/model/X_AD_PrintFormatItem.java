@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormatItem
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_PrintFormatItem")
 public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -68,6 +69,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 // Y
 			setIsPrinted (true);
 // Y
+			setIsPrintInstanceAttributes (false);
+// N
 			setIsRelativePosition (true);
 // Y
 			setIsRunningTotal (false);
@@ -125,9 +128,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -153,9 +157,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor_ID(), get_TrxName());
+	}
 
 	/** Set Print Color.
 		@param AD_PrintColor_ID 
@@ -181,9 +186,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
-			.getPO(getAD_PrintFont_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)
+			.getPO(getAD_PrintFont_ID(), get_TrxName());
+	}
 
 	/** Set Print Font.
 		@param AD_PrintFont_ID 
@@ -209,9 +215,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormatChild() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormatChild_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormatChild_ID(), get_TrxName());
+	}
 
 	/** Set Included Print Format.
 		@param AD_PrintFormatChild_ID 
@@ -237,9 +244,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -302,9 +310,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	public org.compiere.model.I_AD_PrintGraph getAD_PrintGraph() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintGraph)MTable.get(getCtx(), org.compiere.model.I_AD_PrintGraph.Table_Name)
-			.getPO(getAD_PrintGraph_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintGraph)MTable.get(getCtx(), org.compiere.model.I_AD_PrintGraph.Table_ID)
+			.getPO(getAD_PrintGraph_ID(), get_TrxName());
+	}
 
 	/** Set Graph.
 		@param AD_PrintGraph_ID 
@@ -351,22 +360,38 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 
 	/** BarcodeType AD_Reference_ID=377 */
 	public static final int BARCODETYPE_AD_Reference_ID=377;
-	/** Codabar 2 of 7 linear = 2o9 */
-	public static final String BARCODETYPE_Codabar2Of7Linear = "2o9";
-	/** Code 39  3 of 9 linear w/o Checksum = 3o9 */
-	public static final String BARCODETYPE_Code393Of9LinearWOChecksum = "3o9";
-	/** Codeabar linear = COD */
-	public static final String BARCODETYPE_CodeabarLinear = "COD";
-	/** Code 128 dynamically switching = C28 */
-	public static final String BARCODETYPE_Code128DynamicallySwitching = "C28";
 	/** Code 128 A character set = 28A */
 	public static final String BARCODETYPE_Code128ACharacterSet = "28A";
 	/** Code 128 B character set = 28B */
 	public static final String BARCODETYPE_Code128BCharacterSet = "28B";
 	/** Code 128 C character set = 28C */
 	public static final String BARCODETYPE_Code128CCharacterSet = "28C";
+	/** Codabar 2 of 7 linear = 2o9 */
+	public static final String BARCODETYPE_Codabar2Of7Linear = "2o9";
+	/** Code 39 w/o Checksum = 39c */
+	public static final String BARCODETYPE_Code39WOChecksum = "39c";
+	/** Code 39 with Checksum = 39C */
+	public static final String BARCODETYPE_Code39WithChecksum = "39C";
+	/** Code 39  3 of 9 linear w/o Checksum = 3o9 */
+	public static final String BARCODETYPE_Code393Of9LinearWOChecksum = "3o9";
+	/** Code 39  3 of 9 linear with Checksum = 3O9 */
+	public static final String BARCODETYPE_Code393Of9LinearWithChecksum = "3O9";
+	/** PDF417 two dimensional = 417 */
+	public static final String BARCODETYPE_PDF417TwoDimensional = "417";
+	/** SCC-14 shipping code UCC/EAN 128 = C14 */
+	public static final String BARCODETYPE_SCC_14ShippingCodeUCCEAN128 = "C14";
+	/** SSCC-18 number UCC/EAN 128 = C18 */
+	public static final String BARCODETYPE_SSCC_18NumberUCCEAN128 = "C18";
+	/** Code 128 dynamically switching = C28 */
+	public static final String BARCODETYPE_Code128DynamicallySwitching = "C28";
+	/** Code 39 linear w/o Checksum = c39 */
+	public static final String BARCODETYPE_Code39LinearWOChecksum = "c39";
 	/** Code 39 linear with Checksum = C39 */
 	public static final String BARCODETYPE_Code39LinearWithChecksum = "C39";
+	/** Codeabar linear = COD */
+	public static final String BARCODETYPE_CodeabarLinear = "COD";
+	/** EAN 13 = E13 */
+	public static final String BARCODETYPE_EAN13 = "E13";
 	/** EAN 128 = E28 */
 	public static final String BARCODETYPE_EAN128 = "E28";
 	/** Global Trade Item No GTIN UCC/EAN 128 = GTN */
@@ -375,38 +400,22 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String BARCODETYPE_CodabarMonarchLinear = "MON";
 	/** Codabar NW-7 linear = NW7 */
 	public static final String BARCODETYPE_CodabarNW_7Linear = "NW7";
-	/** PDF417 two dimensional = 417 */
-	public static final String BARCODETYPE_PDF417TwoDimensional = "417";
-	/** SCC-14 shipping code UCC/EAN 128 = C14 */
-	public static final String BARCODETYPE_SCC_14ShippingCodeUCCEAN128 = "C14";
+	/** QR Code = QRC */
+	public static final String BARCODETYPE_QRCode = "QRC";
 	/** Shipment ID number UCC/EAN 128 = SID */
 	public static final String BARCODETYPE_ShipmentIDNumberUCCEAN128 = "SID";
 	/** UCC 128 = U28 */
 	public static final String BARCODETYPE_UCC128 = "U28";
+	/** UPC-A = UPA */
+	public static final String BARCODETYPE_UPC_A = "UPA";
+	/** Code 39 USD3 w/o Checksum = us3 */
+	public static final String BARCODETYPE_Code39USD3WOChecksum = "us3";
 	/** Code 39 USD3 with Checksum = US3 */
 	public static final String BARCODETYPE_Code39USD3WithChecksum = "US3";
 	/** Codabar USD-4 linear = US4 */
 	public static final String BARCODETYPE_CodabarUSD_4Linear = "US4";
 	/** US Postal Service UCC/EAN 128 = USP */
 	public static final String BARCODETYPE_USPostalServiceUCCEAN128 = "USP";
-	/** SSCC-18 number UCC/EAN 128 = C18 */
-	public static final String BARCODETYPE_SSCC_18NumberUCCEAN128 = "C18";
-	/** Code 39 USD3 w/o Checksum = us3 */
-	public static final String BARCODETYPE_Code39USD3WOChecksum = "us3";
-	/** Code 39  3 of 9 linear with Checksum = 3O9 */
-	public static final String BARCODETYPE_Code393Of9LinearWithChecksum = "3O9";
-	/** Code 39 linear w/o Checksum = c39 */
-	public static final String BARCODETYPE_Code39LinearWOChecksum = "c39";
-	/** EAN 13 = E13 */
-	public static final String BARCODETYPE_EAN13 = "E13";
-	/** UPC-A = UPA */
-	public static final String BARCODETYPE_UPC_A = "UPA";
-	/** Code 39 with Checksum = 39C */
-	public static final String BARCODETYPE_Code39WithChecksum = "39C";
-	/** Code 39 w/o Checksum = 39c */
-	public static final String BARCODETYPE_Code39WOChecksum = "39c";
-	/** QR Code = QRC */
-	public static final String BARCODETYPE_QRCode = "QRC";
 	/** Set Barcode Type.
 		@param BarcodeType 
 		Type of barcode
@@ -464,16 +473,16 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 
 	/** FieldAlignmentType AD_Reference_ID=253 */
 	public static final int FIELDALIGNMENTTYPE_AD_Reference_ID=253;
+	/** Block = B */
+	public static final String FIELDALIGNMENTTYPE_Block = "B";
+	/** Center = C */
+	public static final String FIELDALIGNMENTTYPE_Center = "C";
 	/** Default = D */
 	public static final String FIELDALIGNMENTTYPE_Default = "D";
 	/** Leading (left) = L */
 	public static final String FIELDALIGNMENTTYPE_LeadingLeft = "L";
 	/** Trailing (right) = T */
 	public static final String FIELDALIGNMENTTYPE_TrailingRight = "T";
-	/** Block = B */
-	public static final String FIELDALIGNMENTTYPE_Block = "B";
-	/** Center = C */
-	public static final String FIELDALIGNMENTTYPE_Center = "C";
 	/** Set Field Alignment.
 		@param FieldAlignmentType 
 		Field Text Alignment
@@ -982,6 +991,30 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
+	/** Set Print Attributes.
+		@param IsPrintInstanceAttributes 
+		Print each attributes as report column instead of printing the description of attribute set instance
+	  */
+	public void setIsPrintInstanceAttributes (boolean IsPrintInstanceAttributes)
+	{
+		set_Value (COLUMNNAME_IsPrintInstanceAttributes, Boolean.valueOf(IsPrintInstanceAttributes));
+	}
+
+	/** Get Print Attributes.
+		@return Print each attributes as report column instead of printing the description of attribute set instance
+	  */
+	public boolean isPrintInstanceAttributes () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsPrintInstanceAttributes);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Relative Position.
 		@param IsRelativePosition 
 		The item is relative positioned (not absolute)
@@ -1152,10 +1185,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 
 	/** LineAlignmentType AD_Reference_ID=254 */
 	public static final int LINEALIGNMENTTYPE_AD_Reference_ID=254;
-	/** Leading (left) = L */
-	public static final String LINEALIGNMENTTYPE_LeadingLeft = "L";
 	/** Center = C */
 	public static final String LINEALIGNMENTTYPE_Center = "C";
+	/** Leading (left) = L */
+	public static final String LINEALIGNMENTTYPE_LeadingLeft = "L";
 	/** Trailing (right) = T */
 	public static final String LINEALIGNMENTTYPE_TrailingRight = "T";
 	/** None = X */
@@ -1267,10 +1300,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final int PRINTAREATYPE_AD_Reference_ID=256;
 	/** Content = C */
 	public static final String PRINTAREATYPE_Content = "C";
-	/** Header = H */
-	public static final String PRINTAREATYPE_Header = "H";
 	/** Footer = F */
 	public static final String PRINTAREATYPE_Footer = "F";
+	/** Header = H */
+	public static final String PRINTAREATYPE_Header = "H";
 	/** Set Area.
 		@param PrintAreaType 
 		Print Area
@@ -1293,16 +1326,18 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final int PRINTFORMATTYPE_AD_Reference_ID=255;
 	/** Field = F */
 	public static final String PRINTFORMATTYPE_Field = "F";
-	/** Text = T */
-	public static final String PRINTFORMATTYPE_Text = "T";
-	/** Print Format = P */
-	public static final String PRINTFORMATTYPE_PrintFormat = "P";
 	/** Image = I */
 	public static final String PRINTFORMATTYPE_Image = "I";
-	/** Rectangle = R */
-	public static final String PRINTFORMATTYPE_Rectangle = "R";
 	/** Line = L */
 	public static final String PRINTFORMATTYPE_Line = "L";
+	/** Print Format = P */
+	public static final String PRINTFORMATTYPE_PrintFormat = "P";
+	/** Rectangle = R */
+	public static final String PRINTFORMATTYPE_Rectangle = "R";
+	/** Script = S */
+	public static final String PRINTFORMATTYPE_Script = "S";
+	/** Text = T */
+	public static final String PRINTFORMATTYPE_Text = "T";
 	/** Set Format Type.
 		@param PrintFormatType 
 		Print Format Type
@@ -1375,6 +1410,23 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
+	/** Set Script.
+		@param Script 
+		Dynamic Java Language Script to calculate result
+	  */
+	public void setScript (String Script)
+	{
+		set_Value (COLUMNNAME_Script, Script);
+	}
+
+	/** Get Script.
+		@return Dynamic Java Language Script to calculate result
+	  */
+	public String getScript () 
+	{
+		return (String)get_Value(COLUMNNAME_Script);
+	}
+
 	/** Set Sequence.
 		@param SeqNo 
 		Method of ordering records; lowest number comes first
@@ -1399,12 +1451,12 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final int SHAPETYPE_AD_Reference_ID=333;
 	/** 3D Rectangle = 3 */
 	public static final String SHAPETYPE_3DRectangle = "3";
+	/** Normal Rectangle = N */
+	public static final String SHAPETYPE_NormalRectangle = "N";
 	/** Oval = O */
 	public static final String SHAPETYPE_Oval = "O";
 	/** Round Rectangle = R */
 	public static final String SHAPETYPE_RoundRectangle = "R";
-	/** Normal Rectangle = N */
-	public static final String SHAPETYPE_NormalRectangle = "N";
 	/** Set Shape Type.
 		@param ShapeType 
 		Type of the shape to be painted

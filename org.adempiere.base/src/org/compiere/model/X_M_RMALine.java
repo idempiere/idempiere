@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_RMALine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_RMALine")
 public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_RMALine (Properties ctx, int M_RMALine_ID, String trxName)
@@ -97,9 +98,10 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -125,9 +127,10 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_Name)
-			.getPO(getC_Tax_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
+			.getPO(getC_Tax_ID(), get_TrxName());
+	}
 
 	/** Set Tax.
 		@param C_Tax_ID 
@@ -210,9 +213,10 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
 		@param M_InOutLine_ID 
@@ -238,9 +242,10 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -266,9 +271,10 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_RMA)MTable.get(getCtx(), org.compiere.model.I_M_RMA.Table_Name)
-			.getPO(getM_RMA_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_RMA)MTable.get(getCtx(), org.compiere.model.I_M_RMA.Table_ID)
+			.getPO(getM_RMA_ID(), get_TrxName());
+	}
 
 	/** Set RMA.
 		@param M_RMA_ID 
@@ -423,9 +429,10 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	}
 
 	public org.compiere.model.I_M_RMALine getRef_RMALine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_RMALine)MTable.get(getCtx(), org.compiere.model.I_M_RMALine.Table_Name)
-			.getPO(getRef_RMALine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_RMALine)MTable.get(getCtx(), org.compiere.model.I_M_RMALine.Table_ID)
+			.getPO(getRef_RMALine_ID(), get_TrxName());
+	}
 
 	/** Set Referenced RMA Line.
 		@param Ref_RMALine_ID Referenced RMA Line	  */

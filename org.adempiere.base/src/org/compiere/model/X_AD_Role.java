@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Role
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Role")
 public class X_AD_Role extends PO implements I_AD_Role, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -165,9 +166,10 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Tree getAD_Tree_Menu() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
-			.getPO(getAD_Tree_Menu_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_ID)
+			.getPO(getAD_Tree_Menu_ID(), get_TrxName());
+	}
 
 	/** Set Menu Tree.
 		@param AD_Tree_Menu_ID 
@@ -193,9 +195,10 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Tree getAD_Tree_Org() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
-			.getPO(getAD_Tree_Org_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_ID)
+			.getPO(getAD_Tree_Org_ID(), get_TrxName());
+	}
 
 	/** Set Organization Tree.
 		@param AD_Tree_Org_ID 
@@ -471,9 +474,10 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -979,12 +983,12 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public static final int PREFERENCETYPE_AD_Reference_ID=330;
 	/** Client = C */
 	public static final String PREFERENCETYPE_Client = "C";
+	/** None = N */
+	public static final String PREFERENCETYPE_None = "N";
 	/** Organization = O */
 	public static final String PREFERENCETYPE_Organization = "O";
 	/** User = U */
 	public static final String PREFERENCETYPE_User = "U";
-	/** None = N */
-	public static final String PREFERENCETYPE_None = "N";
 	/** Set Preference Level.
 		@param PreferenceType 
 		Determines what preferences the user can set
@@ -1005,16 +1009,6 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 
 	/** RoleType AD_Reference_ID=200166 */
 	public static final int ROLETYPE_AD_Reference_ID=200166;
-	/** WebUI = ZK */
-	public static final String ROLETYPE_WebUI = "ZK";
-	/** WebService = WS */
-	public static final String ROLETYPE_WebService = "WS";
-	/** System Support = SS */
-	public static final String ROLETYPE_SystemSupport = "SS";
-	/** Mobile = MO */
-	public static final String ROLETYPE_Mobile = "MO";
-	/** Swing = SW */
-	public static final String ROLETYPE_Swing = "SW";
 	/** External App 1 = E1 */
 	public static final String ROLETYPE_ExternalApp1 = "E1";
 	/** External App 2 = E2 */
@@ -1025,6 +1019,16 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public static final String ROLETYPE_ExternalApp4 = "E4";
 	/** External App 5 = E5 */
 	public static final String ROLETYPE_ExternalApp5 = "E5";
+	/** Mobile = MO */
+	public static final String ROLETYPE_Mobile = "MO";
+	/** System Support = SS */
+	public static final String ROLETYPE_SystemSupport = "SS";
+	/** Swing = SW */
+	public static final String ROLETYPE_Swing = "SW";
+	/** WebService = WS */
+	public static final String ROLETYPE_WebService = "WS";
+	/** WebUI = ZK */
+	public static final String ROLETYPE_WebUI = "ZK";
 	/** Set Role Type.
 		@param RoleType Role Type	  */
 	public void setRoleType (String RoleType)
@@ -1041,9 +1045,10 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
 		@param Supervisor_ID 
@@ -1087,14 +1092,14 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 
 	/** UserLevel AD_Reference_ID=226 */
 	public static final int USERLEVEL_AD_Reference_ID=226;
-	/** System = S   */
-	public static final String USERLEVEL_System = "S  ";
 	/** Client =  C  */
 	public static final String USERLEVEL_Client = " C ";
-	/** Organization =   O */
-	public static final String USERLEVEL_Organization = "  O";
 	/** Client+Organization =  CO */
 	public static final String USERLEVEL_ClientPlusOrganization = " CO";
+	/** Organization =   O */
+	public static final String USERLEVEL_Organization = "  O";
+	/** System = S   */
+	public static final String USERLEVEL_System = "S  ";
 	/** Set User Level.
 		@param UserLevel 
 		System Client Organization

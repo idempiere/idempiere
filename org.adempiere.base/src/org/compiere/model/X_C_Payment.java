@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Payment
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Payment")
 public class X_C_Payment extends PO implements I_C_Payment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Payment (Properties ctx, int C_Payment_ID, String trxName)
@@ -303,9 +304,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -331,9 +333,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
@@ -359,9 +362,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -387,9 +391,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BP_BankAccount.Table_Name)
-			.getPO(getC_BP_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BP_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BP_BankAccount.Table_ID)
+			.getPO(getC_BP_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Partner Bank Account.
 		@param C_BP_BankAccount_ID 
@@ -415,9 +420,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -443,9 +449,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
-			.getPO(getC_CashBook_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)
+			.getPO(getC_CashBook_ID(), get_TrxName());
+	}
 
 	/** Set Cash Book.
 		@param C_CashBook_ID 
@@ -471,9 +478,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -499,9 +507,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
-			.getPO(getC_ConversionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
 
 	/** Set Currency Type.
 		@param C_ConversionType_ID 
@@ -527,9 +536,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -555,9 +565,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_Name)
-			.getPO(getC_DepositBatch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_ID)
+			.getPO(getC_DepositBatch_ID(), get_TrxName());
+	}
 
 	/** Set Deposit Batch.
 		@param C_DepositBatch_ID Deposit Batch	  */
@@ -580,9 +591,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
 
 	/** Set Document Type.
 		@param C_DocType_ID 
@@ -645,9 +657,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -693,9 +706,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -721,9 +735,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_PaymentBatch getC_PaymentBatch() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentBatch)MTable.get(getCtx(), org.compiere.model.I_C_PaymentBatch.Table_Name)
-			.getPO(getC_PaymentBatch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentBatch)MTable.get(getCtx(), org.compiere.model.I_C_PaymentBatch.Table_ID)
+			.getPO(getC_PaymentBatch_ID(), get_TrxName());
+	}
 
 	/** Set Payment Batch.
 		@param C_PaymentBatch_ID 
@@ -772,9 +787,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_Name)
-			.getPO(getC_PaymentProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)
+			.getPO(getC_PaymentProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Payment Processor.
 		@param C_PaymentProcessor_ID 
@@ -814,9 +830,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_Name)
-			.getPO(getC_POSTenderType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_ID)
+			.getPO(getC_POSTenderType_ID(), get_TrxName());
+	}
 
 	/** Set POS Tender Type.
 		@param C_POSTenderType_ID POS Tender Type	  */
@@ -839,9 +856,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -927,18 +945,18 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	public static final int CREDITCARDTYPE_AD_Reference_ID=149;
 	/** Amex = A */
 	public static final String CREDITCARDTYPE_Amex = "A";
-	/** MasterCard = M */
-	public static final String CREDITCARDTYPE_MasterCard = "M";
-	/** Visa = V */
-	public static final String CREDITCARDTYPE_Visa = "V";
 	/** ATM = C */
 	public static final String CREDITCARDTYPE_ATM = "C";
 	/** Diners = D */
 	public static final String CREDITCARDTYPE_Diners = "D";
+	/** MasterCard = M */
+	public static final String CREDITCARDTYPE_MasterCard = "M";
 	/** Discover = N */
 	public static final String CREDITCARDTYPE_Discover = "N";
 	/** Purchase Card = P */
 	public static final String CREDITCARDTYPE_PurchaseCard = "P";
+	/** Visa = V */
+	public static final String CREDITCARDTYPE_Visa = "V";
 	/** Set Credit Card.
 		@param CreditCardType 
 		Credit Card (Visa, MC, AmEx)
@@ -1109,34 +1127,34 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -1157,30 +1175,30 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -1735,12 +1753,12 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 
 	/** R_AvsAddr AD_Reference_ID=213 */
 	public static final int R_AVSADDR_AD_Reference_ID=213;
-	/** Match = Y */
-	public static final String R_AVSADDR_Match = "Y";
 	/** No Match = N */
 	public static final String R_AVSADDR_NoMatch = "N";
 	/** Unavailable = X */
 	public static final String R_AVSADDR_Unavailable = "X";
+	/** Match = Y */
+	public static final String R_AVSADDR_Match = "Y";
 	/** Set Address verified.
 		@param R_AvsAddr 
 		This address has been verified
@@ -1761,12 +1779,12 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 
 	/** R_AvsZip AD_Reference_ID=213 */
 	public static final int R_AVSZIP_AD_Reference_ID=213;
-	/** Match = Y */
-	public static final String R_AVSZIP_Match = "Y";
 	/** No Match = N */
 	public static final String R_AVSZIP_NoMatch = "N";
 	/** Unavailable = X */
 	public static final String R_AVSZIP_Unavailable = "X";
+	/** Match = Y */
+	public static final String R_AVSZIP_Match = "Y";
 	/** Set Zip verified.
 		@param R_AvsZip 
 		The Zip Code has been verified
@@ -1810,9 +1828,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getRef_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getRef_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getRef_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Referenced Payment.
 		@param Ref_Payment_ID Referenced Payment	  */
@@ -1835,9 +1854,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getReversal() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getReversal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getReversal_ID(), get_TrxName());
+	}
 
 	/** Set Reversal ID.
 		@param Reversal_ID 
@@ -2034,14 +2054,14 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 
 	/** TenderType AD_Reference_ID=214 */
 	public static final int TENDERTYPE_AD_Reference_ID=214;
-	/** Credit Card = C */
-	public static final String TENDERTYPE_CreditCard = "C";
-	/** Check = K */
-	public static final String TENDERTYPE_Check = "K";
 	/** Direct Deposit = A */
 	public static final String TENDERTYPE_DirectDeposit = "A";
+	/** Credit Card = C */
+	public static final String TENDERTYPE_CreditCard = "C";
 	/** Direct Debit = D */
 	public static final String TENDERTYPE_DirectDebit = "D";
+	/** Check = K */
+	public static final String TENDERTYPE_Check = "K";
 	/** Account = T */
 	public static final String TENDERTYPE_Account = "T";
 	/** Cash = X */
@@ -2066,16 +2086,16 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 
 	/** TrxType AD_Reference_ID=215 */
 	public static final int TRXTYPE_AD_Reference_ID=215;
-	/** Sales = S */
-	public static final String TRXTYPE_Sales = "S";
-	/** Delayed Capture = D */
-	public static final String TRXTYPE_DelayedCapture = "D";
-	/** Credit (Payment) = C */
-	public static final String TRXTYPE_CreditPayment = "C";
-	/** Voice Authorization = F */
-	public static final String TRXTYPE_VoiceAuthorization = "F";
 	/** Authorization = A */
 	public static final String TRXTYPE_Authorization = "A";
+	/** Credit (Payment) = C */
+	public static final String TRXTYPE_CreditPayment = "C";
+	/** Delayed Capture = D */
+	public static final String TRXTYPE_DelayedCapture = "D";
+	/** Voice Authorization = F */
+	public static final String TRXTYPE_VoiceAuthorization = "F";
+	/** Sales = S */
+	public static final String TRXTYPE_Sales = "S";
 	/** Void = V */
 	public static final String TRXTYPE_Void = "V";
 	/** Set Transaction Type.
@@ -2097,9 +2117,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -2125,9 +2146,10 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

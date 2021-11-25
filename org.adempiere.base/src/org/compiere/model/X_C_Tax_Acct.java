@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_Tax_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Tax_Acct")
 public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Tax_Acct (Properties ctx, int C_Tax_Acct_ID, String trxName)
@@ -74,9 +75,10 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -116,9 +118,10 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_Name)
-			.getPO(getC_Tax_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
+			.getPO(getC_Tax_ID(), get_TrxName());
+	}
 
 	/** Set Tax.
 		@param C_Tax_ID 
@@ -144,9 +147,10 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
 	}
 
 	public I_C_ValidCombination getT_Credit_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getT_Credit_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getT_Credit_Acct(), get_TrxName());
+	}
 
 	/** Set Tax Credit.
 		@param T_Credit_Acct 
@@ -169,9 +173,10 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
 	}
 
 	public I_C_ValidCombination getT_Due_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getT_Due_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getT_Due_Acct(), get_TrxName());
+	}
 
 	/** Set Tax Due.
 		@param T_Due_Acct 
@@ -194,9 +199,10 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
 	}
 
 	public I_C_ValidCombination getT_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getT_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getT_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Tax Expense.
 		@param T_Expense_Acct 

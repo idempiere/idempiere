@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoColumn
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_InfoColumn")
 public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -43,7 +44,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setAD_Reference_ID (0);
 			setColumnName (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsAutocomplete (false);
 // N
 			setIsCentrallyMaintained (true);
@@ -93,9 +94,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
-			.getPO(getAD_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
+			.getPO(getAD_Element_ID(), get_TrxName());
+	}
 
 	/** Set System Element.
 		@param AD_Element_ID 
@@ -121,9 +123,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
-			.getPO(getAD_FieldStyle_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_FieldStyle_ID(), get_TrxName());
+	}
 
 	/** Set Field Style.
 		@param AD_FieldStyle_ID 
@@ -186,9 +189,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -214,9 +218,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -242,9 +247,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -270,9 +276,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -669,20 +676,20 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 
 	/** QueryOperator AD_Reference_ID=200061 */
 	public static final int QUERYOPERATOR_AD_Reference_ID=200061;
-	/** Like = Like */
-	public static final String QUERYOPERATOR_Like = "Like";
+	/** != = != */
+	public static final String QUERYOPERATOR_NotEq = "!=";
+	/** < = < */
+	public static final String QUERYOPERATOR_Le = "<";
+	/** <= = <= */
+	public static final String QUERYOPERATOR_LeEq = "<=";
 	/** = = = */
 	public static final String QUERYOPERATOR_Eq = "=";
 	/** > = > */
 	public static final String QUERYOPERATOR_Gt = ">";
 	/** >= = >= */
 	public static final String QUERYOPERATOR_GtEq = ">=";
-	/** < = < */
-	public static final String QUERYOPERATOR_Le = "<";
-	/** <= = <= */
-	public static final String QUERYOPERATOR_LeEq = "<=";
-	/** != = != */
-	public static final String QUERYOPERATOR_NotEq = "!=";
+	/** Like = Like */
+	public static final String QUERYOPERATOR_Like = "Like";
 	/** Full Like = LIKE */
 	public static final String QUERYOPERATOR_FullLike = "LIKE";
 	/** Set Query Operator.

@@ -51,8 +51,6 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 	public MRfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
 	{
 		super(ctx, C_RfQResponseLine_ID, trxName);
-//		if (ignored != 0)
-//			throw new IllegalArgumentException("Multi-Key");
 	}	//	MRfQResponseLine
 
 	/**

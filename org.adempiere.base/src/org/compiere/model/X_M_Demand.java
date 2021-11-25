@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Demand
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_Demand")
 public class X_M_Demand extends PO implements I_M_Demand, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Demand (Properties ctx, int M_Demand_ID, String trxName)
@@ -75,9 +76,10 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
     }
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
 		@param C_Calendar_ID 
@@ -103,9 +105,10 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_Name)
-			.getPO(getC_Year_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_ID)
+			.getPO(getC_Year_ID(), get_TrxName());
+	}
 
 	/** Set Year.
 		@param C_Year_ID 

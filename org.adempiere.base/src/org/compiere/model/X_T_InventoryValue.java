@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InventoryValue
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="T_InventoryValue")
 public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_T_InventoryValue (Properties ctx, int T_InventoryValue_ID, String trxName)
@@ -76,9 +77,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
     }
 
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_Name)
-			.getPO(getAD_PInstance_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
+			.getPO(getAD_PInstance_ID(), get_TrxName());
+	}
 
 	/** Set Process Instance.
 		@param AD_PInstance_ID 
@@ -104,9 +106,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -229,9 +232,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -257,9 +261,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_Name)
-			.getPO(getM_CostElement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
+			.getPO(getM_CostElement_ID(), get_TrxName());
+	}
 
 	/** Set Cost Element.
 		@param M_CostElement_ID 
@@ -285,9 +290,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_Name)
-			.getPO(getM_PriceList_Version_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
+			.getPO(getM_PriceList_Version_ID(), get_TrxName());
+	}
 
 	/** Set Price List Version.
 		@param M_PriceList_Version_ID 
@@ -313,9 +319,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -341,9 +348,10 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 

@@ -24,14 +24,15 @@ import org.compiere.model.*;
 
 /** Generated Model for QM_SpecificationLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="QM_SpecificationLine")
 public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_QM_SpecificationLine (Properties ctx, int QM_SpecificationLine_ID, String trxName)
@@ -99,9 +100,10 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	}
 
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
-			.getPO(getM_Attribute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
 
 	/** Set Attribute.
 		@param M_Attribute_ID 
@@ -128,24 +130,24 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 
 	/** Operation AD_Reference_ID=205 */
 	public static final int OPERATION_AD_Reference_ID=205;
+	/** != = != */
+	public static final String OPERATION_NotEq = "!=";
+	/** < = << */
+	public static final String OPERATION_Le = "<<";
+	/** <= = <= */
+	public static final String OPERATION_LeEq = "<=";
 	/**  = = == */
 	public static final String OPERATION_Eq = "==";
 	/** >= = >= */
 	public static final String OPERATION_GtEq = ">=";
 	/** > = >> */
 	public static final String OPERATION_Gt = ">>";
-	/** < = << */
-	public static final String OPERATION_Le = "<<";
 	/**  ~ = ~~ */
 	public static final String OPERATION_Like = "~~";
-	/** <= = <= */
-	public static final String OPERATION_LeEq = "<=";
 	/** |<x>| = AB */
 	public static final String OPERATION_X = "AB";
 	/** sql = SQ */
 	public static final String OPERATION_Sql = "SQ";
-	/** != = != */
-	public static final String OPERATION_NotEq = "!=";
 	/** Set Operation.
 		@param Operation 
 		Compare Operation
@@ -165,9 +167,10 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	}
 
 	public org.eevolution.model.I_QM_Specification getQM_Specification() throws RuntimeException
-    {
-		return (org.eevolution.model.I_QM_Specification)MTable.get(getCtx(), org.eevolution.model.I_QM_Specification.Table_Name)
-			.getPO(getQM_Specification_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_QM_Specification)MTable.get(getCtx(), org.eevolution.model.I_QM_Specification.Table_ID)
+			.getPO(getQM_Specification_ID(), get_TrxName());
+	}
 
 	/** Set Quality Specification.
 		@param QM_Specification_ID Quality Specification	  */

@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Exp
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Package_Exp")
 public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp (Properties ctx, int AD_Package_Exp_ID, String trxName)
@@ -319,6 +320,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 
 	/** ReleaseNo AD_Reference_ID=50002 */
 	public static final int RELEASENO_AD_Reference_ID=50002;
+	/** No specific release = all */
+	public static final String RELEASENO_NoSpecificRelease = "all";
 	/** Release 2.5.2a = Release 2.5.2a */
 	public static final String RELEASENO_Release252a = "Release 2.5.2a";
 	/** Release 2.5.2b = Release 2.5.2b */
@@ -333,8 +336,6 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 	public static final String RELEASENO_Release253a = "Release 2.5.3a";
 	/** Release 2.5.3b = Release 2.5.3b */
 	public static final String RELEASENO_Release253b = "Release 2.5.3b";
-	/** No specific release = all */
-	public static final String RELEASENO_NoSpecificRelease = "all";
 	/** Release 3.1.0 = Release 3.1.0 */
 	public static final String RELEASENO_Release310 = "Release 3.1.0";
 	/** Release 3.2.0 = Release 3.2.0 */

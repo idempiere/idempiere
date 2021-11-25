@@ -21,14 +21,21 @@
 
 package org.adempiere.webui.apps.form;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.logging.Level;
 
+import javax.activation.FileDataSource;
+
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
@@ -58,11 +65,13 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.WEMailDialog;
 import org.compiere.apps.form.Archive;
 import org.compiere.model.MArchive;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MUser;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -90,7 +99,7 @@ import org.zkoss.zul.impl.XulElement;
  * @author	Niraj Sohun
  * @date	September 28, 2007
 */
-
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.ArchiveViewer")
 public class WArchiveViewer extends Archive implements IFormController, EventListener<Event>
 {
 	private static final String ONCLOSE_TIMESTAMP_ATTR = "onclose.timestamp";
@@ -140,7 +149,6 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	};
 	private CustomForm form;
 	
-//	private Vbox queryPanel = new Vbox();
 	private Checkbox reportField = new Checkbox();
 	private Label processLabel = new Label(Msg.translate(Env.getCtx(), "AD_Process_ID"));
 	private Listbox processField = new Listbox();
@@ -160,7 +168,6 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private Datebox createdQFrom = new Datebox();
 	private Datebox createdQTo = new Datebox();
 	
-//	private Vbox viewEnterPanel = new Vbox();
 	private Button bBack = new Button();
 	private Button bNext = new Button();
 	private Label positionInfo = new Label(".");
@@ -177,6 +184,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Button updateArchive = new Button(); 
 	private Button deleteArchive = new Button(); 
+	private Button bEmail = new Button();
 		
 	private Tabbox tabbox = new Tabbox();
 	private Tabs tabs = new Tabs();
@@ -259,7 +267,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private void jbInit() throws Exception
 	{
 		ZKUpdateUtil.setWidth(tabbox, "100%");
-		ZKUpdateUtil.setHeight(tabbox, "90%");
+		ZKUpdateUtil.setVflex(tabbox, "1");		
 		tabbox.appendChild(tabs);
 		tabbox.appendChild(tabpanels);
 		tabbox.addEventListener(Events.ON_SELECT, this);
@@ -294,6 +302,13 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		
+		if (ThemeManager.isUseFontIconForImage())
+			bEmail.setIconSclass("z-icon-SendMail");
+		else
+			bEmail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
+		bEmail.setTooltiptext(Msg.getMsg(Env.getCtx(), "EMail"));
+		bEmail.addEventListener(Events.ON_CLICK, this);
+
 		if (ThemeManager.isUseFontIconForImage())
 			bBack.setIconSclass("z-icon-Previous");
 		else
@@ -506,6 +521,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		Hbox hbox = new Hbox();
 		hbox.appendChild(deleteArchive);
 		hbox.appendChild(bRefresh);
+		hbox.appendChild(bEmail);
 		hbox.appendChild(updateArchive);
 		cell = new Cell();
 		cell.setColspan(3);
@@ -573,6 +589,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		tabpanels.appendChild(tabViewPanel);
 		
 		confirmPanel.addActionListener(this);
+		ZKUpdateUtil.setVflex(confirmPanel, "min");
+		confirmPanel.setStyle("padding-top: 2px;padding-bottom: 2px;");
 		updateQDisplay();
 
 		iframe.setId("reportFrame");
@@ -611,6 +629,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			updateVDisplay(false);
 		else if (e.getTarget() == bNext)
 			updateVDisplay(true);
+		else if (e.getTarget() == bEmail)
+			sendMail();
 		else if (e.getTarget() == bRefresh)
 			iframe.invalidate();
 		else if (e.getTarget() instanceof Tab)
@@ -664,6 +684,29 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				}
 			}
 		});
+	}
+
+	/**
+	 * Send EMail with the current displayed file as attachment
+	 */
+	private void sendMail() {
+		MArchive ar = m_archives[m_index];
+
+		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
+		String fileName = System.getProperty("java.io.tmpdir") +
+				System.getProperty("file.separator") + ar.getName() + ".pdf";
+		File attachment = new File(fileName);
+		try {
+			Files.write(attachment.toPath(), ar.getBinaryData());
+		} catch (IOException e) {
+			throw new AdempiereException(e);
+		}
+
+		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
+				from, "", "", "", new FileDataSource(attachment),
+				m_WindowNo, m_AD_Table_ID, m_Record_ID, null);
+
+		AEnv.showWindow(dialog);
 	}
 
 	/**

@@ -55,9 +55,9 @@ public class MLookupFactory
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MLookupFactory.class);
 	/** Table Reference Cache				*/
-	private static CCache<String,MLookupInfo> s_cacheRefTable = new CCache<String,MLookupInfo>(I_AD_Ref_Table.Table_Name, 30, 60);	//	1h
+	private static CCache<String,MLookupInfo> s_cacheRefTable = new CCache<String,MLookupInfo>(I_AD_Ref_Table.Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);	//	1h
 	/** List Reference Cache				*/
-	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, 60);	//	1h
+	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);	//	1h
 
 
 	/**
@@ -292,8 +292,9 @@ public class MLookupFactory
 			if (s_log.isLoggable(Level.FINEST)) s_log.finest("Cache: " + retValue);
 			return retValue.cloneIt();
 		}
+
+		boolean orderByValue = MReference.get(AD_Reference_Value_ID).isOrderByValue();
 		
-		String byValue = DB.getSQLValueString(null, "SELECT IsOrderByValue FROM AD_Reference WHERE AD_Reference_ID = ? ", AD_Reference_Value_ID);
 		StringBuilder realSQL = new StringBuilder ("SELECT NULL, AD_Ref_List.Value,");
 		MClient client = MClient.get(Env.getCtx());
 		StringBuilder AspFilter = new StringBuilder();
@@ -322,7 +323,7 @@ public class MLookupFactory
 		String directSql = realSQL.toString() + " AND AD_Ref_List.Value=?";
 				
 		realSQL.append(AspFilter.toString());
-		if ("Y".equals(byValue))
+		if (orderByValue)
 			realSQL.append(" ORDER BY 2");
 		else
 			realSQL.append(" ORDER BY 3"); // sort by name/translated name - teo_sarca, [ 1672820 ]
@@ -903,9 +904,16 @@ public class MLookupFactory
 			//  List
 			else if (DisplayType.isList(ldc.DisplayType))
 			{
-				String embeddedSQL = getLookup_ListEmbed(language, ldc.AD_Reference_ID, ldc.ColumnName);
-				if (embeddedSQL != null)
-					displayColumn.append("(").append(embeddedSQL).append(")");
+				if (ldc.DisplayType == DisplayType.ChosenMultipleSelectionList)
+				{
+					displayColumn.append(columnSQL);
+				}
+				else
+				{
+					String embeddedSQL = getLookup_ListEmbed(language, ldc.AD_Reference_ID, ldc.ColumnName);
+					if (embeddedSQL != null)
+						displayColumn.append("(").append(embeddedSQL).append(")");
+				}
 			}
 			//	ID
 			else if (DisplayType.isID(ldc.DisplayType))

@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_PaymentTransaction
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_PaymentTransaction")
 public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_PaymentTransaction (Properties ctx, int C_PaymentTransaction_ID, String trxName)
@@ -286,9 +287,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -314,9 +316,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
@@ -342,9 +345,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -370,9 +374,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BP_BankAccount.Table_Name)
-			.getPO(getC_BP_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BP_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BP_BankAccount.Table_ID)
+			.getPO(getC_BP_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Partner Bank Account.
 		@param C_BP_BankAccount_ID 
@@ -398,9 +403,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -426,9 +432,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_Name)
-			.getPO(getC_CashBook_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)
+			.getPO(getC_CashBook_ID(), get_TrxName());
+	}
 
 	/** Set Cash Book.
 		@param C_CashBook_ID 
@@ -454,9 +461,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -482,9 +490,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
-			.getPO(getC_ConversionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
 
 	/** Set Currency Type.
 		@param C_ConversionType_ID 
@@ -510,9 +519,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -555,9 +565,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -583,9 +594,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -611,9 +623,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_PaymentBatch getC_PaymentBatch() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentBatch)MTable.get(getCtx(), org.compiere.model.I_C_PaymentBatch.Table_Name)
-			.getPO(getC_PaymentBatch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentBatch)MTable.get(getCtx(), org.compiere.model.I_C_PaymentBatch.Table_ID)
+			.getPO(getC_PaymentBatch_ID(), get_TrxName());
+	}
 
 	/** Set Payment Batch.
 		@param C_PaymentBatch_ID 
@@ -639,9 +652,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 
@@ -667,9 +681,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_Name)
-			.getPO(getC_PaymentProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)
+			.getPO(getC_PaymentProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Payment Processor.
 		@param C_PaymentProcessor_ID 
@@ -729,9 +744,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_Name)
-			.getPO(getC_POSTenderType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_ID)
+			.getPO(getC_POSTenderType_ID(), get_TrxName());
+	}
 
 	/** Set POS Tender Type.
 		@param C_POSTenderType_ID POS Tender Type	  */
@@ -754,9 +770,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -842,18 +859,18 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public static final int CREDITCARDTYPE_AD_Reference_ID=149;
 	/** Amex = A */
 	public static final String CREDITCARDTYPE_Amex = "A";
-	/** MasterCard = M */
-	public static final String CREDITCARDTYPE_MasterCard = "M";
-	/** Visa = V */
-	public static final String CREDITCARDTYPE_Visa = "V";
 	/** ATM = C */
 	public static final String CREDITCARDTYPE_ATM = "C";
 	/** Diners = D */
 	public static final String CREDITCARDTYPE_Diners = "D";
+	/** MasterCard = M */
+	public static final String CREDITCARDTYPE_MasterCard = "M";
 	/** Discover = N */
 	public static final String CREDITCARDTYPE_Discover = "N";
 	/** Purchase Card = P */
 	public static final String CREDITCARDTYPE_PurchaseCard = "P";
+	/** Visa = V */
+	public static final String CREDITCARDTYPE_Visa = "V";
 	/** Set Credit Card.
 		@param CreditCardType 
 		Credit Card (Visa, MC, AmEx)
@@ -1237,12 +1254,12 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 
 	/** R_AvsAddr AD_Reference_ID=213 */
 	public static final int R_AVSADDR_AD_Reference_ID=213;
-	/** Match = Y */
-	public static final String R_AVSADDR_Match = "Y";
 	/** No Match = N */
 	public static final String R_AVSADDR_NoMatch = "N";
 	/** Unavailable = X */
 	public static final String R_AVSADDR_Unavailable = "X";
+	/** Match = Y */
+	public static final String R_AVSADDR_Match = "Y";
 	/** Set Address verified.
 		@param R_AvsAddr 
 		This address has been verified
@@ -1263,12 +1280,12 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 
 	/** R_AvsZip AD_Reference_ID=213 */
 	public static final int R_AVSZIP_AD_Reference_ID=213;
-	/** Match = Y */
-	public static final String R_AVSZIP_Match = "Y";
 	/** No Match = N */
 	public static final String R_AVSZIP_NoMatch = "N";
 	/** Unavailable = X */
 	public static final String R_AVSZIP_Unavailable = "X";
+	/** Match = Y */
+	public static final String R_AVSZIP_Match = "Y";
 	/** Set Zip verified.
 		@param R_AvsZip 
 		The Zip Code has been verified
@@ -1312,9 +1329,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_PaymentTransaction getRef_PaymentTransaction() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentTransaction)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTransaction.Table_Name)
-			.getPO(getRef_PaymentTransaction_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentTransaction)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTransaction.Table_ID)
+			.getPO(getRef_PaymentTransaction_ID(), get_TrxName());
+	}
 
 	/** Set Referenced Payment Transaction.
 		@param Ref_PaymentTransaction_ID Referenced Payment Transaction	  */
@@ -1474,14 +1492,14 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 
 	/** TenderType AD_Reference_ID=214 */
 	public static final int TENDERTYPE_AD_Reference_ID=214;
-	/** Credit Card = C */
-	public static final String TENDERTYPE_CreditCard = "C";
-	/** Check = K */
-	public static final String TENDERTYPE_Check = "K";
 	/** Direct Deposit = A */
 	public static final String TENDERTYPE_DirectDeposit = "A";
+	/** Credit Card = C */
+	public static final String TENDERTYPE_CreditCard = "C";
 	/** Direct Debit = D */
 	public static final String TENDERTYPE_DirectDebit = "D";
+	/** Check = K */
+	public static final String TENDERTYPE_Check = "K";
 	/** Account = T */
 	public static final String TENDERTYPE_Account = "T";
 	/** Cash = X */
@@ -1506,16 +1524,16 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 
 	/** TrxType AD_Reference_ID=215 */
 	public static final int TRXTYPE_AD_Reference_ID=215;
-	/** Sales = S */
-	public static final String TRXTYPE_Sales = "S";
-	/** Delayed Capture = D */
-	public static final String TRXTYPE_DelayedCapture = "D";
-	/** Credit (Payment) = C */
-	public static final String TRXTYPE_CreditPayment = "C";
-	/** Voice Authorization = F */
-	public static final String TRXTYPE_VoiceAuthorization = "F";
 	/** Authorization = A */
 	public static final String TRXTYPE_Authorization = "A";
+	/** Credit (Payment) = C */
+	public static final String TRXTYPE_CreditPayment = "C";
+	/** Delayed Capture = D */
+	public static final String TRXTYPE_DelayedCapture = "D";
+	/** Voice Authorization = F */
+	public static final String TRXTYPE_VoiceAuthorization = "F";
+	/** Sales = S */
+	public static final String TRXTYPE_Sales = "S";
 	/** Void = V */
 	public static final String TRXTYPE_Void = "V";
 	/** Set Transaction Type.
@@ -1537,9 +1555,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -1565,9 +1584,10 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

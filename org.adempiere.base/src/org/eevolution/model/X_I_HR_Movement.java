@@ -27,14 +27,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_HR_Movement
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="I_HR_Movement")
 public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_I_HR_Movement (Properties ctx, int I_HR_Movement_ID, String trxName)
@@ -114,9 +115,10 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -176,9 +178,10 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_Name)
-			.getPO(getHR_Concept_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_ID)
+			.getPO(getHR_Concept_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Concept.
 		@param HR_Concept_ID Payroll Concept	  */
@@ -201,9 +204,10 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Movement getHR_Movement() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Movement)MTable.get(getCtx(), org.eevolution.model.I_HR_Movement.Table_Name)
-			.getPO(getHR_Movement_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Movement)MTable.get(getCtx(), org.eevolution.model.I_HR_Movement.Table_ID)
+			.getPO(getHR_Movement_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Movement.
 		@param HR_Movement_ID Payroll Movement	  */
@@ -226,9 +230,10 @@ public class X_I_HR_Movement extends PO implements I_I_HR_Movement, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Process getHR_Process() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Process)MTable.get(getCtx(), org.eevolution.model.I_HR_Process.Table_Name)
-			.getPO(getHR_Process_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Process)MTable.get(getCtx(), org.eevolution.model.I_HR_Process.Table_ID)
+			.getPO(getHR_Process_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Process.
 		@param HR_Process_ID Payroll Process	  */

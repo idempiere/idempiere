@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for CM_ChatTypeUpdate
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="CM_ChatTypeUpdate")
 public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_CM_ChatTypeUpdate (Properties ctx, int CM_ChatTypeUpdate_ID, String trxName)
@@ -72,9 +73,10 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -100,9 +102,10 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 	}
 
 	public org.compiere.model.I_CM_ChatType getCM_ChatType() throws RuntimeException
-    {
-		return (org.compiere.model.I_CM_ChatType)MTable.get(getCtx(), org.compiere.model.I_CM_ChatType.Table_Name)
-			.getPO(getCM_ChatType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_CM_ChatType)MTable.get(getCtx(), org.compiere.model.I_CM_ChatType.Table_ID)
+			.getPO(getCM_ChatType_ID(), get_TrxName());
+	}
 
 	/** Set Chat Type.
 		@param CM_ChatType_ID 

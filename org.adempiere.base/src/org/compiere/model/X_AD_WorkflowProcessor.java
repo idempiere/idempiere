@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WorkflowProcessor
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_WorkflowProcessor")
 public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessor (Properties ctx, int AD_WorkflowProcessor_ID, String trxName)
@@ -77,9 +78,10 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
     }
 
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
-			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_ID)
+			.getPO(getAD_Schedule_ID(), get_TrxName());
+	}
 
 	/** Set Schedule.
 		@param AD_Schedule_ID Schedule	  */
@@ -316,9 +318,10 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
 		@param Supervisor_ID 

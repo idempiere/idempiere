@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Style
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Style")
 public class X_AD_Style extends PO implements I_AD_Style, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Style (Properties ctx, int AD_Style_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
 			setAD_Style_ID (0);
 			setAD_Style_UU (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
         } */
     }

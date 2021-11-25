@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Replenish
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_Replenish")
 public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Replenish (Properties ctx, int M_Replenish_ID, String trxName)
@@ -116,9 +117,10 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -144,9 +146,10 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -186,9 +189,10 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -214,9 +218,10 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_WarehouseSource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_WarehouseSource_ID(), get_TrxName());
+	}
 
 	/** Set Source Warehouse.
 		@param M_WarehouseSource_ID 
@@ -260,12 +265,12 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 
 	/** ReplenishType AD_Reference_ID=164 */
 	public static final int REPLENISHTYPE_AD_Reference_ID=164;
-	/** Maintain Maximum Level = 2 */
-	public static final String REPLENISHTYPE_MaintainMaximumLevel = "2";
 	/** Manual = 0 */
 	public static final String REPLENISHTYPE_Manual = "0";
 	/** Reorder below Minimum Level = 1 */
 	public static final String REPLENISHTYPE_ReorderBelowMinimumLevel = "1";
+	/** Maintain Maximum Level = 2 */
+	public static final String REPLENISHTYPE_MaintainMaximumLevel = "2";
 	/** Custom = 9 */
 	public static final String REPLENISHTYPE_Custom = "9";
 	/** Set Replenish Type.

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AuthorizationAccount
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_AD_AuthorizationAccount 
 {
@@ -88,14 +88,14 @@ public interface I_AD_AuthorizationAccount
 
 	public org.compiere.model.I_AD_AuthorizationCredential getAD_AuthorizationCredential() throws RuntimeException;
 
-    /** Column name AD_AuthorizationScope */
-    public static final String COLUMNNAME_AD_AuthorizationScope = "AD_AuthorizationScope";
+    /** Column name AD_AuthorizationScopes */
+    public static final String COLUMNNAME_AD_AuthorizationScopes = "AD_AuthorizationScopes";
 
-	/** Set Authorization Scope	  */
-	public void setAD_AuthorizationScope (String AD_AuthorizationScope);
+	/** Set Authorization Scopes	  */
+	public void setAD_AuthorizationScopes (String AD_AuthorizationScopes);
 
-	/** Get Authorization Scope	  */
-	public String getAD_AuthorizationScope();
+	/** Get Authorization Scopes	  */
+	public String getAD_AuthorizationScopes();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

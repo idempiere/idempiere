@@ -27,7 +27,7 @@ import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.apps.form.WQuickForm;
+import org.adempiere.webui.apps.form.IQuickForm;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Combobox;
@@ -171,7 +171,7 @@ public class QuickGridView extends Vbox
 	// To prevent 'onFocus' event fire twice on same component.
 	private Component preEventComponent;
 
-	public WQuickForm				quickForm;
+	public IQuickForm				quickForm;
 
 	public GridField[] getGridField() {
 		return gridFields;
@@ -239,7 +239,7 @@ public class QuickGridView extends Vbox
 		addEventListener(EVENT_ONFOCUS_AFTER_SAVE, this);
 	}
 
-	public QuickGridView(AbstractADWindowContent abstractADWindowContent, GridTab gridTab, WQuickForm wQuickForm)
+	public QuickGridView(AbstractADWindowContent abstractADWindowContent, GridTab gridTab, IQuickForm wQuickForm)
 	{
 		this(abstractADWindowContent.getWindowNo());
 		setADWindowPanel(abstractADWindowContent);

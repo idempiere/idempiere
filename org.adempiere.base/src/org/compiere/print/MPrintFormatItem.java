@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.GridField;
+import org.compiere.model.MRole;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -31,6 +32,8 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -246,6 +249,14 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		}
 	}	//	loadTranslations
 
+	/**
+	 * 	Type Script
+	 *	@return true if script
+	 */
+	public boolean isTypeScript()
+	{
+		return getPrintFormatType().equals(PRINTFORMATTYPE_Script);
+	}
 
 	/**
 	 * 	Type Field
@@ -721,6 +732,18 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		if (!isTypeField() && !isTypePrintFormat() && !isImageField()) {
 			setAD_Column_ID(0);
 		}
+		
+		if(!isTypeScript() && !Util.isEmpty(getScript())) {
+			setScript(null);
+		}
+		
+		if(   !Util.isEmpty(getScript())
+		   && is_ValueChanged(MPrintFormatItem.COLUMNNAME_Script)
+		   && !MRole.getDefault().isAccessAdvanced()) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+			return false;
+		}
+		
 		return true;
 	}	//	beforeSave
 	

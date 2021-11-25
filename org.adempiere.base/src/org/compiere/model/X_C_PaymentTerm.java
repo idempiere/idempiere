@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentTerm
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_PaymentTerm")
 public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_PaymentTerm (Properties ctx, int C_PaymentTerm_ID, String trxName)
@@ -463,8 +464,6 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 
 	/** NetDay AD_Reference_ID=167 */
 	public static final int NETDAY_AD_Reference_ID=167;
-	/** Sunday = 7 */
-	public static final String NETDAY_Sunday = "7";
 	/** Monday = 1 */
 	public static final String NETDAY_Monday = "1";
 	/** Tuesday = 2 */
@@ -477,6 +476,8 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public static final String NETDAY_Friday = "5";
 	/** Saturday = 6 */
 	public static final String NETDAY_Saturday = "6";
+	/** Sunday = 7 */
+	public static final String NETDAY_Sunday = "7";
 	/** Set Net Day.
 		@param NetDay 
 		Day when payment is due net
@@ -519,10 +520,10 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public static final int PAYMENTTERMUSAGE_AD_Reference_ID=53382;
 	/** Both = B */
 	public static final String PAYMENTTERMUSAGE_Both = "B";
-	/** Sales = S */
-	public static final String PAYMENTTERMUSAGE_Sales = "S";
 	/** Purchases = P */
 	public static final String PAYMENTTERMUSAGE_Purchases = "P";
+	/** Sales = S */
+	public static final String PAYMENTTERMUSAGE_Sales = "S";
 	/** Set Payment Term Usage.
 		@param PaymentTermUsage 
 		Payment term usage indicates if this payment term is used for sales, purchases or both.

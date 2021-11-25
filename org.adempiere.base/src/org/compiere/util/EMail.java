@@ -48,6 +48,7 @@ import javax.mail.internet.MimeMultipart;
 
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
+import org.compiere.model.MSMTP;
 import org.compiere.model.MSysConfig;
 
 import com.sun.mail.smtp.SMTPMessage;
@@ -78,6 +79,10 @@ public final class EMail implements Serializable
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
+	
+	//log last email send error message in context
+	public final static String EMAIL_SEND_MSG = "EmailSendMsg";
+	
 	/**
 	 *	Full Constructor
 	 *  @param client the client
@@ -235,22 +240,39 @@ public final class EMail implements Serializable
 	/**	Logger							*/
 	protected transient static CLogger		log = CLogger.getCLogger (EMail.class);
 
+	/** Set it to true if you need to use the SMTP defined at tenant level - otherwise will try to use a SMTP from AD_SMTP table */
+	private boolean m_forceUseTenantSmtp = false; 
+
 	/**
 	 *	Send Mail direct
 	 *	@return OK or error message
 	 */
 	public String send ()
 	{
+		if (!m_forceUseTenantSmtp && getFrom() != null) {
+			MSMTP smtp = MSMTP.get(m_ctx, Env.getAD_Client_ID(m_ctx), getFrom().getAddress());
+			if (smtp != null) {
+				setSmtpHost(smtp.getSMTPHost());
+				setSmtpPort(smtp.getSMTPPort());
+				setSecureSmtp(smtp.isSecureSMTP());
+				createAuthenticator(smtp.getRequestUser(), smtp.getRequestUserPW());
+				if (log.isLoggable(Level.FINE)) log.fine("sending email using from " + getFrom().getAddress() + " using " + smtp.toString());
+			}
+		}
+
 		if (log.isLoggable(Level.INFO)){
 			log.info("(" + m_smtpHost + ") " + m_from + " -> " + m_to);
 			log.info("(m_auth) " + m_auth);
 		}
 		
 		m_sentMsg = null;
+		Env.getCtx().remove(EMAIL_SEND_MSG);
+		
 		//
 		if (!isValid(true))
 		{
 			m_sentMsg = "Invalid Data";
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return m_sentMsg;
 		}
 		//
@@ -305,12 +327,14 @@ public final class EMail implements Serializable
 		{
 			log.log(Level.WARNING, "Auth=" + m_auth + " - " + se.toString());
 			m_sentMsg = se.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return se.toString();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "Auth=" + m_auth, e);
 			m_sentMsg = e.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return e.toString();
 		}
 
@@ -475,12 +499,14 @@ public final class EMail implements Serializable
 			else
 				log.log(Level.WARNING, sb.toString());
 			m_sentMsg = sb.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return sb.toString();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
 			m_sentMsg = e.getLocalizedMessage();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return e.getLocalizedMessage();
 		}
 		finally
@@ -588,7 +614,7 @@ public final class EMail implements Serializable
 	{
 		if (username == null || password == null)
 		{
-			log.warning("Ignored - " +  username + "/" + password);
+			log.fine("Ignored - " +  username + "/" + password);
 			m_auth = null;
 		}
 		else
@@ -1257,4 +1283,7 @@ public final class EMail implements Serializable
 		return ia;
 	}
 
+	public void setForTenantSmtp(boolean forceTenantSmtp) {
+		m_forceUseTenantSmtp = forceTenantSmtp;	
+	}
 }	//	EMail

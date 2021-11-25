@@ -42,6 +42,7 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
+@org.adempiere.base.annotation.Process
 public class ApplyMigrationScripts extends SvrProcess {
 
 	/** Logger */

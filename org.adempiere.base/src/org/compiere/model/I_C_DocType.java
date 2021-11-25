@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_C_DocType 
 {
@@ -419,6 +419,15 @@ public interface I_C_DocType
 	  * Movement is in transit
 	  */
 	public boolean isInTransit();
+
+    /** Column name isNoPriceListCheck */
+    public static final String COLUMNNAME_IsNoPriceListCheck = "IsNoPriceListCheck";
+
+	/** Set Allow Product Without Pricelist	  */
+	public void setIsNoPriceListCheck (boolean IsNoPriceListCheck);
+
+	/** Get Allow Product Without Pricelist	  */
+	public boolean IsNoPriceListCheck();
 
     /** Column name IsOverwriteDateOnComplete */
     public static final String COLUMNNAME_IsOverwriteDateOnComplete = "IsOverwriteDateOnComplete";

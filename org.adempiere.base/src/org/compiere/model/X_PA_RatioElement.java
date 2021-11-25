@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_RatioElement
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PA_RatioElement")
 public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_RatioElement (Properties ctx, int PA_RatioElement_ID, String trxName)
@@ -79,9 +80,10 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
     }
 
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getAccount_ID(), get_TrxName());
+	}
 
 	/** Set Account.
 		@param Account_ID 
@@ -161,9 +163,10 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	public org.compiere.model.I_PA_MeasureCalc getPA_MeasureCalc() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_MeasureCalc)MTable.get(getCtx(), org.compiere.model.I_PA_MeasureCalc.Table_Name)
-			.getPO(getPA_MeasureCalc_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_MeasureCalc)MTable.get(getCtx(), org.compiere.model.I_PA_MeasureCalc.Table_ID)
+			.getPO(getPA_MeasureCalc_ID(), get_TrxName());
+	}
 
 	/** Set Measure Calculation.
 		@param PA_MeasureCalc_ID 
@@ -226,9 +229,10 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	public org.compiere.model.I_PA_Ratio getPA_Ratio() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_Name)
-			.getPO(getPA_Ratio_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_ID)
+			.getPO(getPA_Ratio_ID(), get_TrxName());
+	}
 
 	/** Set Ratio.
 		@param PA_Ratio_ID 
@@ -254,9 +258,10 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	public org.compiere.model.I_PA_Ratio getPA_RatioUsed() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_Name)
-			.getPO(getPA_RatioUsed_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_Ratio)MTable.get(getCtx(), org.compiere.model.I_PA_Ratio.Table_ID)
+			.getPO(getPA_RatioUsed_ID(), get_TrxName());
+	}
 
 	/** Set Ratio Used.
 		@param PA_RatioUsed_ID 
@@ -289,10 +294,10 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
 		@param PostingType 
 		The type of posted amount for the transaction
@@ -313,14 +318,14 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 
 	/** RatioElementType AD_Reference_ID=372 */
 	public static final int RATIOELEMENTTYPE_AD_Reference_ID=372;
-	/** Ratio = R */
-	public static final String RATIOELEMENTTYPE_Ratio = "R";
-	/** Constant = C */
-	public static final String RATIOELEMENTTYPE_Constant = "C";
-	/** Calculation = X */
-	public static final String RATIOELEMENTTYPE_Calculation = "X";
 	/** Account Value = A */
 	public static final String RATIOELEMENTTYPE_AccountValue = "A";
+	/** Constant = C */
+	public static final String RATIOELEMENTTYPE_Constant = "C";
+	/** Ratio = R */
+	public static final String RATIOELEMENTTYPE_Ratio = "R";
+	/** Calculation = X */
+	public static final String RATIOELEMENTTYPE_Calculation = "X";
 	/** Set Element Type.
 		@param RatioElementType 
 		Ratio Element Type
@@ -341,14 +346,14 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 
 	/** RatioOperand AD_Reference_ID=373 */
 	public static final int RATIOOPERAND_AD_Reference_ID=373;
-	/** Plus = P */
-	public static final String RATIOOPERAND_Plus = "P";
-	/** Minus = N */
-	public static final String RATIOOPERAND_Minus = "N";
-	/** Multiply = M */
-	public static final String RATIOOPERAND_Multiply = "M";
 	/** Divide = D */
 	public static final String RATIOOPERAND_Divide = "D";
+	/** Multiply = M */
+	public static final String RATIOOPERAND_Multiply = "M";
+	/** Minus = N */
+	public static final String RATIOOPERAND_Minus = "N";
+	/** Plus = P */
+	public static final String RATIOOPERAND_Plus = "P";
 	/** Set Operand.
 		@param RatioOperand 
 		Ratio Operand

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_OnlineTrxHistory
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_OnlineTrxHistory")
 public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_OnlineTrxHistory (Properties ctx, int C_OnlineTrxHistory_ID, String trxName)
@@ -76,9 +77,10 @@ public class X_C_OnlineTrxHistory extends PO implements I_C_OnlineTrxHistory, I_
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 

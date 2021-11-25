@@ -75,8 +75,6 @@ public class MRfQLineQty extends X_C_RfQLineQty
 		super (ctx, C_RfQLineQty_ID, trxName);
 		if (C_RfQLineQty_ID == 0)
 		{
-		//	setC_RfQLine_ID (0);
-		//	setC_UOM_ID (0);
 			setIsOfferQty (false);
 			setIsPurchaseQty (false);
 			setQty (Env.ONE);	// 1

@@ -1749,7 +1749,7 @@ public final class DB
         if (noIsSOTrxColumn && TableName.endsWith("Line")) {
         	noIsSOTrxColumn = false;
         	String hdr = TableName.substring(0, TableName.indexOf("Line"));
-        	if (MTable.get(Env.getCtx(), hdr).getColumn("IsSOTrx") == null) {
+        	if (MTable.get(Env.getCtx(), hdr) == null || MTable.get(Env.getCtx(), hdr).getColumn("IsSOTrx") == null) {
         		noIsSOTrxColumn = true;
         	} else {
         		// use IN instead of EXISTS as the subquery should be highly selective
@@ -2599,4 +2599,21 @@ public final class DB
 	{
 		return getDatabase().intersectClauseForCSV(columnName, csv);
 	}
+	
+	/**
+	 * 
+	 * @param sql
+	 * @return true if it is select sql statement
+	 */
+	public static boolean isSelectStatement(String sql) {
+		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
+		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
+		String removeLeadingSpaces = "^\\s+";
+		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
+		if(cleanSql.matches("^select\s.*$") && !cleanSql.contains(";"))
+			return true;
+		else
+			return false;
+	}
+
 }	//	DB

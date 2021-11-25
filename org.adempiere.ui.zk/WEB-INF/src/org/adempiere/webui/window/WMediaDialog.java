@@ -211,6 +211,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		confirmPanel.appendChild(bOk);
 		confirmPanel.appendChild(bCancel);
 		confirmPanel.setStyle("float: right;");
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
 	private void  afterPageAttached() {
@@ -316,8 +317,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		
 		else if (e.getTarget() == bCancel)
 		{
-			m_cancel = true;
-			dispose();
+			onCancel();
 		}
 		
 		//	clear data
@@ -341,6 +341,11 @@ public class WMediaDialog extends Window implements EventListener<Event>
 			processUploadMedia(ue.getMedia());
 		}
 	}	//	onEvent
+
+	private void onCancel() {
+		m_cancel = true;
+		dispose();
+	}
 	
 	private void processUploadMedia(Media media) {
 		if (media == null)
@@ -385,6 +390,10 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	public Object getData() {
 		return m_data;
 	}
-	
-	
+
+	@Override
+	public void focus() {
+		super.focus();
+		bLoad.focus();
+	}		
 }

@@ -29,6 +29,7 @@ import org.compiere.process.SvrProcess;
  * @author Low Heng Sin
  *
  */
+@org.adempiere.base.annotation.Process
 public class VoidShipmentProcess extends SvrProcess 
 {
 	@Override

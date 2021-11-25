@@ -62,8 +62,6 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 		super (ctx, C_PaymentAllocate_ID, trxName);
 		if (C_PaymentAllocate_ID == 0)
 		{
-		//	setC_Payment_ID (0);	//	Parent
-		//	setC_Invoice_ID (0);
 			setAmount (Env.ZERO);
 			setDiscountAmt (Env.ZERO);
 			setOverUnderAmt (Env.ZERO);

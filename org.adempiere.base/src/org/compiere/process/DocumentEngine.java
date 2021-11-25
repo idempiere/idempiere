@@ -367,7 +367,6 @@ public class DocumentEngine implements DocAction
 							for (PO docafter : docsPostProcess) {								
 								if (docafter.get_ValueAsBoolean("Posted"))
 									continue;
-								@SuppressWarnings("unused")
 								String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
 								if (!Util.isEmpty(ignoreError, true)) {
 									log.warning("Error posting " + docafter + ". Error="+ignoreError);
@@ -965,17 +964,17 @@ public class DocumentEngine implements DocAction
 			options[index++] = DocumentEngine.ACTION_Prepare;
 			options[index++] = DocumentEngine.ACTION_Void;
 		}
-		//	Draft/Invalid				..  DR/IN
+		//	Draft/In Process/Invalid	..  DR/IP/IN
 		else if (docStatus.equals(DocumentEngine.STATUS_Drafted)
+			|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 			|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 		{
 			options[index++] = DocumentEngine.ACTION_Complete;
-		//	options[index++] = DocumentEngine.ACTION_Prepare;
+			options[index++] = DocumentEngine.ACTION_Prepare;
 			options[index++] = DocumentEngine.ACTION_Void;
 		}
-		//	In Process                  ..  IP
-		else if (docStatus.equals(DocumentEngine.STATUS_InProgress)
-			|| docStatus.equals(DocumentEngine.STATUS_Approved))
+		//	Approved                  ..  AP
+		else if (docStatus.equals(DocumentEngine.STATUS_Approved))
 		{
 			options[index++] = DocumentEngine.ACTION_Complete;
 			options[index++] = DocumentEngine.ACTION_Void;
@@ -1010,7 +1009,6 @@ public class DocumentEngine implements DocAction
 				|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 				|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 			{
-				options[index++] = DocumentEngine.ACTION_Prepare;
 				//	Draft Sales Order Quote/Proposal - Process
 				if ("Y".equals(isSOTrx)
 					&& ("OB".equals(orderType) || "ON".equals(orderType)))
@@ -1148,7 +1146,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO
@@ -1163,15 +1160,8 @@ public class DocumentEngine implements DocAction
 		 */
 		else if (AD_Table_ID == MProduction.Table_ID)
 		{
-			//	Draft                       ..  DR/IP/IN
-			if (docStatus.equals(DocumentEngine.STATUS_Drafted)
-					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
-					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
-			{
-				options[index++] = DocumentEngine.ACTION_Prepare;
-			}
 			//	Complete                    ..  CO
-			else if (docStatus.equals(DocumentEngine.STATUS_Completed))
+			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
 				if (periodOpen) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
@@ -1189,7 +1179,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO
@@ -1208,7 +1197,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO
@@ -1227,7 +1215,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO

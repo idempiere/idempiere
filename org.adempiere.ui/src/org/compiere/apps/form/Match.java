@@ -21,7 +21,10 @@ import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MClient;
@@ -361,7 +364,7 @@ public class Match
 			m_qtyColumn = "lin.MovementQty";
 			m_sql.append("SELECT hdr.M_InOut_ID,hdr.DocumentNo, hdr.MovementDate, bp.Name,hdr.C_BPartner_ID,"
 				+ " lin.Line,lin.M_InOutLine_ID, p.Name,lin.M_Product_ID,"
-				+ " lin.MovementQty,SUM(NVL(m.Qty,0)),org.Name, hdr.AD_Org_ID " //JAVIER
+				+ " CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END,SUM(NVL(m.Qty,0)),org.Name, hdr.AD_Org_ID " //JAVIER
 				+ "FROM M_InOut hdr"
 				+ " INNER JOIN AD_Org org ON (hdr.AD_Org_ID=org.AD_Org_ID)" //JAVIER
 				+ " INNER JOIN C_BPartner bp ON (hdr.C_BPartner_ID=bp.C_BPartner_ID)"
@@ -378,9 +381,9 @@ public class Match
 				m_sql.append(" AND m.C_OrderLine_ID  = ").append(Line_ID);
 
 			m_groupBy = " GROUP BY hdr.M_InOut_ID,hdr.DocumentNo,hdr.MovementDate,bp.Name,hdr.C_BPartner_ID,"
-				+ " lin.Line,lin.M_InOutLine_ID,p.Name,lin.M_Product_ID,lin.MovementQty, org.Name, hdr.AD_Org_ID " //JAVIER
+				+ " lin.Line,lin.M_InOutLine_ID,p.Name,lin.M_Product_ID,lin.MovementQty, org.Name, hdr.AD_Org_ID, dt.DocBaseType " //JAVIER
 				+ "HAVING "
-				+ (matched ? "0" : "lin.MovementQty")
+				+ (matched ? "0" : "CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END")
 				+ "<>SUM(NVL(m.Qty,0))";
 		}
 	//	Log.trace(7, "VMatch.tableInit", m_sql + "\n" + m_groupBy);
@@ -522,11 +525,20 @@ public class Match
 				{
 					success = true;
 					//	Correct Ordered Qty for Stocked Products (see MOrder.reserveStock / MInOut.processIt)
-					if (sLine.getProduct() != null && sLine.getProduct().isStocked())
-						success = MStorageReservation.add (Env.getCtx(), sLine.getM_Warehouse_ID(),
-							sLine.getM_Product_ID(),
-							sLine.getM_AttributeSetInstance_ID(),
-							qty.negate(), false, trxName);
+					if (oLine.get_ID() > 0 && oLine.getM_Product_ID() > 0 && oLine.getProduct().isStocked()) {
+						IReservationTracer tracer = null;
+						IReservationTracerFactory factory = Core.getReservationTracerFactory();
+						if (factory != null) {
+							tracer = factory.newTracer(sLine.getParent().getC_DocType_ID(), sLine.getParent().getDocumentNo(), sLine.getLine(), 
+									sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+									oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
+									trxName);
+						}
+						success = MStorageReservation.add (Env.getCtx(), oLine.getM_Warehouse_ID(),
+							oLine.getM_Product_ID(),
+							oLine.getM_AttributeSetInstance_ID(),
+							qty.negate(), oLine.getParent().isSOTrx(), trxName, tracer);
+					}
 				}
 			}
 			else

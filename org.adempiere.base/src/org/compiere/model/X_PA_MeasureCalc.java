@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_MeasureCalc
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PA_MeasureCalc")
 public class X_PA_MeasureCalc extends PO implements I_PA_MeasureCalc, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_MeasureCalc (Properties ctx, int PA_MeasureCalc_ID, String trxName)
@@ -42,7 +43,7 @@ public class X_PA_MeasureCalc extends PO implements I_PA_MeasureCalc, I_Persiste
 			setDateColumn (null);
 // x.Date
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setKeyColumn (null);
 			setName (null);
 			setOrgColumn (null);
@@ -84,9 +85,10 @@ public class X_PA_MeasureCalc extends PO implements I_PA_MeasureCalc, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 

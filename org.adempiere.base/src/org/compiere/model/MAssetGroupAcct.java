@@ -78,13 +78,6 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 		return m_parent;
 	}
 	
-	/* commented by @win
-	public int getA_Asset_Class_ID()
-	{
-		return getParent().getA_Asset_Class_ID();
-	}
-	*/
-	
 	public Timestamp getAssetServiceDate()
 	{
 		return null;

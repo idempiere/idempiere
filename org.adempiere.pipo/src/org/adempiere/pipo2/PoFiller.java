@@ -57,10 +57,12 @@ public class PoFiller{
 		String value = getStringValue(columnName);
 		if(value == null)
 			return false;
-		
-		String strParts [] = value.split("[|]");
-		return strParts.length == 2;
 
+		String strParts [] = value.split("[|]");
+		return (   strParts.length == 2
+				&& strParts[0].endsWith(PackOut.PACKOUT_BLOB_FILE_EXTENSION)
+				&& (   PoExporter.POEXPORTER_BLOB_TYPE_STRING.equals(strParts[1]) // see PoExporter.addBlob
+					|| PoExporter.POEXPORTER_BLOB_TYPE_BYTEARRAY.equals(strParts[1])));
 	}
 	
 	/**
@@ -358,7 +360,11 @@ public class PoFiller{
 				} else if (DisplayType.isLOB(info.getColumnDisplayType(index))) {
 					setBlob(qName);
 				} else {
-					setString(qName);
+					if (isBlobOnPackinFile(qName)) {
+						setBlob(qName);
+					} else {
+						setString(qName);
+					}
 				}
 			}
 		}
@@ -410,7 +416,7 @@ public class PoFiller{
 					PackIn packIn = ctx.packIn;
 					try {
 						bytes = packIn.readBlob(fileName);
-						if ("byte[]".equals(dataType)) {
+						if (PoExporter.POEXPORTER_BLOB_TYPE_BYTEARRAY.equals(dataType)) {
 							data = bytes;
 						} else {
 							data = new String(bytes, "UTF-8");

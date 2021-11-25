@@ -55,6 +55,7 @@ import org.eevolution.model.MDDOrderLine;
  * 	@see 	http://sourceforge.net/tracker/index.php?func=detail&aid=2030865&group_id=176962&atid=879335		
  *  @version $Id: DistributionRun.java,v 1.4 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class DistributionRun extends SvrProcess
 {
 	/**	The Run to execute		*/

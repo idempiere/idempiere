@@ -31,6 +31,7 @@ import org.compiere.process.SvrProcess;
  * 	@version 	$Id: MPrintFormatProcess.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  *  @author		Michael Judd BF [ 2730339 ] - Error logging in MPrintFormatProcess
  */
+@org.adempiere.base.annotation.Process
 public class MPrintFormatProcess extends SvrProcess
 {
 	/** PrintFormat             */

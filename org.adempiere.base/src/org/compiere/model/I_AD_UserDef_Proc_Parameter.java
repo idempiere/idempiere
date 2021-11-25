@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Proc_Parameter
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_AD_UserDef_Proc_Parameter 
 {
@@ -48,6 +48,21 @@ public interface I_AD_UserDef_Proc_Parameter
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_FieldGroup_ID */
+    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
+
+	/** Set Field Group.
+	  * Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
+
+	/** Get Field Group.
+	  * Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID();
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

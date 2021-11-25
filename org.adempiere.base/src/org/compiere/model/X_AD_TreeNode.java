@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_TreeNode
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_TreeNode")
 public class X_AD_TreeNode extends PO implements I_AD_TreeNode, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_TreeNode (Properties ctx, int AD_TreeNode_ID, String trxName)
@@ -72,9 +73,10 @@ public class X_AD_TreeNode extends PO implements I_AD_TreeNode, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_Name)
-			.getPO(getAD_Tree_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_ID)
+			.getPO(getAD_Tree_ID(), get_TrxName());
+	}
 
 	/** Set Tree.
 		@param AD_Tree_ID 

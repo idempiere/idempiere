@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BankAccount_Processor
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_BankAccount_Processor")
 public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Processor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName)
@@ -337,9 +338,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
 		@param C_BankAccount_ID 
@@ -379,9 +381,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -407,9 +410,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_Name)
-			.getPO(getC_PaymentProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)
+			.getPO(getC_PaymentProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Payment Processor.
 		@param C_PaymentProcessor_ID 

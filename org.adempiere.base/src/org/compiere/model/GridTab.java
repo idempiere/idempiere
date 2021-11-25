@@ -48,6 +48,7 @@ import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -112,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5086068543834849233L;
+	private static final long serialVersionUID = -2091725732178841608L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -589,6 +590,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		m_mTable.addDataStatusListener(this);
 	//	m_mTable.addTableModelListener(this);
 	}   //  enableEvents
+
+	/**
+	 * get Tab Type
+	 * @return String
+	 */
+	public String getTabType()
+	{
+		return m_vo.AD_TabType;
+	} // getTabType
 
 	/**
 	 *	Assemble whereClause and query MTable and position to row 0.
@@ -1068,11 +1078,19 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		return false;
 	}
-
+	
 	/**
 	 * refresh current row of parent tabs
 	 */
 	public void refreshParentTabs() {
+		refreshParentTabs(false);
+	}
+
+
+	/**
+	 * refresh current row of parent tabs
+	 */
+	public void refreshParentTabs(boolean fireParentEvent) {
 		if (isDetail()) {
 			// get parent tab
 			// the parent tab is the first tab above with level = this_tab_level-1
@@ -1081,7 +1099,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				GridTab parentTab = m_window.getTab(i);
 				if (parentTab.m_vo.TabLevel == level-1) {
 					// this is parent tab
-					parentTab.dataRefresh(false);
+					parentTab.dataRefresh(fireParentEvent);
 					// search for the next parent
 					if (parentTab.isDetail()) {
 						level = parentTab.m_vo.TabLevel;
@@ -1364,7 +1382,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!isDetail())
 			return true;
 		//	Same link column value
-		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, this.getParentTabNo(), getLinkColumnName());
+		// IDEMPIERE-4799 Fix Check Parent Column name
+		String columnName = Util.isEmpty(m_parentColumnName) ? getLinkColumnName() : m_parentColumnName;
+		String value = Env.getContext(m_vo.ctx, m_vo.WindowNo, this.getParentTabNo(), columnName);
 		return m_linkValue.equals(value);
 	}	//	isCurrent
 
@@ -1621,7 +1641,18 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public String get_ValueAsString (String variableName)
 	{
-		return Env.getContext (m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, variableName, false, true);
+		return get_ValueAsString (m_vo.ctx, variableName);
+	}	//	get_ValueAsString
+	
+	/**
+	 * 	Get Variable Value (Evaluatee)
+	 *  @param ctx context
+	 *	@param variableName name
+	 *	@return value
+	 */
+	public String get_ValueAsString (Properties ctx, String variableName)
+	{
+		return new DefaultEvaluatee(this, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
 	/**
@@ -2629,6 +2660,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		if (changingRow && keyCalloutDelayed != null)
 			processCallout(keyCalloutDelayed);
+		
+		//set isSOTrx context
+		if (changingRow) {
+			setIsSOTrxContext();
+		}
+		
 		loadDependentInfo();
 
 		if (!fireEvents)    //  prevents informing twice
@@ -2665,6 +2702,48 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		
 		return m_currentRow;
 	}   //  setCurrentRow
+
+	private void setIsSOTrxContext() {
+		final String IsSOTrx = "IsSOTrx";
+		final String C_DocType_ID = "C_DocType_ID";
+		final String C_DocTypeTarget_ID = "C_DocTypeTarget_ID";
+		if (getField(IsSOTrx) != null || getField(C_DocType_ID) != null || getField(C_DocTypeTarget_ID) != null) {
+			String isSOTrx = null;
+			GridField field = getField(IsSOTrx);
+			if (field != null && field.getValue() != null) {
+				Object value = field.getValue();
+				if (value instanceof Boolean) {
+					isSOTrx = ((Boolean) value).booleanValue() ? "Y" : "N";
+				} else if (value instanceof String) {
+					isSOTrx = (String) value;
+				}
+			}
+			if (isSOTrx == null) {
+				field = getField(C_DocType_ID);
+				if (field != null && field.getValue() != null) {
+					int docTypeId = ((Number)field.getValue()).intValue();
+					if (docTypeId > 0) {
+						isSOTrx = MDocType.get(docTypeId).isSOTrx() ? "Y" : "N";
+					}
+				}
+			}
+			if (isSOTrx == null) {
+				field = getField(C_DocTypeTarget_ID);
+				if (field != null && field.getValue() != null) {
+					int docTypeId = ((Number)field.getValue()).intValue();
+					if (docTypeId > 0) {
+						isSOTrx = MDocType.get(docTypeId).isSOTrx() ? "Y" : "N";
+					}
+				}
+			}
+			if (isSOTrx != null) {
+				Env.setContext(Env.getCtx(), getWindowNo(), getTabNo(), IsSOTrx, isSOTrx);
+				if (m_vo.TabNo == 0) {
+					Env.setContext(Env.getCtx(), getWindowNo(), IsSOTrx, isSOTrx);
+				}
+			}
+		}
+	}
 
 
 	/**
@@ -2851,6 +2930,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private List<Callout> activeCalloutInstance = new ArrayList<Callout>();
 
 	private boolean m_updateWindowContext = true;
+
+	// Cached parent Tab No
+	private int m_parentTabNo = -1;
 
 	/**
 	 *
@@ -3321,11 +3403,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	private int getParentTabNo()
 	{
+		if (m_parentTabNo >= 0)
+			return m_parentTabNo;
 		int tabNo = m_vo.TabNo;
 		int currentLevel = m_vo.TabLevel;
 		int parentLevel = currentLevel-1;
 		if (parentLevel < 0)
-			return tabNo;
+			return (m_parentTabNo = tabNo);
 		while (parentLevel != currentLevel)
 		{
 			tabNo--;
@@ -3333,7 +3417,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (tabNo == 0)
 				break;
 		}
-		return tabNo;
+		return (m_parentTabNo = tabNo);
 	}
 
 	public GridTab getParentTab()

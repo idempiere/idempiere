@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UOM
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_UOM")
 public class X_C_UOM extends PO implements I_C_UOM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_UOM (Properties ctx, int C_UOM_ID, String trxName)
@@ -241,18 +242,26 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	public static final String UOMTYPE_Angle = "AN";
 	/** Area = AR */
 	public static final String UOMTYPE_Area = "AR";
-	/** Data Storage = DS */
-	public static final String UOMTYPE_DataStorage = "DS";
+	/** Currency = CU */
+	public static final String UOMTYPE_Currency = "CU";
 	/** Density = DE */
 	public static final String UOMTYPE_Density = "DE";
+	/** Data Storage = DS */
+	public static final String UOMTYPE_DataStorage = "DS";
+	/** Data Speed = DV */
+	public static final String UOMTYPE_DataSpeed = "DV";
 	/** Energy = EN */
 	public static final String UOMTYPE_Energy = "EN";
 	/** Force = FO */
 	public static final String UOMTYPE_Force = "FO";
+	/** Frequency = FR */
+	public static final String UOMTYPE_Frequency = "FR";
 	/** Kitchen Measures = KI */
 	public static final String UOMTYPE_KitchenMeasures = "KI";
 	/** Length = LE */
 	public static final String UOMTYPE_Length = "LE";
+	/** Other = OT */
+	public static final String UOMTYPE_Other = "OT";
 	/** Power = PO */
 	public static final String UOMTYPE_Power = "PO";
 	/** Pressure = PR */
@@ -263,22 +272,14 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	public static final String UOMTYPE_Time = "TM";
 	/** Torque = TO */
 	public static final String UOMTYPE_Torque = "TO";
+	/** Volume Dry = VD */
+	public static final String UOMTYPE_VolumeDry = "VD";
 	/** Velocity = VE */
 	public static final String UOMTYPE_Velocity = "VE";
 	/** Volume Liquid = VL */
 	public static final String UOMTYPE_VolumeLiquid = "VL";
-	/** Volume Dry = VD */
-	public static final String UOMTYPE_VolumeDry = "VD";
 	/** Weight = WE */
 	public static final String UOMTYPE_Weight = "WE";
-	/** Currency = CU */
-	public static final String UOMTYPE_Currency = "CU";
-	/** Data Speed = DV */
-	public static final String UOMTYPE_DataSpeed = "DV";
-	/** Frequency = FR */
-	public static final String UOMTYPE_Frequency = "FR";
-	/** Other = OT */
-	public static final String UOMTYPE_Other = "OT";
 	/** Set UOM Type.
 		@param UOMType UOM Type	  */
 	public void setUOMType (String UOMType)

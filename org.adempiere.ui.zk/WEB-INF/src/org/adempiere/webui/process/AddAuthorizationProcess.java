@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.Desktop;
  *	IDEMPIERE-3101
  * 	@author Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class AddAuthorizationProcess extends org.compiere.process.AddAuthorizationProcess implements IServerPushCallback {
 
 	/**

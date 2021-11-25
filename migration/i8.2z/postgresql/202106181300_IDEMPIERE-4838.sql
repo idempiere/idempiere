@@ -1,0 +1,7 @@
+-- Jun 18, 2021, 1:46:29 PM MYT
+UPDATE AD_SysConfig SET Value='Y',Updated=TO_TIMESTAMP('2021-06-18 13:46:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_SysConfig_ID=200163
+;
+
+SELECT Register_Migration_Script ('202106181300_IDEMPIERE-4838.sql') FROM DUAL
+;
+

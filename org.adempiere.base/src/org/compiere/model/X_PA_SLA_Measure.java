@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Measure
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PA_SLA_Measure")
 public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_SLA_Measure (Properties ctx, int PA_SLA_Measure_ID, String trxName)
@@ -78,9 +79,10 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -168,9 +170,10 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	}
 
 	public org.compiere.model.I_PA_SLA_Goal getPA_SLA_Goal() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_SLA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Goal.Table_Name)
-			.getPO(getPA_SLA_Goal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_SLA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Goal.Table_ID)
+			.getPO(getPA_SLA_Goal_ID(), get_TrxName());
+	}
 
 	/** Set SLA Goal.
 		@param PA_SLA_Goal_ID 

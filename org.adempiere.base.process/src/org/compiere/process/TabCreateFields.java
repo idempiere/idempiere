@@ -47,6 +47,7 @@ import org.compiere.util.Util;
  *      <li>BF [ 2891218] Wrong behavior in entity type settings for customization entity types
  *        https://sourceforge.net/tracker/?func=detail&aid=2891218&group_id=176962&atid=879332 
  */
+@org.adempiere.base.annotation.Process
 public class TabCreateFields extends SvrProcess
 {
 	/**	Tab Number				*/
@@ -209,6 +210,15 @@ public class TabCreateFields extends SvrProcess
 				} else if (column.getColumnName().equalsIgnoreCase("User2_ID")) {
 					field.setDisplayLogic("@$Element_U2@=Y");
 				}  
+
+				// set read-only for usual known-fields
+				if (   column.getColumnName().equalsIgnoreCase("IsApproved")
+					|| column.getColumnName().equalsIgnoreCase("DocStatus")
+					|| column.getColumnName().equalsIgnoreCase("Processed")
+					|| column.getColumnName().equalsIgnoreCase("ProcessedOn")
+					|| column.getColumnName().equalsIgnoreCase("Processing")) {
+					field.setIsReadOnly(true);
+				}
 
 				if (field.save())
 				{

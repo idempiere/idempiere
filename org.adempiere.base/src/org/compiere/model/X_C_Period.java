@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Period
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Period")
 public class X_C_Period extends PO implements I_C_Period, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Period (Properties ctx, int C_Period_ID, String trxName)
@@ -115,9 +116,10 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_Name)
-			.getPO(getC_Year_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_ID)
+			.getPO(getC_Year_ID(), get_TrxName());
+	}
 
 	/** Set Year.
 		@param C_Year_ID 
@@ -206,10 +208,10 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 
 	/** PeriodType AD_Reference_ID=115 */
 	public static final int PERIODTYPE_AD_Reference_ID=115;
-	/** Standard Calendar Period = S */
-	public static final String PERIODTYPE_StandardCalendarPeriod = "S";
 	/** Adjustment Period = A */
 	public static final String PERIODTYPE_AdjustmentPeriod = "A";
+	/** Standard Calendar Period = S */
+	public static final String PERIODTYPE_StandardCalendarPeriod = "S";
 	/** Set Period Type.
 		@param PeriodType 
 		Period Type

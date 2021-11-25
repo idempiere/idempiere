@@ -21,6 +21,7 @@
 package org.adempiere.base;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -29,14 +30,19 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import org.adempiere.base.event.IEventManager;
+import org.adempiere.base.upload.IUploadService;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
+import org.adempiere.util.DefaultReservationTracerFactory;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.Callout;
+import org.compiere.model.I_AD_PrintHeaderFooter;
 import org.compiere.model.MAddressValidation;
+import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MTaxProvider;
@@ -47,8 +53,10 @@ import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
+import org.compiere.util.Util;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.distributed.IMessageService;
@@ -56,6 +64,7 @@ import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
+import org.idempiere.print.IPrintHeaderFooter;
 import org.idempiere.process.IMappedProcessFactory;
 
 /**
@@ -92,6 +101,8 @@ public class Core {
 	public static final String ISHIPMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IShipmentProcessorFactory_Cache";
 
 	public static final String IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME = "_IPaymentProcessorFactory_Cache";
+	
+	public static final String IPRINT_HEADER_FOOTER_CACHE_TABLE_NAME = "_IIPrintHeaderFooterCache";
 
 	private final static CLogger s_log = CLogger.getCLogger(Core.class);
 
@@ -968,5 +979,86 @@ public class Core {
 		}
 		
 		return eventManager;
+	}
+	
+	/**
+	 * 
+	 * @return {@link IUploadService}
+	 */
+	public static List<IUploadService> getUploadServices() {
+		List<IUploadService> services = new ArrayList<IUploadService>();
+		List<MAuthorizationAccount> accounts = MAuthorizationAccount.getAuthorizedAccouts(Env.getAD_User_ID(Env.getCtx()), MAuthorizationAccount.AD_AUTHORIZATIONSCOPES_Document);
+		for (MAuthorizationAccount account : accounts) {
+			IUploadService service = getUploadService(account);
+			if (service != null) {
+				services.add(service);
+			}
+		}
+		return services;
+	}
+	
+	/**
+	 * 
+	 * @param account
+	 * @return {@link IUploadService}
+	 */
+	public static IUploadService getUploadService(MAuthorizationAccount account) {
+		String provider = account.getAD_AuthorizationCredential().getAD_AuthorizationProvider().getName();
+		ServiceQuery query = new ServiceQuery();
+		query.put("provider", provider);
+		IServiceHolder<IUploadService> holder = Service.locator().locate(IUploadService.class, query);
+		if (holder != null) {
+			return holder.getService();
+		}
+		
+		return null;
+	}
+	
+	private final static CCache<String, IServiceReferenceHolder<IPrintHeaderFooter>> s_printHeaderFooterCache = new CCache<>(IPRINT_HEADER_FOOTER_CACHE_TABLE_NAME, "IPrintHeaderFooterFactory", 100, false);
+	
+	/**
+	 * Get print header/footer instance
+	 * @param print header/footer
+	 * @return print header/footer instance or null if not found
+	 */
+	public static IPrintHeaderFooter getPrintHeaderFooter(I_AD_PrintHeaderFooter printHeaderFooter) {
+		String componentName = printHeaderFooter.getSourceClassName();
+		if (Util.isEmpty(componentName, true)) {
+			s_log.log(Level.SEVERE, "Print Header/Footer source class not defined: " + printHeaderFooter);
+			return null;
+		}
+		
+		IServiceReferenceHolder<IPrintHeaderFooter> cache = s_printHeaderFooterCache.get(componentName);
+		if (cache != null) {
+			IPrintHeaderFooter service = cache.getService();
+			if (service != null) {
+				return service;
+			}
+			s_printHeaderFooterCache.remove(componentName);
+		}
+		
+		IServiceReferenceHolder<IPrintHeaderFooter> serviceReference = Service.locator()
+				.locate(IPrintHeaderFooter.class, componentName, null).getServiceReference();
+		if (serviceReference == null) 
+			return null;
+		IPrintHeaderFooter service = serviceReference.getService();
+		if (service != null) {
+			s_printHeaderFooterCache.put(componentName, serviceReference);
+			return service;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get {@link IReservationTracerFactory} component
+	 * @return {@link IReservationTracerFactory} implementation
+	 */
+	public static IReservationTracerFactory getReservationTracerFactory() {
+		IServiceHolder<IReservationTracerFactory> serviceHolder = Service.locator().locate(IReservationTracerFactory.class);
+		if (serviceHolder != null && serviceHolder.getService() != null)
+			return serviceHolder.getService();
+		
+		return DefaultReservationTracerFactory.getInstance();
 	}
 }

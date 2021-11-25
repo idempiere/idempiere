@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UserRemuneration
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_UserRemuneration")
 public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_UserRemuneration (Properties ctx, int C_UserRemuneration_ID, String trxName)
@@ -81,9 +82,10 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -117,9 +119,10 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
     }
 
 	public org.compiere.model.I_C_Remuneration getC_Remuneration() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Remuneration)MTable.get(getCtx(), org.compiere.model.I_C_Remuneration.Table_Name)
-			.getPO(getC_Remuneration_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Remuneration)MTable.get(getCtx(), org.compiere.model.I_C_Remuneration.Table_ID)
+			.getPO(getC_Remuneration_ID(), get_TrxName());
+	}
 
 	/** Set Remuneration.
 		@param C_Remuneration_ID 

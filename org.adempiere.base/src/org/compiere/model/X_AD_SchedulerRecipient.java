@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SchedulerRecipient
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_SchedulerRecipient")
 public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipient, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
@@ -40,6 +41,8 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
         {
 			setAD_Scheduler_ID (0);
 			setAD_SchedulerRecipient_ID (0);
+			setIsUpload (false);
+// N
         } */
     }
 
@@ -71,10 +74,37 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
       return sb.toString();
     }
 
+	public org.compiere.model.I_AD_AuthorizationAccount getAD_AuthorizationAccount() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_AuthorizationAccount)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationAccount.Table_ID)
+			.getPO(getAD_AuthorizationAccount_ID(), get_TrxName());
+	}
+
+	/** Set Authorization Account.
+		@param AD_AuthorizationAccount_ID Authorization Account	  */
+	public void setAD_AuthorizationAccount_ID (int AD_AuthorizationAccount_ID)
+	{
+		if (AD_AuthorizationAccount_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationAccount_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationAccount_ID, Integer.valueOf(AD_AuthorizationAccount_ID));
+	}
+
+	/** Get Authorization Account.
+		@return Authorization Account	  */
+	public int getAD_AuthorizationAccount_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -100,9 +130,10 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 	}
 
 	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_Name)
-			.getPO(getAD_Scheduler_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_ID)
+			.getPO(getAD_Scheduler_ID(), get_TrxName());
+	}
 
 	/** Set Scheduler.
 		@param AD_Scheduler_ID 
@@ -165,9 +196,10 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -199,4 +231,42 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_User_ID()));
     }
+
+	/** Set File Name.
+		@param FileName 
+		Name of the local file or URL
+	  */
+	public void setFileName (String FileName)
+	{
+		set_Value (COLUMNNAME_FileName, FileName);
+	}
+
+	/** Get File Name.
+		@return Name of the local file or URL
+	  */
+	public String getFileName () 
+	{
+		return (String)get_Value(COLUMNNAME_FileName);
+	}
+
+	/** Set Upload.
+		@param IsUpload Upload	  */
+	public void setIsUpload (boolean IsUpload)
+	{
+		set_Value (COLUMNNAME_IsUpload, Boolean.valueOf(IsUpload));
+	}
+
+	/** Get Upload.
+		@return Upload	  */
+	public boolean isUpload () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsUpload);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 }

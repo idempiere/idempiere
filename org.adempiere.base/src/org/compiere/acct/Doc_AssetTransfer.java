@@ -27,11 +27,6 @@ public class Doc_AssetTransfer extends Doc
 	
 	protected String loadDocumentDetails()
 	{
-		// Fix C_Period_ID
-//		MAssetTransfer assetTr = getAssetTransfer();
-//		assetTr.setC_Period_ID();
-//		assetTr.saveEx();
-		
 		return null;
 	}
 	
@@ -50,7 +45,6 @@ public class Doc_AssetTransfer extends Doc
 	{
 		MAssetTransfer assetTr = getAssetTransfer();
 		MDepreciationWorkfile wk = getAssetWorkfile();	
-	    //MDepreciationExp exp = getExpense();
 		
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		Fact fact = new Fact(this, as, assetTr.getPostingType());
@@ -72,15 +66,10 @@ public class Doc_AssetTransfer extends Doc
 			MAccount dr = MAccount.get(getCtx(), assetTr.getA_Accumdepreciation_Acct());
 			FactUtil.createSimpleOperation(fact, null, dr, cr, as.getC_Currency_ID(),
 					wk.getA_Accumulated_Depr(), false);
-			        //exp.getA_Accumulated_Depr(), false);
 		}
 		//
 		return facts;
 	}
-	/*private MDepreciationExp getExpense() {
-		
-		return MDepreciationExp.get(getCtx(), 1712112);
-	}*/
 
 	private MAssetTransfer getAssetTransfer()
 	{

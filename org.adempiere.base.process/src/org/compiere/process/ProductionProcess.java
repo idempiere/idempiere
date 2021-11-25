@@ -21,6 +21,7 @@ import org.compiere.wf.MWorkflow;
  * @author Paul Bowden
  *
  */
+@org.adempiere.base.annotation.Process
 public class ProductionProcess extends SvrProcess {
 
 	private int p_M_Production_ID=0;

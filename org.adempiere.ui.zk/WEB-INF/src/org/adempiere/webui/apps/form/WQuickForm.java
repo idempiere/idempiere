@@ -9,6 +9,9 @@
  * You should have received a copy of the GNU General Public License along    *
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
+ *                                                                            * 
+ * Contributor:                                                               * 
+ *   Andreas Sumerauer                                                        * 
  *****************************************************************************/
 
 package org.adempiere.webui.apps.form;
@@ -33,18 +36,15 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.DataStatusEvent;
-import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Trx;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
@@ -55,14 +55,12 @@ import org.zkoss.zul.Columns;
  * @author Logilite Technologies
  * @since Nov 03, 2017
  */
-public class WQuickForm extends Window implements EventListener <Event>, DataStatusListener
+public class WQuickForm extends Window implements IQuickForm
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5363771364595732977L;
-
-	public Trx						trx					= null;
 
 	private Borderlayout			mainLayout			= new Borderlayout();
 	private AbstractADWindowContent	adWinContent		= null;

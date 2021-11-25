@@ -52,7 +52,6 @@ public class MAllocationLine extends X_C_AllocationLine
 		super (ctx, C_AllocationLine_ID, trxName);
 		if (C_AllocationLine_ID == 0)
 		{
-		//	setC_AllocationHdr_ID (0);
 			setAmount (Env.ZERO);
 			setDiscountAmt (Env.ZERO);
 			setWriteOffAmt (Env.ZERO);

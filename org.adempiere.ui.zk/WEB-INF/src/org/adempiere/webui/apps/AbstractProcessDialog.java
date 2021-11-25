@@ -16,9 +16,6 @@ package org.adempiere.webui.apps;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -69,19 +66,19 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstanceLog;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserDefProc;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
-import org.compiere.model.MReportView;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -108,7 +105,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9220870163215609274L;
+	private static final long serialVersionUID = -7374210834757533221L;
 
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -128,6 +125,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private BusyDialog progressWindow;	
 	
 	private String		    m_Name = null;
+	private String		    m_Description = null;
+	private String		    m_Help = null;
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private String initialMessage;
 	
@@ -166,57 +165,35 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		log.config("");
 		//
+		StringBuilder buildMsg = new StringBuilder();
 		boolean trl = !Env.isBaseLanguage(m_ctx, "AD_Process");
-		String sql = "SELECT Name, Description, Help, IsReport, ShowHelp, AD_Process_UU "
-				+ "FROM AD_Process "
-				+ "WHERE AD_Process_ID=?";
-		if (trl)
-			sql = "SELECT t.Name, t.Description, t.Help, p.IsReport, p.ShowHelp, AD_Process_UU "
-				+ "FROM AD_Process p, AD_Process_Trl t "
-				+ "WHERE p.AD_Process_ID=t.AD_Process_ID"
-				+ " AND p.AD_Process_ID=? AND t.AD_Language=?";
+		MProcess process = MProcess.get(AD_Process_ID);
+		m_Name = trl ? process.get_Translation(MProcess.COLUMNNAME_Name) : process.getName();
+		m_Description = trl ? process.get_Translation(MProcess.COLUMNNAME_Description) : process.getDescription();
+		m_Help = trl ? process.get_Translation(MProcess.COLUMNNAME_Help) : process.getHelp();
+		m_ShowHelp = process.getShowHelp();
 
-		PreparedStatement pstmt = null; 
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Process_ID);
-			if (trl)
-				pstmt.setString(2, Env.getAD_Language(m_ctx));
-			rs = pstmt.executeQuery();
-			StringBuilder buildMsg = new StringBuilder();
-			if (rs.next())
-			{
-				m_Name = rs.getString(1);
-				m_ShowHelp = rs.getString(5);
-				//
-				buildMsg.append("<b>");
-				String s = rs.getString(2);		//	Description
-				if (rs.wasNull())
-					buildMsg.append(Msg.getMsg(m_ctx, "StartProcess?"));
-				else
-					buildMsg.append(s);
-				buildMsg.append("</b>");
-
-				s = rs.getString(3);			//	Help
-				if (!rs.wasNull())
-					buildMsg.append("<p>").append(s).append("</p>");
-				m_AD_Process_UU = rs.getString(6);
-			}
-			
-			initialMessage = buildMsg.toString();
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return false;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
+		// User Customization
+		MUserDefProc userDef = MUserDefProc.getBestMatch(ctx, AD_Process_ID);
+		if (userDef != null) {
+			if (userDef.getName() != null)
+				m_Name = userDef.getName();
+			if (userDef.getDescription() != null)
+				m_Description = userDef.getDescription();
+			if (userDef.getHelp() != null)
+				m_Help = userDef.getHelp();
 		}
 
+		buildMsg.append("<b>");
+		buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
+		buildMsg.append("</b>");
+
+		if (!Util.isEmpty(m_Help))
+			buildMsg.append("<p>").append(m_Help).append("</p>");
+		m_AD_Process_UU = process.getAD_Process_UU();
+	
+		initialMessage = buildMsg.toString();
+		
 		if (m_Name == null)
 			return false;
 		//
@@ -461,12 +438,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 
 	protected boolean isReport () {
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() == null;
 	}
 	
 	protected boolean isJasperReport () {
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() != null;
 	}
 	
@@ -537,7 +514,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		int AD_Column_ID = 0;
 		boolean m_isCanExport = false; 
 		
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		int table_ID = 0;
 		try 
 		{
@@ -1345,4 +1322,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 		});
 	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (getParameterPanel() != null) {
+			if (getParameterPanel().focusToFirstEditor())
+				return;
+		}
+		if (bOK != null)
+			bOK.focus();
+	}		
 }

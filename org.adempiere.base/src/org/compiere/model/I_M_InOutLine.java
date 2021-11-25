@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InOutLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_M_InOutLine 
 {
@@ -249,6 +249,19 @@ public interface I_M_InOutLine
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAutoProduce */
+    public static final String COLUMNNAME_IsAutoProduce = "IsAutoProduce";
+
+	/** Set Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce);
+
+	/** Get Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce();
 
     /** Column name IsDescription */
     public static final String COLUMNNAME_IsDescription = "IsDescription";

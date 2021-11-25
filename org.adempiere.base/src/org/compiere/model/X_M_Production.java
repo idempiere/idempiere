@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Production
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_Production")
 public class X_M_Production extends PO implements I_M_Production, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211106L;
 
     /** Standard Constructor */
     public X_M_Production (Properties ctx, int M_Production_ID, String trxName)
@@ -108,9 +109,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -136,9 +138,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -164,9 +167,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -192,9 +196,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
 		@param C_OrderLine_ID 
@@ -220,9 +225,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -248,9 +254,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_Name)
-			.getPO(getC_ProjectPhase_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
+			.getPO(getC_ProjectPhase_ID(), get_TrxName());
+	}
 
 	/** Set Project Phase.
 		@param C_ProjectPhase_ID 
@@ -276,9 +283,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_Name)
-			.getPO(getC_ProjectTask_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
+			.getPO(getC_ProjectTask_ID(), get_TrxName());
+	}
 
 	/** Set Project Task.
 		@param C_ProjectTask_ID 
@@ -356,34 +364,34 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -404,30 +412,30 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -497,10 +505,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 
 	/** IsCreated AD_Reference_ID=319 */
 	public static final int ISCREATED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISCREATED_Yes = "Y";
 	/** No = N */
 	public static final String ISCREATED_No = "N";
+	/** Yes = Y */
+	public static final String ISCREATED_Yes = "Y";
 	/** Set Records created.
 		@param IsCreated Records created	  */
 	public void setIsCreated (String IsCreated)
@@ -537,10 +545,40 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 		return false;
 	}
 
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
+
+	/** Set Shipment/Receipt Line.
+		@param M_InOutLine_ID 
+		Line on Shipment or Receipt document
+	  */
+	public void setM_InOutLine_ID (int M_InOutLine_ID)
+	{
+		if (M_InOutLine_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
+	}
+
+	/** Get Shipment/Receipt Line.
+		@return Line on Shipment or Receipt document
+	  */
+	public int getM_InOutLine_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -583,9 +621,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -688,6 +727,35 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 		return false;
 	}
 
+	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
+	{
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
+	}
+
+	/** Set BOM & Formula.
+		@param PP_Product_BOM_ID 
+		BOM & Formula
+	  */
+	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
+	{
+		if (PP_Product_BOM_ID < 1) 
+			set_Value (COLUMNNAME_PP_Product_BOM_ID, null);
+		else 
+			set_Value (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
+	}
+
+	/** Get BOM & Formula.
+		@return BOM & Formula
+	  */
+	public int getPP_Product_BOM_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Processed.
 		@param Processed 
 		The document has been processed
@@ -774,9 +842,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Production getReversal() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_Name)
-			.getPO(getReversal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_ID)
+			.getPO(getReversal_ID(), get_TrxName());
+	}
 
 	/** Set Reversal ID.
 		@param Reversal_ID 
@@ -802,9 +871,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -830,9 +900,10 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

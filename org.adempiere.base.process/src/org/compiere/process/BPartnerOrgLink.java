@@ -36,6 +36,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: BPartnerOrgLink.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class BPartnerOrgLink extends SvrProcess
 {
 	/**	Existing Org			*/

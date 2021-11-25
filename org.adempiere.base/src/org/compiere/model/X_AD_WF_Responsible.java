@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Responsible
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_Responsible")
 public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WF_Responsible (Properties ctx, int AD_WF_Responsible_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 			setAD_Role_ID (0);
 			setAD_WF_Responsible_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setResponsibleType (null);
         } */
@@ -76,9 +77,10 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -104,9 +106,10 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -232,16 +235,16 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 
 	/** ResponsibleType AD_Reference_ID=304 */
 	public static final int RESPONSIBLETYPE_AD_Reference_ID=304;
-	/** Organization = O */
-	public static final String RESPONSIBLETYPE_Organization = "O";
 	/** Human = H */
 	public static final String RESPONSIBLETYPE_Human = "H";
+	/** Manual = M */
+	public static final String RESPONSIBLETYPE_Manual = "M";
+	/** Organization = O */
+	public static final String RESPONSIBLETYPE_Organization = "O";
 	/** Role = R */
 	public static final String RESPONSIBLETYPE_Role = "R";
 	/** System Resource = S */
 	public static final String RESPONSIBLETYPE_SystemResource = "S";
-	/** Manual = M */
-	public static final String RESPONSIBLETYPE_Manual = "M";
 	/** Set Responsible Type.
 		@param ResponsibleType 
 		Type of the Responsibility for a workflow

@@ -44,8 +44,10 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.util.Statistic;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.Adempiere;
+import org.compiere.model.MRole;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogErrorBuffer;
 import org.compiere.util.CLogMgt;
@@ -62,6 +64,7 @@ import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Monitor;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -337,7 +340,22 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		pre.setParent(div);
 		Text text = new Text(CLogMgt.getInfo(null).toString());
 		text.setParent(pre);
-
+		
+		if (Env.getAD_Client_ID(Env.getCtx())==0 && MRole.getDefault().isAccessAdvanced()) {
+			addCallback(AFTER_PAGE_ATTACHED, t-> {
+				Monitor monitor = getDesktop().getWebApp().getConfiguration().getMonitor();
+				if (monitor != null && monitor instanceof Statistic) {
+					Statistic stat = (Statistic) monitor;
+					StringBuilder info = new StringBuilder(text.getValue());
+					info.append("\n");
+					info.append("Desktop: ").append("#Created=").append(stat.getTotalDesktopCount()).append(" #Active=").append(stat.getActiveDesktopCount());
+					info.append("\n");
+					info.append("Session: ").append("#Created=").append(stat.getTotalSessionCount()).append(" #Active=").append(stat.getActiveSessionCount());
+					text.setValue(info.toString());
+				}
+			});
+		}
+		
 		return tabPanel;
 	}
 

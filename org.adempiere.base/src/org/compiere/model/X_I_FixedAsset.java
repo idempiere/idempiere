@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_FixedAsset
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="I_FixedAsset")
 public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_I_FixedAsset (Properties ctx, int I_FixedAsset_ID, String trxName)
@@ -120,9 +121,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Class)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Class.Table_Name)
-			.getPO(getA_Asset_Class_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Class)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Class.Table_ID)
+			.getPO(getA_Asset_Class_ID(), get_TrxName());
+	}
 
 	/** Set Asset class.
 		@param A_Asset_Class_ID Asset class	  */
@@ -176,9 +178,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Group)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Group.Table_Name)
-			.getPO(getA_Asset_Group_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Group)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Group.Table_ID)
+			.getPO(getA_Asset_Group_ID(), get_TrxName());
+	}
 
 	/** Set Asset Group.
 		@param A_Asset_Group_ID 
@@ -218,9 +221,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
 		@param A_Asset_ID 
@@ -246,9 +250,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset_Type)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Type.Table_Name)
-			.getPO(getA_Asset_Type_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset_Type)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Type.Table_ID)
+			.getPO(getA_Asset_Type_ID(), get_TrxName());
+	}
 
 	/** Set Asset Type.
 		@param A_Asset_Type_ID Asset Type	  */
@@ -458,9 +463,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -486,9 +492,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartnerSR_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartnerSR_ID(), get_TrxName());
+	}
 
 	/** Set BPartner (Agent).
 		@param C_BPartnerSR_ID 
@@ -514,9 +521,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_City)MTable.get(getCtx(), org.compiere.model.I_C_City.Table_Name)
-			.getPO(getC_City_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_City)MTable.get(getCtx(), org.compiere.model.I_C_City.Table_ID)
+			.getPO(getC_City_ID(), get_TrxName());
+	}
 
 	/** Set City.
 		@param C_City_ID 
@@ -556,9 +564,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -584,9 +593,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 
@@ -647,34 +657,34 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
 	/** <None> = -- */
 	public static final String DOCACTION_None = "--";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -817,9 +827,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_Name)
-			.getPO(getM_Locator_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
 
 	/** Set Locator.
 		@param M_Locator_ID 
@@ -845,9 +856,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

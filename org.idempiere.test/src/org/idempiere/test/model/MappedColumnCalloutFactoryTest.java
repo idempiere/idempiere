@@ -39,6 +39,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MTest;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.TestActivator;
+import org.idempiere.test.model.annotated.MyAnnotatedTestQtyCallout;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -67,6 +68,11 @@ public class MappedColumnCalloutFactoryTest extends AbstractTestCase {
 		var list = Core.findCallout(MTest.Table_Name, MTest.COLUMNNAME_T_Amount);
 		var optional = list.stream().filter(e -> e instanceof MyTestAmountCallout).findFirst();
 		assertTrue(optional.isPresent(), "Can't find MyTestAmountCallout column callout for " + MTest.Table_Name + "." + MTest.COLUMNNAME_T_Amount);
+				
+		factory.scan(TestActivator.context, "org.idempiere.test.model.annotated");		
+		list = Core.findCallout(MTest.Table_Name, MTest.COLUMNNAME_T_Qty);
+		optional = list.stream().filter(e -> e instanceof MyAnnotatedTestQtyCallout).findFirst();
+		assertTrue(optional.isPresent(), "Can't find MyAnnotatedTestQtyCallout column callout for " + MTest.Table_Name + "." + MTest.COLUMNNAME_T_Qty);
 	}
 	
 	@Test

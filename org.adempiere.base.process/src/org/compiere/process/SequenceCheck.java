@@ -37,6 +37,7 @@ import org.compiere.util.Trx;
  *  @author Jorg Janke
  *  @version $Id: SequenceCheck.java,v 1.3 2006/07/30 00:54:44 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class SequenceCheck extends SvrProcess
 {
 	/**	Static Logger	*/

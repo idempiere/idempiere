@@ -38,6 +38,7 @@ import org.compiere.util.Env;
  *  Contributor(s):
  *    Carlos Ruiz - globalqss - FR [ 1992542 ] Import Payment doesn't have DocAction parameter
  */
+@org.adempiere.base.annotation.Process
 public class ImportPayment extends SvrProcess
 {
 	/**	Organization to be imported to	*/

@@ -63,12 +63,30 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	 * @return True if save successfully
 	 */
 	public static boolean saveData(Properties ctx, int AD_Tab_ID, int AD_User_ID, String Custom, String DisplayedGrid, String trxName, boolean isQuickForm) {
+		return saveData(ctx, AD_Tab_ID, AD_User_ID, Custom, DisplayedGrid, trxName, isQuickForm, null);
+	}
+	
+	/**
+	 * Save Tab Customization Data
+	 *
+	 * @param ctx - Context
+	 * @param AD_Tab_ID - Tab ID
+	 * @param AD_User_ID - User ID
+	 * @param Custom - Customized Field IDs with it's Size
+	 * @param DisplayedGrid - Default preference of Grid view
+	 * @param trxName - Transaction
+	 * @param isQuickForm - Is Quick Form
+	 * @param isAutoHide - is auto hide empty column
+	 * @return True if save successfully
+	 */
+	public static boolean saveData(Properties ctx, int AD_Tab_ID, int AD_User_ID, String Custom, String DisplayedGrid, String trxName, boolean isQuickForm, String isAutoHide) {
 		MTabCustomization tabCust = get(ctx, AD_User_ID, AD_Tab_ID, trxName, isQuickForm);
 
 		if (tabCust != null && tabCust.getAD_Tab_Customization_ID() > 0)
 		{
 			tabCust.setCustom(Custom);
 			tabCust.setIsDisplayedGrid(DisplayedGrid);
+			tabCust.setIsAutoHideEmptyColumn(isAutoHide);
 		}
 		else
 		{
@@ -78,6 +96,7 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 			tabCust.setCustom(Custom);
 			tabCust.setIsDisplayedGrid(DisplayedGrid);
 			tabCust.setIsQuickForm(isQuickForm);
+			tabCust.setIsAutoHideEmptyColumn(isAutoHide);
 		}
 
 		if (Util.isEmpty(tabCust.getCustom(), true))

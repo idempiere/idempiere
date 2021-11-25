@@ -17,13 +17,18 @@
 
 package org.adempiere.webui.component;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ManageImageCache;
 import org.compiere.model.MImage;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MUserDefInfo;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.image.Image;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
@@ -91,12 +96,19 @@ public class Tab extends org.zkoss.zul.Tab
 	 */
 	public static class DecorateInfo {
 		private String imageKey;
-		private String imageIntenalUrl;
+		private URL imageIntenalUrl;
 		
 		public void decorate (LabelImageElement comp){
-			if (imageIntenalUrl != null)
-				comp.setImage(imageIntenalUrl);
-			else if (imageKey != null){
+			if (imageIntenalUrl != null) {
+				if (ThemeManager.isUseFontIconForImage()) {
+					String iconClass = imageIntenalUrl.getFile().replace("16.png", "").replaceAll(".*\\/", "");
+					comp.setIconSclass("z-icon-" + iconClass);
+				} else {
+					Image image = ManageImageCache.instance().getImage(imageIntenalUrl);
+					if (image != null)
+						comp.setImageContent(image);
+				}
+			} else if (imageKey != null){
 				Image ico = ManageImageCache.instance().getImage(imageKey);
 				if (ico != null)
 					comp.setImageContent(ico);
@@ -104,15 +116,19 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 		
 		public DecorateInfo (MImage imageData){
-			imageIntenalUrl = ManageImageCache.getImageInternalUrl(imageData);
-			if (imageIntenalUrl == null)
-				imageKey = ManageImageCache.instance().loadImage(imageData);
+			if (imageData != null) {
+				imageIntenalUrl = ManageImageCache.getImageInternalUrl(imageData);
+				if (imageIntenalUrl == null)
+					imageKey = ManageImageCache.instance().loadImage(imageData);
+			}
 		}
 		
 		public DecorateInfo (String imagePath){
-			imageIntenalUrl = ManageImageCache.getImageInternalUrl(imagePath);
-			if (imageIntenalUrl == null)
-				imageKey = imagePath;
+			if (imagePath != null) {
+				imageIntenalUrl = ManageImageCache.getImageInternalUrl(imagePath);
+				if (imageIntenalUrl == null)
+					imageKey = imagePath;
+			}
 		}
 		
 		/**
@@ -125,7 +141,16 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 		
 		public static DecorateInfo get (MInfoWindow mInfo){
-			return mInfo==null?null:new DecorateInfo(mInfo.getImageURL());
+
+			if (mInfo != null) {
+				String image = mInfo.getImageURL();
+				MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), mInfo.getAD_InfoWindow_ID());
+				if (userDef != null && !Util.isEmpty(userDef.getImageURL()))
+					image = userDef.getImageURL();
+
+				return new DecorateInfo(image);
+			}
+			return null;
 		}
 	}
 	

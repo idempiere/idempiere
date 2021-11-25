@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_BOM
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_Product_BOM")
 public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_Product_BOM (Properties ctx, int M_Product_BOM_ID, String trxName)
@@ -100,10 +101,6 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 
 	/** BOMType AD_Reference_ID=279 */
 	public static final int BOMTYPE_AD_Reference_ID=279;
-	/** Standard Part = P */
-	public static final String BOMTYPE_StandardPart = "P";
-	/** Optional Part = O */
-	public static final String BOMTYPE_OptionalPart = "O";
 	/** In alternative Group 1 = 1 */
 	public static final String BOMTYPE_InAlternativeGroup1 = "1";
 	/** In alternative Group 2 = 2 */
@@ -122,6 +119,10 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 	public static final String BOMTYPE_InAlternativeGroup8 = "8";
 	/** In alternative Group 9 = 9 */
 	public static final String BOMTYPE_InAlternativeGroup9 = "9";
+	/** Optional Part = O */
+	public static final String BOMTYPE_OptionalPart = "O";
+	/** Standard Part = P */
+	public static final String BOMTYPE_StandardPart = "P";
 	/** Set BOM Type.
 		@param BOMType 
 		Type of BOM
@@ -239,9 +240,10 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_M_PartType getM_PartType() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PartType)MTable.get(getCtx(), org.compiere.model.I_M_PartType.Table_Name)
-			.getPO(getM_PartType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PartType)MTable.get(getCtx(), org.compiere.model.I_M_PartType.Table_ID)
+			.getPO(getM_PartType_ID(), get_TrxName());
+	}
 
 	/** Set Part Type.
 		@param M_PartType_ID Part Type	  */
@@ -280,9 +282,10 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_ProductBOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_ProductBOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_ProductBOM_ID(), get_TrxName());
+	}
 
 	/** Set BOM Product.
 		@param M_ProductBOM_ID 
@@ -330,9 +333,10 @@ public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

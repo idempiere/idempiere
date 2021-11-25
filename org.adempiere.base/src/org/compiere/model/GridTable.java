@@ -432,8 +432,7 @@ public class GridTable extends AbstractTableModel
 		//
 		if (log.isLoggable(Level.FINE))
 			log.fine(m_SQL_Count);
-		if (log.isLoggable(Level.INFO))
-			Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_SQL, m_SQL);
+		Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_SQL, m_SQL);
 		return m_SQL;
 	}	//	createSelectSql
 
@@ -1014,10 +1013,10 @@ public class GridTable extends AbstractTableModel
 		
 		if (!isSameSortEntries)
 		{
-			//	update UI
-			fireTableDataChanged();
 			//  Info detected by MTab.dataStatusChanged and current row set to 0
 			fireDataStatusIEvent(SORTED_DSE_EVENT, "#" + m_sort.size());
+			//	update UI
+			fireTableDataChanged();
 		}
 	}	//	sort
 

@@ -43,11 +43,9 @@ public class MSerNoCtl extends X_M_SerNoCtl
 		super(ctx, M_SerNoCtl_ID, trxName);
 		if (M_SerNoCtl_ID == 0)
 		{
-		//	setM_SerNoCtl_ID (0);
 			setStartNo (1);
 			setCurrentNext (1);
 			setIncrementNo (1);
-		//	setName (null);
 		}
 	}	//	MSerNoCtl
 

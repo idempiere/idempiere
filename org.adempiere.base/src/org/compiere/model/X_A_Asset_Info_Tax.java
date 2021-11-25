@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Info_Tax
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="A_Asset_Info_Tax")
 public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Tax (Properties ctx, int A_Asset_Info_Tax_ID, String trxName)

@@ -27,14 +27,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_MRP
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PP_MRP")
 public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_MRP (Properties ctx, int PP_MRP_ID, String trxName)
@@ -79,9 +80,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -107,9 +109,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
 		@param C_Order_ID 
@@ -135,9 +138,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
 		@param C_OrderLine_ID 
@@ -282,9 +286,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.eevolution.model.I_DD_Order getDD_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_DD_Order)MTable.get(getCtx(), org.eevolution.model.I_DD_Order.Table_Name)
-			.getPO(getDD_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_DD_Order)MTable.get(getCtx(), org.eevolution.model.I_DD_Order.Table_ID)
+			.getPO(getDD_Order_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Order.
 		@param DD_Order_ID Distribution Order	  */
@@ -307,9 +312,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.eevolution.model.I_DD_OrderLine getDD_OrderLine() throws RuntimeException
-    {
-		return (org.eevolution.model.I_DD_OrderLine)MTable.get(getCtx(), org.eevolution.model.I_DD_OrderLine.Table_Name)
-			.getPO(getDD_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_DD_OrderLine)MTable.get(getCtx(), org.eevolution.model.I_DD_OrderLine.Table_ID)
+			.getPO(getDD_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Order Line.
 		@param DD_OrderLine_ID Distribution Order Line	  */
@@ -350,30 +356,30 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -417,9 +423,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_Name)
-			.getPO(getM_Forecast_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_ID)
+			.getPO(getM_Forecast_ID(), get_TrxName());
+	}
 
 	/** Set Forecast.
 		@param M_Forecast_ID 
@@ -445,9 +452,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_Name)
-			.getPO(getM_ForecastLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_ID)
+			.getPO(getM_ForecastLine_ID(), get_TrxName());
+	}
 
 	/** Set Forecast Line.
 		@param M_ForecastLine_ID 
@@ -473,9 +481,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -501,9 +510,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Requisition getM_Requisition() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Requisition)MTable.get(getCtx(), org.compiere.model.I_M_Requisition.Table_Name)
-			.getPO(getM_Requisition_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Requisition)MTable.get(getCtx(), org.compiere.model.I_M_Requisition.Table_ID)
+			.getPO(getM_Requisition_ID(), get_TrxName());
+	}
 
 	/** Set Requisition.
 		@param M_Requisition_ID 
@@ -529,9 +539,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_M_RequisitionLine getM_RequisitionLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_RequisitionLine)MTable.get(getCtx(), org.compiere.model.I_M_RequisitionLine.Table_Name)
-			.getPO(getM_RequisitionLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_RequisitionLine)MTable.get(getCtx(), org.compiere.model.I_M_RequisitionLine.Table_ID)
+			.getPO(getM_RequisitionLine_ID(), get_TrxName());
+	}
 
 	/** Set Requisition Line.
 		@param M_RequisitionLine_ID 
@@ -557,9 +568,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
 		@param M_Warehouse_ID 
@@ -611,6 +623,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 
 	/** OrderType AD_Reference_ID=53229 */
 	public static final int ORDERTYPE_AD_Reference_ID=53229;
+	/** Distribution Order = DOO */
+	public static final String ORDERTYPE_DistributionOrder = "DOO";
 	/** Forecast = FCT */
 	public static final String ORDERTYPE_Forecast = "FCT";
 	/** Manufacturing Order = MOP */
@@ -621,8 +635,6 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	public static final String ORDERTYPE_MaterialRequisition = "POR";
 	/** Sales Order = SOO */
 	public static final String ORDERTYPE_SalesOrder = "SOO";
-	/** Distribution Order = DOO */
-	public static final String ORDERTYPE_DistributionOrder = "DOO";
 	/** Safety Stock = STK */
 	public static final String ORDERTYPE_SafetyStock = "STK";
 	/** Set Order Type.
@@ -644,9 +656,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getPlanner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getPlanner_ID(), get_TrxName());
+	}
 
 	/** Set Planner.
 		@param Planner_ID Planner	  */
@@ -706,9 +719,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.eevolution.model.I_PP_Order_BOMLine getPP_Order_BOMLine() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_BOMLine)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_BOMLine.Table_Name)
-			.getPO(getPP_Order_BOMLine_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_BOMLine)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_BOMLine.Table_ID)
+			.getPO(getPP_Order_BOMLine_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order BOM Line.
 		@param PP_Order_BOMLine_ID Manufacturing Order BOM Line	  */
@@ -731,9 +745,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_Name)
-			.getPO(getPP_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
+			.getPO(getPP_Order_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order.
 		@param PP_Order_ID 
@@ -796,9 +811,10 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
 		@param S_Resource_ID 

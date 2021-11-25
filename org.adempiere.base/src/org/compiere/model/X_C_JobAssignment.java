@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobAssignment
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_JobAssignment")
 public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_JobAssignment (Properties ctx, int C_JobAssignment_ID, String trxName)
@@ -75,9 +76,10 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -140,9 +142,10 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
 	}
 
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
-			.getPO(getC_Job_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
+			.getPO(getC_Job_ID(), get_TrxName());
+	}
 
 	/** Set Position.
 		@param C_Job_ID 

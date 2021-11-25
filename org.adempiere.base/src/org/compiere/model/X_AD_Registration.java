@@ -23,14 +23,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Registration
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Registration")
 public class X_AD_Registration extends PO implements I_AD_Registration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName)
@@ -118,9 +119,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	public org.compiere.model.I_AD_System getAD_System() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_System)MTable.get(getCtx(), org.compiere.model.I_AD_System.Table_Name)
-			.getPO(getAD_System_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_System)MTable.get(getCtx(), org.compiere.model.I_AD_System.Table_ID)
+			.getPO(getAD_System_ID(), get_TrxName());
+	}
 
 	/** Set System.
 		@param AD_System_ID 
@@ -146,9 +148,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -174,9 +177,10 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	public I_C_Location getC_Location() throws RuntimeException
-    {
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_Name)
-			.getPO(getC_Location_ID(), get_TrxName());	}
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
 
 	/** Set Address.
 		@param C_Location_ID 

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestTypeUpdates
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="R_RequestTypeUpdates")
 public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName)
@@ -72,9 +73,10 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -124,9 +126,10 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	}
 
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_Name)
-			.getPO(getR_RequestType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_ID)
+			.getPO(getR_RequestType_ID(), get_TrxName());
+	}
 
 	/** Set Request Type.
 		@param R_RequestType_ID 

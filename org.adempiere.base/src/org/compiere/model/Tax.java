@@ -167,15 +167,6 @@ public class Tax
 		int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
 		boolean IsSOTrx, String trxName)
 	{
-		/* ship location from warehouse is plainly ignored below */
-		// if (M_Warehouse_ID <= 0)
-			// M_Warehouse_ID = Env.getContextAsInt(ctx, "M_Warehouse_ID");
-		// if (M_Warehouse_ID <= 0)
-		// {
-			// throw new TaxForChangeNotFoundException(C_Charge_ID, AD_Org_ID, M_Warehouse_ID,
-						// billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
-						// "@NotFound@ @M_Warehouse_ID@");
-		// }
 		int C_TaxCategory_ID = 0;
 		int shipFromC_Location_ID = 0;
 		int shipToC_Location_ID = 0;

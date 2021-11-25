@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StorageProvider
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_StorageProvider")
 public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210416L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_StorageProvider (Properties ctx, int AD_StorageProvider_ID, String trxName)
@@ -150,10 +151,10 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 
 	/** Method AD_Reference_ID=200019 */
 	public static final int METHOD_AD_Reference_ID=200019;
-	/** File System = FileSystem */
-	public static final String METHOD_FileSystem = "FileSystem";
 	/** Database = DB */
 	public static final String METHOD_Database = "DB";
+	/** File System = FileSystem */
+	public static final String METHOD_FileSystem = "FileSystem";
 	/** Set Method.
 		@param Method Method	  */
 	public void setMethod (String Method)

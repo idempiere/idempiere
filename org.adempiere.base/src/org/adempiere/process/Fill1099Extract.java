@@ -27,6 +27,7 @@ import org.compiere.util.*;
  *  @author Carlos Ruiz
  *  @version $Id: Fill1099Extract.java
  */
+@org.adempiere.base.annotation.Process
 public class Fill1099Extract extends SvrProcess
 {
 	private Timestamp	p_Cut_Date = null;
@@ -71,11 +72,6 @@ public class Fill1099Extract extends SvrProcess
 		sql.append("amtbucket13, amtbucket14, amtbucket15, amtbucket16) ");
 		sql.append("SELECT ?, bp.ad_client_id, bp.ad_org_id, bp.isactive, bp.created, bp.createdby, ");
 		sql.append("bp.updated, bp.updatedby, bp.c_bpartner_id, bp.value, bp.name, bp.taxid, ");
-		/*Yvonne: should be the Invoice Address	 
-		sql.append("(SELECT MIN (c_location_id) ");
-		sql.append("FROM C_BPARTNER_LOCATION bpl ");
-		sql.append("WHERE bpl.c_bpartner_id = bp.c_bpartner_id) c_location_id, );"
-		*/				 
 		sql.append("bpl.c_location_id, ");
 		if (DB.isPostgreSQL())
 			sql.append("date_part('year', ?::timestamp), trunc(?::timestamp),");

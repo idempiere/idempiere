@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="HR_Concept")
 public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_Concept (Properties ctx, int HR_Concept_ID, String trxName)
@@ -77,12 +78,12 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 
 	/** AccountSign AD_Reference_ID=118 */
 	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
-	/** Natural = N */
-	public static final String ACCOUNTSIGN_Natural = "N";
-	/** Debit = D */
-	public static final String ACCOUNTSIGN_Debit = "D";
 	/** Credit = C */
 	public static final String ACCOUNTSIGN_Credit = "C";
+	/** Debit = D */
+	public static final String ACCOUNTSIGN_Debit = "D";
+	/** Natural = N */
+	public static final String ACCOUNTSIGN_Natural = "N";
 	/** Set Account Sign.
 		@param AccountSign 
 		Indicates the Natural Sign of the Account as a Debit or Credit
@@ -102,9 +103,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -172,9 +174,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Concept_Category getHR_Concept_Category() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Concept_Category)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept_Category.Table_Name)
-			.getPO(getHR_Concept_Category_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Concept_Category)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept_Category.Table_ID)
+			.getPO(getHR_Concept_Category_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Concept Category.
 		@param HR_Concept_Category_ID Payroll Concept Category	  */
@@ -231,9 +234,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_Name)
-			.getPO(getHR_Department_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
+			.getPO(getHR_Department_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Department.
 		@param HR_Department_ID Payroll Department	  */
@@ -256,9 +260,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_Name)
-			.getPO(getHR_Job_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_ID)
+			.getPO(getHR_Job_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Job.
 		@param HR_Job_ID Payroll Job	  */
@@ -281,9 +286,10 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_Name)
-			.getPO(getHR_Payroll_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
+			.getPO(getHR_Payroll_ID(), get_TrxName());
+	}
 
 	/** Set Payroll.
 		@param HR_Payroll_ID Payroll	  */

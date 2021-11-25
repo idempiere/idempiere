@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOM
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_BOM")
 public class X_M_BOM extends PO implements I_M_BOM, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_BOM (Properties ctx, int M_BOM_ID, String trxName)
@@ -80,22 +81,22 @@ public class X_M_BOM extends PO implements I_M_BOM, I_Persistent
 	public static final int BOMTYPE_AD_Reference_ID=347;
 	/** Current Active = A */
 	public static final String BOMTYPE_CurrentActive = "A";
+	/** Product Configure = C */
+	public static final String BOMTYPE_ProductConfigure = "C";
+	/** Future = F */
+	public static final String BOMTYPE_Future = "F";
+	/** Make-To-Kit = K */
+	public static final String BOMTYPE_Make_To_Kit = "K";
+	/** Maintenance = M */
+	public static final String BOMTYPE_Maintenance = "M";
 	/** Make-To-Order = O */
 	public static final String BOMTYPE_Make_To_Order = "O";
 	/** Previous = P */
 	public static final String BOMTYPE_Previous = "P";
-	/** Previous, Spare = S */
-	public static final String BOMTYPE_PreviousSpare = "S";
-	/** Future = F */
-	public static final String BOMTYPE_Future = "F";
-	/** Maintenance = M */
-	public static final String BOMTYPE_Maintenance = "M";
 	/** Repair = R */
 	public static final String BOMTYPE_Repair = "R";
-	/** Product Configure = C */
-	public static final String BOMTYPE_ProductConfigure = "C";
-	/** Make-To-Kit = K */
-	public static final String BOMTYPE_Make_To_Kit = "K";
+	/** Previous, Spare = S */
+	public static final String BOMTYPE_PreviousSpare = "S";
 	/** Set BOM Type.
 		@param BOMType 
 		Type of BOM
@@ -216,9 +217,10 @@ public class X_M_BOM extends PO implements I_M_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
-			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
+			.getPO(getM_ChangeNotice_ID(), get_TrxName());
+	}
 
 	/** Set Change Notice.
 		@param M_ChangeNotice_ID 
@@ -244,9 +246,10 @@ public class X_M_BOM extends PO implements I_M_BOM, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 

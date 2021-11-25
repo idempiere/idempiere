@@ -48,12 +48,8 @@ public class MTransaction extends X_M_Transaction
 		super (ctx, M_Transaction_ID, trxName);
 		if (M_Transaction_ID == 0)
 		{
-		//	setM_Transaction_ID (0);		//	PK
-		//	setM_Locator_ID (0);
-		//	setM_Product_ID (0);
 			setMovementDate (new Timestamp(System.currentTimeMillis()));
 			setMovementQty (Env.ZERO);
-		//	setMovementType (MOVEMENTTYPE_CustomerShipment);
 		}
 	}	//	MTransaction
 

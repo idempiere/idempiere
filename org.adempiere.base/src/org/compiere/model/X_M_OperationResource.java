@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_OperationResource
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_OperationResource")
 public class X_M_OperationResource extends PO implements I_M_OperationResource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName)
@@ -78,9 +79,10 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
     }
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
 		@param A_Asset_ID 
@@ -106,9 +108,10 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
-			.getPO(getC_Job_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
+			.getPO(getC_Job_ID(), get_TrxName());
+	}
 
 	/** Set Position.
 		@param C_Job_ID 
@@ -205,9 +208,10 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ProductOperation)MTable.get(getCtx(), org.compiere.model.I_M_ProductOperation.Table_Name)
-			.getPO(getM_ProductOperation_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ProductOperation)MTable.get(getCtx(), org.compiere.model.I_M_ProductOperation.Table_ID)
+			.getPO(getM_ProductOperation_ID(), get_TrxName());
+	}
 
 	/** Set Product Operation.
 		@param M_ProductOperation_ID 

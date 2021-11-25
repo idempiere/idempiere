@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_TimeExpenseLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="S_TimeExpenseLine")
 public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_S_TimeExpenseLine (Properties ctx, int S_TimeExpenseLine_ID, String trxName)
@@ -82,9 +83,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
     }
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -110,9 +112,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -138,9 +141,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -166,9 +170,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -194,9 +199,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
 		@param C_InvoiceLine_ID 
@@ -242,9 +248,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
 		@param C_OrderLine_ID 
@@ -270,9 +277,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -298,9 +306,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_Name)
-			.getPO(getC_ProjectPhase_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
+			.getPO(getC_ProjectPhase_ID(), get_TrxName());
+	}
 
 	/** Set Project Phase.
 		@param C_ProjectPhase_ID 
@@ -326,9 +335,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_Name)
-			.getPO(getC_ProjectTask_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
+			.getPO(getC_ProjectTask_ID(), get_TrxName());
+	}
 
 	/** Set Project Task.
 		@param C_ProjectTask_ID 
@@ -354,9 +364,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 
@@ -532,9 +543,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
     }
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -724,9 +736,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_S_TimeExpense getS_TimeExpense() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_TimeExpense)MTable.get(getCtx(), org.compiere.model.I_S_TimeExpense.Table_Name)
-			.getPO(getS_TimeExpense_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_TimeExpense)MTable.get(getCtx(), org.compiere.model.I_S_TimeExpense.Table_ID)
+			.getPO(getS_TimeExpense_ID(), get_TrxName());
+	}
 
 	/** Set Expense Report.
 		@param S_TimeExpense_ID 
@@ -789,9 +802,10 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	}
 
 	public org.compiere.model.I_S_TimeType getS_TimeType() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_TimeType)MTable.get(getCtx(), org.compiere.model.I_S_TimeType.Table_Name)
-			.getPO(getS_TimeType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_TimeType)MTable.get(getCtx(), org.compiere.model.I_S_TimeType.Table_ID)
+			.getPO(getS_TimeType_ID(), get_TrxName());
+	}
 
 	/** Set Time Type.
 		@param S_TimeType_ID 

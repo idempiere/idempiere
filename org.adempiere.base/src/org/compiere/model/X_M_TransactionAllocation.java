@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_TransactionAllocation
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_TransactionAllocation")
 public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllocation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_TransactionAllocation (Properties ctx, int M_TransactionAllocation_ID, String trxName)
@@ -81,10 +82,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 
 	/** AllocationStrategyType AD_Reference_ID=294 */
 	public static final int ALLOCATIONSTRATEGYTYPE_AD_Reference_ID=294;
-	/** LiFo = L */
-	public static final String ALLOCATIONSTRATEGYTYPE_LiFo = "L";
 	/** FiFo = F */
 	public static final String ALLOCATIONSTRATEGYTYPE_FiFo = "F";
+	/** LiFo = L */
+	public static final String ALLOCATIONSTRATEGYTYPE_LiFo = "L";
 	/** Set Allocation Strategy.
 		@param AllocationStrategyType 
 		Allocation Strategy
@@ -152,9 +153,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -180,9 +182,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
 		@param M_InOutLine_ID 
@@ -208,9 +211,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_Name)
-			.getPO(getM_InventoryLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
+			.getPO(getM_InventoryLine_ID(), get_TrxName());
+	}
 
 	/** Set Phys.Inventory Line.
 		@param M_InventoryLine_ID 
@@ -236,9 +240,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -264,9 +269,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_Name)
-			.getPO(getM_ProductionLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)
+			.getPO(getM_ProductionLine_ID(), get_TrxName());
+	}
 
 	/** Set Production Line.
 		@param M_ProductionLine_ID 
@@ -306,9 +312,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_Transaction getM_Transaction() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Transaction)MTable.get(getCtx(), org.compiere.model.I_M_Transaction.Table_Name)
-			.getPO(getM_Transaction_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Transaction)MTable.get(getCtx(), org.compiere.model.I_M_Transaction.Table_ID)
+			.getPO(getM_Transaction_ID(), get_TrxName());
+	}
 
 	/** Set Inventory Transaction.
 		@param M_Transaction_ID Inventory Transaction	  */
@@ -331,9 +338,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_InOutLine getOut_M_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getOut_M_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getOut_M_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Out Shipment Line.
 		@param Out_M_InOutLine_ID 
@@ -359,9 +367,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_InventoryLine getOut_M_InventoryLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_Name)
-			.getPO(getOut_M_InventoryLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
+			.getPO(getOut_M_InventoryLine_ID(), get_TrxName());
+	}
 
 	/** Set Out Inventory Line.
 		@param Out_M_InventoryLine_ID 
@@ -387,9 +396,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_ProductionLine getOut_M_ProductionLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_Name)
-			.getPO(getOut_M_ProductionLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)
+			.getPO(getOut_M_ProductionLine_ID(), get_TrxName());
+	}
 
 	/** Set Out Production Line.
 		@param Out_M_ProductionLine_ID 
@@ -415,9 +425,10 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	}
 
 	public org.compiere.model.I_M_Transaction getOut_M_Transaction() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Transaction)MTable.get(getCtx(), org.compiere.model.I_M_Transaction.Table_Name)
-			.getPO(getOut_M_Transaction_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Transaction)MTable.get(getCtx(), org.compiere.model.I_M_Transaction.Table_ID)
+			.getPO(getOut_M_Transaction_ID(), get_TrxName());
+	}
 
 	/** Set Out Transaction.
 		@param Out_M_Transaction_ID 

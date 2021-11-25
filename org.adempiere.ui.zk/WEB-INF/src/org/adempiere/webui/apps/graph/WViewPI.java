@@ -3,6 +3,7 @@ package org.adempiere.webui.apps.graph;
 import org.adempiere.webui.panel.ADForm;
 import org.compiere.model.MGoal;
 
+@org.idempiere.ui.zk.annotation.Form(name = "org.adempiere.apps.graph.ViewPI")
 public class WViewPI extends ADForm {
 
 	/**

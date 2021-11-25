@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQLineQty
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_RfQLineQty")
 public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_RfQLineQty (Properties ctx, int C_RfQLineQty_ID, String trxName)
@@ -122,9 +123,10 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 	}
 
 	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RfQLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQLine.Table_Name)
-			.getPO(getC_RfQLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RfQLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQLine.Table_ID)
+			.getPO(getC_RfQLine_ID(), get_TrxName());
+	}
 
 	/** Set RfQ Line.
 		@param C_RfQLine_ID 
@@ -187,9 +189,10 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
 		@param C_UOM_ID 

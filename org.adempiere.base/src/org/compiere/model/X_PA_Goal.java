@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Goal
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PA_Goal")
 public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_Goal (Properties ctx, int PA_Goal_ID, String trxName)
@@ -86,9 +87,10 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -114,9 +116,10 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -143,16 +146,16 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 
 	/** ChartType AD_Reference_ID=53315 */
 	public static final int CHARTTYPE_AD_Reference_ID=53315;
+	/** Area Chart = AC */
+	public static final String CHARTTYPE_AreaChart = "AC";
 	/** Bar Chart = BC */
 	public static final String CHARTTYPE_BarChart = "BC";
+	/** Line Chart = LC */
+	public static final String CHARTTYPE_LineChart = "LC";
 	/** Pie Chart = PC */
 	public static final String CHARTTYPE_PieChart = "PC";
 	/** Ring Chart = RC */
 	public static final String CHARTTYPE_RingChart = "RC";
-	/** Line Chart = LC */
-	public static final String CHARTTYPE_LineChart = "LC";
-	/** Area Chart = AC */
-	public static final String CHARTTYPE_AreaChart = "AC";
 	/** Waterfall Chart = WC */
 	public static final String CHARTTYPE_WaterfallChart = "WC";
 	/** Set Chart Type.
@@ -307,14 +310,14 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 
 	/** MeasureDisplay AD_Reference_ID=367 */
 	public static final int MEASUREDISPLAY_AD_Reference_ID=367;
+	/** Total = 0 */
+	public static final String MEASUREDISPLAY_Total = "0";
 	/** Year = 1 */
 	public static final String MEASUREDISPLAY_Year = "1";
 	/** Quarter = 3 */
 	public static final String MEASUREDISPLAY_Quarter = "3";
 	/** Month = 5 */
 	public static final String MEASUREDISPLAY_Month = "5";
-	/** Total = 0 */
-	public static final String MEASUREDISPLAY_Total = "0";
 	/** Week = 7 */
 	public static final String MEASUREDISPLAY_Week = "7";
 	/** Day = 8 */
@@ -339,14 +342,14 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 
 	/** MeasureScope AD_Reference_ID=367 */
 	public static final int MEASURESCOPE_AD_Reference_ID=367;
+	/** Total = 0 */
+	public static final String MEASURESCOPE_Total = "0";
 	/** Year = 1 */
 	public static final String MEASURESCOPE_Year = "1";
 	/** Quarter = 3 */
 	public static final String MEASURESCOPE_Quarter = "3";
 	/** Month = 5 */
 	public static final String MEASURESCOPE_Month = "5";
-	/** Total = 0 */
-	public static final String MEASURESCOPE_Total = "0";
 	/** Week = 7 */
 	public static final String MEASURESCOPE_Week = "7";
 	/** Day = 8 */
@@ -432,9 +435,10 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_ColorSchema getPA_ColorSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ColorSchema)MTable.get(getCtx(), org.compiere.model.I_PA_ColorSchema.Table_Name)
-			.getPO(getPA_ColorSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ColorSchema)MTable.get(getCtx(), org.compiere.model.I_PA_ColorSchema.Table_ID)
+			.getPO(getPA_ColorSchema_ID(), get_TrxName());
+	}
 
 	/** Set Color Schema.
 		@param PA_ColorSchema_ID 
@@ -483,9 +487,10 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_Goal getPA_GoalParent() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_Name)
-			.getPO(getPA_GoalParent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_ID)
+			.getPO(getPA_GoalParent_ID(), get_TrxName());
+	}
 
 	/** Set Parent Goal.
 		@param PA_GoalParent_ID 
@@ -525,9 +530,10 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_Measure)MTable.get(getCtx(), org.compiere.model.I_PA_Measure.Table_Name)
-			.getPO(getPA_Measure_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_Measure)MTable.get(getCtx(), org.compiere.model.I_PA_Measure.Table_ID)
+			.getPO(getPA_Measure_ID(), get_TrxName());
+	}
 
 	/** Set Measure.
 		@param PA_Measure_ID 

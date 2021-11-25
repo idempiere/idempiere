@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_ToolBarButtonRestrict
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_ToolBarButtonRestrict")
 public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButtonRestrict, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -74,24 +75,24 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 
 	/** Action AD_Reference_ID=104 */
 	public static final int ACTION_AD_Reference_ID=104;
-	/** Window = W */
-	public static final String ACTION_Window = "W";
-	/** Task = T */
-	public static final String ACTION_Task = "T";
+	/** Workbench = B */
+	public static final String ACTION_Workbench = "B";
+	/** Detail = D */
+	public static final String ACTION_Detail = "D";
 	/** WorkFlow = F */
 	public static final String ACTION_WorkFlow = "F";
+	/** Info = I */
+	public static final String ACTION_Info = "I";
 	/** Process = P */
 	public static final String ACTION_Process = "P";
 	/** Report = R */
 	public static final String ACTION_Report = "R";
+	/** Task = T */
+	public static final String ACTION_Task = "T";
+	/** Window = W */
+	public static final String ACTION_Window = "W";
 	/** Form = X */
 	public static final String ACTION_Form = "X";
-	/** Workbench = B */
-	public static final String ACTION_Workbench = "B";
-	/** Info = I */
-	public static final String ACTION_Info = "I";
-	/** Detail = D */
-	public static final String ACTION_Detail = "D";
 	/** Set Action.
 		@param Action 
 		Indicates the Action to be performed
@@ -111,9 +112,10 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -139,9 +141,10 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -167,9 +170,10 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
 		@param AD_Tab_ID 
@@ -195,9 +199,10 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	}
 
 	public org.compiere.model.I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ToolBarButton)MTable.get(getCtx(), org.compiere.model.I_AD_ToolBarButton.Table_Name)
-			.getPO(getAD_ToolBarButton_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ToolBarButton)MTable.get(getCtx(), org.compiere.model.I_AD_ToolBarButton.Table_ID)
+			.getPO(getAD_ToolBarButton_ID(), get_TrxName());
+	}
 
 	/** Set ToolBar Button.
 		@param AD_ToolBarButton_ID ToolBar Button	  */
@@ -254,9 +259,10 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 

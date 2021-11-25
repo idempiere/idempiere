@@ -323,11 +323,6 @@ public class MCostQueue extends X_M_CostQueue
 		super (ctx, ignored, trxName);
 		if (ignored == 0)
 		{
-		//	setC_AcctSchema_ID (0);
-		//	setM_AttributeSetInstance_ID (0);
-		//	setM_CostElement_ID (0);
-		//	setM_CostType_ID (0);
-		//	setM_Product_ID (0);
 			setCurrentCostPrice (Env.ZERO);
 			setCurrentQty (Env.ZERO);
 		}

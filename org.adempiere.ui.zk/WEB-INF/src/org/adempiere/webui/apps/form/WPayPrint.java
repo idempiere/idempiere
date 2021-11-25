@@ -74,7 +74,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.South;
 
-import com.itextpdf.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfReader;
 
 /**
  *  Payment Print & Export
@@ -86,6 +86,7 @@ import com.itextpdf.text.pdf.PdfReader;
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank 
  *    Markus Bozem:  IDEMPIERE-1546 / IDEMPIERE-3286 
 */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPayPrint")
 public class WPayPrint extends PayPrint implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private CustomForm form = new CustomForm();

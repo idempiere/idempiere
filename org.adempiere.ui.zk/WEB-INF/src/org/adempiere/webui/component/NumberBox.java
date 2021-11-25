@@ -28,7 +28,6 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -132,11 +131,15 @@ public class NumberBox extends Div
 		else
 			btn.setImage(ThemeManager.getThemeResource("images/Calculator16.png"));
 		btn.setTabindex(-1);
-		ZKUpdateUtil.setHflex(btn, "0");
+		ZKUpdateUtil.setHflex(btn, "0");	
+		
 		btn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				if (btn.getPopup() != null) {
+				if (popup != null) {
+					popup.open(NumberBox.this, "after_start");
+					// Fill the calculator with the actual value of the field
+					// TODO: this could be made a user preference
 			        String curValue = "";
 					if (decimalBox.getValue() != null) {
 						curValue = decimalBox.getValue().toString();
@@ -146,9 +149,12 @@ public class NumberBox extends Div
 					        String separator = Character.toString(separatorChar);
 					        curValue = curValue.replace(".", separator);
 				        }
+						if ("0".equals(curValue)) {
+							curValue = "";
+						}
 					}
 					String txtCalcId = txtCalc.getId();
-					Clients.evalJavaScript("calc.append('" + txtCalcId + "', '" + curValue + "')");
+					Clients.evalJavaScript("calc.append('" + txtCalcId + "', '" + curValue + "')");					
 				}				
 			}
 		});
@@ -157,7 +163,6 @@ public class NumberBox extends Div
         
         popup = getCalculatorPopup();
         appendChild(popup);
-        btn.setPopup(popup);
         btn.setStyle("text-align: center;");        
      
         LayoutUtils.addSclass("number-box", this);	     
@@ -243,22 +248,7 @@ public class NumberBox extends Div
     
     private Popup getCalculatorPopup()
     {
-        Popup popup = new Popup() {
-        	/**
-			 * 
-			 */
-			private static final long serialVersionUID = -5991248152956632527L;
-
-			@Override
-        	public void onPageAttached(Page newpage, Page oldpage) {
-        		super.onPageAttached(newpage, oldpage);
-        		if (newpage != null) {
-        			if (btn.getPopup() != null) {
-        				btn.setPopup(this);
-        			}
-        		}
-        	}
-        };
+        Popup popup = new Popup();
 
         Vbox vbox = new Vbox();
 
@@ -439,6 +429,8 @@ public class NumberBox extends Div
 
         popup.appendChild(vbox);
         popup.setWidgetListener("onOpen", "calc.clearAll('" + txtCalcId + "')");
+        
+        popup.addEventListener(Events.ON_CANCEL, e -> popup.close());        
         return popup;
     }
 
@@ -475,12 +467,9 @@ public class NumberBox extends Div
 	     {
 	    	 if (btn.getParent() != decimalBox.getParent())
 	    		 btn.setParent(decimalBox.getParent());
-	    	 btn.setPopup(popup);
 	     }
 	     else 
 	     {
-	    	 Popup p = null;
-	    	 btn.setPopup(p);
 	    	 if (btn.getParent() != null)
 	    		 btn.detach();
 	     }

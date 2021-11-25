@@ -41,6 +41,7 @@ import org.compiere.process.SvrProcess;
  *	@author Alejandro Falcone
  *	@version $Id: DepositBatchClose.java,v 1.2 2007/07/03 00:51:01 afalcone Exp $
  */
+@org.adempiere.base.annotation.Process
 public class DepositBatchClose extends SvrProcess
 {
 	/**	Deposit Batch from Record			*/

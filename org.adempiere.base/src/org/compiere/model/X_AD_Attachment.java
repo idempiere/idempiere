@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Attachment
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Attachment")
 public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Attachment (Properties ctx, int AD_Attachment_ID, String trxName)
@@ -110,10 +111,37 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Attachment_UU);
 	}
 
+	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_ID)
+			.getPO(getAD_StorageProvider_ID(), get_TrxName());
+	}
+
+	/** Set Storage Provider.
+		@param AD_StorageProvider_ID Storage Provider	  */
+	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
+	{
+		if (AD_StorageProvider_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
+	}
+
+	/** Get Storage Provider.
+		@return Storage Provider	  */
+	public int getAD_StorageProvider_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 

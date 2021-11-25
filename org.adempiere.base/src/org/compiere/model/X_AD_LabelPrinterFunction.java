@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LabelPrinterFunction
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_LabelPrinterFunction")
 public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFunction, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_LabelPrinterFunction (Properties ctx, int AD_LabelPrinterFunction_ID, String trxName)
@@ -111,9 +112,10 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	}
 
 	public org.compiere.model.I_AD_LabelPrinter getAD_LabelPrinter() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_LabelPrinter)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinter.Table_Name)
-			.getPO(getAD_LabelPrinter_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_LabelPrinter)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinter.Table_ID)
+			.getPO(getAD_LabelPrinter_ID(), get_TrxName());
+	}
 
 	/** Set Label printer.
 		@param AD_LabelPrinter_ID 

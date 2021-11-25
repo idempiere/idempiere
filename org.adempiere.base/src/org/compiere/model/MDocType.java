@@ -42,7 +42,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7313617271586412889L;
+	private static final long serialVersionUID = 1830844263371227816L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
@@ -131,10 +131,6 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		super(ctx, C_DocType_ID, trxName);
 		if (C_DocType_ID == 0)
 		{
-		//	setName (null);
-		//	setPrintName (null);
-		//	setDocBaseType (null);
-		//	setGL_Category_ID (0);
 			setDocumentCopies (0);
 			setHasCharges (false);
 			setIsDefault (false);
@@ -143,7 +139,6 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 			setIsPickQAConfirm(false);
 			setIsShipConfirm(false);
 			setIsSplitWhenDifference(false);
-			//
 			setIsCreateCounter(true);
 			setIsDefaultCounterDoc(false);
 			setIsIndexed(true);
@@ -297,8 +292,6 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		/*if (getAD_Org_ID() != 0)
-			setAD_Org_ID(0);*/
 		return true;
 	}	//	beforeSave
 	

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for ASP_ClientException
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="ASP_ClientException")
 public class X_ASP_ClientException extends PO implements I_ASP_ClientException, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_ClientException (Properties ctx, int ASP_ClientException_ID, String trxName)
@@ -72,9 +73,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
     }
 
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
-			.getPO(getAD_Field_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
+			.getPO(getAD_Field_ID(), get_TrxName());
+	}
 
 	/** Set Field.
 		@param AD_Field_ID 
@@ -100,9 +102,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
 		@param AD_Form_ID 
@@ -128,9 +131,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -156,9 +160,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_Name)
-			.getPO(getAD_Process_Para_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
+			.getPO(getAD_Process_Para_ID(), get_TrxName());
+	}
 
 	/** Set Process Parameter.
 		@param AD_Process_Para_ID Process Parameter	  */
@@ -181,9 +186,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
 		@param AD_Tab_ID 
@@ -209,9 +215,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
 		@param AD_Task_ID 
@@ -237,9 +244,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
 		@param AD_WF_Node_ID 
@@ -265,9 +273,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -293,9 +302,10 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 

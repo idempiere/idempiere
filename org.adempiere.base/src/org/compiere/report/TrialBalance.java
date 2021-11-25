@@ -43,6 +43,7 @@ import org.compiere.util.Language;
  *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
  *  @version $Id: TrialBalance.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class TrialBalance extends SvrProcess
 {
 	/** AcctSchame Parameter			*/

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_CyclePhase
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_CyclePhase")
 public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_CyclePhase (Properties ctx, int C_CyclePhase_ID, String trxName)
@@ -85,9 +86,10 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 	}
 
 	public org.compiere.model.I_C_CycleStep getC_CycleStep() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CycleStep)MTable.get(getCtx(), org.compiere.model.I_C_CycleStep.Table_Name)
-			.getPO(getC_CycleStep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CycleStep)MTable.get(getCtx(), org.compiere.model.I_C_CycleStep.Table_ID)
+			.getPO(getC_CycleStep_ID(), get_TrxName());
+	}
 
 	/** Set Cycle Step.
 		@param C_CycleStep_ID 
@@ -113,9 +115,10 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Phase getC_Phase() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Phase)MTable.get(getCtx(), org.compiere.model.I_C_Phase.Table_Name)
-			.getPO(getC_Phase_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Phase)MTable.get(getCtx(), org.compiere.model.I_C_Phase.Table_ID)
+			.getPO(getC_Phase_ID(), get_TrxName());
+	}
 
 	/** Set Standard Phase.
 		@param C_Phase_ID 

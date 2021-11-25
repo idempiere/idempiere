@@ -39,6 +39,7 @@ public class ClusterMember implements IClusterMember {
 		this.port = port;
 	}
 
+	@SuppressWarnings("deprecation")
 	public ClusterMember(Member member) {
 		this.id = member.getUuid();
 		this.address = member.getSocketAddress().getAddress();

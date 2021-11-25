@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for M_ShipperLabels
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_ShipperLabels")
 public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_ShipperLabels (Properties ctx, int M_ShipperLabels_ID, String trxName)
@@ -122,9 +123,10 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	}
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_Name)
-			.getPO(getM_Shipper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
 
 	/** Set Shipper.
 		@param M_Shipper_ID 
@@ -150,9 +152,10 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	}
 
 	public org.compiere.model.I_M_ShipperLabelsCfg getM_ShipperLabelsCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperLabelsCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabelsCfg.Table_Name)
-			.getPO(getM_ShipperLabelsCfg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperLabelsCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabelsCfg.Table_ID)
+			.getPO(getM_ShipperLabelsCfg_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Labels Configuration.
 		@param M_ShipperLabelsCfg_ID Shipper Labels Configuration	  */

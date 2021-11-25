@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_RelationType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_RelationType")
 public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_RelationType (Properties ctx, int AD_RelationType_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
         {
 			setAD_RelationType_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsDirected (false);
 // N
 			setName (null);
@@ -78,9 +79,10 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
     }
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Source() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Source_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Source_ID(), get_TrxName());
+	}
 
 	/** Set Source Reference.
 		@param AD_Reference_Source_ID Source Reference	  */
@@ -103,9 +105,10 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Target() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Target_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Target_ID(), get_TrxName());
+	}
 
 	/** Set Target Reference.
 		@param AD_Reference_Target_ID Target Reference	  */
@@ -249,10 +252,10 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 
 	/** Role_Source AD_Reference_ID=53331 */
 	public static final int ROLE_SOURCE_AD_Reference_ID=53331;
-	/** Order = Order */
-	public static final String ROLE_SOURCE_Order = "Order";
 	/** Invoice = Invoice */
 	public static final String ROLE_SOURCE_Invoice = "Invoice";
+	/** Order = Order */
+	public static final String ROLE_SOURCE_Order = "Order";
 	/** Set Source Role.
 		@param Role_Source 
 		If set, this role will be used as label for the zoom destination instead of the destinations's window name
@@ -273,10 +276,10 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 
 	/** Role_Target AD_Reference_ID=53331 */
 	public static final int ROLE_TARGET_AD_Reference_ID=53331;
-	/** Order = Order */
-	public static final String ROLE_TARGET_Order = "Order";
 	/** Invoice = Invoice */
 	public static final String ROLE_TARGET_Invoice = "Invoice";
+	/** Order = Order */
+	public static final String ROLE_TARGET_Order = "Order";
 	/** Set Target Role.
 		@param Role_Target 
 		If set, this role will be used as label for the zoom destination instead of the destinations's window name
@@ -297,10 +300,10 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 
 	/** Type AD_Reference_ID=53332 */
 	public static final int TYPE_AD_Reference_ID=53332;
-	/** Implicit = I */
-	public static final String TYPE_Implicit = "I";
 	/** Explicit = E */
 	public static final String TYPE_Explicit = "E";
+	/** Implicit = I */
+	public static final String TYPE_Implicit = "I";
 	/** Set Type.
 		@param Type 
 		Type of Validation (SQL, Java Script, Java Language)

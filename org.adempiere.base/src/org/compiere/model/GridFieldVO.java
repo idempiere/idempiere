@@ -117,86 +117,87 @@ public class GridFieldVO implements Serializable, Cloneable
 		}
 		// FR IDEMPIERE-177
 		// Field Customization
-		if (vo.IsDisplayed) {
-			MUserDefField userDef = null;
-			userDef = MUserDefField.get(vo.ctx,vo.AD_Field_ID, vo.AD_Tab_ID, vo.AD_Window_ID);
-			if (userDef != null)
-			{
-				if (userDef.getName() != null)
-					vo.Header = userDef.getName();
-				if (userDef.getDescription() != null)
-					vo.Description = userDef.getDescription();
-				if (userDef.getHelp() != null)
-					vo.Help = userDef.getHelp();
-				if (userDef.getDisplayLength() > 0)
-					vo.DisplayLength = userDef.getDisplayLength();
-				if (userDef.getDisplayLogic() != null)
-					vo.DisplayLogic = userDef.getDisplayLogic();
-				if (userDef.getDefaultValue() != null)
-					vo.DefaultValue = userDef.getDefaultValue();
-				if (userDef.getSortNo() > 0)
-					vo.SortNo = userDef.getSortNo();
-				//IDEMPIERE-163
-				if (userDef.getIsDisplayed()!= null)
-				    vo.IsDisplayed = "Y".equals(userDef.getIsDisplayed());
-				if (userDef.getIsReadOnly()!= null)
-				    vo.IsReadOnly = "Y".equals(userDef.getIsReadOnly());
-				if (userDef.getIsSameLine()!= null)
-				    vo.IsSameLine = "Y".equals(userDef.getIsSameLine());
-				if (userDef.getIsUpdateable()!= null)
-				    vo.IsUpdateable = "Y".equals(userDef.getIsUpdateable());
-				if (userDef.getIsAlwaysUpdateable()!= null)	
-				   vo.IsAlwaysUpdateable = "Y".equals(userDef.getIsAlwaysUpdateable());
-				if (userDef.getReadOnlyLogic()!= null)
-					vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
-				if (userDef.getMandatoryLogic()!= null )
-					vo.MandatoryLogic = userDef.getMandatoryLogic();	
-				if (userDef.getAD_Reference_ID()>0)
-					vo.displayType = userDef.getAD_Reference_ID();
-				if (userDef.getAD_Reference_Value_ID()>0)
-					vo.AD_Reference_Value_ID = userDef.getAD_Reference_Value_ID();
-				if (userDef.getIsMandatory()!= null)
-					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
-				if (userDef.getXPosition() > 0)
-					vo.XPosition = userDef.getXPosition();
-				if (userDef.getColumnSpan() > 0)
-					vo.ColumnSpan=userDef.getColumnSpan();
-				if (userDef.getNumLines() > 0)
-					vo.NumLines=userDef.getNumLines();
-				if (userDef.getIsToolbarButton() != null)
-					vo.IsToolbarButton  = userDef.getIsToolbarButton();
-				if (userDef.getVFormat() != null)
-					vo.VFormat = userDef.getVFormat();
-				//IDEMPIERE-1120 Implement Field SeqNo customization
-				if (userDef.getSeqNo() > 0)
-				    vo.SeqNo = userDef.getSeqNo();
-				if (userDef.getAD_Val_Rule_ID() > 0)
-					vo.ValidationCode  = MValRule.get(vo.ctx, userDef.getAD_Val_Rule_ID()).getCode();
-				if (userDef.getAD_Val_Rule_Lookup_ID() > 0)
-					vo.ValidationCodeLookup = MValRule.get(ctx, userDef.getAD_Val_Rule_Lookup_ID()).getCode();
-				if (userDef.getAD_LabelStyle_ID() > 0)
-					vo.AD_LabelStyle_ID = userDef.getAD_LabelStyle_ID();
-				
-				if (userDef.getAD_FieldStyle_ID() > 0)
-					vo.AD_FieldStyle_ID = userDef.getAD_FieldStyle_ID();
-				
-				if (userDef.getPA_DashboardContent_ID() > 0)
-					vo.PA_DashboardContent_ID = userDef.getPA_DashboardContent_ID();
+		MUserDefField userDef = MUserDefField.get(vo.ctx,vo.AD_Field_ID, vo.AD_Tab_ID, vo.AD_Window_ID);
+		if (userDef != null)
+		{
+			if (userDef.getName() != null)
+				vo.Header = userDef.getName();
+			if (userDef.getDescription() != null)
+				vo.Description = userDef.getDescription();
+			if (userDef.getHelp() != null)
+				vo.Help = userDef.getHelp();
+			if (userDef.getDisplayLength() > 0)
+				vo.DisplayLength = userDef.getDisplayLength();
+			if (userDef.getDisplayLogic() != null)
+				vo.DisplayLogic = userDef.getDisplayLogic();
+			if (userDef.getDefaultValue() != null)
+				vo.DefaultValue = userDef.getDefaultValue();
+			if (userDef.getSortNo() > 0)
+				vo.SortNo = userDef.getSortNo();
+			//IDEMPIERE-163
+			if (userDef.getIsDisplayed()!= null)
+				vo.IsDisplayed = "Y".equals(userDef.getIsDisplayed());
+			if (userDef.getIsReadOnly()!= null)
+				vo.IsReadOnly = "Y".equals(userDef.getIsReadOnly());
+			if (userDef.getIsSameLine()!= null)
+				vo.IsSameLine = "Y".equals(userDef.getIsSameLine());
+			if (userDef.getIsUpdateable()!= null)
+				vo.IsUpdateable = "Y".equals(userDef.getIsUpdateable());
+			if (userDef.getIsAlwaysUpdateable()!= null)	
+				vo.IsAlwaysUpdateable = "Y".equals(userDef.getIsAlwaysUpdateable());
+			if (userDef.getReadOnlyLogic()!= null)
+				vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
+			if (userDef.getMandatoryLogic()!= null )
+				vo.MandatoryLogic = userDef.getMandatoryLogic();	
+			if (userDef.getAD_Reference_ID()>0)
+				vo.displayType = userDef.getAD_Reference_ID();
+			if (userDef.getAD_Reference_Value_ID()>0)
+				vo.AD_Reference_Value_ID = userDef.getAD_Reference_Value_ID();
+			if (userDef.getIsMandatory()!= null)
+				vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
+			if (userDef.getXPosition() > 0)
+				vo.XPosition = userDef.getXPosition();
+			if (userDef.getColumnSpan() > 0)
+				vo.ColumnSpan=userDef.getColumnSpan();
+			if (userDef.getNumLines() > 0)
+				vo.NumLines=userDef.getNumLines();
+			if (userDef.getIsToolbarButton() != null)
+				vo.IsToolbarButton  = userDef.getIsToolbarButton();
+			if (userDef.getVFormat() != null)
+				vo.VFormat = userDef.getVFormat();
+			//IDEMPIERE-1120 Implement Field SeqNo customization
+			if (userDef.getSeqNo() > 0)
+				vo.SeqNo = userDef.getSeqNo();
+			if (userDef.getIsDisplayedGrid() != null)
+				vo.IsDisplayedGrid = "Y".equals(userDef.getIsDisplayedGrid());
+			if (userDef.getSeqNoGrid() > 0)
+				vo.SeqNoGrid = userDef.getSeqNoGrid();
+			if (userDef.getAD_Val_Rule_ID() > 0)
+				vo.ValidationCode  = MValRule.get(vo.ctx, userDef.getAD_Val_Rule_ID()).getCode();
+			if (userDef.getAD_Val_Rule_Lookup_ID() > 0)
+				vo.ValidationCodeLookup = MValRule.get(ctx, userDef.getAD_Val_Rule_Lookup_ID()).getCode();
+			if (userDef.getAD_LabelStyle_ID() > 0)
+				vo.AD_LabelStyle_ID = userDef.getAD_LabelStyle_ID();
 
-				if (userDef.getPlaceholder() != null)
-					vo.Placeholder = userDef.getPlaceholder();
-				
-				//devCoffee 8535
-				if (userDef.getAD_FieldGroup_ID() > 0)
-				{
-					vo.FieldGroup = ((X_AD_FieldGroup)userDef.getAD_FieldGroup()).get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
-					vo.FieldGroupType = userDef.getAD_FieldGroup().getFieldGroupType();
-				}
-				//fim devCoffee 8535
-				
-				if (userDef.getIsAutocomplete() != null)
-					vo.IsAutocomplete = "Y".equals(userDef.getIsAutocomplete());
+			if (userDef.getAD_FieldStyle_ID() > 0)
+				vo.AD_FieldStyle_ID = userDef.getAD_FieldStyle_ID();
+
+			if (userDef.getPA_DashboardContent_ID() > 0)
+				vo.PA_DashboardContent_ID = userDef.getPA_DashboardContent_ID();
+
+			if (userDef.getPlaceholder() != null)
+				vo.Placeholder = userDef.getPlaceholder();
+
+			//devCoffee 8535
+			if (userDef.getAD_FieldGroup_ID() > 0)
+			{
+				vo.FieldGroup = ((X_AD_FieldGroup)userDef.getAD_FieldGroup()).get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
+				vo.FieldGroupType = userDef.getAD_FieldGroup().getFieldGroupType();
 			}
+			//fim devCoffee 8535
+
+			if (userDef.getIsAutocomplete() != null)
+				vo.IsAutocomplete = "Y".equals(userDef.getIsAutocomplete());
 		}
 		//
 		vo.initFinish();
@@ -428,6 +429,10 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.Placeholder = rs.getString("Placeholder");
 			vo.Placeholder2 = rs.getString("Placeholder2");
 			vo.IsAutocomplete = "Y".equals(rs.getString("IsAutoComplete"));
+			//
+			vo.FieldGroup = rs.getString("FieldGroup");
+			vo.FieldGroupType = rs.getString("FieldGroupType");
+			vo.IsCollapsedByDefault = "Y".equals(rs.getString("IsCollapsedByDefault"));
 		}
 		catch (SQLException e)
 		{
@@ -475,6 +480,11 @@ public class GridFieldVO implements Serializable, Cloneable
 					vo.ValueMax = userDef.getValueMax();
 				if (userDef.getIsMandatory()!= null)
 					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
+				if (userDef.getAD_FieldGroup_ID() > 0) {
+					X_AD_FieldGroup fg = new X_AD_FieldGroup(Env.getCtx(), userDef.getAD_FieldGroup_ID(), null);
+					vo.FieldGroup = fg.get_Translation(X_AD_FieldGroup.COLUMNNAME_Name);
+					vo.FieldGroupType = fg.getFieldGroupType();
+				}
 			}
 		}
 		//fim devCoffee - 3858

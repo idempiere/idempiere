@@ -58,6 +58,7 @@ import org.compiere.util.Env;
  *	@author Alejandro Falcone
  *	
  **/
+@org.adempiere.base.annotation.Process
 public class ImmediateBankTransfer extends SvrProcess
 {
 	 /** DocAction          */

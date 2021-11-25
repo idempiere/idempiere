@@ -186,12 +186,6 @@ public class MPasswordRule extends X_AD_PasswordRule {
 					WordListDictionary dict = new WordListDictionary(awl);
 					DictionarySubstringRule dictRule = new DictionarySubstringRule(dict);
 
-					/*if (getDictWordLength() > 0) {//when update library to passay. this method is miss 
-						dictRule.setWordLength(getDictWordLength()); // size of words to check in the password						
-					} else{
-						dictRule.setWordLength(DictionarySubstringRule.DEFAULT_WORD_LENGTH);
-					}*/
-
 					if (isDictMatchBackwards()) {
 						dictRule.setMatchBackwards(true); // match dictionary words backwards
 					}

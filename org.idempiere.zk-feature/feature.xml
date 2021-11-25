@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.zk.feature"
       label="Materialize zk osgi libary"
-      version="8.2.0.qualifier"
+      version="9.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -88,14 +88,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.fileupload"
+         id="org.apache.commons.commons-fileupload"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.io"
+         id="org.apache.commons.commons-io"
          download-size="0"
          install-size="0"
          version="0.0.0"

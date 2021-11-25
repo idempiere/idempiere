@@ -37,6 +37,7 @@ import org.compiere.util.Util;
  *	@author victor.perez@e-evoltuion.com
  *	
  **/
+@org.adempiere.base.annotation.Process
 public class BankTransfer extends SvrProcess
 {
 	private String 		p_DocumentNo= "";				// Document No

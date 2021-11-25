@@ -130,8 +130,6 @@ public class MDepositBatch extends X_C_DepositBatch
 
 	/**	Process Message 			*/
 	private String		m_processMsg = null;
-	/**	Just Prepared Flag			*/
-//	private boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -224,10 +222,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	

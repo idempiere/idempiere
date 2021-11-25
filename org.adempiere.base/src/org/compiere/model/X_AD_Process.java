@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Process")
 public class X_AD_Process extends PO implements I_AD_Process, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 			setAccessLevel (null);
 			setAD_Process_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsBetaFunctionality (false);
 			setIsReport (false);
 			setName (null);
@@ -81,16 +82,16 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public static final int ACCESSLEVEL_AD_Reference_ID=5;
 	/** Organization = 1 */
 	public static final String ACCESSLEVEL_Organization = "1";
+	/** Client only = 2 */
+	public static final String ACCESSLEVEL_ClientOnly = "2";
 	/** Client+Organization = 3 */
 	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
 	/** System only = 4 */
 	public static final String ACCESSLEVEL_SystemOnly = "4";
-	/** All = 7 */
-	public static final String ACCESSLEVEL_All = "7";
 	/** System+Client = 6 */
 	public static final String ACCESSLEVEL_SystemPlusClient = "6";
-	/** Client only = 2 */
-	public static final String ACCESSLEVEL_ClientOnly = "2";
+	/** All = 7 */
+	public static final String ACCESSLEVEL_All = "7";
 	/** Set Data Access Level.
 		@param AccessLevel 
 		Access Level required
@@ -110,9 +111,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
 
 	/** Set Context Help.
 		@param AD_CtxHelp_ID Context Help	  */
@@ -135,9 +137,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
 		@param AD_Form_ID 
@@ -163,9 +166,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
 		@param AD_PrintFormat_ID 
@@ -228,9 +232,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ReportView)MTable.get(getCtx(), org.compiere.model.I_AD_ReportView.Table_Name)
-			.getPO(getAD_ReportView_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ReportView)MTable.get(getCtx(), org.compiere.model.I_AD_ReportView.Table_ID)
+			.getPO(getAD_ReportView_ID(), get_TrxName());
+	}
 
 	/** Set Report View.
 		@param AD_ReportView_ID 
@@ -256,9 +261,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
 		@param AD_Workflow_ID 
@@ -553,10 +559,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public static final String SHOWHELP_AskUserForFutureUse = "A";
 	/** Don't show help = N */
 	public static final String SHOWHELP_DonTShowHelp = "N";
-	/** Show Help = Y */
-	public static final String SHOWHELP_ShowHelp = "Y";
 	/** Run silently - Take Defaults = S */
 	public static final String SHOWHELP_RunSilently_TakeDefaults = "S";
+	/** Show Help = Y */
+	public static final String SHOWHELP_ShowHelp = "Y";
 	/** Set Show Help.
 		@param ShowHelp Show Help	  */
 	public void setShowHelp (String ShowHelp)

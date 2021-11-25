@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PA_DashboardContent")
 public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -82,9 +83,10 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
     }
 
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_Name)
-			.getPO(getAD_Chart_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
+			.getPO(getAD_Chart_ID(), get_TrxName());
+	}
 
 	/** Set Chart.
 		@param AD_Chart_ID Chart	  */
@@ -107,9 +109,10 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -135,9 +138,10 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
 		@param AD_Role_ID 
@@ -163,9 +167,10 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -191,9 +196,10 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -257,10 +263,10 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 
 	/** GoalDisplay AD_Reference_ID=53316 */
 	public static final int GOALDISPLAY_AD_Reference_ID=53316;
-	/** HTML Table = T */
-	public static final String GOALDISPLAY_HTMLTable = "T";
 	/** Chart = C */
 	public static final String GOALDISPLAY_Chart = "C";
+	/** HTML Table = T */
+	public static final String GOALDISPLAY_HTMLTable = "T";
 	/** Set Goal Display.
 		@param GoalDisplay 
 		Type of goal display on dashboard
@@ -490,9 +496,10 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	public org.compiere.model.I_PA_Goal getPA_Goal() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_Name)
-			.getPO(getPA_Goal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_ID)
+			.getPO(getPA_Goal_ID(), get_TrxName());
+	}
 
 	/** Set Goal.
 		@param PA_Goal_ID 

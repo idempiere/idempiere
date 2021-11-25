@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_TopicCategory
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="B_TopicCategory")
 public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_B_TopicCategory (Properties ctx, int B_TopicCategory_ID, String trxName)
@@ -110,9 +111,10 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	}
 
 	public org.compiere.model.I_B_TopicType getB_TopicType() throws RuntimeException
-    {
-		return (org.compiere.model.I_B_TopicType)MTable.get(getCtx(), org.compiere.model.I_B_TopicType.Table_Name)
-			.getPO(getB_TopicType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_B_TopicType)MTable.get(getCtx(), org.compiere.model.I_B_TopicType.Table_ID)
+			.getPO(getB_TopicType_ID(), get_TrxName());
+	}
 
 	/** Set Topic Type.
 		@param B_TopicType_ID 

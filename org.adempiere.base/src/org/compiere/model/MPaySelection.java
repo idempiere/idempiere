@@ -47,9 +47,6 @@ public class MPaySelection extends X_C_PaySelection
 		super(ctx, C_PaySelection_ID, trxName);
 		if (C_PaySelection_ID == 0)
 		{
-		//	setC_BankAccount_ID (0);
-		//	setName (null);	// @#Date@
-		//	setPayDate (new Timestamp(System.currentTimeMillis()));	// @#Date@
 			setTotalAmt (Env.ZERO);
 			setIsApproved (false);
 			setProcessed (false);

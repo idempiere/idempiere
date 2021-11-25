@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceBatch
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_InvoiceBatch")
 public class X_C_InvoiceBatch extends PO implements I_C_InvoiceBatch, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_InvoiceBatch (Properties ctx, int C_InvoiceBatch_ID, String trxName)
@@ -86,9 +87,10 @@ public class X_C_InvoiceBatch extends PO implements I_C_InvoiceBatch, I_Persiste
     }
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
-			.getPO(getC_ConversionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
 
 	/** Set Currency Type.
 		@param C_ConversionType_ID 
@@ -114,9 +116,10 @@ public class X_C_InvoiceBatch extends PO implements I_C_InvoiceBatch, I_Persiste
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -347,9 +350,10 @@ public class X_C_InvoiceBatch extends PO implements I_C_InvoiceBatch, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
 		@param SalesRep_ID 

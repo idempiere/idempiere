@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ValidCombination
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_ValidCombination")
 public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ValidCombination (Properties ctx, int C_ValidCombination_ID, String trxName)
@@ -74,9 +75,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
     }
 
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getAccount_ID(), get_TrxName());
+	}
 
 	/** Set Account.
 		@param Account_ID 
@@ -142,9 +144,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -170,9 +173,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
 		@param C_Activity_ID 
@@ -198,9 +202,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -226,9 +231,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
 		@param C_Campaign_ID 
@@ -254,9 +260,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocFrom_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocFrom_ID(), get_TrxName());
+	}
 
 	/** Set Location From.
 		@param C_LocFrom_ID 
@@ -282,9 +289,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocTo_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocTo_ID(), get_TrxName());
+	}
 
 	/** Set Location To.
 		@param C_LocTo_ID 
@@ -335,9 +343,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
     }
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
 		@param C_Project_ID 
@@ -363,9 +372,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_Name)
-			.getPO(getC_SalesRegion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
+			.getPO(getC_SalesRegion_ID(), get_TrxName());
+	}
 
 	/** Set Sales Region.
 		@param C_SalesRegion_ID 
@@ -391,9 +401,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_SubAcct getC_SubAcct() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SubAcct)MTable.get(getCtx(), org.compiere.model.I_C_SubAcct.Table_Name)
-			.getPO(getC_SubAcct_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SubAcct)MTable.get(getCtx(), org.compiere.model.I_C_SubAcct.Table_ID)
+			.getPO(getC_SubAcct_ID(), get_TrxName());
+	}
 
 	/** Set Sub Account.
 		@param C_SubAcct_ID 
@@ -497,9 +508,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -525,9 +537,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
 		@param User1_ID 
@@ -553,9 +566,10 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
 		@param User2_ID 

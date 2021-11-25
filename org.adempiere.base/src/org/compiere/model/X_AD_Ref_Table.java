@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Ref_Table
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Ref_Table")
 public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Ref_Table (Properties ctx, int AD_Ref_Table_ID, String trxName)
@@ -43,7 +44,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Reference_ID (0);
 			setAD_Table_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsValueDisplayed (false);
         } */
     }
@@ -77,9 +78,10 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Column getAD_Disp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Display(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Display(), get_TrxName());
+	}
 
 	/** Set Display column.
 		@param AD_Display 
@@ -102,9 +104,10 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -130,9 +133,10 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Column getAD_() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Key(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Key(), get_TrxName());
+	}
 
 	/** Set Key column.
 		@param AD_Key 
@@ -155,9 +159,10 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -205,9 +210,10 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -233,9 +239,10 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 

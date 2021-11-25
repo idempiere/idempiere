@@ -825,23 +825,18 @@ public class MOrderLine extends X_C_OrderLine
 				log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
 				return false;
 			}
+			int C_DocType_ID = getParent().getDocTypeID();
+			MDocType docType = MDocType.get(getCtx(), C_DocType_ID);
 			//
-			if (!m_productPrice.isCalculated())
+			if (!docType.IsNoPriceListCheck() && !m_productPrice.isCalculated())
 			{
 				throw new ProductNotOnPriceListException(m_productPrice, getLine());
 			}
 		}
 
 		//	UOM
-		if (getC_UOM_ID() == 0 
-			&& (getM_Product_ID() != 0 
-				|| getPriceEntered().compareTo(Env.ZERO) != 0
-				|| getC_Charge_ID() != 0))
-		{
-			int C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());
-			if (C_UOM_ID > 0)
-				setC_UOM_ID (C_UOM_ID);
-		}
+		if (getC_UOM_ID() == 0)
+			setDefaultC_UOM_ID();
 		//	Qty Precision
 		if (newRecord || is_ValueChanged("QtyEntered"))
 			setQtyEntered(getQtyEntered());
@@ -880,7 +875,24 @@ public class MOrderLine extends X_C_OrderLine
 		
 		return true;
 	}	//	beforeSave
+	
+	/***
+	 * Sets the default unit of measure
+	 * If there's a product, it sets the UOM of the product
+	 * If not, it sets the default UOM of the client
+	 */
+	private void setDefaultC_UOM_ID() {
+		int C_UOM_ID = 0;
+		
+		if (MProduct.get(getCtx(), getM_Product_ID()) != null) {
+			C_UOM_ID = MProduct.get(getCtx(), getM_Product_ID()).getC_UOM_ID();	
+		} else {
+			C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());
+		}
 
+		if (C_UOM_ID > 0)
+			setC_UOM_ID (C_UOM_ID);
+	}
 	
 	/**
 	 * 	Before Delete

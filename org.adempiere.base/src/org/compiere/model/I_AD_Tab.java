@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_AD_Tab 
 {
@@ -175,6 +175,19 @@ public interface I_AD_Tab
 	public int getAD_Table_ID();
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name AD_TabType */
+    public static final String COLUMNNAME_AD_TabType = "AD_TabType";
+
+	/** Set Tab Type.
+	  * Defines Tab Type
+	  */
+	public void setAD_TabType (String AD_TabType);
+
+	/** Get Tab Type.
+	  * Defines Tab Type
+	  */
+	public String getAD_TabType();
 
     /** Column name AD_Tab_UU */
     public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";

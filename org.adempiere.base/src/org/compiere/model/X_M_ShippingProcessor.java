@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for M_ShippingProcessor
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_ShippingProcessor")
 public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName)
@@ -102,9 +103,10 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	}
 
 	public org.compiere.model.I_M_ShippingProcessorCfg getM_ShippingProcessorCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShippingProcessorCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessorCfg.Table_Name)
-			.getPO(getM_ShippingProcessorCfg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShippingProcessorCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessorCfg.Table_ID)
+			.getPO(getM_ShippingProcessorCfg_ID(), get_TrxName());
+	}
 
 	/** Set Shipping Processor Configuration.
 		@param M_ShippingProcessorCfg_ID Shipping Processor Configuration	  */

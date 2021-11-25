@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Tab
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Tab")
 public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Tab (Properties ctx, int ASP_Tab_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
 		@param AD_Tab_ID 
@@ -179,9 +181,10 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Window getASP_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Window)MTable.get(getCtx(), org.compiere.model.I_ASP_Window.Table_Name)
-			.getPO(getASP_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Window)MTable.get(getCtx(), org.compiere.model.I_ASP_Window.Table_ID)
+			.getPO(getASP_Window_ID(), get_TrxName());
+	}
 
 	/** Set ASP Window.
 		@param ASP_Window_ID ASP Window	  */

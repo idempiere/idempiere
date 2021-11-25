@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Column
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_UserDef_Info_Column")
 public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Column, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
     }
 
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_Name)
-			.getPO(getAD_FieldStyle_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_FieldStyle_ID(), get_TrxName());
+	}
 
 	/** Set Field Style.
 		@param AD_FieldStyle_ID 
@@ -101,9 +103,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	}
 
 	public org.compiere.model.I_AD_InfoColumn getAD_InfoColumn() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
-			.getPO(getAD_InfoColumn_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
+			.getPO(getAD_InfoColumn_ID(), get_TrxName());
+	}
 
 	/** Set Info Column.
 		@param AD_InfoColumn_ID 
@@ -129,9 +132,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -157,9 +161,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_Value_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_Value_ID(), get_TrxName());
+	}
 
 	/** Set Reference Key.
 		@param AD_Reference_Value_ID 
@@ -219,9 +224,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	}
 
 	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_UserDef_Info)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Info.Table_Name)
-			.getPO(getAD_UserDef_Info_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_UserDef_Info)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Info.Table_ID)
+			.getPO(getAD_UserDef_Info_ID(), get_TrxName());
+	}
 
 	/** Set User defined Info Window.
 		@param AD_UserDef_Info_ID User defined Info Window	  */
@@ -244,9 +250,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	}
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_Name)
-			.getPO(getAD_Val_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
+			.getPO(getAD_Val_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Dynamic Validation.
 		@param AD_Val_Rule_ID 
@@ -358,10 +365,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 
 	/** IsAutocomplete AD_Reference_ID=319 */
 	public static final int ISAUTOCOMPLETE_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISAUTOCOMPLETE_Yes = "Y";
 	/** No = N */
 	public static final String ISAUTOCOMPLETE_No = "N";
+	/** Yes = Y */
+	public static final String ISAUTOCOMPLETE_Yes = "Y";
 	/** Set Autocomplete.
 		@param IsAutocomplete 
 		Automatic completion for textfields
@@ -382,10 +389,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 
 	/** IsDisplayed AD_Reference_ID=319 */
 	public static final int ISDISPLAYED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDISPLAYED_Yes = "Y";
 	/** No = N */
 	public static final String ISDISPLAYED_No = "N";
+	/** Yes = Y */
+	public static final String ISDISPLAYED_Yes = "Y";
 	/** Set Displayed.
 		@param IsDisplayed 
 		Determines, if this field is displayed
@@ -406,10 +413,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 
 	/** IsMandatory AD_Reference_ID=319 */
 	public static final int ISMANDATORY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISMANDATORY_Yes = "Y";
 	/** No = N */
 	public static final String ISMANDATORY_No = "N";
+	/** Yes = Y */
+	public static final String ISMANDATORY_Yes = "Y";
 	/** Set Mandatory.
 		@param IsMandatory 
 		Data entry is required in this column
@@ -430,10 +437,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 
 	/** IsQueryCriteria AD_Reference_ID=319 */
 	public static final int ISQUERYCRITERIA_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISQUERYCRITERIA_Yes = "Y";
 	/** No = N */
 	public static final String ISQUERYCRITERIA_No = "N";
+	/** Yes = Y */
+	public static final String ISQUERYCRITERIA_Yes = "Y";
 	/** Set Query Criteria.
 		@param IsQueryCriteria 
 		The column is also used as a query criteria
@@ -454,10 +461,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 
 	/** IsReadOnly AD_Reference_ID=319 */
 	public static final int ISREADONLY_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISREADONLY_Yes = "Y";
 	/** No = N */
 	public static final String ISREADONLY_No = "N";
+	/** Yes = Y */
+	public static final String ISREADONLY_Yes = "Y";
 	/** Set Read Only.
 		@param IsReadOnly 
 		Field is read only
@@ -526,20 +533,20 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 
 	/** QueryOperator AD_Reference_ID=200061 */
 	public static final int QUERYOPERATOR_AD_Reference_ID=200061;
-	/** Like = Like */
-	public static final String QUERYOPERATOR_Like = "Like";
+	/** != = != */
+	public static final String QUERYOPERATOR_NotEq = "!=";
+	/** < = < */
+	public static final String QUERYOPERATOR_Le = "<";
+	/** <= = <= */
+	public static final String QUERYOPERATOR_LeEq = "<=";
 	/** = = = */
 	public static final String QUERYOPERATOR_Eq = "=";
 	/** > = > */
 	public static final String QUERYOPERATOR_Gt = ">";
 	/** >= = >= */
 	public static final String QUERYOPERATOR_GtEq = ">=";
-	/** < = < */
-	public static final String QUERYOPERATOR_Le = "<";
-	/** <= = <= */
-	public static final String QUERYOPERATOR_LeEq = "<=";
-	/** != = != */
-	public static final String QUERYOPERATOR_NotEq = "!=";
+	/** Like = Like */
+	public static final String QUERYOPERATOR_Like = "Like";
 	/** Full Like = LIKE */
 	public static final String QUERYOPERATOR_FullLike = "LIKE";
 	/** Set Query Operator.

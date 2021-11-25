@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_TaxDeclarationLine")
 public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName)
@@ -83,9 +84,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
     }
 
 	public org.compiere.model.I_C_AllocationLine getC_AllocationLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AllocationLine)MTable.get(getCtx(), org.compiere.model.I_C_AllocationLine.Table_Name)
-			.getPO(getC_AllocationLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AllocationLine)MTable.get(getCtx(), org.compiere.model.I_C_AllocationLine.Table_ID)
+			.getPO(getC_AllocationLine_ID(), get_TrxName());
+	}
 
 	/** Set Allocation Line.
 		@param C_AllocationLine_ID 
@@ -111,9 +113,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -139,9 +142,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -167,9 +171,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -195,9 +200,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
 		@param C_InvoiceLine_ID 
@@ -223,9 +229,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	public org.compiere.model.I_C_TaxDeclaration getC_TaxDeclaration() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxDeclaration)MTable.get(getCtx(), org.compiere.model.I_C_TaxDeclaration.Table_Name)
-			.getPO(getC_TaxDeclaration_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_TaxDeclaration)MTable.get(getCtx(), org.compiere.model.I_C_TaxDeclaration.Table_ID)
+			.getPO(getC_TaxDeclaration_ID(), get_TrxName());
+	}
 
 	/** Set Tax Declaration.
 		@param C_TaxDeclaration_ID 
@@ -288,9 +295,10 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_Name)
-			.getPO(getC_Tax_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
+			.getPO(getC_Tax_ID(), get_TrxName());
+	}
 
 	/** Set Tax.
 		@param C_Tax_ID 

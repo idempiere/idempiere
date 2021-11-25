@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SysConfig
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_SysConfig")
 public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_SysConfig (Properties ctx, int AD_SysConfig_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
         {
 			setAD_SysConfig_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setValue (null);
         } */
@@ -110,12 +111,12 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 
 	/** ConfigurationLevel AD_Reference_ID=53222 */
 	public static final int CONFIGURATIONLEVEL_AD_Reference_ID=53222;
-	/** System = S */
-	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Client = C */
 	public static final String CONFIGURATIONLEVEL_Client = "C";
 	/** Organization = O */
 	public static final String CONFIGURATIONLEVEL_Organization = "O";
+	/** System = S */
+	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Set Configuration Level.
 		@param ConfigurationLevel 
 		Configuration Level for this parameter

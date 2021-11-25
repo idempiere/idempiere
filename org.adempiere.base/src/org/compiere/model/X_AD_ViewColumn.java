@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_ViewColumn
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_ViewColumn")
 public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 			setAD_ViewComponent_ID (0);
 			setColumnName (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
         } */
     }
 
@@ -108,9 +109,10 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_ViewComponent getAD_ViewComponent() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ViewComponent)MTable.get(getCtx(), org.compiere.model.I_AD_ViewComponent.Table_Name)
-			.getPO(getAD_ViewComponent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ViewComponent)MTable.get(getCtx(), org.compiere.model.I_AD_ViewComponent.Table_ID)
+			.getPO(getAD_ViewComponent_ID(), get_TrxName());
+	}
 
 	/** Set Database View Component.
 		@param AD_ViewComponent_ID Database View Component	  */

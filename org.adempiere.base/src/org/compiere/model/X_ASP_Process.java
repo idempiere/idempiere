@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Process
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Process")
 public class X_ASP_Process extends PO implements I_ASP_Process, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_ASP_Process (Properties ctx, int ASP_Process_ID, String trxName)
@@ -74,9 +75,10 @@ public class X_ASP_Process extends PO implements I_ASP_Process, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -102,9 +104,10 @@ public class X_ASP_Process extends PO implements I_ASP_Process, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_Name)
-			.getPO(getASP_Level_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)
+			.getPO(getASP_Level_ID(), get_TrxName());
+	}
 
 	/** Set ASP Level.
 		@param ASP_Level_ID ASP Level	  */

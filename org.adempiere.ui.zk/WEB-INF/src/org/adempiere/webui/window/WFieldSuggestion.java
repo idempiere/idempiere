@@ -19,6 +19,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Label;
@@ -125,6 +126,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
 		this.setMaximizable(true);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	@Override
@@ -132,8 +134,12 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK)) {
 			onSave();
 		} else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL)) {
-			this.detach();
+			onCancel();
 		}		
+	}
+
+	private void onCancel() {
+		this.detach();
 	}
 
 	private void onSave() {

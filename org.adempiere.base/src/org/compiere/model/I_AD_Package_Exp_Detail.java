@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Exp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Development 9.0
  */
 public interface I_AD_Package_Exp_Detail 
 {
@@ -411,6 +411,15 @@ public interface I_AD_Package_Exp_Detail
 
 	/** Get Destination_FileName	  */
 	public String getDestination_FileName();
+
+    /** Column name ExecCode */
+    public static final String COLUMNNAME_ExecCode = "ExecCode";
+
+	/** Set Execution Code	  */
+	public void setExecCode (String ExecCode);
+
+	/** Get Execution Code	  */
+	public String getExecCode();
 
     /** Column name File_Directory */
     public static final String COLUMNNAME_File_Directory = "File_Directory";

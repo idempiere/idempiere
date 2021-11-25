@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_CtxHelpSuggestion")
 public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)
@@ -100,9 +101,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
 
 	/** Set Context Help.
 		@param AD_CtxHelp_ID Context Help	  */
@@ -125,9 +127,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	public org.compiere.model.I_AD_CtxHelpMsg getAD_CtxHelpMsg() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelpMsg)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelpMsg.Table_Name)
-			.getPO(getAD_CtxHelpMsg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_CtxHelpMsg)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelpMsg.Table_ID)
+			.getPO(getAD_CtxHelpMsg_ID(), get_TrxName());
+	}
 
 	/** Set Context Help Message.
 		@param AD_CtxHelpMsg_ID Context Help Message	  */
@@ -204,9 +207,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	public org.compiere.model.I_AD_AllClients_V getAD_UserClient() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AllClients_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllClients_V.Table_Name)
-			.getPO(getAD_UserClient_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AllClients_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllClients_V.Table_ID)
+			.getPO(getAD_UserClient_ID(), get_TrxName());
+	}
 
 	/** Set Tenant of User.
 		@param AD_UserClient_ID Tenant of User	  */
@@ -229,9 +233,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 

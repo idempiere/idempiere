@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoWindow
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_InfoWindow")
 public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 			setAD_InfoWindow_ID (0);
 			setAD_Table_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFromClause (null);
 			setIsDefault (false);
 // N
@@ -88,9 +89,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
     }
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
 
 	/** Set Context Help.
 		@param AD_CtxHelp_ID Context Help	  */
@@ -150,9 +152,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 

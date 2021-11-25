@@ -28,6 +28,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	BOM Model
+ * 
+ *  Never leave beta and drop
+ *  @deprecated
  *  @author Jorg Janke
  *  @version $Id: MBOM.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
@@ -127,8 +130,6 @@ public class MBOM extends X_M_BOM implements ImmutablePOSupport
 		super (ctx, M_BOM_ID, trxName);
 		if (M_BOM_ID == 0)
 		{
-		//	setM_Product_ID (0);
-		//	setName (null);
 			setBOMType (BOMTYPE_CurrentActive);	// A
 			setBOMUse (BOMUSE_Master);	// A
 		}

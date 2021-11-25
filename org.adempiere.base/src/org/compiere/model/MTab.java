@@ -28,6 +28,7 @@ import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -46,6 +47,29 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = -8111075325920938135L;
 
+	/**	Cache						*/
+	private static ImmutableIntPOCache<Integer,MTab> s_cache = new ImmutableIntPOCache<Integer,MTab>(Table_Name, 20);
+	
+	/**
+	 * 
+	 * @param AD_Tab_ID
+	 * @return {@link MTab}
+	 */
+	public static MTab get(int AD_Tab_ID)
+	{
+		Integer key = Integer.valueOf(AD_Tab_ID);
+		MTab retValue = s_cache.get (Env.getCtx(), key, e -> new MTab(Env.getCtx(), e));
+		if (retValue != null) 
+			return retValue;
+		
+		retValue = new MTab (Env.getCtx(), AD_Tab_ID, (String)null);
+		if (retValue.get_ID () == AD_Tab_ID) {
+			s_cache.put (key, retValue);
+			return retValue;
+		}
+		return null;
+	}
+	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -57,9 +81,6 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 		super (ctx, AD_Tab_ID, trxName);
 		if (AD_Tab_ID == 0)
 		{
-		//	setAD_Window_ID (0);
-		//	setAD_Table_ID (0);
-		//	setName (null);
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setHasTree (false);
 			setIsReadOnly (false);
@@ -193,9 +214,10 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-	//	UPDATE AD_Tab SET IsInsertRecord='N' WHERE IsInsertRecord='Y' AND IsReadOnly='Y'
 		if (isReadOnly() && isInsertRecord())
 			setIsInsertRecord(false);
+		if (is_new() || is_ValueChanged(COLUMNNAME_AD_TabType))
+			setIsSortTab(AD_TABTYPE_Sort.equals(getAD_TabType())); // preserve this redundant flag for backward compatibility
 		//RF[2826384]
 		if(isSortTab())
 		{

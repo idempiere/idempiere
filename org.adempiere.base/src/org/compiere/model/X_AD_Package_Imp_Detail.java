@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Package_Imp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Package_Imp_Detail")
 public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Detail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210923L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Detail (Properties ctx, int AD_Package_Imp_Detail_ID, String trxName)
@@ -143,9 +144,10 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	}
 
 	public org.compiere.model.I_AD_Package_Imp getAD_Package_Imp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Package_Imp)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp.Table_Name)
-			.getPO(getAD_Package_Imp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Package_Imp)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp.Table_ID)
+			.getPO(getAD_Package_Imp_ID(), get_TrxName());
+	}
 
 	/** Set Package Imp..
 		@param AD_Package_Imp_ID Package Imp.	  */
@@ -168,9 +170,10 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -193,6 +196,20 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Execution Code.
+		@param ExecCode Execution Code	  */
+	public void setExecCode (String ExecCode)
+	{
+		set_Value (COLUMNNAME_ExecCode, ExecCode);
+	}
+
+	/** Get Execution Code.
+		@return Execution Code	  */
+	public String getExecCode () 
+	{
+		return (String)get_Value(COLUMNNAME_ExecCode);
 	}
 
 	/** Set Name.
@@ -233,6 +250,23 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Result.
+		@param Result 
+		Result of the action taken
+	  */
+	public void setResult (String Result)
+	{
+		set_ValueNoCheck (COLUMNNAME_Result, Result);
+	}
+
+	/** Get Result.
+		@return Result of the action taken
+	  */
+	public String getResult () 
+	{
+		return (String)get_Value(COLUMNNAME_Result);
 	}
 
 	/** Set Success.

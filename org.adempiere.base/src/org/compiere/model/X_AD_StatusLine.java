@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StatusLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_StatusLine")
 public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_StatusLine (Properties ctx, int AD_StatusLine_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 			setAD_Message_ID (0);
 			setAD_StatusLine_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setSQLStatement (null);
         } */
@@ -76,9 +77,10 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_Name)
-			.getPO(getAD_Message_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
+			.getPO(getAD_Message_ID(), get_TrxName());
+	}
 
 	/** Set Message.
 		@param AD_Message_ID 

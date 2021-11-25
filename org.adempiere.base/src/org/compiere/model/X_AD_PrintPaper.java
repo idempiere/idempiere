@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintPaper
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_PrintPaper")
 public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_PrintPaper (Properties ctx, int AD_PrintPaper_ID, String trxName)
@@ -159,10 +160,10 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 
 	/** DimensionUnits AD_Reference_ID=375 */
 	public static final int DIMENSIONUNITS_AD_Reference_ID=375;
-	/** MM = M */
-	public static final String DIMENSIONUNITS_MM = "M";
 	/** Inch = I */
 	public static final String DIMENSIONUNITS_Inch = "I";
+	/** MM = M */
+	public static final String DIMENSIONUNITS_MM = "M";
 	/** Set Dimension Units.
 		@param DimensionUnits 
 		Units of Dimension

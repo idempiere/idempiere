@@ -83,7 +83,6 @@ public class Doc_Payment extends Doc
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
-	//	log.config( toString() + " Balance=" + retValue);
 		return retValue;
 	}   //  getBalance
 

@@ -13,6 +13,9 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.adempiere.webui.LayoutUtils;
@@ -91,30 +94,57 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 				LayoutUtils.addSclass("medium-toolbarbutton toolbarbutton-with-text", btnViewItem);
 		}
 
-		List<MInfoWindow> list = new Query(Env.getCtx(), MInfoWindow.Table_Name, "IsValid='Y' AND IsShowInDashboard='Y'", null)
-		.setOnlyActiveRecords(true)
-		.setOrderBy(MInfoWindow.COLUMNNAME_SeqNo)
-		.list();
+		List<MInfoWindow> listAll = new Query(Env.getCtx(), MInfoWindow.Table_Name, "IsValid='Y'", null)
+				.setOnlyActiveRecords(true)
+				.list();
 
-		MInfoWindow[] infos = list.toArray(new MInfoWindow[list.size()]);
+		MInfoWindow[] infosAll = listAll.toArray(new MInfoWindow[listAll.size()]);
 
-		for (int i = 0; i < infos.length; i++)
+		List<ListInfoWindow> selectedInfoWindows = new ArrayList<ListInfoWindow>();
+
+		for (int i = 0; i < infosAll.length; i++) 
 		{
-			MInfoWindow info = infos[i];
+			MInfoWindow info = infosAll[i];
+			if (MInfoWindow.get(info.getAD_InfoWindow_ID(), null) != null)
+			{
+				MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
+
+				if (userDef != null) {
+
+					if ((info.isShowInDashboard() && Util.isEmpty(userDef.getIsShowInDashboard())) || (!Util.isEmpty(userDef.getIsShowInDashboard()) && userDef.getIsShowInDashboard().equals(MUserDefInfo.ISSHOWINDASHBOARD_Yes))) {
+						int seqNo = userDef.getSeqNo() > 0 ? userDef.getSeqNo() : info.getSeqNo();
+						selectedInfoWindows.add(new ListInfoWindow(info, seqNo));
+					}
+				}
+				else if (info.isShowInDashboard())
+					selectedInfoWindows.add(new ListInfoWindow(info, info.getSeqNo()));
+			}
+		}
+
+		Collections.sort(selectedInfoWindows, new SeqNoComparator());
+
+		for (ListInfoWindow so : selectedInfoWindows) {
+			MInfoWindow info = so.getInfoWindow();
 			if (MInfoWindow.get(info.getAD_InfoWindow_ID(), null) != null)
 			{
 				// Load User Def
 				String name = info.get_Translation("Name");
+				String image = (Util.isEmpty(info.getImageURL()) ? "Info16.png" : info.getImageURL());
+
 				MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
-				if(userDef != null && !Util.isEmpty(userDef.getName())) {
-					name = userDef.getName();
+				if(userDef != null) {
+
+					if (!Util.isEmpty(userDef.getName()))
+						name = userDef.getName();
+					if (!Util.isEmpty(userDef.getImageURL()))
+						image = userDef.getImageURL();
 				} 
-				
+
 				ToolBarButton btnViewItem = new ToolBarButton(info.getName());
 				btnViewItem.setSclass("link");
 				btnViewItem.setLabel(name);
-				String image = (Util.isEmpty(info.getImageURL()) ? "Info16.png" : info.getImageURL());
-				if (ThemeManager.isUseFontIconForImage())
+
+				if (ThemeManager.isUseFontIconForImage()) 
 				{
 					image = image.replace("16.png", "");
 					btnViewItem.setIconSclass("z-icon-"+image);
@@ -168,6 +198,40 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 					SessionManager.getAppDesktop().openInfo(infoWindowID);
 				}
 			}
+		}
+	}
+
+	/**
+	 * List of Info Windows to be displayed in the panel
+	 * @author nmicoud
+	 */ 
+	private class ListInfoWindow {
+
+		MInfoWindow iw = null;
+		int seqNo = 0;
+
+		public ListInfoWindow(MInfoWindow infoWindow, int seqNo) {
+			iw = infoWindow;
+			this.seqNo = seqNo;
+		}
+
+		public int getSeqNo() {
+			return seqNo;
+		}
+
+		public MInfoWindow getInfoWindow() {
+			return iw;
+		}
+	}
+
+	/**
+	 * @author nmicoud
+	 * IDEMPIERE-4946 Implement InfoWindow SeqNo customization
+	 */
+	public static class SeqNoComparator implements Comparator<ListInfoWindow> {
+		@Override
+		public int compare(ListInfoWindow iw1, ListInfoWindow iw2) {
+			return (Integer.valueOf(iw1.getSeqNo())).compareTo(Integer.valueOf(iw2.getSeqNo()));
 		}
 	}
 }

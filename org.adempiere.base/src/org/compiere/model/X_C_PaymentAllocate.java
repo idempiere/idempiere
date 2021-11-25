@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentAllocate
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_PaymentAllocate")
 public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_PaymentAllocate (Properties ctx, int C_PaymentAllocate_ID, String trxName)
@@ -99,9 +100,10 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
 	}
 
 	public org.compiere.model.I_C_AllocationLine getC_AllocationLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AllocationLine)MTable.get(getCtx(), org.compiere.model.I_C_AllocationLine.Table_Name)
-			.getPO(getC_AllocationLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AllocationLine)MTable.get(getCtx(), org.compiere.model.I_C_AllocationLine.Table_ID)
+			.getPO(getC_AllocationLine_ID(), get_TrxName());
+	}
 
 	/** Set Allocation Line.
 		@param C_AllocationLine_ID 
@@ -127,9 +129,10 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
 		@param C_Invoice_ID 
@@ -200,9 +203,10 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
 		@param C_Payment_ID 

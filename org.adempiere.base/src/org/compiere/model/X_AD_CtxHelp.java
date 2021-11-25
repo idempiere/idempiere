@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelp
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_CtxHelp")
 public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_CtxHelp (Properties ctx, int AD_CtxHelp_ID, String trxName)
@@ -106,24 +107,24 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 
 	/** CtxType AD_Reference_ID=200064 */
 	public static final int CTXTYPE_AD_Reference_ID=200064;
-	/** Tab = T */
-	public static final String CTXTYPE_Tab = "T";
-	/** Process = P */
-	public static final String CTXTYPE_Process = "P";
-	/** Form = F */
-	public static final String CTXTYPE_Form = "F";
-	/** Info = I */
-	public static final String CTXTYPE_Info = "I";
-	/** Workflow = W */
-	public static final String CTXTYPE_Workflow = "W";
-	/** Task = K */
-	public static final String CTXTYPE_Task = "K";
-	/** Home = H */
-	public static final String CTXTYPE_Home = "H";
 	/** All = A */
 	public static final String CTXTYPE_All = "A";
+	/** Form = F */
+	public static final String CTXTYPE_Form = "F";
+	/** Home = H */
+	public static final String CTXTYPE_Home = "H";
+	/** Info = I */
+	public static final String CTXTYPE_Info = "I";
+	/** Task = K */
+	public static final String CTXTYPE_Task = "K";
 	/** Node = N */
 	public static final String CTXTYPE_Node = "N";
+	/** Process = P */
+	public static final String CTXTYPE_Process = "P";
+	/** Tab = T */
+	public static final String CTXTYPE_Tab = "T";
+	/** Workflow = W */
+	public static final String CTXTYPE_Workflow = "W";
 	/** Set Context Type.
 		@param CtxType 
 		Type of Context Help

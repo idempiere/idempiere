@@ -16,7 +16,9 @@ package org.adempiere.webui;
 
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.part.UIPart;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Helper class for any component want implement {@link ISupportMask}
@@ -73,7 +75,14 @@ public class ShowMaskWrapper implements ISupportMask {
 		if (maskObj != null || maskObj.getParent() != null){
 			// in same request, not yet call to show mask
 			if (!ShowMaskWrapper.hasFlagShowMask(comp)){
+				Component p = maskObj.getParent();
 				maskObj.detach();
+				if (p == comp) {
+					StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+					script.append(p.getUuid()).append("');");
+					script.append("w.busy=null;");
+					Clients.response(new AuScript(script.toString()));
+				}
 			}
 		}
 	}

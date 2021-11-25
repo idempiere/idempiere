@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_WizardProcess
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_WizardProcess")
 public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_WizardProcess (Properties ctx, int AD_WizardProcess_ID, String trxName)
@@ -71,9 +72,10 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -99,9 +101,10 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
 		@param AD_WF_Node_ID 
@@ -179,18 +182,18 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 
 	/** WizardStatus AD_Reference_ID=200003 */
 	public static final int WIZARDSTATUS_AD_Reference_ID=200003;
-	/** New = N */
-	public static final String WIZARDSTATUS_New = "N";
-	/** Pending = P */
-	public static final String WIZARDSTATUS_Pending = "P";
+	/** Delayed = D */
+	public static final String WIZARDSTATUS_Delayed = "D";
 	/** Finished = F */
 	public static final String WIZARDSTATUS_Finished = "F";
 	/** In-Progress = I */
 	public static final String WIZARDSTATUS_In_Progress = "I";
+	/** New = N */
+	public static final String WIZARDSTATUS_New = "N";
+	/** Pending = P */
+	public static final String WIZARDSTATUS_Pending = "P";
 	/** Skipped = S */
 	public static final String WIZARDSTATUS_Skipped = "S";
-	/** Delayed = D */
-	public static final String WIZARDSTATUS_Delayed = "D";
 	/** Set Wizard Status.
 		@param WizardStatus Wizard Status	  */
 	public void setWizardStatus (String WizardStatus)

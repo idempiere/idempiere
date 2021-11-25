@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for EXP_FormatLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="EXP_FormatLine")
 public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_EXP_FormatLine (Properties ctx, int EXP_FormatLine_ID, String trxName)
@@ -75,9 +76,10 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -103,9 +105,10 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
+			.getPO(getAD_Reference_ID(), get_TrxName());
+	}
 
 	/** Set Reference.
 		@param AD_Reference_ID 
@@ -161,9 +164,10 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	}
 
 	public org.compiere.model.I_EXP_Format getEXP_EmbeddedFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_EXP_Format)MTable.get(getCtx(), org.compiere.model.I_EXP_Format.Table_Name)
-			.getPO(getEXP_EmbeddedFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_EXP_Format)MTable.get(getCtx(), org.compiere.model.I_EXP_Format.Table_ID)
+			.getPO(getEXP_EmbeddedFormat_ID(), get_TrxName());
+	}
 
 	/** Set Embedded Format.
 		@param EXP_EmbeddedFormat_ID Embedded Format	  */
@@ -186,9 +190,10 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 	}
 
 	public org.compiere.model.I_EXP_Format getEXP_Format() throws RuntimeException
-    {
-		return (org.compiere.model.I_EXP_Format)MTable.get(getCtx(), org.compiere.model.I_EXP_Format.Table_Name)
-			.getPO(getEXP_Format_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_EXP_Format)MTable.get(getCtx(), org.compiere.model.I_EXP_Format.Table_ID)
+			.getPO(getEXP_Format_ID(), get_TrxName());
+	}
 
 	/** Set Export Format.
 		@param EXP_Format_ID Export Format	  */
@@ -342,10 +347,10 @@ public class X_EXP_FormatLine extends PO implements I_EXP_FormatLine, I_Persiste
 
 	/** Type AD_Reference_ID=53241 */
 	public static final int TYPE_AD_Reference_ID=53241;
-	/** XML Element = E */
-	public static final String TYPE_XMLElement = "E";
 	/** XML Attribute = A */
 	public static final String TYPE_XMLAttribute = "A";
+	/** XML Element = E */
+	public static final String TYPE_XMLElement = "E";
 	/** Embedded EXP Format = M */
 	public static final String TYPE_EmbeddedEXPFormat = "M";
 	/** Referenced EXP Format = R */

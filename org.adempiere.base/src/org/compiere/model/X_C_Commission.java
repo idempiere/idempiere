@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Commission
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Commission")
 public class X_C_Commission extends PO implements I_C_Commission, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211011L;
 
     /** Standard Constructor */
     public X_C_Commission (Properties ctx, int C_Commission_ID, String trxName)
@@ -40,7 +41,6 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
       /** if (C_Commission_ID == 0)
         {
 			setC_BPartner_ID (0);
-			setC_Charge_ID (0);
 			setC_Commission_ID (0);
 			setC_Currency_ID (0);
 			setDocBasisType (null);
@@ -81,9 +81,10 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
 		@param C_BPartner_ID 
@@ -109,9 +110,10 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
 		@param C_Charge_ID 
@@ -174,9 +176,10 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
 		@param C_Currency_ID 
@@ -254,10 +257,10 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 
 	/** DocBasisType AD_Reference_ID=224 */
 	public static final int DOCBASISTYPE_AD_Reference_ID=224;
-	/** Order = O */
-	public static final String DOCBASISTYPE_Order = "O";
 	/** Invoice = I */
 	public static final String DOCBASISTYPE_Invoice = "I";
+	/** Order = O */
+	public static final String DOCBASISTYPE_Order = "O";
 	/** Receipt = R */
 	public static final String DOCBASISTYPE_Receipt = "R";
 	/** Set Calculation Basis.
@@ -280,12 +283,12 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 
 	/** FrequencyType AD_Reference_ID=225 */
 	public static final int FREQUENCYTYPE_AD_Reference_ID=225;
-	/** Weekly = W */
-	public static final String FREQUENCYTYPE_Weekly = "W";
 	/** Monthly = M */
 	public static final String FREQUENCYTYPE_Monthly = "M";
 	/** Quarterly = Q */
 	public static final String FREQUENCYTYPE_Quarterly = "Q";
+	/** Weekly = W */
+	public static final String FREQUENCYTYPE_Weekly = "W";
 	/** Yearly = Y */
 	public static final String FREQUENCYTYPE_Yearly = "Y";
 	/** Set Frequency Type.
@@ -328,6 +331,35 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
+
+	/** Set Product.
+		@param M_Product_ID 
+		Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1) 
+			set_Value (COLUMNNAME_M_Product_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.

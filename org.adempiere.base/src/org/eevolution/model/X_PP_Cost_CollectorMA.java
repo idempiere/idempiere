@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_Cost_CollectorMA
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="PP_Cost_CollectorMA")
 public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_PP_Cost_CollectorMA (Properties ctx, int PP_Cost_CollectorMA_ID, String trxName)
@@ -76,9 +77,10 @@ public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, 
     }
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -124,9 +126,10 @@ public class X_PP_Cost_CollectorMA extends PO implements I_PP_Cost_CollectorMA, 
 	}
 
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Cost_Collector)MTable.get(getCtx(), org.eevolution.model.I_PP_Cost_Collector.Table_Name)
-			.getPO(getPP_Cost_Collector_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Cost_Collector)MTable.get(getCtx(), org.eevolution.model.I_PP_Cost_Collector.Table_ID)
+			.getPO(getPP_Cost_Collector_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Cost Collector.
 		@param PP_Cost_Collector_ID Manufacturing Cost Collector	  */

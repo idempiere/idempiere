@@ -26,10 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.activation.FileDataSource;
+
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -38,24 +41,29 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.WEMailDialog;
 import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.media.IMediaView;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -108,14 +116,16 @@ public class WAttachment extends Window implements EventListener<Event>
 	private Button bDeleteAll = new Button();
 	private Button bLoad = new Button();
 	private Button bCancel = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, false, true);
+	private boolean bCancelClicked = false;
 	private Button bOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, false, true);
 	private Button bPreview = new Button();
+	private Button bEmail = new Button();
 
 	private Panel previewPanel = new Panel();
 
 	private Borderlayout mainPanel = new Borderlayout();
 
-	private Hbox toolBar = new Hbox();
+	private ToolBar toolBar = new ToolBar();
 
 	private Hlayout confirmPanel = new Hlayout();
 
@@ -124,6 +134,8 @@ public class WAttachment extends Window implements EventListener<Event>
 	private String orientation;
 
 	private int maxPreviewSize;
+
+	private Component customPreviewComponent;
 
 	private static List<String> autoPreviewList;
 
@@ -264,11 +276,12 @@ public class WAttachment extends Window implements EventListener<Event>
 		cbContent.addEventListener(Events.ON_SELECT, this);
 
 		toolBar.setAlign("center");
-		toolBar.setPack("start");
+		toolBar.setOverflowPopup(true);
 		toolBar.appendChild(bLoad);
 		toolBar.appendChild(bDelete);
 		toolBar.appendChild(bSave);
 		toolBar.appendChild(bSaveAllAsZip);
+		toolBar.appendChild(bEmail);
 		toolBar.appendChild(cbContent);
 		toolBar.appendChild(sizeLabel);
 
@@ -311,6 +324,15 @@ public class WAttachment extends Window implements EventListener<Event>
 		bLoad.addEventListener(Events.ON_UPLOAD, this);
 
 		bDelete.addEventListener(Events.ON_CLICK, this);
+
+		bEmail.setEnabled(false);
+		if (ThemeManager.isUseFontIconForImage())
+			bEmail.setIconSclass("z-icon-SendMail");
+		else
+			bEmail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
+		bLoad.setSclass("img-btn");
+		bEmail.setTooltiptext(Msg.getMsg(Env.getCtx(), "EMail"));
+		bEmail.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
 		ZKUpdateUtil.setVflex(preview, "1");
@@ -367,6 +389,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			orientation = ClientInfo.get().orientation;
 			ClientInfo.onClientInfo(this, this::onClientInfo);
 		}
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
 	protected void onClientInfo()
@@ -446,6 +469,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			bSave.setEnabled(true);
 			bSaveAllAsZip.setEnabled(true);
 			bDelete.setEnabled(true);
+			bEmail.setEnabled(true);
 
 			if (autoPreviewList.contains(mimeType))
 			{
@@ -465,6 +489,18 @@ public class WAttachment extends Window implements EventListener<Event>
 			else
 			{
 				clearPreview();
+				IMediaView view = Extensions.getMediaView(mimeType, getExtension(entry.getName()), ClientInfo.isMobile());
+				if (view != null) 
+				{
+					if (data.length <= maxPreviewSize) {
+						AMedia media = new AMedia(entry.getName(), null, mimeType, entry.getData());
+						customPreviewComponent = view.renderMediaView(previewPanel, media, true);
+						return true;
+					} else {
+						return false;
+					}
+				}
+				
 				return false;
 			}
 		}
@@ -474,8 +510,17 @@ public class WAttachment extends Window implements EventListener<Event>
 			bSaveAllAsZip.setEnabled(false);
 			bDelete.setEnabled(false);
 			sizeLabel.setText("");
+			bEmail.setEnabled(false);
 			return false;
 		}
+	}
+
+	private String getExtension(String name) {
+		int index = name.lastIndexOf(".");
+		if (index > 0) {
+			return name.substring(index+1);
+		}
+		return "";
 	}
 
 	/**
@@ -501,6 +546,11 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		preview.setSrc(null);
 		preview.setVisible(false);
+		if (customPreviewComponent != null)
+		{
+			customPreviewComponent.detach();
+			customPreviewComponent = null;
+		}
 	}
 
 	/**
@@ -564,7 +614,7 @@ public class WAttachment extends Window implements EventListener<Event>
 			}
 			clearPreview();
 			autoPreview (cbContent.getSelectedIndex(), false);
-		} else if (e.getTarget() == bOk || DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {
+		} else if (e.getTarget() == bOk || (!bCancelClicked && DialogEvents.ON_WINDOW_CLOSE.equals(e.getName()))) {
 			if (m_attachment != null) {
 				String newText = text.getText();
 				if (newText == null)
@@ -591,8 +641,8 @@ public class WAttachment extends Window implements EventListener<Event>
 				dispose();
 			}
 		} else if (e.getTarget() == bCancel) {
-			//	Cancel
-			dispose();
+			bCancelClicked = true;
+			onCancel();
 		} else if (e.getTarget() == bDeleteAll) {
 			//	Delete Attachment
 			deleteAttachment();
@@ -610,9 +660,16 @@ public class WAttachment extends Window implements EventListener<Event>
 			displayData(cbContent.getSelectedIndex(), true);
 		} else if (e.getTarget() == bSaveAllAsZip) {
 			saveAllAsZip();
+		} else if(e.getTarget()==bEmail){
+			sendMail();
 		}
 
 	}	//	onEvent
+
+	private void onCancel() {
+		//	Cancel
+		dispose();
+	}
 
 	private void processUploadMedia(Media media) {
 		if (media != null && media.getByteData().length>0)
@@ -787,5 +844,22 @@ public class WAttachment extends Window implements EventListener<Event>
 			}			
 			Filedownload.save(media);
 		}
+	}
+	
+	private void sendMail()
+	{
+		int index = cbContent.getSelectedIndex();
+
+		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
+		String fileName = System.getProperty("java.io.tmpdir") +
+		System.getProperty("file.separator") + m_attachment.getEntryName(index);
+		File attachment = new File(fileName);
+		m_attachment.getEntryFile(index, attachment);
+
+		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
+			from, "", "", "", new FileDataSource(attachment),
+			m_WindowNo, m_attachment.getAD_Table_ID(), m_attachment.getRecord_ID(), null);
+
+		AEnv.showWindow(dialog);
 	}
 }

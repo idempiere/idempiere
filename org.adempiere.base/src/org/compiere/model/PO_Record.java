@@ -126,8 +126,6 @@ public class PO_Record
 		//	Parent Loop
 		for (int j = 0; j < s_parents.length; j++)
 		{
-			// DELETE FROM AD_Attachment WHERE AD_Table_ID=1 AND Record_ID IN 
-			//	(SELECT C_InvoiceLine_ID FROM C_InvoiceLine WHERE C_Invoice_ID=1)
 			if (s_parents[j] == AD_Table_ID)
 			{
 				int AD_Table_IDchild = s_parentChilds[j];

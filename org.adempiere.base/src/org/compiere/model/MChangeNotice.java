@@ -42,7 +42,6 @@ public class MChangeNotice extends X_M_ChangeNotice
 		super (ctx, M_ChangeNotice_ID, trxName);
 		if (M_ChangeNotice_ID == 0)
 		{
-		//	setName (null);
 			setIsApproved (false);	// N
 			setProcessed (false);
 		}	

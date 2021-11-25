@@ -169,8 +169,12 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	private void initAttachmentStoreDetails(Properties ctx, String trxName)
 	{
-		MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
-		provider=new MStorageProvider(ctx, clientInfo.getAD_StorageProvider_ID(), trxName);		
+		if (is_new()) {
+			MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
+			setStorageProvider(MStorageProvider.get(ctx, clientInfo.getAD_StorageProvider_ID()));
+		} else {
+			setStorageProvider(MStorageProvider.get(ctx, getAD_StorageProvider_ID()));
+		}
 	}
 	
 	/**
@@ -314,10 +318,16 @@ public class MAttachment extends X_AD_Attachment
 		boolean retValue = false;
 		if (item == null)
 			return false;
+		item.getData(); // in case of lazy load enforce reading
 		if (m_items == null)
 			loadLOBData();
 		for (int i = 0; i < m_items.size(); i++) {
-			if (m_items.get(i).getName().equals(item.getName()) ) {
+			String itemName = m_items.get(i).getName();
+			// Filesystem (and store other plugins can) mark not found files surrounding it with ~
+			// avoid duplicating the file in this case
+			if (itemName.startsWith("~") && itemName.endsWith("~"))
+				itemName = itemName.substring(1, itemName.length()-1);
+			if (itemName.equals(item.getName()) ) {
 				m_items.set(i, item);
 				replaced = true;
 			}
@@ -705,6 +715,7 @@ public class MAttachment extends X_AD_Attachment
 	 */
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;
+		setAD_StorageProvider_ID(p.getAD_StorageProvider_ID());
 	}
 
 }	//	MAttachment

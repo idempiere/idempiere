@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ContactActivity
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_ContactActivity")
 public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_ContactActivity (Properties ctx, int C_ContactActivity_ID, String trxName)
@@ -76,9 +77,10 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -161,10 +163,10 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	public static final int CONTACTACTIVITYTYPE_AD_Reference_ID=53423;
 	/** Email = EM */
 	public static final String CONTACTACTIVITYTYPE_Email = "EM";
-	/** Phone call = PC */
-	public static final String CONTACTACTIVITYTYPE_PhoneCall = "PC";
 	/** Meeting = ME */
 	public static final String CONTACTACTIVITYTYPE_Meeting = "ME";
+	/** Phone call = PC */
+	public static final String CONTACTACTIVITYTYPE_PhoneCall = "PC";
 	/** Task = TA */
 	public static final String CONTACTACTIVITYTYPE_Task = "TA";
 	/** Set Activity Type.
@@ -186,9 +188,10 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	}
 
 	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_Name)
-			.getPO(getC_Opportunity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_ID)
+			.getPO(getC_Opportunity_ID(), get_TrxName());
+	}
 
 	/** Set Sales Opportunity.
 		@param C_Opportunity_ID Sales Opportunity	  */
@@ -277,9 +280,10 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
 		@param SalesRep_ID 

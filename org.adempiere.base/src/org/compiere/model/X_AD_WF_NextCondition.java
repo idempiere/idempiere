@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NextCondition
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_NextCondition")
 public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211114L;
 
     /** Standard Constructor */
     public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName)
@@ -38,14 +39,13 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
       super (ctx, AD_WF_NextCondition_ID, trxName);
       /** if (AD_WF_NextCondition_ID == 0)
         {
-			setAD_Column_ID (0);
 			setAD_WF_NextCondition_ID (0);
 			setAD_WF_NodeNext_ID (0);
 // @4|AD_WF_NodeNext_ID@
 			setAndOr (null);
 // O
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setOperation (null);
 			setSeqNo (0);
 // @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_WF_NextCondition WHERE AD_WF_NodeNext_ID=@AD_WF_NodeNext_ID@
@@ -82,9 +82,10 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
 		@param AD_Column_ID 
@@ -147,9 +148,10 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 	}
 
 	public org.compiere.model.I_AD_WF_NodeNext getAD_WF_NodeNext() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_NodeNext)MTable.get(getCtx(), org.compiere.model.I_AD_WF_NodeNext.Table_Name)
-			.getPO(getAD_WF_NodeNext_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_NodeNext)MTable.get(getCtx(), org.compiere.model.I_AD_WF_NodeNext.Table_ID)
+			.getPO(getAD_WF_NodeNext_ID(), get_TrxName());
+	}
 
 	/** Set Node Transition.
 		@param AD_WF_NodeNext_ID 
@@ -220,24 +222,24 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 
 	/** Operation AD_Reference_ID=205 */
 	public static final int OPERATION_AD_Reference_ID=205;
+	/** != = != */
+	public static final String OPERATION_NotEq = "!=";
+	/** < = << */
+	public static final String OPERATION_Le = "<<";
+	/** <= = <= */
+	public static final String OPERATION_LeEq = "<=";
 	/**  = = == */
 	public static final String OPERATION_Eq = "==";
 	/** >= = >= */
 	public static final String OPERATION_GtEq = ">=";
 	/** > = >> */
 	public static final String OPERATION_Gt = ">>";
-	/** < = << */
-	public static final String OPERATION_Le = "<<";
 	/**  ~ = ~~ */
 	public static final String OPERATION_Like = "~~";
-	/** <= = <= */
-	public static final String OPERATION_LeEq = "<=";
 	/** |<x>| = AB */
 	public static final String OPERATION_X = "AB";
 	/** sql = SQ */
 	public static final String OPERATION_Sql = "SQ";
-	/** != = != */
-	public static final String OPERATION_NotEq = "!=";
 	/** Set Operation.
 		@param Operation 
 		Compare Operation
@@ -274,6 +276,20 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set SQLStatement.
+		@param SQLStatement SQLStatement	  */
+	public void setSQLStatement (String SQLStatement)
+	{
+		set_Value (COLUMNNAME_SQLStatement, SQLStatement);
+	}
+
+	/** Get SQLStatement.
+		@return SQLStatement	  */
+	public String getSQLStatement () 
+	{
+		return (String)get_Value(COLUMNNAME_SQLStatement);
 	}
 
 	/** Set Search Key.

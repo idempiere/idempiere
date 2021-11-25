@@ -89,9 +89,6 @@ public class Doc_MatchInv extends Doc
 	private ProductCost		m_pc = null;
 	private MMatchInv m_matchInv;
 
-	/** Commitments			*/
-//	private DocLine[]		m_commitments = null;
-
 	/**
 	 *  Load Specific Document Details
 	 *  @return error message or null
@@ -188,15 +185,6 @@ public class Doc_MatchInv extends Doc
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		setC_Currency_ID (as.getC_Currency_ID());
 		boolean isInterOrg = isInterOrg(as);
-
-		/**	Needs to be handled in PO Matching as no Receipt info
-		if (m_pc.isService())
-		{
-			log.fine("Service - skipped");
-			return fact;
-		}
-		**/
-
 
 		//  NotInvoicedReceipt      DR
 		//  From Receipt

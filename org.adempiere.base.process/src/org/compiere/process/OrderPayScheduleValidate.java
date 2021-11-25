@@ -29,6 +29,7 @@ import org.compiere.util.Msg;
  *	
  *  @author Carlos Ruiz - GlobalQSS
  */
+@org.adempiere.base.annotation.Process
 public class OrderPayScheduleValidate extends SvrProcess
 {
 	/**

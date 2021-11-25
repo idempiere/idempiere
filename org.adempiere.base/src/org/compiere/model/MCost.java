@@ -63,6 +63,21 @@ public class MCost extends X_M_Cost
 	private static final long serialVersionUID = -9054858267574839079L;
 
 	/**
+	 * 
+	 * @param product
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @return current product cost
+	 */
+	public static BigDecimal getCurrentCost(MProduct product, int M_AttributeSetInstance_ID, String trxName)
+	{
+		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
+		MAcctSchema as = MClient.get(Env.getAD_Client_ID(Env.getCtx())).getAcctSchema();
+		String costingMethod = product.getCostingMethod(as);
+		return getCurrentCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID, costingMethod, new BigDecimal("1"), 0, true, trxName); 
+	}
+	
+	/**
 	 * 	Retrieve/Calculate Current Cost Price
 	 *	@param product product
 	 *	@param M_AttributeSetInstance_ID real asi
@@ -170,7 +185,6 @@ public class MCost extends X_M_Cost
 				costElementType = rs.getString(2);
 				String cm = rs.getString(3);
 				percent = rs.getBigDecimal(4);
-				//M_CostElement_ID = rs.getInt(5);
 				if (s_log.isLoggable(Level.FINEST)) s_log.finest("CurrentCostPrice=" + currentCostPrice
 					+ ", CurrentCostPriceLL=" + currentCostPriceLL
 					+ ", CostElementType=" + costElementType
@@ -1435,10 +1449,6 @@ public class MCost extends X_M_Cost
 		super (ctx, ignored, trxName);
 		if (ignored == 0)
 		{
-		//	setC_AcctSchema_ID (0);
-		//	setM_CostElement_ID (0);
-		//	setM_CostType_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);
 			//
 			setCurrentCostPrice (Env.ZERO);
@@ -1619,8 +1629,6 @@ public class MCost extends X_M_Cost
 		sb.append (",M_Product_ID=").append (getM_Product_ID());
 		if (getM_AttributeSetInstance_ID() != 0)
 			sb.append (",AD_ASI_ID=").append (getM_AttributeSetInstance_ID());
-	//	sb.append (",C_AcctSchema_ID=").append (getC_AcctSchema_ID());
-	//	sb.append (",M_CostType_ID=").append (getM_CostType_ID());
 		sb.append (",M_CostElement_ID=").append (getM_CostElement_ID());
 		//
 		sb.append (", CurrentCost=").append (getCurrentCostPrice())
@@ -1650,7 +1658,6 @@ public class MCost extends X_M_Cost
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//The method getCostElement() not should be cached because is a transaction
-		//MCostElement ce = getCostElement();
 		MCostElement ce = (MCostElement)getM_CostElement();
 		//	Check if data entry makes sense
 		if (m_manual)
@@ -1749,22 +1756,6 @@ public class MCost extends X_M_Cost
 	 */
 	public static void main (String[] args)
 	{
-		/**
-		DELETE M_Cost c
-		WHERE EXISTS (SELECT * FROM M_CostElement ce
-		    WHERE c.M_CostElement_ID=ce.M_CostElement_ID AND ce.IsCalculated='Y')
-		/
-		UPDATE M_Cost
-		  SET CumulatedAmt=0, CumulatedQty=0
-		/
-		UPDATE M_CostDetail
-		  SET Processed='N'
-		WHERE Processed='Y'
-		/
-		COMMIT
-		/
-		**/
-
 		Adempiere.startup(true);
 		MClient client = MClient.get(Env.getCtx(), 11);	//	GardenWorld
 		create(client);

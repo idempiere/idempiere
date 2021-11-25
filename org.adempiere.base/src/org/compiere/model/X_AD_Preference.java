@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Preference
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_Preference")
 public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName)
@@ -75,9 +76,10 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
     }
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -140,9 +142,10 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
 		@param AD_Process_ID 
@@ -168,9 +171,10 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -196,9 +200,10 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
 		@param AD_Window_ID 
@@ -247,10 +252,10 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 
 	/** PreferenceFor AD_Reference_ID=200084 */
 	public static final int PREFERENCEFOR_AD_Reference_ID=200084;
-	/** Window = W */
-	public static final String PREFERENCEFOR_Window = "W";
 	/** Process = P */
 	public static final String PREFERENCEFOR_Process = "P";
+	/** Window = W */
+	public static final String PREFERENCEFOR_Window = "W";
 	/** Set Preference For.
 		@param PreferenceFor 
 		Type of preference, it can window, info window or parameter process

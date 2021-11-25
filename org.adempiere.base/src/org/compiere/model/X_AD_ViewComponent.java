@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ViewComponent
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_ViewComponent")
 public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_ViewComponent (Properties ctx, int AD_ViewComponent_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 			setAD_Table_ID (0);
 			setAD_ViewComponent_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFromClause (null);
 			setName (null);
         } */
@@ -76,9 +77,10 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
 		@param AD_Table_ID 
@@ -251,9 +253,10 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 	}
 
 	public org.compiere.model.I_AD_Table getReferenced_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getReferenced_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getReferenced_Table_ID(), get_TrxName());
+	}
 
 	/** Set Referenced Table.
 		@param Referenced_Table_ID Referenced Table	  */

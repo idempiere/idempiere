@@ -55,6 +55,28 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	
 	private int m_maxSize = 0;
 	
+	/** Default cache expire time in minutes **/
+	public static final int DEFAULT_EXPIRE_MINUTE = getDefaultExpireMinute();
+	
+	private static int getDefaultExpireMinute() 
+	{
+		try 
+		{
+			String property = System.getProperty("Cache.ExpireMinute");
+			if (property != null && property.trim().length() > 0)
+			{
+				int expireMinute = 0;
+				try
+				{
+					expireMinute = Integer.parseInt(property.trim());
+				} catch (Throwable t) {}
+				if (expireMinute > 0)
+					return expireMinute;
+			}
+		} catch (Throwable t) {}
+		return 60;
+	}
+	
 	public CCache (String name, int initialCapacity)
 	{
 		this(name, name, initialCapacity);
@@ -87,7 +109,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 
 	public CCache (String tableName, String name, int initialCapacity, boolean distributed)
 	{
-		this (tableName, name, initialCapacity, 60, distributed);
+		this (tableName, name, initialCapacity, DEFAULT_EXPIRE_MINUTE, distributed);
 	}		
 	
 	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed)
@@ -454,19 +476,43 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public void newRecord(int record_ID) {
 	}
 
+	/**
+	 * 
+	 * @return max size of cache
+	 */
 	public int getMaxSize() {
 		return m_maxSize;
 	}
 	
+	/**
+	 * 
+	 * @return true if cache is distributed (using hazelcast)
+	 */
 	public boolean isDistributed() {
 		return m_distributed;
 	}
 	
+	/**
+	 * 
+	 * @return cache hit count
+	 */
 	public long getHit() {
 		return m_hit.get();
 	}
 	
+	/**
+	 * 
+	 * @return cache miss count
+	 */
 	public long getMiss() {
 		return m_miss.get();
 	}	
+	
+	/**
+	 * 
+	 * @return true if cache has expire
+	 */
+	public boolean isExpire() {
+		return m_expire > 0 && m_timeExp > 0 && m_timeExp < System.currentTimeMillis();
+	}
 }	//	CCache

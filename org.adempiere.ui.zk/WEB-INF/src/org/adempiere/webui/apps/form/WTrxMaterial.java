@@ -63,6 +63,7 @@ import org.zkoss.zul.South;
  * @author Jorg Janke
  * @version $Id: VTrxMaterial.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VTrxMaterial")
 public class WTrxMaterial extends TrxMaterial
 	implements IFormController, EventListener<Event>, ValueChangeListener
 {
@@ -258,7 +259,7 @@ public class WTrxMaterial extends TrxMaterial
 		//
 		
 		m_gridController = new ADTabpanel();
-		m_gridController.init(null, m_WindowNo, m_mTab, m_mWindow);
+		m_gridController.init(null, m_mTab);
 		if (!m_gridController.isGridView())
 			m_gridController.switchRowPresentation();
 		Center center = new Center();

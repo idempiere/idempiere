@@ -25,6 +25,9 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -759,6 +762,14 @@ public class AdempiereMonitor extends HttpServlet
 		bb.addElement(new hr());
 		para = new p();
 		ServerInstance[] servers = getServerManager().getServerInstances();		
+		Arrays.sort(servers, new Comparator<ServerInstance>() {
+		    public int compare(ServerInstance o1, ServerInstance o2) {
+		    	if (o1 == null || o1.getModel() == null || o1.getModel().getName() == null
+		    			|| o2 == null || o2.getModel() == null || o2.getModel().getName() == null)
+		    		return 0;
+		        return o1.getModel().getName().compareTo(o2.getModel().getName());
+		    }
+		});
 		for (int i = 0; i < servers.length; i++)
 		{
 			if (i > 0)
@@ -768,9 +779,16 @@ public class AdempiereMonitor extends HttpServlet
 			para.addElement(link);
 			font status = null;
 			if (server.isStarted())
-				status = new font().setColor(HtmlColor.GREEN).addElement(" (Running)");
+			{
+				if (server.isSleeping())
+					status = new font().setColor(HtmlColor.GREEN).addElement(" (Started)");
+				else
+					status = new font().setColor(HtmlColor.GREEN).addElement(" (Running)");
+			}
 			else
+			{
 				status = new font().setColor(HtmlColor.RED).addElement(" (Stopped)");
+			}
 			para.addElement(status);
 		}
 		bb.addElement(para);
@@ -899,7 +917,7 @@ public class AdempiereMonitor extends HttpServlet
 		
 		if (serverCount != null) {
 			builder.append(serverCount.getStarted()+serverCount.getStopped())
-				.append(" - Running=")
+				.append(" - Started=")
 				.append(serverCount.getStarted())
 				.append(" - Stopped=")
 				.append(serverCount.getStopped());
@@ -1152,6 +1170,7 @@ public class AdempiereMonitor extends HttpServlet
 		//	List Log Files
 		p p = new p();
 		p.addElement(new b("All Log Files: "));
+		p.addElement(new br());
 		//	All in dir
 		LogFileInfo logFiles[] = systemInfo.getLogFileInfos();
 		for (LogFileInfo logFile : logFiles) 
@@ -1159,7 +1178,11 @@ public class AdempiereMonitor extends HttpServlet
 			if (logFile != logFiles[0])
 				p.addElement(" - ");
 			String fileName = logFile.getFileName();
-			a link = new a ("idempiereMonitor?Trace=" + fileName, fileName);
+			String displayName = fileName;
+			int index = fileName.lastIndexOf(File.separator);
+			if (index > 1)
+				displayName = fileName.substring(index+1);
+			a link = new a ("idempiereMonitor?Trace=" + fileName, displayName);
 			p.addElement(link);
 			int size = (int)(logFile.getFileSize()/1024);
 			if (size < 1024)
@@ -1509,20 +1532,45 @@ public class AdempiereMonitor extends HttpServlet
 		{		
 			if (ccache.getName().endsWith("|CCacheListener"))
 				continue;
-			line = new tr();
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getHit())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMiss())));
-			line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
-			if (ccache.getNodeId() != null)
+			if (ccache.getSize() > 0)
 			{
-				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getNodeId())));
+				line = new tr();
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getHit())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMiss())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
+				if (ccache.getNodeId() != null)
+				{
+					line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getNodeId())));
+				}
+				table.addElement(line);
 			}
-			table.addElement(line);
+		}
+		for (CacheInfo ccache : instances)
+		{		
+			if (ccache.getName().endsWith("|CCacheListener"))
+				continue;
+			if (ccache.getSize() == 0)
+			{
+				line = new tr();
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getTableName())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getExpireMinutes())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMaxSize())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getHit())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getMiss())));
+				line.addElement(new td().addElement(WebEnv.getCellContent(ccache.isDistributed())));
+				if (ccache.getNodeId() != null)
+				{
+					line.addElement(new td().addElement(WebEnv.getCellContent(ccache.getNodeId())));
+				}
+				table.addElement(line);
+			}
 		}
 		//
 		b.addElement(table);

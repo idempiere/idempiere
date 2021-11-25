@@ -43,9 +43,13 @@ public class SessionManager
         String adRoleId = Env.getContext(ctx, Env.AD_ROLE_ID);
         String adClientId = Env.getContext(ctx, Env.AD_CLIENT_ID);
         String adOrgId = Env.getContext(ctx, Env.AD_ORG_ID);
+        String mfaId = Env.getContext(ctx, "#MFA_Registration_ID");
 
-        return (!"".equals(adUserId) && !"".equals(adRoleId)
-                && !"".equals(adClientId) && !"".equals(adOrgId));
+        return (   !"".equals(mfaId)
+        		&& !"".equals(adOrgId)
+        		&& !"".equals(adUserId)
+        		&& !"".equals(adRoleId)
+        		&& !"".equals(adClientId));
     }
     
     public static void setSessionApplication(IWebClient app)
@@ -80,7 +84,11 @@ public class SessionManager
     	if (app != null)
     		app.logout();
     }
-
+    
+    /**
+	 * Perform logout after user close a browser tab without first logging out.
+	 * Usually this is invoke from {@link SessionContextListener} and developer shouldn't call this directly.
+	 */
     public static void logoutSessionAfterBrowserDestroyed()
     {
     	IWebClient app = getSessionApplication();
@@ -88,6 +96,10 @@ public class SessionManager
     		app.logoutAfterTabDestroyed();
     }
     
+    /**
+     * 
+     * @param user
+     */
     public static void changeRole(MUser user){
     	IWebClient app = getSessionApplication();
     	if (app != null)

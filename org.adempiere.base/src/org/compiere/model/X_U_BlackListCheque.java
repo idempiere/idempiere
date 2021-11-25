@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for U_BlackListCheque
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="U_BlackListCheque")
 public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_U_BlackListCheque (Properties ctx, int U_BlackListCheque_ID, String trxName)

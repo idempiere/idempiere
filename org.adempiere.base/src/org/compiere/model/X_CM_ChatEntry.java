@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatEntry
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="CM_ChatEntry")
 public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_CM_ChatEntry (Properties ctx, int CM_ChatEntry_ID, String trxName)
@@ -76,9 +77,10 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
 		@param AD_User_ID 
@@ -122,12 +124,12 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 
 	/** ChatEntryType AD_Reference_ID=398 */
 	public static final int CHATENTRYTYPE_AD_Reference_ID=398;
-	/** Wiki = W */
-	public static final String CHATENTRYTYPE_Wiki = "W";
-	/** Note (flat) = N */
-	public static final String CHATENTRYTYPE_NoteFlat = "N";
 	/** Forum (threaded) = F */
 	public static final String CHATENTRYTYPE_ForumThreaded = "F";
+	/** Note (flat) = N */
+	public static final String CHATENTRYTYPE_NoteFlat = "N";
+	/** Wiki = W */
+	public static final String CHATENTRYTYPE_Wiki = "W";
 	/** Set Chat Entry Type.
 		@param ChatEntryType 
 		Type of Chat/Forum Entry
@@ -147,9 +149,10 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryGrandParent() throws RuntimeException
-    {
-		return (org.compiere.model.I_CM_ChatEntry)MTable.get(getCtx(), org.compiere.model.I_CM_ChatEntry.Table_Name)
-			.getPO(getCM_ChatEntryGrandParent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_CM_ChatEntry)MTable.get(getCtx(), org.compiere.model.I_CM_ChatEntry.Table_ID)
+			.getPO(getCM_ChatEntryGrandParent_ID(), get_TrxName());
+	}
 
 	/** Set Chat Entry Grandparent.
 		@param CM_ChatEntryGrandParent_ID 
@@ -206,9 +209,10 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
     }
 
 	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryParent() throws RuntimeException
-    {
-		return (org.compiere.model.I_CM_ChatEntry)MTable.get(getCtx(), org.compiere.model.I_CM_ChatEntry.Table_Name)
-			.getPO(getCM_ChatEntryParent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_CM_ChatEntry)MTable.get(getCtx(), org.compiere.model.I_CM_ChatEntry.Table_ID)
+			.getPO(getCM_ChatEntryParent_ID(), get_TrxName());
+	}
 
 	/** Set Chat Entry Parent.
 		@param CM_ChatEntryParent_ID 
@@ -248,9 +252,10 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	public org.compiere.model.I_CM_Chat getCM_Chat() throws RuntimeException
-    {
-		return (org.compiere.model.I_CM_Chat)MTable.get(getCtx(), org.compiere.model.I_CM_Chat.Table_Name)
-			.getPO(getCM_Chat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_CM_Chat)MTable.get(getCtx(), org.compiere.model.I_CM_Chat.Table_ID)
+			.getPO(getCM_Chat_ID(), get_TrxName());
+	}
 
 	/** Set Chat.
 		@param CM_Chat_ID 

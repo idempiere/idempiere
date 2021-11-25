@@ -222,6 +222,10 @@ public class MProduction extends X_M_Production implements DocAction {
 	}// deleteLines
 
 	public int createLines(boolean mustBeStocked) {
+		return createLines(mustBeStocked, 0);
+	}
+	
+	public int createLines(boolean mustBeStocked, int PP_Product_BOM_ID) {
 		
 		lineno = 100;
 
@@ -241,12 +245,16 @@ public class MProduction extends X_M_Production implements DocAction {
 		line.saveEx();
 		count++;
 		
-		createLines(mustBeStocked, finishedProduct, getProductionQty());
+		if (PP_Product_BOM_ID > 0) {
+			setPP_Product_BOM_ID(PP_Product_BOM_ID);
+			saveEx();
+		}
+		createLines(mustBeStocked, finishedProduct, getProductionQty(), PP_Product_BOM_ID);
 		
 		return count;
 	}
 
-	protected int createLines(boolean mustBeStocked, MProduct finishedProduct, BigDecimal requiredQty) {
+	protected int createLines(boolean mustBeStocked, MProduct finishedProduct, BigDecimal requiredQty, int PP_Product_BOM_ID) {
 		
 		int defaultLocator = 0;
 		
@@ -254,11 +262,16 @@ public class MProduction extends X_M_Production implements DocAction {
 		
 		int M_Warehouse_ID = finishedLocator.getM_Warehouse_ID();
 		
-		int asi = 0;
-
 		// products used in production
-		String sql = "SELECT M_ProductBom_ID, BOMQty" + " FROM M_Product_BOM"
-				+ " WHERE M_Product_ID=" + finishedProduct.getM_Product_ID() + " ORDER BY Line";
+		String sql = " SELECT bl.M_Product_ID, bl.QtyBOM" + " FROM PP_Product_BOMLine bl"
+				+ " JOIN PP_Product_BOM b ON b.PP_Product_BOM_ID = bl.PP_Product_BOM_ID "
+				+ " WHERE b.M_Product_ID=" + finishedProduct.getM_Product_ID() + " AND b.IsActive='Y' AND bl.IsActive='Y' ";				
+		if (PP_Product_BOM_ID > 0) {
+			sql += " AND b.PP_Product_BOM_ID=" + PP_Product_BOM_ID;
+		} else {
+			sql += " AND b.BOMType='A' AND b.BOMUse='A' ";
+		}
+		sql += " ORDER BY bl.Line";
 		
 		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());) {			
 
@@ -275,7 +288,7 @@ public class MProduction extends X_M_Production implements DocAction {
 
 				if ( bomproduct.isBOM() && bomproduct.isPhantom() )
 				{
-					createLines(mustBeStocked, bomproduct, BOMMovementQty);
+					createLines(mustBeStocked, bomproduct, BOMMovementQty, 0);
 				}
 				else
 				{
@@ -339,6 +352,7 @@ public class MProduction extends X_M_Production implements DocAction {
 						MProductionLine BOMLine = null;
 						int prevLoc = -1;
 						int previousAttribSet = -1;
+						int prevAsi = -1;
 						// Create lines from storage until qty is reached
 						for (int sl = 0; sl < storages.length; sl++) {
 
@@ -350,11 +364,11 @@ public class MProduction extends X_M_Production implements DocAction {
 
 								int loc = storages[sl].getM_Locator_ID();
 								int slASI = storages[sl].getM_AttributeSetInstance_ID();
-								int locAttribSet = new MAttributeSetInstance(getCtx(), asi,
+								int locAttribSet = new MAttributeSetInstance(getCtx(), slASI,
 										get_TrxName()).getM_AttributeSet_ID();
 
 								// roll up costing attributes if in the same locator
-								if (locAttribSet == 0 && previousAttribSet == 0
+								if (((locAttribSet == 0 && previousAttribSet == 0) || (slASI == prevAsi))
 										&& prevLoc == loc) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(lineQty));
@@ -379,6 +393,7 @@ public class MProduction extends X_M_Production implements DocAction {
 								}
 								prevLoc = loc;
 								previousAttribSet = locAttribSet;
+								prevAsi = slASI;
 								// enough ?
 								BOMMovementQty = BOMMovementQty.subtract(lineQty);
 								if (BOMMovementQty.signum() == 0)
@@ -505,7 +520,12 @@ public class MProduction extends X_M_Production implements DocAction {
 		return DocAction.STATUS_InProgress;
 	}
 
-	protected String validateEndProduct(int M_Product_ID) {
+	/**
+	 * 
+	 * @param M_Product_ID
+	 * @return error message (if any)
+	 */
+	public String validateEndProduct(int M_Product_ID) {
 		String msg = isBom(M_Product_ID);
 		if (!Util.isEmpty(msg))
 			return msg;
@@ -529,25 +549,26 @@ public class MProduction extends X_M_Production implements DocAction {
 		{
 			return "Attempt to create product line for Non Bill Of Materials";
 		}
-		int materials = DB.getSQLValue(get_TrxName(), "SELECT count(M_Product_BOM_ID) FROM M_Product_BOM WHERE M_Product_ID = ?", M_Product_ID);
+		int materials = DB.getSQLValue(get_TrxName(), "SELECT count(bl.PP_Product_BOMLine_ID) FROM PP_Product_BOMLine bl JOIN PP_Product_BOM b ON b.PP_Product_BOM_ID = bl.PP_Product_BOM_ID WHERE b.M_Product_ID = ? " +
+				" AND bl.IsActive='Y' AND b.IsActive='Y' AND b.BOMType='A' AND b.BOMUse='A' ", M_Product_ID );
 		if (materials == 0)
 		{
-			return "Attempt to create product line for Bill Of Materials with no BOM Products";
+			return "Attempt to create product line for Bill Of Materials with no BOM Components";
 		}
 		return null;
 	}
 
 	protected boolean costsOK(int M_Product_ID) throws AdempiereUserError {
-		MProduct product = MProduct.get(getCtx(), M_Product_ID);
+		MProduct product = MProduct.get(getCtx(), M_Product_ID, get_TrxName());
 		String costingMethod=product.getCostingMethod(MClient.get(getCtx()).getAcctSchema());
 		// will not work if non-standard costing is used
 		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-		{			
-			String sql = "SELECT ABS(((cc.currentcostprice-(SELECT SUM(c.currentcostprice*bom.bomqty)"
+		{	
+			String sql = "SELECT ABS(((cc.currentcostprice-(SELECT SUM(c.currentcostprice*bom.qtybom)"
 					+ " FROM m_cost c"
-					+ " INNER JOIN m_product_bom bom ON (c.m_product_id=bom.m_productbom_id)"
-					+ " INNER JOIN m_costelement ce ON (c.m_costelement_id = ce.m_costelement_id AND ce.costingmethod = 'S')"
-					+ " WHERE bom.m_product_id = pp.m_product_id)"
+					+ " INNER JOIN pp_product_bomline bom ON (c.m_product_id=bom.m_product_id AND bom.IsActive='Y')"
+					+ " JOIN pp_product_bom b ON (b.pp_product_bom_id = bom.pp_product_bom_id)"
+					+ " WHERE b.m_product_id = pp.m_product_id and b.bomuse='A' and b.bomtype='A' AND b.IsActive='Y')"
 					+ " )/cc.currentcostprice))"
 					+ " FROM m_product pp"
 					+ " INNER JOIN m_cost cc on (cc.m_product_id=pp.m_product_id)"

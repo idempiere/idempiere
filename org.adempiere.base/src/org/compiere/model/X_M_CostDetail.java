@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_CostDetail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_CostDetail")
 public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -99,9 +100,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID 
@@ -127,9 +129,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
 		@param C_InvoiceLine_ID 
@@ -155,9 +158,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
 		@param C_OrderLine_ID 
@@ -183,9 +187,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_Name)
-			.getPO(getC_ProjectIssue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_ID)
+			.getPO(getC_ProjectIssue_ID(), get_TrxName());
+	}
 
 	/** Set Project Issue.
 		@param C_ProjectIssue_ID 
@@ -372,9 +377,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -437,9 +443,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_Name)
-			.getPO(getM_CostElement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
+			.getPO(getM_CostElement_ID(), get_TrxName());
+	}
 
 	/** Set Cost Element.
 		@param M_CostElement_ID 
@@ -465,9 +472,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
 		@param M_InOutLine_ID 
@@ -493,9 +501,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_Name)
-			.getPO(getM_InventoryLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
+			.getPO(getM_InventoryLine_ID(), get_TrxName());
+	}
 
 	/** Set Phys.Inventory Line.
 		@param M_InventoryLine_ID 
@@ -521,9 +530,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_M_MatchInv getM_MatchInv() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_Name)
-			.getPO(getM_MatchInv_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_ID)
+			.getPO(getM_MatchInv_ID(), get_TrxName());
+	}
 
 	/** Set Match Invoice.
 		@param M_MatchInv_ID 
@@ -549,9 +559,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_Name)
-			.getPO(getM_MovementLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)
+			.getPO(getM_MovementLine_ID(), get_TrxName());
+	}
 
 	/** Set Move Line.
 		@param M_MovementLine_ID 
@@ -577,9 +588,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
 		@param M_Product_ID 
@@ -605,9 +617,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_Name)
-			.getPO(getM_ProductionLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)
+			.getPO(getM_ProductionLine_ID(), get_TrxName());
+	}
 
 	/** Set Production Line.
 		@param M_ProductionLine_ID 
@@ -633,9 +646,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Cost_Collector)MTable.get(getCtx(), org.eevolution.model.I_PP_Cost_Collector.Table_Name)
-			.getPO(getPP_Cost_Collector_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Cost_Collector)MTable.get(getCtx(), org.eevolution.model.I_PP_Cost_Collector.Table_ID)
+			.getPO(getPP_Cost_Collector_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Cost Collector.
 		@param PP_Cost_Collector_ID Manufacturing Cost Collector	  */

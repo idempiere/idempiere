@@ -24,9 +24,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
-import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
@@ -44,6 +42,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -126,7 +125,6 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 
 	private Borderlayout 	mainPanel = new Borderlayout();
 	private Textbox			newText = new Textbox();
-	private ConfirmPanel	confirmPanel = new ConfirmPanel(false);
 	private Tree			messageTree = new Tree();
 	private Button addButton;
 	private Map<Integer, Component> entryMap = new HashMap<Integer, Component>();
@@ -171,10 +169,6 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		ZKUpdateUtil.setVflex(south, "min");
 		
 		mainPanel.appendChild(south);		
-		LayoutUtils.addSclass("dialog-footer", confirmPanel);
-		confirmPanel.addActionListener(this);
-		south.appendChild(confirmPanel);
-		ZKUpdateUtil.setVflex(confirmPanel, "min");
 
 		if (!ThemeManager.isUseCSSForWindowSize())
 		{
@@ -198,6 +192,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 			orientation = ClientInfo.get().orientation;
 			ClientInfo.onClientInfo(this, this::onClientInfo);
 		}
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
 	protected void onClientInfo()
@@ -330,11 +325,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	 */
 	public void actionPerformed (Event e)
 	{
-		if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
-		{
-			dispose();			
-		}
-		else if (e.getTarget() == addButton)
+		if (e.getTarget() == addButton)
 		{
 			String data = newText.getText();
 			if (data != null && data.length() > 0)
@@ -390,5 +381,9 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 
 	public void onEvent(Event event) throws Exception {
 		actionPerformed(event);
+	}
+
+	private void onCancel() {
+		this.detach();
 	}
 }	//	WChat

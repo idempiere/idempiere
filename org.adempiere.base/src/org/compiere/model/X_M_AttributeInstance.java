@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeInstance
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="M_AttributeInstance")
 public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName)
@@ -75,9 +76,10 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
     }
 
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
-			.getPO(getM_Attribute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
 
 	/** Set Attribute.
 		@param M_Attribute_ID 
@@ -117,9 +119,10 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
 		@param M_AttributeSetInstance_ID 
@@ -145,9 +148,10 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	}
 
 	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_AttributeValue)MTable.get(getCtx(), org.compiere.model.I_M_AttributeValue.Table_Name)
-			.getPO(getM_AttributeValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_AttributeValue)MTable.get(getCtx(), org.compiere.model.I_M_AttributeValue.Table_ID)
+			.getPO(getM_AttributeValue_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Value.
 		@param M_AttributeValue_ID 

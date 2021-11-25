@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Period
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="HR_Period")
 public class X_HR_Period extends PO implements I_HR_Period, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_HR_Period (Properties ctx, int HR_Period_ID, String trxName)
@@ -80,9 +81,10 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
     }
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getC_Period_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
 
 	/** Set Period.
 		@param C_Period_ID 
@@ -108,9 +110,10 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_Name)
-			.getPO(getC_Year_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_ID)
+			.getPO(getC_Year_ID(), get_TrxName());
+	}
 
 	/** Set Year.
 		@param C_Year_ID 
@@ -187,9 +190,10 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_Name)
-			.getPO(getHR_Payroll_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
+			.getPO(getHR_Payroll_ID(), get_TrxName());
+	}
 
 	/** Set Payroll.
 		@param HR_Payroll_ID Payroll	  */
@@ -246,9 +250,10 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Year getHR_Year() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Year)MTable.get(getCtx(), org.eevolution.model.I_HR_Year.Table_Name)
-			.getPO(getHR_Year_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Year)MTable.get(getCtx(), org.eevolution.model.I_HR_Year.Table_ID)
+			.getPO(getHR_Year_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Year.
 		@param HR_Year_ID Payroll Year	  */

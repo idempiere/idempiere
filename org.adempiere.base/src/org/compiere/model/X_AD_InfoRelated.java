@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoRelated
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="AD_InfoRelated")
 public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_AD_InfoRelated (Properties ctx, int AD_InfoRelated_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 			setAD_InfoRelated_ID (0);
 			setAD_InfoWindow_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setRelatedColumn_ID (0);
 // 0
@@ -114,9 +115,10 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
 		@param AD_InfoWindow_ID 
@@ -238,9 +240,10 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
     }
 
 	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
-			.getPO(getParentRelatedColumn_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
+			.getPO(getParentRelatedColumn_ID(), get_TrxName());
+	}
 
 	/** Set Parent Related Column.
 		@param ParentRelatedColumn_ID 
@@ -266,9 +269,10 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_Name)
-			.getPO(getRelatedColumn_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
+			.getPO(getRelatedColumn_ID(), get_TrxName());
+	}
 
 	/** Set Related Info Column.
 		@param RelatedColumn_ID Related Info Column	  */
@@ -291,9 +295,10 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getRelatedInfo() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getRelatedInfo_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getRelatedInfo_ID(), get_TrxName());
+	}
 
 	/** Set Related Info Window.
 		@param RelatedInfo_ID Related Info Window	  */

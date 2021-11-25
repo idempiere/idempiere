@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Region
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Development 9.0 - $Id$ */
+@org.adempiere.base.Model(table="C_Region")
 public class X_C_Region extends PO implements I_C_Region, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20210917L;
 
     /** Standard Constructor */
     public X_C_Region (Properties ctx, int C_Region_ID, String trxName)
@@ -73,9 +74,10 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
     }
 
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
-			.getPO(getC_Country_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
+			.getPO(getC_Country_ID(), get_TrxName());
+	}
 
 	/** Set Country.
 		@param C_Country_ID 

@@ -30,6 +30,7 @@ import org.compiere.util.Util;
  * @author hengsin
  *
  */
+@org.idempiere.ui.zk.annotation.Form
 public class WProcessParameter implements IFormController {
 
 	private WProcessParameterForm parameterForm = null;

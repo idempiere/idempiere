@@ -1055,10 +1055,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
 			.append(",DateMaterialPolicy=").append(getDateMaterialPolicy())
 			.append(": OnHand=").append(getQtyOnHand())
-			/* @win commented out
-			.append(",Reserved=").append(getQtyReserved())
-			.append(",Ordered=").append(getQtyOrdered())
-			*/
 			.append("]");
 		return sb.toString();
 	}	//	toString

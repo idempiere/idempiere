@@ -30,6 +30,7 @@ import org.osgi.service.event.Event;
  * 
  * Annotation driven event delegate base class that works together with {@link BaseEventHandler}.
  * Subclass implementation doesn't have to be thread safe as event delegate is create and throw away for each event call.
+ * Subclass should use {@link EventTopic} or one of its derived annotation to define the event topic to handle
  * @author hengsin
  *
  */
