@@ -495,7 +495,8 @@ public class PurchaseOrderTest extends AbstractTestCase {
 				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
 		CacheMgt.get().reset();
 
-		try {
+		BigDecimal initialQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+		try {			
 			MOrder order = new MOrder(ctx, 0, trxName);
 			order.setBPartner(MBPartner.get(ctx, BP_PATIO));
 			order.setC_DocTypeTarget_ID(DOCTYPE_PO);
@@ -521,6 +522,8 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
 			line1.load(trxName);
 			assertEquals(1, line1.getQtyReserved().intValue(), "Wrong Order line qty reserved value");
+			BigDecimal newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue()+1, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			MInOut receipt1 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
 			receipt1.setDocStatus(DocAction.STATUS_Drafted);
@@ -539,9 +542,8 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	
 			line1.load(trxName);
 			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
-	
-			receiptLine1.load(trxName);
-			assertEquals(1, receiptLine1.getQtyOverReceipt().intValue(), "Wrong receipt line qty over receipt value");
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			// reactivate the purchase order
 			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_ReActivate);
@@ -562,10 +564,11 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			line1.load(trxName);
 			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
 			assertEquals(2, line1.getQtyOrdered().intValue(), "Wrong order line qty ordered value");
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			//reverse MR
 			receiptLine1.load(trxName);
-			assertEquals(0, receiptLine1.getQtyOverReceipt().intValue(), "Wrong receipt line qty over receipt value");
 			assertEquals(2, receiptLine1.getMovementQty().intValue(), "Wrong receipt line movement qty value");
 			receipt1.load(trxName);
 			receipt1.getLines(true);
@@ -576,6 +579,8 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			line1.load(trxName);
 			assertEquals(2, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
 			assertEquals(0, line1.getQtyDelivered().intValue(), "Wrong order line qty delivered value");
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue()+2, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 		} finally {
 			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?", 
 					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);

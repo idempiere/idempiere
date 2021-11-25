@@ -11,6 +11,10 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 CREATE INDEX m_inoutline_orderline_idx ON M_InOutLine (C_OrderLine_ID)
 ;
 
+-- Nov 26, 2021, 6:14:22 AM MYT
+UPDATE AD_Column SET IsActive='N',Updated=TO_TIMESTAMP('2021-11-26 06:14:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=210888
+;
+
 SELECT register_migration_script('202111210850_IDEMPIERE-5040.sql') FROM dual
 ;
 
