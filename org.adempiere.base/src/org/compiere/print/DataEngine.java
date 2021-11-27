@@ -1052,7 +1052,7 @@ public class DataEngine
 								{
 									/** START DEVCOFFEE: script column **/
 									int displayType = pdc.getDisplayType();
-									if(rs.getMetaData().getColumnName(displayIndex).contains("SCRIPTCOLUMN")) {
+									if (display.startsWith("@SCRIPT")) {
 										Object value = rs.getObject(displayIndex);
 										int columnType = rs.getMetaData().getColumnType(displayIndex);
 										// String, Text
