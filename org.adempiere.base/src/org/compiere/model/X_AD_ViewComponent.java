@@ -31,7 +31,7 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211128L;
 
     /** Standard Constructor */
     public X_AD_ViewComponent (Properties ctx, int AD_ViewComponent_ID, String trxName)
@@ -44,6 +44,8 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFromClause (null);
+			setIsUnionAll (false);
+// N
 			setName (null);
         } */
     }
@@ -208,6 +210,30 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Is UNION ALL.
+		@param IsUnionAll 
+		The component view is UNION ALL
+	  */
+	public void setIsUnionAll (boolean IsUnionAll)
+	{
+		set_Value (COLUMNNAME_IsUnionAll, Boolean.valueOf(IsUnionAll));
+	}
+
+	/** Get Is UNION ALL.
+		@return The component view is UNION ALL
+	  */
+	public boolean isUnionAll () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsUnionAll);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.

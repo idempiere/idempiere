@@ -178,6 +178,19 @@ public interface I_AD_ViewComponent
 	  */
 	public boolean isActive();
 
+    /** Column name IsUnionAll */
+    public static final String COLUMNNAME_IsUnionAll = "IsUnionAll";
+
+	/** Set Is UNION ALL.
+	  * The component view is UNION ALL
+	  */
+	public void setIsUnionAll (boolean IsUnionAll);
+
+	/** Get Is UNION ALL.
+	  * The component view is UNION ALL
+	  */
+	public boolean isUnionAll();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

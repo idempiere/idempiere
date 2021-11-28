@@ -99,7 +99,11 @@ public class DatabaseViewValidate extends SvrProcess {
 		{
 			MViewComponent vc = m_vcs[i];
 			if (i > 0)
+			{
 				sb.append(" UNION ");
+				if (vc.isUnionAll())
+					sb.append(" ALL ");
+			}
 			else
 			{
 				vCols = vc.getColumns(true);
