@@ -207,7 +207,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		final String whereClause = "GL_Journal_ID=?";
 		List <MJournalLine> list = new Query(getCtx(), I_GL_JournalLine.Table_Name, whereClause, get_TrxName())
 			.setParameters(getGL_Journal_ID())
-			.setOrderBy("Line")
+			.setOrderBy("Line,GL_JournalLine_ID")
 			.list();
 		//
 		MJournalLine[] retValue = new MJournalLine[list.size()];
