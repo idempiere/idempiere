@@ -81,10 +81,18 @@ import org.junit.jupiter.api.Test;
  */
 public class ProductionTest extends AbstractTestCase {
 
+	private static final int BP_PATIO = 121;
+	private static final int DOCTYPE_PO = 126;
+	private static final int DOCTYPE_RECEIPT = 122;
+	private static final int USER_GARDENADMIN = 101;
+	
 	@Test
 	public void testAverageCostingProduction() {
 		int mulchId = 137;
 		int hqLocator = 101;
+				
+		createPOAndMRForProduct(mulchId);
+		
 		MProduct mulch = MProduct.get(mulchId);
 		BigDecimal componentOnHand1 = MStorageOnHand.getQtyOnHand(mulchId, getM_Warehouse_ID(), 0, getTrxName());
 		BigDecimal componentCost = MCost.getCurrentCost(mulch, 0, getTrxName());
@@ -162,6 +170,51 @@ public class ProductionTest extends AbstractTestCase {
 		BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName());
 		assertTrue(endProductCost.equals(componentCost), "Cost not roll up correctly");
 	}
+
+	private void createPOAndMRForProduct(int mulchId) {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_PATIO));
+		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), mulchId));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());		
+		
+		MInOut receipt1 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		receipt1.setDocStatus(DocAction.STATUS_Drafted);
+		receipt1.setDocAction(DocAction.ACTION_Complete);
+		receipt1.saveEx();
+
+		MInOutLine receiptLine1 = new MInOutLine(receipt1);
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
+		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		receipt1.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus());
+		if (!receipt1.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt1.getAD_Client_ID(), receipt1.get_Table_ID(), receipt1.get_ID(), false, getTrxName());
+			assertNull(error, error);
+		}
+	}
 	
 	@Test
 	public void testStandardCostingProduction() {
@@ -181,7 +234,10 @@ public class ProductionTest extends AbstractTestCase {
 		try {
 			int mulchId = 137;
 			int hqLocator = 101;
-			MProduct mulch = MProduct.get(mulchId);
+			
+			createPOAndMRForProduct(mulchId);
+			
+			MProduct mulch = MProduct.get(mulchId);			
 			BigDecimal componentOnHand1 = MStorageOnHand.getQtyOnHand(mulchId, getM_Warehouse_ID(), 0, getTrxName());
 			BigDecimal componentCost = MCost.getCurrentCost(mulch, 0, getTrxName());
 									
