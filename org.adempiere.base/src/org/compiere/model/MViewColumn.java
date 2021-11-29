@@ -119,8 +119,10 @@ public class MViewColumn extends X_AD_ViewColumn implements ImmutablePOSupport {
 	protected boolean beforeSave(boolean newRecord) {
 		String error = Database.isValidIdentifier(getColumnName());
 		if (!Util.isEmpty(error)) {
-			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
-			return false;
+			if ( ! (getColumnName().startsWith("\"") && getColumnName().endsWith("\"")) ) { // quoted column is valid in views
+				log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
+				return false;
+			}
 		}
 		return true;
 	}
