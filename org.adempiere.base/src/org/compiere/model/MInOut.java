@@ -1395,6 +1395,14 @@ public class MInOut extends X_M_InOut implements DocAction
 							if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
 								QtyMA = QtyMA.negate();
 	
+							if (product != null && QtyMA.signum() < 0 && MovementType.equals("C-") && ma.getM_AttributeSetInstance_ID() > 0
+								&& oLine != null && oLine.getM_AttributeSetInstance_ID()==0) 
+							{
+								String status = moveOnHandToShipmentASI(product, sLine.getM_Locator_ID(), ma.getM_AttributeSetInstance_ID(), QtyMA.negate(), ma.getDateMaterialPolicy(), get_TrxName());
+								if (status != null)
+									return status;
+							}
+							
 							//	Update Storage - see also VMatch.createMatchRecord
 							if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
 								sLine.getM_Locator_ID(),
@@ -1452,6 +1460,14 @@ public class MInOut extends X_M_InOut implements DocAction
 
 					if (mtrx == null)
 					{
+						if (product != null  && MovementType.equals("C-") && sLine.getM_AttributeSetInstance_ID() > 0 && Qty.signum() < 0
+							&& oLine != null && oLine.getM_AttributeSetInstance_ID()==0) 
+						{
+							String status = moveOnHandToShipmentASI(product, sLine.getM_Locator_ID(), sLine.getM_AttributeSetInstance_ID(), Qty.negate(), null, get_TrxName());
+							if (status != null)
+								return status;
+						}
+						
 						Timestamp dateMPolicy= null;
 						BigDecimal pendingQty = Qty;
 						if (pendingQty.signum() < 0) {  // taking from inventory
@@ -2561,4 +2577,90 @@ public class MInOut extends X_M_InOut implements DocAction
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
 
+	/**
+	 * For product with mix of No ASI and ASI inventory, this move Non ASI on hand to the new ASI created at shipment line or shipment line ma
+	 * @param product
+	 * @param M_Locator_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param qty
+	 * @param dateMaterialPolicy
+	 * @param trxName
+	 * @return error doc status if there are any errors
+	 */
+	protected String moveOnHandToShipmentASI(MProduct product, int M_Locator_ID, int M_AttributeSetInstance_ID, BigDecimal qty,
+			Timestamp dateMaterialPolicy, String trxName) {
+		if (qty.signum() <= 0)
+			return null;
+		if (M_AttributeSetInstance_ID == 0)
+			return null;
+		if (dateMaterialPolicy != null) {
+			MStorageOnHand asi = MStorageOnHand.get(getCtx(), M_Locator_ID, product.getM_Product_ID(), M_AttributeSetInstance_ID, dateMaterialPolicy, trxName);
+			if (asi != null && asi.getQtyOnHand().signum() != 0)
+				return null;
+			
+			MStorageOnHand noasi = MStorageOnHand.get(getCtx(), M_Locator_ID, product.getM_Product_ID(), 0, dateMaterialPolicy, trxName);
+			if (noasi != null && noasi.getM_AttributeSetInstance_ID()==0 && noasi.getQtyOnHand().compareTo(qty) >= 0) {
+				if (!(MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), 0, qty.negate(), dateMaterialPolicy, trxName)))
+				{
+					String lastError = CLogger.retrieveErrorString("");
+					m_processMsg = "Cannot move Inventory OnHand (MA) to Shipment ASI [" + product.getValue() + "] - " + lastError;
+					return DocAction.STATUS_Invalid;
+				}
+				if (!(MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), M_AttributeSetInstance_ID, qty, dateMaterialPolicy, trxName)))
+				{
+					String lastError = CLogger.retrieveErrorString("");
+					m_processMsg = "Cannot move Inventory OnHand (MA) to Shipment ASI [" + product.getValue() + "] - " + lastError;
+					return DocAction.STATUS_Invalid;
+				}
+			}
+		} else {
+			BigDecimal totalASI = BigDecimal.ZERO;
+			BigDecimal totalOnHand = BigDecimal.ZERO;
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+					product.getM_Product_ID(), M_AttributeSetInstance_ID, null,
+					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+					M_Locator_ID, get_TrxName());
+			for (MStorageOnHand onhand : storages) {
+				totalASI = totalASI.add(onhand.getQtyOnHand());
+			}
+			if (totalASI.signum() != 0) 
+				return null;
+			storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+					product.getM_Product_ID(), 0, null,
+					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), true,
+					M_Locator_ID, get_TrxName());
+			List<MStorageOnHand> nonASIList = new ArrayList<>();
+			for (MStorageOnHand storage : storages) {
+				if (storage.getM_AttributeSetInstance_ID() == 0) {
+					totalOnHand = totalOnHand.add(storage.getQtyOnHand());
+					nonASIList.add(storage);
+				}
+			}
+			if (totalOnHand.compareTo(qty) >= 0) {
+				BigDecimal totalToMove = qty;
+				for (MStorageOnHand onhand : nonASIList) {
+					BigDecimal toMove = totalToMove;
+					if (toMove.compareTo(onhand.getQtyOnHand()) >= 0) {
+						toMove = onhand.getQtyOnHand();							
+					}
+					if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), 0, toMove.negate(), onhand.getDateMaterialPolicy(), trxName)) {
+						String lastError = CLogger.retrieveErrorString("");
+						m_processMsg = "Cannot move Inventory OnHand to Shipment ASI [" + product.getValue() + "] - " + lastError;
+						return DocAction.STATUS_Invalid;
+					}
+					dateMaterialPolicy = onhand.getDateMaterialPolicy();
+					totalToMove = totalToMove.subtract(toMove);
+					if (totalToMove.signum() <= 0)
+						break;
+				}
+				if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), M_AttributeSetInstance_ID, qty, dateMaterialPolicy, trxName)) {
+					String lastError = CLogger.retrieveErrorString("");
+					m_processMsg = "Cannot move Inventory OnHand to Shipment ASI [" + product.getValue() + "] - " + lastError;
+					return DocAction.STATUS_Invalid;
+				}
+			}
+		}
+		
+		return null;
+	}
 }	//	MInOut

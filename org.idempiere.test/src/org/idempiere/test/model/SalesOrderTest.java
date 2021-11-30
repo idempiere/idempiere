@@ -78,6 +78,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	private static final int PRODUCT_AZALEA = 128;
 	private static final int PRODUCT_FERT50 = 136;
 	private static final int PRODUCT_MARY = 132;
+	private static final int PRODUCT_PCHAIR = 133;
 	private static final int ORG_FERTILIZER = 50001;
 	private static final int WAREHOUSE_FERTILIZER = 50002;
 	private static final int LOCATOR_FERTILIZER = 50001;
@@ -970,5 +971,82 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(0, line1.getQtyReserved().intValue());
 		assertEquals(1, line1.getQtyLostSales().intValue());
 		assertEquals(line1.getQtyDelivered().intValue(), line1.getQtyOrdered().intValue());
+	}
+	
+	@Test
+	public void testSerialWhenShipping() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PCHAIR));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Unexpected Order document status");
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue(), "Unexpected order line qty reserved value");		
+		
+		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(Env.getCtx(), getM_Warehouse_ID(),
+				PRODUCT_PCHAIR, 0, null, true, false, 0, getTrxName());
+		int originalOnHand = 0;
+		for (MStorageOnHand storage : storages) {
+			if (storage.getM_AttributeSetInstance_ID()==0)
+				originalOnHand += storage.getQtyOnHand().intValue();
+		}
+		
+		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+		
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+		shipmentLine.setQty(new BigDecimal("1"));
+		MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+		asi.setM_AttributeSet_ID(MProduct.get(PRODUCT_PCHAIR).getM_AttributeSet_ID());
+		asi.setSerNo("PChair Serial #1000000");
+		asi.saveEx();
+		shipmentLine.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+		shipmentLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Unexpected Shipment document status");
+		
+		storages = MStorageOnHand.getWarehouse(Env.getCtx(), getM_Warehouse_ID(),
+				PRODUCT_PCHAIR, 0, null, true, false, 0, getTrxName());
+		int newOnHand = 0;
+		for (MStorageOnHand storage : storages) {
+			if (storage.getM_AttributeSetInstance_ID()==0)
+				newOnHand += storage.getQtyOnHand().intValue();
+		}
+		assertEquals(originalOnHand-1, newOnHand, "Unexpected on hand quantity");
+		
+		storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		int asiOnHand = 0;
+		int asiRecords = 0;
+		for (MStorageOnHand storage : storages) {
+			if (storage.getM_Warehouse_ID()==getM_Warehouse_ID() && storage.getM_AttributeSetInstance_ID()==asi.get_ID()) {
+				asiOnHand += storage.getQtyOnHand().intValue();
+				asiRecords++;
+			}
+		}
+		assertEquals(0, asiOnHand, "Unexpected on hand quantity for Serial ASI");
+		assertEquals(1, asiRecords, "Unexpected number of Serial ASI Storage records");
 	}
 }
