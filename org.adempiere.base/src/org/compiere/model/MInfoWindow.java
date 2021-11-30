@@ -34,7 +34,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -51,7 +51,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	private static final long serialVersionUID = 6723480469706009814L;
 
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MInfoWindow> s_cache = new ImmutableIntPOCache<Integer,MInfoWindow>(Table_Name, 20);
+	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
 	
 	/**
 	 * 	Standard Constructor
@@ -124,7 +124,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 */
 	public static MInfoWindow getInfoWindow(int AD_InfoWindow_ID) {
 		if (AD_InfoWindow_ID > 0) {
-			Integer key = Integer.valueOf(AD_InfoWindow_ID);
+			String key = String.valueOf(AD_InfoWindow_ID) + "|" + Env.getAD_Role_ID(Env.getCtx());
 			MInfoWindow infoWin =  s_cache.get(key);
 			if (infoWin != null)
 				return infoWin;
