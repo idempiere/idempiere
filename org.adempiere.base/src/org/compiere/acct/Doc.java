@@ -138,7 +138,7 @@ public abstract class Doc
 	 *  M_Requisition		POR
 	 **************************************************************************/
 
-	private static final String DOC_TYPE_BY_DOC_BASE_TYPE_SQL = "SELECT C_DocType_ID FROM C_DocType WHERE AD_Client_ID=? AND DocBaseType=? AND IsActive='Y' ORDER BY IsDefault DESC, C_DocType_ID";
+	public static final String DOC_TYPE_BY_DOC_BASE_TYPE_SQL = "SELECT C_DocType_ID FROM C_DocType WHERE AD_Client_ID=? AND DocBaseType=? AND IsActive='Y' ORDER BY IsDefault DESC, C_DocType_ID";
 	
 	/**	AR Invoices - ARI       */
 	public static final String 	DOCTYPE_ARInvoice       = MDocType.DOCBASETYPE_ARInvoice;

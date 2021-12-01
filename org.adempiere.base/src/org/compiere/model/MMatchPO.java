@@ -31,6 +31,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
+import org.compiere.acct.Doc;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -1359,7 +1363,20 @@ public class MMatchPO extends X_M_MatchPO
 	 *	@throws Exception
 	 */
 
-	public boolean reverse(Timestamp reversalDate)  
+	public boolean reverse(Timestamp reversalDate)
+	{
+		return reverse(reversalDate, false);
+	}
+	
+	/**
+	 * 	Reverse MatchPO.
+	 *  @param reversalDate
+	 *  @param reverseMatchingOnly true if MR is not reverse
+	 *	@return boolean
+	 *	@throws Exception
+	 */
+
+	public boolean reverse(Timestamp reversalDate, boolean reverseMatchingOnly)  
 	{
 		if (this.isProcessed() && this.getReversal_ID() == 0)
 		{		
@@ -1389,6 +1406,50 @@ public class MMatchPO extends X_M_MatchPO
 			this.setReversal_ID(reversal.getM_MatchPO_ID());
 			this.saveEx();
 
+			//update qtyOrdered
+			if (reverseMatchingOnly && reversal.getM_InOutLine_ID() > 0 && reversal.getC_OrderLine_ID() > 0)
+			{
+				MInOutLine sLine = new MInOutLine(Env.getCtx(), reversal.getM_InOutLine_ID(), get_TrxName());
+				if (sLine.getMovementQty().compareTo(this.getQty()) == 0 && sLine.getC_OrderLine_ID() == reversal.getC_OrderLine_ID())
+				{
+					//clear c_orderline from shipment so we can match the shipment again (to the same or different order line)
+					sLine.setC_OrderLine_ID(0);
+					sLine.saveEx();					
+				}
+				//add back qtyOrdered
+				MOrderLine oLine = new MOrderLine(Env.getCtx(), reversal.getC_OrderLine_ID(), get_TrxName());
+				BigDecimal storageReservationToUpdate = oLine.getQtyReserved();
+				oLine.setQtyReserved(oLine.getQtyReserved().add(getQty()));
+				BigDecimal reservedAndDelivered = oLine.getQtyDelivered().add(oLine.getQtyReserved());
+				if (reservedAndDelivered.compareTo(oLine.getQtyOrdered()) > 0) 
+				{
+					oLine.setQtyReserved(oLine.getQtyReserved().subtract(reservedAndDelivered.subtract(oLine.getQtyOrdered())));
+					if (oLine.getQtyReserved().signum()==-1)
+						oLine.setQtyReserved(Env.ZERO);
+				}
+				oLine.saveEx();
+				storageReservationToUpdate = storageReservationToUpdate.subtract(oLine.getQtyReserved());
+				if (storageReservationToUpdate.signum() != 0)
+				{
+					IReservationTracer tracer = null;
+					IReservationTracerFactory factory = Core.getReservationTracerFactory();
+					if (factory != null) 
+					{
+						int docTypeId = DB.getSQLValue((String)null, Doc.DOC_TYPE_BY_DOC_BASE_TYPE_SQL, getAD_Client_ID(), Doc.DOCTYPE_MatMatchPO);
+						tracer = factory.newTracer(docTypeId, reversal.getDocumentNo(), 10, 
+								reversal.get_Table_ID(), reversal.get_ID(), oLine.getM_Warehouse_ID(), 
+								oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
+								get_TrxName());
+					}
+					boolean success = MStorageReservation.add (Env.getCtx(), oLine.getM_Warehouse_ID(),
+						oLine.getM_Product_ID(),
+						oLine.getM_AttributeSetInstance_ID(),
+						storageReservationToUpdate.negate(), oLine.getParent().isSOTrx(), get_TrxName(), tracer);
+					if (!success)
+						return false;
+				}
+			}
+			
 			// auto create new matchpo if have invoice line
 			if ( reversal.getC_InvoiceLine_ID() > 0 && reversal.getM_InOutLine_ID() > 0 )
 			{
