@@ -80,6 +80,8 @@ public class SalesOrderTest extends AbstractTestCase {
 	private static final int PRODUCT_MARY = 132;
 	private static final int ORG_FERTILIZER = 50001;
 	private static final int WAREHOUSE_FERTILIZER = 50002;
+	private static final int WAREHOUSE_HQ_TRANSIT = 50000;
+	private static final int WAREHOUSE_HQ = 103;
 	private static final int LOCATOR_FERTILIZER = 50001;
 	private static final int UOM_HOUR = 101;
 
@@ -970,5 +972,41 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(0, line1.getQtyReserved().intValue());
 		assertEquals(1, line1.getQtyLostSales().intValue());
 		assertEquals(line1.getQtyDelivered().intValue(), line1.getQtyOrdered().intValue());
+	}
+	
+	@Test
+	public void testWarehouseChange() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		//Joe Block
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Prepare);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.setM_Warehouse_ID(WAREHOUSE_HQ);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		//Azalea Bush
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		order.setM_Warehouse_ID(WAREHOUSE_HQ_TRANSIT);
+		boolean success = order.save();
+		assertEquals(true, success);
+		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
+		assertFalse(info.isError());
+		
+		// No change on warehouse allowed if QtyDelivered, QtyInvoice or QtyReserved != 0 on any line
+		order.setM_Warehouse_ID(WAREHOUSE_HQ);
+		success = order.save();
+		assertEquals(false, success);
 	}
 }
