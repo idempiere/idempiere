@@ -1214,7 +1214,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	// QueryFrom
         	ValueNamePair selected = listColumn.getSelectedItem().getValue();
 	        String columnName = selected.getValue();
-	        String tableName = listTable.getSelectedItem().getValue();
+	        String tableName = listTable != null && listTable.getSelectedItem() != null ? listTable.getSelectedItem().getValue() : m_tableName;
 	        if (columnName == null || columnName == "")
 	        	return;
 	    	String value = fields.length > INDEX_VALUE ? fields[INDEX_VALUE] : "";
@@ -1319,33 +1319,33 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	operator = fields.length > INDEX_OPERATOR ? fields[INDEX_OPERATOR] : ""; 
 
 
-        	//listTable.appendItem("","" );
-	        for (int i = 0; i < tabs.length; i++)
-	        {
-	        	ValueNamePair item = tabs[i];
-	            listTable.appendItem(item.getName(), item.getValue());
-
-	            if (item.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
-	            	if(item.getValue().equals(tableName))
-		 	        {
-		 	           	listTable.setSelectedIndex(listTable.getItemCount()-1);
-		 	        	selected = true;		 	        	
-		 	        }
-
-	            } else {
-	 	            if (item.getValue().equals(tableName))
-	 	        	{
-	 	            	GridTab mtab = m_windowPanel.getGridWindow().getGridTab(tableName);
-	 	            	listTable.setSelectedIndex(listTable.getItemCount()-1);
-	 	        		selected = true;
-	 	        		findFields=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID()).getFields();
-	 	        		m_gridTab=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID());
-	 	        	}
-
-
-	            }	           
-	        }
-	        if(!selected) listTable.setSelectedIndex(0);
+        	if (m_windowPanel != null)
+        	{	
+		        for (int i = 0; i < tabs.length; i++)
+		        {
+		        	ValueNamePair item = tabs[i];
+		            listTable.appendItem(item.getName(), item.getValue());
+	
+		            if (item.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+		            	if(item.getValue().equals(tableName))
+			 	        {
+			 	           	listTable.setSelectedIndex(listTable.getItemCount()-1);
+			 	        	selected = true;		 	        	
+			 	        }
+	
+		            } else {
+		 	            if (item.getValue().equals(tableName))
+		 	        	{
+		 	            	GridTab mtab = m_windowPanel.getGridWindow().getGridTab(tableName);
+		 	            	listTable.setSelectedIndex(listTable.getItemCount()-1);
+		 	        		selected = true;
+		 	        		findFields=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID()).getFields();
+		 	        		m_gridTab=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID());
+		 	        	}
+		            }	           
+		        }
+		        if(!selected) listTable.setSelectedIndex(0);
+        	}
         }
         
         //  0 = Columns
