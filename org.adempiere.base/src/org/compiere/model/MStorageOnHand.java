@@ -948,6 +948,32 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 
 	/**
+	 * Get Quantity On Hand of Warehouse with ASI=0
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandWithASIZero(int M_Product_ID, int M_Warehouse_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=?")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	
+	/**
 	 * Get Quantity On Hand of Warehouse Available for Reservation
 	 * @param M_Product_ID
 	 * @param M_Warehouse_ID
@@ -981,6 +1007,33 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 
 	/**
+	 * Get Quantity On Hand of Warehouse Available for Reservation with ASI=0
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForReservationWithASIZero(int M_Product_ID, int M_Warehouse_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh"
+				+ " JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)"
+				+ " LEFT JOIN M_LocatorType lt ON (loc.M_LocatorType_ID=lt.M_LocatorType_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=? AND COALESCE(lt.IsAvailableForReservation,'Y')='Y'")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		BigDecimal qty = DB.getSQLValueBDEx(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	/**
 	 * Get Quantity On Hand of Warehouse that's available for shipping
 	 * @param M_Product_ID
 	 * @param M_Warehouse_ID
@@ -1013,6 +1066,32 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 	
 	/**
+	 * Get Quantity On Hand of Warehouse that's available for shipping with ASI=0
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForShippingWithASIZero(int M_Product_ID, int M_Warehouse_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
+			.append(" LEFT JOIN M_LocatorType lt ON (loc.M_LocatorType_ID=lt.M_LocatorType_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=? AND COALESCE(lt.IsAvailableForShipping,'Y')='Y'")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		BigDecimal qty = DB.getSQLValueBDEx(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	/**
 	 * Get Quantity On Hand of Locator
 	 * @param M_Product_ID
 	 * @param M_Locator_ID
@@ -1035,6 +1114,31 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			sql.append(" AND oh.M_AttributeSetInstance_ID=?");
 			params.add(M_AttributeSetInstance_ID);
 		}
+
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	/**
+	 * Get Quantity On Hand of Locator wtih ASI=0
+	 * @param M_Product_ID
+	 * @param M_Locator_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForLocatorWithASIZero(int M_Product_ID, int M_Locator_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(oh.QtyOnHand) FROM M_StorageOnHand oh")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND oh.M_Locator_ID=?")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Locator_ID);
 
 		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
 		if (qty == null)

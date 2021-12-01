@@ -81,6 +81,8 @@ public class SalesOrderTest extends AbstractTestCase {
 	private static final int PRODUCT_PCHAIR = 133;
 	private static final int ORG_FERTILIZER = 50001;
 	private static final int WAREHOUSE_FERTILIZER = 50002;
+	private static final int WAREHOUSE_HQ_TRANSIT = 50000;
+	private static final int WAREHOUSE_HQ = 103;
 	private static final int LOCATOR_FERTILIZER = 50001;
 	private static final int UOM_HOUR = 101;
 
@@ -974,6 +976,42 @@ public class SalesOrderTest extends AbstractTestCase {
 	}
 	
 	@Test
+	public void testWarehouseChange() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		//Joe Block
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Prepare);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.setM_Warehouse_ID(WAREHOUSE_HQ);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		//Azalea Bush
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		order.setM_Warehouse_ID(WAREHOUSE_HQ_TRANSIT);
+		boolean success = order.save();
+		assertEquals(true, success);
+		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
+		assertFalse(info.isError());
+		
+		// No change on warehouse allowed if QtyDelivered, QtyInvoice or QtyReserved != 0 on any line
+		order.setM_Warehouse_ID(WAREHOUSE_HQ);
+		success = order.save();
+		assertEquals(false, success);
+	}
+	
+	@Test
 	public void testSerialWhenShipping() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
@@ -1000,13 +1038,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(1, line1.getQtyReserved().intValue(), "Unexpected order line qty reserved value");		
 		
-		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(Env.getCtx(), getM_Warehouse_ID(),
-				PRODUCT_PCHAIR, 0, null, true, false, 0, getTrxName());
-		int originalOnHand = 0;
-		for (MStorageOnHand storage : storages) {
-			if (storage.getM_AttributeSetInstance_ID()==0)
-				originalOnHand += storage.getQtyOnHand().intValue();
-		}
+		int originalOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
 		
 		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
@@ -1028,21 +1060,14 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Unexpected Shipment document status");
 		
-		storages = MStorageOnHand.getWarehouse(Env.getCtx(), getM_Warehouse_ID(),
-				PRODUCT_PCHAIR, 0, null, true, false, 0, getTrxName());
-		int newOnHand = 0;
-		for (MStorageOnHand storage : storages) {
-			if (storage.getM_AttributeSetInstance_ID()==0)
-				newOnHand += storage.getQtyOnHand().intValue();
-		}
+		int newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
 		assertEquals(originalOnHand-1, newOnHand, "Unexpected on hand quantity");
-		
-		storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
-		int asiOnHand = 0;
+				
+		int asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi.get_ID(), getTrxName()).intValue();
 		int asiRecords = 0;
+		MStorageOnHand[] storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
 		for (MStorageOnHand storage : storages) {
 			if (storage.getM_Warehouse_ID()==getM_Warehouse_ID() && storage.getM_AttributeSetInstance_ID()==asi.get_ID()) {
-				asiOnHand += storage.getQtyOnHand().intValue();
 				asiRecords++;
 			}
 		}
