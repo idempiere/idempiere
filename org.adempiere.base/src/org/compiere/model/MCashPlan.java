@@ -81,7 +81,7 @@ public class MCashPlan extends X_C_CashPlan
 	public MCashPlanLine[] getLines ()
 	{
 		ArrayList<MCashPlanLine> list = new ArrayList<MCashPlanLine>();
-		String sql = "SELECT * FROM C_CashPlanLine WHERE C_CashPlan_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM C_CashPlanLine WHERE C_CashPlan_ID=? ORDER BY Line,C_CashPlanLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

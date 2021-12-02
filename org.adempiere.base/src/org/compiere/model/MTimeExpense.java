@@ -111,7 +111,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		int C_Currency_ID = getC_Currency_ID();
 		ArrayList<MTimeExpenseLine> list = new ArrayList<MTimeExpenseLine>();
 		//
-		String sql = "SELECT * FROM S_TimeExpenseLine WHERE S_TimeExpense_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM S_TimeExpenseLine WHERE S_TimeExpense_ID=? ORDER BY Line,S_TimeExpenseLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

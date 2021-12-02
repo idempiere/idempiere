@@ -713,7 +713,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (orderBy != null && orderBy.length() > 0)
 			orderClause += orderBy;
 		else
-			orderClause += "Line";
+			orderClause += "Line,C_OrderLine_ID";
 		m_lines = getLines(null, orderClause);
 		return m_lines;
 	}	//	getLines
