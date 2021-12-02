@@ -65,6 +65,7 @@ import org.compiere.wf.MWorkflow;
  *	
  *  @author Carlos Ruiz
  */
+@org.adempiere.base.annotation.Process
 public class ASPGenerateLevel extends SvrProcess
 {
 	private String  p_ASP_Status;

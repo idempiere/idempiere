@@ -37,6 +37,7 @@ import org.compiere.util.Msg;
  *  @version $Id: BPartnerValidate.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  *  FR: [ 2214883 ] Remove SQL code and Replace for Query - red1, teo_sarca
  */
+@org.adempiere.base.annotation.Process
 public class BPartnerValidate extends SvrProcess
 {
 	/**	BPartner ID			*/

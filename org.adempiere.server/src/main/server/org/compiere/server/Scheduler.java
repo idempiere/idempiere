@@ -152,7 +152,7 @@ public class Scheduler extends AdempiereServer
 		{
 			if (m_trx != null)
 				m_trx.close();
-
+			m_trx = null;
 			session.logout();
 			getCtx().remove(Env.AD_SESSION_ID);
 		}

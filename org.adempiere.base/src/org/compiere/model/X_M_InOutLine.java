@@ -33,7 +33,7 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211126L;
 
     /** Standard Constructor */
     public X_M_InOutLine (Properties ctx, int M_InOutLine_ID, String trxName)
@@ -379,6 +379,30 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set Auto Produce.
+		@param IsAutoProduce 
+		Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce)
+	{
+		set_ValueNoCheck (COLUMNNAME_IsAutoProduce, Boolean.valueOf(IsAutoProduce));
+	}
+
+	/** Get Auto Produce.
+		@return Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoProduce);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Description Only.
 		@param IsDescription 
 		if true, the line is just description and no transaction
@@ -713,26 +737,6 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 	public BigDecimal getQtyEntered () 
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyEntered);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Over Receipt.
-		@param QtyOverReceipt 
-		Over Receipt Quantity
-	  */
-	public void setQtyOverReceipt (BigDecimal QtyOverReceipt)
-	{
-		set_Value (COLUMNNAME_QtyOverReceipt, QtyOverReceipt);
-	}
-
-	/** Get Over Receipt.
-		@return Over Receipt Quantity
-	  */
-	public BigDecimal getQtyOverReceipt () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOverReceipt);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

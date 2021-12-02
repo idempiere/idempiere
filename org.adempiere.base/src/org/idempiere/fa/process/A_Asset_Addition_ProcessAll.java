@@ -11,6 +11,7 @@ import org.compiere.util.DB;
  * Process All (not processed) Additions
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
+@org.adempiere.base.annotation.Process
 public class A_Asset_Addition_ProcessAll extends SvrProcess
 {
 	

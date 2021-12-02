@@ -420,6 +420,15 @@ public interface I_C_DocType
 	  */
 	public boolean isInTransit();
 
+    /** Column name isNoPriceListCheck */
+    public static final String COLUMNNAME_IsNoPriceListCheck = "IsNoPriceListCheck";
+
+	/** Set Allow Product Without Pricelist	  */
+	public void setIsNoPriceListCheck (boolean IsNoPriceListCheck);
+
+	/** Get Allow Product Without Pricelist	  */
+	public boolean IsNoPriceListCheck();
+
     /** Column name IsOverwriteDateOnComplete */
     public static final String COLUMNNAME_IsOverwriteDateOnComplete = "IsOverwriteDateOnComplete";
 

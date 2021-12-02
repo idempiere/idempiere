@@ -325,6 +325,19 @@ public interface I_M_Product
 	  */
 	public boolean isActive();
 
+    /** Column name IsAutoProduce */
+    public static final String COLUMNNAME_IsAutoProduce = "IsAutoProduce";
+
+	/** Set Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce);
+
+	/** Get Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce();
+
     /** Column name IsBOM */
     public static final String COLUMNNAME_IsBOM = "IsBOM";
 

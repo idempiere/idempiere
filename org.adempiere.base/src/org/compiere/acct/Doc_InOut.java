@@ -850,11 +850,7 @@ public class Doc_InOut extends Doc
 					//update below
 					costs = Env.ONE;
 				}
-				//  NotInvoicedReceipt				DR
-				// Elaine 2008/06/26
-				/*dr = fact.createLine(line,
-					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
-					as.getC_Currency_ID(), costs , null);*/
+
 				dr = fact.createLine(line,
 					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
 					C_Currency_ID, costs , null);
@@ -888,9 +884,7 @@ public class Doc_InOut extends Doc
 				MAccount assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				if (product.isService())
 					assets = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
-				// Elaine 2008/06/26
-				/*cr = fact.createLine(line, assets,
-					as.getC_Currency_ID(), null, costs);*/
+
 				cr = fact.createLine(line, assets,
 					C_Currency_ID, null, costs);
 				//

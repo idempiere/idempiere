@@ -56,7 +56,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7207471169113857831L;
+	private static final long serialVersionUID = -7152360636393521683L;
 
 	/**
 	 * 	Get Order Unreserved Qty
@@ -790,7 +790,8 @@ public class MOrderLine extends X_C_OrderLine
 		
 		//	R/O Check - Product/Warehouse Change
 		if (!newRecord 
-			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID"))) 
+			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || 
+			(!getParent().isProcessed() && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)))) 
 		{
 			if (!canChangeWarehouse())
 				return false;
@@ -825,8 +826,10 @@ public class MOrderLine extends X_C_OrderLine
 				log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
 				return false;
 			}
+			int C_DocType_ID = getParent().getDocTypeID();
+			MDocType docType = MDocType.get(getCtx(), C_DocType_ID);
 			//
-			if (!m_productPrice.isCalculated())
+			if (!docType.IsNoPriceListCheck() && !m_productPrice.isCalculated())
 			{
 				throw new ProductNotOnPriceListException(m_productPrice, getLine());
 			}

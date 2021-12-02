@@ -48,6 +48,7 @@ import org.compiere.util.DisplayType;
  * @author Elaine
  *
  */
+@org.adempiere.base.annotation.Process
 public class SalesOrderRateInquiryProcess extends SvrProcess 
 {
 	private boolean p_IsPriviledgedRate = false;
@@ -246,7 +247,6 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			if ((ol.getM_Product_ID() > 0 && ol.getM_Product_ID() == ci.getM_ProductFreight_ID()) ||
 					(ol.getC_Charge_ID() > 0 && ol.getC_Charge_ID() == ci.getC_ChargeFreight_ID()))
 			{
-//				FreightAmt = FreightAmt.add(ol.getLineNetAmt());
 				continue;
 			}
 			else if (ol.getM_Product_ID() > 0)
@@ -379,87 +379,38 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		
 		MShippingTransaction st = new MShippingTransaction(ctx, 0, trxName);
 		st.setAction(action);
-//		st.setAD_Client_ID(m_order.getAD_Client_ID());
 		st.setAD_Org_ID(m_order.getAD_Org_ID());
 		st.setAD_User_ID(m_order.getAD_User_ID());
 		st.setBill_Location_ID(m_order.getBill_Location_ID());
 		st.setBoxCount(BoxCount);
-//		st.setC_BP_ShippingAcct_ID(getC_BP_ShippingAcct_ID());
 		st.setC_BPartner_ID(m_order.getC_BPartner_ID());
 		st.setC_BPartner_Location_ID(m_order.getC_BPartner_Location_ID());
 		st.setC_Currency_ID(m_order.getC_Currency_ID());
-//		st.setC_Invoice_ID(0);
 		st.setC_Order_ID(m_order.getC_Order_ID());
 		st.setC_UOM_Length_ID(ci.getC_UOM_Length_ID());
 		st.setC_UOM_Weight_ID(ci.getC_UOM_Weight_ID());
-//		st.setCashOnDelivery(isCashOnDelivery());
 		st.setCODAmount(CODAmount);
 		st.setCustomsValue(CustomsValue);
-//		st.setDateReceived(getDateReceived());
-//		st.setDeliveryConfirmation(isDeliveryConfirmation());
-//		st.setDeliveryConfirmationType(getDeliveryConfirmationType());
-//		st.setDescription(getDescription());
-//		st.setDotHazardClassOrDivision(getDotHazardClassOrDivision());
-//		st.setDryIceWeight(getDryIceWeight());
 		st.setDutiesShipperAccount(DutiesShipperAccount);
-//		st.setFOB(getFOB());
 		st.setFreightAmt(FreightAmt);
 		st.setFreightCharges(MShippingTransaction.FREIGHTCHARGES_PrepaidAndBill);
-//		st.setHandlingCharge(getHandlingCharge());
-//		st.setHeight(getHeight());
-//		st.setHoldAddress(getHoldAddress());
-//		st.setHomeDeliveryPremiumDate(getHomeDeliveryPremiumDate());
-//		st.setHomeDeliveryPremiumPhone(getHomeDeliveryPremiumPhone());
-//		st.setHomeDeliveryPremiumType(getHomeDeliveryPremiumType());
-//		st.setInsurance(getInsurance());
-//		st.setInsuredAmount(getInsuredAmount());
-//		st.setIsAccessible(isAccessible());
 		st.setIsActive(m_order.isActive());
-//		st.setIsAddedHandling(isAddedHandling());
-//		st.setIsAlternateReturnAddress(isAlternateReturnAddress());
-//		st.setIsCargoAircraftOnly(isCargoAircraftOnly());
-//		st.setIsDryIce(isDryIce());
-//		st.setIsDutiable(isDutiable());
-//		st.setIsFutureDayShipment(isFutureDayShipment());
-//		st.setIsHazMat(isHazMat());
-//		st.setIsHoldAtLocation(isHoldAtLocation());
-//		st.setIsIgnoreZipNotFound(isIgnoreZipNotFound());
-//		st.setIsIgnoreZipStateNotMatch(isIgnoreZipStateNotMatch());
 		st.setIsPriviledgedRate(isPriviledgedRate);
 		st.setIsResidential(shipper.isResidential());
 		st.setIsSaturdayDelivery(shipper.isSaturdayDelivery());
-//		st.setIsSaturdayPickup(isSaturdayPickup());
-//		st.setIsVerbalConfirmation(isVerbalConfirmation());
-//		st.setLatestPickupTime(getLatestPickupTime());
-//		st.setLength(getLength());
-//		st.setM_InOut_ID(0);
-//		st.setM_Package_ID(getM_Package_ID());
 		st.setM_Shipper_ID(m_order.getM_Shipper_ID());
 		st.setM_ShipperLabels_ID(M_ShipperLabels_ID);
 		st.setM_ShipperPackaging_ID(M_ShipperPackaging_ID);
 		st.setM_ShipperPickupTypes_ID(M_ShipperPickupTypes_ID);
 		st.setM_ShippingProcessor_ID(shipper.getM_ShippingProcessor_ID());
 		st.setM_Warehouse_ID(m_order.getM_Warehouse_ID());
-//		st.setNotificationMessage(getNotificationMessage());
-//		st.setNotificationType(getNotificationType());
 		st.setPaymentRule(m_order.getPaymentRule());
 		st.setPOReference(m_order.getPOReference());
-//		st.setPrice(getPrice());
-//		st.setPriceActual(getPriceActual());
-//		st.setProcessed(isProcessed());
-//		st.setReceivedInfo(getReceivedInfo());
-//		st.setReturnBPartner_ID(getReturnBPartner_ID());
-//		st.setReturnLocation_ID(getReturnLocation_ID());
-//		st.setReturnUser_ID(getReturnUser_ID());
 		st.setSalesRep_ID(m_order.getSalesRep_ID());
 		st.setShipDate(m_order.getDatePromised());
 		st.setShipperAccount(ShipperAccount);
-//		st.setShippingRespMessage(ShippingRespMessage);
-//		st.setSurcharges(getSurcharges());
 		st.setTrackingInfo(shipper.getTrackingURL());
-//		st.setTrackingNo(getTrackingNo());
 		st.setWeight(TotalWeight);
-//		st.setWidth(getWidth());
 		st.saveEx();
 		
 		for (int i = 0; i < packages.size(); i++)
@@ -467,7 +418,6 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			ShippingPackage shippingPackage = packages.get(i);
 			
 			MShippingTransactionLine stl = new MShippingTransactionLine(st.getCtx(), 0, st.get_TrxName());
-//			stl.setAD_Client_ID(m_order.getAD_Client_ID());
 			stl.setAD_Org_ID(m_order.getAD_Org_ID());
 			stl.setC_UOM_Length_ID(ci.getC_UOM_Length_ID());
 			stl.setC_UOM_Weight_ID(ci.getC_UOM_Weight_ID());
@@ -475,13 +425,8 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			stl.setHeight(shippingPackage.getHeight());
 			stl.setIsActive(m_order.isActive());
 			stl.setLength(shippingPackage.getLength());
-//			stl.setM_PackageMPS_ID(0);
 			stl.setM_ShippingTransaction_ID(st.getM_ShippingTransaction_ID());
-//			stl.setMasterTrackingNo(getMasterTrackingNo());
-//			stl.setPrice(getPrice());
-//			stl.setProcessed(isProcessed());
 			stl.setSeqNo((i+1) * 10);
-//			stl.setTrackingNo(getTrackingNo());
 			stl.setWeight(shippingPackage.getWeight());
 			stl.setWidth(shippingPackage.getWidth());
 			stl.saveEx();

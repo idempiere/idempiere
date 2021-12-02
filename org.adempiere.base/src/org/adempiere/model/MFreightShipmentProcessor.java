@@ -51,7 +51,7 @@ public class MFreightShipmentProcessor implements IShipmentProcessor {
 
 	@Override
 	public boolean rateInquiry(Properties ctx, MShippingTransaction st, boolean isPriviledgedRate, String trxName) {
-		// st.setShippingRespMessage("In case of error set the message here");
+
 		MOrder order = new MOrder(ctx, st.getC_Order_ID(), trxName);
 		int freightCategoryId = order.getM_FreightCategory_ID();
 		Timestamp dateOrder = order.getDateOrdered();

@@ -35,6 +35,7 @@ import org.compiere.process.SvrProcess;
  *
  *	@author zuhri utama
  */
+@org.adempiere.base.annotation.Process
 public class ProjectCreateAsset extends SvrProcess
 {
 	/**	Project 			*/

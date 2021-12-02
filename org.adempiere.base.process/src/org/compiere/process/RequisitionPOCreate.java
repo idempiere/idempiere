@@ -54,6 +54,7 @@ import org.compiere.util.Msg;
  *  		<li>FR [ 2844074  ] Requisition PO Create - more selection fields
  *  			https://sourceforge.net/tracker/?func=detail&aid=2844074&group_id=176962&atid=879335
  */
+@org.adempiere.base.annotation.Process
 public class RequisitionPOCreate extends SvrProcess
 {
 	/** Org					*/

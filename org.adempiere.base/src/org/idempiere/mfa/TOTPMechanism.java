@@ -109,6 +109,8 @@ public class TOTPMechanism implements IMFAMechanism {
 		int expireMinutes = method.getExpireInMinutes();
 
 		MMFARegistration reg = new MMFARegistration(ctx, 0, trxName);
+		reg.set_ValueOfColumn(MMFARegistration.COLUMNNAME_AD_Client_ID, user.getAD_Client_ID());
+		reg.setAD_Org_ID(0);
 		if (! Util.isEmpty(prm)) {
 			reg.setName(prm);
 			reg.setParameterValue(prm);
@@ -122,7 +124,7 @@ public class TOTPMechanism implements IMFAMechanism {
 		reg.setIsUserMFAPreferred(false);
 		if (expireMinutes > 0)
 			reg.setExpiration(new Timestamp(System.currentTimeMillis() + (expireMinutes*60000)));
-		reg.saveEx();
+		saveRegistration(reg);
 
 		// Invalidate any other previous pending registration with same method
 		MMFARegistration.invalidatePreviousPending(method, prm, reg);
@@ -161,7 +163,7 @@ public class TOTPMechanism implements IMFAMechanism {
 			reg.setName(name);
 		if (preferred)
 			reg.setIsUserMFAPreferred(true);
-		reg.saveEx();
+		saveRegistration(reg);
 
 		return Msg.getMsg(ctx, "MFARegistrationCompleted");
 	}
@@ -204,12 +206,7 @@ public class TOTPMechanism implements IMFAMechanism {
 			reg.setLastFailure(new Timestamp(System.currentTimeMillis()));
 			reg.setFailedLoginCount(reg.getFailedLoginCount() + 1);
 		}
-		try {
-			PO.setCrossTenantSafe();
-			reg.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		saveRegistration(reg);
 		return valid;
 	}
 
@@ -241,15 +238,23 @@ public class TOTPMechanism implements IMFAMechanism {
 
 		if (setPreferred) {
 			reg.setIsUserMFAPreferred(true);
-			try {
-				PO.setCrossTenantSafe();
-				reg.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			saveRegistration(reg);
 		}
 
 		return null;
+	}
+
+	/**
+	 * Save the registration record allowing cross-tenant (saving for a user in System tenant)
+	 * @param reg
+	 */
+	private void saveRegistration(MMFARegistration reg) {
+		try {
+			PO.setCrossTenantSafe();
+			reg.saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 	}
 
 }

@@ -16,12 +16,14 @@ package org.adempiere.model;
 import java.util.Properties;
 
 import org.adempiere.base.IColumnCallout;
+import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBPartner;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
+@Callout(tableName = MBPartner.Table_Name, columnName = MBPartner.COLUMNNAME_C_BPartner_ID)
 public class CalloutBPartnerQuickEntry implements IColumnCallout {
 
 	@Override
@@ -29,13 +31,18 @@ public class CalloutBPartnerQuickEntry implements IColumnCallout {
 		// this callout is just for quick entry window
 		if ("Y".equals(Env.getContext(ctx, WindowNo, "_QUICK_ENTRY_MODE_"))) {
 			int parent_windowNo = Integer.parseInt(Env.getContext(ctx, WindowNo, "_QUICK_ENTRY_CALLER_WINDOW_"));
-			
+
 			String docSOTrx = Env.getContext(ctx, parent_windowNo, "IsSOTrx", false);
-			
+
 			if (!Util.isEmpty(docSOTrx)) {
 				boolean isSOTrx = "Y".equals(docSOTrx);
-				mTab.setValue(MBPartner.COLUMNNAME_IsCustomer, isSOTrx);
-				mTab.setValue(MBPartner.COLUMNNAME_IsVendor, !isSOTrx);
+				// set _ParentIsSOTrx_ used in DisplayLogic and ReadOnlyLogic of C_BPartner.IsCustomer and IsVendor
+				Env.setContext(ctx, WindowNo, "_ParentIsSOTrx_", isSOTrx);
+				Env.setContext(ctx, WindowNo, mTab.getTabNo(), "_ParentIsSOTrx_", isSOTrx);
+				if (value == null || ((Integer) value) == 0) { // new record
+					mTab.setValue(MBPartner.COLUMNNAME_IsCustomer, isSOTrx);
+					mTab.setValue(MBPartner.COLUMNNAME_IsVendor, !isSOTrx);
+				}
 			}
 		}
 		return null;

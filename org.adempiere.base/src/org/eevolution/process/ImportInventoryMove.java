@@ -54,6 +54,7 @@ import org.eevolution.model.X_I_Movement;
  * 	@version 	$Id: ImportInventoryMovement.java,v 1.0
  */
 
+@org.adempiere.base.annotation.Process
 public class ImportInventoryMove extends SvrProcess
 {
 

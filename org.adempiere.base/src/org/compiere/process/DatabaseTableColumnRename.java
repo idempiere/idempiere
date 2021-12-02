@@ -34,6 +34,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+@org.adempiere.base.annotation.Process
 public class DatabaseTableColumnRename extends SvrProcess {
 
 	// New Element

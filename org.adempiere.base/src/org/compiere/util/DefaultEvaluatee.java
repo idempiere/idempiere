@@ -135,7 +135,15 @@ public class DefaultEvaluatee implements Evaluatee {
 		{
 			po = s_ReferenceCache.get(key);
 			if (po != null && po.get_ID() == id)
-				refValue = po.get_ValueAsString(foreignColumn);
+			{
+				Object value = po.get_Value(foreignColumn);
+				if (value == null)
+					refValue = "";
+				else if (value instanceof Boolean)
+					refValue = (Boolean)value ? "Y" : "N";
+				else
+					refValue = value.toString();
+			}
 			else
 				po = null;
 		}
@@ -145,7 +153,13 @@ public class DefaultEvaluatee implements Evaluatee {
 			if (po != null && po.get_ID() == id)
 			{
 				s_ReferenceCache.put(key, po);
-				refValue = po.get_ValueAsString(foreignColumn);
+				Object value = po.get_Value(foreignColumn);
+				if (value == null)
+					refValue = "";
+				else if (value instanceof Boolean)
+					refValue = (Boolean)value ? "Y" : "N";
+				else
+					refValue = value.toString();
 			}						 						
 		}
 		return refValue;

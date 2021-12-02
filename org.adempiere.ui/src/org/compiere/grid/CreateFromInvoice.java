@@ -103,9 +103,9 @@ public abstract class CreateFromInvoice extends CreateFrom
 				sql.append(" LEFT OUTER JOIN M_MatchInv mi ON (sl.M_InOutLine_ID=mi.M_InOutLine_ID) "
 					+ " JOIN M_InOut s2 ON (sl.M_InOut_ID=s2.M_InOut_ID) "
 					+ " WHERE s2.C_BPartner_ID=? AND s2.IsSOTrx=? AND s2.DocStatus IN ('CL','CO') "
-					+ " GROUP BY sl.M_InOut_ID,sl.MovementQty,mi.M_InOutLine_ID"
-					+ " HAVING (sl.MovementQty<>SUM(mi.Qty) AND mi.M_InOutLine_ID IS NOT NULL)"
-					+ " OR mi.M_InOutLine_ID IS NULL ");
+					+ " GROUP BY sl.M_InOut_ID,sl.MovementQty,s2.MovementType,mi.M_InOutLine_ID"
+					+ " HAVING (sl.MovementQty <> SUM(mi.Qty) * CASE WHEN s2.MovementType = 'V-' THEN -1 ELSE 1 END"
+					+ " AND mi.M_InOutLine_ID IS NOT NULL) OR mi.M_InOutLine_ID IS NULL ");
 			else
 				sql.append(" INNER JOIN M_InOut s2 ON (sl.M_InOut_ID=s2.M_InOut_ID)"
 					+ " LEFT JOIN C_InvoiceLine il ON sl.M_InOutLine_ID = il.M_InOutLine_ID"
@@ -150,10 +150,10 @@ public abstract class CreateFromInvoice extends CreateFrom
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 
 		String sqlStmt = "SELECT r.M_RMA_ID, r.DocumentNo || '-' || r.Amt from M_RMA r "
+				+ "INNER JOIN M_RMALine l ON (l.M_RMA_ID = r.M_RMA_ID) "
 				+ "WHERE ISSOTRX='N' AND r.DocStatus in ('CO', 'CL') "
 				+ "AND r.C_BPartner_ID=? "
-				+ "AND NOT EXISTS (SELECT * FROM C_Invoice inv "
-				+ "WHERE inv.M_RMA_ID=r.M_RMA_ID AND inv.DocStatus IN ('CO', 'CL'))";
+				+ "AND COALESCE(l.QtyInvoiced,0) < l.Qty ";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -195,7 +195,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT ");	//	QtyEntered
 		if(!isSOTrx)
-			sql.append("l.MovementQty-SUM(COALESCE(mi.Qty, 0)),");
+			sql.append("l.Movementqty-SUM(COALESCE(mi.Qty, 0))*CASE WHEN io.MovementType = 'V-' THEN -1 ELSE 1 END,");
 		else
 			sql.append("l.MovementQty-SUM(COALESCE(il.QtyInvoiced,0)),");
 		sql.append(" l.QtyEntered/l.MovementQty,"
@@ -221,7 +221,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 			.append(" WHERE l.M_InOut_ID=? AND l.MovementQty<>0 ")
 			.append("GROUP BY l.MovementQty, l.QtyEntered/l.MovementQty, "
 				+ "l.C_UOM_ID, COALESCE(uom.UOMSymbol, uom.Name), "
-				+ "l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line, l.C_OrderLine_ID ");
+				+ "l.M_Product_ID, p.Name, po.VendorProductNo, l.M_InOutLine_ID, l.Line, l.C_OrderLine_ID, io.MovementType ");
 		if(!isSOTrx)
 			sql.append(" HAVING l.MovementQty-SUM(COALESCE(mi.Qty, 0)) <>0");
 		else
@@ -527,7 +527,8 @@ public abstract class CreateFromInvoice extends CreateFrom
 						for (int j = 0; j < lines.length; j++)
 						{
 							MInOutLine line = lines[j];
-							if (rmaLine.getQty().compareTo(QtyEntered) == 0)
+							BigDecimal alreadyInvoiced = rmaLine.getQtyInvoiced() != null ? rmaLine.getQtyInvoiced() : BigDecimal.ZERO;
+							if (rmaLine.getQty().subtract(alreadyInvoiced).compareTo(QtyEntered) >= 0)
 							{
 								inoutLine = line;
 								M_InOutLine_ID = inoutLine.getM_InOutLine_ID();

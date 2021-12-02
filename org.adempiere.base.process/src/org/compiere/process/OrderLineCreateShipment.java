@@ -33,6 +33,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: OrderLineCreateShipment.java,v 1.1 2007/07/23 05:34:35 mfuggle Exp $
  */
+@org.adempiere.base.annotation.Process
 public class OrderLineCreateShipment extends SvrProcess
 {
 	/**	Shipment					*/

@@ -31,6 +31,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
+@org.adempiere.base.annotation.Process
 public class GeneratePeriodicCashPlanLines  extends SvrProcess {
 
 	private int p_C_Project_ID = 0;

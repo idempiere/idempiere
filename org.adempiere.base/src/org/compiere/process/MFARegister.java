@@ -39,6 +39,7 @@ import org.compiere.util.Msg;
  *	IDEMPIERE-4782
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
+@org.adempiere.base.annotation.Process
 public class MFARegister extends SvrProcess {
 
 	/* MFA Method */

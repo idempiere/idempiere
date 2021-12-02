@@ -168,7 +168,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(delivery, DocAction.ACTION_Complete);
 		delivery.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, delivery.getDocStatus());
 		
 		if (!delivery.isPosted()) {

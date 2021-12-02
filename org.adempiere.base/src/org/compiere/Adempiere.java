@@ -524,10 +524,6 @@ public final class Adempiere
 		log = CLogger.getCLogger(Adempiere.class);
 		//	Greeting
 		if (log.isLoggable(Level.INFO)) log.info(getSummaryAscii());
-	//	log.info(getAdempiereHome() + " - " + getJavaInfo() + " - " + getOSInfo());
-
-		//  Load System environment
-	//	EnvLoader.load(Ini.ENV_PREFIX);
 
 		//  System properties
 		Ini.loadProperties (false);
@@ -588,24 +584,26 @@ public final class Adempiere
 		}
 	}
 
-	private static void createThreadPool() {
-		int max = Runtime.getRuntime().availableProcessors() * 20;
-		int defaultMax = max;
-		Properties properties = Ini.getProperties();
-		String maxSize = properties.getProperty("MaxThreadPoolSize");
-		if (maxSize != null) {
-			try {
-				max = Integer.parseInt(maxSize);
-			} catch (Exception e) {}
+	private static synchronized void createThreadPool() {
+		if (threadPoolExecutor == null) {
+			int max = Runtime.getRuntime().availableProcessors() * 20;
+			int defaultMax = max;
+			Properties properties = Ini.getProperties();
+			String maxSize = properties.getProperty("MaxThreadPoolSize");
+			if (maxSize != null) {
+				try {
+					max = Integer.parseInt(maxSize);
+				} catch (Exception e) {}
+			}
+			if (max <= 0) {
+				max = defaultMax;
+			}
+			
+			// start thread pool
+			threadPoolExecutor = new ScheduledThreadPoolExecutor(max);		
+			
+			Trx.startTrxMonitor();
 		}
-		if (max <= 0) {
-			max = defaultMax;
-		}
-		
-		// start thread pool
-		threadPoolExecutor = new ScheduledThreadPoolExecutor(max);		
-		
-		Trx.startTrxMonitor();
 	}
 
 	/**
@@ -694,11 +692,18 @@ public final class Adempiere
 	public static synchronized void stop() {
 		if (threadPoolExecutor != null) {
 			threadPoolExecutor.shutdown();
+			threadPoolExecutor = null;
 		}
 		log = null;
 	}
 	
-	public static ScheduledThreadPoolExecutor getThreadPoolExecutor() {
+	/**
+	 * 
+	 * @return {@link ScheduledThreadPoolExecutor}
+	 */
+	public static synchronized ScheduledThreadPoolExecutor getThreadPoolExecutor() {
+		if (threadPoolExecutor == null)
+			createThreadPool();
 		return threadPoolExecutor;
 	}
 	

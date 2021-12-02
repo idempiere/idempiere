@@ -29,6 +29,7 @@ import org.compiere.model.I_AD_Field;
 import org.compiere.model.MField;
 import org.compiere.model.MTab;
 import org.compiere.model.MUserDefField;
+import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -110,6 +111,8 @@ public class TabEditor
 					gridField.getVO().XPosition = field.getXPosition();
 					gridField.getVO().ColumnSpan = field.getColumnSpan();
 					gridField.getVO().IsDisplayed = field.isDisplayed();
+					gridField.getVO().FieldGroup = getFieldGroup(field);
+					gridField.getVO().FieldGroupType = getFieldGroupType(field);
 				} 
 			}
 			
@@ -447,5 +450,23 @@ public class TabEditor
 			}
 		}
 	}
- 
+
+	/** Return the name of the group field of the field */
+	public String getFieldGroup(MField field) {
+		if (field.getAD_FieldGroup_ID() > 0) {
+    		if (isBaseLang) 
+				return field.getAD_FieldGroup().getName();
+    		else
+				return ((X_AD_FieldGroup) field.getAD_FieldGroup()).get_Translation(X_AD_FieldGroup.COLUMNNAME_Name);
+		}
+		return "";
+	}
+
+	/** Return the type of the group field of the field */
+	public String getFieldGroupType(MField field) {
+		if (field.getAD_FieldGroup_ID() > 0)
+			return field.getAD_FieldGroup().getFieldGroupType();
+		return "";
+	}
+	
 } // TabEditor

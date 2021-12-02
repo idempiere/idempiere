@@ -21,7 +21,10 @@ import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MClient;
@@ -484,14 +487,23 @@ public class Match
 		{
 			//	Update Order Line
 			MOrderLine oLine = new MOrderLine(Env.getCtx(), Line_ID, trxName);
+			BigDecimal storageReservationToUpdate = null;
 			if (oLine.get_ID() != 0)	//	other in MInOut.completeIt
 			{
+				storageReservationToUpdate = oLine.getQtyReserved();
 				oLine.setQtyReserved(oLine.getQtyReserved().subtract(qty));
+				if (oLine.getQtyReserved().signum() == -1)
+					oLine.setQtyReserved(Env.ZERO);
+				else if (oLine.getQtyDelivered().compareTo(oLine.getQtyOrdered()) > 0)
+					oLine.setQtyReserved(Env.ZERO);
 				oLine.saveEx();
+				storageReservationToUpdate = storageReservationToUpdate.subtract(oLine.getQtyReserved());
 			}
 
 			// Update Shipment Line
 			BigDecimal toDeliver = oLine.getQtyOrdered().subtract(oLine.getQtyDelivered());
+			if (toDeliver.signum() < 0)
+				toDeliver = Env.ZERO;
 			if (sLine.getMovementQty().compareTo(toDeliver) <= 0)
 			{
 				sLine.setC_OrderLine_ID(Line_ID);
@@ -522,11 +534,20 @@ public class Match
 				{
 					success = true;
 					//	Correct Ordered Qty for Stocked Products (see MOrder.reserveStock / MInOut.processIt)
-					if (sLine.getProduct() != null && sLine.getProduct().isStocked())
-						success = MStorageReservation.add (Env.getCtx(), sLine.getM_Warehouse_ID(),
-							sLine.getM_Product_ID(),
-							sLine.getM_AttributeSetInstance_ID(),
-							qty.negate(), false, trxName);
+					if (oLine.get_ID() > 0 && oLine.getM_Product_ID() > 0 && oLine.getProduct().isStocked() && storageReservationToUpdate != null) {
+						IReservationTracer tracer = null;
+						IReservationTracerFactory factory = Core.getReservationTracerFactory();
+						if (factory != null) {
+							tracer = factory.newTracer(sLine.getParent().getC_DocType_ID(), sLine.getParent().getDocumentNo(), sLine.getLine(), 
+									sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+									oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
+									trxName);
+						}
+						success = MStorageReservation.add (Env.getCtx(), oLine.getM_Warehouse_ID(),
+							oLine.getM_Product_ID(),
+							oLine.getM_AttributeSetInstance_ID(),
+							storageReservationToUpdate.negate(), oLine.getParent().isSOTrx(), trxName, tracer);
+					}
 				}
 			}
 			else

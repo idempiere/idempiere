@@ -62,6 +62,7 @@ public class MIndexColumn extends X_AD_IndexColumn {
 		setAD_TableIndex_ID(parent.getAD_TableIndex_ID());
 		setAD_Column_ID(column.getAD_Column_ID());
 		setSeqNo(seqNo);
+		setEntityType(parent.getEntityType());
 	}
 	
 	/**

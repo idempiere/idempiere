@@ -26,6 +26,8 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -43,8 +45,13 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
+import org.compiere.model.MStorageReservationLog;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CacheMgt;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
@@ -286,10 +293,11 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
-		assertEquals(0, line1.getQtyReserved().compareTo(MINUS_THREE));
+		// IDEMPIERE-5039 - when reservations go negative they are changed to zero
+		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
 		newQtyOrdered = getQtyOrdered(ctx, PRODUCT_MULCH, trxName);
-		assertEquals(0, qtyOrderedOriginal.add(MINUS_THREE).compareTo(newQtyOrdered));
+		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 
 		// create a new material receipt for the -3 reversed
 		MInOut receipt2 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
@@ -419,4 +427,164 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		}
 	}
 
+	@Test
+	public void testQtyOrderedLog() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, BP_PATIO));
+		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, PRODUCT_WEEDER));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+		Query query = new Query(Env.getCtx(), MStorageReservationLog.Table_Name, "M_Product_ID=? AND IsSOTrx='N' AND M_Warehouse_ID=?", getTrxName());
+		MStorageReservationLog log = query.setOrderBy(MStorageReservationLog.COLUMNNAME_M_StorageReservationLog_ID+" Desc")
+				.setParameters(PRODUCT_WEEDER, line1.getM_Warehouse_ID()).first();
+		assertNotNull(log, "MStorageReservationLog not created after completion of purchase order");
+		assertTrue(log.getDeltaQty().intValue() == 1, "Delta quantity of MStorageReservationLog != 1 ("+log.getDeltaQty().toPlainString()+")");
+		MStorageReservation ordered = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_WEEDER, 0, false, getTrxName());
+		assertTrue(log.getNewQty().equals(ordered.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
+		
+		MInOut receipt = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.saveEx();
+
+		MInOutLine receiptLine1 = new MInOutLine(receipt);
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
+		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		receipt.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		log = query.first();
+		assertNotNull(log, "MStorageReservationLog not created after completion of material receipt");
+		assertTrue(log.getDeltaQty().intValue() == -1, "Delta quantity of MStorageReservationLog != -1 ("+log.getDeltaQty().toPlainString()+")");
+		ordered = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_WEEDER, 0, false, getTrxName());
+		assertTrue(log.getNewQty().equals(ordered.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
+	}
+	
+	@Test
+	public void testQtyOverReceipt() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		
+		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?", 
+				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+		CacheMgt.get().reset();
+
+		BigDecimal initialQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+		try {			
+			MOrder order = new MOrder(ctx, 0, trxName);
+			order.setBPartner(MBPartner.get(ctx, BP_PATIO));
+			order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(USER_GARDENADMIN);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.saveEx();
+	
+			MOrderLine line1 = new MOrderLine(order);
+			line1.setLine(10);
+			line1.setProduct(MProduct.get(ctx, PRODUCT_MULCH));
+			line1.setQty(new BigDecimal("1"));
+			line1.setDatePromised(today);
+			line1.saveEx();
+	
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
+			line1.load(trxName);
+			assertEquals(1, line1.getQtyReserved().intValue(), "Wrong Order line qty reserved value");
+			BigDecimal newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue()+1, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
+	
+			MInOut receipt1 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+			receipt1.setDocStatus(DocAction.STATUS_Drafted);
+			receipt1.setDocAction(DocAction.ACTION_Complete);
+			receipt1.saveEx();
+	
+			MInOutLine receiptLine1 = new MInOutLine(receipt1);
+			receiptLine1.setOrderLine(line1, 0, new BigDecimal("2"));
+			receiptLine1.setQty(new BigDecimal("2"));
+			receiptLine1.saveEx();
+	
+			info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			receipt1.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus(), "Material receipt not completed");
+	
+			line1.load(trxName);
+			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
+	
+			// reactivate the purchase order
+			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_ReActivate);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(trxName);
+			assertEquals(DocAction.STATUS_InProgress, order.getDocStatus(), "Order not reactivated");
+	
+			// change the line quantity to 2
+			line1.load(trxName);
+			line1.setQty(new BigDecimal("2"));
+			line1.saveEx();
+	
+			// complete the order again
+			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
+			line1.load(trxName);
+			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
+			assertEquals(2, line1.getQtyOrdered().intValue(), "Wrong order line qty ordered value");
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
+	
+			//reverse MR
+			receiptLine1.load(trxName);
+			assertEquals(2, receiptLine1.getMovementQty().intValue(), "Wrong receipt line movement qty value");
+			receipt1.load(trxName);
+			receipt1.getLines(true);
+			info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Reverse_Accrual);
+			assertFalse(info.isError(), info.getSummary());
+			receipt1.load(trxName);
+			assertEquals(DocAction.STATUS_Reversed, receipt1.getDocStatus(), "Material receipt not reversed");
+			line1.load(trxName);
+			assertEquals(2, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
+			assertEquals(0, line1.getQtyDelivered().intValue(), "Wrong order line qty delivered value");
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), PRODUCT_MULCH, getTrxName());
+			assertEquals(initialQtyOrdered.intValue()+2, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
+		} finally {
+			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?", 
+					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+			CacheMgt.get().reset();
+		}
+	}
 }

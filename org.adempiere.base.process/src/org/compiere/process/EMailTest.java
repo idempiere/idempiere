@@ -37,6 +37,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: EMailTest.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class EMailTest extends SvrProcess
 {
 	/** Client Parameter			*/

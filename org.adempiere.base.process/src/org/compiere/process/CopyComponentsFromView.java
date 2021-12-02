@@ -40,6 +40,7 @@ import org.compiere.util.Msg;
  *  @author Diego Ruiz - Bx Service GmbH
  *  @version $Id: CopyComponentsFromView
  */
+@org.adempiere.base.annotation.Process
 public class CopyComponentsFromView extends SvrProcess {
 	
 	/** Target Table		*/

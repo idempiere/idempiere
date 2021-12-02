@@ -113,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6119615577891555600L;
+	private static final long serialVersionUID = -2091725732178841608L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -1078,11 +1078,19 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		return false;
 	}
-
+	
 	/**
 	 * refresh current row of parent tabs
 	 */
 	public void refreshParentTabs() {
+		refreshParentTabs(false);
+	}
+
+
+	/**
+	 * refresh current row of parent tabs
+	 */
+	public void refreshParentTabs(boolean fireParentEvent) {
 		if (isDetail()) {
 			// get parent tab
 			// the parent tab is the first tab above with level = this_tab_level-1
@@ -1091,7 +1099,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				GridTab parentTab = m_window.getTab(i);
 				if (parentTab.m_vo.TabLevel == level-1) {
 					// this is parent tab
-					parentTab.dataRefresh(false);
+					parentTab.dataRefresh(fireParentEvent);
 					// search for the next parent
 					if (parentTab.isDetail()) {
 						level = parentTab.m_vo.TabLevel;

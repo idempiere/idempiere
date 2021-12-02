@@ -49,7 +49,7 @@ public final class FactUtil
 		int C_Currency_ID, BigDecimal amt, boolean signSensitive)
 	{
 		FactLine[] lines = new FactLine[2];
-		//newTrxIndex();
+
 		if (signSensitive) {
 			lines[0] = fact.createLine(docLine, account_DR, C_Currency_ID, amt);
 			lines[1] = fact.createLine(docLine, account_CR, C_Currency_ID, amt.negate());
@@ -58,7 +58,6 @@ public final class FactUtil
 			lines[0] = fact.createLine(docLine, account_DR, C_Currency_ID, amt, null);
 			lines[1] = fact.createLine(docLine, account_CR, C_Currency_ID, null, amt);
 		}
-		//newTrxIndex();
 		//
 		return lines;
 	}   //  createLine

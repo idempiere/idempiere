@@ -42,7 +42,10 @@ public abstract class AbstractModelFactory implements IModelFactory {
 	 */
 	@Override
 	public PO getPO(String tableName, int Record_ID, String trxName) {
-		Class<?> clazz = getClass(tableName);
+		return getPO(getClass(tableName), tableName, Record_ID, trxName);
+	}
+
+	public static PO getPO(Class<?> clazz, String tableName, int Record_ID, String trxName) {
 		if (clazz == null)
 		{
 			return null;
@@ -97,7 +100,10 @@ public abstract class AbstractModelFactory implements IModelFactory {
 	 */
 	@Override
 	public PO getPO(String tableName, ResultSet rs, String trxName) {
-		Class<?> clazz = getClass(tableName);
+		return getPO(getClass(tableName), tableName, rs, trxName);
+	}
+
+	public static PO getPO(Class<?> clazz, String tableName, ResultSet rs, String trxName) {
 		if (clazz == null)
 		{
 			return null;

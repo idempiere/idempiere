@@ -24,6 +24,7 @@ package org.compiere.process;
  *  @author Jorg Janke
  *  @version $Id: SystemValidate.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class SystemValidate extends SvrProcess
 {
 	/**

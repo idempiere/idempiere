@@ -85,6 +85,7 @@ import static org.adempiere.webui.ClientInfo.*;
  * 
  * Contributor : Fabian Aguilar - OFBConsulting - Multiallocation
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VAllocation")
 public class WAllocation extends Allocation
 	implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener
 {

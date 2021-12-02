@@ -310,7 +310,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	@Override
 	public void updateUI() {
 		refresh();
-		bxRecentItems.invalidate();
+		if (bxRecentItems != null)
+			bxRecentItems.invalidate();
 		updateDesktopReference();
 		
 	}
@@ -324,7 +325,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 				desktop.get().removeListener(listener);
 			
 			desktop = new WeakReference<Desktop>(getDesktop());
-			desktop.get().addListener(listener);
+			if (desktop != null && desktop.get() != null)
+				desktop.get().addListener(listener);
 		}
 	}
 

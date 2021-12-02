@@ -30,6 +30,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
+@org.adempiere.base.annotation.Process
 public class DatabaseViewValidate extends SvrProcess {
 
 	private int		p_AD_Table_ID = 0; 
@@ -98,7 +99,11 @@ public class DatabaseViewValidate extends SvrProcess {
 		{
 			MViewComponent vc = m_vcs[i];
 			if (i > 0)
+			{
 				sb.append(" UNION ");
+				if (vc.isUnionAll())
+					sb.append(" ALL ");
+			}
 			else
 			{
 				vCols = vc.getColumns(true);

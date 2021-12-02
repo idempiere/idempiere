@@ -210,7 +210,7 @@ public class ProductCost
 			ResultSet rs = null;
 			try
 			{
-				pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql, m_trxName);
 				pstmt.setInt(1, m_M_Product_ID);
 				pstmt.setInt(2, as.getC_AcctSchema_ID());
 				rs = pstmt.executeQuery();
@@ -268,7 +268,7 @@ public class ProductCost
 			ResultSet rs = null;
 			try
 			{
-				pstmt = DB.prepareStatement(sql, null);
+				pstmt = DB.prepareStatement(sql, m_trxName);
 				pstmt.setInt(1, as.getC_AcctSchema_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())

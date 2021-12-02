@@ -68,6 +68,7 @@ import org.zkoss.zul.Vbox;
  * @author Low Heng Sin
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.wf.WFPanel")
 public class WFEditor extends ADForm {
 	/**
 	 * 

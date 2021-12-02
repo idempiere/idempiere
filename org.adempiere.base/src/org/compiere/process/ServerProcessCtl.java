@@ -55,6 +55,29 @@ public class ServerProcessCtl implements Runnable {
 	 */
 	public static ServerProcessCtl process (ProcessInfo pi, Trx trx)
 	{
+		return process(pi, trx, true);
+	}
+	
+	/**
+	 *	Process Control
+	 *  <code>
+	 *	- Get Instance ID
+	 *	- Get Parameters
+	 *	- execute (lock - start process - unlock)
+	 *  </code>
+	 *  Creates a ProcessCtl instance, which calls
+	 *  lockUI and unlockUI if parent is a ASyncProcess
+	 *  <br>
+	 *	Called from APanel.cmd_print, APanel.actionButton and
+	 *  VPaySelect.cmd_generate
+	 *
+	 *  @param pi ProcessInfo process info
+	 *  @param trx Transaction
+	 *  @param managedTrxForJavaProcess
+	 *  @return worker started ProcessCtl instance or null for workflow
+	 */
+	public static ServerProcessCtl process (ProcessInfo pi, Trx trx, boolean managedTrxForJavaProcess)
+	{
 		if (log.isLoggable(Level.FINE)) log.fine("ServerProcess - " + pi);
 
 		MPInstance instance = null; 
@@ -93,6 +116,7 @@ public class ServerProcessCtl implements Runnable {
 
 		//	execute
 		ServerProcessCtl worker = new ServerProcessCtl(pi, trx);
+		worker.setManagedTrxForJavaProcess(managedTrxForJavaProcess);
 		worker.run();
 		
 		return worker;

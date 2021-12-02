@@ -7,6 +7,7 @@ import org.compiere.model.MPaymentTransaction;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+@org.adempiere.base.annotation.Process
 public class VoidOnlineAuthorizationPaymentTransaction extends SvrProcess {
 
 	protected void prepare()

@@ -17,6 +17,7 @@ import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
+@org.adempiere.base.annotation.Process
 public class DatabaseViewDrop extends SvrProcess {
 
 	private int		p_AD_Table_ID = 0; 

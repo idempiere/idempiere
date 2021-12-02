@@ -56,6 +56,7 @@ import org.compiere.util.Trx;
  *  
  *  IMAPHost format: {imap|imaps}://[IMAPHostURL]:[Port] example: imaps://imap.gmail.com:993
  */
+@org.adempiere.base.annotation.Process
 public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHandle
 {
 	protected String	p_IMAPHost = null;

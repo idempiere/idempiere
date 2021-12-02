@@ -28,7 +28,8 @@ Require-Bundle: org.adempiere.base;bundle-version="9.0.0",
  org.adempiere.base.process;bundle-version="9.0.0",
  org.adempiere.payment.processor;bundle-version="9.0.0",
  org.compiere.db.postgresql.provider;bundle-version="9.0.0",
- org.idempiere.webservices;bundle-version="9.0.0"
+ org.idempiere.webservices;bundle-version="9.0.0",
+ org.adempiere.ui.zk;bundle-version="9.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.idempiere.test.TestActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -28,10 +28,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -759,8 +762,6 @@ public class MInOut extends X_M_InOut implements DocAction
 				}
 			}
 			
-			line.setQtyOverReceipt(fromLine.getQtyOverReceipt());
-			
 			//
 			line.setProcessed(false);
 			if (line.save(get_TrxName()))
@@ -1191,7 +1192,7 @@ public class MInOut extends X_M_InOut implements DocAction
 			//
 			if (line.getM_AttributeSetInstance_ID() != 0)
 				continue;
-			if (product != null && product.isASIMandatory(isSOTrx()))
+			if (product != null && product.isASIMandatoryFor(MAttributeSet.MANDATORYTYPE_WhenShipping,isSOTrx()))
 			{
 				if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInOutLine.Table_ID, isSOTrx())) {
 					BigDecimal qtyDiff = line.getMovementQty();
@@ -1355,8 +1356,6 @@ public class MInOut extends X_M_InOut implements DocAction
 					log.fine("Material Transaction");
 					MTransaction mtrx = null;
 					
-					//
-					BigDecimal overReceipt = BigDecimal.ZERO;
 					if (!isReversal()) 
 					{
 						if (oLine != null) 
@@ -1365,21 +1364,25 @@ public class MInOut extends X_M_InOut implements DocAction
 									.subtract(oLine.getQtyDelivered());
 							if (toDelivered.signum() < 0) // IDEMPIERE-2889
 								toDelivered = Env.ZERO;
-							if (sLine.getMovementQty().compareTo(toDelivered) > 0)
-								overReceipt = sLine.getMovementQty().subtract(
-										toDelivered);
-							if (overReceipt.signum() != 0) 
-							{
-								sLine.setQtyOverReceipt(overReceipt);
-								sLine.saveEx();
-							}
 						}
 					} 
-					else 
+					
+					BigDecimal storageReservationToUpdate = sLine.getMovementQty();
+					if (oLine != null)
 					{
-						overReceipt = sLine.getQtyOverReceipt();
+						if (!isReversal()) 
+						{
+							if (storageReservationToUpdate.compareTo(oLine.getQtyReserved()) > 0) 
+								storageReservationToUpdate = oLine.getQtyReserved();
+						}
+						else
+						{
+							BigDecimal tmp = storageReservationToUpdate.negate().add(oLine.getQtyReserved());
+							if (tmp.compareTo(oLine.getQtyOrdered()) > 0)
+								storageReservationToUpdate = oLine.getQtyOrdered().subtract(oLine.getQtyReserved());
+						}
 					}
-					BigDecimal orderedQtyToUpdate = sLine.getMovementQty().subtract(overReceipt);
+					
 					//
 					if (sLine.getM_AttributeSetInstance_ID() == 0)
 					{
@@ -1418,16 +1421,25 @@ public class MInOut extends X_M_InOut implements DocAction
 							}
 						}
 						
-						if (oLine!=null && mtrx!=null && oLine.getQtyOrdered().signum() >= 0)
+						if (oLine!=null && mtrx!=null && 
+						   ((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))
 						{					
-							if (sLine.getC_OrderLine_ID() != 0)
+							if (sLine.getC_OrderLine_ID() != 0 && oLine.getM_Product_ID() > 0)
 							{
+								IReservationTracer tracer = null;
+								IReservationTracerFactory factory = Core.getReservationTracerFactory();
+								if (factory != null) {
+									tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
+											sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+											oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
+											get_TrxName());
+								}
 								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
-										sLine.getM_Product_ID(),
+										oLine.getM_Product_ID(),
 										oLine.getM_AttributeSetInstance_ID(),
-										orderedQtyToUpdate.negate(),
+										storageReservationToUpdate.negate(),
 										isSOTrx(),
-										get_TrxName()))
+										get_TrxName(), tracer))
 								{
 									String lastError = CLogger.retrieveErrorString("");
 									m_processMsg = "Cannot correct Inventory " + (isSOTrx()? "Reserved" : "Ordered") + " (MA) - [" + product.getValue() + "] - " + lastError;
@@ -1499,12 +1511,21 @@ public class MInOut extends X_M_InOut implements DocAction
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-						if (oLine!=null && oLine.getQtyOrdered().signum() >= 0)  
+						if (oLine!=null && oLine.getM_Product_ID() > 0 &&
+							((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))  
 						{
+							IReservationTracer tracer = null;
+							IReservationTracerFactory factory = Core.getReservationTracerFactory();
+							if (factory != null) {
+								tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
+										sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+										oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
+										get_TrxName());
+							}
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
-									sLine.getM_Product_ID(),
+									oLine.getM_Product_ID(),
 									oLine.getM_AttributeSetInstance_ID(),
-									orderedQtyToUpdate.negate(), isSOTrx(), get_TrxName()))
+									storageReservationToUpdate.negate(), isSOTrx(), get_TrxName(), tracer))
 							{
 								m_processMsg = "Cannot correct Inventory Reserved " + (isSOTrx()? "Reserved [" :"Ordered [") + product.getValue() + "]";
 								return DocAction.STATUS_Invalid;
@@ -1530,7 +1551,7 @@ public class MInOut extends X_M_InOut implements DocAction
 				{
 					if (oLine.getQtyOrdered().signum() >= 0)
 					{
-						oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty().subtract(sLine.getQtyOverReceipt())));
+						oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty()));
 
 						if (oLine.getQtyReserved().signum() == -1)
 							oLine.setQtyReserved(Env.ZERO);
@@ -2293,7 +2314,6 @@ public class MInOut extends X_M_InOut implements DocAction
 			MInOutLine rLine = rLines[i];
 			rLine.setQtyEntered(rLine.getQtyEntered().negate());
 			rLine.setMovementQty(rLine.getMovementQty().negate());
-			rLine.setQtyOverReceipt(rLine.getQtyOverReceipt().negate());
 			rLine.setM_AttributeSetInstance_ID(sLines[i].getM_AttributeSetInstance_ID());
 			// Goodwill: store original (voided/reversed) document line
 			rLine.setReversalLine_ID(sLines[i].getM_InOutLine_ID());
