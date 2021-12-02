@@ -191,7 +191,7 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * open popup window relative to the ref component
+	 * open embedded window relative to the ref component
 	 * @param ref
 	 * @param window
 	 * @param position
@@ -207,7 +207,26 @@ public final class LayoutUtils {
 			.append("');");
 		window.setVisible(true);
 		window.setMode(Mode.EMBEDDED);
-		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
+		Clients.response("_openEmbeddedWindow_", new AuScript(window, script.toString()));
+	}
+	
+	/**
+	 * open highlighted window relative to the ref component
+	 * @param ref
+	 * @param window
+	 * @param position
+	 */
+	public static void openHighlightedWindow(Component ref, Window window, String position) {
+		StringBuilder script = new StringBuilder();
+		script.append("idempiere.show_popup_window('#")
+			.append(ref.getUuid())
+			.append("','#")
+			.append(window.getUuid())
+			.append("','")
+			.append(position)
+			.append("');");
+		window.setMode(Mode.HIGHLIGHTED);
+		Clients.response("_openHighlightedWindow_", new AuScript(window, script.toString()));
 	}
 	
 	/**
@@ -508,5 +527,20 @@ public final class LayoutUtils {
 				popup.detach();
 			}
 		});
+	}
+
+	/**
+	 * set target same width as ref using client side script
+	 * @param target
+	 * @param ref
+	 */
+	public static void sameWidth(HtmlBasedComponent target, HtmlBasedComponent ref) {
+		StringBuilder script = new StringBuilder()
+				.append("var t=zk.Widget.$('#").append(target.getUuid()).append("');")
+				.append("var r=zk.Widget.$('#").append(ref.getUuid()).append("');")
+				.append("jq(t).css({'width':").append("jq(r).width()+'px'});")
+				.append("t.setWidth(\"").append("jq(r).width()+'px'\");")
+				.append("zk.fireSized(t,0);");
+		Clients.response("_sameWidth_", new AuScript(target, script.toString()));
 	}
 }
