@@ -539,8 +539,7 @@ public final class LayoutUtils {
 				.append("var t=zk.Widget.$('#").append(target.getUuid()).append("');")
 				.append("var r=zk.Widget.$('#").append(ref.getUuid()).append("');")
 				.append("jq(t).css({'width':").append("jq(r).width()+'px'});")
-				.append("t.setWidth(\"").append("jq(r).width()+'px'\");")
-				.append("zk.fireSized(t,0);");
+				.append("t.setWidth(\"").append("jq(r).width()+'px'\");");
 		Clients.response("_sameWidth_", new AuScript(target, script.toString()));
 	}
 }
