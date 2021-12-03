@@ -511,10 +511,11 @@ public class MatchPOTest extends AbstractTestCase {
 		order.setDocAction(DocAction.ACTION_Complete);
 		order.saveEx();
 		
+		BigDecimal orderQty = new BigDecimal("1");
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
 		orderLine.setProduct(product);
-		orderLine.setQty(new BigDecimal("1"));
+		orderLine.setQty(orderQty);
 		orderLine.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
@@ -533,9 +534,9 @@ public class MatchPOTest extends AbstractTestCase {
 		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
 		
 		MInOutLine receiptLine = new MInOutLine(receipt);
-		receiptLine.setOrderLine(orderLine, M_Locator_ID, new BigDecimal("1"));
+		receiptLine.setOrderLine(orderLine, M_Locator_ID, orderQty);
 		receiptLine.setLine(10);
-		receiptLine.setQty(new BigDecimal("1"));
+		receiptLine.setQty(orderQty);
 		receiptLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
@@ -616,6 +617,63 @@ public class MatchPOTest extends AbstractTestCase {
 			}
 		}
 		assertTrue(selectedOrderRow >= 0, "Can't find not matched PO line");
+		
+		//create vendor invoice
+		MInvoice invoice = new MInvoice(order, MDocType.getOfDocBaseType(Env.getCtx(), MDocType.DOCBASETYPE_APInvoice)[0].getC_DocType_ID(), order.getDateAcct());
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+		
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setOrderLine(orderLine);
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(product);
+		invoiceLine.setQty(orderQty);
+		invoiceLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		orderLine.load(getTrxName());
+		assertEquals(invoiceLine.getQtyInvoiced().intValue(), orderLine.getQtyInvoiced().intValue(), "Unexpected order line qty invoiced");
+		matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(3, matchPOs.length, "Unexpected number of MatchPO for order line");
+		
+		fromTable.prepareTable(layout, null, null, false, null);
+		toTable.prepareTable(layout, null, null, false, null);
+		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
+		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
+		selectedRow = -1;
+		for(int i = 0; i < fromTable.getRowCount(); i++) {
+			String docNo = (String)fromTable.getValueAt(i, 1);
+			if (receipt.getDocumentNo().equals(docNo)) {
+				int matched = ((Number)fromTable.getValueAt(i, 7)).intValue();
+				assertEquals(0, matched, "Unexpected matched qty for Material Receipt line");
+				int qty = ((Number)fromTable.getValueAt(i, 6)).intValue();
+				assertEquals(receiptLine.getMovementQty().intValue(), qty, "Unexpected qty for Material Receipt line");
+				selectedRow = i;
+				break;
+			}
+		}
+		assertTrue(selectedRow >= 0, "Can't find not matched Material Receipt line");
+		fromTable.setSelectedRow(selectedRow);
+		match.cmd_searchTo(fromTable, toTable, match.getMatchTypeText(Match.MATCH_ORDER), Match.MATCH_SHIPMENT, true, true, false, false);
+		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched Order Line: " + fromTable.getRowCount());
+		selectedOrderRow = -1;
+		for(int i = 0; i < toTable.getRowCount(); i++) {
+			String docNo = (String)toTable.getValueAt(i, 1);
+			if (order.getDocumentNo().equals(docNo)) {
+				int matched = ((Number)toTable.getValueAt(i, 7)).intValue();
+				assertEquals(0, matched, "Unexpected matched qty for PO line");
+				int qty = ((Number)toTable.getValueAt(i, 6)).intValue();
+				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for PO line");
+				selectedOrderRow = i;
+				break;
+			}
+		}
+		assertTrue(selectedOrderRow >= 0, "Can't find not matched PO line");
+				
 		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedOrderRow, 0);
 		idColumn.setSelected(true);
 		match.cmd_process(fromTable, toTable, Match.MODE_NOTMATCHED, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), new BigDecimal(1));
@@ -649,10 +707,11 @@ public class MatchPOTest extends AbstractTestCase {
 		order.setDocAction(DocAction.ACTION_Complete);
 		order.saveEx();
 		
+		BigDecimal orderQty = new BigDecimal("2");
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
 		orderLine.setProduct(product);
-		orderLine.setQty(new BigDecimal("2"));
+		orderLine.setQty(orderQty);
 		orderLine.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
@@ -670,10 +729,11 @@ public class MatchPOTest extends AbstractTestCase {
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
 		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
 		
+		BigDecimal receiptQty = new BigDecimal("1");
 		MInOutLine receiptLine = new MInOutLine(receipt);
-		receiptLine.setOrderLine(orderLine, M_Locator_ID, new BigDecimal("1"));
+		receiptLine.setOrderLine(orderLine, M_Locator_ID, receiptQty);
 		receiptLine.setLine(10);
-		receiptLine.setQty(new BigDecimal("1"));
+		receiptLine.setQty(receiptQty);
 		receiptLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
@@ -754,6 +814,61 @@ public class MatchPOTest extends AbstractTestCase {
 			}
 		}
 		assertTrue(selectedOrderRow >= 0, "Can't find not matched PO line");
+		
+		//create vendor invoice
+		MInvoice invoice = new MInvoice(order, MDocType.getOfDocBaseType(Env.getCtx(), MDocType.DOCBASETYPE_APInvoice)[0].getC_DocType_ID(), order.getDateAcct());
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+		
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setOrderLine(orderLine);
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(product);
+		invoiceLine.setQty(orderQty);
+		invoiceLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		orderLine.load(getTrxName());
+		assertEquals(invoiceLine.getQtyInvoiced().intValue(), orderLine.getQtyInvoiced().intValue(), "Unexpected order line qty invoiced");
+		
+		fromTable.prepareTable(layout, null, null, false, null);
+		toTable.prepareTable(layout, null, null, false, null);
+		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
+		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
+		selectedRow = -1;
+		for(int i = 0; i < fromTable.getRowCount(); i++) {
+			String docNo = (String)fromTable.getValueAt(i, 1);
+			if (receipt.getDocumentNo().equals(docNo)) {
+				int matched = ((Number)fromTable.getValueAt(i, 7)).intValue();
+				assertEquals(0, matched, "Unexpected matched qty for Material Receipt line");
+				int qty = ((Number)fromTable.getValueAt(i, 6)).intValue();
+				assertEquals(receiptLine.getMovementQty().intValue(), qty, "Unexpected qty for Material Receipt line");
+				selectedRow = i;
+				break;
+			}
+		}
+		assertTrue(selectedRow >= 0, "Can't find not matched Material Receipt line");
+		fromTable.setSelectedRow(selectedRow);
+		match.cmd_searchTo(fromTable, toTable, match.getMatchTypeText(Match.MATCH_ORDER), Match.MATCH_SHIPMENT, true, true, false, false);
+		assertTrue(toTable.getRowCount()>0, "Unexpected number of records for not matched Order Line: " + fromTable.getRowCount());
+		selectedOrderRow = -1;
+		for(int i = 0; i < toTable.getRowCount(); i++) {
+			String docNo = (String)toTable.getValueAt(i, 1);
+			if (order.getDocumentNo().equals(docNo)) {
+				int matched = ((Number)toTable.getValueAt(i, 7)).intValue();
+				assertEquals(0, matched, "Unexpected matched qty for PO line");
+				int qty = ((Number)toTable.getValueAt(i, 6)).intValue();
+				assertEquals(orderLine.getQtyOrdered().intValue(), qty, "Unexpected qty for PO line");
+				selectedOrderRow = i;
+				break;
+			}
+		}
+		assertTrue(selectedOrderRow >= 0, "Can't find not matched PO line");
+		
 		IDColumn idColumn = (IDColumn)toTable.getValueAt(selectedOrderRow, 0);
 		idColumn.setSelected(true);
 		match.cmd_process(fromTable, toTable, Match.MODE_NOTMATCHED, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), new BigDecimal(1));
@@ -764,7 +879,7 @@ public class MatchPOTest extends AbstractTestCase {
 		receiptLine.load(getTrxName());
 		assertEquals(orderLine.getC_OrderLine_ID(), receiptLine.getC_OrderLine_ID(), "Unexpected order line ID value for receipt line");
 		matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
-		assertEquals(3, matchPOs.length, "Unexpected number of MatchPO for order line");
+		assertEquals(4, matchPOs.length, "Unexpected number of MatchPO for order line");
 		newOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
 		assertEquals(initialOnOrdered+1, newOnOrdered, "Unexpected qty on ordered value");
 		newOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();

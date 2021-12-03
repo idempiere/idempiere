@@ -1278,6 +1278,8 @@ public class MMatchPO extends X_M_MatchPO
 			.append (",C_OrderLine_ID=").append (getC_OrderLine_ID())
 			.append (",M_InOutLine_ID=").append (getM_InOutLine_ID())
 			.append (",C_InvoiceLine_ID=").append (getC_InvoiceLine_ID())
+			.append (",Processed=").append(isProcessed())
+			.append (",Posted=").append(isPosted())
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
