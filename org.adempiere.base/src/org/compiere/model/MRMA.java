@@ -99,7 +99,7 @@ public class MRMA extends X_M_RMA implements DocAction
 		}
 		List<MRMALine> list = new Query(getCtx(), I_M_RMALine.Table_Name, "M_RMA_ID=?", get_TrxName())
 		.setParameters(getM_RMA_ID())
-		.setOrderBy(MRMALine.COLUMNNAME_Line)
+		.setOrderBy(MRMALine.COLUMNNAME_Line+","+MRMALine.COLUMNNAME_M_RMALine_ID)
 		.list();
 
 		m_lines = new MRMALine[list.size ()];

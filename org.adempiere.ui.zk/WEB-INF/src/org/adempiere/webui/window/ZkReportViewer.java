@@ -227,6 +227,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
 
 	private Center center;
+
+	private FindWindow find;
 	/**
 	 * 	Static Layout
 	 * 	@throws Exception
@@ -1513,22 +1515,30 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			bFind.setVisible(false);
 		else
 		{
-			final FindWindow find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
-            if (!find.initialize())
-            	return;
+			if (find == null) 
+			{
+				find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
+	            if (!find.initialize()) 
+	            {
+	            	find = null;
+	            	return;
+	            }
             
-            find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					if (!find.isCancel())
-		            {
-		            	m_reportEngine.setQuery(find.getQuery());
-		            	postRenderReportEvent();
-		            }
-				}
-			});
-            find.setTitle(null);
-            LayoutUtils.openPopupWindow(toolBar, find, "after_start");
+	            find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						if (!find.isCancel())
+			            {
+			            	m_reportEngine.setQuery(find.getQuery());
+			            	postRenderReportEvent();
+			            }
+					}
+				});
+	            setupFindwindow(find);	            
+			}
+			getParent().appendChild(find);			
+            LayoutUtils.openHighlightedWindow(toolBar, find, "after_start");
+            LayoutUtils.sameWidth(find, this);
 		}
 	}	//	cmd_find
 
@@ -1893,4 +1903,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		return m_reportEngine.getName();
 	}
 	
+	private void setupFindwindow(FindWindow findWindow) {
+		findWindow.setTitle(null);
+		findWindow.setBorder("none");	
+		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
+			ZKUpdateUtil.setHeight(findWindow, "100%");
+		else
+			ZKUpdateUtil.setHeight(findWindow, "60%");
+		findWindow.setSizable(false);
+		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
+	}
 }

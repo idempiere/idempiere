@@ -202,7 +202,7 @@ public class MDiscountSchema extends X_M_DiscountSchema implements ImmutablePOSu
 			return m_lines;
 		}
 		
-		String sql = "SELECT * FROM M_DiscountSchemaLine WHERE M_DiscountSchema_ID=? ORDER BY SeqNo";
+		String sql = "SELECT * FROM M_DiscountSchemaLine WHERE M_DiscountSchema_ID=? ORDER BY SeqNo,M_DiscountSchemaLine_ID";
 		ArrayList<MDiscountSchemaLine> list = new ArrayList<MDiscountSchemaLine>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

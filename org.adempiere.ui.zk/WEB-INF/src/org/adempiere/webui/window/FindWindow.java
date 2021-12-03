@@ -1057,6 +1057,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         		listTable.setSelectedIndex(0);
         	}
         });
+		if (m_gridTab == null)
+			listTable.setDisabled(true);
         
         Combobox listColumn = new Combobox();        
         listColumn.setId("listColumn"+listItem.getId());
@@ -1212,7 +1214,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	// QueryFrom
         	ValueNamePair selected = listColumn.getSelectedItem().getValue();
 	        String columnName = selected.getValue();
-	        String tableName = listTable.getSelectedItem().getValue();
+	        String tableName = listTable != null && listTable.getSelectedItem() != null ? listTable.getSelectedItem().getValue() : m_tableName;
 	        if (columnName == null || columnName == "")
 	        	return;
 	    	String value = fields.length > INDEX_VALUE ? fields[INDEX_VALUE] : "";
@@ -1317,33 +1319,33 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	operator = fields.length > INDEX_OPERATOR ? fields[INDEX_OPERATOR] : ""; 
 
 
-        	//listTable.appendItem("","" );
-	        for (int i = 0; i < tabs.length; i++)
-	        {
-	        	ValueNamePair item = tabs[i];
-	            listTable.appendItem(item.getName(), item.getValue());
-
-	            if (item.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
-	            	if(item.getValue().equals(tableName))
-		 	        {
-		 	           	listTable.setSelectedIndex(listTable.getItemCount()-1);
-		 	        	selected = true;		 	        	
-		 	        }
-
-	            } else {
-	 	            if (item.getValue().equals(tableName))
-	 	        	{
-	 	            	GridTab mtab = m_windowPanel.getGridWindow().getGridTab(tableName);
-	 	            	listTable.setSelectedIndex(listTable.getItemCount()-1);
-	 	        		selected = true;
-	 	        		findFields=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID()).getFields();
-	 	        		m_gridTab=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID());
-	 	        	}
-
-
-	            }	           
-	        }
-	        if(!selected) listTable.setSelectedIndex(0);
+        	if (m_windowPanel != null)
+        	{	
+		        for (int i = 0; i < tabs.length; i++)
+		        {
+		        	ValueNamePair item = tabs[i];
+		            listTable.appendItem(item.getName(), item.getValue());
+	
+		            if (item.getValue().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
+		            	if(item.getValue().equals(tableName))
+			 	        {
+			 	           	listTable.setSelectedIndex(listTable.getItemCount()-1);
+			 	        	selected = true;		 	        	
+			 	        }
+	
+		            } else {
+		 	            if (item.getValue().equals(tableName))
+		 	        	{
+		 	            	GridTab mtab = m_windowPanel.getGridWindow().getGridTab(tableName);
+		 	            	listTable.setSelectedIndex(listTable.getItemCount()-1);
+		 	        		selected = true;
+		 	        		findFields=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID()).getFields();
+		 	        		m_gridTab=m_windowPanel.getGridWindow().getGridTab(mtab.getAD_Tab_ID());
+		 	        	}
+		            }	           
+		        }
+		        if(!selected) listTable.setSelectedIndex(0);
+        	}
         }
         
         //  0 = Columns
@@ -1679,15 +1681,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                		}
 	                	}
                 	} else {
-	                	if (table != null && table.getValue().toString().length() > 0)
-	                	{
-	                		m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getValue());
-	                	} 
-	                	else
-	                	{
-	                		m_gridTab=m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
-	                	}
-	                	
+                		if (m_gridTab != null) {
+                			if (table != null && table.getValue().toString().length() > 0) {
+                				m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getValue());
+                			} else {
+                				m_gridTab=m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
+                			}
+                		}
+
 	                	if (listbox.getId().equals(listColumn.getId()))
 	                	{
 	                		Comboitem column = listColumn.getSelectedItem();
@@ -2083,16 +2084,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	        boolean isRightBracketCompositeExists = false;
 
 				if(table.getSelectedItem() != null && !table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)) {
-					if (!table.getSelectedItem().getValue().toString().isEmpty())
-					{
-						m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getSelectedItem().getValue());
-					} 
-					else
-					{
-						m_gridTab=m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
+					if (m_windowPanel != null) {
+						if (!table.getSelectedItem().getValue().toString().isEmpty())
+							m_gridTab=m_windowPanel.getGridWindow().getGridTab(table.getSelectedItem().getValue());
+						else
+							m_gridTab=m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
 					}
 				}
-				
+
 	            Combobox column = (Combobox)row.getFellow("listColumn"+row.getId());
 	            if (column == null)
 	                continue;
@@ -2104,7 +2103,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            ValueNamePair vnp = column.getSelectedItem().getValue();
 	            String ColumnName = vnp.getValue();
 	            String tableUID = table.getSelectedItem() != null ? table.getSelectedItem().getValue().toString() : "";
-	            String infoName = column.toString();
+	            String infoName = ColumnName;
 	            
 	            GridField field = null;
 				boolean isProductCategoryField = false;
@@ -2639,7 +2638,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	int referenceType = -1;
 		boolean isEncrypted = false;
     	if (columnName != null) {
-    		MTable table = MTable.get(Env.getCtx(), m_gridTab.getTableName());
+    		MTable table = null;
+    		if (m_gridTab != null)
+        		table = MTable.get(Env.getCtx(), m_gridTab.getTableName());
+    		else
+        		table = MTable.get(Env.getCtx(), m_tableName);
     		MColumn col = table.getColumn(columnName);
     		referenceType = col.getAD_Reference_ID();
     		GridField field = getTargetMField(columnName);
@@ -2800,11 +2803,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         if (columnName == null)
             return null;
-        for (int c = 0; c < m_gridTab.getFields().length; c++)
-        {
-            GridField field = m_gridTab.getFields()[c];
-            if (field != null && columnName.equals(field.getColumnName()))
-                return field;
+        if (m_gridTab == null) { // when filtering a report dialog
+            for (int c = 0; c < m_findFields.length; c++) {
+                GridField field = m_findFields[c];
+                if (field != null && columnName.equals(field.getColumnName()))
+                    return field;
+            }
+        } else {
+            for (int c = 0; c < m_gridTab.getFields().length; c++) {
+                GridField field = m_gridTab.getFields()[c];
+                if (field != null && columnName.equals(field.getColumnName()))
+                    return field;
+            }
         }
         return null;
 

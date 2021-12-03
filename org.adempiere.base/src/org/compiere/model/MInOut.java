@@ -658,7 +658,7 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 		List<MInOutLine> list = new Query(getCtx(), I_M_InOutLine.Table_Name, "M_InOut_ID=?", get_TrxName())
 		.setParameters(getM_InOut_ID())
-		.setOrderBy(MInOutLine.COLUMNNAME_Line)
+		.setOrderBy(MInOutLine.COLUMNNAME_Line+","+MInOutLine.COLUMNNAME_M_InOutLine_ID)
 		.list();
 		//
 		m_lines = new MInOutLine[list.size()];

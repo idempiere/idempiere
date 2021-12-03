@@ -50,7 +50,8 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		
 		String sql = "SELECT pl.M_ProductionLine_ID "
 			+ "FROM M_ProductionLine pl "
-			+ "WHERE pl.M_ProductionPlan_ID = ?";
+			+ "WHERE pl.M_ProductionPlan_ID = ? "
+			+ "ORDER BY pl.Line, pl.M_ProductionLine_ID ";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

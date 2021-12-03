@@ -279,7 +279,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	public MDepositBatchLine[] getLines()
 	{
 		ArrayList<MDepositBatchLine> list = new ArrayList<MDepositBatchLine>();
-		String sql = "SELECT * FROM C_DepositBatchLine WHERE C_DepositBatch_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM C_DepositBatchLine WHERE C_DepositBatch_ID=? ORDER BY Line,C_DepositBatchLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

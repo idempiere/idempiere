@@ -133,7 +133,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		final String whereClause = I_C_BankStatementLine.COLUMNNAME_C_BankStatement_ID+"=?";
 		List<MBankStatementLine> list = new Query(getCtx(),I_C_BankStatementLine.Table_Name,whereClause,get_TrxName())
 		.setParameters(getC_BankStatement_ID())
-		.setOrderBy("Line")
+		.setOrderBy("Line,C_BankStatementLine_ID")
 		.list();
 		MBankStatementLine[] retValue = new MBankStatementLine[list.size()];
 		list.toArray(retValue);
