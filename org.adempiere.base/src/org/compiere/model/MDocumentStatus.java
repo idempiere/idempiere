@@ -58,7 +58,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	 * @param AD_Role_ID 
 	 *	@return array of document status
 	 */
-	public static MDocumentStatus[] getDocumentStatusIndicators(Properties ctx, int AD_User_ID, int AD_Role_ID)
+	public static MDocumentStatus[] getDocumentStatusIndicators(Properties ctx, int AD_User_ID, int AD_Role_ID, String trxName)
 	{
 		if (AD_User_ID < 0)
 			return new MDocumentStatus[0];
@@ -68,7 +68,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 		String joinClause = "LEFT JOIN PA_DocumentStatusAccess dsa ON PA_DocumentStatus.PA_DocumentStatus_ID = dsa.PA_DocumentStatus_ID "
 				+ "AND dsa.IsActive = 'Y' ";
 
-		List<MDocumentStatus> list = new Query(ctx, MDocumentStatus.Table_Name, whereClause, null)
+		List<MDocumentStatus> list = new Query(ctx, MDocumentStatus.Table_Name, whereClause, trxName)
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MDocumentStatus.COLUMNNAME_SeqNo)
 				.addJoinClause(joinClause)
