@@ -278,6 +278,15 @@ public class MInOutLineMA extends X_M_InOutLineMA
 			}
 			
 			setDateMaterialPolicy(dateMPolicy);
+		} else if (newRecord && getM_AttributeSetInstance_ID() > 0 && getDateMaterialPolicy() == null) {
+			I_M_InOutLine line = getM_InOutLine();
+			Timestamp dateMPolicy = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+			if(dateMPolicy == null)
+			{
+				I_M_InOut  inout = line.getM_InOut();
+				dateMPolicy = inout.getMovementDate();
+			}
+			setDateMaterialPolicy(dateMPolicy);
 		}
 		
 		return true;
