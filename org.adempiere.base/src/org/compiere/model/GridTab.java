@@ -233,8 +233,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
 	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
-	//private HashMap<Integer,Integer>	m_PostIts = null;
-
 	/**************************************************************************
 	 *  Tab loader for Tabs > 0
 	 */
@@ -342,7 +340,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//
 		if (m_vo.isInitFields())
 			m_vo.getFields().clear();
-		//m_vo.Fields = null;
 		m_vo = null;
 		if (m_loader != null)
 		{
@@ -377,11 +374,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				GridField field = new GridField (voF);
 				field.setGridTab(this);
 				String columnName = field.getColumnName();
-				//FR [ 1757088 ] - this create Bug [ 1866793 ]
-				/*
-				if(this.isReadOnly()) {
-				   voF.IsReadOnly = true;
-				}*/
 				//	Record Info
 				if (field.isKey()) {
 					setKeyColumnName(columnName);
@@ -588,7 +580,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		//  Setup Events
 		m_mTable.addDataStatusListener(this);
-	//	m_mTable.addTableModelListener(this);
 	}   //  enableEvents
 
 	/**
@@ -687,14 +678,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				//	Check validity
 				if (value.length() == 0)
 				{
-					//log.severe ("No value for link column " + lc);
 					//parent is new, can't retrieve detail
 					m_parentNeedSave = true;
 					if (where.length() != 0)
 						where.append(" AND ");
-					// where.append(lc).append(" is null ");
-					// as opened by this fix [ 1881480 ] Navigation problem between tabs
-					// it's safer to avoid retrieving details at all if there is no parent value
 					where.append (" 2=3");
 				}
 				else
@@ -851,7 +838,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//	Column NOT in Tab - create EXISTS subquery
 		String tableName = null;
 		String tabKeyColumn = getKeyColumnName();
-		//	Column=SalesRep_ID, Key=AD_User_ID, Query=SalesRep_ID=101
 
 		sql = "SELECT t.TableName "
 			+ "FROM AD_Column c"
@@ -1168,23 +1154,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			log.warning ("Insert Not allowed in TabNo=" + m_vo.TabNo);
 			return false;
 		}
-		//	Prevent New Where Main Record is processed
-		//	but not apply for TabLevel=0 - teo_sarca [ 1673902 ]
-		//  hengsin: together with readonly logic, the following validation create confusing situation for user.
-		//  i.e, if readonly logic enable the new button on toolbar, it will just does nothing due to the validation below.
-		//  better let everything decide using just the tab's readonly logic instead.
-		/*
-		if (m_vo.TabLevel > 0 && m_vo.TabNo > 0)
-		{
-			boolean processed = isProcessed();
-		//	boolean active = "Y".equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, "IsActive"));
-			if (processed)
-			{
-				log.warning ("Not allowed in TabNo=" + m_vo.TabNo + " -> Processed=" + processed);
-				return false;
-			}
-			if (log.isLoggable(Level.FINEST)) log.finest("Processed=" + processed);
-		}*/
 
 		//hengsin, don't create new when parent is empty
 		if (isDetail() && m_parentNeedSave)
@@ -1448,32 +1417,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		return m_parents;
 	}	//	getParentColumnNames
-
-	/**
-	 *	Get Tree ID of this tab
-	 *  @return ID
-	 */
-	/*private int getTreeID()
-	{
-		if (log.isLoggable(Level.FINE)) log.fine(m_vo.TableName);
-		String SQL = "SELECT * FROM AD_ClientInfo WHERE AD_Client="
-			+ Env.getContext(m_vo.ctx, m_vo.WindowNo, "AD_Client_ID")
-			+ " ORDER BY AD_Org DESC";
-		//
-		if (m_vo.TableName.equals("AD_Menu"))
-			return 10;		//	MM
-		else if (m_vo.TableName.equals("C_ElementValue"))
-			return 20;		//	EV
-		else if (m_vo.TableName.equals("M_Product"))
-			return 30;     	//	PR
-		else if (m_vo.TableName.equals("C_BPartner"))
-			return 40;    	//	BP
-		else if (m_vo.TableName.equals("AD_Org"))
-			return 50;     	//	OO
-		else if (m_vo.TableName.equals("C_Project"))
-			return 60;		//	PJ
-		return 0;
-	}	//	getTreeID*/
 
 	/**
 	 *	Returns true if this is a detail record
@@ -2405,7 +2348,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		m_lastDataStatusEventTime = System.currentTimeMillis();
 		m_lastDataStatusEvent = m_DataStatusEvent;
 		m_DataStatusEvent = null;
-	//	log.fine("dataStatusChanged #" + m_vo.TabNo + "- fini", e.toString());
 	}	//	dataStatusChanged
 
 	/**
@@ -2431,7 +2373,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  Distribute/fire it
         for (int i = 0; i < listeners.length; i++)
         	listeners[i].dataStatusChanged(e);
-	//	log.fine("fini - " + e.toString());
 	}	//	fireDataStatusChanged
 
 	/**
@@ -2643,10 +2584,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 			else
 			{   //  no rows - set to a reasonable value - not updateable
-//				Object value = null;
-//				if (mField.isKey() || mField.isParent() || mField.getColumnName().equals(m_linkColumnName))
-//					value = mField.getDefault();
-
 				// CarlosRuiz - globalqss [ 1881480 ] Navigation problem between tabs
 				// the implementation of linking with window context variables is very weak
 				// you must be careful when defining a column in a detail tab with a field
@@ -3201,15 +3138,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return null;
 		return m_mTable.getValueAt(row, col);
 	}   //  getValue
-
-	/*
-	public boolean isNeedToSaveParent()
-	{
-		if (isDetail())
-			return m_parentNeedSave;
-		else
-			return false;
-	}*/
 
 	/**
 	 *  toString
