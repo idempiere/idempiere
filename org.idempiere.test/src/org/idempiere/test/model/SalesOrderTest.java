@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.MAllocationHdr;
@@ -50,6 +51,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
 import org.compiere.model.MStorageReservationLog;
+import org.compiere.model.MTransaction;
 import org.compiere.model.MUOM;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.Query;
@@ -78,6 +80,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	private static final int PRODUCT_AZALEA = 128;
 	private static final int PRODUCT_FERT50 = 136;
 	private static final int PRODUCT_MARY = 132;
+	private static final int PRODUCT_PCHAIR = 133;
 	private static final int ORG_FERTILIZER = 50001;
 	private static final int WAREHOUSE_FERTILIZER = 50002;
 	private static final int WAREHOUSE_HQ_TRANSIT = 50000;
@@ -1008,5 +1011,110 @@ public class SalesOrderTest extends AbstractTestCase {
 		order.setM_Warehouse_ID(WAREHOUSE_HQ);
 		success = order.save();
 		assertEquals(false, success);
+	}
+	
+	@Test
+	public void testSetASIWhenShipping() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PCHAIR));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Unexpected Order document status");
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue(), "Unexpected order line qty reserved value");		
+		
+		int originalOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		
+		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+		
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+		shipmentLine.setQty(new BigDecimal("1"));
+		MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+		asi.setM_AttributeSet_ID(MProduct.get(PRODUCT_PCHAIR).getM_AttributeSet_ID());
+		asi.setSerNo("PChair Serial #1000000");
+		asi.saveEx();
+		shipmentLine.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+		shipmentLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Unexpected Shipment document status");
+		
+		int newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		assertEquals(originalOnHand-1, newOnHand, "Unexpected on hand quantity");
+				
+		int asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi.get_ID(), getTrxName()).intValue();
+		int asiRecords = 0;
+		MStorageOnHand[] storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		for (MStorageOnHand storage : storages) {
+			if (storage.getM_Warehouse_ID()==getM_Warehouse_ID() && storage.getM_AttributeSetInstance_ID()==asi.get_ID()) {
+				asiRecords++;
+			}
+		}
+		assertEquals(0, asiOnHand, "Unexpected on hand quantity for Serial ASI");
+		assertEquals(1, asiRecords, "Unexpected number of Serial ASI Storage records");
+		
+		Query query = new Query(Env.getCtx(), MTransaction.Table_Name, "M_InOutLine_ID=? AND M_Product_ID=? AND M_AttributeSetInstance_ID=0", getTrxName());
+		MTransaction trxFrom = query.setParameters(shipmentLine.get_ID(), shipmentLine.getM_Product_ID()).first();
+		assertNotNull(trxFrom, "Can't find MTransaction record for no ASI MTransaction record");
+		assertEquals(-1, trxFrom.getMovementQty().intValue(), "Unexpected movement qty for no ASI MTransaction record");
+		
+		query = new Query(Env.getCtx(), MTransaction.Table_Name, "M_InOutLine_ID=? AND M_Product_ID=? AND M_AttributeSetInstance_ID=?", getTrxName());
+		List<MTransaction> asiTrxs = query.setParameters(shipmentLine.get_ID(), shipmentLine.getM_Product_ID(), shipmentLine.getM_AttributeSetInstance_ID())
+				.setOrderBy("M_Transaction_ID")
+				.list();
+		assertEquals(2, asiTrxs.size(), "Unexpected number of records for ASI MTransaction");
+		assertEquals(1, asiTrxs.get(0).getMovementQty().intValue(), "Unexpected movement qty for first ASI MTransaction record");
+		assertEquals(-1, asiTrxs.get(1).getMovementQty().intValue(), "Unexpected movement qty for second ASI MTransaction record");
+		
+		//reverse the MR
+		shipment.load(getTrxName());
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Accrual);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Unexpected Shipment document status");
+		newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		assertEquals(originalOnHand, newOnHand, "Unexpected on hand quantity no ASI");
+		asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi.get_ID(), getTrxName()).intValue();
+		assertEquals(0, asiOnHand, "Unexpected on hand quantity for Serial ASI");
+		
+		MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
+		MInOutLine[] reversalLines = reversal.getLines();
+		query = new Query(Env.getCtx(), MTransaction.Table_Name, "M_InOutLine_ID=? AND M_Product_ID=? AND M_AttributeSetInstance_ID=0", getTrxName());
+		List<MTransaction> noASITrxs = query.setParameters(reversalLines[0].get_ID(), reversalLines[0].getM_Product_ID())
+				.setOrderBy("M_Transaction_ID")
+				.list();
+		assertEquals(1, noASITrxs.size(), "Unexpected number of records for reversal no ASI MTransaction");
+		assertEquals(1, asiTrxs.get(0).getMovementQty().intValue(), "Unexpected reversal movement qty for no ASI MTransaction record");
+		
+		query = new Query(Env.getCtx(), MTransaction.Table_Name, "M_InOutLine_ID=? AND M_Product_ID=? AND M_AttributeSetInstance_ID=?", getTrxName());
+		asiTrxs = query.setParameters(reversalLines[0].get_ID(), reversalLines[0].getM_Product_ID(), reversalLines[0].getM_AttributeSetInstance_ID())
+				.setOrderBy("M_Transaction_ID")
+				.list();
+		assertEquals(2, asiTrxs.size(), "Unexpected number of records for reversal ASI MTransaction");
+		assertEquals(1, asiTrxs.get(0).getMovementQty().intValue(), "Unexpected reversal movement qty for first ASI MTransaction record");
+		assertEquals(-1, asiTrxs.get(1).getMovementQty().intValue(), "Unexpected reversal movement qty for second ASI MTransaction record");
 	}
 }
