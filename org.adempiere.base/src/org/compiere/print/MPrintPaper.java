@@ -26,7 +26,6 @@ import javax.print.attribute.standard.MediaSize;
 import javax.print.attribute.standard.MediaSizeName;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintPaper;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;

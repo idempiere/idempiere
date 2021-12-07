@@ -23,7 +23,6 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 
 /**
  *	Print Format Utilities.
@@ -140,13 +139,7 @@ public class PrintFormatUtil
 			rs = null; pstmt = null;
 		}
 		if (counter == 0) {
-			if (log.isLoggable(Level.FINE)) log.fine("None"
-				/**
-				+ " - " + sql 
-				+ " - AD_PrintFormat_ID=" + pf.getAD_PrintFormat_ID()
-				+ " - AD_Table_ID=" + pf.getAD_Table_ID()
-				*/
-				);
+			if (log.isLoggable(Level.FINE)) log.fine("None");
 		} else {
 			if (log.isLoggable(Level.FINE)) log.fine("Added=" + counter);
 		}
