@@ -664,7 +664,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		if (orderIDs.length() > 0 && C_Invoice_ID > 0)
 			whereClause.append(" AND (C_Order_ID IN (").append(orderIDs).append(") OR C_Invoice_ID=").append(C_Invoice_ID).append(")");
 		else if (orderIDs.length() > 0)
-			whereClause.append(" AND C_Order_ID IN ('").append(orderIDs).append(")");
+			whereClause.append(" AND C_Order_ID IN (").append(orderIDs).append(")");
 		else if (C_Invoice_ID > 0)
 			whereClause.append(" AND C_Invoice_ID=").append(C_Invoice_ID);
 		whereClause.append(" AND IsApproved='Y' AND IsVoided='N' AND IsDelayedCapture='N' ");
