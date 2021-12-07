@@ -221,7 +221,6 @@ public class MPrintColor extends X_AD_PrintColor implements ImmutablePOSupport
 		}
 		if (code == null)
 			m_cacheColor = Color.black;
-	//	log.fine( "MPrintColor.getColor " + code, m_cacheColor);
 		return m_cacheColor;
 	}	//	getColor
 
@@ -295,17 +294,6 @@ public class MPrintColor extends X_AD_PrintColor implements ImmutablePOSupport
 			System.out.println(names[i] + " = " + colors[i] + " RGB=" + colors[i].getRGB()
 				+ " -> " + new Color(colors[i].getRGB(), false)
 				+ " -> " + new Color(colors[i].getRGB(), true));
-/**
-		//	Create Colors
-		for (int i = 0; i < colors.length; i++)
-			create(colors[i], names[i]);
-		create(whiteGray, "Gray white");
-		create(darkGreen, "Green dark");
-		create(blackGreen, "Green black");
-		create(blackBlue, "Blue black");
-		create(brown, "Brown");
-		create(darkBrown, "Brown dark");
-**/
 
 		//	Read All Colors
 		int[] IDs = PO.getAllIDs ("AD_PrintColor", null, null);

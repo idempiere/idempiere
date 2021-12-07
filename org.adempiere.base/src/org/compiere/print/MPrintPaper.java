@@ -324,25 +324,4 @@ public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 		}
 	}	//	CMediaSizeName	
 	
-	/**************************************************************************
-	 * 	Test
-	 * 	@param args args
-	 */
-	public static void main(String[] args)
-	{
-		org.compiere.Adempiere.startupEnvironment(true);
-
-	//	create ("Standard Landscape", true);
-	//	create ("Standard Portrait", false);
-
-		//	Read All Papers
-		int[] IDs = PO.getAllIDs ("AD_PrintPaper", null, null);
-		for (int i = 0; i < IDs.length; i++)
-		{
-			System.out.println("--");
-			MPrintPaper pp = new MPrintPaper(Env.getCtx(), IDs[i], null);
-			pp.dump();
-		}
-
-	}
 }	//	MPrintPaper

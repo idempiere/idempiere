@@ -153,17 +153,4 @@ public class PrintFormatUtil
 		return counter;
 	}	//	addMissingColumns
 
-
-	/**************************************************************************
-	 * 	Main
-	 *	@param args arguments
-	 */
-	public static void main(String[] args)
-	{
-		org.compiere.Adempiere.startupEnvironment(true);
-		//
-		PrintFormatUtil pfu = new PrintFormatUtil (Env.getCtx());
-		pfu.addMissingColumns((String)null);
-	}	//	main
-	
 }	//	PrintFormatUtils
