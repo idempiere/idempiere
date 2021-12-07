@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -328,15 +329,9 @@ public class DocumentEngine implements DocAction
 			if (m_document != null && ok)
 			{
 				// PostProcess documents when invoice or inout (this is to postprocess the generated MatchPO and MatchInv if any)
-				ArrayList<PO> docsPostProcess = new ArrayList<PO>();
-				if (m_document instanceof MInvoice || m_document instanceof MInOut || m_document instanceof MPayment) {
-					if (m_document instanceof MInvoice) {
-						docsPostProcess  = ((MInvoice) m_document).getDocsPostProcess();
-					} else if (m_document instanceof MInOut) {
-						docsPostProcess  = ((MInOut) m_document).getDocsPostProcess();
-					} else if (m_document instanceof MPayment) {
-						docsPostProcess  = ((MPayment) m_document).getDocsPostProcess();
-					}
+				List<PO> docsPostProcess = new ArrayList<PO>();
+				if (m_document instanceof IDocsPostProcess) {
+					docsPostProcess = ((IDocsPostProcess) m_document).getDocsPostProcess(); 
 				}
 				if (m_document instanceof PO && docsPostProcess.size() > 0) {
 					// Process (this is to update the ProcessedOn flag with a timestamp after the original document)
