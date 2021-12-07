@@ -1037,7 +1037,34 @@ public class MInOut extends X_M_InOut implements DocAction
             MDocType docType = MDocType.get(getCtx(), rma.getC_DocType_ID());
             setC_DocType_ID(docType.getC_DocTypeShipment_ID());
         }
+        
+        // Set MovementType
+        if(newRecord || (get_ValueDifference("C_DocType") != null)) {
+			MDocType docType = new MDocType(getCtx(), getC_DocType_ID(), get_TrxName());
+			String DocBaseType = docType.getDocBaseType();
+			Boolean IsSOTrx = docType.isSOTrx();
+			
+			if (DocBaseType.equals("MMS"))					//	Material Shipments
+				
+				{
+						if (IsSOTrx)
+							setMovementType("C-");				// Customer Shipments
+						else
+							setMovementType("V-");				// Vendor Return
 
+				}
+				
+			else if (DocBaseType.equals("MMR"))				//	Material Receipts
+			    
+				{
+						if (IsSOTrx)
+							setMovementType("C+");				 // Customer Return
+						else
+							setMovementType("V+");				 // Vendor Receipts
+				}				
+				
+		}
+        
 		return true;
 	}	//	beforeSave
 
