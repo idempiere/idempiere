@@ -855,6 +855,37 @@ public class MPayment extends X_C_Payment
 			}
 		}
 
+		if (!isProcessed())
+		{
+			if (!TENDERTYPE_CreditCard.equals(getTenderType()))
+			{
+				if (!Util.isEmpty(getCreditCardType(), true))
+				{
+					setCreditCardType(null);					
+				}
+				
+				if (!Util.isEmpty(getCreditCardNumber(), true))
+				{
+					setCreditCardNumber(null);
+				}
+				
+				if (!Util.isEmpty(getCreditCardVV(), true))
+				{
+					setCreditCardVV(null);
+				}
+				
+				if (getCreditCardExpMM() > 0)
+				{
+					set_Value(COLUMNNAME_CreditCardExpMM, null);
+				}
+				
+				if (getCreditCardExpYY() > 0)
+				{
+					set_Value(COLUMNNAME_CreditCardExpYY, null);
+				}
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
