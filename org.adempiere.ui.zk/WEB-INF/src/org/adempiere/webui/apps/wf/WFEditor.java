@@ -33,7 +33,9 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
+import org.compiere.model.MEntityType;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -255,6 +257,8 @@ public class WFEditor extends ADForm {
 					int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 					MWFNode node = new MWFNode(m_wf, name, name);
 					node.setClientOrg(AD_Client_ID, 0);
+					if (AD_Client_ID > 11)
+						node.setEntityType(MSysConfig.getValue(MSysConfig.DEFAULT_ENTITYTYPE, MEntityType.ENTITYTYPE_UserMaintained));
 					node.saveEx();
 					reload(m_wf.getAD_Workflow_ID(), true);
 				}
@@ -384,10 +388,10 @@ public class WFEditor extends ADForm {
 			if (widget != null) {
 				MWFNode node = widget.getModel();
 				Menupopup popupMenu = new Menupopup();
+				// Zoom
+				addMenuItem(popupMenu, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")), node, WFPopupItem.WFPOPUPITEM_ZOOM);
 				if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()))
 				{
-					// Zoom
-					addMenuItem(popupMenu, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")), node, WFPopupItem.WFPOPUPITEM_ZOOM);
 					// Properties
 					addMenuItem(popupMenu, Msg.getMsg(Env.getCtx(), "Properties"), node, WFPopupItem.WFPOPUPITEM_PROPERTIES);
 					// Delete node
