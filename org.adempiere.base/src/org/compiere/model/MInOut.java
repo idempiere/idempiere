@@ -977,9 +977,19 @@ public class MInOut extends X_M_InOut implements DocAction
 		}
 	}	//	setM_Warehouse_ID
 
+	/**
+	 * Gets Movement Type based on Document Type's DocBaseType and isSOTrx
+	 * @param ctx 
+	 * @param C_DocType_ID Document Type ID
+	 * @param issotrx is sales transaction
+	 * @param trxName transaction name
+	 * @return Movement Type
+	 */
 	public static String getMovementType(Properties ctx, int C_DocType_ID, boolean issotrx, String trxName) {
 		String movementType = null;
-		MDocType docType = new MDocType(ctx, C_DocType_ID, trxName);
+		MDocType docType = MDocType.get(C_DocType_ID);
+		
+		if (docType == null) return null;
 		
         if (docType.getDocBaseType().equals(MDocType.DOCBASETYPE_MaterialDelivery)) 
             movementType = docType.isSOTrx() ? MOVEMENTTYPE_CustomerShipment : MOVEMENTTYPE_VendorReturns; 
@@ -989,6 +999,9 @@ public class MInOut extends X_M_InOut implements DocAction
 		return movementType;
 	}
 
+	/**
+	 * Sets Movement Type based on Document Type's DocBaseType and isSOTrx
+	 */
 	public void setMovementType() {
 		
 		if(getC_DocType_ID() <= 0) {
