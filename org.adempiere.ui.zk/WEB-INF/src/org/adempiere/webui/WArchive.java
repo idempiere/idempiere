@@ -175,6 +175,10 @@ public class WArchive implements EventListener<Event>
 				av.query(true, m_AD_Table_ID, m_Record_ID);
 			else	//	all Reports
 				av.query(true, m_AD_Table_ID, 0);
+			
+			if (m_popup.getParent() instanceof Popup) {
+				((Popup)m_popup.getParent()).close();
+			}
 
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			SessionManager.getAppDesktop().showWindow(form);
