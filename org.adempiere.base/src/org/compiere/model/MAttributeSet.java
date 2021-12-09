@@ -525,4 +525,15 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 		return this;
 	}
 
+	/**
+	 * 
+	 * @return Arrays of {@link MAttributeUse}
+	 */
+	public MAttributeUse[] getMAttributeUse()
+	{
+		Query query = new Query(getCtx(), I_M_AttributeUse.Table_Name, "M_AttributeSet_ID=?", get_TrxName());
+		List<MAttributeUse> list = query.setOnlyActiveRecords(true).setParameters(get_ID()).list();
+		return list.toArray(new MAttributeUse[0]);
+	}
+	
 }	//	MAttributeSet
