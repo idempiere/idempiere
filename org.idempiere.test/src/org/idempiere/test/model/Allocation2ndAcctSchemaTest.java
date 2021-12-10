@@ -1620,7 +1620,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	private MAllocationHdr createAllocationHdr(Timestamp date, int C_Currency_ID) {
-		MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, date, C_Currency_ID, Env.getContext(Env.getCtx(), Env.AD_USER_NAME), getTrxName());
+		MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, date, C_Currency_ID, Env.getContext(Env.getCtx(), "#AD_User_Name"), getTrxName());
 		int doctypeAlloc = MDocType.getDocType("CMA");
 		alloc.setC_DocType_ID(doctypeAlloc);
 		alloc.saveEx();

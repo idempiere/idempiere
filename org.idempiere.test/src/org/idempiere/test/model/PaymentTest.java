@@ -57,7 +57,7 @@ public class PaymentTest extends AbstractTestCase {
 		int C_BankAccount_ID = DB.getSQLValueEx(getTrxName(), "SELECT C_BankAccount_ID FROM C_BankAccount WHERE IsActive='Y' AND AD_Client_ID=? "
 				+ "AND IsDefault='Y' ORDER BY C_BankAccount_ID", getAD_Client_ID());
 		payment.setC_BankAccount_ID(C_BankAccount_ID);
-		payment.setC_Currency_ID(Env.getContextAsInt(Env.getCtx(), Env.C_CURRENCY_ID));
+		payment.setC_Currency_ID(Env.getContextAsInt(Env.getCtx(), "$C_Currency_ID"));
 		payment.saveEx();
 		assertEquals("123", payment.getCreditCardVV());
 		
