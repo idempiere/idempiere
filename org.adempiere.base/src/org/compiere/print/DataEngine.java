@@ -346,7 +346,6 @@ public class DataEngine
 				int FieldLength = rs.getInt(5);
 				boolean IsMandatory = "Y".equals(rs.getString(6));
 				boolean IsKey = "Y".equals(rs.getString(7));
-				//boolean IsParent = "Y".equals(rs.getString(8));
 				//  SQL GroupBy
 				boolean IsGroupFunction = "Y".equals(rs.getString(9));
 				if (IsGroupFunction)
@@ -377,7 +376,7 @@ public class DataEngine
 
 				//	General Info
 				boolean IsPrinted = "Y".equals(rs.getString(15));
-				//int SortNo = rs.getInt(16);
+
 				boolean isPageBreak = "Y".equals(rs.getString(17));
 				
 				String formatPattern = rs.getString(25);
@@ -430,8 +429,7 @@ public class DataEngine
 					synonymNext();
 				}
 				//	-- Parent, TableDir (and unqualified Search) --
-				else if ( /* (IsParent && DisplayType.isLookup(AD_Reference_ID)) || <-- IDEMPIERE-71 Carlos Ruiz - globalqss */ 
-						AD_Reference_ID == DisplayType.TableDir
+				else if ( AD_Reference_ID == DisplayType.TableDir
 						|| (AD_Reference_ID == DisplayType.Search && AD_Reference_Value_ID == 0)
 					)
 				{
@@ -1003,7 +1001,6 @@ public class DataEngine
 					{
 						if (pdc.getColumnName().endsWith("_ID"))
 						{
-						//	int id = rs.getInt(pdc.getColumnIDName());
 							int id = rs.getInt(counter++);
 							if (!rs.wasNull())
 							{
@@ -1014,7 +1011,6 @@ public class DataEngine
 						}
 						else
 						{
-						//	String id = rs.getString(pdc.getColumnIDName());
 							String id = rs.getString(counter++);
 							if (!rs.wasNull())
 							{
@@ -1052,7 +1048,7 @@ public class DataEngine
 								{
 									/** START DEVCOFFEE: script column **/
 									int displayType = pdc.getDisplayType();
-									if(rs.getMetaData().getColumnName(displayIndex).contains("SCRIPTCOLUMN")) {
+									if (display.startsWith("@SCRIPT")) {
 										Object value = rs.getObject(displayIndex);
 										int columnType = rs.getMetaData().getColumnType(displayIndex);
 										// String, Text
@@ -1383,14 +1379,10 @@ public class DataEngine
 	{
 		org.compiere.Adempiere.startup(true);
 
-	//	DataEngine de = new DataEngine(null);
 		@SuppressWarnings("unused")
 		DataEngine de = new DataEngine(Language.getLanguage("de_DE"));
 		MQuery query = new MQuery();
 		query.addRestriction("AD_Table_ID", MQuery.LESS, 105);
-	//	PrintData pd = de.load_fromTable(100, query, null, null, false);
-	//	pd.dump();
-	//	pd.createXML(new javax.xml.transform.stream.StreamResult(System.out));
 	}
 		
 }	//	DataEngine

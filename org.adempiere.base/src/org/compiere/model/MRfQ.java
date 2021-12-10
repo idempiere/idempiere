@@ -152,7 +152,7 @@ public class MRfQ extends X_C_RfQ
 		ArrayList<MRfQLine> list = new ArrayList<MRfQLine>();
 		String sql = "SELECT * FROM C_RfQLine "
 			+ "WHERE C_RfQ_ID=? AND IsActive='Y' "
-			+ "ORDER BY Line";
+			+ "ORDER BY Line,C_RfQLine_ID ";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

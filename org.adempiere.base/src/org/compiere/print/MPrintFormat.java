@@ -169,7 +169,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		if (language != null)
 		{
 			m_language = language;
-		//	log.fine("setLanguage - " + language);
 		}
 		m_translationViewLanguage = null;
 	}	//	getLanguage
@@ -516,8 +515,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	protected Object loadSpecial (ResultSet rs, int index) throws SQLException
 	{
-		//	CreateCopy
-	//	log.config(p_info.getColumnName(index));
 		return null;
 	}   //  loadSpecial
 
@@ -530,11 +527,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	protected String saveNewSpecial (Object value, int index)
 	{
-		//	CreateCopy
-	//	String colName = p_info.getColumnName(index);
-	//	String colClass = p_info.getColumnClass(index).toString();
-	//	String colValue = value == null ? "null" : value.getClass().toString();
-	//	log.log(Level.SEVERE, "Unknown class for column " + colName + " (" + colClass + ") - Value=" + colValue);
 		if (value == null)
 			return "NULL";
 		return value.toString();
@@ -780,7 +772,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 
 		//	Save & complete
 		pf.saveEx();
-	//	pf.dump();
 		pf.setItems (createItems(ctx, pf));
 		//
 		return pf;
@@ -856,7 +847,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 
 		//	Save & complete
 		pf.saveEx();
-	//	pf.dump();
 		pf.setItems (createItems(ctx, pf));
 		//
 		return pf;
@@ -1362,27 +1352,5 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			m_tFormat.markImmutable();
 		return this;
 	}
-
-	/**************************************************************************
-	 * 	Test
-	 * 	@param args arga
-	 */
-	static public void main (String[] args)
-	{
-		org.compiere.Adempiere.startup(true);
-		/**
-		MPrintFormat.createFromTable(Env.getCtx(), 496);	//	Order
-		MPrintFormat.createFromTable(Env.getCtx(), 497);
-		MPrintFormat.createFromTable(Env.getCtx(), 516);	//	Invoice
-		MPrintFormat.createFromTable(Env.getCtx(), 495);
-		MPrintFormat.createFromTable(Env.getCtx(), 500);	//	Shipment
-		MPrintFormat.createFromTable(Env.getCtx(), 501);
-
-		MPrintFormat.createFromTable(Env.getCtx(), 498);	//	Check
-		MPrintFormat.createFromTable(Env.getCtx(), 499);
-		MPrintFormat.createFromTable(Env.getCtx(), 498);	//	Remittance
-		**/
-	}	//	main
-
 
 }	//	MPrintFormat

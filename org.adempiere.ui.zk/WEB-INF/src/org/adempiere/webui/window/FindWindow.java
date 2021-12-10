@@ -2103,7 +2103,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            ValueNamePair vnp = column.getSelectedItem().getValue();
 	            String ColumnName = vnp.getValue();
 	            String tableUID = table.getSelectedItem() != null ? table.getSelectedItem().getValue().toString() : "";
-	            String infoName = column.toString();
+	            String infoName = ColumnName;
 	            
 	            GridField field = null;
 				boolean isProductCategoryField = false;

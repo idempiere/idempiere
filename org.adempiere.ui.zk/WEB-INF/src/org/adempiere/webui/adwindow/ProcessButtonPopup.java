@@ -60,7 +60,7 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 		//document actions
 		if (docActionBtn != null) {
 			IProcessButton processButton = (IProcessButton) docActionBtn.getAttribute(WButtonEditor.EDITOR_ATTRIBUTE);
-			WDocActionPanel actionPanel = new WDocActionPanel(processButton.getADTabpanel().getGridTab());
+			WDocActionPanel actionPanel = new WDocActionPanel(processButton.getADTabpanel().getGridTab(), true);
 			List<Listitem> actions = actionPanel.getDocActionItems();
 			if (actions.size() > 0) {
 				if (this.getChildren().size() > 0)

@@ -34,6 +34,7 @@ import org.adempiere.util.IProcessUI;
 import org.adempiere.util.PaymentUtil;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.process.IDocsPostProcess;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -82,7 +83,7 @@ import org.compiere.util.ValueNamePair;
  *  @version 	$Id: MPayment.java,v 1.4 2006/10/02 05:18:39 jjanke Exp $
  */
 public class MPayment extends X_C_Payment 
-	implements DocAction, ProcessCall, PaymentInterface
+	implements DocAction, ProcessCall, PaymentInterface, IDocsPostProcess
 {
 	/**
 	 * 
@@ -846,6 +847,37 @@ public class MPayment extends X_C_Payment
 			}
 		}
 
+		if (!isProcessed())
+		{
+			if (!TENDERTYPE_CreditCard.equals(getTenderType()))
+			{
+				if (!Util.isEmpty(getCreditCardType(), true))
+				{
+					setCreditCardType(null);					
+				}
+				
+				if (!Util.isEmpty(getCreditCardNumber(), true))
+				{
+					setCreditCardNumber(null);
+				}
+				
+				if (!Util.isEmpty(getCreditCardVV(), true))
+				{
+					setCreditCardVV(null);
+				}
+				
+				if (getCreditCardExpMM() > 0)
+				{
+					set_Value(COLUMNNAME_CreditCardExpMM, null);
+				}
+				
+				if (getCreditCardExpYY() > 0)
+				{
+					set_Value(COLUMNNAME_CreditCardExpYY, null);
+				}
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
@@ -2131,7 +2163,8 @@ public class MPayment extends X_C_Payment
 		docsPostProcess.add(doc);
 	}
 
-	public ArrayList<PO> getDocsPostProcess() {
+	@Override
+	public List<PO> getDocsPostProcess() {
 		return docsPostProcess;
 	}
 

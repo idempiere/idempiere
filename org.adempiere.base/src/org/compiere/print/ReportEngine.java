@@ -18,7 +18,6 @@ package org.compiere.print;
 
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
-import static org.compiere.model.SystemIDs.TABLE_AD_TABLE;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -466,7 +465,6 @@ public class ReportEngine implements PrintServiceAttributeListener
 				if (log.isLoggable(Level.INFO)) log.info("Copy " + (m_info.getCopies()-1));
 				prats.add(new Copies(m_info.getCopies()-1));
 				job = getPrinterJob(m_info.getPrinterName());
-			//	job.getPrintService().addPrintServiceAttributeListener(this);
 				job.setPageable (m_layout.getPageable(true));		//	Copy
 				PrintUtil.print(job, prats, false, false);
 			}
@@ -496,7 +494,6 @@ PrintServiceAttributeSet - length=1
 queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		**/
 		if (log.isLoggable(Level.FINE)) log.fine("attributeUpdate - " + psae);
-	//	PrintUtil.dump (psae.getAttributes());
 	}	//	attributeUpdate
 
 
@@ -1866,12 +1863,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	/** Inventory Move = 11  */
 	public static final int		MOVEMENT = 11;
 	
-
-//	private static final String[]	DOC_TABLES = new String[] {
-//		"C_Order_Header_v", "M_InOut_Header_v", "C_Invoice_Header_v", "C_Project_Header_v",
-//		"C_RfQResponse_v",
-//		"C_PaySelection_Check_v", "C_PaySelection_Check_v",  
-//		"C_DunningRunEntry_v","PP_Order_Header_v","DD_Order_Header_v" };
 	private static final String[]	DOC_BASETABLES = new String[] {
 		"C_Order", "M_InOut", "C_Invoice", "C_Project",
 		"C_RfQResponse",
@@ -2122,7 +2113,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		//	query
 		MQuery query = new MQuery(format.getAD_Table_ID());
 		query.addRestriction(DOC_IDS[type], MQuery.EQUAL, Record_ID);
-	//	log.config( "ReportCtrl.startDocumentPrint - " + format, query + " - " + language.getAD_Language());
+
 		//
 		if (DocumentNo == null || DocumentNo.length() == 0)
 			DocumentNo = "DocPrint";
@@ -2218,7 +2209,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-			//	if (i == 1 && ADialog.ask(0, null, what[0] == INVOICE ? "PrintOnlyRecentInvoice?" : "PrintOnlyRecentShipment?")) break;
 				what[1] = rs.getInt(1);
 			}
 			else	//	No Document Found
@@ -2258,38 +2248,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				log.log(Level.SEVERE, "Updated records=" + no + " - should be just one");
 		}
 	}	//	printConfirm
-	
-	
-	/*************************************************************************
-	 * 	Test
-	 * 	@param args args
-	 */
-	public static void main(String[] args)
-	{
-		org.compiere.Adempiere.startupEnvironment(true);
-		//
-		int AD_Table_ID = TABLE_AD_TABLE;
-		MQuery q = new MQuery("AD_Table");
-		q.addRestriction("AD_Table_ID", "<", 108);
-		//
-		MPrintFormat f = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
-		PrintInfo i = new PrintInfo("test", AD_Table_ID, 108, 0);
-		i.setAD_Table_ID(AD_Table_ID);
-		ReportEngine re = new ReportEngine(Env.getCtx(), f, q, i);
-		re.layout();
-		/**
-		re.createCSV(new File("C:\\Temp\\test.csv"), ',', Language.getLanguage());
-		re.createHTML(new File("C:\\Temp\\test.html"), false, Language.getLanguage());
-		re.createXML(new File("C:\\Temp\\test.xml"));
-		re.createPS(new File ("C:\\Temp\\test.ps"));
-		re.createPDF(new File("C:\\Temp\\test.pdf"));
-		/****/
-		re.print();
-	//	re.print(true, 1, false, "Epson Stylus COLOR 900 ESC/P 2");		//	Dialog
-	//	re.print(true, 1, false, "HP LaserJet 3300 Series PCL 6");		//	Dialog
-	//	re.print(false, 1, false, "Epson Stylus COLOR 900 ESC/P 2");	//	Dialog
-		System.exit(0);
-	}	//	main
 
 	public void setWhereExtended(String whereExtended) {
 		m_whereExtended = whereExtended;

@@ -117,7 +117,6 @@ public class GridField
 	 */
 	protected void dispose()
 	{
-	//	log.fine( "GridField.dispose = " + m_vo.ColumnName);
 		m_propertyChangeListeners = null;
 		if (m_lookup != null)
 			m_lookup.dispose();
@@ -252,8 +251,6 @@ public class GridField
 			retValue = true;
 		else if (m_vo.IsKey)
 			retValue = false;
-	//	else if (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy"))
-	//		retValue = false;
 		else {
 			//http://jira.idempiere.com/browse/IDEMPIERE-694
 			if (LookupFactoryHelper.isLookup(m_vo))
@@ -756,7 +753,6 @@ public class GridField
 		if (m_vo.DefaultValue != null && m_vo.DefaultValue.startsWith("@SQL="))
 		{
 			String sql = m_vo.DefaultValue.substring(5);			//	w/o tag
-			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables
 			//hengsin, capture unparseable error to avoid subsequent sql exception
 			sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, false);	//	replace variables
 			if (sql.equals(""))
@@ -952,12 +948,6 @@ public class GridField
 			if (log.isLoggable(Level.FINE)) log.fine("[YesNo=N] " + m_vo.ColumnName);
 			return "N";
 		}
-		//  lookups with one value
-	//	if (DisplayType.isLookup(m_vo.displayType) && m_lookup.getSize() == 1)
-	//	{
-	//		/** @todo default if only one lookup value */
-	//	}
-		//  IDs remain null
 		if (m_vo.ColumnName.endsWith("_ID"))
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("[ID=null] "  + m_vo.ColumnName);
@@ -1818,13 +1808,7 @@ public class GridField
 	 */
 	public boolean isLongField()
 	{
-	//	if (m_vo.displayType == DisplayType.String 
-	//		|| m_vo.displayType == DisplayType.Text 
-	//		|| m_vo.displayType == DisplayType.Memo
-	//		|| m_vo.displayType == DisplayType.TextLong
-	//		|| m_vo.displayType == DisplayType.Image)
 		return (m_vo.DisplayLength >= MAXDISPLAY_LENGTH/2);
-	//	return false;
 	}   //  isLongField
 	
 	/**
@@ -1844,7 +1828,6 @@ public class GridField
 	 */
 	public void setValue ()
 	{
-	//	log.fine(ColumnName + "=" + newValue);
 		if (m_valueNoFire)      //  set the old value
 			m_oldValue = m_value;
 		m_value = null;
@@ -1853,7 +1836,6 @@ public class GridField
 
 		//  Does not fire, if same value
 		m_propertyChangeListeners.firePropertyChange(PROPERTY, m_oldValue, m_value);
-	//	m_propertyChangeListeners.firePropertyChange(PROPERTY, s_oldValue, null);
 	}   //  setValue
 
 	/**
@@ -1864,7 +1846,6 @@ public class GridField
 	 */
 	public void setValueAndUpdateContext ()
 	{
-	//	log.fine(ColumnName + "=" + newValue);
 		if (m_valueNoFire)      //  set the old value
 			m_oldValue = m_value;
 		m_value = null;
@@ -1876,7 +1857,6 @@ public class GridField
 
 		//  Does not fire, if same value
 		m_propertyChangeListeners.firePropertyChange(PROPERTY, m_oldValue, m_value);
-	//	m_propertyChangeListeners.firePropertyChange(PROPERTY, s_oldValue, null);
 	}   //  setValue
 
 	/**
@@ -1889,7 +1869,6 @@ public class GridField
 	 */
 	public void setValue (Object newValue, boolean inserting)
 	{
-	//	log.fine(ColumnName + "=" + newValue);
 		if (m_valueNoFire)      //  set the old value
 			m_oldValue = m_value;
 		m_value = newValue;

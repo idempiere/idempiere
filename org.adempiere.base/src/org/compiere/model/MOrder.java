@@ -713,7 +713,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (orderBy != null && orderBy.length() > 0)
 			orderClause += orderBy;
 		else
-			orderClause += "Line";
+			orderClause += "Line,C_OrderLine_ID";
 		m_lines = getLines(null, orderClause);
 		return m_lines;
 	}	//	getLines
@@ -2593,6 +2593,27 @@ public class MOrder extends X_C_Order implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;
+		
+		// Validate In Progress MInOUt
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT io.DocumentNo FROM M_InOut io ")
+				.append("JOIN M_InOutLine iol ON (io.M_InOut_ID=iol.M_InOut_ID) ")
+				.append("JOIN C_OrderLine ol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID) ")
+				.append("WHERE io.DocStatus='IP' AND ol.QtyOrdered != 0 AND (ol.M_Product_ID > 0 OR ol.C_Charge_ID > 0) ")
+				.append("AND ol.IsActive='Y' AND iol.IsActive='Y' ")
+				.append("AND ol.C_Order_ID=? ");
+		List<List<Object>> openShipments = DB.getSQLArrayObjectsEx(get_TrxName(), sql.toString(), getC_Order_ID());
+		if (openShipments != null && openShipments.size() > 0) 
+		{
+			m_processMsg = Msg.getMsg(p_ctx,"MInOutInProgress")+" (";
+			for(int i = 0; i< openShipments.size(); i++)
+			{
+				if (i > 0)
+					m_processMsg += ", ";
+				m_processMsg += openShipments.get(i).get(0).toString();
+			}
+			m_processMsg += ")";
+			return false;
+		}
 		
 		//	Close Not delivered Qty - SO/PO
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);

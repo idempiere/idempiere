@@ -531,7 +531,6 @@ public class PrintData implements Serializable
 				log.log(Level.SEVERE, "Element not PrintData(Element) " + o.getClass().getName());
 		}
 		//	As Data is stored sparse, there might be lots of NULL values
-	//	log.log(Level.SEVERE, "PrintData.getIndex - Element not found - " + name);
 		return -1;
 	}	//	getIndex
 
@@ -582,7 +581,6 @@ public class PrintData implements Serializable
 				log.log(Level.SEVERE, "Element not PrintData(Element) " + o.getClass().getName());
 		}
 		//	As Data is stored sparse, there might be lots of NULL values
-	//	log.log(Level.SEVERE, "PrintData.getIndex - Element not found - " + name);
 		return -1;
 	}
 	
