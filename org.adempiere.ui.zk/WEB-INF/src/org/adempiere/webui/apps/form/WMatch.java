@@ -55,7 +55,6 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
-import org.compiere.model.MMatchPO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -112,7 +111,6 @@ public class WMatch extends Match
 			LayoutUtils.addSclass("status-border", statusBar);
 			//
 			
-			MMatchPO.consolidate(Env.getCtx());
 			cmd_matchTo();
 		}
 		catch(Exception e)
