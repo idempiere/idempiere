@@ -1021,7 +1021,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if(newRecord || is_ValueChanged("C_DocType")) {
+		if(newRecord || is_ValueChanged("C_DocType_ID")) {
 			setMovementType();
 		}
 		
