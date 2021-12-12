@@ -58,6 +58,19 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	 * @param AD_Role_ID 
 	 *	@return array of document status
 	 */
+	public static MDocumentStatus[] getDocumentStatusIndicators(Properties ctx, int AD_User_ID, int AD_Role_ID)
+	{
+		return getDocumentStatusIndicators(ctx,AD_User_ID,AD_Role_ID);
+	}
+	
+	/**
+	 * Get Document Status Indicators
+	 * @param ctx
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @param trxName
+	 * @return array of document status
+	 */
 	public static MDocumentStatus[] getDocumentStatusIndicators(Properties ctx, int AD_User_ID, int AD_Role_ID, String trxName)
 	{
 		if (AD_User_ID < 0)

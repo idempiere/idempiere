@@ -59,10 +59,10 @@ public class WDocumentStatusPanel extends Panel {
 	 *	@return panel
 	 */
 	public static WDocumentStatusPanel get()
-	{
+	{	
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
-		MDocumentStatus[] indicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), AD_User_ID, AD_Role_ID, null);
+		MDocumentStatus[] indicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), AD_User_ID, AD_Role_ID);
 		return new WDocumentStatusPanel(indicators);
 	}
 
