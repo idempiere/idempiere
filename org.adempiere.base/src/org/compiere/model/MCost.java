@@ -1364,8 +1364,11 @@ public class MCost extends X_M_Cost
 		//FR: [ 2214883 ] - end -
 		//	New
 		if (cost == null)
+		{
 			cost = new MCost (product, M_AttributeSetInstance_ID,
 				as, AD_Org_ID, M_CostElement_ID);
+			cost.set_TrxName(trxName);
+		}
 		return cost;
 	}	//	get
 
