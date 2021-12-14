@@ -58,6 +58,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWFNode;
+import org.compiere.wf.MWFProcess;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -697,6 +698,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				try
 				{
 					m_activity.setUserChoice(AD_User_ID, value, dt, textMsg);
+					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
+					wfpr.checkCloseActivities(m_activity.get_TrxName());
 				}
 				catch (Exception e)
 				{
@@ -715,6 +718,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				{
 					// ensure activity is ran within a transaction
 					m_activity.setUserConfirmation(AD_User_ID, textMsg);
+					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
+					wfpr.checkCloseActivities(m_activity.get_TrxName());
 				}
 				catch (Exception e)
 				{
