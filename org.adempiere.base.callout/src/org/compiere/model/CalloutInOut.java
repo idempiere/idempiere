@@ -196,6 +196,7 @@ public class CalloutInOut extends CalloutEngine
 				String trxFlag = rs.getString("IsSOTrx");
 				Object isSOTrxValue = mTab.getValue("IsSOTrx");
 				String isSOTrxValueStr = null;
+				boolean IsSOTrx = "Y".equals(trxFlag);
 				if (isSOTrxValue != null)
 				{
 					if (isSOTrxValue instanceof Boolean)
@@ -206,28 +207,9 @@ public class CalloutInOut extends CalloutEngine
 				
 				if (!(trxFlag.equals(isSOTrxValueStr)))
 					mTab.setValue("IsSOTrx", trxFlag);
-				if (DocBaseType.equals("MMS"))					//	Material Shipments
-				/**solve 1648131 bug vpj-cd e-evolution */
-				{
-						boolean IsSOTrx = "Y".equals(trxFlag);
-						if (IsSOTrx)
-							mTab.setValue("MovementType", "C-");	// Customer Shipments
-						else
-							mTab.setValue("MovementType", "V-");	// Vendor Return
-
-				}
-				/**END vpj-cd e-evolution */
-				else if (DocBaseType.equals("MMR"))				//	Material Receipts
-			    /**solve 1648131 bug vpj-cd e-evolution  */
-				{
-						boolean IsSOTrx = "Y".equals(trxFlag);
-						if (IsSOTrx)
-							mTab.setValue("MovementType", "C+"); // Customer Return
-						else
-							mTab.setValue("MovementType", "V+"); // Vendor Receipts
-				}				
-				/**END vpj-cd e-evolution */
-
+				
+				mTab.setValue("MovementType", MInOut.getMovementType(ctx, C_DocType_ID, IsSOTrx, null));
+				
 				//	DocumentNo
 				if (rs.getString("IsDocNoControlled").equals("Y"))
 				{

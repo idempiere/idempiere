@@ -1948,6 +1948,208 @@ public class AllocationTest extends AbstractTestCase {
 			rollback();
 		}
 	}
+	
+	@Test
+	/**
+	 * Test the allocation posting (different period)
+	 * Invoice Total=12,587.48, Period 1
+	 * Payment Total=18,549.52, Period 2
+	 * Allocation Total=12,5587.48, Period 2
+	 * Invoice Total=40,125.00, Period 3
+	 * Allocation Total=5,962.04, Period 3
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5053
+	 */
+	public void testAllocatePaymentPostingWithCurrencyBalancing() {
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp date2 = new Timestamp(cal.getTimeInMillis());
+		Timestamp date3 = currentDate;
+		
+		int C_ConversionType_ID = 201; // Company
+		
+		MCurrency usd = MCurrency.get(100); // USD
+		MCurrency euro = MCurrency.get("EUR"); // EUR
+		BigDecimal eurToUsd1 = new BigDecimal(32.458922422202);
+		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		
+		BigDecimal eurToUsd2 = new BigDecimal(33.93972535567);
+		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		
+		BigDecimal eurToUsd3 = new BigDecimal(33.27812049435);
+		MConversionRate cr3 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, eurToUsd3, false);
+		
+		int M_PriceList_ID = 103; // Export in EUR
+		
+		try {
+			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
+			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
+					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
+					.setOrderBy("IsDefault DESC")
+					.first();
+			assertTrue(ba != null, "@NoAccountOrgCurrency@");
+			
+			MInvoice invoice1 = new MInvoice(Env.getCtx(), 0, getTrxName());			
+			invoice1.setC_BPartner_ID(BP_C_AND_W);
+			invoice1.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
+			invoice1.setC_DocType_ID(invoice1.getC_DocTypeTarget_ID());
+			invoice1.setPaymentRule(MInvoice.PAYMENTRULE_OnCredit);
+			invoice1.setC_PaymentTerm_ID(PAYMENT_TERM_IMMEDIATE);
+			invoice1.setDateInvoiced(date1);
+			invoice1.setDateAcct(date1);
+			invoice1.setM_PriceList_ID(M_PriceList_ID);
+			invoice1.setC_ConversionType_ID(C_ConversionType_ID);
+			invoice1.setDocStatus(DocAction.STATUS_Drafted);
+			invoice1.setDocAction(DocAction.ACTION_Complete);
+			invoice1.saveEx();
+
+			MInvoiceLine line = new MInvoiceLine(invoice1);
+			line.setLine(10);
+			line.setC_Charge_ID(CHARGE_FREIGHT);
+			line.setQty(BigDecimal.ONE);
+			BigDecimal invAmt = new BigDecimal(12587.48);
+			line.setPrice(invAmt);
+			line.setC_Tax_ID(104); // Standard
+			line.saveEx();
+			
+			completeDocument(invoice1);
+			postDocument(invoice1);
+			
+			BigDecimal payAmt = new BigDecimal(18549.52);
+			MPayment payment = createReceiptPayment(BP_C_AND_W, ba.getC_BankAccount_ID(), date2, euro.getC_Currency_ID(), C_ConversionType_ID, payAmt);
+			completeDocument(payment);
+			postDocument(payment);
+			
+			MAllocationHdr alloc1 = new MAllocationHdr(Env.getCtx(), true, date2, euro.getC_Currency_ID(), Env.getContext(Env.getCtx(), Env.AD_USER_NAME), getTrxName());
+			alloc1.setAD_Org_ID(payment.getAD_Org_ID());
+			int doctypeAlloc = MDocType.getDocType("CMA");
+			alloc1.setC_DocType_ID(doctypeAlloc);
+			alloc1.saveEx();
+			
+			BigDecimal allocAmount = new BigDecimal(12587.48);
+			MAllocationLine aLine = new MAllocationLine(alloc1, allocAmount, Env.ZERO, Env.ZERO, Env.ZERO);
+			aLine.setC_BPartner_ID(invoice1.getC_BPartner_ID());
+			aLine.setC_Invoice_ID(invoice1.getC_Invoice_ID());
+			aLine.setC_Payment_ID(payment.getC_Payment_ID());
+			aLine.saveEx();
+			
+			completeDocument(alloc1);
+			postDocument(alloc1);
+			
+			MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice1.getC_Invoice_ID(), getTrxName());
+			assertTrue(allocations.length == 1);
+			
+			MAllocationHdr allocation = allocations[0];
+			postDocument(allocation);
+			
+			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (MAcctSchema as : ass) {
+				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+					continue;
+				
+				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
+				doc.setC_BankAccount_ID(ba.getC_BankAccount_ID());
+				MAccount acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
+				BigDecimal ucAmtAcctDr = new BigDecimal(370.88).setScale(2, RoundingMode.HALF_UP);
+				
+				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
+						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
+						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
+						+ " ORDER BY Created";
+				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+				for (int id : ids) {
+					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
+						if (fa.getAmtAcctDr().signum() > 0)
+							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());
+					}
+				}
+			}
+			
+			MInvoice invoice2 = new MInvoice(Env.getCtx(), 0, getTrxName());			
+			invoice2.setC_BPartner_ID(BP_C_AND_W);
+			invoice2.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
+			invoice2.setC_DocType_ID(invoice2.getC_DocTypeTarget_ID());
+			invoice2.setPaymentRule(MInvoice.PAYMENTRULE_OnCredit);
+			invoice2.setC_PaymentTerm_ID(PAYMENT_TERM_IMMEDIATE);
+			invoice2.setDateInvoiced(date3);
+			invoice2.setDateAcct(date3);
+			invoice2.setM_PriceList_ID(M_PriceList_ID);
+			invoice2.setC_ConversionType_ID(C_ConversionType_ID);
+			invoice2.setDocStatus(DocAction.STATUS_Drafted);
+			invoice2.setDocAction(DocAction.ACTION_Complete);
+			invoice2.saveEx();
+
+			line = new MInvoiceLine(invoice2);
+			line.setLine(10);
+			line.setC_Charge_ID(CHARGE_FREIGHT);
+			line.setQty(BigDecimal.ONE);
+			invAmt = new BigDecimal(40125);
+			line.setPrice(invAmt);
+			line.setC_Tax_ID(104); // Standard
+			line.saveEx();
+			
+			completeDocument(invoice2);
+			postDocument(invoice2);
+			
+			MAllocationHdr alloc2 = new MAllocationHdr(Env.getCtx(), true, date3, euro.getC_Currency_ID(), Env.getContext(Env.getCtx(), Env.AD_USER_NAME), getTrxName());
+			alloc2.setAD_Org_ID(payment.getAD_Org_ID());
+			alloc2.setC_DocType_ID(doctypeAlloc);
+			alloc2.saveEx();
+			
+			allocAmount = new BigDecimal(5962.04);
+			aLine = new MAllocationLine(alloc2, allocAmount, Env.ZERO, Env.ZERO, Env.ZERO);
+			aLine.setC_BPartner_ID(invoice2.getC_BPartner_ID());
+			aLine.setC_Invoice_ID(invoice2.getC_Invoice_ID());
+			aLine.setC_Payment_ID(payment.getC_Payment_ID());
+			aLine.saveEx();
+			
+			completeDocument(alloc2);
+			postDocument(alloc2);
+			
+			allocations = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice2.getC_Invoice_ID(), getTrxName());
+			assertTrue(allocations.length == 1);
+			
+			allocation = allocations[0];
+			postDocument(allocation);
+			
+			for (MAcctSchema as : ass) {
+				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+					continue;
+				
+				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
+				doc.setC_BankAccount_ID(ba.getC_BankAccount_ID());
+				MAccount acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
+				BigDecimal ucAmtAcctDr = new BigDecimal(175.67).setScale(2, RoundingMode.HALF_UP);
+				BigDecimal ucAmtAcctCr = new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP);
+				
+				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
+						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
+						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
+						+ " ORDER BY Created";
+				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+				for (int id : ids) {
+					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
+						if (fa.getAmtAcctDr().signum() > 0)
+							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());		
+						else if (fa.getAmtAcctCr().signum() > 0)
+							assertTrue(fa.getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());
+					}
+				}
+			}
+		} finally {
+			deleteConversionRate(cr1);
+			deleteConversionRate(cr2);
+			deleteConversionRate(cr3);
+			
+			rollback();
+		}
+	}
 
 	private MInvoice createInvoice(Boolean isAR, Boolean isCreditMemo, Timestamp dateinvoiced,  Timestamp dateacct,
 			Integer bpartnerid, Integer payterm, Integer taxid, BigDecimal totallines) {

@@ -544,8 +544,6 @@ public class GridWorkbench implements Serializable
 		public int      WindowNo = -1;
 		/** Window Midel	*/
 		public GridWindow  mWindow = null;
-	//	public MFrame   mFrame = null;
-	//	public MProcess mProcess = null;
 	}   //  WBWindow
 	
 }   //  Workbench

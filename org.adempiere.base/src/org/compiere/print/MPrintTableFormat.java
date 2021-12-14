@@ -66,7 +66,6 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		super (ctx, AD_PrintTableFormat_ID, trxName);
 		if (AD_PrintTableFormat_ID == 0)
 		{
-		//	setName (null);
 			setIsDefault (false);
 			setIsPaintHeaderLines (true);	// Y
 			setIsPaintBoundaryLines (false);

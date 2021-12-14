@@ -2610,7 +2610,7 @@ public final class DB
 		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
 		String removeLeadingSpaces = "^\\s+";
 		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
-		if(cleanSql.matches("^select\s.*$") && !cleanSql.contains(";"))
+		if(cleanSql.matches("^select\\s.*$") && !cleanSql.contains(";"))
 			return true;
 		else
 			return false;
