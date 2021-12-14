@@ -76,9 +76,9 @@ public class DocumentStatusTest extends AbstractTestCase {
 		invoiceDS.saveEx();
 
 		X_PA_DocumentStatusAccess invoiceDSAccess = new X_PA_DocumentStatusAccess(Env.getCtx(),0, getTrxName());
-		invoiceDSAccess.set_ValueOfColumn("PA_DocumentStatus_ID", invoiceDS.get_ID());
-		invoiceDSAccess.set_ValueOfColumn("AD_User_ID", USER_GARDENADMIN);
-		invoiceDSAccess.set_ValueOfColumn("AD_Role_ID", ROLE_GARDENWORLDADMIN);
+		invoiceDSAccess.setPA_DocumentStatus_ID(invoiceDS.get_ID());
+		invoiceDSAccess.setAD_User_ID(USER_GARDENADMIN);
+		invoiceDSAccess.setAD_Role_ID(ROLE_GARDENWORLDADMIN);
 		invoiceDSAccess.saveEx();
 
 
@@ -101,8 +101,8 @@ public class DocumentStatusTest extends AbstractTestCase {
 		requestDS.saveEx();
 
 		X_PA_DocumentStatusAccess requestDSAccess = new X_PA_DocumentStatusAccess(Env.getCtx(),0, getTrxName());
-		requestDSAccess.set_ValueOfColumn("PA_DocumentStatus_ID", requestDS.get_ID());
-		requestDSAccess.set_ValueOfColumn("AD_Role_ID", ROLE_GARDENWORLDUSER);
+		requestDSAccess.setPA_DocumentStatus_ID(requestDS.get_ID());
+		requestDSAccess.setAD_Role_ID( ROLE_GARDENWORLDUSER);
 		requestDSAccess.saveEx();
 
 		/* Document Status with specific role access */
@@ -115,8 +115,8 @@ public class DocumentStatusTest extends AbstractTestCase {
 		WorkflowActivitiesDS.saveEx();
 
 		X_PA_DocumentStatusAccess WorkflowActivitiesDSAccess = new X_PA_DocumentStatusAccess(Env.getCtx(),0, getTrxName());
-		WorkflowActivitiesDSAccess.set_ValueOfColumn("PA_DocumentStatus_ID", WorkflowActivitiesDS.get_ID());
-		WorkflowActivitiesDSAccess.set_ValueOfColumn("AD_User_ID", USER_GARDENADMIN);
+		WorkflowActivitiesDSAccess.setPA_DocumentStatus_ID(WorkflowActivitiesDS.get_ID());
+		WorkflowActivitiesDSAccess.setAD_User_ID(USER_GARDENADMIN);
 		WorkflowActivitiesDSAccess.saveEx();
 
 		// check document status accessibility with user- GardenAdmin and role- GardenWorld Admin

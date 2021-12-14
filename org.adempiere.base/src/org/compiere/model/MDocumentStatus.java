@@ -60,7 +60,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	 */
 	public static MDocumentStatus[] getDocumentStatusIndicators(Properties ctx, int AD_User_ID, int AD_Role_ID)
 	{
-		return getDocumentStatusIndicators(ctx,AD_User_ID,AD_Role_ID);
+		return getDocumentStatusIndicators(ctx,AD_User_ID,AD_Role_ID,null);
 	}
 	
 	/**
