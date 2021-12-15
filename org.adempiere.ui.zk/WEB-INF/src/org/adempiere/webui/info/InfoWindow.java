@@ -78,6 +78,8 @@ import org.compiere.model.InfoColumnVO;
 import org.compiere.model.InfoRelatedVO;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAuthorizationAccount;
+import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MLookupFactory;
@@ -135,8 +137,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1180753002653812499L;
-	
+	private static final long serialVersionUID = -555428887004398025L;
+
 	protected Grid parameterGrid;
 	private Borderlayout layout;
 	private Vbox southBody;
@@ -565,7 +567,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					splitValue = true;
 					for(int i = 0; i < values.length && i < identifiers.size(); i++) {
 						WEditor editor = identifiers.get(i);
-						editor.setValue(values[i].trim());
+						if (! editorIsTranslated(editor))
+							editor.setValue(values[i].trim());
 					}
 					testCount(false);
 				} 
@@ -579,6 +582,32 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			editors.get(0).setValue(queryValue);
 		}
 		isQueryByUser = false;
+	}
+
+	/**
+	 * Verify if the column related to the editor is translated and we are working in a translated env
+	 * @param editor
+	 * @return true if the column from the editor is translated
+	 */
+	private boolean editorIsTranslated(WEditor editor) {
+		MClient client = MClient.get(Env.getCtx());
+		if (! client.isMultiLingualDocument())
+			return false;
+		if (client.getAD_Language().equals(Env.getAD_Language(Env.getCtx())))
+			return false;
+		if (   editor.getGridField() == null
+			|| editor.getGridField().getVO() == null
+			|| editor.getGridField().getVO().AD_Infowindow_ID <= 0)
+			return false;
+		int winId = editor.getGridField().getVO().AD_Infowindow_ID;
+		MInfoWindow win = MInfoWindow.getInfoWindow(winId);
+		if (win == null || win.getAD_Table_ID() <= 0)
+			return false;
+		MTable table = MTable.get(win.getAD_Table_ID());
+		MColumn column = table.getColumn(editor.getColumnName());
+		if (column == null)
+			return false;
+		return column.isTranslated();
 	}
 
 	@Override
