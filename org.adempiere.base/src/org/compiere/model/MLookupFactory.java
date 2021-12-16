@@ -491,6 +491,7 @@ public class MLookupFactory
 			}
 		}
 
+		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 		String lookupDisplayColumn = null;
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
@@ -499,7 +500,7 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
-				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '-' || ");
+				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
 			if (displayColumnSQL != null && displayColumnSQL.trim().length() > 0)
 				realSQL.append("NVL(").append(displayColumnSQL).append(",'-1')");
 			else {
@@ -527,7 +528,7 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
-				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '-' || ");
+				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
 			if (displayColumnSQL != null && displayColumnSQL.trim().length() > 0)
 				realSQL.append("NVL(").append(displayColumnSQL).append(",'-1')");
 			else {
@@ -673,8 +674,10 @@ public class MLookupFactory
 
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
 
-		if (isValueDisplayed)
-			embedSQL.append(TableNameAlias).append(".Value||'-'||");
+		if (isValueDisplayed) {
+			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+			embedSQL.append(TableNameAlias).append(".Value||'").append(separator).append("'||");
+		}
 
 		MColumn columnDisplay = new MColumn(Env.getCtx(), columnDisplay_ID, null);
 		if (columnDisplay.isVirtualUIColumn() || columnDisplay.isVirtualSearchColumn())
