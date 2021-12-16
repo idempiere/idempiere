@@ -326,21 +326,6 @@ public interface I_AD_Package_Exp_Detail
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
-    /** Column name AD_Workbench_ID */
-    public static final String COLUMNNAME_AD_Workbench_ID = "AD_Workbench_ID";
-
-	/** Set Workbench.
-	  * Collection of windows, reports
-	  */
-	public void setAD_Workbench_ID (int AD_Workbench_ID);
-
-	/** Get Workbench.
-	  * Collection of windows, reports
-	  */
-	public int getAD_Workbench_ID();
-
-	public org.compiere.model.I_AD_Workbench getAD_Workbench() throws RuntimeException;
-
     /** Column name AD_Workflow_ID */
     public static final String COLUMNNAME_AD_Workflow_ID = "AD_Workflow_ID";
 
@@ -520,10 +505,10 @@ public interface I_AD_Package_Exp_Detail
     /** Column name SQLStatement */
     public static final String COLUMNNAME_SQLStatement = "SQLStatement";
 
-	/** Set SQLStatement	  */
+	/** Set SQL Expression/Statement	  */
 	public void setSQLStatement (String SQLStatement);
 
-	/** Get SQLStatement	  */
+	/** Get SQL Expression/Statement	  */
 	public String getSQLStatement();
 
     /** Column name Target_Directory */
