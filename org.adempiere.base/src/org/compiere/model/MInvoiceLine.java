@@ -940,14 +940,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				return false;
 		
 			// red1 - solving BUGS #[ 1701331 ] , #[ 1786103 ]
-			if (tax.getTaxAmt().signum() != 0) {
-				if (!tax.save(get_TrxName()))
-					return false;
-			}
-			else {
-				if (!tax.is_new() && !tax.delete(false, get_TrxName()))
-					return false;
-			}
+			if (!tax.save(get_TrxName()))
+				return false;
 		}
 		return true;
 	}
