@@ -1,0 +1,40 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- IDEMPIERE-5102 Deactivate AD_Desktop and AD_Workbench
+-- Dec 16, 2021, 2:06:14 PM MYT
+UPDATE AD_Table SET IsActive='N',Updated=TO_DATE('2021-12-16 14:06:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=458
+;
+
+-- Dec 16, 2021, 2:06:22 PM MYT
+UPDATE AD_Table SET IsActive='N',Updated=TO_DATE('2021-12-16 14:06:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=460
+;
+
+-- Dec 16, 2021, 2:06:30 PM MYT
+UPDATE AD_Table SET IsActive='N',Updated=TO_DATE('2021-12-16 14:06:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=459
+;
+
+-- Dec 16, 2021, 2:08:00 PM MYT
+UPDATE AD_Table SET IsActive='N',Updated=TO_DATE('2021-12-16 14:08:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=468
+;
+
+-- Dec 16, 2021, 2:08:05 PM MYT
+UPDATE AD_Table SET IsActive='N',Updated=TO_DATE('2021-12-16 14:08:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=470
+;
+
+-- Dec 16, 2021, 2:08:11 PM MYT
+UPDATE AD_Table SET IsActive='N',Updated=TO_DATE('2021-12-16 14:08:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=469
+;
+
+-- IDEMPIERE-5102 Deactivate AD_Desktop and AD_Workbench
+-- Dec 16, 2021, 2:16:14 PM MYT
+UPDATE AD_Column SET IsActive='N',Updated=TO_DATE('2021-12-16 14:16:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=50129
+;
+
+-- Dec 16, 2021, 2:16:34 PM MYT
+UPDATE AD_Field SET IsActive='N', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2021-12-16 14:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=50112
+;
+
+SELECT register_migration_script('202112160650_IDEMPIERE-5102.sql') FROM dual
+;
+
