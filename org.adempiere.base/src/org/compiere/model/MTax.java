@@ -381,7 +381,11 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		if (getTo_Country_ID() > 0 && getC_CountryGroupTo_ID() > 0) {
 			setTo_Country_ID(0);
 		}
-
+		if (isSummary()) {
+			if (getParent_Tax_ID() > 0) {
+				setParent_Tax_ID(0);
+			}
+		}
 		return super.beforeSave(newRecord);
 	}
 	
