@@ -31,7 +31,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210923L;
+	private static final long serialVersionUID = 20211216L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -599,35 +599,6 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_Workbench getAD_Workbench() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Workbench)MTable.get(getCtx(), org.compiere.model.I_AD_Workbench.Table_ID)
-			.getPO(getAD_Workbench_ID(), get_TrxName());
-	}
-
-	/** Set Workbench.
-		@param AD_Workbench_ID 
-		Collection of windows, reports
-	  */
-	public void setAD_Workbench_ID (int AD_Workbench_ID)
-	{
-		if (AD_Workbench_ID < 1) 
-			set_Value (COLUMNNAME_AD_Workbench_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Workbench_ID, Integer.valueOf(AD_Workbench_ID));
-	}
-
-	/** Get Workbench.
-		@return Collection of windows, reports
-	  */
-	public int getAD_Workbench_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workbench_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
@@ -904,15 +875,15 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 		return (String)get_Value(COLUMNNAME_ReleaseNo);
 	}
 
-	/** Set SQLStatement.
-		@param SQLStatement SQLStatement	  */
+	/** Set SQL Expression/Statement.
+		@param SQLStatement SQL Expression/Statement	  */
 	public void setSQLStatement (String SQLStatement)
 	{
 		set_Value (COLUMNNAME_SQLStatement, SQLStatement);
 	}
 
-	/** Get SQLStatement.
-		@return SQLStatement	  */
+	/** Get SQL Expression/Statement.
+		@return SQL Expression/Statement	  */
 	public String getSQLStatement () 
 	{
 		return (String)get_Value(COLUMNNAME_SQLStatement);
