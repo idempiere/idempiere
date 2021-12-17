@@ -1545,7 +1545,7 @@ public final class Env
 	 *	@param WindowNo	Number of Window
 	 *	@param tabNo	Number of Tab
 	 *	@param value Message to be parsed
-	 *  @param onlyTab if true, no defaults are used
+	 *  @param onlyTab if true, only value from tabNo are used
 	 * 	@param ignoreUnparsable if true, unsuccessful @return parsed String or "" if not successful and ignoreUnparsable
 	 *	@return parsed context
 	 */
@@ -1629,15 +1629,15 @@ public final class Env
 	 *
 	 *  @param ctx context
 	 *	@param	WindowNo	Number of Window
-	 *	@param	TabNo   	Number of Tab
+	 *	@param	tabNo   	Number of Tab
 	 *	@param	value		Message to be parsed
-	 *  @param  onlyWindow  if true, no defaults are used
+	 *  @param  onlyTab  	if true, no value from tabNo are used
 	 *  @return parsed String or "" if not successful
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
-		boolean onlyWindow)
+		boolean onlyTab)
 	{
-		return parseContext(ctx, WindowNo, tabNo, value, onlyWindow, false);
+		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, false);
 	}	//	parseContext
 
 	/**
