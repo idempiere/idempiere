@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -1027,8 +1026,7 @@ public class DataEngine
 						if (pdc.hasAlias())
 						{
 							//	DisplayColumn first
-							int displayIndex = counter++;
-							String display = rs.getString(displayIndex);
+							String display = rs.getString(counter++);
 							if (pdc.getColumnName().endsWith("_ID"))
 							{
 								int id = rs.getInt(counter++);
@@ -1040,49 +1038,27 @@ public class DataEngine
 							}
 							else
 							{
-								
-
-								
 								String id = rs.getString(counter++);
 								if (display != null && !rs.wasNull())
 								{
 									/** START DEVCOFFEE: script column **/
 									int displayType = pdc.getDisplayType();
-									if (display.startsWith("@SCRIPT")) {
-										Object value = rs.getObject(displayIndex);
-										int columnType = rs.getMetaData().getColumnType(displayIndex);
-										// String, Text
-										if (columnType == Types.CHAR || columnType == Types.VARCHAR)
+									if (display.startsWith("@SCRIPT"))
+									{
+										displayType = DisplayType.Number;
+										display = display.replace("@SCRIPT", "");
+										Object value = parseVariable(display, pdc, pd);
+										Interpreter bsh = new Interpreter ();
+										try
 										{
-											displayType = DisplayType.Text;
-										}
-										else if (columnType == Types.DATE || columnType == Types.TIME
-												|| columnType == Types.TIMESTAMP)
+											value = bsh.eval(value.toString());
+										} catch (EvalError e)
 										{
-											displayType = DisplayType.DateTime;
-										}
-										// Number
-										else if (columnType == Types.INTEGER || columnType == Types.SMALLINT
-											|| columnType == Types.DECIMAL || columnType == Types.NUMERIC)
-										{
-											displayType = DisplayType.Number;
-										}
-
-										if (display.startsWith("@SCRIPT"))
-										{
-											displayType = DisplayType.Number;
-											display = display.replace("@SCRIPT", "");
-											value = parseVariable(display, pdc, pd);
-											Interpreter bsh = new Interpreter ();
-											try {
-												value = bsh.eval(value.toString());
-												
-											} catch (EvalError e) {
-												log.severe(e.getMessage());
-											}
+											log.severe(e.getMessage());
 										}
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), (Serializable) value, displayType, pdc.getFormatPattern());
-									} else {
+									} else
+									{
 										ValueNamePair pp = new ValueNamePair(id, display);
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), pp, displayType, pdc.getFormatPattern());
 									}
