@@ -34,7 +34,6 @@ import org.compiere.model.MEntityType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.X_PA_DocumentStatusAccess;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -160,6 +159,5 @@ public class DocumentStatusTest extends AbstractTestCase {
 		assertFalse(Arrays.asList(documentStatusIndicators).contains(WorkflowActivitiesDS),
 				"User assignment not visible, Should not Visible");
 
-		rollback();
 	}
 }

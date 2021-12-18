@@ -41,7 +41,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5908220133480463782L;
+	private static final long serialVersionUID = 4028519324986534673L;
 
 	public MDocumentStatus(Properties ctx, int PA_DocumentStatus_ID, String trxName) {
 		super(ctx, PA_DocumentStatus_ID, trxName);
@@ -76,29 +76,27 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 		if (AD_User_ID < 0)
 			return new MDocumentStatus[0];
 
-		String whereClause = "PA_DocumentStatus.AD_Client_ID IN (0,?) AND ((dsa.AD_User_ID IS NULL OR dsa.AD_User_ID=?) "
-				+ "AND ( dsa.AD_Role_ID IS NULL OR dsa.AD_Role_ID=?) AND (dsa.AD_Client_ID IS NULL OR dsa.AD_Client_ID IN (0,?)))";
-		String joinClause = "LEFT JOIN PA_DocumentStatusAccess dsa ON PA_DocumentStatus.PA_DocumentStatus_ID = dsa.PA_DocumentStatus_ID "
-				+ "AND dsa.IsActive = 'Y' ";
+		String whereClause = "AD_Client_ID IN (0,?)";
 
 		List<MDocumentStatus> list = new Query(ctx, MDocumentStatus.Table_Name, whereClause, trxName)
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MDocumentStatus.COLUMNNAME_SeqNo)
-				.addJoinClause(joinClause)
-				.setParameters(Env.getAD_Client_ID(ctx), AD_User_ID, AD_Role_ID,Env.getAD_Client_ID(ctx))
+				.setParameters(Env.getAD_Client_ID(ctx))
 				.list();
 
 		/* Verify access for user/role */
 		List<MDocumentStatus> listWithAccess = new ArrayList<MDocumentStatus>();
 		for (MDocumentStatus ds : list) {
-			if (ds.getAD_Window_ID() > 0) {
-				Boolean access = MRole.getDefault().getWindowAccess(ds.getAD_Window_ID());
-				if (access != null)
-					listWithAccess.add(ds);
-			} else if (ds.getAD_Form_ID() > 0) {
-				Boolean access = MRole.getDefault().getFormAccess(ds.getAD_Form_ID());
-				if (access != null)
-					listWithAccess.add(ds);
+			if (ds.canAccess(ctx, AD_User_ID, AD_Role_ID, trxName)) {
+				if (ds.getAD_Window_ID() > 0) {
+					Boolean access = MRole.getDefault().getWindowAccess(ds.getAD_Window_ID());
+					if (access != null)
+						listWithAccess.add(ds);
+				} else if (ds.getAD_Form_ID() > 0) {
+					Boolean access = MRole.getDefault().getFormAccess(ds.getAD_Form_ID());
+					if (access != null)
+						listWithAccess.add(ds);
+				}
 			}
 		}
 
@@ -143,6 +141,34 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 		sb.append(get_ID()).append("-").append(getName())
 			.append("]");
 		return sb.toString();
+	}
+
+	/**
+	 * Verify access against the table PA_DocumentStatusAccess
+	 * @param userId  AD_User_ID
+	 * @param roleId  AD_Role_ID
+	 * @return true if the user/role has access
+	 */
+	private boolean canAccess(Properties ctx, int userId, int roleId, String trxName) {
+		List<MDocumentStatusAccess> accessList = new Query(ctx, MDocumentStatusAccess.Table_Name, "PA_DocumentStatus_ID=? AND AD_Client_ID IN (0,?)", trxName)
+				.setOnlyActiveRecords(true)
+				.setParameters(getPA_DocumentStatus_ID(), Env.getAD_Client_ID(ctx))
+				.list();
+
+		if (accessList.size() == 0)
+			return true; // no permissions set on System or Tenant - allow access
+
+		for (MDocumentStatusAccess access : accessList) {
+			/* the only problem here is that is not easy to hide things from System role or System user
+			 * but as they are the administrators is not a problem
+			 */
+			if (access.getAD_Role_ID() == roleId)
+				return true;
+			if (access.getAD_User_ID() == userId)
+				return true;
+		}
+
+		return false;
 	}
 
 }
