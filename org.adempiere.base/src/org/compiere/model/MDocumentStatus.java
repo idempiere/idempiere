@@ -60,15 +60,32 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	 */
 	public static MDocumentStatus[] getDocumentStatusIndicators(Properties ctx, int AD_User_ID, int AD_Role_ID)
 	{
+		return getDocumentStatusIndicators(ctx,AD_User_ID,AD_Role_ID,null);
+	}
+	
+	/**
+	 * Get Document Status Indicators
+	 * @param ctx
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @param trxName
+	 * @return array of document status
+	 */
+	public static MDocumentStatus[] getDocumentStatusIndicators(Properties ctx, int AD_User_ID, int AD_Role_ID, String trxName)
+	{
 		if (AD_User_ID < 0)
 			return new MDocumentStatus[0];
 
-		String whereClause = "AD_Client_ID IN (0,?) AND ((AD_User_ID IS NULL OR AD_User_ID=?) AND ( AD_Role_ID IS NULL OR AD_Role_ID=?))";
+		String whereClause = "PA_DocumentStatus.AD_Client_ID IN (0,?) AND ((dsa.AD_User_ID IS NULL OR dsa.AD_User_ID=?) "
+				+ "AND ( dsa.AD_Role_ID IS NULL OR dsa.AD_Role_ID=?) AND (dsa.AD_Client_ID IS NULL OR dsa.AD_Client_ID IN (0,?)))";
+		String joinClause = "LEFT JOIN PA_DocumentStatusAccess dsa ON PA_DocumentStatus.PA_DocumentStatus_ID = dsa.PA_DocumentStatus_ID "
+				+ "AND dsa.IsActive = 'Y' ";
 
-		List<MDocumentStatus> list = new Query(ctx, MDocumentStatus.Table_Name, whereClause, null)
+		List<MDocumentStatus> list = new Query(ctx, MDocumentStatus.Table_Name, whereClause, trxName)
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MDocumentStatus.COLUMNNAME_SeqNo)
-				.setParameters(Env.getAD_Client_ID(ctx), AD_User_ID, AD_Role_ID)
+				.addJoinClause(joinClause)
+				.setParameters(Env.getAD_Client_ID(ctx), AD_User_ID, AD_Role_ID,Env.getAD_Client_ID(ctx))
 				.list();
 
 		/* Verify access for user/role */
