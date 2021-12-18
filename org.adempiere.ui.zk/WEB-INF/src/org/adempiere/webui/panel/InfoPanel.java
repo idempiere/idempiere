@@ -619,8 +619,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         String sql =contentPanel.prepareTable(layout, from,
                 where,p_multipleSelection,
                 getTableName(),false);
-	if (infoWindow != null)	
+	    if (infoWindow != null)	    	
         	contentPanel.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() );
+	    else
+	    	contentPanel.setwListBoxName("AD_InfoPanel|"+ from );
         p_layout = contentPanel.getLayout();
 		m_sqlMain = sql;
 		m_sqlCount = "SELECT COUNT(*) FROM " + from + " WHERE " + where;
@@ -2767,7 +2769,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (SessionManager.getSessionApplication() != null &&
 				SessionManager.getSessionApplication().getKeylistener() != null)
 				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
-			if (infoWindow != null && getFirstChild() != null)
+			if (getFirstChild() != null)
 				saveWlistBoxColumnWidth(getFirstChild());
 		} catch (Exception e){
 			log.log(Level.WARNING, e.getMessage(), e);
