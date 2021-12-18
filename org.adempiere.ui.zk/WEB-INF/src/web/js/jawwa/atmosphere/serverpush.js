@@ -41,7 +41,7 @@
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
     	  if (me.trace)
     		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
-    	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound" && jqxhr.status != 504) {
+    	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound") {
 	          console.error("error: " + textStatus + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
 	          me.failures += 1;
     	  }
