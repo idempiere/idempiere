@@ -25,6 +25,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -1043,22 +1044,26 @@ public class DataEngine
 								{
 									/** START DEVCOFFEE: script column **/
 									int displayType = pdc.getDisplayType();
-									if (display.startsWith("@SCRIPT"))
-									{
-										displayType = DisplayType.Number;
+									if (display.startsWith("@SCRIPT")) {
 										display = display.replace("@SCRIPT", "");
 										Object value = parseVariable(display, pdc, pd);
 										Interpreter bsh = new Interpreter ();
-										try
-										{
+										try {
 											value = bsh.eval(value.toString());
-										} catch (EvalError e)
-										{
+										}
+										catch (EvalError e) {
 											log.severe(e.getMessage());
 										}
+										if (value instanceof Number)
+											displayType = DisplayType.Number;
+										else if (value instanceof Boolean)
+											displayType = DisplayType.YesNo;
+										else if (value instanceof Date)
+											displayType = DisplayType.Date;
+										else
+											displayType = DisplayType.Text;
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), (Serializable) value, displayType, pdc.getFormatPattern());
-									} else
-									{
+									} else {
 										ValueNamePair pp = new ValueNamePair(id, display);
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), pp, displayType, pdc.getFormatPattern());
 									}
@@ -1317,11 +1322,13 @@ public class DataEngine
 
 			token = inStr.substring(0, j);
 
-			if (token.startsWith("ACCUMULATE/")) {
-
+			if (token.startsWith("ACCUMULATE/"))
+			{
 				token = token.replace("ACCUMULATE/", "");
-
-				BigDecimal value = (BigDecimal) ((PrintDataElement)pd.getNode(token)).getValue();
+				Object tokenPDE = pd.getNode(token);
+				if (tokenPDE == null)
+					return "\"Item not found: " + token + "\"";
+				BigDecimal value = (BigDecimal) ((PrintDataElement)tokenPDE).getValue();
 
 				if (m_summarized.containsKey(pdc))
 				{
@@ -1336,7 +1343,10 @@ public class DataEngine
 			else if (token.startsWith("COL/"))
 			{
 				token = token.replace("COL/", "");
-				BigDecimal value = (BigDecimal) ((PrintDataElement)pd.getNode(token)).getValue();
+				Object tokenPDE = pd.getNode(token);
+				if (tokenPDE == null)
+					return "\"Item not found: " + token + "\"";
+				Object value = ((PrintDataElement)tokenPDE).getValue();
 				outStr.append(value);
 			}
 
