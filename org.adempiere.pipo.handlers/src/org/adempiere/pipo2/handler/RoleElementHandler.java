@@ -18,6 +18,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -131,7 +132,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createOrgAccess(ctx, document, rs.getInt("AD_Org_ID"), rs.getInt("AD_Role_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_Role_OrgAccess", e);
 			throw new DatabaseAccessException("Failed to export organization role access.");
 		} finally {
@@ -150,7 +151,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createUserRole(ctx, document, rs.getInt("AD_User_ID"), rs.getInt("AD_Role_ID"), rs.getInt("AD_Org_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_User_Roles", e);
 			throw new DatabaseAccessException("Failed to export user role assignment.");
 		} finally {
@@ -168,7 +169,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createWindowAccess(ctx, document, rs.getInt("AD_Window_ID"), rs.getInt("AD_Role_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_Window_Access", e);
 			throw new DatabaseAccessException("Failed to export window access.");
 		} finally {
@@ -185,7 +186,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createProcessAccess(ctx, document, rs.getInt("AD_Process_ID"), rs.getInt("AD_Role_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_Process_Access", e);
 			throw new DatabaseAccessException("Failed to export process access.");
 		} finally {
@@ -202,7 +203,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createFormAccess(ctx, document, rs.getInt("AD_Form_ID"), rs.getInt("AD_Role_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_Form_Access", e);
 			throw new DatabaseAccessException("Failed to export form access.");
 		} finally {
@@ -219,7 +220,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createWorkflowAccess(ctx, document, rs.getInt("AD_Workflow_ID"), rs.getInt("AD_Role_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_Workflow_Access", e);
 			throw new DatabaseAccessException("Failed to export workflow access.");
 		} finally {
@@ -236,7 +237,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createTaskAccess(ctx, document, rs.getInt("AD_Task_ID"), rs.getInt("AD_Role_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_Task_Access", e);
 			throw new DatabaseAccessException("Failed to export task access.");
 		} finally {
@@ -253,7 +254,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createInfoWindowAccess(ctx, document, rs.getInt("AD_InfoWindow_ID"), rs.getInt("AD_Role_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "AD_InfoWindow_Access", e);
 			throw new DatabaseAccessException("Failed to export InfoWindow access.");
 		} finally {

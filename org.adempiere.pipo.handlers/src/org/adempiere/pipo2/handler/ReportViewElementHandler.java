@@ -18,11 +18,13 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
@@ -129,8 +131,8 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createReportViewCol(ctx, document, rs.getInt("AD_ReportView_Col_ID"));
 			}
-		} catch (Exception e) {
-			throw new AdempiereException(e);
+		} catch (SQLException e) {
+			throw new DBException(e);
 		} finally {
 			DB.close(rs, pstmt);
 		}
@@ -145,8 +147,8 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createReportViewColumn(ctx, document, AD_ReportView_ID, rs.getInt("AD_Column_ID"));
 			}
-		} catch (Exception e) {
-			throw new AdempiereException(e);
+		} catch (SQLException e) {
+			throw new DBException(e);
 		} finally {
 			DB.close(rs, pstmt);
 		}
