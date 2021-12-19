@@ -102,9 +102,14 @@ public class MProduction extends X_M_Production implements DocAction {
 
 		StringBuilder errors = new StringBuilder();
 		int processed = 0;
-			
+
 		if (!isUseProductionPlan()) {
-			MProductionLine[] lines = getLines();
+			List<MProductionLine> linesList = new Query(Env.getCtx(), I_M_ProductionLine.Table_Name
+					, "M_ProductionLine.M_Production_ID=?", get_TrxName())
+					.setNoVirtualColumn(true)
+					.setOrderBy("M_ProductionLine.Line, M_ProductionLine.M_ProductionLine_ID")
+					.setParameters(getM_Production_ID()).list();
+			MProductionLine[] lines = linesList.toArray(new MProductionLine[0]);
 			//IDEMPIERE-3107 Check if End Product in Production Lines exist
 			if(!isHaveEndProduct(lines)) {
 				m_processMsg = "Production does not contain End Product";
@@ -117,11 +122,17 @@ public class MProduction extends X_M_Production implements DocAction {
 			}
 			processed = processed + lines.length;
 		} else {
-			Query planQuery = new Query(Env.getCtx(), I_M_ProductionPlan.Table_Name, "M_ProductionPlan.M_Production_ID=?", get_TrxName());
+			Query linesQuery = new Query(Env.getCtx(), I_M_ProductionLine.Table_Name
+					, "M_ProductionLine.M_ProductionPlan_ID=?", get_TrxName())
+					.setNoVirtualColumn(true)
+					.setOrderBy("M_ProductionLine.Line, M_ProductionLine.M_ProductionLine_ID");
+			Query planQuery = new Query(Env.getCtx(), I_M_ProductionPlan.Table_Name
+					, "M_ProductionPlan.M_Production_ID=?", get_TrxName());
 			List<MProductionPlan> plans = planQuery.setParameters(getM_Production_ID()).list();
 			for(MProductionPlan plan : plans) {
-				MProductionLine[] lines = plan.getLines();
-				
+				List<MProductionLine> linesList = linesQuery.setParameters(plan.getM_ProductionPlan_ID()).list();
+				MProductionLine[] lines = linesList.toArray(new MProductionLine[0]);
+
 				//IDEMPIERE-3107 Check if End Product in Production Lines exist
 				if(!isHaveEndProduct(lines)) {
 					m_processMsg = String.format("Production plan (line %1$d id %2$d) does not contain End Product", plan.getLine(), plan.get_ID());
@@ -148,7 +159,6 @@ public class MProduction extends X_M_Production implements DocAction {
 			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
-
 		setProcessed(true);
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
