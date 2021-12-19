@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -99,17 +100,24 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
-		MProductionLine parentLine = new MProductionLine(getCtx(), getM_ProductionLine_ID(), get_TrxName());
-		MProduction prodParent;
-		if (parentLine.getM_Production_ID() > 0) {
-			prodParent = new MProduction(getCtx(), parentLine.getM_Production_ID(), get_TrxName());
-		} else {
-			MProductionPlan plan = new MProductionPlan(getCtx(), parentLine.getM_ProductionPlan_ID(), get_TrxName());
-			prodParent = new MProduction(getCtx(), plan.getM_Production_ID(), get_TrxName());
-		}
-		if (newRecord && prodParent.isProcessed()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
-			return false;
+		if(newRecord) {
+			String sql = "SELECT 1 FROM M_Production "
+					+ "WHERE Processed = 'Y' AND M_Production_ID IN"
+					+ " (SELECT M_Production_ID FROM M_ProductionLine WHERE M_ProductionLine_ID = ?)";
+			boolean isProcessed = 0 < DB.getSQLValue(get_TrxName(), sql, getM_ProductionLine_ID());
+			if(!isProcessed) {
+				sql = "SELECT 1 FROM M_Production "
+						+ "INNER JOIN M_ProductionPlan ON "
+						+ "  M_ProductionPlan.M_Production_ID = M_Production.M_Production_ID "
+						+ "INNER JOIN M_ProductionLine ON "
+						+ "  M_ProductionLine.M_ProductionPlan_ID = M_ProductionPlan.M_ProductionPlan_ID "
+						+ "WHERE M_ProductionLine.M_ProductionLine_ID = ? AND M_Production.Processed = 'Y'";
+				isProcessed = 0 < DB.getSQLValue(get_TrxName(), sql, getM_ProductionLine_ID());
+			}
+			if(isProcessed) {
+				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+				return false;
+			}
 		}
 		return true;
 	}
