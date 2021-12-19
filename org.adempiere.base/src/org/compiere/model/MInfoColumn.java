@@ -104,14 +104,24 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 	 */
 	public boolean isColumnAccess(TableInfo[] tableInfos)
 	{
+		String synonym = null;
+		String column = null;
 		int index = getSelectClause().indexOf(".");
 		if (index == getSelectClause().lastIndexOf(".") && index >= 0)
 		{
-			String synonym = getSelectClause().substring(0, index);
-			String column = getSelectClause().substring(index+1);
+			synonym = getSelectClause().substring(0, index);
+			column = getSelectClause().substring(index+1);
+		}
+		else if (tableInfos.length == 1)
+		{
+			synonym = Util.isEmpty(tableInfos[0].getSynonym(), true) ? tableInfos[0].getTableName() : tableInfos[0].getSynonym();
+			column = getSelectClause();
+		}
+		if (!Util.isEmpty(synonym, true) && !Util.isEmpty(column, true))
+		{
 			for(TableInfo tableInfo : tableInfos)
 			{
-				if (tableInfo.getSynonym() != null && tableInfo.getSynonym().equals(synonym))
+				if ((!Util.isEmpty(tableInfo.getSynonym(),true) && tableInfo.getSynonym().equals(synonym)) || (Util.isEmpty(tableInfo.getSynonym(),true) && tableInfo.getTableName().equals(synonym)))
 				{
 					String tableName = tableInfo.getTableName();
 					MTable mTable = MTable.get(Env.getCtx(), tableName);
