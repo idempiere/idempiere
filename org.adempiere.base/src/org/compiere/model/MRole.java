@@ -609,12 +609,12 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		}
 
 		loadAccess(true);
-		return "@AD_Window_ID@ #" + win 
+		return Msg.parseTranslation(getCtx(), "@AD_Window_ID@ #" + win 
 			+ " -  @AD_Process_ID@ #" + proc
 			+ " -  @AD_Form_ID@ #" + form
 			+ " -  @AD_Workflow_ID@ #" + wf
 			+ " -  @DocAction@ #" + docact
-			+ " -  @AD_InfoWindow_ID@ #" + info;
+			+ " -  @AD_InfoWindow_ID@ #" + info);
 		
 	}	//	createAccessRecords
 

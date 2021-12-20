@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -306,6 +307,10 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 				" FROM AD_Process_Para_Trl WHERE AD_Process_Para_ID = ? ";
 		count = DB.executeUpdateEx(sql, new Object[] { getAD_Process_Para_ID(), source.getAD_Process_Para_ID() }, get_TrxName());
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "AD_Process_Para_Trl inserted: " + count);
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE AD_Process_Para_Trl SET AD_Process_Para_Trl_UU=generate_uuid() WHERE AD_Process_Para_Trl_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), "AD_Process_Para_Trl", "AD_Process_Para_Trl_UU"), get_TrxName());		
 		
 	}
 

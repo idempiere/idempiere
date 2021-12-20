@@ -47,6 +47,10 @@ import javax.print.attribute.standard.JobPriority;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JDialog;
 
+import org.adempiere.process.UUIDGenerator;
+import org.compiere.model.MColumn;
+import org.compiere.model.PO;
+import org.compiere.model.X_AD_PrintForm;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -484,6 +488,12 @@ public class PrintUtil
 		int no = DB.executeUpdate(sql, trxName);
 		if (no != 1)
 			log.log(Level.SEVERE, "PrintForm NOT inserted");
+
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE AD_PrintForm SET AD_PrintForm_UU=generate_uuid() WHERE AD_PrintForm_UU IS NULL", trxName);
+		else
+			UUIDGenerator.updateUUID(MColumn.get(ctx, X_AD_PrintForm.Table_Name, PO.getUUIDColumnName(X_AD_PrintForm.Table_Name)), trxName);
+		
 		//
 		CLogMgt.enable(true);
 	}	//	createDocuments
