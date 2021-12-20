@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -160,7 +161,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createItem(ctx, document, rs.getInt("AD_PrintFormatItem_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new DBException(e);
 		} finally {
 			DB.close(rs, pstmt);

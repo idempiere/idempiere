@@ -18,6 +18,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -138,7 +139,7 @@ public class TabElementHandler extends AbstractElementHandler {
 				createField(ctx, document, rs.getInt("AD_Field_ID"));
 			}
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			log.log(Level.SEVERE,e.getLocalizedMessage(), e);
 			throw new DatabaseAccessException("Failed to export window tab", e);
