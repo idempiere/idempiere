@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -47,6 +48,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
+import org.compiere.wf.MWorkflowAccess;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.POCopyCache;
 
@@ -589,6 +591,22 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		int wf = DB.executeUpdateEx(sqlWorkflow + roleAccessLevel, get_TrxName());
 		int docact = DB.executeUpdateEx(sqlDocAction, get_TrxName());
 		int info = DB.executeUpdateEx(sqlInfo + roleAccessLevel, get_TrxName());
+
+		if (DB.isGenerateUUIDSupported()) {
+			DB.executeUpdateEx("UPDATE AD_Window_Access SET AD_Window_Access_UU=generate_uuid() WHERE AD_Window_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Process_Access SET AD_Process_Access_UU=generate_uuid() WHERE AD_Process_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Form_Access SET AD_Form_Access_UU=generate_uuid() WHERE AD_Form_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Workflow_Access SET AD_Workflow_Access_UU=generate_uuid() WHERE AD_Workflow_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Document_Action_Access SET AD_Document_Action_Access_UU=generate_uuid() WHERE AD_Document_Action_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_InfoWindow_Access SET AD_InfoWindow_Access_UU=generate_uuid() WHERE AD_InfoWindow_Access_UU IS NULL", get_TrxName());
+		} else {
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MWindowAccess.Table_Name,         PO.getUUIDColumnName(MWindowAccess.Table_Name)),         get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MProcessAccess.Table_Name,        PO.getUUIDColumnName(MProcessAccess.Table_Name)),        get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MFormAccess.Table_Name,           PO.getUUIDColumnName(MFormAccess.Table_Name)),           get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MWorkflowAccess.Table_Name,       PO.getUUIDColumnName(MWorkflowAccess.Table_Name)),       get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MDocumentActionAccess.Table_Name, PO.getUUIDColumnName(MDocumentActionAccess.Table_Name)), get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MInfoWindowAccess.Table_Name,     PO.getUUIDColumnName(MInfoWindowAccess.Table_Name)),     get_TrxName());
+		}
 
 		loadAccess(true);
 		return "@AD_Window_ID@ #" + win 

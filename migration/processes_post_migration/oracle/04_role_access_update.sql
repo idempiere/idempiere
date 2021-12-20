@@ -94,6 +94,13 @@ BEGIN
       -- DBMS_OUTPUT.PUT_LINE (sqlins);
       EXECUTE IMMEDIATE sqlins;
 
+      UPDATE AD_Window_Access SET AD_Window_Access_UU=generate_uuid() WHERE AD_Window_Access_UU IS NULL;
+      UPDATE AD_Process_Access SET AD_Process_Access_UU=generate_uuid() WHERE AD_Process_Access_UU IS NULL;
+      UPDATE AD_Form_Access SET AD_Form_Access_UU=generate_uuid() WHERE AD_Form_Access_UU IS NULL;
+      UPDATE AD_Workflow_Access SET AD_Workflow_Access_UU=generate_uuid() WHERE AD_Workflow_Access_UU IS NULL;
+      UPDATE AD_Document_Action_Access SET AD_Document_Action_Access_UU=generate_uuid() WHERE AD_Document_Action_Access_UU IS NULL;
+      UPDATE AD_InfoWindow_Access SET AD_InfoWindow_Access_UU=generate_uuid() WHERE AD_InfoWindow_Access_UU IS NULL;
+
    END LOOP;
 
    COMMIT;
