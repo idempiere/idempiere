@@ -92,7 +92,6 @@ public class CostUpdate extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-		//	log.fine("prepare - " + para[i]);
 			if (para[i].getParameter() == null)
 				;
 			else if (name.equals("M_Product_Category_ID"))

@@ -368,15 +368,6 @@ public class ImportInvoice extends SvrProcess
 			log.warning ("No BP Location=" + no);
 
 		//	Set Country
-		/**
-		sql = new StringBuilder ("UPDATE I_Invoice o "
-			  + "SET CountryCode=(SELECT MAX(CountryCode) FROM C_Country c WHERE c.IsDefault='Y'"
-			  + " AND c.AD_Client_ID IN (0, o.AD_Client_ID)) "
-			  + "WHERE C_BPartner_ID IS NULL AND CountryCode IS NULL AND C_Country_ID IS NULL"
-			  + " AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		log.fine("Set Country Default=" + no);
-		**/
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET C_Country_ID=(SELECT C_Country_ID FROM C_Country c")
 			  .append(" WHERE o.CountryCode=c.CountryCode AND c.AD_Client_ID IN (0, o.AD_Client_ID)) ")

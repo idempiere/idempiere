@@ -256,9 +256,6 @@ public class CommissionCalc extends SvrProcess
 			comAmt.saveEx();
 		}	//	for all commission lines
 		
-	//	comRun.updateFromAmt();
-	//	comRun.saveEx();
-		
 		//	Save Last Run
 		m_com.setDateLastRun (p_StartDate);
 		m_com.saveEx();
@@ -329,17 +326,6 @@ public class CommissionCalc extends SvrProcess
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("setStartEndDate = " + p_StartDate + " - " + m_EndDate);
 		
-		/**
-		String sd = DB.TO_DATE(p_StartDate, true);
-		StringBuilder sql = new StringBuilder ("SELECT ");
-		if (MCommission.FREQUENCYTYPE_Quarterly.equals(m_com.getFrequencyType()))
-			sql.append("TRUNC(").append(sd).append(", 'Q'), TRUNC(").append(sd).append("+92, 'Q')-1");
-		else if (MCommission.FREQUENCYTYPE_Weekly.equals(m_com.getFrequencyType()))
-			sql.append("TRUNC(").append(sd).append(", 'DAY'), TRUNC(").append(sd).append("+7, 'DAY')-1");
-		else	//	Month
-			sql.append("TRUNC(").append(sd).append(", 'MM'), TRUNC(").append(sd).append("+31, 'MM')-1");
-		sql.append(" FROM DUAL");
-		**/
 	}	//	setStartEndDate
 
 	/**

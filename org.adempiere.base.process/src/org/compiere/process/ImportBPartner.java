@@ -149,16 +149,6 @@ implements ImportProcess
 		if (log.isLoggable(Level.CONFIG)) log.config("Invalid Group=" + no);
 
 		//	Set Country
-		/**
-		sql = new StringBuilder ("UPDATE I_BPartner i "
-			+ "SET CountryCode=(SELECT CountryCode FROM C_Country c WHERE c.IsDefault='Y'"
-			+ " AND c.AD_Client_ID IN (0, i.AD_Client_ID) AND ROWNUM=1) "
-			+ "WHERE CountryCode IS NULL AND C_Country_ID IS NULL"
-			+ " AND I_IsImported<>'Y'").append(clientCheck);
-		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
-		log.fine("Set Country Default=" + no);
-		 **/
-		//
 		sql = new StringBuilder ("UPDATE I_BPartner i ")
 				.append("SET C_Country_ID=(SELECT C_Country_ID FROM C_Country c")
 				.append(" WHERE i.CountryCode=c.CountryCode AND c.AD_Client_ID IN (0, i.AD_Client_ID)) ")
@@ -353,8 +343,6 @@ implements ImportProcess
 					else				//	Update existing BPartner
 					{
 						bp = new MBPartner(getCtx(), impBP.getC_BPartner_ID(), get_TrxName());
-						//	if (impBP.getValue() != null)			//	not to overwite
-						//		bp.setValue(impBP.getValue());
 						if (impBP.getName() != null)
 						{
 							bp.setName(impBP.getName());

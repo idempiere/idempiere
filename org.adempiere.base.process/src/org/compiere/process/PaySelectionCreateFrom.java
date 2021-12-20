@@ -173,7 +173,6 @@ public class PaySelectionCreateFrom extends SvrProcess
 				sqlWhere.append(" OR ");
 			else
 				sqlWhere.append(" AND ");
-			// sql.append("paymentTermDueDays(C_PaymentTerm_ID, DateInvoiced, ?) >= 0");	//	##
 			sqlWhere.append("i.DueDate<=?");	//	##
 			if (p_OnlyDiscount)
 				sqlWhere.append(")");

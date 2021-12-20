@@ -80,33 +80,7 @@ public class SynchronizeTerminology extends SvrProcess
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 			trx.commit(true);
-			// Create Elements for Process Parameters which are centrally maintained
-			/* IDEMPIERE 109 - this create unwanted Element
-			sql="SELECT DISTINCT ColumnName, Name, Description, Help, EntityType "
-				+" FROM	AD_PROCESS_PARA p "
-				+" WHERE NOT EXISTS "
-				+" (SELECT 1 FROM AD_ELEMENT e "
-				+" WHERE UPPER(p.ColumnName)=UPPER(e.ColumnName))"
-				+" AND p.isCentrallyMaintained = 'Y'"
-				+" AND p.isActive = 'Y'";
-			pstmt = DB.prepareStatement(sql, get_TrxName());
-			rs = pstmt.executeQuery ();
-			while (rs.next()){
-				String columnName = rs.getString(1);
-				String name = rs.getString(2);
-				String desc = rs.getString(3);
-				String help =rs.getString(4);
-				String entityType=rs.getString(5);
-				//TODO AD_SEQ system !!!
-				M_Element elem = new M_Element(getCtx(),columnName,entityType,get_TrxName());
-				elem.setDescription(desc);
-				elem.setHelp(help);
-				elem.setPrintName(name);
-				elem.saveEx();
-			}
-			pstmt.close();
-			rs.close();
-			trx.commit(true);*/
+
 			log.info("Adding missing Element Translations");
 			sql="INSERT INTO AD_ELEMENT_TRL (AD_Element_ID, AD_LANGUAGE, AD_Client_ID, AD_Org_ID,"
 				+" IsActive, Created, CreatedBy, Updated, UpdatedBy,"
