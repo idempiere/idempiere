@@ -73,7 +73,7 @@ public class MProjectTypePhase extends X_C_Phase
 	public MProjectTypeTask[] getTasks()
 	{
 		ArrayList<MProjectTypeTask> list = new ArrayList<MProjectTypeTask>();
-		String sql = "SELECT * FROM C_Task WHERE C_Phase_ID=? ORDER BY SeqNo";
+		String sql = "SELECT * FROM C_Task WHERE C_Phase_ID=? AND IsActive='Y' ORDER BY SeqNo, C_Task_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
