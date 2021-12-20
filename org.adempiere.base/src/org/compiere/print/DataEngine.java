@@ -423,7 +423,8 @@ public class DataEngine
 						continue;
 
 					sqlSELECT.append(script).append(" AS \"").append(m_synonym).append(pfiName).append("\",")
-					.append("''").append(" AS \"").append(pfiName).append("\",");
+					// Warning here: Oracle treats empty strings '' as NULL and the code below checks for wasNull on this column
+					.append("' '").append(" AS \"").append(pfiName).append("\",");
 					//
 					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, -1, pfiName, DisplayType.Text, FieldLength, orderName, isPageBreak);
 					synonymNext();
