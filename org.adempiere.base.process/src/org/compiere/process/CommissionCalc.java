@@ -77,25 +77,9 @@ public class CommissionCalc extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		if (log.isLoggable(Level.INFO)) log.info("C_Commission_ID=" + getRecord_ID() + ", StartDate=" + p_StartDate);
-		if (p_StartDate == null)
-			p_StartDate = new Timestamp (System.currentTimeMillis());
-		m_com = new MCommission (getCtx(), getRecord_ID(), get_TrxName());
-		if (m_com.get_ID() == 0)
-			throw new AdempiereUserError ("No Commission");
-			
-		//	Create Commission	
-		MCommissionRun comRun = new MCommissionRun (m_com);
+		checkParameters();
 		setStartEndDate();
-		comRun.setStartDate(p_StartDate);		
-		//	01-Jan-2000 - 31-Jan-2001 - USD
-		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.Date);
-		StringBuilder description = new StringBuilder().append(format.format(p_StartDate)) 
-			.append(" - ").append(format.format(m_EndDate))
-			.append(" - ").append(MCurrency.getISO_Code(getCtx(), m_com.getC_Currency_ID()));
-		comRun.setDescription(description.toString());
-		if (!comRun.save())
-			throw new AdempiereSystemError ("Could not save Commission Run");
+		MCommissionRun comRun = createCommissionRun();
 		
 		MCommissionLine[] lines = m_com.getLines();
 		for (int i = 0; i < lines.length; i++)
@@ -263,6 +247,32 @@ public class CommissionCalc extends SvrProcess
 				.append(" - ").append(comRun.getDescription());
 		return msgreturn.toString();
 	}	//	doIt
+	
+	protected void checkParameters() {
+		if (log.isLoggable(Level.INFO)) log.info("C_Commission_ID=" + getRecord_ID() + ", StartDate=" + p_StartDate);
+		if (p_StartDate == null)
+			p_StartDate = new Timestamp (System.currentTimeMillis());
+		m_com = new MCommission (getCtx(), getRecord_ID(), get_TrxName());
+		if (m_com.get_ID() == 0)
+			throw new AdempiereUserError ("No Commission");
+	}
+	
+	protected MCommissionRun createCommissionRun() {
+		MCommissionRun comRun = new MCommissionRun(m_com);
+		comRun.setStartDate(p_StartDate);
+		comRun.setDescription(getCommissionRunDescription());
+		comRun.saveEx();
+		return comRun;
+	}
+	
+	protected String getCommissionRunDescription() {
+		// 01-Jan-2000 - 31-Jan-2001 - USD
+		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.Date);
+		StringBuilder description = new StringBuilder().append(format.format(p_StartDate))
+				.append(" - ").append(format.format(m_EndDate))
+				.append(" - ").append(MCurrency.getISO_Code(getCtx(), m_com.getC_Currency_ID()));
+		return description.toString();
+	}
 
 	/**
 	 * 	Set Start and End Date
