@@ -81,161 +81,16 @@ public class CommissionCalc extends SvrProcess
 		setStartEndDate();
 		MCommissionRun comRun = createCommissionRun();
 		
-		MCommissionLine[] lines = m_com.getLines();
-		for (int i = 0; i < lines.length; i++)
+		for (MCommissionLine commissionLine : m_com.getLines())
 		{
 			//	Amt for Line - Updated By Trigger
-			MCommissionAmt comAmt = new MCommissionAmt (comRun, lines[i].getC_CommissionLine_ID());
-			if (!comAmt.save())
-				throw new AdempiereSystemError ("Could not save Commission Amt");
-			//
-			StringBuilder sql = new StringBuilder();
-			if (MCommission.DOCBASISTYPE_Receipt.equals(m_com.getDocBasisType()))
-			{
-				if (m_com.isListDetails())
-				{
-					sql.append("SELECT h.C_Currency_ID, CASE WHEN h.GrandTotal <> 0 ")
-						.append(" 		THEN (l.LineNetAmt*al.Amount/h.GrandTotal) ")
-						.append("		ELSE 0 END AS Amt,")
-						.append(" CASE WHEN h.GrandTotal <> 0 ")
-						.append("		THEN (l.QtyInvoiced*al.Amount/h.GrandTotal) ")
-						.append("		ELSE 0 END AS Qty,")
-						.append(" NULL, l.C_InvoiceLine_ID, p.DocumentNo||'_'||h.DocumentNo,")
-						.append(" COALESCE(prd.Value,l.Description), h.DateInvoiced ")
-						.append("FROM C_Payment p")
-						.append(" INNER JOIN C_AllocationLine al ON (p.C_Payment_ID=al.C_Payment_ID)")
-						.append(" INNER JOIN C_Invoice h ON (al.C_Invoice_ID = h.C_Invoice_ID)")
-						.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
-						.append(" LEFT OUTER JOIN M_Product prd ON (l.M_Product_ID = prd.M_Product_ID) ")
-						.append("WHERE p.DocStatus IN ('CL','CO','RE')")
-						.append(" AND h.IsSOTrx='Y'")
-						.append(" AND p.AD_Client_ID = ?")
-						.append(" AND p.DateTrx BETWEEN ? AND ?");
-				}
-				else
-				{
-					sql.append("SELECT h.C_Currency_ID, ")
-						.append(" SUM(CASE WHEN h.GrandTotal <> 0 ")
-						.append("		THEN l.LineNetAmt*al.Amount/h.GrandTotal ELSE 0 END) AS Amt,")
-						.append(" SUM(CASE WHEN h.GrandTotal <> 0 ")
-						.append("		THEN l.QtyInvoiced*al.Amount/h.GrandTotal ELSE 0 END) AS Qty,")
-						.append(" NULL, NULL, NULL, NULL, MAX(h.DateInvoiced) ")
-						.append("FROM C_Payment p")
-						.append(" INNER JOIN C_AllocationLine al ON (p.C_Payment_ID=al.C_Payment_ID)")
-						.append(" INNER JOIN C_Invoice h ON (al.C_Invoice_ID = h.C_Invoice_ID)")
-						.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
-						.append("WHERE p.DocStatus IN ('CL','CO','RE')")
-						.append(" AND h.IsSOTrx='Y'")
-						.append(" AND p.AD_Client_ID = ?")
-						.append(" AND p.DateTrx BETWEEN ? AND ?");
-				}
-			}
-			else if (MCommission.DOCBASISTYPE_Order.equals(m_com.getDocBasisType()))
-			{
-				if (m_com.isListDetails())
-				{
-					sql.append("SELECT h.C_Currency_ID, l.LineNetAmt, l.QtyOrdered, ")
-						.append("l.C_OrderLine_ID, NULL, h.DocumentNo,")
-						.append(" COALESCE(prd.Value,l.Description),h.DateOrdered ")
-						.append("FROM C_Order h")
-						.append(" INNER JOIN C_OrderLine l ON (h.C_Order_ID = l.C_Order_ID)")
-						.append(" LEFT OUTER JOIN M_Product prd ON (l.M_Product_ID = prd.M_Product_ID) ")
-						.append("WHERE h.DocStatus IN ('CL','CO')")
-						.append(" AND h.IsSOTrx='Y'")
-						.append(" AND h.AD_Client_ID = ?")
-						.append(" AND h.DateOrdered BETWEEN ? AND ?");
-				}
-				else
-				{
-					sql.append("SELECT h.C_Currency_ID, SUM(l.LineNetAmt) AS Amt,")
-						.append(" SUM(l.QtyOrdered) AS Qty, ")
-						.append("NULL, NULL, NULL, NULL, MAX(h.DateOrdered) ")
-						.append("FROM C_Order h")
-						.append(" INNER JOIN C_OrderLine l ON (h.C_Order_ID = l.C_Order_ID) ")
-						.append("WHERE h.DocStatus IN ('CL','CO')")
-						.append(" AND h.IsSOTrx='Y'")
-						.append(" AND h.AD_Client_ID = ?")
-						.append(" AND h.DateOrdered BETWEEN ? AND ?");
-				}
-			}
-			else 	//	Invoice Basis
-			{
-				if (m_com.isListDetails())
-				{
-					sql.append("SELECT h.C_Currency_ID, l.LineNetAmt, l.QtyInvoiced, ")
-						.append("NULL, l.C_InvoiceLine_ID, h.DocumentNo,")
-						.append(" COALESCE(prd.Value,l.Description),h.DateInvoiced ")
-						.append("FROM C_Invoice h")
-						.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID)")
-						.append(" LEFT OUTER JOIN M_Product prd ON (l.M_Product_ID = prd.M_Product_ID) ")
-						.append("WHERE h.DocStatus IN ('CL','CO','RE')")
-						.append(" AND h.IsSOTrx='Y'")
-						.append(" AND h.AD_Client_ID = ?")
-						.append(" AND h.DateInvoiced BETWEEN ? AND ?");
-				}
-				else
-				{
-					sql.append("SELECT h.C_Currency_ID, SUM(l.LineNetAmt) AS Amt,")
-						.append(" SUM(l.QtyInvoiced) AS Qty, ")
-						.append("NULL, NULL, NULL, NULL, MAX(h.DateInvoiced) ")
-						.append("FROM C_Invoice h")
-						.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
-						.append("WHERE h.DocStatus IN ('CL','CO','RE')")
-						.append(" AND h.IsSOTrx='Y'")
-						.append(" AND h.AD_Client_ID = ?")
-						.append(" AND h.DateInvoiced BETWEEN ? AND ?");
-				}
-			}
-			//	CommissionOrders/Invoices
-			if (lines[i].isCommissionOrders())
-			{
-				MUser[] users = MUser.getOfBPartner(getCtx(), m_com.getC_BPartner_ID(), get_TrxName());
-				if (users == null || users.length == 0)
-					throw new AdempiereUserError ("Commission Business Partner has no Users/Contact");
-				if (users.length == 1)
-				{
-					int SalesRep_ID = users[0].getAD_User_ID();
-					sql.append(" AND h.SalesRep_ID=").append(SalesRep_ID);
-				}
-				else
-				{
-					log.warning("Not 1 User/Contact for C_BPartner_ID=" 
-						+ m_com.getC_BPartner_ID() + " but " + users.length);
-					sql.append(" AND h.SalesRep_ID IN (SELECT AD_User_ID FROM AD_User WHERE C_BPartner_ID=")
-						.append(m_com.getC_BPartner_ID()).append(")");
-				}
-			}
-			//	Organization
-			if (lines[i].getOrg_ID() != 0)
-				sql.append(" AND h.AD_Org_ID=").append(lines[i].getOrg_ID());
-			//	BPartner
-			if (lines[i].getC_BPartner_ID() != 0)
-				sql.append(" AND h.C_BPartner_ID=").append(lines[i].getC_BPartner_ID());
-			//	BPartner Group
-			if (lines[i].getC_BP_Group_ID() != 0)
-				sql.append(" AND h.C_BPartner_ID IN ")
-					.append("(SELECT C_BPartner_ID FROM C_BPartner WHERE C_BP_Group_ID=").append(lines[i].getC_BP_Group_ID()).append(")");
-			//	Sales Region
-			if (lines[i].getC_SalesRegion_ID() != 0)
-				sql.append(" AND h.C_BPartner_Location_ID IN ")
-					.append("(SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_SalesRegion_ID=").append(lines[i].getC_SalesRegion_ID()).append(")");
-			//	Product
-			if (lines[i].getM_Product_ID() != 0)
-				sql.append(" AND l.M_Product_ID=").append(lines[i].getM_Product_ID());
-			//	Product Category
-			if (lines[i].getM_Product_Category_ID() != 0)
-				sql.append(" AND l.M_Product_ID IN ")
-					.append("(SELECT M_Product_ID FROM M_Product WHERE M_Product_Category_ID=").append(lines[i].getM_Product_Category_ID()).append(")");
-			//	Payment Rule
-			if (lines[i].getPaymentRule() != null)
-				sql.append(" AND h.PaymentRule='").append(lines[i].getPaymentRule()).append("'");
-			//	Grouping
-			if (!m_com.isListDetails())
-				sql.append(" GROUP BY h.C_Currency_ID");
-			//
-			if (log.isLoggable(Level.FINE)) log.fine("Line=" + lines[i].getLine() + " - " + sql);
-			//
-			createDetail(sql.toString(), comAmt);
+			MCommissionAmt comAmt = new MCommissionAmt(comRun, commissionLine.getC_CommissionLine_ID());
+			comAmt.saveEx();
+
+			String sql = getCommissionCalulationSQL(commissionLine);
+			if (log.isLoggable(Level.FINE)) log.fine("Line=" + commissionLine.getLine() + " - " + sql);
+
+			createDetail(sql, comAmt);
 			comAmt.calculateCommission();
 			comAmt.saveEx();
 		}	//	for all commission lines
@@ -272,6 +127,179 @@ public class CommissionCalc extends SvrProcess
 				.append(" - ").append(format.format(m_EndDate))
 				.append(" - ").append(MCurrency.getISO_Code(getCtx(), m_com.getC_Currency_ID()));
 		return description.toString();
+	}
+	
+	protected String getCommissionCalulationSQL(MCommissionLine commissionLine) {
+		StringBuilder sql = new StringBuilder();
+		if (MCommission.DOCBASISTYPE_Receipt.equals(m_com.getDocBasisType()))
+		{
+			sql.append(getPaymentCommissionSQL());
+		}
+		else if (MCommission.DOCBASISTYPE_Order.equals(m_com.getDocBasisType()))
+		{
+			sql.append(getOrderCommissionSQL());
+		}
+		else 	//	Invoice Basis
+		{
+			sql.append(getInvoiceCommissionSQL());
+		}
+		sql.append(getCommissionLineWhereClause(commissionLine));
+		//	Grouping
+		if (!m_com.isListDetails())
+			sql.append(" GROUP BY h.C_Currency_ID");
+		
+		return sql.toString();
+	}
+	
+	protected String getPaymentCommissionSQL() {
+		StringBuilder sql = new StringBuilder();
+		if (m_com.isListDetails())
+		{
+			sql.append("SELECT h.C_Currency_ID, CASE WHEN h.GrandTotal <> 0 ")
+				.append(" 		THEN (l.LineNetAmt*al.Amount/h.GrandTotal) ")
+				.append("		ELSE 0 END AS Amt,")
+				.append(" CASE WHEN h.GrandTotal <> 0 ")
+				.append("		THEN (l.QtyInvoiced*al.Amount/h.GrandTotal) ")
+				.append("		ELSE 0 END AS Qty,")
+				.append(" NULL, l.C_InvoiceLine_ID, p.DocumentNo||'_'||h.DocumentNo,")
+				.append(" COALESCE(prd.Value,l.Description), h.DateInvoiced ")
+				.append("FROM C_Payment p")
+				.append(" INNER JOIN C_AllocationLine al ON (p.C_Payment_ID=al.C_Payment_ID)")
+				.append(" INNER JOIN C_Invoice h ON (al.C_Invoice_ID = h.C_Invoice_ID)")
+				.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
+				.append(" LEFT OUTER JOIN M_Product prd ON (l.M_Product_ID = prd.M_Product_ID) ")
+				.append("WHERE p.DocStatus IN ('CL','CO','RE')")
+				.append(" AND h.IsSOTrx='Y'")
+				.append(" AND p.AD_Client_ID = ?")
+				.append(" AND p.DateTrx BETWEEN ? AND ?");
+		}
+		else
+		{
+			sql.append("SELECT h.C_Currency_ID, ")
+				.append(" SUM(CASE WHEN h.GrandTotal <> 0 ")
+				.append("		THEN l.LineNetAmt*al.Amount/h.GrandTotal ELSE 0 END) AS Amt,")
+				.append(" SUM(CASE WHEN h.GrandTotal <> 0 ")
+				.append("		THEN l.QtyInvoiced*al.Amount/h.GrandTotal ELSE 0 END) AS Qty,")
+				.append(" NULL, NULL, NULL, NULL, MAX(h.DateInvoiced) ")
+				.append("FROM C_Payment p")
+				.append(" INNER JOIN C_AllocationLine al ON (p.C_Payment_ID=al.C_Payment_ID)")
+				.append(" INNER JOIN C_Invoice h ON (al.C_Invoice_ID = h.C_Invoice_ID)")
+				.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
+				.append("WHERE p.DocStatus IN ('CL','CO','RE')")
+				.append(" AND h.IsSOTrx='Y'")
+				.append(" AND p.AD_Client_ID = ?")
+				.append(" AND p.DateTrx BETWEEN ? AND ?");
+		}
+		return sql.toString();
+	}
+	
+	protected String getOrderCommissionSQL() {
+		StringBuilder sql = new StringBuilder();
+		if (m_com.isListDetails())
+		{
+			sql.append("SELECT h.C_Currency_ID, l.LineNetAmt, l.QtyOrdered, ")
+				.append("l.C_OrderLine_ID, NULL, h.DocumentNo,")
+				.append(" COALESCE(prd.Value,l.Description),h.DateOrdered ")
+				.append("FROM C_Order h")
+				.append(" INNER JOIN C_OrderLine l ON (h.C_Order_ID = l.C_Order_ID)")
+				.append(" LEFT OUTER JOIN M_Product prd ON (l.M_Product_ID = prd.M_Product_ID) ")
+				.append("WHERE h.DocStatus IN ('CL','CO')")
+				.append(" AND h.IsSOTrx='Y'")
+				.append(" AND h.AD_Client_ID = ?")
+				.append(" AND h.DateOrdered BETWEEN ? AND ?");
+		}
+		else
+		{
+			sql.append("SELECT h.C_Currency_ID, SUM(l.LineNetAmt) AS Amt,")
+				.append(" SUM(l.QtyOrdered) AS Qty, ")
+				.append("NULL, NULL, NULL, NULL, MAX(h.DateOrdered) ")
+				.append("FROM C_Order h")
+				.append(" INNER JOIN C_OrderLine l ON (h.C_Order_ID = l.C_Order_ID) ")
+				.append("WHERE h.DocStatus IN ('CL','CO')")
+				.append(" AND h.IsSOTrx='Y'")
+				.append(" AND h.AD_Client_ID = ?")
+				.append(" AND h.DateOrdered BETWEEN ? AND ?");
+		}
+		return sql.toString();
+	}
+	
+	protected String getInvoiceCommissionSQL() {
+		StringBuilder sql = new StringBuilder();
+		if (m_com.isListDetails())
+		{
+			sql.append("SELECT h.C_Currency_ID, l.LineNetAmt, l.QtyInvoiced, ")
+				.append("NULL, l.C_InvoiceLine_ID, h.DocumentNo,")
+				.append(" COALESCE(prd.Value,l.Description),h.DateInvoiced ")
+				.append("FROM C_Invoice h")
+				.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID)")
+				.append(" LEFT OUTER JOIN M_Product prd ON (l.M_Product_ID = prd.M_Product_ID) ")
+				.append("WHERE h.DocStatus IN ('CL','CO','RE')")
+				.append(" AND h.IsSOTrx='Y'")
+				.append(" AND h.AD_Client_ID = ?")
+				.append(" AND h.DateInvoiced BETWEEN ? AND ?");
+		}
+		else
+		{
+			sql.append("SELECT h.C_Currency_ID, SUM(l.LineNetAmt) AS Amt,")
+				.append(" SUM(l.QtyInvoiced) AS Qty, ")
+				.append("NULL, NULL, NULL, NULL, MAX(h.DateInvoiced) ")
+				.append("FROM C_Invoice h")
+				.append(" INNER JOIN C_InvoiceLine l ON (h.C_Invoice_ID = l.C_Invoice_ID) ")
+				.append("WHERE h.DocStatus IN ('CL','CO','RE')")
+				.append(" AND h.IsSOTrx='Y'")
+				.append(" AND h.AD_Client_ID = ?")
+				.append(" AND h.DateInvoiced BETWEEN ? AND ?");
+		}
+		return sql.toString();
+	}
+	
+	protected String getCommissionLineWhereClause(MCommissionLine commissionLine) {
+		StringBuilder sql = new StringBuilder();
+		//		CommissionOrders/Invoices
+		if (commissionLine.isCommissionOrders())
+		{
+			MUser[] users = MUser.getOfBPartner(getCtx(), m_com.getC_BPartner_ID(), get_TrxName());
+			if (users == null || users.length == 0)
+				throw new AdempiereUserError ("Commission Business Partner has no Users/Contact");
+			if (users.length == 1)
+			{
+				int SalesRep_ID = users[0].getAD_User_ID();
+				sql.append(" AND h.SalesRep_ID=").append(SalesRep_ID);
+			}
+			else
+			{
+				log.warning("Not 1 User/Contact for C_BPartner_ID=" 
+						+ m_com.getC_BPartner_ID() + " but " + users.length);
+				sql.append(" AND h.SalesRep_ID IN (SELECT AD_User_ID FROM AD_User WHERE C_BPartner_ID=")
+				.append(m_com.getC_BPartner_ID()).append(")");
+			}
+		}
+		//		Organization
+		if (commissionLine.getOrg_ID() != 0)
+			sql.append(" AND h.AD_Org_ID=").append(commissionLine.getOrg_ID());
+		//	BPartner
+		if (commissionLine.getC_BPartner_ID() != 0)
+			sql.append(" AND h.C_BPartner_ID=").append(commissionLine.getC_BPartner_ID());
+		//	BPartner Group
+		if (commissionLine.getC_BP_Group_ID() != 0)
+			sql.append(" AND h.C_BPartner_ID IN ")
+			.append("(SELECT C_BPartner_ID FROM C_BPartner WHERE C_BP_Group_ID=").append(commissionLine.getC_BP_Group_ID()).append(")");
+		//	Sales Region
+		if (commissionLine.getC_SalesRegion_ID() != 0)
+			sql.append(" AND h.C_BPartner_Location_ID IN ")
+			.append("(SELECT C_BPartner_Location_ID FROM C_BPartner_Location WHERE C_SalesRegion_ID=").append(commissionLine.getC_SalesRegion_ID()).append(")");
+		//	Product
+		if (commissionLine.getM_Product_ID() != 0)
+			sql.append(" AND l.M_Product_ID=").append(commissionLine.getM_Product_ID());
+		//	Product Category
+		if (commissionLine.getM_Product_Category_ID() != 0)
+			sql.append(" AND l.M_Product_ID IN ")
+			.append("(SELECT M_Product_ID FROM M_Product WHERE M_Product_Category_ID=").append(commissionLine.getM_Product_Category_ID()).append(")");
+		//	Payment Rule
+		if (commissionLine.getPaymentRule() != null)
+			sql.append(" AND h.PaymentRule='").append(commissionLine.getPaymentRule()).append("'");
+
+		return sql.toString();
 	}
 
 	/**
