@@ -46,10 +46,10 @@ import org.compiere.util.Language;
 @org.adempiere.base.annotation.Process
 public class CommissionCalc extends SvrProcess
 {
-	private Timestamp		p_StartDate;
+	protected Timestamp		p_StartDate;
 	//
-	private Timestamp		m_EndDate;
-	private MCommission		m_com;
+	protected Timestamp		m_EndDate;
+	protected MCommission		m_com;
 	//
 
 	/**
@@ -267,7 +267,7 @@ public class CommissionCalc extends SvrProcess
 	/**
 	 * 	Set Start and End Date
 	 */
-	private void setStartEndDate()
+	protected void setStartEndDate()
 	{
 		GregorianCalendar cal = new GregorianCalendar(Language.getLoginLanguage().getLocale());
 		cal.setTimeInMillis(p_StartDate.getTime());
@@ -334,7 +334,7 @@ public class CommissionCalc extends SvrProcess
 	 *	@param comAmt parent
 	 * @throws Exception 
 	 */
-	private void createDetail (String sql, MCommissionAmt comAmt) throws Exception
+	protected void createDetail (String sql, MCommissionAmt comAmt) throws Exception
 	{
 		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());)
 		{
