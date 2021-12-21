@@ -103,6 +103,10 @@ public class CommissionCalc extends SvrProcess
 		return msgreturn.toString();
 	}	//	doIt
 	
+	/**
+	 *  Check if the process parameters are valid
+	 *  @throws Exception if the commission record is not valid
+	 */
 	protected void checkParameters() {
 		if (log.isLoggable(Level.INFO)) log.info("C_Commission_ID=" + getRecord_ID() + ", StartDate=" + p_StartDate);
 		if (p_StartDate == null)
@@ -112,6 +116,11 @@ public class CommissionCalc extends SvrProcess
 			throw new AdempiereUserError ("No Commission");
 	}
 	
+	/**
+	 *  Creates the Commission run with the parameter start date
+	 *  and sets the description
+	 *  @return MCommissionRun
+	 */
 	protected MCommissionRun createCommissionRun() {
 		MCommissionRun comRun = new MCommissionRun(m_com);
 		comRun.setStartDate(p_StartDate);
@@ -120,6 +129,11 @@ public class CommissionCalc extends SvrProcess
 		return comRun;
 	}
 	
+	/**
+	 *  Returns the String that will be used for the description column
+	 *  in the Commission Run
+	 *  @return Description String
+	 */
 	protected String getCommissionRunDescription() {
 		// 01-Jan-2000 - 31-Jan-2001 - USD
 		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.Date);
@@ -129,6 +143,12 @@ public class CommissionCalc extends SvrProcess
 		return description.toString();
 	}
 	
+	/**
+	 *  Creates the SQL statement string that is used to generate the
+	 *  Commission detail records 
+	 *  @param MCommissionLine commissionLine
+	 *  @return SQL statement
+	 */
 	protected String getCommissionCalculationSQL(MCommissionLine commissionLine) {
 		StringBuilder sql = new StringBuilder();
 		if (MCommission.DOCBASISTYPE_Receipt.equals(m_com.getDocBasisType()))
@@ -151,6 +171,10 @@ public class CommissionCalc extends SvrProcess
 		return sql.toString();
 	}
 	
+	/**
+	 *  Creates the SQL statement for payments (C_Payment)
+	 *  @return SQL statement
+	 */
 	protected String getPaymentCommissionSQL() {
 		StringBuilder sql = new StringBuilder();
 		if (m_com.isListDetails())
@@ -193,6 +217,10 @@ public class CommissionCalc extends SvrProcess
 		return sql.toString();
 	}
 	
+	/**
+	 *  Creates the SQL statement for orders (C_Order)
+	 *  @return SQL statement
+	 */
 	protected String getOrderCommissionSQL() {
 		StringBuilder sql = new StringBuilder();
 		if (m_com.isListDetails())
@@ -223,6 +251,10 @@ public class CommissionCalc extends SvrProcess
 		return sql.toString();
 	}
 	
+	/**
+	 *  Creates the SQL statement for invoices (C_Invoice)
+	 *  @return SQL statement
+	 */
 	protected String getInvoiceCommissionSQL() {
 		StringBuilder sql = new StringBuilder();
 		if (m_com.isListDetails())
@@ -253,6 +285,11 @@ public class CommissionCalc extends SvrProcess
 		return sql.toString();
 	}
 	
+	/**
+	 *  Creates the SQL WHERE clause based on the field values 
+	 *  defined in the Commission Lien record
+	 *  @return SQL statement
+	 */
 	protected String getCommissionLineWhereClause(MCommissionLine commissionLine) {
 		StringBuilder sql = new StringBuilder();
 		//		CommissionOrders/Invoices
