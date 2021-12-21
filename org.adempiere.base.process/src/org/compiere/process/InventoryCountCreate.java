@@ -138,10 +138,10 @@ public class InventoryCountCreate extends SvrProcess
 			StringBuilder sql = new StringBuilder("INSERT INTO M_StorageOnHand ");
 								sql.append("(AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
 								sql.append(" M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID,");
-								sql.append(" QtyOnHand, DateLastInventory) ");
+								sql.append(" QtyOnHand, DateLastInventory, DateMaterialPolicy, M_StorageOnHand_UU) ");
 								sql.append("SELECT l.AD_CLIENT_ID, l.AD_ORG_ID, 'Y', getDate(), 0,getDate(), 0,");
 								sql.append(" l.M_Locator_ID, p.M_Product_ID, 0,");
-								sql.append(" 0,null ");
+								sql.append(" 0,null,trunc(getdate()),generate_uuid() ");
 								sql.append("FROM M_Locator l");
 								sql.append(" INNER JOIN M_Product p ON (l.AD_Client_ID=p.AD_Client_ID) ");
 								sql.append("WHERE l.M_Warehouse_ID=");
