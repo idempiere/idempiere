@@ -17,12 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.model.M_Element;
-import org.compiere.util.CLogMgt;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.compiere.util.Trx;
 
 /**
@@ -33,9 +29,7 @@ import org.compiere.util.Trx;
 @org.adempiere.base.annotation.Process
 public class SynchronizeTerminology extends SvrProcess
 {
-	/**	Static Logger	*/
-	private static final CLogger	s_log	= CLogger.getCLogger (SynchronizeTerminology.class);
-	
+
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -606,15 +600,6 @@ public class SynchronizeTerminology extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
 			trx.commit(true);
 
-			/**
-				SELECT 	e.PrintName "Element", pfi.PrintName "FormatItem", trl.AD_Language, trl.PrintName "Trl"
-				FROM 	AD_Element e
-				  INNER JOIN AD_Column c ON (e.AD_Element_ID=c.AD_Element_ID)
-				  INNER JOIN AD_PrintFormatItem pfi ON (c.AD_Column_ID=pfi.AD_Column_ID)
-				  INNER JOIN AD_PrintFormatItem_Trl trl ON (pfi.AD_PrintFormatItem_ID=trl.AD_PrintFormatItem_ID)
-				WHERE pfi.AD_PrintFormatItem_ID=?
-			 **/
-
 			//	Sync Names - Window
 			log.info("Synchronizing Menu with Window");
 			sql="UPDATE	AD_MENU m"
@@ -897,22 +882,5 @@ public class SynchronizeTerminology extends SvrProcess
 		}
 
 		return "@OK@";
-	}
-
-	//add main method, preparing for nightly build
-	public static void main(String[] args) 
-	{
-		Adempiere.startupEnvironment(false);
-		CLogMgt.setLevel(Level.FINE);
-		s_log.info("Synchronize Terminology");
-		s_log.info("-----------------------");
-		ProcessInfo pi = new ProcessInfo("Synchronize Terminology", 172);
-		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
-		
-		SynchronizeTerminology sc = new SynchronizeTerminology();
-		sc.startProcess(Env.getCtx(), pi, null);
-		StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle()).append(" Error=").append(pi.isError()).append(" Summary=").append(pi.getSummary());
-		System.out.println(msgout.toString());
 	}
 }
