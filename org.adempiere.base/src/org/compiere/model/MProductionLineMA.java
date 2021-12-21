@@ -100,24 +100,24 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
-		if(newRecord) {
-			String sql = "SELECT 1 FROM M_Production "
-					+ "WHERE Processed = 'Y' AND M_Production_ID IN"
-					+ " (SELECT M_Production_ID FROM M_ProductionLine WHERE M_ProductionLine_ID = ?)";
-			boolean isProcessed = 0 < DB.getSQLValue(get_TrxName(), sql, getM_ProductionLine_ID());
-			if(!isProcessed) {
-				sql = "SELECT 1 FROM M_Production "
-						+ "INNER JOIN M_ProductionPlan ON "
-						+ "  M_ProductionPlan.M_Production_ID = M_Production.M_Production_ID "
-						+ "INNER JOIN M_ProductionLine ON "
-						+ "  M_ProductionLine.M_ProductionPlan_ID = M_ProductionPlan.M_ProductionPlan_ID "
-						+ "WHERE M_ProductionLine.M_ProductionLine_ID = ? AND M_Production.Processed = 'Y'";
-				isProcessed = 0 < DB.getSQLValue(get_TrxName(), sql, getM_ProductionLine_ID());
-			}
-			if(isProcessed) {
-				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
-				return false;
-			}
+		// reject changes if the production is already processed
+		String sql = "SELECT 1 FROM M_ProductionLine "
+				+ "INNER JOIN M_Production ON "
+				+ "   M_ProductionLine.M_Production_ID = M_Production.M_Production_ID "
+				+ "WHERE M_ProductionLine.M_ProductionLine_ID = ? AND M_Production.Processed = 'Y'";
+		boolean isProcessed = 0 < DB.getSQLValue(get_TrxName(), sql, getM_ProductionLine_ID());
+		if(!isProcessed) {
+			sql = "SELECT 1 FROM M_Production "
+					+ "INNER JOIN M_ProductionPlan ON "
+					+ "  M_ProductionPlan.M_Production_ID = M_Production.M_Production_ID "
+					+ "INNER JOIN M_ProductionLine ON "
+					+ "  M_ProductionLine.M_ProductionPlan_ID = M_ProductionPlan.M_ProductionPlan_ID "
+					+ "WHERE M_ProductionLine.M_ProductionLine_ID = ? AND M_Production.Processed = 'Y'";
+			isProcessed = 0 < DB.getSQLValue(get_TrxName(), sql, getM_ProductionLine_ID());
+		}
+		if(isProcessed) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));
+			return false;
 		}
 		return true;
 	}
