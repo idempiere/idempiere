@@ -87,7 +87,7 @@ public class CommissionCalc extends SvrProcess
 			MCommissionAmt comAmt = new MCommissionAmt(comRun, commissionLine.getC_CommissionLine_ID());
 			comAmt.saveEx();
 
-			String sql = getCommissionCalulationSQL(commissionLine);
+			String sql = getCommissionCalculationSQL(commissionLine);
 			if (log.isLoggable(Level.FINE)) log.fine("Line=" + commissionLine.getLine() + " - " + sql);
 
 			createDetail(sql, comAmt);
@@ -129,7 +129,7 @@ public class CommissionCalc extends SvrProcess
 		return description.toString();
 	}
 	
-	protected String getCommissionCalulationSQL(MCommissionLine commissionLine) {
+	protected String getCommissionCalculationSQL(MCommissionLine commissionLine) {
 		StringBuilder sql = new StringBuilder();
 		if (MCommission.DOCBASISTYPE_Receipt.equals(m_com.getDocBasisType()))
 		{
