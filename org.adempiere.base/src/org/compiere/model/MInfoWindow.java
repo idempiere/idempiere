@@ -518,5 +518,14 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
 		return MTable.get(Env.getCtx(), getAD_Table_ID(), get_TrxName());
-	}		
+	}
+	
+	/**
+	 * 
+	 * @return array of {@link TableInfo}
+	 */
+	public TableInfo[] getTableInfos() {
+		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + getFromClause());
+		return sqlParser.getTableInfo(0);
+	}
 }	//	MInfoWindow
