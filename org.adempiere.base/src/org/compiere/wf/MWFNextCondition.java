@@ -186,10 +186,9 @@ public class MWFNextCondition extends X_AD_WF_NextCondition implements Immutable
 	 *  COL= remaining value is interpreted as a column of the associated record
 	 * 
 	 * @param sValue value to be decoded
-	 * @param PO model object bound to the activity
-	 * 
+	 * @param po PO model object bound to the activity
+	 * @return
 	 */
-	
 	protected String getDecodedValue(String sValue, PO po)
 	{		
 		String sRet = sValue;

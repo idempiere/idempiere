@@ -45,7 +45,7 @@ public class RemoveSchedulerCallable implements Callable<Response>, Serializable
 	private MScheduler scheduler;
 	
 	/**
-	 * @param serverId
+	 * @param scheduler
 	 */
 	public RemoveSchedulerCallable(MScheduler scheduler) {
 		this.scheduler = scheduler;

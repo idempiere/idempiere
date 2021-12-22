@@ -102,15 +102,14 @@ public class FDialog
 	/**
 	 *	Display warning with warning icon
 	 *	@param	windowNo	Number of Window
+     *  @param comp
 	 *	@param	adMessage	Message to be translated
 	 *	@param	message		Additional message
-	 *	@param	title		If none then one will be generated
 	 *
 	 * @see #warn(int, String)
 	 * @see #warn(int, String, String)
 	 * @see #warn(int, Component, String, String, String)
 	 */
-    
     public static void warn(int windowNo, Component comp, String adMessage, String message)
     {
     	warn(windowNo, comp, adMessage, message, null);
@@ -200,13 +199,12 @@ public class FDialog
 	 *	Display error with error icon
 	 *	@param	windowNo	Number of Window
 	 *	@param	adMessage	Message to be translated
-	 *	@param	adMessage	Additional message
+	 *	@param	msg         Additional message
 	 *
 	 *  @see #error(int, String)
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, Component, String, String)
 	 */
-	
     public static void error(int windowNo, String adMessage, String msg)
     {
         error(windowNo, null, adMessage, msg);
@@ -290,11 +288,10 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
 	 *	@return true, if OK
 	 */    
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg)
@@ -305,11 +302,11 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
+     *  @param callback
 	 *	@return true, if OK
 	 */    
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg, final Callback<Boolean> callback)
@@ -342,13 +339,11 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
-	 *
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@return true, if OK
 	 */
-    
     public static boolean ask(int windowNo, Component comp, String adMessage)
     {
     	return ask(windowNo, comp, adMessage, (Callback<Boolean>)null);
@@ -449,13 +444,14 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
-	 *
+     *  @param  title
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
+     *  @param  callback
+     *  @param  args
 	 *	@return true, if OK
 	 */
-    
     public static boolean ask(String title, int windowNo, Component comp, String adMessage, final Callback<Boolean> callback, Object ... args)
     {
     	Callback<Integer> msgCallback = null;
@@ -557,12 +553,12 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
 	 *	@param	title		Title of the dialog panel
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	adMessage   Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
+     *  @param callback
 	 *	@return true, if OK
 	 */        
     public static boolean ask(int windowNo, Component comp, String title, String adMessage, String msg, final Callback<Boolean> callback)

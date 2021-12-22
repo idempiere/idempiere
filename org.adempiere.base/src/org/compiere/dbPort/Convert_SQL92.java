@@ -36,7 +36,7 @@ public abstract class Convert_SQL92 extends Convert {
 	 *  Converting joins can ve very complex when multiple tables/keys are involved.
 	 *  The main scenarios supported are two tables with multiple key columns
 	 *  and multiple tables with single key columns.
-	 *  <pre>
+	 *  <pre>{@code
 	 *      SELECT a.Col1, b.Col2 FROM tableA a, tableB b WHERE a.ID=b.ID(+)
 	 *      => SELECT a.Col1, b.Col2 FROM tableA a LEFT OUTER JOIN tableB b ON (a.ID=b.ID)
 	 *
@@ -47,7 +47,7 @@ public abstract class Convert_SQL92 extends Convert {
 	 *  - OR condition ignored (not sure what to do, should not happen)
 	 *  Limitations:
 	 *  - Parameters for outer joins must be first - as sequence of parameters changes
-	 *  </pre>
+	 *  }</pre>
 	 *  @param sqlStatement
 	 *  @return converted statement
 	 */
@@ -323,10 +323,10 @@ public abstract class Convert_SQL92 extends Convert {
 	
 	/**************************************************************************
 	 *  Converts Decode.
-	 *  <pre>
+	 *  <pre>{@code
 	 *      DECODE (a, 1, 'one', 2, 'two', 'none')
 	 *       => CASE WHEN a = 1 THEN 'one' WHEN a = 2 THEN 'two' ELSE 'none' END
-	 *  </pre>
+	 *  }</pre>
 	 *  @param sqlStatement
 	 *  @return converted statement
 	 */

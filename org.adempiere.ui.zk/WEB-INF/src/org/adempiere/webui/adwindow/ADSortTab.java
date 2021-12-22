@@ -70,7 +70,7 @@ import org.zkoss.zul.event.ListDataEvent;
  *
  * @author victor.perez@e-evolution.com, e-Evolution
  * 				FR [ 2826406 ] The Tab Sort without parent column
- *				<li> https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2826406&group_id=176962
+ *				<li> https://sourceforge.net/p/adempiere/feature-requests/776/
  * Zk Port
  * @author Low Heng Sin
  * @author Juan David Arboleda : Refactoring Yes and No List to work with multiple choice.
@@ -90,9 +90,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	 * Initiate
 	 * 
 	 * @param winPanel
-	 * @param WindowNo
 	 * @param gridTab
-	 * @param gridWindow
 	 */
 	@Override
 	public void init(AbstractADWindowContent winPanel, GridTab gridTab)
@@ -679,7 +677,6 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 
 	/** (non-Javadoc)
-	 * @see org.compiere.grid.APanelTab#saveData()
 	 */
 	public void saveData()
 	{

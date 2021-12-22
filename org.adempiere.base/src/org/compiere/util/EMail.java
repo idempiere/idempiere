@@ -585,8 +585,8 @@ public final class EMail implements Serializable
 
 	/**
 	 * 	Get Message ID or null
-	 * 	@return Message ID e.g. <20030130004739.15377.qmail@web13506.mail.yahoo.com>
-	 *  <25699763.1043887247538.JavaMail.jjanke@main>
+	 * 	@return Message ID e.g. &lt;20030130004739.15377.qmail@web13506.mail.yahoo.com&gt;
+	 *  &lt;25699763.1043887247538.JavaMail.jjanke@main&gt;
 	 */
 	public String getMessageID()
 	{
@@ -966,7 +966,7 @@ public final class EMail implements Serializable
 
 	/**
 	 *	Add url based file Attachment
-	 * 	@param uri url content to attach
+	 * 	@param url url content to attach
 	 */
 	public void addAttachment (URI url)
 	{

@@ -63,7 +63,7 @@ public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 
 	/**
 	 * Validate if there is a non-expired device registered with that code
-	 * @param registerCookie
+	 * @param identifier
 	 * @return true if device is valid
 	 */
 	public static boolean isValid(String identifier) {

@@ -65,15 +65,15 @@ import bsh.Interpreter;
  * 				<li>BF [ 1807368 ] DataEngine does not close DB connection
  * 				<li>BF [ 2549128 ] Report View Column not working at all
  * 				<li>BF [ 2865545 ] Error if not all parts of multikey are lookups
- * 					https://sourceforge.net/tracker/?func=detail&aid=2865545&group_id=176962&atid=879332
+ * 					https://sourceforge.net/p/adempiere/bugs/2120/
  * @author Teo Sarca, teo.sarca@gmail.com
  * 				<li>BF [ 2876268 ] DataEngine: error on text long fields
- * 					https://sourceforge.net/tracker/?func=detail&aid=2876268&group_id=176962&atid=879332
+ * 					https://sourceforge.net/p/adempiere/bugs/2169/
  * @author victor.perez@e-evolution.com 
- *				<li>FR [ 2011569 ] Implementing new Summary flag in Report View  http://sourceforge.net/tracker/index.php?func=detail&aid=2011569&group_id=176962&atid=879335
+ *				<li>FR [ 2011569 ] Implementing new Summary flag in Report View  https://sourceforge.net/p/adempiere/feature-requests/478/
  * @author Paul Bowden (phib)
  * 				<li> BF 2908435 Virtual columns with lookup reference types can't be printed
- *                   https://sourceforge.net/tracker/?func=detail&aid=2908435&group_id=176962&atid=879332
+ *                   https://sourceforge.net/p/adempiere/bugs/2246/
  *  @contributor  Fernandinho (FAIRE)
  *  				- http://jira.idempiere.com/browse/IDEMPIERE-153
  */

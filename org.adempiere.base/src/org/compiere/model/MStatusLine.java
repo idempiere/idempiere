@@ -64,7 +64,7 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param AD_Window_ID
+	 *	@param AD_StatusLine_ID
 	 *	@param trxName transaction
 	 */
 	public MStatusLine (Properties ctx, int AD_StatusLine_ID, String trxName)
@@ -172,7 +172,7 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 	}
 
 	/**
-	 * Get the widget lines defined for the window&tab&table (immutable)
+	 * Get the widget lines defined for the window and tab and table (immutable)
 	 * @param window_ID
 	 * @param tab_ID
 	 * @param table_ID

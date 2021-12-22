@@ -73,7 +73,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	/**
 	 * get the Product BOM for a product
 	 * @param product
-	 * @return return List with <MPPProductBOM
+	 * @return return List with MPPProductBOM
 	 */
 	public static List<MPPProductBOM> getProductBOMs(MProduct product)
 	{
@@ -135,7 +135,7 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	
 	/**
 	 * Get PP_Product_BOM_ID for given M_Product_ID
-	 * @param M_Product_ID
+	 * @param product
 	 * @return PP_Product_BOM_ID
 	 */
 	public static int getBOMSearchKey(MProduct product)

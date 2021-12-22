@@ -454,8 +454,8 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	 *	Convert PRICE expressed in entered UoM to equivalent price in product UoM and round. <br/>
 	 *  OR Convert QTY in product UOM to qty in entered UoM and round. <br/>
 	 *  
-	 *   eg: $6/6pk => $1/ea <br/>
-	 *   OR 6 X ea => 1 X 6pk
+	 *   eg: $6/6pk =&gt; $1/ea <br/>
+	 *   OR 6 X ea =&gt; 1 X 6pk
 	 *   
 	 *  @param ctx context
 	 *  @param M_Product_ID product
@@ -522,8 +522,8 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	 *	Convert PRICE expressed in product UoM to equivalent price in entered UoM and round. <br/>
 	 *  OR Convert QTY in entered UOM to qty in product UoM and round.  <br/>
 	 *  
-	 *   eg: $1/ea => $6/6pk <br/>
-	 *   OR 1 X 6pk => 6 X ea
+	 *   eg: $1/ea =&gt; $6/6pk <br/>
+	 *   OR 1 X 6pk =&gt; 6 X ea
 	 *   
 	 *  @param ctx context
 	 *  @param M_Product_ID product

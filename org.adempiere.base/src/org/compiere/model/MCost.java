@@ -52,8 +52,8 @@ import org.compiere.util.Trx;
  *  	<li>FR: [ 2214883 ] Remove SQL code and Replace for Query - red1 (only non-join query)
  *  
  *  @author Teo Sarca
- *  	<li>BF [ 2847648 ] Manufacture & shipment cost errors
- *  		https://sourceforge.net/tracker/?func=detail&aid=2847648&group_id=176962&atid=934929
+ *  	<li>BF [ 2847648 ] Manufacture and shipment cost errors
+ *  		https://sourceforge.net/p/adempiere/libero/237/
  */
 public class MCost extends X_M_Cost
 {
@@ -1569,7 +1569,7 @@ public class MCost extends X_M_Cost
 	}	//	setWeightedAverage
 
 	/**
-	 *	@param amt unit amt
+	 *	@param amtUnit unit amt
 	 */
 	public void setWeightedAverageInitial (BigDecimal amtUnit)
 	{
@@ -1607,7 +1607,7 @@ public class MCost extends X_M_Cost
 
 	/**
 	 * 	Get History Average (Amt/Qty)
-	 *	@return average if amt/aty <> 0 otherwise null
+	 *	@return average if amt/aty &lt;&gt; 0 otherwise null
 	 */
 	public BigDecimal getHistoryAverage()
 	{

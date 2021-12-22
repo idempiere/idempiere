@@ -27,11 +27,11 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 
 /**
- *	Account Model Lookup - Maintains ValidCombination Info for Display & Edit - not cached
+ *	Account Model Lookup - Maintains ValidCombination Info for Display and Edit - not cached
  *
  *  @author 	Jorg Janke
  *  @author     victor.perez@e-evolution.com, www.e-evolution.com
- *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
+ *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query https://sourceforge.net/p/adempiere/feature-requests/557/
  *  @version 	$Id: MAccountLookup.java,v 1.3 2006/07/30 00:54:54 jjanke Exp $
  */
 public final class MAccountLookup extends Lookup implements Serializable

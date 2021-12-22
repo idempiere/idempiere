@@ -37,7 +37,7 @@ import org.compiere.model.MUser;
 /**
  *  Web User Info.
  *	Assumes that Email is a direct match.
- *  UPDATE AD_User SET EMail=TRIM(EMail) WHERE Email<>TRIM(EMail)
+ *  UPDATE AD_User SET EMail=TRIM(EMail) WHERE Email&lt;&gt;TRIM(EMail)
  *  @author Jorg Janke
  *  @version $Id$
  */
@@ -594,7 +594,7 @@ public class WebUser
 	}	//	getPassword
 
 	/**
-	 * 	Check & Save Password
+	 * 	Check and Save Password
 	 */
 	public void setPassword ()
 	{
@@ -1153,7 +1153,7 @@ public class WebUser
 	}
 
 	/**
-	 * 	Check & Set EMail Validation Code.
+	 * 	Check and Set EMail Validation Code.
 	 *	@param code code
 	 *	@param info info
 	 */

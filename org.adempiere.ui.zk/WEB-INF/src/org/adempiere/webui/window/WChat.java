@@ -74,7 +74,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 
 	/**
 	 *	Constructor.
-	 *	loads Chat, if ID <> 0
+	 *	loads Chat, if ID &lt;&gt; 0
 	 *  @param WindowNo window no
 	 *  @param CM_Chat_ID chat
 	 *  @param AD_Table_ID table

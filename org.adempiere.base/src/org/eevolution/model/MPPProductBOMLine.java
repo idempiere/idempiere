@@ -92,7 +92,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	 *  Default Constructor
 	 *  @param ctx context
 	 *  @param PP_Product_BOMLine  BOM line to load
-	 *  @param Transaction Line
+	 *  @param trxName
 	 */
 	public MPPProductBOMLine(Properties ctx, int PP_Product_BOMLine, String trxName)
 	{
@@ -155,7 +155,6 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	
 	/**
 	 * Get Low Level of a Product
-	 * @param ID Product
 	 * @return int low level
 	 */
 	public int getLowLevel()
@@ -187,7 +186,9 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	
 	/**
 	 * Calculate Low Level of a Product
-	 * @param ID Product
+	 * @param ctx
+	 * @param M_Product_ID Product ID
+	 * @param trxName
 	 * @return int low level
 	 */
 	public static int getLowLevel(Properties ctx, int M_Product_ID, String trxName)

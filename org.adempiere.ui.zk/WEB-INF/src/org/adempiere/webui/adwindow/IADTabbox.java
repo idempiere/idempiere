@@ -33,7 +33,7 @@ public interface IADTabbox extends UIPart {
 
 	/**
 	 *
-	 * @param tab index
+	 * @param i tab index
 	 */
 	public void setSelectedIndex(int i);
 

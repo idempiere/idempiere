@@ -44,7 +44,7 @@ import org.compiere.util.Util;
  *  @author     Jorg Janke
  *  @version    $Id: ProcessInfo.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
  *  @author victor.perez@e-evolution.com 
- *  @see FR 1906632 http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1906632&group_id=176962
+ *  see FR 1906632 https://sourceforge.net/p/adempiere/feature-requests/382/
  */
 public class ProcessInfo implements Serializable
 {
@@ -400,7 +400,7 @@ public class ProcessInfo implements Serializable
 	}
 	/**
 	 * 
-	 * @param AD_PInstance_ID int
+	 * @param infoWindowID int
 	 */
 	public void setAD_InfoWindow_ID(int infoWindowID)
 	{
@@ -766,7 +766,7 @@ public class ProcessInfo implements Serializable
 	//FR 1906632
 	/**
 	 * Set PDF file generate to Jasper Report
-	 * @param PDF File 
+	 * @param f PDF File 
 	 */
 	public void setPDFReport(File f)
 	{
@@ -775,7 +775,6 @@ public class ProcessInfo implements Serializable
 	
 	/**
 	 * Get PDF file generate to Jasper Report
-	 * @param f
 	 */
 	public File getPDFReport()
 	{
@@ -811,7 +810,7 @@ public class ProcessInfo implements Serializable
 	
 	/**
 	 * Set Export File Extension
-	 * @param exportFileOfType
+	 * @param exportFileExtension
 	 */
 	public void setExportFileExtension(String exportFileExtension)
 	{

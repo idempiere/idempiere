@@ -388,7 +388,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	 * 	Create Payments the first time 
 	 * 	@param checks checks
 	 * 	@param batch batch
-	 * 	@param createDeposit create deposit batch
+	 * 	@param createDepositBatch create deposit batch
 	 * 	@return last Document number or 0 if nothing printed
 	 */
 	public static int confirmPrint (MPaySelectionCheck[] checks, MPaymentBatch batch, boolean createDepositBatch)

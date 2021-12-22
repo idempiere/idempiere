@@ -146,7 +146,7 @@ public class CommissionCalc extends SvrProcess
 	/**
 	 *  Creates the SQL statement string that is used to generate the
 	 *  Commission detail records 
-	 *  @param MCommissionLine commissionLine
+	 *  @param commissionLine MCommissionLine
 	 *  @return SQL statement
 	 */
 	protected String getCommissionCalculationSQL(MCommissionLine commissionLine) {

@@ -57,11 +57,11 @@ public class WPostIt extends Window implements EventListener<Event>{
 	private MPostIt m_postIt;
 
 	/**
-	 * 
 	 * @param title
-	 * @param text
-	 * @param editable
-	 * @param maxSize
+	 * @param postItID
+	 * @param tableID
+	 * @param recordID
+	 * @param trxName
 	 */
 	public WPostIt(String title, int postItID, int tableID, int recordID, /*String created, String updated,*/ String trxName) {
 		super();

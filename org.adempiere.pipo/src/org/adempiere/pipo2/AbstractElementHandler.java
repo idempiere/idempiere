@@ -133,13 +133,11 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
     /**
      *	Make backup copy of record.
-     *
-     *      @param tablename
-     *
-     *
-     *
-     */
-
+	 * @param ctx
+	 * @param AD_Package_Imp_Detail_ID
+	 * @param tableName
+	 * @param from
+	 */
 	public void backupRecord(PIPOContext ctx, int AD_Package_Imp_Detail_ID, String tableName,PO from){
 
     	// Create new record
@@ -192,9 +190,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
 	/**
      *	Open input file for processing
-     *
-     * 	@param String file with path
-     *
+     * @param filePath file with path
+     * @return
      */
     public FileInputStream OpenInputfile (String filePath) {
 
@@ -213,9 +210,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
     /**
      *	Open output file for processing
-     *
-     * 	@param String file with path
-     *
+     * @param filePath file with path
+     * @return
      */
     public OutputStream OpenOutputfile (String filePath) {
 
@@ -234,9 +230,9 @@ public abstract class AbstractElementHandler implements ElementHandler {
 
     /**
      *	Copyfile
-     *
-     * 	@param String file with path
-     *
+     * @param source
+     * @param target
+     * @return
      */
     public int copyFile (InputStream source,OutputStream target) {
 
@@ -387,8 +383,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
     /**
      * Returns option - Is export-import of AD translations is needed
      * @param ctx
-     * @param entityType
-     * @return boolean
+     * @return
      */
     protected boolean isHandleTranslations(Properties ctx) {
 

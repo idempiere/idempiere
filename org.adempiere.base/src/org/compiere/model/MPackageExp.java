@@ -40,9 +40,10 @@ public class MPackageExp extends X_AD_Package_Exp
 	private static final long serialVersionUID = -6295261491885604619L;
 
 	/**
-	 * 	MPackageExp
-	 *	@param ctx
-	 *	@param int
+	 * MPackageExp
+	 * @param ctx
+	 * @param AD_Package_Exp_ID
+	 * @param trxName
 	 */
 	public MPackageExp (Properties ctx, int AD_Package_Exp_ID, String trxName)
 	{

@@ -122,10 +122,12 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 	};
 
 	/**
-	 *	Standard Constructor
-	 *  @param  queryvalue   Query value Name or Value if contains numbers
-	 *  @param isSOTrx  if false, query vendors only
-	 *  @param whereClause where clause
+	 * Standard Constructor
+	 * @param queryValue   Query value Name or Value if contains numbers
+	 * @param windowNo
+	 * @param isSOTrx  if false, query vendors only
+	 * @param multipleSelection
+	 * @param whereClause where clause
 	 */
 	public InfoBPartnerPanel(String queryValue,int windowNo, boolean isSOTrx,boolean multipleSelection, String whereClause)
 	{		
@@ -134,9 +136,14 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 
 	/**
 	 *	Standard Constructor
-	 *  @param  queryvalue   Query value Name or Value if contains numbers
-	 *  @param isSOTrx  if false, query vendors only
-	 *  @param whereClause where clause
+	 */
+	/**
+	 * @param queryValue   Query value Name or Value if contains numbers
+	 * @param windowNo
+	 * @param isSOTrx  if false, query vendors only
+	 * @param multipleSelection
+	 * @param whereClause where clause
+	 * @param lookup
 	 */
 	public InfoBPartnerPanel(String queryValue,int windowNo, boolean isSOTrx,boolean multipleSelection, String whereClause, boolean lookup)
 	{

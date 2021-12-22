@@ -52,7 +52,7 @@ import org.eevolution.model.MDDOrderLine;
  *  @author Jorg Janke
  *  @author  victor.perez@e-evolution.com
  * 			<li>FR Let use the Distribution List and Distribution Run for DO
- * 	@see 	http://sourceforge.net/tracker/index.php?func=detail&aid=2030865&group_id=176962&atid=879335		
+ * 	@see 	https://sourceforge.net/p/adempiere/feature-requests/488/		
  *  @version $Id: DistributionRun.java,v 1.4 2006/07/30 00:51:02 jjanke Exp $
  */
 @org.adempiere.base.annotation.Process

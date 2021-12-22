@@ -61,7 +61,6 @@ public class SessionContextListener implements ExecutionInit,
     /**
      * get servlet thread local context from session
      * @param exec
-     * @param createNew
      */
     public static void setupExecutionContextFromSession(Execution exec) {
     	Session session = exec.getDesktop().getSession();

@@ -271,10 +271,9 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	
 	/**
 	 * 	Create request
-	 *	@param msg message
-	 * @return 
-	 *	@return Type of Message
-	 * @throws Exception 
+	 * @param emailContent
+	 * @param trxName
+	 * @throws Exception
 	 */
 	protected void createRequest(EmailContent emailContent, String trxName) throws Exception {
 		// Assign from variable

@@ -33,7 +33,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *
  *  @author 	Jorg Janke
  *  @author victor.perez@e-evolution.com
- *  @see [ 1966333 ] New Method to get the Default Locator based in Warehouse http://sourceforge.net/tracker/index.php?func=detail&aid=1966333&group_id=176962&atid=879335
+ *  @see [ 1966333 ] New Method to get the Default Locator based in Warehouse https://sourceforge.net/p/adempiere/feature-requests/429/
  *  @version 	$Id: MLocator.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
  */
 public class MLocator extends X_M_Locator implements ImmutablePOSupport
@@ -84,8 +84,7 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	/**
 	 *  FR  [ 1966333 ]
 	 * 	Get oldest Default Locator of warehouse with locator
-	 *	@param ctx context
-	 *	@param M_Locator_ID locator
+	 *  @param warehouse
 	 *	@return locator or null
 	 */
 	public static MLocator getDefault (MWarehouse warehouse)

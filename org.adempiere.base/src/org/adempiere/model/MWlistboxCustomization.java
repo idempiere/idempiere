@@ -34,10 +34,8 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 
 	/**
 	 * @param ctx
-	 * @param AD_WListboxName
 	 * @param AD_Wlistbox_Customization_ID
 	 * @param trxName
-	 * @return
 	 */
 	public MWlistboxCustomization(Properties ctx, int AD_Wlistbox_Customization_ID, String trxName) {
 		super(ctx, AD_Wlistbox_Customization_ID, trxName);
@@ -47,7 +45,6 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	 * @param ctx
 	 * @param rs
 	 * @param trxName
-	 * @return
 	 */	
 	public MWlistboxCustomization(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
@@ -99,9 +96,7 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	 * @param AD_User_ID
 	 * @param Custom
 	 * @param trxName
-	 * @return
 	 */
-	
 	public static void saveData(Properties  ctx,
 								String      AD_WListboxName, 
 								int         AD_User_ID, 

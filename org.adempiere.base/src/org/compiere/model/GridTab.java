@@ -85,28 +85,28 @@ import org.compiere.util.ValueNamePair;
  *  			<li>BF [ 1968598 ] Callout is not called if tab is processed
  *  			<li>BF [ 2104022 ] GridTab.processCallout: throws NPE if callout returns null
  *  			<li>FR [ 2846871 ] Add method org.compiere.model.GridTab.getIncludedTabs
- *  				https://sourceforge.net/tracker/?func=detail&aid=2846871&group_id=176962&atid=879335
+ *  				https://sourceforge.net/p/adempiere/feature-requests/805/
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  			<li>BF [ 2873323 ] ABP: Do not concatenate strings in SQL queries
- *  				https://sourceforge.net/tracker/?func=detail&aid=2873323&group_id=176962&atid=879332
+ *  				https://sourceforge.net/p/adempiere/feature-requests/845/
  *  			<li>BF [ 2874109 ] Tab ORDER BY clause is not supporting context variables
- *  				https://sourceforge.net/tracker/?func=detail&aid=2874109&group_id=176962&atid=879332
+ *  				https://sourceforge.net/p/adempiere/bugs/2162/
  *  			<li>BF [ 2905287 ] GridTab query is not build correctly
- *  				https://sourceforge.net/tracker/?func=detail&aid=2905287&group_id=176962&atid=879332
+ *  				https://sourceforge.net/p/adempiere/bugs/2242/
  *  			<li>BF [ 3007342 ] Included tab context conflict issue
- *  				https://sourceforge.net/tracker/?func=detail&aid=3007342&group_id=176962&atid=879332
+ *  				https://sourceforge.net/p/adempiere/bugs/2409/
  *  @author Victor Perez , e-Evolution.SC
  *  		<li>FR [1877902] Implement JSR 223 Scripting APIs to Callout
  *  		<li>BF [ 2910358 ] Error in context when a field is found in different tabs.
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910358&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2255/
  *     		<li>BF [ 2910368 ] Error in context when IsActive field is found in different
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910368&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2256/
  *  @author Carlos Ruiz, qss FR [1877902]
- *  @see  http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1877902&group_id=176962 to FR [1877902]
+ *  @see  https://sourceforge.net/p/adempiere/feature-requests/318/ to FR [1877902]
  *  @author Cristina Ghita, www.arhipac.ro FR [2870645] Set null value for an ID
- *  @see  https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2870645&group_id=176962
+ *  @see  https://sourceforge.net/p/adempiere/feature-requests/835/
  *  @author Paul Bowden, phib BF 2900767 Zoom to child tab - inefficient queries
- *  @see https://sourceforge.net/tracker/?func=detail&aid=2900767&group_id=176962&atid=879332
+ *  @see https://sourceforge.net/p/adempiere/bugs/2222/
  */
 public class GridTab implements DataStatusListener, Evaluatee, Serializable
 {
@@ -2685,7 +2685,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	/**
 	 *  Set current row - used for deleteSelection
-	 *  @return current row
 	 */
 	public void setCurrentRow(int row){
 			setCurrentRow(row, false);
@@ -2751,7 +2750,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}   //  getField
 
 	/**
-	 *  Set New Value & call Callout
+	 *  Set New Value and call Callout
 	 *  @param columnName database column name
 	 *  @param value value
 	 *  @return error message or ""
@@ -2764,7 +2763,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}   //  setValue
 
 	/**
-	 *  Set New Value & call Callout
+	 *  Set New Value and call Callout
 	 *  @param field field
 	 *  @param value value
 	 *  @return error message or ""
@@ -2797,7 +2796,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * Is the current record active
 	 * @return true if current record is active
-	 * @author Teo Sarca - BF [ 1742159 ]
+	 * author Teo Sarca - BF [ 1742159 ]
 	 */
 	public boolean isActive()
 	{
@@ -3097,7 +3096,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 * If there is no column with the given name, the context for current window will be checked.
 	 * @param columnName column name
 	 * @return boolean value or false if the field was not found
-	 * @author Teo Sarca
+	 * author Teo Sarca
 	 */
 	public boolean getValueAsBoolean(String columnName)
 	{
@@ -3203,9 +3202,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * Feature Request [1707462]
 	 * Enable runtime change of VFormat
-	 * @param Identifier field indent
+	 * @param identifier field indent
 	 * @param strNewFormat new mask
-	 * @author fer_luck
+	 * author fer_luck
 	 */
 	public void setFieldVFormat (String identifier, String strNewFormat)
 	{

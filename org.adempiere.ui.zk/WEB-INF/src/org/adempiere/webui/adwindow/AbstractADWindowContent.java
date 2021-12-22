@@ -145,17 +145,17 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @version $Revision: 0.10 $
  *
  * @author Cristina Ghita, www.arhipac.ro
- * @see FR [ 2877111 ] See identifiers columns when delete records https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2877111&group_id=176962
+ * see FR [ 2877111 ] See identifiers columns when delete records https://sourceforge.net/p/adempiere/feature-requests/855/
  *
  * @author hengsin, hengsin.low@idalica.com
- * @see FR [2887701] https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2887701&group_id=176962
+ * see FR [2887701] https://sourceforge.net/p/adempiere/feature-requests/866/
  * @sponsor www.metas.de
  *
  * @author Teo Sarca, teo.sarca@gmail.com
  *  	<li>BF [ 2992540 ] Grid/Panel not refreshed after process run
- *  		https://sourceforge.net/tracker/?func=detail&aid=2992540&group_id=176962&atid=955896
+ *  		https://sourceforge.net/p/adempiere/zk-web-client/418/
  *  	<li>BF [ 2985892 ] Opening a window using a new record query is not working
- *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
+ *  		https://sourceforge.net/p/adempiere/zk-web-client/411/
  */
 public abstract class AbstractADWindowContent extends AbstractUIPart implements ToolbarListener,
         EventListener<Event>, DataStatusListener, ActionListener, ITabOnSelectHandler
@@ -305,7 +305,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
     /**
-     * @param adWindowId
      * @param query
      * @return boolean
      */
@@ -313,7 +312,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     {
 		// This temporary validation code is added to check the reported bug
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
-		// https://sourceforge.net/tracker/?func=detail&atid=955896&aid=2832968&group_id=176962
+		// https://sourceforge.net/p/adempiere/zk-web-client/303/
 		// it's harmless, if there is no bug then this must never fail
 		Session currSess = Executions.getCurrent().getDesktop().getSession();
 		int checkad_user_id = -1;

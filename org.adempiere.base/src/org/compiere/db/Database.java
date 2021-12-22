@@ -92,8 +92,8 @@ public class Database
 	/**
 	 *  Get Database Driver by url string.
 	 *  Access to database specific functionality.
-	 *  @param URL JDBC connection url
-	 *  @return Adempiere Database Driver
+	 *  @param url JDBC connection url
+	 *  @return iDempiere Database Driver
 	 */
 	public static AdempiereDatabase getDatabaseFromURL(String url)
 	{
@@ -113,7 +113,7 @@ public class Database
 
 	/**
 	 *  Apply common validations for database object names
-	 *  @param String identifier
+	 *  @param identifier String
 	 *  @return String error-code - null if not error
 	 */
 	public static String isValidIdentifier(String identifier)

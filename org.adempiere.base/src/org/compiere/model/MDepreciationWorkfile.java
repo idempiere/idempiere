@@ -36,7 +36,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
-	 *	@param M_InventoryLine_ID line
+	 *	@param A_Depreciation_Workfile_ID line
+	 *  @param trxName
 	 */
 	public MDepreciationWorkfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName)
 	{
@@ -320,7 +321,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	 * @param A_Asset_ID
 	 * @param postingType
 	 * @param trxName
-	 * @param Account Schema
+	 * @param C_AcctSchema_ID Account Schema
 	 * @return workfile
 	 * @see #get(Properties, int, String, String)
 	 */

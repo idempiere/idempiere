@@ -69,7 +69,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 * @param text
 	 * @param editable
 	 * @param maxSize
-	 * @param isHtml - select the html tab at start
+	 * @param IsHtml - select the html tab at start
 	 */
 	public WTextEditorDialog(String title, String text, boolean editable, int maxSize, boolean IsHtml) {
 		this(title, text, editable, maxSize, IsHtml, true);

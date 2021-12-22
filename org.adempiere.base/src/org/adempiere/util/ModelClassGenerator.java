@@ -62,7 +62,7 @@ import org.compiere.util.Util;
  * 				<li>BF [ 2780468 ] ModelClassGenerator: not generating methods for Created*
  * 				<li>--
  * 				<li>FR [ 2848449 ] ModelClassGenerator: Implement model getters
- *					https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2848449&group_id=176962
+ *					https://sourceforge.net/p/adempiere/feature-requests/812/
  * @author Victor Perez, e-Evolution
  * 				<li>FR [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
  */
@@ -819,7 +819,7 @@ public class ModelClassGenerator
 	 * @param sourceFolder
 	 * @param packageName
 	 * @param entityType
-	 * @param tableLike
+	 * @param tableName table Like
 	 * @param columnEntityType
 	 */
 	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)

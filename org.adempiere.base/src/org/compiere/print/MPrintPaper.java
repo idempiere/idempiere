@@ -38,7 +38,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *
  *  Change log:
  *  <ul>
- *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2580531&group_id=176962
+ *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/p/adempiere/feature-requests/655/
  *  </ul>
  *  
  * 	@author 	Jorg Janke
@@ -46,7 +46,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 
  * @author Teo Sarca
  * 			<li>FR [ 2829019 ] Check PrintPaper on save
- * 			https://sourceforge.net/tracker/?func=detail&aid=2829019&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/782/
  */
 public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 {

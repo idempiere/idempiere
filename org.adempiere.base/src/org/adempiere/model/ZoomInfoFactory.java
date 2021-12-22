@@ -32,7 +32,7 @@ public class ZoomInfoFactory {
 
 	/**
 	 * Simple class that contains zoom information. Currently used by
-	 * {@link org.compiere.apps.AZoomAcross}.
+	 * {@link org.adempiere.webui.WZoomAcross}.
 	 * 
 	 * @author ts
 	 * 

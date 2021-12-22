@@ -107,8 +107,8 @@ public class MCity extends X_C_City
 
 	/**
 	 * 	Parent Constructor
-	 *	@param Region Region
-	 *	@param CityName City Name
+	 *	@param region Region
+	 *	@param cityName City Name
 	 */
 	public MCity (MRegion region, String cityName)
 	{

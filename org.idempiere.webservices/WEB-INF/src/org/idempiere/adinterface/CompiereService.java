@@ -364,7 +364,7 @@ public class CompiereService {
 	}
 
 	/**
-	 * @return set password
+	 * @param pass
 	 */
 	public synchronized void setPassword(String pass) {
 		m_password = pass;
@@ -378,7 +378,7 @@ public class CompiereService {
 	}
 
 	/**
-	 * @return set expiry minutes
+	 * @param expiryMinutes
 	 */
 	public synchronized void setExpiryMinutes(int expiryMinutes) {
 		m_expiryMinutes = expiryMinutes;

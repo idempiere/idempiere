@@ -58,10 +58,10 @@ import org.compiere.model.Query;
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  *		<li>Incorrect global Variable when you use multi Account Schema
- *			http://sourceforge.net/tracker/?func=detail&atid=879335&aid=2531597&group_id=176962
+ *			https://sourceforge.net/p/adempiere/bugs/1713/
  *  @author teo.sarca@gmail.com
  *  	<li>BF [ 2867246 ] Do not show InTrazit WHs on login
- *  		https://sourceforge.net/tracker/?func=detail&aid=2867246&group_id=176962&atid=879332
+ *  		https://sourceforge.net/p/adempiere/bugs/2136/
  *  @version $Id: Login.java,v 1.6 2006/10/02 05:19:06 jjanke Exp $
  */
 public class Login
@@ -526,7 +526,7 @@ public class Login
 	 *  Load Organizations.
 	 *  <p>
 	 *  Sets Client info in context and loads its organization, the role has access to
-	 *  @param  client    client information
+	 *  @param  rol
 	 *  @return list of valid Org KeyNodePairs or null if in error
 	 */
 	public KeyNamePair[] getOrgs (KeyNamePair rol)

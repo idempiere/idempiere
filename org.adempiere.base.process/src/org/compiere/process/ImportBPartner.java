@@ -44,9 +44,9 @@ import org.compiere.util.DB;
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2788074 ] ImportBPartner: add IsValidateOnly option
- * 				https://sourceforge.net/tracker/?func=detail&aid=2788074&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/710/
  * 			<li>FR [ 2788278 ] Data Import Validator - migrate core processes
- * 				https://sourceforge.net/tracker/?func=detail&aid=2788278&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/713/
  */
 @org.adempiere.base.annotation.Process
 public class ImportBPartner extends SvrProcess

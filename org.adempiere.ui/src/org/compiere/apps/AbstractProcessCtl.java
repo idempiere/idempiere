@@ -54,7 +54,8 @@ public abstract class AbstractProcessCtl implements Runnable
 {
 	/**************************************************************************
 	 *  Constructor
-	 *  @param parent Container & ASyncProcess
+	 *  @param aProcessUI
+	 *  @param WindowNo
 	 *  @param pi Process info
 	 *  @param trx Transaction
 	 *  Created in process(), VInvoiceGen.generateInvoices
@@ -321,12 +322,12 @@ public abstract class AbstractProcessCtl implements Runnable
 	protected abstract void updateProgressWindowTitle(String title);
 
 	/**
-	 *  Lock UI & show Waiting
+	 *  Lock UI and show Waiting
 	 */
 	protected abstract void lock ();
 
 	/**
-	 *  Unlock UI & dispose Waiting.
+	 *  Unlock UI and dispose Waiting.
 	 * 	Called from run()
 	 */
 	protected abstract void unlock ();

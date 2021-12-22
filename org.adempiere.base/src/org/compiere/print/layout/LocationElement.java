@@ -32,7 +32,7 @@ import org.compiere.model.MLocation;
  * 
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1888085 ] One line location field not working
- * 			<li>BF [ 1888094 ] PF: label & label suffix not working for location field
+ * 			<li>BF [ 1888094 ] PF: label and label suffix not working for location field
  * 			<li>BF [ 2695078 } Country is not translated on invoice
  * 
  *  @author Michael Judd (Akuna Ltd)
@@ -108,8 +108,9 @@ public class LocationElement extends GridElement
 	
 	/**
 	 * @deprecated since 3.3.1b
-	 * @see #LocationElement(Properties, int, Font, Paint, boolean, String, String)
+	 * @see #LocationElement(Properties, int, Font, Paint, boolean, String, String, String)
 	 */
+	@Deprecated
 	public LocationElement(Properties ctx, int C_Location_ID, Font font, Paint color) {
 		this(ctx, C_Location_ID, font, color, false, null, null, null);
 	}

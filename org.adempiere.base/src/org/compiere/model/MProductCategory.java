@@ -236,11 +236,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	
 	/**
 	 *	Loop detection of product category tree.
-	 * @param productCategoryId 
-	 * @param newParentCategoryId 
-	 *
-	 *  @param newParentCategoryId New Parent Category
-	 *  @return "" or error message
+	 *  @return boolean
 	 */
 	public boolean hasLoopInTree ()
 	{

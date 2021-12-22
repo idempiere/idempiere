@@ -146,10 +146,8 @@ public class TreeUtils {
 
 	/**
 	 * travel all node of tree, at selected node, call callback function
-	 * @param tree
-	 * @param nodeModel
-	 * @param isRootNode
-	 * @param processNode
+	 * @param treeObject
+	 * @param isOpen
 	 */
 	static public void collapseTree (Component treeObject, boolean isOpen){
 		if (treeObject instanceof Tree) {

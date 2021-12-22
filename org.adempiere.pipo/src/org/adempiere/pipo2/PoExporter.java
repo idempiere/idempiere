@@ -109,19 +109,17 @@ public class PoExporter {
 
 
 	/**
-	 *
-	 * @param name
 	 * @param columnName
+	 * @param atts
 	 */
 	public void add(String columnName, AttributesImpl atts) {
 		add(columnName, "", atts);
 	}
 
 	/**
-	 *
-	 * @param name
 	 * @param columnName
 	 * @param defaultValue
+	 * @param atts
 	 */
 	public void add(String columnName, String defaultValue, AttributesImpl atts) {
 		Object value = po.get_Value(columnName);

@@ -496,11 +496,9 @@ public class AbstractService {
 	}
 	
 	/**
-	 * 
 	 * @param strValue
 	 * @param columnClass
 	 * @param colName
-	 * @param m_webservicetype
 	 * @return
 	 */
 	protected Object convertToObj(String strValue,Class<?> columnClass,String colName){

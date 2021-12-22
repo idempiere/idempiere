@@ -57,7 +57,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	private static final long serialVersionUID = 7691820074981291939L;
 
 	/**
-	 *  Create & Load existing Persistent Object
+	 *  Create and Load existing Persistent Object
 	 *  @param ctx context
 	 *  @param C_DepositBatch_ID  The unique ID of the object
 	 *  @param trxName transaction name	

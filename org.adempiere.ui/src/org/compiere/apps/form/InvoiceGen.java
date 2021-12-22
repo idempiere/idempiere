@@ -215,8 +215,7 @@ public class InvoiceGen extends GenForm
 	}   //  executeQuery
 	
 	/**
-	 *	Save Selection & return selecion Query or ""
-	 *  @return where clause like C_Order_ID IN (...)
+	 *	Save Selection and return selection Query or ""
 	 */
 	public void saveSelection(IMiniTable miniTable)
 	{

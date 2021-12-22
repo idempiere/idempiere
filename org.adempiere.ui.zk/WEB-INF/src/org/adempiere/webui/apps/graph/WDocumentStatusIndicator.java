@@ -57,7 +57,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 
 	/**
 	 * 	Constructor
-	 *	@param goal goal model
+	 *	@param documentStatus
 	 */
 	public WDocumentStatusIndicator(MDocumentStatus documentStatus)
 	{

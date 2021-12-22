@@ -27,7 +27,7 @@ import org.compiere.util.Env;
 
 
 /**
- *  ToolBar & Button Restriction
+ *  ToolBar and Button Restriction
  *  @author Nicolas Micoud
  */
 public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
@@ -86,7 +86,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	/**
 	 * 	Standard Constructor
 	 * 	@param ctx context
-	 * 	@param AD_Note_ID id
+	 * 	@param AD_ToolBarButtonRestrict_ID id
 	 *	@param trxName transaction
 	 */
 	public MToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -184,7 +184,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	}	//	toString
 
 	/**
-	 * Check Window access for ReadWrite & New Toolbar button
+	 * Check Window access for ReadWrite and New Toolbar button
 	 * 
 	 * @param  windowID - AD_Window_ID
 	 * @return          True if Toolbar button is restricted
@@ -195,7 +195,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	} // isNewButtonRestricted
 
 	/**
-	 * Check Window access for ReadWrite & New Toolbar button
+	 * Check Window access for ReadWrite and New Toolbar button
 	 * 
 	 * @param  windowID - AD_Window_ID
 	 * @param  tabID    - AD_Tab_ID

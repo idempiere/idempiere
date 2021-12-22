@@ -87,7 +87,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	 *	@param isReadOnly read only
 	 *	@param isUpdateable updateable
 	 *	@param mLocator locator (lookup) model
-	 * 	@param WindowNo window no
+	 * 	@param windowNo window no
 	 */
 	
 	public WLocatorEditor(	String columnName, boolean mandatory, boolean isReadOnly, 

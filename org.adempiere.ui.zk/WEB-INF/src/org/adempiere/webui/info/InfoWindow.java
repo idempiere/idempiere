@@ -207,10 +207,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param WindowNo
 	 * @param tableName
 	 * @param keyColumn
+	 * @param queryValue
 	 * @param multipleSelection
 	 * @param whereClause
+	 * @param AD_InfoWindow_ID
 	 * @param lookup
-	 * @param gridfield
+	 * @param field
 	 */
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field) {
@@ -221,10 +223,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param WindowNo
 	 * @param tableName
 	 * @param keyColumn
+	 * @param queryValue
 	 * @param multipleSelection
 	 * @param whereClause
+	 * @param AD_InfoWindow_ID
 	 * @param lookup
-	 * @param gridfield
+	 * @param field
 	 * @param predefinedContextVariables
 	 */
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
@@ -329,7 +333,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * separate by layout type
 	 * init drop list and menu control
 	 * set status of haveProcess flag 
-	 * @return true when have process, false when no process
 	 */
 	protected void initInfoProcess() {
 		if (infoWindow == null){
@@ -2040,8 +2043,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	/**
-	 * @author xolali IDEMPIERE-1045
+	 * author xolali IDEMPIERE-1045
 	 * getInfoColumnslayout(MInfoWindow info)
+	 * @param info
+	 * @return
 	 */
 	public ArrayList<ColumnInfo> getInfoColumnslayout(MInfoWindow info){
 
@@ -2118,8 +2123,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	/**
-	 * @author xolali IDEMPIERE-1045
+	 * author xolali IDEMPIERE-1045
 	 * GridField getGridField(InfoColumnVO infoColumn)
+	 * @param infoColumn
+	 * @return
 	 */
 	protected GridField getGridField(InfoColumnVO infoColumn){
 		String columnName = infoColumn.getColumnName();
@@ -2209,7 +2216,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	/**	
 	 * Get id of window link with main table of this info window
-	 * @param tableName
 	 * @return
 	 */
 	protected int getADWindowID() {

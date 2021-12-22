@@ -175,7 +175,8 @@ public class EventManager implements IEventManager {
 
 	/**
 	 * @param topic
-	 * @param parameter
+	 * @param data
+	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static Event newEvent(String topic, Object data) {

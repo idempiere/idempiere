@@ -62,19 +62,19 @@ import org.idempiere.util.ParseSeq;
  *
  *  @author Jorg Janke
  *  @author Victor Perez , e-Evolution.SC FR [ 1757088 ], [1877902] Implement JSR 223 Scripting APIs to Callout
- *  		http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1877902&group_id=176962 to FR [1877902]
+ *  		https://sourceforge.net/p/adempiere/feature-requests/318/ to FR [1877902]
  *  @author Carlos Ruiz, qss FR [1877902]
  *  @author Juan David Arboleda (arboleda), GlobalQSS, [ 1795398 ] Process Parameter: add display and readonly logic
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 2874646 ] GridField issue when a lookup is key
- *  			https://sourceforge.net/tracker/?func=detail&aid=2874646&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2164/
  *  @author victor.perez@e-evolution.com,www.e-evolution.com
  *  		<li>BF [ 2910358 ] Error in context when a field is found in different tabs.
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910358&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2255/
  *     		<li>BF [ 2910368 ] Error in context when IsActive field is found in different
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910368&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2256/
  *  		<li>BF [ 3007342 ] Included tab context conflict issue
- *  			https://sourceforge.net/tracker/?func=detail&aid=3007342&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2409/
  *  @version $Id: GridField.java,v 1.5 2006/07/30 00:51:02 jjanke Exp $
  */
 public class GridField 
@@ -557,7 +557,7 @@ public class GridField
 	
 	/**************************************************************************
 	 *	Create default value.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		(a) Key/Parent/IsActive/SystemAccess
 	 *      (b) SQL Default
 	 *		(c) Column Default		//	system integrity
@@ -567,7 +567,7 @@ public class GridField
 	 *
 	 *  Don't default from Context => use explicit defaultValue
 	 *  (would otherwise copy previous record)
-	 *  </pre>
+	 *  }</pre>
 	 *  this method code in mind GirdField lie at standard window, and default is receive when new record.
 	 *  maybe it will don't suitable for use at other place as info panel parameter,...
 	 *  @return default value or null
@@ -647,7 +647,7 @@ public class GridField
 	 * "5" mean from system preference
 	 * "6" mean preference for field lie down at panel as process parameter, info parameter,...
 	 * "7" mean data-type default
-	 * @param initValueType
+	 * @param defaultValueType
 	 * @return
 	 */
 	protected Object getDefaultValueByType (Character defaultValueType){
@@ -2299,7 +2299,7 @@ public class GridField
 	
 	/**
 	 * Restore the backup value if any
-	 * @author teo_sarca [ 1699826 ]
+	 * author teo_sarca [ 1699826 ]
 	 */
 	public void restoreValue() {
 		if (m_isBackupValue) {
@@ -2320,7 +2320,7 @@ public class GridField
 	 * Feature Request [1707462]
 	 * Enable user to change VFormat on runtime
 	 * @param strNewFormat VFormat mask
-	 * @author fer_luck
+	 * author fer_luck
 	 */
 	public void setVFormat(String strNewFormat){
 		m_vo.VFormat = strNewFormat;
@@ -2347,7 +2347,6 @@ public class GridField
 
 	/**
 	 * Get the default state of collapse field group type
-	 * @param collapseDefaultState
 	 */
 	public boolean getIsCollapsedByDefault() {
 		return m_vo.IsCollapsedByDefault;

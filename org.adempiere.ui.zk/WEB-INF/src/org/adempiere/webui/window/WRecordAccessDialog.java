@@ -56,7 +56,7 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 
 	/**
 	 * 	Record Access Dialog
-	 *	@param owner owner
+	 *	@param parent owner
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
 	 */

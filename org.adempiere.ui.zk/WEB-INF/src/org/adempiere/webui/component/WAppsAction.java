@@ -29,7 +29,7 @@ import org.compiere.util.Msg;
  *  Application Action.
  *      Creates Action with Button
  *      The ActionCommand is translated for display
- *      If translated text contains &, the next character is the Mnemonic
+ *      If translated text contains &amp;, the next character is the Mnemonic
  *
  *  @author     Andrew Kimball
  */
@@ -40,7 +40,6 @@ public class WAppsAction
     *
     *  @param   action base action command - used as AD_Message for Text and Icon name
     *  @param   accelerator optional keystroke for accelerator
-    *  @param   toggle is toggle action (maintains state)
     */
    public WAppsAction (String action, String accelerator) throws IOException
    {
@@ -53,7 +52,6 @@ public class WAppsAction
     *  @param   action base action command - used as AD_Message for Text and Icon name
     *  @param   accelerator optional keystroke for accelerator
     *  @param   toolTipText text, if null defered from action
-    *  @param   toggle is toggle action (maintains state)
     */
    public WAppsAction (String action, String accelerator, String toolTipText) throws IOException
    {

@@ -635,7 +635,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 
 		// This temporary validation code is added to check the reported bug
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
-		// https://sourceforge.net/tracker/?func=detail&atid=955896&aid=2832968&group_id=176962
+		// https://sourceforge.net/p/adempiere/zk-web-client/303/
 		// it's harmless, if there is no bug then this must never fail        
         currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
 		// End of temporary code for [ adempiere-ZK Web Client-2832968 ] User context lost?

@@ -261,7 +261,7 @@ public class RColumn
 		return m_displaySQL;
 	}
 	/**
-	 *  This column is an ID Column (i.e. two values - int & String are read)
+	 *  This column is an ID Column (i.e. two values - int and String are read)
 	 */
 	public boolean isIDcol()
 	{

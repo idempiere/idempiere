@@ -33,7 +33,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *	
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com
- *  @see FR [ 1966337 ] New Method to get the Transit Warehouse based in ID Org http://sourceforge.net/tracker/index.php?func=detail&aid=1966337&group_id=176962&atid=879335
+ *  see FR [ 1966337 ] New Method to get the Transit Warehouse based in ID Org https://sourceforge.net/p/adempiere/feature-requests/430/
  *  @author Teo Sarca, http://www.arhipac.ro
  *  			<li>BF [ 1874419 ] JDBC Statement not close in a finally block
  *  @version $Id: MWarehouse.java,v 1.3 2006/07/30 00:58:05 jjanke Exp $
@@ -266,7 +266,6 @@ public class MWarehouse extends X_M_Warehouse implements ImmutablePOSupport
 	/**
 	 * Before Save
 	 * @param newRecord new
-	 * @param success success
 	 * @return success
 	 */
 	@Override

@@ -534,8 +534,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	
 	/**
 	 *	Zoom to target
-	 *  @param AD_Window_ID window id
-	 *  @param zoomQuery zoom query
+	 *  @param tableID table id
 	 */
 	protected void zoom (int tableID)
 	{

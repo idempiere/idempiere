@@ -158,7 +158,7 @@ public final class MultiMap<K,V> implements Map<K,V>, Serializable
 	}   //  getKeys
 
 	/**
-	 *  Put Key & Value
+	 *  Put Key and Value
 	 * @param key 
 	 * @param value 
 	 *  @return always null

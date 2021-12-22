@@ -33,7 +33,7 @@ import org.compiere.util.TimeUtil;
  *  
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 2892581 ] Cannot load RfQResponseLine
- *  			https://sourceforge.net/tracker/?func=detail&aid=2892581&group_id=176962&atid=879335
+ *  			https://sourceforge.net/p/adempiere/bugs/2201/
  */
 public class MRfQResponseLine extends X_C_RfQResponseLine
 {

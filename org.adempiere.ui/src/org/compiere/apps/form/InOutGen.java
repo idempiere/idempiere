@@ -211,8 +211,7 @@ public class InOutGen extends GenForm
 	}   //  executeQuery
 	
 	/**
-	 *	Save Selection & return selection Query or ""
-	 *  @return where clause like C_Order_ID IN (...)
+	 *	Save Selection and return selection Query or ""
 	 */
 	public void saveSelection(IMiniTable miniTable)
 	{

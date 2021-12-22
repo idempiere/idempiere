@@ -59,7 +59,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	public static final String ERROR = "~./zul/img/msgbox/info-btn.png";
 
 	/**
-	 * @deprecated Should use {@link #ProcessInfoDialog(String, String, ProcessInfo)} for flexible show message
+	 * @deprecated Should use {@link #ProcessInfoDialog(String, String, ProcessInfo, boolean)} for flexible show message
 	 * @param title
 	 * @param header
 	 * @param m_logs
