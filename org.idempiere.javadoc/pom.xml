@@ -81,6 +81,10 @@
 									<exclude>org.checkerframework.*</exclude>
 									<exclude>org.codehaus.*</exclude>
 									<exclude>org.kohsuke.*</exclude>
+									<exclude>io.github.*</exclude>
+									<exclude>io.keikai.*</exclude>
+									<exclude>metainfo.tld</exclude>
+									<exclude>com.zaxxer.*</exclude>
 								</excludes>
 								<additionalArguments>
 									<!-- needed by Java 11 compatibility and compiling at doc generation
@@ -101,6 +105,7 @@
 										java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports
 										java.naming/com.sun.jndi.ldap=ALL-UNNAMED</additionalArgument>
 									<additionalArgument>-Xdoclint:none</additionalArgument>
+									<additionalArgument>-Xmaxwarns 0</additionalArgument>
 									<additionalArgument>-use</additionalArgument>
 									<additionalArgument>-author</additionalArgument>
 									<additionalArgument>-breakiterator</additionalArgument>
