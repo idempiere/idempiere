@@ -559,7 +559,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							if (log.isLoggable(Level.FINE)) log.fine("Diff=" + qtyDiff 
 									+ " - Instance OnHand=" + QtyMA + "->" + QtyNew);
 	
-							if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(), 
 									line.getM_Locator_ID(),
 									line.getM_Product_ID(), 
 									ma.getM_AttributeSetInstance_ID(), 
@@ -617,7 +617,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}
 						
 						//Fallback: Update Storage - see also VMatch.createMatchRecord
-						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(), 
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstance_ID(), 

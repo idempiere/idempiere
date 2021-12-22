@@ -698,8 +698,8 @@ public class SalesOrderTest extends AbstractTestCase {
 		asi.setLot("1010");
 		asi.saveEx();
 
-		MStorageOnHand.add(ctx, WAREHOUSE_FERTILIZER, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, past_month, trxName);
-		MStorageOnHand.add(ctx, WAREHOUSE_FERTILIZER, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
+		MStorageOnHand.add(ctx, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, past_month, trxName);
+		MStorageOnHand.add(ctx, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
 
 		// Expected to create two entries in storage because of the different dates
 		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, WAREHOUSE_FERTILIZER,

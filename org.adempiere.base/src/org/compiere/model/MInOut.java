@@ -1456,7 +1456,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							}
 							
 							//	Update Storage - see also VMatch.createMatchRecord
-							if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(),
 								sLine.getM_Locator_ID(),
 								sLine.getM_Product_ID(),
 								ma.getM_AttributeSetInstance_ID(),
@@ -1545,7 +1545,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 								} else if (storage.getQtyOnHand().signum() > 0) {
 									BigDecimal onHand = storage.getQtyOnHand();
 									// this locator has less qty than required, ship all qtyonhand and iterate to next locator
-									if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+									if (!MStorageOnHand.add(getCtx(), 
 											sLine.getM_Locator_ID(),
 											sLine.getM_Product_ID(),
 											sLine.getM_AttributeSetInstance_ID(),
@@ -1578,7 +1578,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 						//	Fallback: Update Storage - see also VMatch.createMatchRecord
 						if (pendingQty.signum() != 0 &&
-							!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+							!MStorageOnHand.add(getCtx(), 
 							sLine.getM_Locator_ID(),
 							sLine.getM_Product_ID(),
 							sLine.getM_AttributeSetInstance_ID(),
@@ -2671,7 +2671,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				return null;
 			
 			if (reversal) {
-				if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), 0, qty.negate(), dateMaterialPolicy, trxName)) {
+				if (!MStorageOnHand.add(getCtx(), M_Locator_ID, product.getM_Product_ID(), 0, qty.negate(), dateMaterialPolicy, trxName)) {
 					String lastError = CLogger.retrieveErrorString("");
 					m_processMsg = "Cannot move Inventory OnHand to Non ASI [" + product.getValue() + "] - " + lastError;
 					return DocAction.STATUS_Invalid;
@@ -2683,7 +2683,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					m_processMsg = "Transaction From not inserted (MA) [" + product.getValue() + "] - ";
 					return DocAction.STATUS_Invalid;
 				}
-				if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), M_AttributeSetInstance_ID, qty, dateMaterialPolicy, trxName)) {
+				if (!MStorageOnHand.add(getCtx(), M_Locator_ID, product.getM_Product_ID(), M_AttributeSetInstance_ID, qty, dateMaterialPolicy, trxName)) {
 					String lastError = CLogger.retrieveErrorString("");
 					m_processMsg = "Cannot move Inventory OnHand to Shipment ASI [" + product.getValue() + "] - " + lastError;
 					return DocAction.STATUS_Invalid;
@@ -2741,7 +2741,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				if (!reversal && toMove.compareTo(onhand.getQtyOnHand()) >= 0) {
 					toMove = onhand.getQtyOnHand();							
 				}
-				if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), 0, toMove.negate(), onhand.getDateMaterialPolicy(), trxName)) {
+				if (!MStorageOnHand.add(getCtx(), M_Locator_ID, product.getM_Product_ID(), 0, toMove.negate(), onhand.getDateMaterialPolicy(), trxName)) {
 					String lastError = CLogger.retrieveErrorString("");
 					m_processMsg = "Cannot move Inventory OnHand to Non ASI [" + product.getValue() + "] - " + lastError;
 					return DocAction.STATUS_Invalid;
@@ -2758,7 +2758,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				if ((!reversal && totalToMove.signum() <= 0) || (reversal && totalToMove.signum() >= 0))
 					break;
 			}
-			if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(), M_Locator_ID, product.getM_Product_ID(), M_AttributeSetInstance_ID, qty, 
+			if (!MStorageOnHand.add(getCtx(), M_Locator_ID, product.getM_Product_ID(), M_AttributeSetInstance_ID, qty, 
 					(dateMaterialPolicy != null ? dateMaterialPolicy : onHandDateMaterialPolicy), trxName)) {
 				String lastError = CLogger.retrieveErrorString("");
 				m_processMsg = "Cannot move Inventory OnHand to Shipment ASI [" + product.getValue() + "] - " + lastError;
