@@ -444,9 +444,8 @@ public class MMovement extends X_M_Movement implements DocAction
 						{
 							MMovementLineMA ma = mas[j];
 							//
-							MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
 							//Update Storage 
-							if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(),
 									line.getM_Locator_ID(),
 									line.getM_Product_ID(), 
 									ma.getM_AttributeSetInstance_ID(),
@@ -464,8 +463,7 @@ public class MMovement extends X_M_Movement implements DocAction
 								M_AttributeSetInstanceTo_ID = ma.getM_AttributeSetInstance_ID();
 							}
 							//Update Storage 
-							MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
-							if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(),
 									line.getM_LocatorTo_ID(),
 									line.getM_Product_ID(), 
 									M_AttributeSetInstanceTo_ID,
@@ -528,12 +526,11 @@ public class MMovement extends X_M_Movement implements DocAction
 						if (dateMPolicy == null && storages.length > 0)
 							dateMPolicy = storages[0].getDateMaterialPolicy();
 						
-						MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
 						//Update Storage 
 						Timestamp effDateMPolicy = dateMPolicy;
 						if (dateMPolicy == null && line.getMovementQty().negate().signum() > 0)
 							effDateMPolicy = getMovementDate();
-						if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(),
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstance_ID(),
@@ -548,8 +545,7 @@ public class MMovement extends X_M_Movement implements DocAction
 						effDateMPolicy = dateMPolicy;
 						if (dateMPolicy == null && line.getMovementQty().signum() > 0)
 							effDateMPolicy = getMovementDate();
-						MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
-						if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(),
 								line.getM_LocatorTo_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstanceTo_ID(),
