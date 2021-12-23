@@ -64,11 +64,11 @@ public final class Adempiere
 	/** Timestamp                   */
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
-	static public String	MAIN_VERSION	= "Development 9.0";
+	static public String	MAIN_VERSION	= "Release 9";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2021-09-01";
+	static public String	DATE_VERSION	= "2021-12-24";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2020-12-20";
+	static public String	DB_VERSION		= "2021-12-24";
 
 	/** Product Name            */
 	static public final String	NAME 			= "iDempiere\u00AE";
