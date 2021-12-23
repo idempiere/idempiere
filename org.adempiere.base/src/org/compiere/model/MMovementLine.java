@@ -249,8 +249,8 @@ public class MMovementLine extends X_M_MovementLine
 	 *      Set Distribution Order Line. 
 	 *      Does not set Quantity! 
 	 *      @param oLine order line 
-	 *      @param M_Locator_ID locator 
 	 *      @param Qty used only to find suitable locator 
+	 *      @param isReceipt 
 	 */ 
 	public void setOrderLine (MDDOrderLine oLine, BigDecimal Qty, boolean isReceipt) 
 	{ 

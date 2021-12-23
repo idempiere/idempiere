@@ -40,7 +40,7 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 2608617 ] Error when I want to delete a PO document
  * 			<li>BF [ 2609604 ] Add M_RequisitionLine.C_BPartner_ID
  * 			<li>FR [ 2841841 ] Requisition Improvements
- * 				https://sourceforge.net/tracker/?func=detail&aid=2841841&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/792/
  */
 public class MRequisitionLine extends X_M_RequisitionLine
 {
@@ -52,9 +52,9 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	/**
 	 * Get corresponding Requisition Line for given Order Line
 	 * @param ctx
-	 * @param C_OrderLine_ID order line
+	 * @param C_Order_ID order line
 	 * @param trxName
-	 * @return Requisition Line
+	 * @return Requisition Line array
 	 */
 	public static MRequisitionLine[] forC_Order_ID(Properties ctx, int C_Order_ID, String trxName)
 	{

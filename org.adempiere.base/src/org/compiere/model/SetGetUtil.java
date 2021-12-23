@@ -47,7 +47,7 @@ public class SetGetUtil
 	/**
 	 * Update columns from the result of the given query.
 	 * <p> If the query returns more than one row, only the first row will be used.
-	 * <p> This is a simplified version of {@link #updateColumns(SetGetModel[], String[], String, String)}
+	 * <p> This is a simplified version of {@link #updateColumns(SetGetModel[], String[], String, Object[], String)}
 	 * which calls:
 	 * <pre>updateColumns(new SetGetModel[]{model}, columnNames, query, trxName);</pre>
 	 * 
@@ -59,7 +59,7 @@ public class SetGetUtil
 	 * @param params sql parameters
 	 * @param trxName
 	 * 
-	 * @see #updateColumns(SetGetModel[], String[], String, String)
+	 * @see #updateColumns(SetGetModel[], String[], String, Object[], String)
 	 */
 	public static void updateColumns(SetGetModel model, String[] columnNames, String sql, Object[] params, String trxName)
 	{
@@ -501,7 +501,7 @@ public class SetGetUtil
 	/**
 	 * Check if given object was produced by used entry (i.e. created from a window)
 	 * @param o object
-	 * @return If object is instanceof PO then {@link PO#is_UserEntry()} will be checked.
+	 * @return If object is instanceof PO then ...
 	 * 			If object is null then false will be returned.
 	 * 			Else true will be returned.
 	 */

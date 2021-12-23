@@ -458,13 +458,10 @@ public class ImportPayment extends SvrProcess
 				
 				payment.setDateAcct(imp.getDateTrx());
 				payment.setDateTrx(imp.getDateTrx());
-			//	payment.setDescription(imp.getDescription());
-				//
 				payment.setC_BPartner_ID(imp.getC_BPartner_ID());
 				payment.setC_Invoice_ID(imp.getC_Invoice_ID());
 				payment.setC_DocType_ID(imp.getC_DocType_ID());
 				payment.setC_Currency_ID(imp.getC_Currency_ID());
-			//	payment.setC_ConversionType_ID(imp.getC_ConversionType_ID());
 				payment.setC_Charge_ID(imp.getC_Charge_ID());
 				payment.setChargeAmt(imp.getChargeAmt());
 				payment.setTaxAmt(imp.getTaxAmt());

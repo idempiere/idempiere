@@ -174,7 +174,6 @@ public class InOutGenerate extends SvrProcess
 				m_sql.append(" AND o.C_BPartner_ID=?");					//	#3
 		}
 		m_sql.append(" ORDER BY M_Warehouse_ID, PriorityRule, M_Shipper_ID, C_BPartner_ID, C_BPartner_Location_ID, C_Order_ID");
-	//	m_sql += " FOR UPDATE";
 
 		PreparedStatement pstmt = null;
 		try

@@ -93,7 +93,7 @@ import org.zkoss.zul.South;
  *  @version 	$Id: EMailDialog.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *  
  *  globalqss: integrate phib fixing bug reported here
- *     http://sourceforge.net/tracker/index.php?func=detail&aid=1568765&group_id=176962&atid=879332
+ *     https://sourceforge.net/p/adempiere/bugs/62/
  * 
  *  phib - fixing bug [ 1568765 ] Close email dialog button broken
  *  

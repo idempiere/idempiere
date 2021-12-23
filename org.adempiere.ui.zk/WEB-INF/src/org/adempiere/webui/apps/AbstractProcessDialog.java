@@ -150,7 +150,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 * @param WindowNo
 	 * @param AD_Process_ID
 	 * @param pi
-	 * @param innerWidth
 	 * @param autoStart
 	 * @param isDisposeOnComplete
 	 * @return

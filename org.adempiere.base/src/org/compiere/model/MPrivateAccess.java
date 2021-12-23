@@ -78,7 +78,7 @@ public class MPrivateAccess extends X_AD_Private_Access
 	 * 	Get Where Clause of Locked Records for Table
 	 *	@param AD_Table_ID table
 	 *	@param AD_User_ID user requesting info
-	 *	@return "<>1" or " NOT IN (1,2)" or null
+	 *	@return "&lt;&gt;1" or " NOT IN (1,2)" or null
 	 */
 	public static String getLockedRecordWhere (int AD_Table_ID, int AD_User_ID)
 	{

@@ -35,7 +35,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 /**
  *	Warehouse Locator Type Object
  *
- * 	@author 	Carlos Ruiz - Quality Systems & Solutions - globalqss
+ * 	@author 	Carlos Ruiz - Quality Systems &gt; Solutions - globalqss
  */
 public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport {
 	/**

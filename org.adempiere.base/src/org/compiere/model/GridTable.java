@@ -93,9 +93,9 @@ import org.compiere.util.ValueNamePair;
  *			<li>BF [ 1984310 ] GridTable.getClientOrg() doesn't work for AD_Client/AD_Org
  *  @author victor.perez@e-evolution.com,www.e-evolution.com
  *  		<li>BF [ 2910358 ] Error in context when a field is found in different tabs.
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910358&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2255/
  *     		<li>BF [ 2910368 ] Error in context when IsActive field is found in different
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910368&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2256/
  */
 public class GridTable extends AbstractTableModel
 	implements Serializable
@@ -3775,9 +3775,9 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * Feature Request [1707462]
 	 * Enable runtime change of VFormat
-	 * @param Identifier field ident
+	 * @param identifier field ident
 	 * @param strNewFormat new mask
-	 * @author fer_luck
+	 * author fer_luck
 	 */
 	protected void setFieldVFormat (String identifier, String strNewFormat)
 	{

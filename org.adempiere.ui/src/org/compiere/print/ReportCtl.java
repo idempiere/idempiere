@@ -120,7 +120,6 @@ public class ReportCtl
 	 *  @param parent The window which invoked the printing
 	 *  @param WindowNo The windows number which invoked the printing
 	 *  @param pi process info
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if created
 	 */
 	static public boolean start (IProcessUI parent, int WindowNo, ProcessInfo pi)
@@ -183,7 +182,7 @@ public class ReportCtl
 
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit
+	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
@@ -195,7 +194,7 @@ public class ReportCtl
 	
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit
+	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param WindowNo The windows number which invoked the printing
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
@@ -209,14 +208,13 @@ public class ReportCtl
 
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit.<br>
+	 *  - Get Table Info and submit.<br>
 	 *  A report can be created from:
 	 *  <ol>
 	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
 	 *  <li>process information (AD_Process.AD_PrintFormat_ID, AD_Process.AD_ReportView_ID)
 	 *  </ol>
 	 *  @param pi Process Info
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
 	static public boolean startStandardReport (ProcessInfo pi)
@@ -226,7 +224,7 @@ public class ReportCtl
 	
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit.<br>
+	 *  - Get Table Info and submit.<br>
 	 *  A report can be created from:
 	 *  <ol>
 	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
@@ -234,7 +232,6 @@ public class ReportCtl
 	 *  </ol>
 	 *  @param pi Process Info
 	 *  @param WindowNo The windows number which invoked the printing
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)

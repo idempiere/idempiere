@@ -247,7 +247,7 @@ public class POTest extends AbstractTestCase
 	/**
 	 * If one object fails on after save we should not revert all transaction.
 	 * BF [ 2849122 ] PO.AfterSave is not rollback on error
-	 * https://sourceforge.net/tracker/index.php?func=detail&aid=2849122&group_id=176962&atid=879332#
+	 * https://sourceforge.net/p/adempiere/bugs/2073/
 	 */
 	@Test
 	public void testAfterSaveError_BF2849122() 

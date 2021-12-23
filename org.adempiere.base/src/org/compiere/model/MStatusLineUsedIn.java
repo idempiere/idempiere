@@ -37,7 +37,7 @@ public class MStatusLineUsedIn extends X_AD_StatusLineUsedIn
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param AD_Window_ID
+	 *	@param AD_StatusLineUsedIn_ID
 	 *	@param trxName transaction
 	 */
 	public MStatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)

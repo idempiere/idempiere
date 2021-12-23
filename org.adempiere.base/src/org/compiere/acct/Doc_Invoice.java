@@ -861,7 +861,7 @@ public class Doc_Invoice extends Doc
 
 
 	/**
-	 * 	Create Landed Cost accounting & Cost lines
+	 * 	Create Landed Cost accounting and Cost lines
 	 *	@param as accounting schema
 	 *	@param fact fact
 	 *	@param line document line

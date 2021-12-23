@@ -449,7 +449,7 @@ public final class MLookup extends Lookup implements Serializable
 	 *  @param onlyValidated only validated
 	 *  @param onlyActive only active
 	 * 	@param temporary force load for temporary display
-	 *  @param isshortlist
+	 *  @param shortlist
 	 *  @return list
 	 */
 	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // idempiere 90
@@ -794,7 +794,7 @@ public final class MLookup extends Lookup implements Serializable
 	}	//	g2etColumnName
 
 	/**
-	 *	Refresh & return number of items read.
+	 *	Refresh and return number of items read.
 	 * 	Get get data of parent lookups
 	 *  @return no of items read
 	 */
@@ -819,7 +819,7 @@ public final class MLookup extends Lookup implements Serializable
 	}
 	
 	/**
-	 *	Refresh & return number of items read
+	 *	Refresh and return number of items read
 	 * 	@param loadParent get data of parent lookups
 	 *  @return no of items refresh
 	 */

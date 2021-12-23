@@ -223,7 +223,6 @@ public class SecureEngine
 	 * @param hashedText
 	 * @param hexSalt
 	 * @param planText
-	 * @param log
 	 * @return
 	 */
 	public static boolean isMatchHash (String hashedText, String hexSalt, String planText){

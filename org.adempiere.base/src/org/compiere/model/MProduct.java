@@ -43,7 +43,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 			<li>FR [ 2093551 ] Refactor/Add org.compiere.model.MProduct.getCostingLevel
  * 			<li>FR [ 2093569 ] Refactor/Add org.compiere.model.MProduct.getCostingMethod
  * 			<li>BF [ 2824795 ] Deleting Resource product should be forbidden
- * 				https://sourceforge.net/tracker/?func=detail&aid=2824795&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/1988/
  * 
  * @author Mark Ostermann (mark_o), metas consult GmbH
  * 			<li>BF [ 2814628 ] Wrong evaluation of Product inactive in beforeSave()
@@ -942,7 +942,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	
 	/**
 	 * Get Product Costing Method
-	 * @param C_AcctSchema_ID accounting schema ID
+	 * @param as accounting schema
 	 * @return product costing method
 	 */
 	public String getCostingMethod(MAcctSchema as)

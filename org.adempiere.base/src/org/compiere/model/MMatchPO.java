@@ -63,7 +63,7 @@ import org.compiere.util.ValueNamePair;
  *
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  */
 public class MMatchPO extends X_M_MatchPO
 {
@@ -746,7 +746,6 @@ public class MMatchPO extends X_M_MatchPO
 	/**
 	 * Get the match inv created for immediate accounting purposes
 	 * Is cleared after read, so if you read twice second time it returns null
-	 * @param matchInv
 	 */
 	public MMatchInv getMatchInvCreated() {
 		MMatchInv tmp = m_matchInv;

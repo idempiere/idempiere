@@ -413,7 +413,7 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	/**
 	 * Set Storage Provider
 	 * Used temporarily for the process to migrate storage provider
-	 * @param Storage provider
+	 * @param p Storage provider
 	 */
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;

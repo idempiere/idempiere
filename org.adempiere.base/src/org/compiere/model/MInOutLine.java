@@ -37,7 +37,7 @@ import org.compiere.util.Util;
  *
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>BF [ 2784194 ] Check Warehouse-Locator conflict
- *  			https://sourceforge.net/tracker/?func=detail&aid=2784194&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/1871/
  */
 public class MInOutLine extends X_M_InOutLine
 {

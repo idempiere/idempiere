@@ -29,7 +29,7 @@ import org.compiere.util.Env;
 
 
 /**
- *	Time & Expense Report Callout 
+ *	Time and Expense Report Callout 
  *	
  *  @author Jorg Janke
  *  @version $Id: CalloutTimeExpense.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $

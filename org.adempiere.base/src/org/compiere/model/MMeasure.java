@@ -49,7 +49,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 			<li>BF [ 1887674 ] Deadlock when try to modify PA Goal's Measure Target
  * @author victor.perez@e-evolution.com, www.e-evolution.com
  * 			<li>FR [ 2905227 ] Calculate Measure based on the script to PA
- * 			<li>https://sourceforge.net/tracker/?func=detail&aid=2905227&group_id=176962&atid=879335
+ * 			<li>https://sourceforge.net/p/adempiere/feature-requests/888/
  */
 public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 {

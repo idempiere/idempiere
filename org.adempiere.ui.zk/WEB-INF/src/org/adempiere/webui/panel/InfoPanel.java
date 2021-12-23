@@ -581,7 +581,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	/**
 	 *	Set Status DB
-	 *  @param text text
 	 */
 	public void setStatusSelected ()
 	{
@@ -1159,7 +1158,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      * example after testCount we get calculate 6page.
      * when user navigate to page 4. something change in system (a batch record change become don't match with search query) 
      * let we just get 5 page with current parameter.
-     * so when user navigate to page 6. user will face with index issue. (out of index or start index > end index)
+     * so when user navigate to page 6. user will face with index issue. (out of index or start index &gt; end index)
      * this function is fix for it.
      * @param fromIndex
      * @param toIndex
@@ -1451,9 +1450,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	/**
      *  Get the keys of selected row/s based on layout defined in prepareTable
-     *  @deprecated this function should deprecated and replace with {@link #getListKeyValueOfSelectedRow()} to support view at infoWindow
+     *  @deprecated
      *  @return IDs if selection present
-     *  @author ashley
+     *  author ashley
      */
     protected ArrayList<Integer> getSelectedRowKeys()
     {
@@ -1659,7 +1658,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * get keyView value at rowIndex and clumnIndex
 	 * also check in case value is null will rise a exception
 	 * @param rowIndex
-	 * @param columnIndex
 	 * @return
 	 */
 	protected Integer getColumnValue (int rowIndex){
@@ -1698,7 +1696,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * current 1000 line cache 
 	 * because in case query get more 1000 record we can't sync or maintain selected record (ever maintain for current page will make user confuse).
 	 * just clear selection
-	 * in case < 1000 record is ok
+	 * in case &lt; 1000 record is ok
 	 * TODO:rewrite
 	 */
 	protected void syncSelectedAfterRequery (){
@@ -1836,7 +1834,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  Enable OK, History, Zoom if row/s selected
      *  ---
      *  Changes: Changed the logic for accommodating multiple selection
-     *  @author ashley
+     *  author ashley
 	 */
 	protected void enableButtons (boolean enable)
 	{
@@ -1887,10 +1885,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		throws SQLException;
     /**
      * notify to search editor of a value change in the selection info
-     * @param event event
-    *
      */
-
 	protected void showHistory()					{}
 	/**
 	 *  Has History (false)
@@ -1930,7 +1925,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  Save Selection Details
 	 *	To be overwritten by concrete classes
 	 *  this function call when close info window.
-	 *  default infoWindow will set value of all column of current selected record to environment variable with {@link Env.TAB_INF}
+	 *  default infoWindow will set value of all column of current selected record to environment variable with {@link Env#TAB_INFO}
 	 *  class extends can do more by override it. 
 	 */
 	protected void saveSelectionDetail()          {}
@@ -2209,7 +2204,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected void updateSubcontent (){ updateSubcontent(-1);};
 	
 	/**
-	 * Update relate info for a specific row, if targetRow < 0 update using selected row
+	 * Update relate info for a specific row, if targetRow &lt; 0 update using selected row
+	 * @param targetRow
 	 */
 	protected void updateSubcontent (int targetRow){};
 

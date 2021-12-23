@@ -154,7 +154,7 @@ public class Core {
 	/**
 	 *
 	 * @param className
-	 * @param method 
+	 * @param methodName 
 	 * @return callout for className
 	 */
 	public static Callout getCallout(String className, String methodName) {
@@ -1018,7 +1018,7 @@ public class Core {
 	
 	/**
 	 * Get print header/footer instance
-	 * @param print header/footer
+	 * @param printHeaderFooter print header/footer
 	 * @return print header/footer instance or null if not found
 	 */
 	public static IPrintHeaderFooter getPrintHeaderFooter(I_AD_PrintHeaderFooter printHeaderFooter) {

@@ -731,9 +731,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 	/**************************************************************************
 	 *  Tab Changed
-	 *  @param e ChangeEvent
 	 */
-
 	public void stateChanged()
 	{
 	//	log.info( "AcctViewer.stateChanged");

@@ -432,7 +432,7 @@ public class PrintUtil
 	}	//	dump
 
 	/**************************************************************************
-	 * 	Create Print Form & Print Formats for a new Client.
+	 * 	Create Print Form and Print Formats for a new Client.
 	 *  - Order, Invoice, etc.
 	 *  Called from VSetup
 	 *  @param AD_Client_ID new Client
@@ -443,7 +443,7 @@ public class PrintUtil
 	}
 	
 	/**************************************************************************
-	 * 	Create Print Form & Print Formats for a new Client.
+	 * 	Create Print Form and Print Formats for a new Client.
 	 *  - Order, Invoice, etc.
 	 *  Called from VSetup
 	 *  @param AD_Client_ID new Client

@@ -638,7 +638,7 @@ public class Doc_Order extends Doc
 	 * 	Get Commitments Sales
 	 * 	@param doc document
 	 * 	@param maxQty Qty invoiced/matched
-	 * 	@param C_OrderLine_ID invoice line
+	 * 	@param M_InOutLine_ID invoice line
 	 *	@return commitments (order lines)
 	 */
 	protected static DocLine[] getCommitmentsSales(Doc doc, BigDecimal maxQty, int M_InOutLine_ID)
@@ -728,7 +728,7 @@ public class Doc_Order extends Doc
 	 *	@param as accounting schema
 	 *	@param doc doc
 	 *	@param Qty qty invoiced/matched
-	 *	@param C_OrderLine_ID line
+	 *	@param M_InOutLine_ID line
 	 *	@param multiplier 1 for accrual
 	 *	@return Fact
 	 */

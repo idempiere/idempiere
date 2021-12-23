@@ -99,7 +99,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	/**
 	 * 	Get all clients
 	 *	@param ctx context
-	 *	@param order by clause
+	 *	@param orderBy by clause
 	 *	@return clients
 	 */
 	public static MClient[] getAll (Properties ctx, String orderBy)
@@ -587,7 +587,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	 *	@param AD_User_ID recipient
 	 *	@param subject subject
 	 *	@param message message
-	 *	@param attachment optional collection of attachments
+	 *	@param attachments optional collection of attachments
 	 *	@return true if sent
 	 */
 	public boolean sendEMailAttachments (int AD_User_ID,
@@ -601,7 +601,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	 *	@param AD_User_ID recipient
 	 *	@param subject subject
 	 *	@param message message
-	 *	@param attachment optional collection of attachments
+	 *	@param attachments optional collection of attachments
 	 *  @param html
 	 *	@return true if sent
 	 */
@@ -636,7 +636,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	 *	@param to recipient
 	 *	@param subject subject
 	 *	@param message message
-	 *	@param attachment optional attachment
+	 *	@param attachments optional attachment
 	 *	@return true if sent
 	 */
 	public boolean sendEMailAttachments (MUser from, MUser to,
@@ -651,7 +651,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	 *	@param to recipient
 	 *	@param subject subject
 	 *	@param message message
-	 *	@param attachment optional attachment
+	 *	@param attachments optional attachment
 	 *  @param isHtml
 	 *	@return true if sent
 	 */
@@ -1047,7 +1047,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	private ArrayList<Integer>	m_fieldAccess = null;
 	/**
 	 * 	Define is a field is displayed based on ASP rules
-	 * 	@param ad_field_id
+	 * 	@param aDFieldID
 	 *	@return boolean indicating if it's displayed or not
 	 */
 	public boolean isDisplayField(int aDFieldID) {

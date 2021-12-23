@@ -328,7 +328,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
     
     /**
-     * @deprecated keep for compatible, replace by {@link #insertAfter(Component, String, boolean, boolean, DecorateInfo)}
+     * @deprecated keep for compatible, replace by {@link #insertAfter(Tab, Component, String, boolean, boolean, DecorateInfo)}
      * @param refTab
      * @param comp
      * @param title

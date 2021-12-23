@@ -32,7 +32,7 @@ import org.compiere.util.CLogger;
  * 			<li>BF [ 1652623 ] AccessSqlParser.getTableInfo(String) - tablename parsing bug
  * 			<li>BF [ 1964496 ] AccessSqlParser is not parsing well JOIN CLAUSE
  * 			<li>BF [ 2840157 ] AccessSqlParser is not parsing well ON keyword
- * 				https://sourceforge.net/tracker/?func=detail&aid=2840157&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/2042/
  */
 public class AccessSqlParser
 {

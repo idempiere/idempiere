@@ -38,7 +38,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1885496 ] Performance NEEDS
  * 			<li>BF [ 2819654 ] Table Script Validator SeqNo is not set
- * 				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2819654&group_id=176962 
+ * 				https://sourceforge.net/p/adempiere/bugs/1978/
  */
 public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements ImmutablePOSupport
 {
@@ -81,7 +81,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	/**
 	 * 	Get Model Validation Script Rules for a table/event
 	 *	@param ctx context
-	 *	@param table_id AD_Table_ID
+	 *	@param ad_table_id AD_Table_ID
 	 *	@param event Event
 	 *	@return array of MTableScriptValidator or null if error or no validators found
 	 */

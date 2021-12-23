@@ -84,8 +84,6 @@ public class RfQCopyLines extends SvrProcess
 			newLine.setHelp(lines[i].getHelp());
 			newLine.setM_Product_ID(lines[i].getM_Product_ID());
 			newLine.setM_AttributeSetInstance_ID(lines[i].getM_AttributeSetInstance_ID());
-		//	newLine.setDateWorkStart();
-		//	newLine.setDateWorkComplete();
 			newLine.setDeliveryDays(lines[i].getDeliveryDays());
 			newLine.saveEx();
 			//	Copy Qtys

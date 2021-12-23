@@ -81,8 +81,6 @@ public final class ZkCssHelper
      *
      * @param component	the HTML based ZK component whose CSS style is to be modified
      * @param style		CSS style string to append to current style
-     *
-     * @see #setStyle(String)
      */
     public static void appendStyle(HtmlBasedComponent component, String style)
     {
@@ -144,7 +142,6 @@ public final class ZkCssHelper
      *
      * @param component the HTML based ZK component whose CSS style is to be modified
      * @param color     the color to be set
-     * @see #appendStyleBackColor(HtmlBasedComponent, Color)
      * @see #setStyleBackgroundColor(HtmlBasedComponent, Color)
      */
     public static void appendStyleBackgroundColor(HtmlBasedComponent component, Color color)

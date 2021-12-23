@@ -999,7 +999,7 @@ public final class MSetup
 	
 	/**************************************************************************
 	 *  Create Default main entities.
-	 *  - Dimensions & BPGroup, Prod Category)
+	 *  - Dimensions and BPGroup, Prod Category)
 	 *  - Location, Locator, Warehouse
 	 *  - PriceList
 	 *  - Cashbook, PaymentTerm

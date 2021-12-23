@@ -76,7 +76,7 @@ public class MTree extends MTree_Base
 	}
 
 	/**
-	 *  Construct & Load Tree
+	 *  Construct and Load Tree
 	 *  @param AD_Tree_ID   The tree to build
 	 *  @param editable     True, if tree can be modified
 	 *  - includes inactive and empty summary nodes

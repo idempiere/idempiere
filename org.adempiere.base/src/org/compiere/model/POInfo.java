@@ -44,7 +44,7 @@ import org.compiere.util.Env;
  *  @version $Id: POInfo.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  *  @author Victor Perez, e-Evolution SC
  *			<li>[ 2195894 ] Improve performance in PO engine
- *			<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2195894&group_id=176962&atid=879335
+ *			<li>https://sourceforge.net/p/adempiere/feature-requests/555/
  */
 public class POInfo implements Serializable
 {

@@ -313,7 +313,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param findFields findFields
      * @param minRecords minRecords
      * @param adTabId
-     * @param AbstractADWindowContent windowPanel
+     * @param windowPanel AbstractADWindowContent
     **/
     public FindWindow (int targetWindowNo, int targetTabNo, String title,
             int AD_Table_ID, String tableName, String whereExtended,

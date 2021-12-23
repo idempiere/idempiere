@@ -41,7 +41,7 @@ import org.compiere.util.Env;
  *  Avoid posting if both accounts BankAsset and BankInTransit are equal
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 				<li>FR [ 2520591 ] Support multiples calendar for Org
- * 				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ * 				@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *
  */
 public class Doc_BankStatement extends Doc

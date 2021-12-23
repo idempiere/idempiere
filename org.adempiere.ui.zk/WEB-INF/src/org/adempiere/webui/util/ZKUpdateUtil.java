@@ -83,7 +83,7 @@ public class ZKUpdateUtil {
 	}
 	
 	/**
-	 * Set height of popup, window or dialog to heightInPixel. Set height to 100% if heightInPixel > desktopHeight
+	 * Set height of popup, window or dialog to heightInPixel. Set height to 100% if heightInPixel &gt; desktopHeight
 	 * @param comp
 	 * @param heightInPixel Height in Pixel
 	 */
@@ -97,7 +97,7 @@ public class ZKUpdateUtil {
 	}
 	
 	/**
-	 * Set width of popup, window or dialog to widthInPixel. Set width to 100% if widthInPixel > desktopWidth
+	 * Set width of popup, window or dialog to widthInPixel. Set width to 100% if widthInPixel &gt; desktopWidth
 	 * @param comp
 	 * @param widthInPixel
 	 */

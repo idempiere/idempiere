@@ -48,7 +48,7 @@ import org.compiere.util.ValueNamePair;
  * 
  * @author Teo Sarca
  * 		<li>BF [ 2860022 ] MQuery.get() is generating restrictions for non-existent column
- * 			https://sourceforge.net/tracker/?func=detail&aid=2860022&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2099/
  */
 public class MQuery implements Serializable, Cloneable
 {
@@ -1066,7 +1066,7 @@ public class MQuery implements Serializable, Cloneable
 
 	/**
 	 * 	Is Query Active
-	 * 	@return true if number of restrictions > 0
+	 * 	@return true if number of restrictions &gt; 0
 	 */
 	public boolean isActive()
 	{
@@ -1346,12 +1346,12 @@ public class MQuery implements Serializable, Cloneable
 	}	//	getRestrictionSQL
 
 	/**
-	 * 
 	 * @param ColumnName
-	 * @param Operator
 	 * @param Code
+	 * @param Code_To
 	 * @param InfoName
 	 * @param InfoDisplay
+	 * @param InfoDisplay_To
 	 * @param andCondition
 	 * @param depth
 	 * @return

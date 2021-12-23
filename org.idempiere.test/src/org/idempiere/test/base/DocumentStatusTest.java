@@ -30,10 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 
 import org.compiere.model.MDocumentStatus;
+import org.compiere.model.MDocumentStatusAccess;
 import org.compiere.model.MEntityType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
-import org.compiere.model.X_PA_DocumentStatusAccess;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -74,7 +74,7 @@ public class DocumentStatusTest extends AbstractTestCase {
 		invoiceDS.setSeqNo(10);
 		invoiceDS.saveEx();
 
-		X_PA_DocumentStatusAccess invoiceDSAccess = new X_PA_DocumentStatusAccess(Env.getCtx(),0, getTrxName());
+		MDocumentStatusAccess invoiceDSAccess = new MDocumentStatusAccess(Env.getCtx(),0, getTrxName());
 		invoiceDSAccess.setPA_DocumentStatus_ID(invoiceDS.get_ID());
 		invoiceDSAccess.setAD_User_ID(USER_GARDENADMIN);
 		invoiceDSAccess.setAD_Role_ID(ROLE_GARDENWORLDADMIN);
@@ -99,7 +99,7 @@ public class DocumentStatusTest extends AbstractTestCase {
 		requestDS.setSeqNo(30);
 		requestDS.saveEx();
 
-		X_PA_DocumentStatusAccess requestDSAccess = new X_PA_DocumentStatusAccess(Env.getCtx(),0, getTrxName());
+		MDocumentStatusAccess requestDSAccess = new MDocumentStatusAccess(Env.getCtx(),0, getTrxName());
 		requestDSAccess.setPA_DocumentStatus_ID(requestDS.get_ID());
 		requestDSAccess.setAD_Role_ID( ROLE_GARDENWORLDUSER);
 		requestDSAccess.saveEx();
@@ -113,7 +113,7 @@ public class DocumentStatusTest extends AbstractTestCase {
 		WorkflowActivitiesDS.setSeqNo(40);
 		WorkflowActivitiesDS.saveEx();
 
-		X_PA_DocumentStatusAccess WorkflowActivitiesDSAccess = new X_PA_DocumentStatusAccess(Env.getCtx(),0, getTrxName());
+		MDocumentStatusAccess WorkflowActivitiesDSAccess = new MDocumentStatusAccess(Env.getCtx(),0, getTrxName());
 		WorkflowActivitiesDSAccess.setPA_DocumentStatus_ID(WorkflowActivitiesDS.get_ID());
 		WorkflowActivitiesDSAccess.setAD_User_ID(USER_GARDENADMIN);
 		WorkflowActivitiesDSAccess.saveEx();

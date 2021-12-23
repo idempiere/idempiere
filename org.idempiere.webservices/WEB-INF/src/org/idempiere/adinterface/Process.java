@@ -762,7 +762,6 @@ public class Process {
 	 *  	Called also directly from ProcessDialog, VInOutGen, VInvoiceGen, VPayPrint
 	 * 	@param type document type in ReportEngine
 	 * 	@param Record_ID id
-	 * 	@param IsDirectPrint if true, prints directly - otherwise View
 	 * 	@return true if success
 	 */
 	public static ReportEngine startDocumentPrint (int type, int Record_ID)
@@ -780,9 +779,8 @@ public class Process {
 	
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit
+	 *  - Get Table Info and submit
 	 *  @param pi Process Info
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
 	static public ReportEngine startStandardReport (ProcessInfo pi)
@@ -801,7 +799,6 @@ public class Process {
 	 * 	Start Check Print.
 	 * 	Find/Create
 	 *	@param C_Payment_ID Payment
-	 * 	@param IsDirectPrint if true, prints directly - otherwise View
 	 * 	@return true if success
 	 */
 	public static ReportEngine startCheckPrint (int C_Payment_ID)

@@ -69,7 +69,7 @@ import org.osgi.service.event.Event;
  *
  *  @author Jorg Janke
  *  @author Karsten Thiemann FR [ 1782412 ]
- *  @author victor.perez@e-evolution.com www.e-evolution.com FR [ 1866214 ]  http://sourceforge.net/tracker/index.php?func=detail&aid=1866214&group_id=176962&atid=879335
+ *  @author victor.perez@e-evolution.com www.e-evolution.com FR [ 1866214 ]  https://sourceforge.net/p/adempiere/feature-requests/298/
  *  @version $Id: DocumentEngine.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
  */
 public class DocumentEngine implements DocAction
@@ -851,7 +851,6 @@ public class DocumentEngine implements DocAction
 
 	/**
 	 * 	Save Document
-	 *	@return throw exception
 	 */
 	public void saveEx() throws AdempiereException
 	{

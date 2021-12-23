@@ -39,14 +39,14 @@ import org.compiere.util.Language;
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *		<li>BF [ 1734394 ] MLookupFactory.getLookup_TableDirEmbed is not translated
- *		<li>BF [ 1714261 ] MLookupFactory: TableDirEmbed -> TableEmbed not supported
+ *		<li>BF [ 1714261 ] MLookupFactory: TableDirEmbed -&gt; TableEmbed not supported
  *		<li>BF [ 1672820 ] Sorting should be language-sensitive
  *		<li>BF [ 1739530 ] getLookup_TableDirEmbed error when BaseColumn is sql query
  *		<li>BF [ 1739544 ] getLookup_TableEmbed error for self referencing references
  *		<li>BF [ 1817768 ] Isolate hardcoded table direct columns
  * @author Teo Sarca
  * 		<li>BF [ 2933367 ] Virtual Column Identifiers are not working
- * 			https://sourceforge.net/tracker/?func=detail&aid=2933367&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2291/
  * @author Carlos Ruiz, GlobalQSS
  *		<li>BF [ 2561593 ] Multi-tenant problem with webui
  */

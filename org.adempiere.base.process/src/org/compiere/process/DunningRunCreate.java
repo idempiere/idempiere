@@ -169,7 +169,6 @@ public class DunningRunCreate extends SvrProcess
 			sql.append(" AND i.C_Currency_ID=").append(p_C_Currency_ID);
 		if ( p_AD_Org_ID != 0 )
 			sql.append(" AND i.AD_Org_ID=").append(p_AD_Org_ID);
-	//	if (log.isLoggable(Level.INFO)) log.info(sql);
 		
 		String sql2= "";
 		

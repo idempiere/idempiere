@@ -39,7 +39,6 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, Immut
 	private static final long serialVersionUID = 7833442401205258074L;
 
 	/**
-	 * {@inheritDoc}
 	 * @param ctx
 	 * @param AD_InfoProcess_ID
 	 * @param trxName
@@ -50,7 +49,6 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, Immut
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * @param ctx
 	 * @param rs
 	 * @param trxName

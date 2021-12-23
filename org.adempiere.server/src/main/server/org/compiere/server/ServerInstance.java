@@ -53,10 +53,14 @@ public class ServerInstance implements Serializable {
 	private IClusterMember clusterMember;
 	
 	/**
-	 * 
-	 * @param server
+	 * @param serverId
+	 * @param model
 	 * @param started
 	 * @param interrupted
+	 * @param sleeping
+	 * @param startTime
+	 * @param statistics
+	 * @param serverInfo
 	 */
 	public ServerInstance(String serverId, AdempiereProcessor model, boolean started, boolean interrupted, 
 			boolean sleeping, Timestamp startTime, String statistics, String serverInfo) {

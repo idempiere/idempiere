@@ -383,7 +383,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	}
 	
 	/**
-	 * Create & save a new ASI for given product.
+	 * Create and save a new ASI for given product.
 	 * Automatically creates Lot#, Serial# and Guarantee Date.
 	 * @param ctx
 	 * @param product
@@ -408,7 +408,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	}
 	
 	/**
-	 * AutoGerate & save a new ASI for given product.
+	 * AutoGenerate and save a new ASI for given product.
 	 * Automatically creates Lot#
 	 * @param ctx
 	 * @param product

@@ -41,7 +41,7 @@ import org.compiere.util.Msg;
  *
  *  Change log:
  *  <ul>
- *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2580531&group_id=176962
+ *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/p/adempiere/feature-requests/655/
  *  </ul>
  *   
  * 	@author 	Jorg Janke
@@ -151,7 +151,6 @@ public class CPaper extends Paper
 
 	/**
 	 * Get Media Size
-	 * @return media size
 	 */
 	//AA Goodwill : Custom Paper Support
 	public CPaper (double x, double y, int units,

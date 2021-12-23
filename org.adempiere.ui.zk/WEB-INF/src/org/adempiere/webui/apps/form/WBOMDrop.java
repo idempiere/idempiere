@@ -144,8 +144,6 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	
 	/**
 	 *	Initialize Panel
-	 *  @param WindowNo window
-	 *  @param frame parent frame
 	 */
 	protected void initForm()
 	{

@@ -128,9 +128,9 @@ import org.eevolution.model.X_PP_Order;
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2828300 ] Error when printformat table differs from DOC_TABLES
- * 				https://sourceforge.net/tracker/?func=detail&aid=2828300&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/1995/
  * 			<li>BF [ 2828886 ] Problem with reports from temporary tables
- * 				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2828886&group_id=176962
+ * 				https://sourceforge.net/p/adempiere/bugs/2000/
  * 
  *  FR 2872010 - Dunning Run for a complete Dunning (not just level) - Developer: Carlos Ruiz - globalqss - Sponsor: Metas
  */
@@ -2158,7 +2158,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				DocSubTypeSO = rs.getString(1);
 			
 			// @Trifon - Order is not completed(C_DoctType_ID=0) then try with C_DocTypeTarget_ID
-			// [ 2819637 ] Wrong print format on non completed order - https://sourceforge.net/tracker/?func=detail&aid=2819637&group_id=176962&atid=879332
+			// [ 2819637 ] Wrong print format on non completed order - https://sourceforge.net/p/adempiere/bugs/1977/
 			if (DocSubTypeSO == null || "".equals(DocSubTypeSO)) {
 				sql = new StringBuilder("SELECT dt.DocSubTypeSO ")
 					.append("FROM C_DocType dt, C_Order o ")

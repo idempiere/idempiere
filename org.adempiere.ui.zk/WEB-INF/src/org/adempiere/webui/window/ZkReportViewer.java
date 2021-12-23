@@ -129,9 +129,9 @@ import org.zkoss.zul.impl.XulElement;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Viewer.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  * globalqss: integrate phib contribution from 
- *   http://sourceforge.net/tracker/index.php?func=detail&aid=1566335&group_id=176962&atid=879334
+ *   https://sourceforge.net/p/adempiere/patches/4/
  * globalqss: integrate Teo Sarca bug fixing
- * Colin Rooney 2007/03/20 RFE#1670185 & BUG#1684142
+ * Colin Rooney 2007/03/20 RFE#1670185 and BUG#1684142
  *                         Extend security to Info queries
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL

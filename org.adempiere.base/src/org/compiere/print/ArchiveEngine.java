@@ -41,7 +41,7 @@ import org.jfree.io.IOUtils;
  *	Keys set for
  *	- Menu Reports - AD_Report_ID
  *	- Win Report - AD_Table_ID
- *	- Documents - AD_Table_ID & Record_ID & C_Customer_ID 
+ *	- Documents - AD_Table_ID and Record_ID and C_Customer_ID 
  *	
  *  @author Jorg Janke
  *  @version $Id: ArchiveEngine.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $

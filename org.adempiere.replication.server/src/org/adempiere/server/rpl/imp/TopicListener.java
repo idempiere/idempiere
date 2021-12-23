@@ -55,7 +55,7 @@ import org.w3c.dom.Document;
  * @author Trifon N. Trifonov
  * @author Antonio Cañaveral, e-Evolution
  * 				<li>[ 2194986 ] Already connected ClientID issue.
- * 				<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2194986&group_id=176962&atid=879332
+ * 				<li>https://sourceforge.net/p/adempiere/bugs/1555/
  */
 public class TopicListener implements MessageListener {
 	

@@ -206,7 +206,7 @@ public class CLogger extends Logger
 	 * @param defaultMsg default message (used when there are no errors on stack)
 	 * @return error message, or defaultMsg if there is not error message saved
 	 * @see #retrieveError()
-	 * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+	 * author Teo Sarca, SC ARHIPAC SERVICE SRL
 	 */
 	public static String retrieveErrorString(String defaultMsg) {
 		ValueNamePair vp = retrieveError();

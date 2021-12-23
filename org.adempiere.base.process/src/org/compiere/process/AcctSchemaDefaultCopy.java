@@ -232,40 +232,6 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_BP_Group_ID@");
 		createdTotal += created;
 
-//IDEMPIERE-362 Hide things that don't work on iDempiere		
-		//	Update Business Partner - Employee
-		/*
-		if (p_CopyOverwriteAcct)
-		{
-			sql = new StringBuilder("UPDATE C_BP_Employee_Acct a ")
-				.append("SET E_Expense_Acct=").append(acct.getE_Expense_Acct())
-				.append(", E_Prepayment_Acct=").append(acct.getE_Prepayment_Acct())
-				.append(", Updated=getDate(), UpdatedBy=0 ")
-				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
-				.append(" AND EXISTS (SELECT * FROM C_BP_Employee_Acct x ")
-					.append("WHERE x.C_BPartner_ID=a.C_BPartner_ID)");
-			updated = DB.executeUpdate(sql.toString(), get_TrxName());
-			addLog(0, null, new BigDecimal(updated), "@Updated@ @C_BPartner_ID@ @IsEmployee@");
-			updatedTotal += updated;
-		}
-		//	Insert new Business Partner - Employee
-		sql = new StringBuilder("INSERT INTO C_BP_Employee_Acct ")
-			.append("(C_BPartner_ID, C_AcctSchema_ID,")
-			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
-			.append(" E_Expense_Acct, E_Prepayment_Acct) ")
-			.append("SELECT x.C_BPartner_ID, acct.C_AcctSchema_ID,")
-			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', getDate(), 0, getDate(), 0,")
-			.append(" acct.E_Expense_Acct, acct.E_Prepayment_Acct ")
-			.append("FROM C_BPartner x")
-			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
-			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
-			.append(" AND NOT EXISTS (SELECT * FROM C_BP_Employee_Acct a ")
-				.append("WHERE a.C_BPartner_ID=x.C_BPartner_ID")
-				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
-		created = DB.executeUpdate(sql.toString(), get_TrxName());
-		addLog(0, null, new BigDecimal(created), "@Created@ @C_BPartner_ID@ @IsEmployee@");
-		createdTotal += created;
-		*/
 		//
 		if (!p_CopyOverwriteAcct)
 		{
@@ -465,40 +431,6 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_BankAccount_Acct.Table_Name, PO.getUUIDColumnName(X_C_BankAccount_Acct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_BankAccount_ID@");
 		createdTotal += created;
-
-//IDEMPIERE-362 Hide things that don't work on iDempiere
-		//	Update Withholding
-		/*
-		if (p_CopyOverwriteAcct)
-		{
-			sql = new StringBuilder("UPDATE C_Withholding_Acct a ")
-				.append("SET Withholding_Acct=").append(acct.getWithholding_Acct())
-				.append(", Updated=getDate(), UpdatedBy=0 ")
-				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID) 
-				.append(" AND EXISTS (SELECT * FROM C_Withholding_Acct x ")
-					.append("WHERE x.C_Withholding_ID=a.C_Withholding_ID)");
-			updated = DB.executeUpdate(sql.toString(), get_TrxName());
-			addLog(0, null, new BigDecimal(updated), "@Updated@ @C_Withholding_ID@");
-			updatedTotal += updated;
-		}
-		//	Insert new Withholding
-		sql = new StringBuilder("INSERT INTO C_Withholding_Acct ")
-			.append("(C_Withholding_ID, C_AcctSchema_ID,")
-			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
-			.append("	Withholding_Acct) ")
-			.append("SELECT x.C_Withholding_ID, acct.C_AcctSchema_ID,")
-			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', getDate(), 0, getDate(), 0,")
-			.append(" acct.Withholding_Acct ")
-			.append("FROM C_Withholding x")
-			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
-			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
-			.append(" AND NOT EXISTS (SELECT * FROM C_Withholding_Acct a ")
-				.append("WHERE a.C_Withholding_ID=x.C_Withholding_ID")
-				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
-		created = DB.executeUpdate(sql.toString(), get_TrxName());
-		addLog(0, null, new BigDecimal(created), "@Created@ @C_Withholding_ID@");
-		createdTotal += created;
-		*/
 		
 		//	Update Charge
 		if (p_CopyOverwriteAcct)

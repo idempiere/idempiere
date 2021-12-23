@@ -38,7 +38,8 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 	private int windowNo;
 
 	/**
-	 * @param comp
+	 * @param ctx
+	 * @param windowNo
 	 * @param gridField
 	 */
 	public WInfoPAttributeEditor(Properties ctx, int windowNo, GridField gridField) {
