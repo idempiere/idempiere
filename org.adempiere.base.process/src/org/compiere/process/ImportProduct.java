@@ -25,9 +25,13 @@ import java.util.logging.Level;
 
 import org.adempiere.model.ImportValidator;
 import org.adempiere.process.ImportProcess;
+import org.adempiere.process.UUIDGenerator;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProduct;
+import org.compiere.model.MProductPO;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.PO;
 import org.compiere.model.X_I_Product;
 import org.compiere.util.DB;
 
@@ -600,6 +604,10 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 							no = pstmt_insertProductPO.executeUpdate();
 							if (log.isLoggable(Level.FINER)) log.finer("Insert Product_PO = " + no);
 							noInsertPO++;
+							if (DB.isGenerateUUIDSupported())
+								DB.executeUpdateEx("UPDATE M_Product_PO SET M_Product_PO_UU=generate_uuid() WHERE M_Product_PO_UU IS NULL", get_TrxName());
+							else
+								UUIDGenerator.updateUUID(MColumn.get(getCtx(), MProductPO.Table_Name, PO.getUUIDColumnName(MProductPO.Table_Name)), get_TrxName());
 						}
 						catch (SQLException ex)
 						{

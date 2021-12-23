@@ -17,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.adempiere.process.UUIDGenerator;
+import org.compiere.model.MColumn;
 import org.compiere.model.M_Element;
 import org.compiere.util.DB;
 import org.compiere.util.Trx;
@@ -88,6 +90,11 @@ public class SynchronizeTerminology extends SvrProcess
 				+" (SELECT AD_Element_ID || AD_LANGUAGE FROM AD_ELEMENT_TRL)";
 			no = DB.executeUpdate(sql, false, get_TrxName());	  	
 			if (log.isLoggable(Level.INFO)) log.info("  rows updated: "+no);
+			if (DB.isGenerateUUIDSupported())
+				DB.executeUpdateEx("UPDATE AD_Element_Trl SET AD_Element_Trl_UU=generate_uuid() WHERE AD_Element_Trl_UU IS NULL", get_TrxName());
+			else
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), "AD_Element_Trl", "AD_Element_Trl_UU"), get_TrxName());
+			
 			trx.commit(true);
 
 			log.info("Creating link from Element to Column");

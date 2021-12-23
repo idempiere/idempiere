@@ -3,6 +3,9 @@
 INSERT INTO AD_ELEMENT_TRL (AD_Element_ID, AD_LANGUAGE, AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy, Name, PrintName, Description, Help, Placeholder, IsTranslated) SELECT m.AD_Element_ID, l.AD_LANGUAGE, m.AD_Client_ID, m.AD_Org_ID, m.IsActive, m.Created, m.CreatedBy, m.Updated, m.UpdatedBy, m.Name, m.PrintName, m.Description, m.Help, m.Placeholder, 'N' FROM AD_ELEMENT m, AD_LANGUAGE l WHERE l.IsActive = 'Y' AND l.IsSystemLanguage = 'Y' AND AD_Element_ID || AD_LANGUAGE NOT IN (SELECT AD_Element_ID || AD_LANGUAGE FROM AD_ELEMENT_TRL)
 ;
 
+UPDATE AD_Element_Trl SET AD_Element_Trl_UU=generate_uuid() WHERE AD_Element_Trl_UU IS NULL
+;
+
 UPDATE AD_COLUMN SET AD_Element_id = (SELECT AD_Element_ID FROM AD_ELEMENT e WHERE UPPER(AD_COLUMN.ColumnName)=UPPER(e.ColumnName)) WHERE AD_Element_ID IS NULL
 ;
 
