@@ -467,6 +467,36 @@ public interface I_M_Movement
 
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
+    /** Column name M_Warehouse_ID */
+    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
+
+	/** Set Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public void setM_Warehouse_ID (int M_Warehouse_ID);
+
+	/** Get Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID();
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
+
+    /** Column name M_WarehouseTo_ID */
+    public static final String COLUMNNAME_M_WarehouseTo_ID = "M_WarehouseTo_ID";
+
+	/** Set Warehouse To.
+	  * To Storage Warehouse and Service Point
+	  */
+	public void setM_WarehouseTo_ID (int M_WarehouseTo_ID);
+
+	/** Get Warehouse To.
+	  * To Storage Warehouse and Service Point
+	  */
+	public int getM_WarehouseTo_ID();
+
+	public org.compiere.model.I_M_Warehouse getM_WarehouseTo() throws RuntimeException;
+
     /** Column name POReference */
     public static final String COLUMNNAME_POReference = "POReference";
 

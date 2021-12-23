@@ -34,7 +34,7 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211115L;
 
     /** Standard Constructor */
     public X_M_Movement (Properties ctx, int M_Movement_ID, String trxName)
@@ -661,8 +661,6 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 	public static final String FREIGHTCOSTRULE_FixPrice = "F";
 	/** Freight included = I */
 	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
-	/** Line = L */
-	public static final String FREIGHTCOSTRULE_Line = "L";
 	/** Set Freight Cost Rule.
 		@param FreightCostRule 
 		Method for charging Freight
@@ -807,6 +805,64 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 	public int getM_Shipper_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
+
+	/** Set Warehouse.
+		@param M_Warehouse_ID 
+		Storage Warehouse and Service Point
+	  */
+	public void setM_Warehouse_ID (int M_Warehouse_ID)
+	{
+		if (M_Warehouse_ID < 1) 
+			set_Value (COLUMNNAME_M_Warehouse_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
+	}
+
+	/** Get Warehouse.
+		@return Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_WarehouseTo() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_WarehouseTo_ID(), get_TrxName());
+	}
+
+	/** Set Warehouse To.
+		@param M_WarehouseTo_ID 
+		To Storage Warehouse and Service Point
+	  */
+	public void setM_WarehouseTo_ID (int M_WarehouseTo_ID)
+	{
+		if (M_WarehouseTo_ID < 1) 
+			set_Value (COLUMNNAME_M_WarehouseTo_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_WarehouseTo_ID, Integer.valueOf(M_WarehouseTo_ID));
+	}
+
+	/** Get Warehouse To.
+		@return To Storage Warehouse and Service Point
+	  */
+	public int getM_WarehouseTo_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_WarehouseTo_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
