@@ -446,9 +446,9 @@ public class ModelClassGenerator
 					|| columnName.equals("M_AttributeSet_ID") || columnName.equals("M_AttributeSetInstance_ID"))
 					firstOK = 0;
 				//	set _ID to null if < 0 for special column or < 1 for others
-				sb.append("\t\tif (").append (columnName).append (" < ").append(firstOK).append(") ").append(NL)
+				sb.append("\t\tif (").append (columnName).append (" < ").append(firstOK).append(")").append(NL)
 					.append("\t").append(setValue).append(" (").append ("COLUMNNAME_").append(columnName).append(", null);").append(NL)
-					.append("\t\telse ").append(NL).append("\t");
+					.append("\t\telse").append(NL).append("\t");
 			}
 			sb.append(setValue).append(" (").append ("COLUMNNAME_").append(columnName).append(", Integer.valueOf(").append(columnName).append("));").append(NL);
 		}
@@ -506,7 +506,7 @@ public class ModelClassGenerator
 		} else {
 			sb.append(" get").append(columnName);
 		}
-		sb.append(" () ").append(NL)
+		sb.append("()").append(NL)
 			.append("\t{").append(NL)
 			.append("\t\t");
 		if (clazz.equals(Integer.class)) {
@@ -552,28 +552,27 @@ public class ModelClassGenerator
 	public void generateJavaSetComment(String columnName, String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
-			.append("\t/** Set ").append(propertyName).append(".").append(NL)
-			.append("\t\t@param ").append(columnName).append(" ")
+			.append("\t/** Set ").append(Util.maskHTML(propertyName)).append(".").append(NL)
+			.append("\t\t@param ").append(columnName)
 		;
 		if (description != null && description.length() > 0) {
-			result.append(NL)
-				.append("\t\t").append(description).append(NL);
+			result.append(" ").append(Util.maskHTML(description));
 		} else {
-			result.append(propertyName);
+			result.append(" ").append(Util.maskHTML(propertyName));
 		}
-		result.append("\t  */").append(NL);
+		result.append(NL).append("\t*/").append(NL);
 	}
 
 	//	****** Get Comment ******
 	public void generateJavaGetComment(String propertyName, String description, StringBuilder result) {
 
 		result.append(NL)
-			.append("\t/** Get ").append(propertyName);
+			.append("\t/** Get ").append(Util.maskHTML(propertyName));
 		if (description != null && description.length() > 0) {
 			result.append(".").append(NL)
-				.append("\t\t@return ").append(description).append(NL);
+				.append("\t\t@return ").append(Util.maskHTML(description)).append(NL);
 		} else {
-			result.append(".\n\t\t@return ").append(propertyName);
+			result.append(".\n\t\t@return ").append(Util.maskHTML(propertyName));
 		}
 		result.append("\t  */").append(NL);
 	}
@@ -607,7 +606,7 @@ public class ModelClassGenerator
 			.append(AD_Reference_ID);
 		StringBuilder statement = new StringBuilder();
 		//
-		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? AND IsActive='Y' ORDER BY Value";
+		String sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=? ORDER BY Value"; // even inactive, see IDEMPIERE-4979
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -673,7 +672,7 @@ public class ModelClassGenerator
 						initCap = true;
 					}
 				}
-				retValue.append("\n\t/** ").append(name).append(" = ").append(value).append(" */");
+				retValue.append("\n\t/** ").append(Util.maskHTML(name)).append(" = ").append(Util.maskHTML(value)).append(" */");
 				retValue.append("\n\tpublic static final String ").append(columnName.toUpperCase())
 					.append("_").append(nameClean)
 					.append(" = \"").append(value).append("\";");
