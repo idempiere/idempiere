@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_Order_Cost
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Cost")
 public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PP_Order_Cost (Properties ctx, int PP_Order_Cost_ID, String trxName)
@@ -84,21 +84,20 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_Value (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -113,21 +112,20 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -156,9 +154,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/** _ = x */
 	public static final String COSTINGMETHOD__ = "x";
 	/** Set Costing Method.
-		@param CostingMethod 
-		Indicates how Costs will be calculated
-	  */
+		@param CostingMethod Indicates how Costs will be calculated
+	*/
 	public void setCostingMethod (String CostingMethod)
 	{
 
@@ -168,15 +165,14 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/** Get Costing Method.
 		@return Indicates how Costs will be calculated
 	  */
-	public String getCostingMethod () 
+	public String getCostingMethod()
 	{
 		return (String)get_Value(COLUMNNAME_CostingMethod);
 	}
 
 	/** Set Accumulated Amt.
-		@param CumulatedAmt 
-		Total Amount
-	  */
+		@param CumulatedAmt Total Amount
+	*/
 	public void setCumulatedAmt (BigDecimal CumulatedAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_CumulatedAmt, CumulatedAmt);
@@ -185,7 +181,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/** Get Accumulated Amt.
 		@return Total Amount
 	  */
-	public BigDecimal getCumulatedAmt () 
+	public BigDecimal getCumulatedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CumulatedAmt);
 		if (bd == null)
@@ -194,7 +190,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Cumulated Amt Post.
-		@param CumulatedAmtPost Cumulated Amt Post	  */
+		@param CumulatedAmtPost Cumulated Amt Post
+	*/
 	public void setCumulatedAmtPost (BigDecimal CumulatedAmtPost)
 	{
 		set_ValueNoCheck (COLUMNNAME_CumulatedAmtPost, CumulatedAmtPost);
@@ -202,7 +199,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 
 	/** Get Cumulated Amt Post.
 		@return Cumulated Amt Post	  */
-	public BigDecimal getCumulatedAmtPost () 
+	public BigDecimal getCumulatedAmtPost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CumulatedAmtPost);
 		if (bd == null)
@@ -211,9 +208,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Accumulated Qty.
-		@param CumulatedQty 
-		Total Quantity
-	  */
+		@param CumulatedQty Total Quantity
+	*/
 	public void setCumulatedQty (BigDecimal CumulatedQty)
 	{
 		set_ValueNoCheck (COLUMNNAME_CumulatedQty, CumulatedQty);
@@ -222,7 +218,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/** Get Accumulated Qty.
 		@return Total Quantity
 	  */
-	public BigDecimal getCumulatedQty () 
+	public BigDecimal getCumulatedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CumulatedQty);
 		if (bd == null)
@@ -231,7 +227,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Cumulated Qty Post.
-		@param CumulatedQtyPost Cumulated Qty Post	  */
+		@param CumulatedQtyPost Cumulated Qty Post
+	*/
 	public void setCumulatedQtyPost (BigDecimal CumulatedQtyPost)
 	{
 		set_ValueNoCheck (COLUMNNAME_CumulatedQtyPost, CumulatedQtyPost);
@@ -239,7 +236,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 
 	/** Get Cumulated Qty Post.
 		@return Cumulated Qty Post	  */
-	public BigDecimal getCumulatedQtyPost () 
+	public BigDecimal getCumulatedQtyPost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CumulatedQtyPost);
 		if (bd == null)
@@ -248,9 +245,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Current Cost Price.
-		@param CurrentCostPrice 
-		The currently used cost price
-	  */
+		@param CurrentCostPrice The currently used cost price
+	*/
 	public void setCurrentCostPrice (BigDecimal CurrentCostPrice)
 	{
 		set_ValueNoCheck (COLUMNNAME_CurrentCostPrice, CurrentCostPrice);
@@ -259,7 +255,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/** Get Current Cost Price.
 		@return The currently used cost price
 	  */
-	public BigDecimal getCurrentCostPrice () 
+	public BigDecimal getCurrentCostPrice()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentCostPrice);
 		if (bd == null)
@@ -268,9 +264,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Current Cost Price Lower Level.
-		@param CurrentCostPriceLL 
-		Current Price Lower Level Is the sum of the costs of the components of this product manufactured for this level.
-	  */
+		@param CurrentCostPriceLL Current Price Lower Level Is the sum of the costs of the components of this product manufactured for this level.
+	*/
 	public void setCurrentCostPriceLL (BigDecimal CurrentCostPriceLL)
 	{
 		set_ValueNoCheck (COLUMNNAME_CurrentCostPriceLL, CurrentCostPriceLL);
@@ -279,7 +274,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/** Get Current Cost Price Lower Level.
 		@return Current Price Lower Level Is the sum of the costs of the components of this product manufactured for this level.
 	  */
-	public BigDecimal getCurrentCostPriceLL () 
+	public BigDecimal getCurrentCostPriceLL()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentCostPriceLL);
 		if (bd == null)
@@ -288,9 +283,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Current Quantity.
-		@param CurrentQty 
-		Current Quantity
-	  */
+		@param CurrentQty Current Quantity
+	*/
 	public void setCurrentQty (BigDecimal CurrentQty)
 	{
 		set_Value (COLUMNNAME_CurrentQty, CurrentQty);
@@ -299,7 +293,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/** Get Current Quantity.
 		@return Current Quantity
 	  */
-	public BigDecimal getCurrentQty () 
+	public BigDecimal getCurrentQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentQty);
 		if (bd == null)
@@ -314,21 +308,20 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -343,21 +336,20 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -372,21 +364,20 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Cost Type.
-		@param M_CostType_ID 
-		Type of Cost (e.g. Current, Plan, Future)
-	  */
+		@param M_CostType_ID Type of Cost (e.g. Current, Plan, Future)
+	*/
 	public void setM_CostType_ID (int M_CostType_ID)
 	{
-		if (M_CostType_ID < 1) 
+		if (M_CostType_ID < 1)
 			set_Value (COLUMNNAME_M_CostType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_CostType_ID, Integer.valueOf(M_CostType_ID));
 	}
 
 	/** Get Cost Type.
 		@return Type of Cost (e.g. Current, Plan, Future)
 	  */
-	public int getM_CostType_ID () 
+	public int getM_CostType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostType_ID);
 		if (ii == null)
@@ -401,21 +392,20 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -424,18 +414,19 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Manufacturing Order Cost.
-		@param PP_Order_Cost_ID Manufacturing Order Cost	  */
+		@param PP_Order_Cost_ID Manufacturing Order Cost
+	*/
 	public void setPP_Order_Cost_ID (int PP_Order_Cost_ID)
 	{
-		if (PP_Order_Cost_ID < 1) 
+		if (PP_Order_Cost_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Cost_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Cost_ID, Integer.valueOf(PP_Order_Cost_ID));
 	}
 
 	/** Get Manufacturing Order Cost.
 		@return Manufacturing Order Cost	  */
-	public int getPP_Order_Cost_ID () 
+	public int getPP_Order_Cost_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Cost_ID);
 		if (ii == null)
@@ -444,7 +435,8 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set PP_Order_Cost_UU.
-		@param PP_Order_Cost_UU PP_Order_Cost_UU	  */
+		@param PP_Order_Cost_UU PP_Order_Cost_UU
+	*/
 	public void setPP_Order_Cost_UU (String PP_Order_Cost_UU)
 	{
 		set_Value (COLUMNNAME_PP_Order_Cost_UU, PP_Order_Cost_UU);
@@ -452,7 +444,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 
 	/** Get PP_Order_Cost_UU.
 		@return PP_Order_Cost_UU	  */
-	public String getPP_Order_Cost_UU () 
+	public String getPP_Order_Cost_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Order_Cost_UU);
 	}
@@ -464,21 +456,20 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)

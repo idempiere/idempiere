@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionDistribution
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionDistribution")
 public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistribution, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName)
@@ -87,9 +87,8 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/** Descending = D */
 	public static final String DISTRIBUTIONSORTING_Descending = "D";
 	/** Set Distribution Sorting.
-		@param DistributionSorting 
-		Quantity distribution sorting by unit price
-	  */
+		@param DistributionSorting Quantity distribution sorting by unit price
+	*/
 	public void setDistributionSorting (String DistributionSorting)
 	{
 
@@ -99,7 +98,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/** Get Distribution Sorting.
 		@return Quantity distribution sorting by unit price
 	  */
-	public String getDistributionSorting () 
+	public String getDistributionSorting()
 	{
 		return (String)get_Value(COLUMNNAME_DistributionSorting);
 	}
@@ -113,9 +112,8 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/** Max = X */
 	public static final String DISTRIBUTIONTYPE_Max = "X";
 	/** Set Distribution Type.
-		@param DistributionType 
-		Type of quantity distribution calculation using comparison qty and order qty as operand
-	  */
+		@param DistributionType Type of quantity distribution calculation using comparison qty and order qty as operand
+	*/
 	public void setDistributionType (String DistributionType)
 	{
 
@@ -125,24 +123,25 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/** Get Distribution Type.
 		@return Type of quantity distribution calculation using comparison qty and order qty as operand
 	  */
-	public String getDistributionType () 
+	public String getDistributionType()
 	{
 		return (String)get_Value(COLUMNNAME_DistributionType);
 	}
 
 	/** Set Promotion Distribution.
-		@param M_PromotionDistribution_ID Promotion Distribution	  */
+		@param M_PromotionDistribution_ID Promotion Distribution
+	*/
 	public void setM_PromotionDistribution_ID (int M_PromotionDistribution_ID)
 	{
-		if (M_PromotionDistribution_ID < 1) 
+		if (M_PromotionDistribution_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PromotionDistribution_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PromotionDistribution_ID, Integer.valueOf(M_PromotionDistribution_ID));
 	}
 
 	/** Get Promotion Distribution.
 		@return Promotion Distribution	  */
-	public int getM_PromotionDistribution_ID () 
+	public int getM_PromotionDistribution_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionDistribution_ID);
 		if (ii == null)
@@ -151,7 +150,8 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	}
 
 	/** Set M_PromotionDistribution_UU.
-		@param M_PromotionDistribution_UU M_PromotionDistribution_UU	  */
+		@param M_PromotionDistribution_UU M_PromotionDistribution_UU
+	*/
 	public void setM_PromotionDistribution_UU (String M_PromotionDistribution_UU)
 	{
 		set_Value (COLUMNNAME_M_PromotionDistribution_UU, M_PromotionDistribution_UU);
@@ -159,7 +159,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 
 	/** Get M_PromotionDistribution_UU.
 		@return M_PromotionDistribution_UU	  */
-	public String getM_PromotionDistribution_UU () 
+	public String getM_PromotionDistribution_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_PromotionDistribution_UU);
 	}
@@ -171,18 +171,19 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	}
 
 	/** Set Promotion.
-		@param M_Promotion_ID Promotion	  */
+		@param M_Promotion_ID Promotion
+	*/
 	public void setM_Promotion_ID (int M_Promotion_ID)
 	{
-		if (M_Promotion_ID < 1) 
+		if (M_Promotion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, Integer.valueOf(M_Promotion_ID));
 	}
 
 	/** Get Promotion.
 		@return Promotion	  */
-	public int getM_Promotion_ID () 
+	public int getM_Promotion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Promotion_ID);
 		if (ii == null)
@@ -197,18 +198,19 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	}
 
 	/** Set Promotion Line.
-		@param M_PromotionLine_ID Promotion Line	  */
+		@param M_PromotionLine_ID Promotion Line
+	*/
 	public void setM_PromotionLine_ID (int M_PromotionLine_ID)
 	{
-		if (M_PromotionLine_ID < 1) 
+		if (M_PromotionLine_ID < 1)
 			set_Value (COLUMNNAME_M_PromotionLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_PromotionLine_ID, Integer.valueOf(M_PromotionLine_ID));
 	}
 
 	/** Get Promotion Line.
 		@return Promotion Line	  */
-	public int getM_PromotionLine_ID () 
+	public int getM_PromotionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionLine_ID);
 		if (ii == null)
@@ -218,14 +220,13 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 
 	/** Operation AD_Reference_ID=53294 */
 	public static final int OPERATION_AD_Reference_ID=53294;
-	/** <= = <= */
+	/** &lt;= = &lt;= */
 	public static final String OPERATION_LeEq = "<=";
-	/** >= = >= */
+	/** &gt;= = &gt;= */
 	public static final String OPERATION_GtEq = ">=";
 	/** Set Operation.
-		@param Operation 
-		Compare Operation
-	  */
+		@param Operation Compare Operation
+	*/
 	public void setOperation (String Operation)
 	{
 
@@ -235,15 +236,14 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/** Get Operation.
 		@return Compare Operation
 	  */
-	public String getOperation () 
+	public String getOperation()
 	{
 		return (String)get_Value(COLUMNNAME_Operation);
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -252,7 +252,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -261,9 +261,8 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -272,7 +271,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankAccount
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_BankAccount")
 public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_BankAccount (Properties ctx, int C_BankAccount_ID, String trxName)
@@ -83,9 +83,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
     }
 
 	/** Set Account No.
-		@param AccountNo 
-		Account Number
-	  */
+		@param AccountNo Account Number
+	*/
 	public void setAccountNo (String AccountNo)
 	{
 		set_Value (COLUMNNAME_AccountNo, AccountNo);
@@ -94,7 +93,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Account No.
 		@return Account Number
 	  */
-	public String getAccountNo () 
+	public String getAccountNo()
 	{
 		return (String)get_Value(COLUMNNAME_AccountNo);
 	}
@@ -110,9 +109,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Savings = S */
 	public static final String BANKACCOUNTTYPE_Savings = "S";
 	/** Set Bank Account Type.
-		@param BankAccountType 
-		Bank Account Type
-	  */
+		@param BankAccountType Bank Account Type
+	*/
 	public void setBankAccountType (String BankAccountType)
 	{
 
@@ -122,15 +120,14 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Bank Account Type.
 		@return Bank Account Type
 	  */
-	public String getBankAccountType () 
+	public String getBankAccountType()
 	{
 		return (String)get_Value(COLUMNNAME_BankAccountType);
 	}
 
 	/** Set BBAN.
-		@param BBAN 
-		Basic Bank Account Number
-	  */
+		@param BBAN Basic Bank Account Number
+	*/
 	public void setBBAN (String BBAN)
 	{
 		set_Value (COLUMNNAME_BBAN, BBAN);
@@ -139,27 +136,26 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get BBAN.
 		@return Basic Bank Account Number
 	  */
-	public String getBBAN () 
+	public String getBBAN()
 	{
 		return (String)get_Value(COLUMNNAME_BBAN);
 	}
 
 	/** Set Bank Account.
-		@param C_BankAccount_ID 
-		Account at the Bank
-	  */
+		@param C_BankAccount_ID Account at the Bank
+	*/
 	public void setC_BankAccount_ID (int C_BankAccount_ID)
 	{
-		if (C_BankAccount_ID < 1) 
+		if (C_BankAccount_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
 	}
 
 	/** Get Bank Account.
 		@return Account at the Bank
 	  */
-	public int getC_BankAccount_ID () 
+	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
 		if (ii == null)
@@ -168,7 +164,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	/** Set C_BankAccount_UU.
-		@param C_BankAccount_UU C_BankAccount_UU	  */
+		@param C_BankAccount_UU C_BankAccount_UU
+	*/
 	public void setC_BankAccount_UU (String C_BankAccount_UU)
 	{
 		set_Value (COLUMNNAME_C_BankAccount_UU, C_BankAccount_UU);
@@ -176,7 +173,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 
 	/** Get C_BankAccount_UU.
 		@return C_BankAccount_UU	  */
-	public String getC_BankAccount_UU () 
+	public String getC_BankAccount_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BankAccount_UU);
 	}
@@ -188,21 +185,20 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	/** Set Bank.
-		@param C_Bank_ID 
-		Bank
-	  */
+		@param C_Bank_ID Bank
+	*/
 	public void setC_Bank_ID (int C_Bank_ID)
 	{
-		if (C_Bank_ID < 1) 
+		if (C_Bank_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, Integer.valueOf(C_Bank_ID));
 	}
 
 	/** Get Bank.
 		@return Bank
 	  */
-	public int getC_Bank_ID () 
+	public int getC_Bank_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Bank_ID);
 		if (ii == null)
@@ -217,21 +213,20 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -240,9 +235,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	/** Set Credit limit.
-		@param CreditLimit 
-		Amount of Credit allowed
-	  */
+		@param CreditLimit Amount of Credit allowed
+	*/
 	public void setCreditLimit (BigDecimal CreditLimit)
 	{
 		set_Value (COLUMNNAME_CreditLimit, CreditLimit);
@@ -251,7 +245,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Credit limit.
 		@return Amount of Credit allowed
 	  */
-	public BigDecimal getCreditLimit () 
+	public BigDecimal getCreditLimit()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CreditLimit);
 		if (bd == null)
@@ -260,9 +254,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	/** Set Current balance.
-		@param CurrentBalance 
-		Current Balance
-	  */
+		@param CurrentBalance Current Balance
+	*/
 	public void setCurrentBalance (BigDecimal CurrentBalance)
 	{
 		set_Value (COLUMNNAME_CurrentBalance, CurrentBalance);
@@ -271,7 +264,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Current balance.
 		@return Current Balance
 	  */
-	public BigDecimal getCurrentBalance () 
+	public BigDecimal getCurrentBalance()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentBalance);
 		if (bd == null)
@@ -280,9 +273,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -291,15 +283,14 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set IBAN.
-		@param IBAN 
-		International Bank Account Number
-	  */
+		@param IBAN International Bank Account Number
+	*/
 	public void setIBAN (String IBAN)
 	{
 		set_Value (COLUMNNAME_IBAN, IBAN);
@@ -308,15 +299,14 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get IBAN.
 		@return International Bank Account Number
 	  */
-	public String getIBAN () 
+	public String getIBAN()
 	{
 		return (String)get_Value(COLUMNNAME_IBAN);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -325,7 +315,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -338,9 +328,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -349,7 +338,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -363,7 +352,8 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
     }
 
 	/** Set Payment Export Class.
-		@param PaymentExportClass Payment Export Class	  */
+		@param PaymentExportClass Payment Export Class
+	*/
 	public void setPaymentExportClass (String PaymentExportClass)
 	{
 		set_Value (COLUMNNAME_PaymentExportClass, PaymentExportClass);
@@ -371,15 +361,14 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 
 	/** Get Payment Export Class.
 		@return Payment Export Class	  */
-	public String getPaymentExportClass () 
+	public String getPaymentExportClass()
 	{
 		return (String)get_Value(COLUMNNAME_PaymentExportClass);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -388,7 +377,7 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

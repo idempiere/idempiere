@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for T_Reconciliation
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="T_Reconciliation")
 public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_T_Reconciliation (Properties ctx, int T_Reconciliation_ID, String trxName)
@@ -78,21 +78,20 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -101,18 +100,19 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 	}
 
 	/** Set Accounting Fact.
-		@param Fact_Acct_ID Accounting Fact	  */
+		@param Fact_Acct_ID Accounting Fact
+	*/
 	public void setFact_Acct_ID (int Fact_Acct_ID)
 	{
-		if (Fact_Acct_ID < 1) 
+		if (Fact_Acct_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Fact_Acct_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Fact_Acct_ID, Integer.valueOf(Fact_Acct_ID));
 	}
 
 	/** Get Accounting Fact.
 		@return Accounting Fact	  */
-	public int getFact_Acct_ID () 
+	public int getFact_Acct_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Fact_Acct_ID);
 		if (ii == null)
@@ -121,9 +121,8 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 	}
 
 	/** Set Match Code.
-		@param MatchCode 
-		String identifying related accounting facts
-	  */
+		@param MatchCode String identifying related accounting facts
+	*/
 	public void setMatchCode (String MatchCode)
 	{
 		set_Value (COLUMNNAME_MatchCode, MatchCode);
@@ -132,13 +131,14 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 	/** Get Match Code.
 		@return String identifying related accounting facts
 	  */
-	public String getMatchCode () 
+	public String getMatchCode()
 	{
 		return (String)get_Value(COLUMNNAME_MatchCode);
 	}
 
 	/** Set T_Reconciliation_UU.
-		@param T_Reconciliation_UU T_Reconciliation_UU	  */
+		@param T_Reconciliation_UU T_Reconciliation_UU
+	*/
 	public void setT_Reconciliation_UU (String T_Reconciliation_UU)
 	{
 		set_Value (COLUMNNAME_T_Reconciliation_UU, T_Reconciliation_UU);
@@ -146,7 +146,7 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 
 	/** Get T_Reconciliation_UU.
 		@return T_Reconciliation_UU	  */
-	public String getT_Reconciliation_UU () 
+	public String getT_Reconciliation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_Reconciliation_UU);
 	}

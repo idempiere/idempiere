@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Lot
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Lot")
 public class X_M_Lot extends PO implements I_M_Lot, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_Lot (Properties ctx, int M_Lot_ID, String trxName)
@@ -75,9 +75,8 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
     }
 
 	/** Set Date From.
-		@param DateFrom 
-		Starting date for a range
-	  */
+		@param DateFrom Starting date for a range
+	*/
 	public void setDateFrom (Timestamp DateFrom)
 	{
 		set_Value (COLUMNNAME_DateFrom, DateFrom);
@@ -86,15 +85,14 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/** Get Date From.
 		@return Starting date for a range
 	  */
-	public Timestamp getDateFrom () 
+	public Timestamp getDateFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFrom);
 	}
 
 	/** Set Date To.
-		@param DateTo 
-		End date of a date range
-	  */
+		@param DateTo End date of a date range
+	*/
 	public void setDateTo (Timestamp DateTo)
 	{
 		set_Value (COLUMNNAME_DateTo, DateTo);
@@ -103,15 +101,14 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/** Get Date To.
 		@return End date of a date range
 	  */
-	public Timestamp getDateTo () 
+	public Timestamp getDateTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTo);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -120,15 +117,14 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -137,7 +133,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
@@ -149,21 +145,20 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	}
 
 	/** Set Lot Control.
-		@param M_LotCtl_ID 
-		Product Lot Control
-	  */
+		@param M_LotCtl_ID Product Lot Control
+	*/
 	public void setM_LotCtl_ID (int M_LotCtl_ID)
 	{
-		if (M_LotCtl_ID < 1) 
+		if (M_LotCtl_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_LotCtl_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_LotCtl_ID, Integer.valueOf(M_LotCtl_ID));
 	}
 
 	/** Get Lot Control.
 		@return Product Lot Control
 	  */
-	public int getM_LotCtl_ID () 
+	public int getM_LotCtl_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_LotCtl_ID);
 		if (ii == null)
@@ -172,21 +167,20 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	}
 
 	/** Set Lot.
-		@param M_Lot_ID 
-		Product Lot Definition
-	  */
+		@param M_Lot_ID Product Lot Definition
+	*/
 	public void setM_Lot_ID (int M_Lot_ID)
 	{
-		if (M_Lot_ID < 1) 
+		if (M_Lot_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Lot_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Lot_ID, Integer.valueOf(M_Lot_ID));
 	}
 
 	/** Get Lot.
 		@return Product Lot Definition
 	  */
-	public int getM_Lot_ID () 
+	public int getM_Lot_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Lot_ID);
 		if (ii == null)
@@ -195,7 +189,8 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	}
 
 	/** Set M_Lot_UU.
-		@param M_Lot_UU M_Lot_UU	  */
+		@param M_Lot_UU M_Lot_UU
+	*/
 	public void setM_Lot_UU (String M_Lot_UU)
 	{
 		set_Value (COLUMNNAME_M_Lot_UU, M_Lot_UU);
@@ -203,7 +198,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 
 	/** Get M_Lot_UU.
 		@return M_Lot_UU	  */
-	public String getM_Lot_UU () 
+	public String getM_Lot_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Lot_UU);
 	}
@@ -215,21 +210,20 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -246,9 +240,8 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
     }
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -257,7 +250,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

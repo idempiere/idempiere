@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Session
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Session")
 public class X_AD_Session extends PO implements I_AD_Session, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Session (Properties ctx, int AD_Session_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -103,21 +102,20 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	}
 
 	/** Set Session.
-		@param AD_Session_ID 
-		User Session Online or Web
-	  */
+		@param AD_Session_ID User Session Online or Web
+	*/
 	public void setAD_Session_ID (int AD_Session_ID)
 	{
-		if (AD_Session_ID < 1) 
+		if (AD_Session_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Session_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Session_ID, Integer.valueOf(AD_Session_ID));
 	}
 
 	/** Get Session.
 		@return User Session Online or Web
 	  */
-	public int getAD_Session_ID () 
+	public int getAD_Session_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Session_ID);
 		if (ii == null)
@@ -134,7 +132,8 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
     }
 
 	/** Set AD_Session_UU.
-		@param AD_Session_UU AD_Session_UU	  */
+		@param AD_Session_UU AD_Session_UU
+	*/
 	public void setAD_Session_UU (String AD_Session_UU)
 	{
 		set_Value (COLUMNNAME_AD_Session_UU, AD_Session_UU);
@@ -142,15 +141,14 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 
 	/** Get AD_Session_UU.
 		@return AD_Session_UU	  */
-	public String getAD_Session_UU () 
+	public String getAD_Session_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Session_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -159,13 +157,14 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Login date.
-		@param LoginDate Login date	  */
+		@param LoginDate Login date
+	*/
 	public void setLoginDate (Timestamp LoginDate)
 	{
 		set_Value (COLUMNNAME_LoginDate, LoginDate);
@@ -173,15 +172,14 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 
 	/** Get Login date.
 		@return Login date	  */
-	public Timestamp getLoginDate () 
+	public Timestamp getLoginDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LoginDate);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -190,7 +188,7 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -203,9 +201,8 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	}
 
 	/** Set Remote Addr.
-		@param Remote_Addr 
-		Remote Address
-	  */
+		@param Remote_Addr Remote Address
+	*/
 	public void setRemote_Addr (String Remote_Addr)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Addr, Remote_Addr);
@@ -214,15 +211,14 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	/** Get Remote Addr.
 		@return Remote Address
 	  */
-	public String getRemote_Addr () 
+	public String getRemote_Addr()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Addr);
 	}
 
 	/** Set Remote Host.
-		@param Remote_Host 
-		Remote host Info
-	  */
+		@param Remote_Host Remote host Info
+	*/
 	public void setRemote_Host (String Remote_Host)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Host, Remote_Host);
@@ -231,13 +227,14 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	/** Get Remote Host.
 		@return Remote host Info
 	  */
-	public String getRemote_Host () 
+	public String getRemote_Host()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Host);
 	}
 
 	/** Set Server Name.
-		@param ServerName Server Name	  */
+		@param ServerName Server Name
+	*/
 	public void setServerName (String ServerName)
 	{
 		set_Value (COLUMNNAME_ServerName, ServerName);
@@ -245,15 +242,14 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 
 	/** Get Server Name.
 		@return Server Name	  */
-	public String getServerName () 
+	public String getServerName()
 	{
 		return (String)get_Value(COLUMNNAME_ServerName);
 	}
 
 	/** Set Web Session.
-		@param WebSession 
-		Web Session ID
-	  */
+		@param WebSession Web Session ID
+	*/
 	public void setWebSession (String WebSession)
 	{
 		set_ValueNoCheck (COLUMNNAME_WebSession, WebSession);
@@ -262,7 +258,7 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	/** Get Web Session.
 		@return Web Session ID
 	  */
-	public String getWebSession () 
+	public String getWebSession()
 	{
 		return (String)get_Value(COLUMNNAME_WebSession);
 	}

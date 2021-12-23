@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Warehouse
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Warehouse")
 public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)
@@ -85,21 +85,20 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	/** Set Address.
-		@param C_Location_ID 
-		Location or Address
-	  */
+		@param C_Location_ID Location or Address
+	*/
 	public void setC_Location_ID (int C_Location_ID)
 	{
-		if (C_Location_ID < 1) 
+		if (C_Location_ID < 1)
 			set_Value (COLUMNNAME_C_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
 	}
 
 	/** Get Address.
 		@return Location or Address
 	  */
-	public int getC_Location_ID () 
+	public int getC_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
@@ -108,9 +107,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -119,15 +117,14 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Disallow Negative Inventory.
-		@param IsDisallowNegativeInv 
-		Negative Inventory is not allowed in this warehouse
-	  */
+		@param IsDisallowNegativeInv Negative Inventory is not allowed in this warehouse
+	*/
 	public void setIsDisallowNegativeInv (boolean IsDisallowNegativeInv)
 	{
 		set_Value (COLUMNNAME_IsDisallowNegativeInv, Boolean.valueOf(IsDisallowNegativeInv));
@@ -136,7 +133,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/** Get Disallow Negative Inventory.
 		@return Negative Inventory is not allowed in this warehouse
 	  */
-	public boolean isDisallowNegativeInv () 
+	public boolean isDisallowNegativeInv()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisallowNegativeInv);
 		if (oo != null) 
@@ -149,9 +146,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	/** Set In Transit.
-		@param IsInTransit 
-		Movement is in transit
-	  */
+		@param IsInTransit Movement is in transit
+	*/
 	public void setIsInTransit (boolean IsInTransit)
 	{
 		set_Value (COLUMNNAME_IsInTransit, Boolean.valueOf(IsInTransit));
@@ -160,7 +156,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/** Get In Transit.
 		@return Movement is in transit
 	  */
-	public boolean isInTransit () 
+	public boolean isInTransit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInTransit);
 		if (oo != null) 
@@ -179,21 +175,20 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	/** Set Reservation Locator.
-		@param M_ReserveLocator_ID 
-		Reservation Locator (just for reporting purposes)
-	  */
+		@param M_ReserveLocator_ID Reservation Locator (just for reporting purposes)
+	*/
 	public void setM_ReserveLocator_ID (int M_ReserveLocator_ID)
 	{
-		if (M_ReserveLocator_ID < 1) 
+		if (M_ReserveLocator_ID < 1)
 			set_Value (COLUMNNAME_M_ReserveLocator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ReserveLocator_ID, Integer.valueOf(M_ReserveLocator_ID));
 	}
 
 	/** Get Reservation Locator.
 		@return Reservation Locator (just for reporting purposes)
 	  */
-	public int getM_ReserveLocator_ID () 
+	public int getM_ReserveLocator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ReserveLocator_ID);
 		if (ii == null)
@@ -202,21 +197,20 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -231,21 +225,20 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	/** Set Source Warehouse.
-		@param M_WarehouseSource_ID 
-		Optional Warehouse to replenish from
-	  */
+		@param M_WarehouseSource_ID Optional Warehouse to replenish from
+	*/
 	public void setM_WarehouseSource_ID (int M_WarehouseSource_ID)
 	{
-		if (M_WarehouseSource_ID < 1) 
+		if (M_WarehouseSource_ID < 1)
 			set_Value (COLUMNNAME_M_WarehouseSource_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_WarehouseSource_ID, Integer.valueOf(M_WarehouseSource_ID));
 	}
 
 	/** Get Source Warehouse.
 		@return Optional Warehouse to replenish from
 	  */
-	public int getM_WarehouseSource_ID () 
+	public int getM_WarehouseSource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_WarehouseSource_ID);
 		if (ii == null)
@@ -254,7 +247,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	}
 
 	/** Set M_Warehouse_UU.
-		@param M_Warehouse_UU M_Warehouse_UU	  */
+		@param M_Warehouse_UU M_Warehouse_UU
+	*/
 	public void setM_Warehouse_UU (String M_Warehouse_UU)
 	{
 		set_Value (COLUMNNAME_M_Warehouse_UU, M_Warehouse_UU);
@@ -262,15 +256,14 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 
 	/** Get M_Warehouse_UU.
 		@return M_Warehouse_UU	  */
-	public String getM_Warehouse_UU () 
+	public String getM_Warehouse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Warehouse_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -279,7 +272,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -293,9 +286,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
     }
 
 	/** Set Replenishment Class.
-		@param ReplenishmentClass 
-		Custom class to calculate Quantity to Order
-	  */
+		@param ReplenishmentClass Custom class to calculate Quantity to Order
+	*/
 	public void setReplenishmentClass (String ReplenishmentClass)
 	{
 		set_Value (COLUMNNAME_ReplenishmentClass, ReplenishmentClass);
@@ -304,15 +296,14 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/** Get Replenishment Class.
 		@return Custom class to calculate Quantity to Order
 	  */
-	public String getReplenishmentClass () 
+	public String getReplenishmentClass()
 	{
 		return (String)get_Value(COLUMNNAME_ReplenishmentClass);
 	}
 
 	/** Set Element Separator.
-		@param Separator 
-		Element Separator
-	  */
+		@param Separator Element Separator
+	*/
 	public void setSeparator (String Separator)
 	{
 		set_Value (COLUMNNAME_Separator, Separator);
@@ -321,15 +312,14 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/** Get Element Separator.
 		@return Element Separator
 	  */
-	public String getSeparator () 
+	public String getSeparator()
 	{
 		return (String)get_Value(COLUMNNAME_Separator);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -338,7 +328,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

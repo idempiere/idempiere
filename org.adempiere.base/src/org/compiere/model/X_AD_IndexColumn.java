@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_IndexColumn
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_IndexColumn")
 public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_IndexColumn (Properties ctx, int AD_IndexColumn_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -103,18 +102,19 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	}
 
 	/** Set Table Index Column.
-		@param AD_IndexColumn_ID Table Index Column	  */
+		@param AD_IndexColumn_ID Table Index Column
+	*/
 	public void setAD_IndexColumn_ID (int AD_IndexColumn_ID)
 	{
-		if (AD_IndexColumn_ID < 1) 
+		if (AD_IndexColumn_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_IndexColumn_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_IndexColumn_ID, Integer.valueOf(AD_IndexColumn_ID));
 	}
 
 	/** Get Table Index Column.
 		@return Table Index Column	  */
-	public int getAD_IndexColumn_ID () 
+	public int getAD_IndexColumn_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_IndexColumn_ID);
 		if (ii == null)
@@ -123,7 +123,8 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	}
 
 	/** Set AD_IndexColumn_UU.
-		@param AD_IndexColumn_UU AD_IndexColumn_UU	  */
+		@param AD_IndexColumn_UU AD_IndexColumn_UU
+	*/
 	public void setAD_IndexColumn_UU (String AD_IndexColumn_UU)
 	{
 		set_Value (COLUMNNAME_AD_IndexColumn_UU, AD_IndexColumn_UU);
@@ -131,7 +132,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 
 	/** Get AD_IndexColumn_UU.
 		@return AD_IndexColumn_UU	  */
-	public String getAD_IndexColumn_UU () 
+	public String getAD_IndexColumn_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_IndexColumn_UU);
 	}
@@ -143,18 +144,19 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	}
 
 	/** Set Table Index.
-		@param AD_TableIndex_ID Table Index	  */
+		@param AD_TableIndex_ID Table Index
+	*/
 	public void setAD_TableIndex_ID (int AD_TableIndex_ID)
 	{
-		if (AD_TableIndex_ID < 1) 
+		if (AD_TableIndex_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_TableIndex_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_TableIndex_ID, Integer.valueOf(AD_TableIndex_ID));
 	}
 
 	/** Get Table Index.
 		@return Table Index	  */
-	public int getAD_TableIndex_ID () 
+	public int getAD_TableIndex_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_TableIndex_ID);
 		if (ii == null)
@@ -163,9 +165,8 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	}
 
 	/** Set Column SQL.
-		@param ColumnSQL 
-		Virtual Column (r/o)
-	  */
+		@param ColumnSQL Virtual Column (r/o)
+	*/
 	public void setColumnSQL (String ColumnSQL)
 	{
 		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
@@ -174,7 +175,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	/** Get Column SQL.
 		@return Virtual Column (r/o)
 	  */
-	public String getColumnSQL () 
+	public String getColumnSQL()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnSQL);
 	}
@@ -182,9 +183,8 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -194,15 +194,14 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -211,7 +210,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

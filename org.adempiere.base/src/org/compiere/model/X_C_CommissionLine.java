@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionLine")
 public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_CommissionLine (Properties ctx, int C_CommissionLine_ID, String trxName)
@@ -83,9 +83,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
     }
 
 	/** Set Multiplier Amount.
-		@param AmtMultiplier 
-		Multiplier Amount for generating commissions
-	  */
+		@param AmtMultiplier Multiplier Amount for generating commissions
+	*/
 	public void setAmtMultiplier (BigDecimal AmtMultiplier)
 	{
 		set_Value (COLUMNNAME_AmtMultiplier, AmtMultiplier);
@@ -94,7 +93,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Multiplier Amount.
 		@return Multiplier Amount for generating commissions
 	  */
-	public BigDecimal getAmtMultiplier () 
+	public BigDecimal getAmtMultiplier()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtMultiplier);
 		if (bd == null)
@@ -103,9 +102,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Subtract Amount.
-		@param AmtSubtract 
-		Subtract Amount for generating commissions
-	  */
+		@param AmtSubtract Subtract Amount for generating commissions
+	*/
 	public void setAmtSubtract (BigDecimal AmtSubtract)
 	{
 		set_Value (COLUMNNAME_AmtSubtract, AmtSubtract);
@@ -114,7 +112,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Subtract Amount.
 		@return Subtract Amount for generating commissions
 	  */
-	public BigDecimal getAmtSubtract () 
+	public BigDecimal getAmtSubtract()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtSubtract);
 		if (bd == null)
@@ -128,22 +126,21 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -158,21 +155,20 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Business Partner Group.
-		@param C_BP_Group_ID 
-		Business Partner Group
-	  */
+		@param C_BP_Group_ID Business Partner Group
+	*/
 	public void setC_BP_Group_ID (int C_BP_Group_ID)
 	{
-		if (C_BP_Group_ID < 1) 
+		if (C_BP_Group_ID < 1)
 			set_Value (COLUMNNAME_C_BP_Group_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BP_Group_ID, Integer.valueOf(C_BP_Group_ID));
 	}
 
 	/** Get Business Partner Group.
 		@return Business Partner Group
 	  */
-	public int getC_BP_Group_ID () 
+	public int getC_BP_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
 		if (ii == null)
@@ -187,21 +183,20 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Commission.
-		@param C_Commission_ID 
-		Commission
-	  */
+		@param C_Commission_ID Commission
+	*/
 	public void setC_Commission_ID (int C_Commission_ID)
 	{
-		if (C_Commission_ID < 1) 
+		if (C_Commission_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, Integer.valueOf(C_Commission_ID));
 	}
 
 	/** Get Commission.
 		@return Commission
 	  */
-	public int getC_Commission_ID () 
+	public int getC_Commission_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Commission_ID);
 		if (ii == null)
@@ -218,21 +213,20 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
     }
 
 	/** Set Commission Line.
-		@param C_CommissionLine_ID 
-		Commission Line
-	  */
+		@param C_CommissionLine_ID Commission Line
+	*/
 	public void setC_CommissionLine_ID (int C_CommissionLine_ID)
 	{
-		if (C_CommissionLine_ID < 1) 
+		if (C_CommissionLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CommissionLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CommissionLine_ID, Integer.valueOf(C_CommissionLine_ID));
 	}
 
 	/** Get Commission Line.
 		@return Commission Line
 	  */
-	public int getC_CommissionLine_ID () 
+	public int getC_CommissionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CommissionLine_ID);
 		if (ii == null)
@@ -241,7 +235,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set C_CommissionLine_UU.
-		@param C_CommissionLine_UU C_CommissionLine_UU	  */
+		@param C_CommissionLine_UU C_CommissionLine_UU
+	*/
 	public void setC_CommissionLine_UU (String C_CommissionLine_UU)
 	{
 		set_Value (COLUMNNAME_C_CommissionLine_UU, C_CommissionLine_UU);
@@ -249,15 +244,14 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 
 	/** Get C_CommissionLine_UU.
 		@return C_CommissionLine_UU	  */
-	public String getC_CommissionLine_UU () 
+	public String getC_CommissionLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CommissionLine_UU);
 	}
 
 	/** Set Commission only specified Orders.
-		@param CommissionOrders 
-		Commission only Orders or Invoices, where this Sales Rep is entered
-	  */
+		@param CommissionOrders Commission only Orders or Invoices, where this Sales Rep is entered
+	*/
 	public void setCommissionOrders (boolean CommissionOrders)
 	{
 		set_Value (COLUMNNAME_CommissionOrders, Boolean.valueOf(CommissionOrders));
@@ -266,7 +260,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Commission only specified Orders.
 		@return Commission only Orders or Invoices, where this Sales Rep is entered
 	  */
-	public boolean isCommissionOrders () 
+	public boolean isCommissionOrders()
 	{
 		Object oo = get_Value(COLUMNNAME_CommissionOrders);
 		if (oo != null) 
@@ -285,21 +279,20 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Sales Region.
-		@param C_SalesRegion_ID 
-		Sales coverage region
-	  */
+		@param C_SalesRegion_ID Sales coverage region
+	*/
 	public void setC_SalesRegion_ID (int C_SalesRegion_ID)
 	{
-		if (C_SalesRegion_ID < 1) 
+		if (C_SalesRegion_ID < 1)
 			set_Value (COLUMNNAME_C_SalesRegion_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_SalesRegion_ID, Integer.valueOf(C_SalesRegion_ID));
 	}
 
 	/** Get Sales Region.
 		@return Sales coverage region
 	  */
-	public int getC_SalesRegion_ID () 
+	public int getC_SalesRegion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesRegion_ID);
 		if (ii == null)
@@ -308,9 +301,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -319,15 +311,14 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Positive only.
-		@param IsPositiveOnly 
-		Do not generate negative commissions
-	  */
+		@param IsPositiveOnly Do not generate negative commissions
+	*/
 	public void setIsPositiveOnly (boolean IsPositiveOnly)
 	{
 		set_Value (COLUMNNAME_IsPositiveOnly, Boolean.valueOf(IsPositiveOnly));
@@ -336,7 +327,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Positive only.
 		@return Do not generate negative commissions
 	  */
-	public boolean isPositiveOnly () 
+	public boolean isPositiveOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPositiveOnly);
 		if (oo != null) 
@@ -349,9 +340,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -360,7 +350,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -375,21 +365,20 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -404,21 +393,20 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -427,21 +415,20 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Organization.
-		@param Org_ID 
-		Organizational entity within client
-	  */
+		@param Org_ID Organizational entity within client
+	*/
 	public void setOrg_ID (int Org_ID)
 	{
-		if (Org_ID < 1) 
+		if (Org_ID < 1)
 			set_Value (COLUMNNAME_Org_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Org_ID, Integer.valueOf(Org_ID));
 	}
 
 	/** Get Organization.
 		@return Organizational entity within client
 	  */
-	public int getOrg_ID () 
+	public int getOrg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Org_ID);
 		if (ii == null)
@@ -466,9 +453,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Direct Deposit = T */
 	public static final String PAYMENTRULE_DirectDeposit = "T";
 	/** Set Payment Rule.
-		@param PaymentRule 
-		How you pay the invoice
-	  */
+		@param PaymentRule How you pay the invoice
+	*/
 	public void setPaymentRule (String PaymentRule)
 	{
 
@@ -478,15 +464,14 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Payment Rule.
 		@return How you pay the invoice
 	  */
-	public String getPaymentRule () 
+	public String getPaymentRule()
 	{
 		return (String)get_Value(COLUMNNAME_PaymentRule);
 	}
 
 	/** Set Multiplier Quantity.
-		@param QtyMultiplier 
-		Value to multiply quantities by for generating commissions.
-	  */
+		@param QtyMultiplier Value to multiply quantities by for generating commissions.
+	*/
 	public void setQtyMultiplier (BigDecimal QtyMultiplier)
 	{
 		set_Value (COLUMNNAME_QtyMultiplier, QtyMultiplier);
@@ -495,7 +480,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Multiplier Quantity.
 		@return Value to multiply quantities by for generating commissions.
 	  */
-	public BigDecimal getQtyMultiplier () 
+	public BigDecimal getQtyMultiplier()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyMultiplier);
 		if (bd == null)
@@ -504,9 +489,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	}
 
 	/** Set Subtract Quantity.
-		@param QtySubtract 
-		Quantity to subtract when generating commissions
-	  */
+		@param QtySubtract Quantity to subtract when generating commissions
+	*/
 	public void setQtySubtract (BigDecimal QtySubtract)
 	{
 		set_Value (COLUMNNAME_QtySubtract, QtySubtract);
@@ -515,7 +499,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/** Get Subtract Quantity.
 		@return Quantity to subtract when generating commissions
 	  */
-	public BigDecimal getQtySubtract () 
+	public BigDecimal getQtySubtract()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtySubtract);
 		if (bd == null)

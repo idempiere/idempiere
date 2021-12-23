@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashBook
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CashBook")
 public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_CashBook (Properties ctx, int C_CashBook_ID, String trxName)
@@ -75,21 +75,20 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
     }
 
 	/** Set Cash Book.
-		@param C_CashBook_ID 
-		Cash Book for recording petty cash transactions
-	  */
+		@param C_CashBook_ID Cash Book for recording petty cash transactions
+	*/
 	public void setC_CashBook_ID (int C_CashBook_ID)
 	{
-		if (C_CashBook_ID < 1) 
+		if (C_CashBook_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CashBook_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CashBook_ID, Integer.valueOf(C_CashBook_ID));
 	}
 
 	/** Get Cash Book.
 		@return Cash Book for recording petty cash transactions
 	  */
-	public int getC_CashBook_ID () 
+	public int getC_CashBook_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashBook_ID);
 		if (ii == null)
@@ -98,7 +97,8 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	}
 
 	/** Set C_CashBook_UU.
-		@param C_CashBook_UU C_CashBook_UU	  */
+		@param C_CashBook_UU C_CashBook_UU
+	*/
 	public void setC_CashBook_UU (String C_CashBook_UU)
 	{
 		set_Value (COLUMNNAME_C_CashBook_UU, C_CashBook_UU);
@@ -106,7 +106,7 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 
 	/** Get C_CashBook_UU.
 		@return C_CashBook_UU	  */
-	public String getC_CashBook_UU () 
+	public String getC_CashBook_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CashBook_UU);
 	}
@@ -118,21 +118,20 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -141,9 +140,8 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -152,15 +150,14 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -169,7 +166,7 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -182,9 +179,8 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -193,7 +189,7 @@ public class X_C_CashBook extends PO implements I_C_CashBook, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

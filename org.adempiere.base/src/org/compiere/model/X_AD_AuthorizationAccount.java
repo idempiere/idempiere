@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for AD_AuthorizationAccount
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationAccount")
 public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationAccount, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
@@ -78,7 +78,8 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
     }
 
 	/** Set Access Token.
-		@param AccessToken Access Token	  */
+		@param AccessToken Access Token
+	*/
 	public void setAccessToken (String AccessToken)
 	{
 		set_Value (COLUMNNAME_AccessToken, AccessToken);
@@ -86,13 +87,14 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get Access Token.
 		@return Access Token	  */
-	public String getAccessToken () 
+	public String getAccessToken()
 	{
 		return (String)get_Value(COLUMNNAME_AccessToken);
 	}
 
 	/** Set Access Token Timestamp.
-		@param AccessTokenTimestamp Access Token Timestamp	  */
+		@param AccessTokenTimestamp Access Token Timestamp
+	*/
 	public void setAccessTokenTimestamp (Timestamp AccessTokenTimestamp)
 	{
 		set_Value (COLUMNNAME_AccessTokenTimestamp, AccessTokenTimestamp);
@@ -100,24 +102,25 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get Access Token Timestamp.
 		@return Access Token Timestamp	  */
-	public Timestamp getAccessTokenTimestamp () 
+	public Timestamp getAccessTokenTimestamp()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_AccessTokenTimestamp);
 	}
 
 	/** Set Authorization Account.
-		@param AD_AuthorizationAccount_ID Authorization Account	  */
+		@param AD_AuthorizationAccount_ID Authorization Account
+	*/
 	public void setAD_AuthorizationAccount_ID (int AD_AuthorizationAccount_ID)
 	{
-		if (AD_AuthorizationAccount_ID < 1) 
+		if (AD_AuthorizationAccount_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationAccount_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationAccount_ID, Integer.valueOf(AD_AuthorizationAccount_ID));
 	}
 
 	/** Get Authorization Account.
 		@return Authorization Account	  */
-	public int getAD_AuthorizationAccount_ID () 
+	public int getAD_AuthorizationAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationAccount_ID);
 		if (ii == null)
@@ -126,7 +129,8 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	/** Set AD_AuthorizationAccount_UU.
-		@param AD_AuthorizationAccount_UU AD_AuthorizationAccount_UU	  */
+		@param AD_AuthorizationAccount_UU AD_AuthorizationAccount_UU
+	*/
 	public void setAD_AuthorizationAccount_UU (String AD_AuthorizationAccount_UU)
 	{
 		set_Value (COLUMNNAME_AD_AuthorizationAccount_UU, AD_AuthorizationAccount_UU);
@@ -134,7 +138,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get AD_AuthorizationAccount_UU.
 		@return AD_AuthorizationAccount_UU	  */
-	public String getAD_AuthorizationAccount_UU () 
+	public String getAD_AuthorizationAccount_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationAccount_UU);
 	}
@@ -146,18 +150,19 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	/** Set Authorization Credential.
-		@param AD_AuthorizationCredential_ID Authorization Credential	  */
+		@param AD_AuthorizationCredential_ID Authorization Credential
+	*/
 	public void setAD_AuthorizationCredential_ID (int AD_AuthorizationCredential_ID)
 	{
-		if (AD_AuthorizationCredential_ID < 1) 
+		if (AD_AuthorizationCredential_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationCredential_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationCredential_ID, Integer.valueOf(AD_AuthorizationCredential_ID));
 	}
 
 	/** Get Authorization Credential.
 		@return Authorization Credential	  */
-	public int getAD_AuthorizationCredential_ID () 
+	public int getAD_AuthorizationCredential_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationCredential_ID);
 		if (ii == null)
@@ -178,7 +183,8 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/** Storage = Storage */
 	public static final String AD_AUTHORIZATIONSCOPES_Storage = "Storage";
 	/** Set Authorization Scopes.
-		@param AD_AuthorizationScopes Authorization Scopes	  */
+		@param AD_AuthorizationScopes Authorization Scopes
+	*/
 	public void setAD_AuthorizationScopes (String AD_AuthorizationScopes)
 	{
 
@@ -187,7 +193,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get Authorization Scopes.
 		@return Authorization Scopes	  */
-	public String getAD_AuthorizationScopes () 
+	public String getAD_AuthorizationScopes()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationScopes);
 	}
@@ -199,21 +205,20 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -222,9 +227,8 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_Value (COLUMNNAME_EMail, EMail);
@@ -233,13 +237,14 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set Expire in Seconds.
-		@param ExpireInSeconds Expire in Seconds	  */
+		@param ExpireInSeconds Expire in Seconds
+	*/
 	public void setExpireInSeconds (BigDecimal ExpireInSeconds)
 	{
 		set_Value (COLUMNNAME_ExpireInSeconds, ExpireInSeconds);
@@ -247,7 +252,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get Expire in Seconds.
 		@return Expire in Seconds	  */
-	public BigDecimal getExpireInSeconds () 
+	public BigDecimal getExpireInSeconds()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ExpireInSeconds);
 		if (bd == null)
@@ -256,9 +261,8 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -267,13 +271,14 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Access Revoked.
-		@param IsAccessRevoked Access Revoked	  */
+		@param IsAccessRevoked Access Revoked
+	*/
 	public void setIsAccessRevoked (boolean IsAccessRevoked)
 	{
 		set_Value (COLUMNNAME_IsAccessRevoked, Boolean.valueOf(IsAccessRevoked));
@@ -281,7 +286,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get Access Revoked.
 		@return Access Revoked	  */
-	public boolean isAccessRevoked () 
+	public boolean isAccessRevoked()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAccessRevoked);
 		if (oo != null) 
@@ -294,7 +299,8 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	/** Set Authorized.
-		@param IsAuthorized Authorized	  */
+		@param IsAuthorized Authorized
+	*/
 	public void setIsAuthorized (boolean IsAuthorized)
 	{
 		set_Value (COLUMNNAME_IsAuthorized, Boolean.valueOf(IsAuthorized));
@@ -302,7 +308,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get Authorized.
 		@return Authorized	  */
-	public boolean isAuthorized () 
+	public boolean isAuthorized()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAuthorized);
 		if (oo != null) 
@@ -315,7 +321,8 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	}
 
 	/** Set Refresh Token.
-		@param RefreshToken Refresh Token	  */
+		@param RefreshToken Refresh Token
+	*/
 	public void setRefreshToken (String RefreshToken)
 	{
 		set_Value (COLUMNNAME_RefreshToken, RefreshToken);
@@ -323,7 +330,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 
 	/** Get Refresh Token.
 		@return Refresh Token	  */
-	public String getRefreshToken () 
+	public String getRefreshToken()
 	{
 		return (String)get_Value(COLUMNNAME_RefreshToken);
 	}

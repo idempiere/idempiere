@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_ShipperPickupTypes
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperPickupTypes")
 public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)
@@ -76,9 +76,8 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
     }
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -87,7 +86,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -106,21 +105,20 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	}
 
 	/** Set Shipper.
-		@param M_Shipper_ID 
-		Method or manner of product delivery
-	  */
+		@param M_Shipper_ID Method or manner of product delivery
+	*/
 	public void setM_Shipper_ID (int M_Shipper_ID)
 	{
-		if (M_Shipper_ID < 1) 
+		if (M_Shipper_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
 	}
 
 	/** Get Shipper.
 		@return Method or manner of product delivery
 	  */
-	public int getM_Shipper_ID () 
+	public int getM_Shipper_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
 		if (ii == null)
@@ -135,18 +133,19 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	}
 
 	/** Set Shipper Pickup Types Configuration.
-		@param M_ShipperPickupTypesCfg_ID Shipper Pickup Types Configuration	  */
+		@param M_ShipperPickupTypesCfg_ID Shipper Pickup Types Configuration
+	*/
 	public void setM_ShipperPickupTypesCfg_ID (int M_ShipperPickupTypesCfg_ID)
 	{
-		if (M_ShipperPickupTypesCfg_ID < 1) 
+		if (M_ShipperPickupTypesCfg_ID < 1)
 			set_Value (COLUMNNAME_M_ShipperPickupTypesCfg_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ShipperPickupTypesCfg_ID, Integer.valueOf(M_ShipperPickupTypesCfg_ID));
 	}
 
 	/** Get Shipper Pickup Types Configuration.
 		@return Shipper Pickup Types Configuration	  */
-	public int getM_ShipperPickupTypesCfg_ID () 
+	public int getM_ShipperPickupTypesCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPickupTypesCfg_ID);
 		if (ii == null)
@@ -155,18 +154,19 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	}
 
 	/** Set Shipper Pickup Types.
-		@param M_ShipperPickupTypes_ID Shipper Pickup Types	  */
+		@param M_ShipperPickupTypes_ID Shipper Pickup Types
+	*/
 	public void setM_ShipperPickupTypes_ID (int M_ShipperPickupTypes_ID)
 	{
-		if (M_ShipperPickupTypes_ID < 1) 
+		if (M_ShipperPickupTypes_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ShipperPickupTypes_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ShipperPickupTypes_ID, Integer.valueOf(M_ShipperPickupTypes_ID));
 	}
 
 	/** Get Shipper Pickup Types.
 		@return Shipper Pickup Types	  */
-	public int getM_ShipperPickupTypes_ID () 
+	public int getM_ShipperPickupTypes_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPickupTypes_ID);
 		if (ii == null)
@@ -175,7 +175,8 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	}
 
 	/** Set M_ShipperPickupTypes_UU.
-		@param M_ShipperPickupTypes_UU M_ShipperPickupTypes_UU	  */
+		@param M_ShipperPickupTypes_UU M_ShipperPickupTypes_UU
+	*/
 	public void setM_ShipperPickupTypes_UU (String M_ShipperPickupTypes_UU)
 	{
 		set_Value (COLUMNNAME_M_ShipperPickupTypes_UU, M_ShipperPickupTypes_UU);
@@ -183,15 +184,14 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 
 	/** Get M_ShipperPickupTypes_UU.
 		@return M_ShipperPickupTypes_UU	  */
-	public String getM_ShipperPickupTypes_UU () 
+	public String getM_ShipperPickupTypes_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperPickupTypes_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -200,7 +200,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

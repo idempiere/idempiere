@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueProject
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueProject")
 public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_IssueProject (Properties ctx, int R_IssueProject_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -109,21 +108,20 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -132,9 +130,8 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -143,15 +140,14 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -160,7 +156,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -174,9 +170,8 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
     }
 
 	/** Set Profile.
-		@param ProfileInfo 
-		Information to help profiling the system for solving support issues
-	  */
+		@param ProfileInfo Information to help profiling the system for solving support issues
+	*/
 	public void setProfileInfo (String ProfileInfo)
 	{
 		set_Value (COLUMNNAME_ProfileInfo, ProfileInfo);
@@ -185,27 +180,26 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/** Get Profile.
 		@return Information to help profiling the system for solving support issues
 	  */
-	public String getProfileInfo () 
+	public String getProfileInfo()
 	{
 		return (String)get_Value(COLUMNNAME_ProfileInfo);
 	}
 
 	/** Set Issue Project.
-		@param R_IssueProject_ID 
-		Implementation Projects
-	  */
+		@param R_IssueProject_ID Implementation Projects
+	*/
 	public void setR_IssueProject_ID (int R_IssueProject_ID)
 	{
-		if (R_IssueProject_ID < 1) 
+		if (R_IssueProject_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_IssueProject_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_IssueProject_ID, Integer.valueOf(R_IssueProject_ID));
 	}
 
 	/** Get Issue Project.
 		@return Implementation Projects
 	  */
-	public int getR_IssueProject_ID () 
+	public int getR_IssueProject_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueProject_ID);
 		if (ii == null)
@@ -214,7 +208,8 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	}
 
 	/** Set R_IssueProject_UU.
-		@param R_IssueProject_UU R_IssueProject_UU	  */
+		@param R_IssueProject_UU R_IssueProject_UU
+	*/
 	public void setR_IssueProject_UU (String R_IssueProject_UU)
 	{
 		set_Value (COLUMNNAME_R_IssueProject_UU, R_IssueProject_UU);
@@ -222,15 +217,14 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 
 	/** Get R_IssueProject_UU.
 		@return R_IssueProject_UU	  */
-	public String getR_IssueProject_UU () 
+	public String getR_IssueProject_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_IssueProject_UU);
 	}
 
 	/** Set Statistics.
-		@param StatisticsInfo 
-		Information to help profiling the system for solving support issues
-	  */
+		@param StatisticsInfo Information to help profiling the system for solving support issues
+	*/
 	public void setStatisticsInfo (String StatisticsInfo)
 	{
 		set_Value (COLUMNNAME_StatisticsInfo, StatisticsInfo);
@@ -239,7 +233,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/** Get Statistics.
 		@return Information to help profiling the system for solving support issues
 	  */
-	public String getStatisticsInfo () 
+	public String getStatisticsInfo()
 	{
 		return (String)get_Value(COLUMNNAME_StatisticsInfo);
 	}
@@ -253,9 +247,8 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/** Production = P */
 	public static final String SYSTEMSTATUS_Production = "P";
 	/** Set System Status.
-		@param SystemStatus 
-		Status of the system - Support priority depends on system status
-	  */
+		@param SystemStatus Status of the system - Support priority depends on system status
+	*/
 	public void setSystemStatus (String SystemStatus)
 	{
 
@@ -265,7 +258,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/** Get System Status.
 		@return Status of the system - Support priority depends on system status
 	  */
-	public String getSystemStatus () 
+	public String getSystemStatus()
 	{
 		return (String)get_Value(COLUMNNAME_SystemStatus);
 	}

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_InterOrg_Acct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_InterOrg_Acct")
 public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_InterOrg_Acct (Properties ctx, int C_InterOrg_Acct_ID, String trxName)
@@ -74,21 +74,20 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
     }
 
 	/** Set Inter-Organization.
-		@param AD_OrgTo_ID 
-		Organization valid for intercompany documents
-	  */
+		@param AD_OrgTo_ID Organization valid for intercompany documents
+	*/
 	public void setAD_OrgTo_ID (int AD_OrgTo_ID)
 	{
-		if (AD_OrgTo_ID < 1) 
+		if (AD_OrgTo_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_OrgTo_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_OrgTo_ID, Integer.valueOf(AD_OrgTo_ID));
 	}
 
 	/** Get Inter-Organization.
 		@return Organization valid for intercompany documents
 	  */
-	public int getAD_OrgTo_ID () 
+	public int getAD_OrgTo_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTo_ID);
 		if (ii == null)
@@ -103,21 +102,20 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -126,7 +124,8 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	}
 
 	/** Set C_InterOrg_Acct_UU.
-		@param C_InterOrg_Acct_UU C_InterOrg_Acct_UU	  */
+		@param C_InterOrg_Acct_UU C_InterOrg_Acct_UU
+	*/
 	public void setC_InterOrg_Acct_UU (String C_InterOrg_Acct_UU)
 	{
 		set_Value (COLUMNNAME_C_InterOrg_Acct_UU, C_InterOrg_Acct_UU);
@@ -134,7 +133,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 
 	/** Get C_InterOrg_Acct_UU.
 		@return C_InterOrg_Acct_UU	  */
-	public String getC_InterOrg_Acct_UU () 
+	public String getC_InterOrg_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_InterOrg_Acct_UU);
 	}
@@ -146,9 +145,8 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	}
 
 	/** Set Intercompany Due From Acct.
-		@param IntercompanyDueFrom_Acct 
-		Intercompany Due From / Receivables Account
-	  */
+		@param IntercompanyDueFrom_Acct Intercompany Due From / Receivables Account
+	*/
 	public void setIntercompanyDueFrom_Acct (int IntercompanyDueFrom_Acct)
 	{
 		set_Value (COLUMNNAME_IntercompanyDueFrom_Acct, Integer.valueOf(IntercompanyDueFrom_Acct));
@@ -157,7 +155,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	/** Get Intercompany Due From Acct.
 		@return Intercompany Due From / Receivables Account
 	  */
-	public int getIntercompanyDueFrom_Acct () 
+	public int getIntercompanyDueFrom_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IntercompanyDueFrom_Acct);
 		if (ii == null)
@@ -172,9 +170,8 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	}
 
 	/** Set Intercompany Due To Acct.
-		@param IntercompanyDueTo_Acct 
-		Intercompany Due To / Payable Account
-	  */
+		@param IntercompanyDueTo_Acct Intercompany Due To / Payable Account
+	*/
 	public void setIntercompanyDueTo_Acct (int IntercompanyDueTo_Acct)
 	{
 		set_Value (COLUMNNAME_IntercompanyDueTo_Acct, Integer.valueOf(IntercompanyDueTo_Acct));
@@ -183,7 +180,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	/** Get Intercompany Due To Acct.
 		@return Intercompany Due To / Payable Account
 	  */
-	public int getIntercompanyDueTo_Acct () 
+	public int getIntercompanyDueTo_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IntercompanyDueTo_Acct);
 		if (ii == null)

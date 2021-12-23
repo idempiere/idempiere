@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalGenerator
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGenerator")
 public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_GL_JournalGenerator (Properties ctx, int GL_JournalGenerator_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -108,21 +107,20 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -137,18 +135,19 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set Account Adjust CR.
-		@param C_ElementValueAdjustCR_ID Account Adjust CR	  */
+		@param C_ElementValueAdjustCR_ID Account Adjust CR
+	*/
 	public void setC_ElementValueAdjustCR_ID (int C_ElementValueAdjustCR_ID)
 	{
-		if (C_ElementValueAdjustCR_ID < 1) 
+		if (C_ElementValueAdjustCR_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValueAdjustCR_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValueAdjustCR_ID, Integer.valueOf(C_ElementValueAdjustCR_ID));
 	}
 
 	/** Get Account Adjust CR.
 		@return Account Adjust CR	  */
-	public int getC_ElementValueAdjustCR_ID () 
+	public int getC_ElementValueAdjustCR_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValueAdjustCR_ID);
 		if (ii == null)
@@ -163,18 +162,19 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set Account Adjust DR.
-		@param C_ElementValueAdjustDR_ID Account Adjust DR	  */
+		@param C_ElementValueAdjustDR_ID Account Adjust DR
+	*/
 	public void setC_ElementValueAdjustDR_ID (int C_ElementValueAdjustDR_ID)
 	{
-		if (C_ElementValueAdjustDR_ID < 1) 
+		if (C_ElementValueAdjustDR_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValueAdjustDR_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValueAdjustDR_ID, Integer.valueOf(C_ElementValueAdjustDR_ID));
 	}
 
 	/** Get Account Adjust DR.
 		@return Account Adjust DR	  */
-	public int getC_ElementValueAdjustDR_ID () 
+	public int getC_ElementValueAdjustDR_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValueAdjustDR_ID);
 		if (ii == null)
@@ -183,9 +183,8 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -194,13 +193,14 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Generate GL Journal.
-		@param GenerateGLJournal Generate GL Journal	  */
+		@param GenerateGLJournal Generate GL Journal
+	*/
 	public void setGenerateGLJournal (String GenerateGLJournal)
 	{
 		set_Value (COLUMNNAME_GenerateGLJournal, GenerateGLJournal);
@@ -208,7 +208,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 
 	/** Get Generate GL Journal.
 		@return Generate GL Journal	  */
-	public String getGenerateGLJournal () 
+	public String getGenerateGLJournal()
 	{
 		return (String)get_Value(COLUMNNAME_GenerateGLJournal);
 	}
@@ -220,21 +220,20 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set GL Category.
-		@param GL_Category_ID 
-		General Ledger Category
-	  */
+		@param GL_Category_ID General Ledger Category
+	*/
 	public void setGL_Category_ID (int GL_Category_ID)
 	{
-		if (GL_Category_ID < 1) 
+		if (GL_Category_ID < 1)
 			set_Value (COLUMNNAME_GL_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_Category_ID, Integer.valueOf(GL_Category_ID));
 	}
 
 	/** Get GL Category.
 		@return General Ledger Category
 	  */
-	public int getGL_Category_ID () 
+	public int getGL_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Category_ID);
 		if (ii == null)
@@ -243,18 +242,19 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set GL Journal Generator.
-		@param GL_JournalGenerator_ID GL Journal Generator	  */
+		@param GL_JournalGenerator_ID GL Journal Generator
+	*/
 	public void setGL_JournalGenerator_ID (int GL_JournalGenerator_ID)
 	{
-		if (GL_JournalGenerator_ID < 1) 
+		if (GL_JournalGenerator_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, Integer.valueOf(GL_JournalGenerator_ID));
 	}
 
 	/** Get GL Journal Generator.
 		@return GL Journal Generator	  */
-	public int getGL_JournalGenerator_ID () 
+	public int getGL_JournalGenerator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalGenerator_ID);
 		if (ii == null)
@@ -263,7 +263,8 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	}
 
 	/** Set GL_JournalGenerator_UU.
-		@param GL_JournalGenerator_UU GL_JournalGenerator_UU	  */
+		@param GL_JournalGenerator_UU GL_JournalGenerator_UU
+	*/
 	public void setGL_JournalGenerator_UU (String GL_JournalGenerator_UU)
 	{
 		set_Value (COLUMNNAME_GL_JournalGenerator_UU, GL_JournalGenerator_UU);
@@ -271,15 +272,14 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 
 	/** Get GL_JournalGenerator_UU.
 		@return GL_JournalGenerator_UU	  */
-	public String getGL_JournalGenerator_UU () 
+	public String getGL_JournalGenerator_UU()
 	{
 		return (String)get_Value(COLUMNNAME_GL_JournalGenerator_UU);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -288,15 +288,14 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -305,7 +304,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -331,9 +330,8 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
-		@param PostingType 
-		The type of posted amount for the transaction
-	  */
+		@param PostingType The type of posted amount for the transaction
+	*/
 	public void setPostingType (String PostingType)
 	{
 
@@ -343,7 +341,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/** Get PostingType.
 		@return The type of posted amount for the transaction
 	  */
-	public String getPostingType () 
+	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
 	}

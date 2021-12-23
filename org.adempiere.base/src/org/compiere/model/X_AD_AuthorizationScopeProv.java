@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AuthorizationScopeProv
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationScopeProv")
 public class X_AD_AuthorizationScopeProv extends PO implements I_AD_AuthorizationScopeProv, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationScopeProv (Properties ctx, int AD_AuthorizationScopeProv_ID, String trxName)
@@ -79,18 +79,19 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 	}
 
 	/** Set Authorization Provider.
-		@param AD_AuthorizationProvider_ID Authorization Provider	  */
+		@param AD_AuthorizationProvider_ID Authorization Provider
+	*/
 	public void setAD_AuthorizationProvider_ID (int AD_AuthorizationProvider_ID)
 	{
-		if (AD_AuthorizationProvider_ID < 1) 
+		if (AD_AuthorizationProvider_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationProvider_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationProvider_ID, Integer.valueOf(AD_AuthorizationProvider_ID));
 	}
 
 	/** Get Authorization Provider.
 		@return Authorization Provider	  */
-	public int getAD_AuthorizationProvider_ID () 
+	public int getAD_AuthorizationProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationProvider_ID);
 		if (ii == null)
@@ -111,7 +112,8 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 	/** Storage = Storage */
 	public static final String AD_AUTHORIZATIONSCOPE_Storage = "Storage";
 	/** Set Authorization Scope.
-		@param AD_AuthorizationScope Authorization Scope	  */
+		@param AD_AuthorizationScope Authorization Scope
+	*/
 	public void setAD_AuthorizationScope (String AD_AuthorizationScope)
 	{
 
@@ -120,24 +122,25 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 
 	/** Get Authorization Scope.
 		@return Authorization Scope	  */
-	public String getAD_AuthorizationScope () 
+	public String getAD_AuthorizationScope()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationScope);
 	}
 
 	/** Set Authorization Scope Provider.
-		@param AD_AuthorizationScopeProv_ID Authorization Scope Provider	  */
+		@param AD_AuthorizationScopeProv_ID Authorization Scope Provider
+	*/
 	public void setAD_AuthorizationScopeProv_ID (int AD_AuthorizationScopeProv_ID)
 	{
-		if (AD_AuthorizationScopeProv_ID < 1) 
+		if (AD_AuthorizationScopeProv_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationScopeProv_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationScopeProv_ID, Integer.valueOf(AD_AuthorizationScopeProv_ID));
 	}
 
 	/** Get Authorization Scope Provider.
 		@return Authorization Scope Provider	  */
-	public int getAD_AuthorizationScopeProv_ID () 
+	public int getAD_AuthorizationScopeProv_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationScopeProv_ID);
 		if (ii == null)
@@ -146,7 +149,8 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 	}
 
 	/** Set AD_AuthorizationScopeProv_UU.
-		@param AD_AuthorizationScopeProv_UU AD_AuthorizationScopeProv_UU	  */
+		@param AD_AuthorizationScopeProv_UU AD_AuthorizationScopeProv_UU
+	*/
 	public void setAD_AuthorizationScopeProv_UU (String AD_AuthorizationScopeProv_UU)
 	{
 		set_Value (COLUMNNAME_AD_AuthorizationScopeProv_UU, AD_AuthorizationScopeProv_UU);
@@ -154,13 +158,14 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 
 	/** Get AD_AuthorizationScopeProv_UU.
 		@return AD_AuthorizationScopeProv_UU	  */
-	public String getAD_AuthorizationScopeProv_UU () 
+	public String getAD_AuthorizationScopeProv_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationScopeProv_UU);
 	}
 
 	/** Set Scope URL.
-		@param ScopeURL Scope URL	  */
+		@param ScopeURL Scope URL
+	*/
 	public void setScopeURL (String ScopeURL)
 	{
 		set_Value (COLUMNNAME_ScopeURL, ScopeURL);
@@ -168,7 +173,7 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 
 	/** Get Scope URL.
 		@return Scope URL	  */
-	public String getScopeURL () 
+	public String getScopeURL()
 	{
 		return (String)get_Value(COLUMNNAME_ScopeURL);
 	}

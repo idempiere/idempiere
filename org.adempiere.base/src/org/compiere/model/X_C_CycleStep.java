@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CycleStep
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CycleStep")
 public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_CycleStep (Properties ctx, int C_CycleStep_ID, String trxName)
@@ -86,21 +86,20 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	}
 
 	/** Set Project Cycle.
-		@param C_Cycle_ID 
-		Identifier for this Project Reporting Cycle
-	  */
+		@param C_Cycle_ID Identifier for this Project Reporting Cycle
+	*/
 	public void setC_Cycle_ID (int C_Cycle_ID)
 	{
-		if (C_Cycle_ID < 1) 
+		if (C_Cycle_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Cycle_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Cycle_ID, Integer.valueOf(C_Cycle_ID));
 	}
 
 	/** Get Project Cycle.
 		@return Identifier for this Project Reporting Cycle
 	  */
-	public int getC_Cycle_ID () 
+	public int getC_Cycle_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Cycle_ID);
 		if (ii == null)
@@ -109,21 +108,20 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	}
 
 	/** Set Cycle Step.
-		@param C_CycleStep_ID 
-		The step for this Cycle
-	  */
+		@param C_CycleStep_ID The step for this Cycle
+	*/
 	public void setC_CycleStep_ID (int C_CycleStep_ID)
 	{
-		if (C_CycleStep_ID < 1) 
+		if (C_CycleStep_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CycleStep_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CycleStep_ID, Integer.valueOf(C_CycleStep_ID));
 	}
 
 	/** Get Cycle Step.
 		@return The step for this Cycle
 	  */
-	public int getC_CycleStep_ID () 
+	public int getC_CycleStep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CycleStep_ID);
 		if (ii == null)
@@ -132,7 +130,8 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	}
 
 	/** Set C_CycleStep_UU.
-		@param C_CycleStep_UU C_CycleStep_UU	  */
+		@param C_CycleStep_UU C_CycleStep_UU
+	*/
 	public void setC_CycleStep_UU (String C_CycleStep_UU)
 	{
 		set_Value (COLUMNNAME_C_CycleStep_UU, C_CycleStep_UU);
@@ -140,15 +139,14 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 
 	/** Get C_CycleStep_UU.
 		@return C_CycleStep_UU	  */
-	public String getC_CycleStep_UU () 
+	public String getC_CycleStep_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CycleStep_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -157,7 +155,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -171,9 +169,8 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
     }
 
 	/** Set Relative Weight.
-		@param RelativeWeight 
-		Relative weight of this step (0 = ignored)
-	  */
+		@param RelativeWeight Relative weight of this step (0 = ignored)
+	*/
 	public void setRelativeWeight (BigDecimal RelativeWeight)
 	{
 		set_Value (COLUMNNAME_RelativeWeight, RelativeWeight);
@@ -182,7 +179,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	/** Get Relative Weight.
 		@return Relative weight of this step (0 = ignored)
 	  */
-	public BigDecimal getRelativeWeight () 
+	public BigDecimal getRelativeWeight()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_RelativeWeight);
 		if (bd == null)
@@ -191,9 +188,8 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -202,7 +198,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

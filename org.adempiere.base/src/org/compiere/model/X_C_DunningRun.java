@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRun
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_DunningRun")
 public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_DunningRun (Properties ctx, int C_DunningRun_ID, String trxName)
@@ -83,21 +83,20 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	}
 
 	/** Set Dunning.
-		@param C_Dunning_ID 
-		Dunning Rules for overdue invoices
-	  */
+		@param C_Dunning_ID Dunning Rules for overdue invoices
+	*/
 	public void setC_Dunning_ID (int C_Dunning_ID)
 	{
-		if (C_Dunning_ID < 1) 
+		if (C_Dunning_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, Integer.valueOf(C_Dunning_ID));
 	}
 
 	/** Get Dunning.
 		@return Dunning Rules for overdue invoices
 	  */
-	public int getC_Dunning_ID () 
+	public int getC_Dunning_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Dunning_ID);
 		if (ii == null)
@@ -112,18 +111,19 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	}
 
 	/** Set Dunning Level.
-		@param C_DunningLevel_ID Dunning Level	  */
+		@param C_DunningLevel_ID Dunning Level
+	*/
 	public void setC_DunningLevel_ID (int C_DunningLevel_ID)
 	{
-		if (C_DunningLevel_ID < 1) 
+		if (C_DunningLevel_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DunningLevel_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DunningLevel_ID, Integer.valueOf(C_DunningLevel_ID));
 	}
 
 	/** Get Dunning Level.
 		@return Dunning Level	  */
-	public int getC_DunningLevel_ID () 
+	public int getC_DunningLevel_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DunningLevel_ID);
 		if (ii == null)
@@ -132,21 +132,20 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	}
 
 	/** Set Dunning Run.
-		@param C_DunningRun_ID 
-		Dunning Run
-	  */
+		@param C_DunningRun_ID Dunning Run
+	*/
 	public void setC_DunningRun_ID (int C_DunningRun_ID)
 	{
-		if (C_DunningRun_ID < 1) 
+		if (C_DunningRun_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DunningRun_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DunningRun_ID, Integer.valueOf(C_DunningRun_ID));
 	}
 
 	/** Get Dunning Run.
 		@return Dunning Run
 	  */
-	public int getC_DunningRun_ID () 
+	public int getC_DunningRun_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DunningRun_ID);
 		if (ii == null)
@@ -155,7 +154,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	}
 
 	/** Set C_DunningRun_UU.
-		@param C_DunningRun_UU C_DunningRun_UU	  */
+		@param C_DunningRun_UU C_DunningRun_UU
+	*/
 	public void setC_DunningRun_UU (String C_DunningRun_UU)
 	{
 		set_Value (COLUMNNAME_C_DunningRun_UU, C_DunningRun_UU);
@@ -163,15 +163,14 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 
 	/** Get C_DunningRun_UU.
 		@return C_DunningRun_UU	  */
-	public String getC_DunningRun_UU () 
+	public String getC_DunningRun_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DunningRun_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -180,15 +179,14 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Dunning Date.
-		@param DunningDate 
-		Date of Dunning
-	  */
+		@param DunningDate Date of Dunning
+	*/
 	public void setDunningDate (Timestamp DunningDate)
 	{
 		set_Value (COLUMNNAME_DunningDate, DunningDate);
@@ -197,7 +195,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	/** Get Dunning Date.
 		@return Date of Dunning
 	  */
-	public Timestamp getDunningDate () 
+	public Timestamp getDunningDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DunningDate);
 	}
@@ -211,9 +209,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
     }
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -222,7 +219,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -235,7 +232,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -243,7 +241,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -256,7 +254,8 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	}
 
 	/** Set Send.
-		@param SendIt Send	  */
+		@param SendIt Send
+	*/
 	public void setSendIt (String SendIt)
 	{
 		set_Value (COLUMNNAME_SendIt, SendIt);
@@ -264,7 +263,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 
 	/** Get Send.
 		@return Send	  */
-	public String getSendIt () 
+	public String getSendIt()
 	{
 		return (String)get_Value(COLUMNNAME_SendIt);
 	}

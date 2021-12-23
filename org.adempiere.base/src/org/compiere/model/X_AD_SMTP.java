@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SMTP
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_SMTP")
 public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_SMTP (Properties ctx, int AD_SMTP_ID, String trxName)
@@ -54,7 +55,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 7 - System - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -76,18 +77,19 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
     }
 
 	/** Set SMTP Server.
-		@param AD_SMTP_ID SMTP Server	  */
+		@param AD_SMTP_ID SMTP Server
+	*/
 	public void setAD_SMTP_ID (int AD_SMTP_ID)
 	{
-		if (AD_SMTP_ID < 1) 
+		if (AD_SMTP_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_SMTP_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_SMTP_ID, Integer.valueOf(AD_SMTP_ID));
 	}
 
 	/** Get SMTP Server.
 		@return SMTP Server	  */
-	public int getAD_SMTP_ID () 
+	public int getAD_SMTP_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_SMTP_ID);
 		if (ii == null)
@@ -96,7 +98,8 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	}
 
 	/** Set AD_SMTP_UU.
-		@param AD_SMTP_UU AD_SMTP_UU	  */
+		@param AD_SMTP_UU AD_SMTP_UU
+	*/
 	public void setAD_SMTP_UU (String AD_SMTP_UU)
 	{
 		set_Value (COLUMNNAME_AD_SMTP_UU, AD_SMTP_UU);
@@ -104,15 +107,14 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 
 	/** Get AD_SMTP_UU.
 		@return AD_SMTP_UU	  */
-	public String getAD_SMTP_UU () 
+	public String getAD_SMTP_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_SMTP_UU);
 	}
 
 	/** Set EMail Test.
-		@param EMailTest 
-		Test EMail
-	  */
+		@param EMailTest Test EMail
+	*/
 	public void setEMailTest (String EMailTest)
 	{
 		set_Value (COLUMNNAME_EMailTest, EMailTest);
@@ -121,15 +123,14 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get EMail Test.
 		@return Test EMail
 	  */
-	public String getEMailTest () 
+	public String getEMailTest()
 	{
 		return (String)get_Value(COLUMNNAME_EMailTest);
 	}
 
 	/** Set SMTP SSL/TLS.
-		@param IsSecureSMTP 
-		Use SSL/TLS for SMTP
-	  */
+		@param IsSecureSMTP Use SSL/TLS for SMTP
+	*/
 	public void setIsSecureSMTP (boolean IsSecureSMTP)
 	{
 		set_Value (COLUMNNAME_IsSecureSMTP, Boolean.valueOf(IsSecureSMTP));
@@ -138,7 +139,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get SMTP SSL/TLS.
 		@return Use SSL/TLS for SMTP
 	  */
-	public boolean isSecureSMTP () 
+	public boolean isSecureSMTP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSecureSMTP);
 		if (oo != null) 
@@ -151,9 +152,8 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	}
 
 	/** Set SMTP Authentication.
-		@param IsSmtpAuthorization 
-		Your mail server requires Authentication
-	  */
+		@param IsSmtpAuthorization Your mail server requires Authentication
+	*/
 	public void setIsSmtpAuthorization (boolean IsSmtpAuthorization)
 	{
 		set_Value (COLUMNNAME_IsSmtpAuthorization, Boolean.valueOf(IsSmtpAuthorization));
@@ -162,7 +162,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get SMTP Authentication.
 		@return Your mail server requires Authentication
 	  */
-	public boolean isSmtpAuthorization () 
+	public boolean isSmtpAuthorization()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSmtpAuthorization);
 		if (oo != null) 
@@ -175,9 +175,8 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -186,7 +185,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -200,9 +199,8 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
     }
 
 	/** Set Request User.
-		@param RequestUser 
-		User Name (ID) of the email owner
-	  */
+		@param RequestUser User Name (ID) of the email owner
+	*/
 	public void setRequestUser (String RequestUser)
 	{
 		set_Value (COLUMNNAME_RequestUser, RequestUser);
@@ -211,15 +209,14 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get Request User.
 		@return User Name (ID) of the email owner
 	  */
-	public String getRequestUser () 
+	public String getRequestUser()
 	{
 		return (String)get_Value(COLUMNNAME_RequestUser);
 	}
 
 	/** Set Request User Password.
-		@param RequestUserPW 
-		Password of the user name (ID) for mail processing
-	  */
+		@param RequestUserPW Password of the user name (ID) for mail processing
+	*/
 	public void setRequestUserPW (String RequestUserPW)
 	{
 		set_Value (COLUMNNAME_RequestUserPW, RequestUserPW);
@@ -228,15 +225,14 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get Request User Password.
 		@return Password of the user name (ID) for mail processing
 	  */
-	public String getRequestUserPW () 
+	public String getRequestUserPW()
 	{
 		return (String)get_Value(COLUMNNAME_RequestUserPW);
 	}
 
 	/** Set Mail Host.
-		@param SMTPHost 
-		Hostname of Mail Server for SMTP and IMAP
-	  */
+		@param SMTPHost Hostname of Mail Server for SMTP and IMAP
+	*/
 	public void setSMTPHost (String SMTPHost)
 	{
 		set_Value (COLUMNNAME_SMTPHost, SMTPHost);
@@ -245,15 +241,14 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get Mail Host.
 		@return Hostname of Mail Server for SMTP and IMAP
 	  */
-	public String getSMTPHost () 
+	public String getSMTPHost()
 	{
 		return (String)get_Value(COLUMNNAME_SMTPHost);
 	}
 
 	/** Set SMTP Port.
-		@param SMTPPort 
-		SMTP Port Number
-	  */
+		@param SMTPPort SMTP Port Number
+	*/
 	public void setSMTPPort (int SMTPPort)
 	{
 		set_Value (COLUMNNAME_SMTPPort, Integer.valueOf(SMTPPort));
@@ -262,7 +257,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/** Get SMTP Port.
 		@return SMTP Port Number
 	  */
-	public int getSMTPPort () 
+	public int getSMTPPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SMTPPort);
 		if (ii == null)
@@ -271,7 +266,8 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	}
 
 	/** Set Used by email or domain.
-		@param UsedByEmailOrDomain Used by email or domain	  */
+		@param UsedByEmailOrDomain Used by email or domain
+	*/
 	public void setUsedByEmailOrDomain (String UsedByEmailOrDomain)
 	{
 		set_Value (COLUMNNAME_UsedByEmailOrDomain, UsedByEmailOrDomain);
@@ -279,7 +275,7 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 
 	/** Get Used by email or domain.
 		@return Used by email or domain	  */
-	public String getUsedByEmailOrDomain () 
+	public String getUsedByEmailOrDomain()
 	{
 		return (String)get_Value(COLUMNNAME_UsedByEmailOrDomain);
 	}

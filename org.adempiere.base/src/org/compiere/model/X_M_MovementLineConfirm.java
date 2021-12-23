@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementLineConfirm
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementLineConfirm")
 public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfirm, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_MovementLineConfirm (Properties ctx, int M_MovementLineConfirm_ID, String trxName)
@@ -81,9 +81,8 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
     }
 
 	/** Set Confirmed Quantity.
-		@param ConfirmedQty 
-		Confirmation of a received quantity
-	  */
+		@param ConfirmedQty Confirmation of a received quantity
+	*/
 	public void setConfirmedQty (BigDecimal ConfirmedQty)
 	{
 		set_Value (COLUMNNAME_ConfirmedQty, ConfirmedQty);
@@ -92,7 +91,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/** Get Confirmed Quantity.
 		@return Confirmation of a received quantity
 	  */
-	public BigDecimal getConfirmedQty () 
+	public BigDecimal getConfirmedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ConfirmedQty);
 		if (bd == null)
@@ -101,9 +100,8 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -112,15 +110,14 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Difference.
-		@param DifferenceQty 
-		Difference Quantity
-	  */
+		@param DifferenceQty Difference Quantity
+	*/
 	public void setDifferenceQty (BigDecimal DifferenceQty)
 	{
 		set_Value (COLUMNNAME_DifferenceQty, DifferenceQty);
@@ -129,7 +126,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/** Get Difference.
 		@return Difference Quantity
 	  */
-	public BigDecimal getDifferenceQty () 
+	public BigDecimal getDifferenceQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DifferenceQty);
 		if (bd == null)
@@ -144,21 +141,20 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set Phys.Inventory Line.
-		@param M_InventoryLine_ID 
-		Unique line in an Inventory document
-	  */
+		@param M_InventoryLine_ID Unique line in an Inventory document
+	*/
 	public void setM_InventoryLine_ID (int M_InventoryLine_ID)
 	{
-		if (M_InventoryLine_ID < 1) 
+		if (M_InventoryLine_ID < 1)
 			set_Value (COLUMNNAME_M_InventoryLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InventoryLine_ID, Integer.valueOf(M_InventoryLine_ID));
 	}
 
 	/** Get Phys.Inventory Line.
 		@return Unique line in an Inventory document
 	  */
-	public int getM_InventoryLine_ID () 
+	public int getM_InventoryLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InventoryLine_ID);
 		if (ii == null)
@@ -173,21 +169,20 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set Move Confirm.
-		@param M_MovementConfirm_ID 
-		Inventory Move Confirmation
-	  */
+		@param M_MovementConfirm_ID Inventory Move Confirmation
+	*/
 	public void setM_MovementConfirm_ID (int M_MovementConfirm_ID)
 	{
-		if (M_MovementConfirm_ID < 1) 
+		if (M_MovementConfirm_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_MovementConfirm_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_MovementConfirm_ID, Integer.valueOf(M_MovementConfirm_ID));
 	}
 
 	/** Get Move Confirm.
 		@return Inventory Move Confirmation
 	  */
-	public int getM_MovementConfirm_ID () 
+	public int getM_MovementConfirm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementConfirm_ID);
 		if (ii == null)
@@ -204,21 +199,20 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
     }
 
 	/** Set Move Line Confirm.
-		@param M_MovementLineConfirm_ID 
-		Inventory Move Line Confirmation
-	  */
+		@param M_MovementLineConfirm_ID Inventory Move Line Confirmation
+	*/
 	public void setM_MovementLineConfirm_ID (int M_MovementLineConfirm_ID)
 	{
-		if (M_MovementLineConfirm_ID < 1) 
+		if (M_MovementLineConfirm_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_MovementLineConfirm_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_MovementLineConfirm_ID, Integer.valueOf(M_MovementLineConfirm_ID));
 	}
 
 	/** Get Move Line Confirm.
 		@return Inventory Move Line Confirmation
 	  */
-	public int getM_MovementLineConfirm_ID () 
+	public int getM_MovementLineConfirm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLineConfirm_ID);
 		if (ii == null)
@@ -227,7 +221,8 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set M_MovementLineConfirm_UU.
-		@param M_MovementLineConfirm_UU M_MovementLineConfirm_UU	  */
+		@param M_MovementLineConfirm_UU M_MovementLineConfirm_UU
+	*/
 	public void setM_MovementLineConfirm_UU (String M_MovementLineConfirm_UU)
 	{
 		set_Value (COLUMNNAME_M_MovementLineConfirm_UU, M_MovementLineConfirm_UU);
@@ -235,7 +230,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 
 	/** Get M_MovementLineConfirm_UU.
 		@return M_MovementLineConfirm_UU	  */
-	public String getM_MovementLineConfirm_UU () 
+	public String getM_MovementLineConfirm_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_MovementLineConfirm_UU);
 	}
@@ -247,21 +242,20 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set Move Line.
-		@param M_MovementLine_ID 
-		Inventory Move document Line
-	  */
+		@param M_MovementLine_ID Inventory Move document Line
+	*/
 	public void setM_MovementLine_ID (int M_MovementLine_ID)
 	{
-		if (M_MovementLine_ID < 1) 
+		if (M_MovementLine_ID < 1)
 			set_Value (COLUMNNAME_M_MovementLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
 	}
 
 	/** Get Move Line.
 		@return Inventory Move document Line
 	  */
-	public int getM_MovementLine_ID () 
+	public int getM_MovementLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
 		if (ii == null)
@@ -270,9 +264,8 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -281,7 +274,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -294,9 +287,8 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set Scrapped Quantity.
-		@param ScrappedQty 
-		The Quantity scrapped due to QA issues
-	  */
+		@param ScrappedQty The Quantity scrapped due to QA issues
+	*/
 	public void setScrappedQty (BigDecimal ScrappedQty)
 	{
 		set_Value (COLUMNNAME_ScrappedQty, ScrappedQty);
@@ -305,7 +297,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/** Get Scrapped Quantity.
 		@return The Quantity scrapped due to QA issues
 	  */
-	public BigDecimal getScrappedQty () 
+	public BigDecimal getScrappedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ScrappedQty);
 		if (bd == null)
@@ -314,9 +306,8 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	}
 
 	/** Set Target Quantity.
-		@param TargetQty 
-		Target Movement Quantity
-	  */
+		@param TargetQty Target Movement Quantity
+	*/
 	public void setTargetQty (BigDecimal TargetQty)
 	{
 		set_Value (COLUMNNAME_TargetQty, TargetQty);
@@ -325,7 +316,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/** Get Target Quantity.
 		@return Target Movement Quantity
 	  */
-	public BigDecimal getTargetQty () 
+	public BigDecimal getTargetQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TargetQty);
 		if (bd == null)

@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservationLog
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservationLog")
 public class X_M_StorageReservationLog extends PO implements I_M_StorageReservationLog, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211101L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_StorageReservationLog (Properties ctx, int M_StorageReservationLog_ID, String trxName)
@@ -89,21 +89,20 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -118,21 +117,20 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -141,9 +139,8 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Delta Quantity.
-		@param DeltaQty 
-		Quantity Difference
-	  */
+		@param DeltaQty Quantity Difference
+	*/
 	public void setDeltaQty (BigDecimal DeltaQty)
 	{
 		set_ValueNoCheck (COLUMNNAME_DeltaQty, DeltaQty);
@@ -152,7 +149,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/** Get Delta Quantity.
 		@return Quantity Difference
 	  */
-	public BigDecimal getDeltaQty () 
+	public BigDecimal getDeltaQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DeltaQty);
 		if (bd == null)
@@ -161,9 +158,8 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_DocumentNo, DocumentNo);
@@ -172,15 +168,14 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -189,7 +184,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -202,9 +197,8 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Line.
-		@param LineNo 
-		Line No
-	  */
+		@param LineNo Line No
+	*/
 	public void setLineNo (int LineNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_LineNo, Integer.valueOf(LineNo));
@@ -213,7 +207,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/** Get Line.
 		@return Line No
 	  */
-	public int getLineNo () 
+	public int getLineNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LineNo);
 		if (ii == null)
@@ -228,21 +222,20 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -257,21 +250,20 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -280,21 +272,20 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Storage Reservation Log.
-		@param M_StorageReservationLog_ID 
-		Log for every storage reservation quantity change
-	  */
+		@param M_StorageReservationLog_ID Log for every storage reservation quantity change
+	*/
 	public void setM_StorageReservationLog_ID (int M_StorageReservationLog_ID)
 	{
-		if (M_StorageReservationLog_ID < 1) 
+		if (M_StorageReservationLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_StorageReservationLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_StorageReservationLog_ID, Integer.valueOf(M_StorageReservationLog_ID));
 	}
 
 	/** Get Storage Reservation Log.
 		@return Log for every storage reservation quantity change
 	  */
-	public int getM_StorageReservationLog_ID () 
+	public int getM_StorageReservationLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_StorageReservationLog_ID);
 		if (ii == null)
@@ -303,7 +294,8 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set M_StorageReservationLog_UU.
-		@param M_StorageReservationLog_UU M_StorageReservationLog_UU	  */
+		@param M_StorageReservationLog_UU M_StorageReservationLog_UU
+	*/
 	public void setM_StorageReservationLog_UU (String M_StorageReservationLog_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_M_StorageReservationLog_UU, M_StorageReservationLog_UU);
@@ -311,7 +303,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 
 	/** Get M_StorageReservationLog_UU.
 		@return M_StorageReservationLog_UU	  */
-	public String getM_StorageReservationLog_UU () 
+	public String getM_StorageReservationLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_StorageReservationLog_UU);
 	}
@@ -323,21 +315,20 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -346,9 +337,8 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set New Current Quantity.
-		@param NewQty 
-		New current quantity after processing of M_CostDetail
-	  */
+		@param NewQty New current quantity after processing of M_CostDetail
+	*/
 	public void setNewQty (BigDecimal NewQty)
 	{
 		set_ValueNoCheck (COLUMNNAME_NewQty, NewQty);
@@ -357,7 +347,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/** Get New Current Quantity.
 		@return New current quantity after processing of M_CostDetail
 	  */
-	public BigDecimal getNewQty () 
+	public BigDecimal getNewQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_NewQty);
 		if (bd == null)
@@ -366,9 +356,8 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Old Current Quantity.
-		@param OldQty 
-		Old current quantity before the processing of M_CostDetail
-	  */
+		@param OldQty Old current quantity before the processing of M_CostDetail
+	*/
 	public void setOldQty (BigDecimal OldQty)
 	{
 		set_ValueNoCheck (COLUMNNAME_OldQty, OldQty);
@@ -377,7 +366,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/** Get Old Current Quantity.
 		@return Old current quantity before the processing of M_CostDetail
 	  */
-	public BigDecimal getOldQty () 
+	public BigDecimal getOldQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OldQty);
 		if (bd == null)
@@ -386,21 +375,20 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)

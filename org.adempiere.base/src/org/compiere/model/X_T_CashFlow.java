@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_CashFlow
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="T_CashFlow")
 public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_T_CashFlow (Properties ctx, int T_CashFlow_ID, String trxName)
@@ -82,21 +82,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -111,21 +110,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -140,21 +138,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -173,7 +170,8 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** 4_Actual Debt (Invoices) = 4 */
 	public static final String CASHFLOWSOURCE_4_ActualDebtInvoices = "4";
 	/** Set Cash Flow Source.
-		@param CashFlowSource Cash Flow Source	  */
+		@param CashFlowSource Cash Flow Source
+	*/
 	public void setCashFlowSource (String CashFlowSource)
 	{
 
@@ -182,7 +180,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 
 	/** Get Cash Flow Source.
 		@return Cash Flow Source	  */
-	public String getCashFlowSource () 
+	public String getCashFlowSource()
 	{
 		return (String)get_Value(COLUMNNAME_CashFlowSource);
 	}
@@ -196,7 +194,8 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** Operational = O */
 	public static final String CASHFLOWTYPE_Operational = "O";
 	/** Set Cash Flow Type.
-		@param CashFlowType Cash Flow Type	  */
+		@param CashFlowType Cash Flow Type
+	*/
 	public void setCashFlowType (String CashFlowType)
 	{
 
@@ -205,7 +204,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 
 	/** Get Cash Flow Type.
 		@return Cash Flow Type	  */
-	public String getCashFlowType () 
+	public String getCashFlowType()
 	{
 		return (String)get_Value(COLUMNNAME_CashFlowType);
 	}
@@ -216,22 +215,21 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -246,21 +244,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -275,18 +272,19 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Cash Plan Line.
-		@param C_CashPlanLine_ID Cash Plan Line	  */
+		@param C_CashPlanLine_ID Cash Plan Line
+	*/
 	public void setC_CashPlanLine_ID (int C_CashPlanLine_ID)
 	{
-		if (C_CashPlanLine_ID < 1) 
+		if (C_CashPlanLine_ID < 1)
 			set_Value (COLUMNNAME_C_CashPlanLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_CashPlanLine_ID, Integer.valueOf(C_CashPlanLine_ID));
 	}
 
 	/** Get Cash Plan Line.
 		@return Cash Plan Line	  */
-	public int getC_CashPlanLine_ID () 
+	public int getC_CashPlanLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashPlanLine_ID);
 		if (ii == null)
@@ -301,21 +299,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Charge.
-		@param C_Charge_ID 
-		Additional document charges
-	  */
+		@param C_Charge_ID Additional document charges
+	*/
 	public void setC_Charge_ID (int C_Charge_ID)
 	{
-		if (C_Charge_ID < 1) 
+		if (C_Charge_ID < 1)
 			set_Value (COLUMNNAME_C_Charge_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
 	}
 
 	/** Get Charge.
 		@return Additional document charges
 	  */
-	public int getC_Charge_ID () 
+	public int getC_Charge_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
@@ -330,21 +327,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Account Element.
-		@param C_ElementValue_ID 
-		Account Element
-	  */
+		@param C_ElementValue_ID Account Element
+	*/
 	public void setC_ElementValue_ID (int C_ElementValue_ID)
 	{
-		if (C_ElementValue_ID < 1) 
+		if (C_ElementValue_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
 	}
 
 	/** Get Account Element.
 		@return Account Element
 	  */
-	public int getC_ElementValue_ID () 
+	public int getC_ElementValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
 		if (ii == null)
@@ -359,21 +355,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -388,21 +383,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_Value (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -417,21 +411,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -440,9 +433,8 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Date To.
-		@param DateTo 
-		End date of a date range
-	  */
+		@param DateTo End date of a date range
+	*/
 	public void setDateTo (Timestamp DateTo)
 	{
 		set_Value (COLUMNNAME_DateTo, DateTo);
@@ -451,15 +443,14 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** Get Date To.
 		@return End date of a date range
 	  */
-	public Timestamp getDateTo () 
+	public Timestamp getDateTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTo);
 	}
 
 	/** Set Transaction Date.
-		@param DateTrx 
-		Transaction Date
-	  */
+		@param DateTrx Transaction Date
+	*/
 	public void setDateTrx (Timestamp DateTrx)
 	{
 		set_Value (COLUMNNAME_DateTrx, DateTrx);
@@ -468,15 +459,14 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** Get Transaction Date.
 		@return Transaction Date
 	  */
-	public Timestamp getDateTrx () 
+	public Timestamp getDateTrx()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTrx);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -485,15 +475,14 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -502,7 +491,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -515,9 +504,8 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Line Total.
-		@param LineTotalAmt 
-		Total line amount incl. Tax
-	  */
+		@param LineTotalAmt Total line amount incl. Tax
+	*/
 	public void setLineTotalAmt (BigDecimal LineTotalAmt)
 	{
 		set_Value (COLUMNNAME_LineTotalAmt, LineTotalAmt);
@@ -526,7 +514,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** Get Line Total.
 		@return Total line amount incl. Tax
 	  */
-	public BigDecimal getLineTotalAmt () 
+	public BigDecimal getLineTotalAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LineTotalAmt);
 		if (bd == null)
@@ -541,21 +529,20 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -564,9 +551,8 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -575,13 +561,14 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Probability.
-		@param Probability Probability	  */
+		@param Probability Probability
+	*/
 	public void setProbability (BigDecimal Probability)
 	{
 		set_Value (COLUMNNAME_Probability, Probability);
@@ -589,7 +576,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 
 	/** Get Probability.
 		@return Probability	  */
-	public BigDecimal getProbability () 
+	public BigDecimal getProbability()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Probability);
 		if (bd == null)
@@ -598,18 +585,19 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set T_CashFlow_ID.
-		@param T_CashFlow_ID T_CashFlow_ID	  */
+		@param T_CashFlow_ID T_CashFlow_ID
+	*/
 	public void setT_CashFlow_ID (int T_CashFlow_ID)
 	{
-		if (T_CashFlow_ID < 1) 
+		if (T_CashFlow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_T_CashFlow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_T_CashFlow_ID, Integer.valueOf(T_CashFlow_ID));
 	}
 
 	/** Get T_CashFlow_ID.
 		@return T_CashFlow_ID	  */
-	public int getT_CashFlow_ID () 
+	public int getT_CashFlow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_T_CashFlow_ID);
 		if (ii == null)
@@ -618,7 +606,8 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 	}
 
 	/** Set T_CashFlow_UU.
-		@param T_CashFlow_UU T_CashFlow_UU	  */
+		@param T_CashFlow_UU T_CashFlow_UU
+	*/
 	public void setT_CashFlow_UU (String T_CashFlow_UU)
 	{
 		set_Value (COLUMNNAME_T_CashFlow_UU, T_CashFlow_UU);
@@ -626,7 +615,7 @@ public class X_T_CashFlow extends PO implements I_T_CashFlow, I_Persistent
 
 	/** Get T_CashFlow_UU.
 		@return T_CashFlow_UU	  */
-	public String getT_CashFlow_UU () 
+	public String getT_CashFlow_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_CashFlow_UU);
 	}

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Test
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="Test")
 public class X_Test extends PO implements I_Test, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
@@ -82,7 +82,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Account_Acct.
-		@param Account_Acct Account_Acct	  */
+		@param Account_Acct Account_Acct
+	*/
 	public void setAccount_Acct (int Account_Acct)
 	{
 		set_Value (COLUMNNAME_Account_Acct, Integer.valueOf(Account_Acct));
@@ -90,7 +91,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Account_Acct.
 		@return Account_Acct	  */
-	public int getAccount_Acct () 
+	public int getAccount_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Account_Acct);
 		if (ii == null)
@@ -99,9 +100,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (int BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, Integer.valueOf(BinaryData));
@@ -110,7 +110,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public int getBinaryData () 
+	public int getBinaryData()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BinaryData);
 		if (ii == null)
@@ -124,22 +124,21 @@ public class X_Test extends PO implements I_Test, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -154,21 +153,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -177,9 +175,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Character Data.
-		@param CharacterData 
-		Long Character Field
-	  */
+		@param CharacterData Long Character Field
+	*/
 	public void setCharacterData (String CharacterData)
 	{
 		set_Value (COLUMNNAME_CharacterData, CharacterData);
@@ -188,7 +185,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Get Character Data.
 		@return Long Character Field
 	  */
-	public String getCharacterData () 
+	public String getCharacterData()
 	{
 		return (String)get_Value(COLUMNNAME_CharacterData);
 	}
@@ -200,21 +197,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Address.
-		@param C_Location_ID 
-		Location or Address
-	  */
+		@param C_Location_ID Location or Address
+	*/
 	public void setC_Location_ID (int C_Location_ID)
 	{
-		if (C_Location_ID < 1) 
+		if (C_Location_ID < 1)
 			set_Value (COLUMNNAME_C_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
 	}
 
 	/** Get Address.
 		@return Location or Address
 	  */
-	public int getC_Location_ID () 
+	public int getC_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
@@ -223,7 +219,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Color.
-		@param Color Color	  */
+		@param Color Color
+	*/
 	public void setColor (String Color)
 	{
 		set_Value (COLUMNNAME_Color, Color);
@@ -231,7 +228,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Color.
 		@return Color	  */
-	public String getColor () 
+	public String getColor()
 	{
 		return (String)get_Value(COLUMNNAME_Color);
 	}
@@ -243,21 +240,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -272,21 +268,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -295,9 +290,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -306,15 +300,14 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -323,7 +316,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
@@ -335,21 +328,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -364,21 +356,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -387,9 +378,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -398,7 +388,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -412,9 +402,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
     }
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -423,7 +412,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -436,7 +425,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -444,7 +434,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -457,7 +447,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Amount.
-		@param T_Amount Amount	  */
+		@param T_Amount Amount
+	*/
 	public void setT_Amount (BigDecimal T_Amount)
 	{
 		set_Value (COLUMNNAME_T_Amount, T_Amount);
@@ -465,7 +456,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Amount.
 		@return Amount	  */
-	public BigDecimal getT_Amount () 
+	public BigDecimal getT_Amount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_T_Amount);
 		if (bd == null)
@@ -474,7 +465,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Date.
-		@param T_Date Date	  */
+		@param T_Date Date
+	*/
 	public void setT_Date (Timestamp T_Date)
 	{
 		set_Value (COLUMNNAME_T_Date, T_Date);
@@ -482,13 +474,14 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Date.
 		@return Date	  */
-	public Timestamp getT_Date () 
+	public Timestamp getT_Date()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_T_Date);
 	}
 
 	/** Set DateTime.
-		@param T_DateTime DateTime	  */
+		@param T_DateTime DateTime
+	*/
 	public void setT_DateTime (Timestamp T_DateTime)
 	{
 		set_Value (COLUMNNAME_T_DateTime, T_DateTime);
@@ -496,24 +489,25 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get DateTime.
 		@return DateTime	  */
-	public Timestamp getT_DateTime () 
+	public Timestamp getT_DateTime()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_T_DateTime);
 	}
 
 	/** Set Test ID.
-		@param Test_ID Test ID	  */
+		@param Test_ID Test ID
+	*/
 	public void setTest_ID (int Test_ID)
 	{
-		if (Test_ID < 1) 
+		if (Test_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Test_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Test_ID, Integer.valueOf(Test_ID));
 	}
 
 	/** Get Test ID.
 		@return Test ID	  */
-	public int getTest_ID () 
+	public int getTest_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Test_ID);
 		if (ii == null)
@@ -522,7 +516,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Test_UU.
-		@param Test_UU Test_UU	  */
+		@param Test_UU Test_UU
+	*/
 	public void setTest_UU (String Test_UU)
 	{
 		set_Value (COLUMNNAME_Test_UU, Test_UU);
@@ -530,13 +525,14 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Test_UU.
 		@return Test_UU	  */
-	public String getTest_UU () 
+	public String getTest_UU()
 	{
 		return (String)get_Value(COLUMNNAME_Test_UU);
 	}
 
 	/** Set Integer.
-		@param T_Integer Integer	  */
+		@param T_Integer Integer
+	*/
 	public void setT_Integer (int T_Integer)
 	{
 		set_Value (COLUMNNAME_T_Integer, Integer.valueOf(T_Integer));
@@ -544,7 +540,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Integer.
 		@return Integer	  */
-	public int getT_Integer () 
+	public int getT_Integer()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_T_Integer);
 		if (ii == null)
@@ -553,7 +549,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Number.
-		@param T_Number Number	  */
+		@param T_Number Number
+	*/
 	public void setT_Number (BigDecimal T_Number)
 	{
 		set_Value (COLUMNNAME_T_Number, T_Number);
@@ -561,7 +558,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Number.
 		@return Number	  */
-	public BigDecimal getT_Number () 
+	public BigDecimal getT_Number()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_T_Number);
 		if (bd == null)
@@ -570,7 +567,8 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	}
 
 	/** Set Qty.
-		@param T_Qty Qty	  */
+		@param T_Qty Qty
+	*/
 	public void setT_Qty (BigDecimal T_Qty)
 	{
 		set_Value (COLUMNNAME_T_Qty, T_Qty);
@@ -578,7 +576,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 
 	/** Get Qty.
 		@return Qty	  */
-	public BigDecimal getT_Qty () 
+	public BigDecimal getT_Qty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_T_Qty);
 		if (bd == null)

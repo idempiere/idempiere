@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Locator
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Locator")
 public class X_M_Locator extends PO implements I_M_Locator, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_Locator (Properties ctx, int M_Locator_ID, String trxName)
@@ -80,9 +80,8 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
     }
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -91,7 +90,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -104,21 +103,20 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -133,18 +131,19 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	}
 
 	/** Set Locator Type.
-		@param M_LocatorType_ID Locator Type	  */
+		@param M_LocatorType_ID Locator Type
+	*/
 	public void setM_LocatorType_ID (int M_LocatorType_ID)
 	{
-		if (M_LocatorType_ID < 1) 
+		if (M_LocatorType_ID < 1)
 			set_Value (COLUMNNAME_M_LocatorType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_LocatorType_ID, Integer.valueOf(M_LocatorType_ID));
 	}
 
 	/** Get Locator Type.
 		@return Locator Type	  */
-	public int getM_LocatorType_ID () 
+	public int getM_LocatorType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_LocatorType_ID);
 		if (ii == null)
@@ -153,7 +152,8 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	}
 
 	/** Set M_Locator_UU.
-		@param M_Locator_UU M_Locator_UU	  */
+		@param M_Locator_UU M_Locator_UU
+	*/
 	public void setM_Locator_UU (String M_Locator_UU)
 	{
 		set_Value (COLUMNNAME_M_Locator_UU, M_Locator_UU);
@@ -161,7 +161,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 
 	/** Get M_Locator_UU.
 		@return M_Locator_UU	  */
-	public String getM_Locator_UU () 
+	public String getM_Locator_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Locator_UU);
 	}
@@ -173,21 +173,20 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -196,9 +195,8 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	}
 
 	/** Set Relative Priority.
-		@param PriorityNo 
-		Where inventory should be picked from first
-	  */
+		@param PriorityNo Where inventory should be picked from first
+	*/
 	public void setPriorityNo (int PriorityNo)
 	{
 		set_Value (COLUMNNAME_PriorityNo, Integer.valueOf(PriorityNo));
@@ -207,7 +205,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/** Get Relative Priority.
 		@return Where inventory should be picked from first
 	  */
-	public int getPriorityNo () 
+	public int getPriorityNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PriorityNo);
 		if (ii == null)
@@ -216,9 +214,8 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -227,7 +224,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
@@ -241,9 +238,8 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
     }
 
 	/** Set Aisle (X).
-		@param X 
-		X dimension, e.g., Aisle
-	  */
+		@param X X dimension, e.g., Aisle
+	*/
 	public void setX (String X)
 	{
 		set_Value (COLUMNNAME_X, X);
@@ -252,15 +248,14 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/** Get Aisle (X).
 		@return X dimension, e.g., Aisle
 	  */
-	public String getX () 
+	public String getX()
 	{
 		return (String)get_Value(COLUMNNAME_X);
 	}
 
 	/** Set Bin (Y).
-		@param Y 
-		Y dimension, e.g., Bin
-	  */
+		@param Y Y dimension, e.g., Bin
+	*/
 	public void setY (String Y)
 	{
 		set_Value (COLUMNNAME_Y, Y);
@@ -269,15 +264,14 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/** Get Bin (Y).
 		@return Y dimension, e.g., Bin
 	  */
-	public String getY () 
+	public String getY()
 	{
 		return (String)get_Value(COLUMNNAME_Y);
 	}
 
 	/** Set Level (Z).
-		@param Z 
-		Z dimension, e.g., Level
-	  */
+		@param Z Z dimension, e.g., Level
+	*/
 	public void setZ (String Z)
 	{
 		set_Value (COLUMNNAME_Z, Z);
@@ -286,7 +280,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/** Get Level (Z).
 		@return Z dimension, e.g., Level
 	  */
-	public String getZ () 
+	public String getZ()
 	{
 		return (String)get_Value(COLUMNNAME_Z);
 	}

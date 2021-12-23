@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxDefinition
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDefinition")
 public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_TaxDefinition (Properties ctx, int C_TaxDefinition_ID, String trxName)
@@ -82,21 +82,20 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Organization Type.
-		@param AD_OrgType_ID 
-		Organization Type
-	  */
+		@param AD_OrgType_ID Organization Type
+	*/
 	public void setAD_OrgType_ID (int AD_OrgType_ID)
 	{
-		if (AD_OrgType_ID < 1) 
+		if (AD_OrgType_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgType_ID, Integer.valueOf(AD_OrgType_ID));
 	}
 
 	/** Get Organization Type.
 		@return Organization Type
 	  */
-	public int getAD_OrgType_ID () 
+	public int getAD_OrgType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgType_ID);
 		if (ii == null)
@@ -110,22 +109,21 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -140,21 +138,20 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Business Partner Group.
-		@param C_BP_Group_ID 
-		Business Partner Group
-	  */
+		@param C_BP_Group_ID Business Partner Group
+	*/
 	public void setC_BP_Group_ID (int C_BP_Group_ID)
 	{
-		if (C_BP_Group_ID < 1) 
+		if (C_BP_Group_ID < 1)
 			set_Value (COLUMNNAME_C_BP_Group_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BP_Group_ID, Integer.valueOf(C_BP_Group_ID));
 	}
 
 	/** Get Business Partner Group.
 		@return Business Partner Group
 	  */
-	public int getC_BP_Group_ID () 
+	public int getC_BP_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
 		if (ii == null)
@@ -169,18 +166,19 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Tax Base.
-		@param C_TaxBase_ID Tax Base	  */
+		@param C_TaxBase_ID Tax Base
+	*/
 	public void setC_TaxBase_ID (int C_TaxBase_ID)
 	{
-		if (C_TaxBase_ID < 1) 
+		if (C_TaxBase_ID < 1)
 			set_Value (COLUMNNAME_C_TaxBase_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TaxBase_ID, Integer.valueOf(C_TaxBase_ID));
 	}
 
 	/** Get Tax Base.
 		@return Tax Base	  */
-	public int getC_TaxBase_ID () 
+	public int getC_TaxBase_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxBase_ID);
 		if (ii == null)
@@ -195,21 +193,20 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Tax Category.
-		@param C_TaxCategory_ID 
-		Tax Category
-	  */
+		@param C_TaxCategory_ID Tax Category
+	*/
 	public void setC_TaxCategory_ID (int C_TaxCategory_ID)
 	{
-		if (C_TaxCategory_ID < 1) 
+		if (C_TaxCategory_ID < 1)
 			set_Value (COLUMNNAME_C_TaxCategory_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TaxCategory_ID, Integer.valueOf(C_TaxCategory_ID));
 	}
 
 	/** Get Tax Category.
 		@return Tax Category
 	  */
-	public int getC_TaxCategory_ID () 
+	public int getC_TaxCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxCategory_ID);
 		if (ii == null)
@@ -218,18 +215,19 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Tax Definition.
-		@param C_TaxDefinition_ID Tax Definition	  */
+		@param C_TaxDefinition_ID Tax Definition
+	*/
 	public void setC_TaxDefinition_ID (int C_TaxDefinition_ID)
 	{
-		if (C_TaxDefinition_ID < 1) 
+		if (C_TaxDefinition_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxDefinition_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxDefinition_ID, Integer.valueOf(C_TaxDefinition_ID));
 	}
 
 	/** Get Tax Definition.
 		@return Tax Definition	  */
-	public int getC_TaxDefinition_ID () 
+	public int getC_TaxDefinition_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDefinition_ID);
 		if (ii == null)
@@ -238,7 +236,8 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set C_TaxDefinition_UU.
-		@param C_TaxDefinition_UU C_TaxDefinition_UU	  */
+		@param C_TaxDefinition_UU C_TaxDefinition_UU
+	*/
 	public void setC_TaxDefinition_UU (String C_TaxDefinition_UU)
 	{
 		set_Value (COLUMNNAME_C_TaxDefinition_UU, C_TaxDefinition_UU);
@@ -246,7 +245,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 
 	/** Get C_TaxDefinition_UU.
 		@return C_TaxDefinition_UU	  */
-	public String getC_TaxDefinition_UU () 
+	public String getC_TaxDefinition_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxDefinition_UU);
 	}
@@ -258,18 +257,19 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Tax Group.
-		@param C_TaxGroup_ID Tax Group	  */
+		@param C_TaxGroup_ID Tax Group
+	*/
 	public void setC_TaxGroup_ID (int C_TaxGroup_ID)
 	{
-		if (C_TaxGroup_ID < 1) 
+		if (C_TaxGroup_ID < 1)
 			set_Value (COLUMNNAME_C_TaxGroup_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TaxGroup_ID, Integer.valueOf(C_TaxGroup_ID));
 	}
 
 	/** Get Tax Group.
 		@return Tax Group	  */
-	public int getC_TaxGroup_ID () 
+	public int getC_TaxGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxGroup_ID);
 		if (ii == null)
@@ -284,21 +284,20 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Tax.
-		@param C_Tax_ID 
-		Tax identifier
-	  */
+		@param C_Tax_ID Tax identifier
+	*/
 	public void setC_Tax_ID (int C_Tax_ID)
 	{
-		if (C_Tax_ID < 1) 
+		if (C_Tax_ID < 1)
 			set_Value (COLUMNNAME_C_Tax_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
 	}
 
 	/** Get Tax.
 		@return Tax identifier
 	  */
-	public int getC_Tax_ID () 
+	public int getC_Tax_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
 		if (ii == null)
@@ -313,18 +312,19 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Tax Type.
-		@param C_TaxType_ID Tax Type	  */
+		@param C_TaxType_ID Tax Type
+	*/
 	public void setC_TaxType_ID (int C_TaxType_ID)
 	{
-		if (C_TaxType_ID < 1) 
+		if (C_TaxType_ID < 1)
 			set_Value (COLUMNNAME_C_TaxType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TaxType_ID, Integer.valueOf(C_TaxType_ID));
 	}
 
 	/** Get Tax Type.
 		@return Tax Type	  */
-	public int getC_TaxType_ID () 
+	public int getC_TaxType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxType_ID);
 		if (ii == null)
@@ -333,9 +333,8 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -344,15 +343,14 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -361,15 +359,14 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Invoiced.
-		@param IsInvoiced 
-		Is this invoiced?
-	  */
+		@param IsInvoiced Is this invoiced?
+	*/
 	public void setIsInvoiced (boolean IsInvoiced)
 	{
 		set_Value (COLUMNNAME_IsInvoiced, Boolean.valueOf(IsInvoiced));
@@ -378,7 +375,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Invoiced.
 		@return Is this invoiced?
 	  */
-	public boolean isInvoiced () 
+	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
 		if (oo != null) 
@@ -391,7 +388,8 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Max Taxable.
-		@param MaxTaxable Max Taxable	  */
+		@param MaxTaxable Max Taxable
+	*/
 	public void setMaxTaxable (int MaxTaxable)
 	{
 		set_Value (COLUMNNAME_MaxTaxable, Integer.valueOf(MaxTaxable));
@@ -399,7 +397,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 
 	/** Get Max Taxable.
 		@return Max Taxable	  */
-	public int getMaxTaxable () 
+	public int getMaxTaxable()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MaxTaxable);
 		if (ii == null)
@@ -408,7 +406,8 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Min Taxable.
-		@param MinTaxable Min Taxable	  */
+		@param MinTaxable Min Taxable
+	*/
 	public void setMinTaxable (int MinTaxable)
 	{
 		set_Value (COLUMNNAME_MinTaxable, Integer.valueOf(MinTaxable));
@@ -416,7 +415,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 
 	/** Get Min Taxable.
 		@return Min Taxable	  */
-	public int getMinTaxable () 
+	public int getMinTaxable()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MinTaxable);
 		if (ii == null)
@@ -431,21 +430,20 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -460,21 +458,20 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -483,9 +480,8 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -494,7 +490,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -508,9 +504,8 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -519,7 +514,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -528,9 +523,8 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -539,15 +533,14 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -556,15 +549,14 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -573,7 +565,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

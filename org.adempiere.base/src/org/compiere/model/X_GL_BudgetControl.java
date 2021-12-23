@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_BudgetControl
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="GL_BudgetControl")
 public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_GL_BudgetControl (Properties ctx, int GL_BudgetControl_ID, String trxName)
@@ -87,9 +87,8 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** Year To Date = Y */
 	public static final String BUDGETCONTROLSCOPE_YearToDate = "Y";
 	/** Set Control Scope.
-		@param BudgetControlScope 
-		Scope of the Budget Control
-	  */
+		@param BudgetControlScope Scope of the Budget Control
+	*/
 	public void setBudgetControlScope (String BudgetControlScope)
 	{
 
@@ -99,7 +98,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** Get Control Scope.
 		@return Scope of the Budget Control
 	  */
-	public String getBudgetControlScope () 
+	public String getBudgetControlScope()
 	{
 		return (String)get_Value(COLUMNNAME_BudgetControlScope);
 	}
@@ -111,21 +110,20 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -135,9 +133,9 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 
 	/** CommitmentType AD_Reference_ID=359 */
 	public static final int COMMITMENTTYPE_AD_Reference_ID=359;
-	/** PO/SO Commitment & Reservation = A */
+	/** PO/SO Commitment &amp; Reservation = A */
 	public static final String COMMITMENTTYPE_POSOCommitmentReservation = "A";
-	/** PO Commitment & Reservation = B */
+	/** PO Commitment &amp; Reservation = B */
 	public static final String COMMITMENTTYPE_POCommitmentReservation = "B";
 	/** PO Commitment only = C */
 	public static final String COMMITMENTTYPE_POCommitmentOnly = "C";
@@ -148,9 +146,8 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** SO Commitment only = S */
 	public static final String COMMITMENTTYPE_SOCommitmentOnly = "S";
 	/** Set Commitment Type.
-		@param CommitmentType 
-		Create Commitment and/or Reservations for Budget Control
-	  */
+		@param CommitmentType Create Commitment and/or Reservations for Budget Control
+	*/
 	public void setCommitmentType (String CommitmentType)
 	{
 
@@ -160,15 +157,14 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** Get Commitment Type.
 		@return Create Commitment and/or Reservations for Budget Control
 	  */
-	public String getCommitmentType () 
+	public String getCommitmentType()
 	{
 		return (String)get_Value(COLUMNNAME_CommitmentType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -177,27 +173,26 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Budget Control.
-		@param GL_BudgetControl_ID 
-		Budget Control
-	  */
+		@param GL_BudgetControl_ID Budget Control
+	*/
 	public void setGL_BudgetControl_ID (int GL_BudgetControl_ID)
 	{
-		if (GL_BudgetControl_ID < 1) 
+		if (GL_BudgetControl_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_BudgetControl_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_BudgetControl_ID, Integer.valueOf(GL_BudgetControl_ID));
 	}
 
 	/** Get Budget Control.
 		@return Budget Control
 	  */
-	public int getGL_BudgetControl_ID () 
+	public int getGL_BudgetControl_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_BudgetControl_ID);
 		if (ii == null)
@@ -206,7 +201,8 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	}
 
 	/** Set GL_BudgetControl_UU.
-		@param GL_BudgetControl_UU GL_BudgetControl_UU	  */
+		@param GL_BudgetControl_UU GL_BudgetControl_UU
+	*/
 	public void setGL_BudgetControl_UU (String GL_BudgetControl_UU)
 	{
 		set_Value (COLUMNNAME_GL_BudgetControl_UU, GL_BudgetControl_UU);
@@ -214,7 +210,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 
 	/** Get GL_BudgetControl_UU.
 		@return GL_BudgetControl_UU	  */
-	public String getGL_BudgetControl_UU () 
+	public String getGL_BudgetControl_UU()
 	{
 		return (String)get_Value(COLUMNNAME_GL_BudgetControl_UU);
 	}
@@ -226,21 +222,20 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	}
 
 	/** Set Budget.
-		@param GL_Budget_ID 
-		General Ledger Budget
-	  */
+		@param GL_Budget_ID General Ledger Budget
+	*/
 	public void setGL_Budget_ID (int GL_Budget_ID)
 	{
-		if (GL_Budget_ID < 1) 
+		if (GL_Budget_ID < 1)
 			set_Value (COLUMNNAME_GL_Budget_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_Budget_ID, Integer.valueOf(GL_Budget_ID));
 	}
 
 	/** Get Budget.
 		@return General Ledger Budget
 	  */
-	public int getGL_Budget_ID () 
+	public int getGL_Budget_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Budget_ID);
 		if (ii == null)
@@ -249,9 +244,8 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -260,15 +254,14 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Before Approval.
-		@param IsBeforeApproval 
-		The Check is before the (manual) approval
-	  */
+		@param IsBeforeApproval The Check is before the (manual) approval
+	*/
 	public void setIsBeforeApproval (boolean IsBeforeApproval)
 	{
 		set_Value (COLUMNNAME_IsBeforeApproval, Boolean.valueOf(IsBeforeApproval));
@@ -277,7 +270,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** Get Before Approval.
 		@return The Check is before the (manual) approval
 	  */
-	public boolean isBeforeApproval () 
+	public boolean isBeforeApproval()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBeforeApproval);
 		if (oo != null) 
@@ -290,9 +283,8 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -301,7 +293,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

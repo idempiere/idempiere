@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Menu
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Menu")
 public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName)
@@ -100,9 +100,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Form = X */
 	public static final String ACTION_Form = "X";
 	/** Set Action.
-		@param Action 
-		Indicates the Action to be performed
-	  */
+		@param Action Indicates the Action to be performed
+	*/
 	public void setAction (String Action)
 	{
 
@@ -112,7 +111,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Action.
 		@return Indicates the Action to be performed
 	  */
-	public String getAction () 
+	public String getAction()
 	{
 		return (String)get_Value(COLUMNNAME_Action);
 	}
@@ -124,21 +123,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Special Form.
-		@param AD_Form_ID 
-		Special Form
-	  */
+		@param AD_Form_ID Special Form
+	*/
 	public void setAD_Form_ID (int AD_Form_ID)
 	{
-		if (AD_Form_ID < 1) 
+		if (AD_Form_ID < 1)
 			set_Value (COLUMNNAME_AD_Form_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Form_ID, Integer.valueOf(AD_Form_ID));
 	}
 
 	/** Get Special Form.
 		@return Special Form
 	  */
-	public int getAD_Form_ID () 
+	public int getAD_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
 		if (ii == null)
@@ -153,21 +151,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Info Window.
-		@param AD_InfoWindow_ID 
-		Info and search/select Window
-	  */
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
 	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
 	{
-		if (AD_InfoWindow_ID < 1) 
+		if (AD_InfoWindow_ID < 1)
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
 	}
 
 	/** Get Info Window.
 		@return Info and search/select Window
 	  */
-	public int getAD_InfoWindow_ID () 
+	public int getAD_InfoWindow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
@@ -176,21 +173,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Menu.
-		@param AD_Menu_ID 
-		Identifies a Menu
-	  */
+		@param AD_Menu_ID Identifies a Menu
+	*/
 	public void setAD_Menu_ID (int AD_Menu_ID)
 	{
-		if (AD_Menu_ID < 1) 
+		if (AD_Menu_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Menu_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Menu_ID, Integer.valueOf(AD_Menu_ID));
 	}
 
 	/** Get Menu.
 		@return Identifies a Menu
 	  */
-	public int getAD_Menu_ID () 
+	public int getAD_Menu_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Menu_ID);
 		if (ii == null)
@@ -199,7 +195,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set AD_Menu_UU.
-		@param AD_Menu_UU AD_Menu_UU	  */
+		@param AD_Menu_UU AD_Menu_UU
+	*/
 	public void setAD_Menu_UU (String AD_Menu_UU)
 	{
 		set_Value (COLUMNNAME_AD_Menu_UU, AD_Menu_UU);
@@ -207,7 +204,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 
 	/** Get AD_Menu_UU.
 		@return AD_Menu_UU	  */
-	public String getAD_Menu_UU () 
+	public String getAD_Menu_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Menu_UU);
 	}
@@ -219,21 +216,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -248,21 +244,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set OS Task.
-		@param AD_Task_ID 
-		Operation System Task
-	  */
+		@param AD_Task_ID Operation System Task
+	*/
 	public void setAD_Task_ID (int AD_Task_ID)
 	{
-		if (AD_Task_ID < 1) 
+		if (AD_Task_ID < 1)
 			set_Value (COLUMNNAME_AD_Task_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
 	}
 
 	/** Get OS Task.
 		@return Operation System Task
 	  */
-	public int getAD_Task_ID () 
+	public int getAD_Task_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
 		if (ii == null)
@@ -277,21 +272,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -306,21 +300,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_Value (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -329,9 +322,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -340,7 +332,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -348,9 +340,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -360,15 +351,14 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Centrally maintained.
-		@param IsCentrallyMaintained 
-		Information maintained in System Element table
-	  */
+		@param IsCentrallyMaintained Information maintained in System Element table
+	*/
 	public void setIsCentrallyMaintained (boolean IsCentrallyMaintained)
 	{
 		set_Value (COLUMNNAME_IsCentrallyMaintained, Boolean.valueOf(IsCentrallyMaintained));
@@ -377,7 +367,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Centrally maintained.
 		@return Information maintained in System Element table
 	  */
-	public boolean isCentrallyMaintained () 
+	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
 		if (oo != null) 
@@ -390,9 +380,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (boolean IsReadOnly)
 	{
 		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
@@ -401,7 +390,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
 		if (oo != null) 
@@ -414,9 +403,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -425,7 +413,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -438,9 +426,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Summary Level.
-		@param IsSummary 
-		This is a summary entity
-	  */
+		@param IsSummary This is a summary entity
+	*/
 	public void setIsSummary (boolean IsSummary)
 	{
 		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(IsSummary));
@@ -449,7 +436,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Summary Level.
 		@return This is a summary entity
 	  */
-	public boolean isSummary () 
+	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
 		if (oo != null) 
@@ -462,9 +449,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -473,7 +459,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -487,9 +473,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
     }
 
 	/** Set Predefined Context Variables.
-		@param PredefinedContextVariables 
-		Predefined context variables to inject when opening a menu entry or a window
-	  */
+		@param PredefinedContextVariables Predefined context variables to inject when opening a menu entry or a window
+	*/
 	public void setPredefinedContextVariables (String PredefinedContextVariables)
 	{
 		set_Value (COLUMNNAME_PredefinedContextVariables, PredefinedContextVariables);
@@ -498,7 +483,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Predefined Context Variables.
 		@return Predefined context variables to inject when opening a menu entry or a window
 	  */
-	public String getPredefinedContextVariables () 
+	public String getPredefinedContextVariables()
 	{
 		return (String)get_Value(COLUMNNAME_PredefinedContextVariables);
 	}

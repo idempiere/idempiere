@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AllClients_V
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_AllClients_V")
 public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_AllClients_V (Properties ctx, int AD_AllClients_V_ID, String trxName)
@@ -70,18 +70,19 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
     }
 
 	/** Set Client (All).
-		@param AD_AllClients_V_ID Client (All)	  */
+		@param AD_AllClients_V_ID Client (All)
+	*/
 	public void setAD_AllClients_V_ID (int AD_AllClients_V_ID)
 	{
-		if (AD_AllClients_V_ID < 1) 
+		if (AD_AllClients_V_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_ID, Integer.valueOf(AD_AllClients_V_ID));
 	}
 
 	/** Get Client (All).
 		@return Client (All)	  */
-	public int getAD_AllClients_V_ID () 
+	public int getAD_AllClients_V_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AllClients_V_ID);
 		if (ii == null)
@@ -90,7 +91,8 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	}
 
 	/** Set AD_AllClients_V_UU.
-		@param AD_AllClients_V_UU AD_AllClients_V_UU	  */
+		@param AD_AllClients_V_UU AD_AllClients_V_UU
+	*/
 	public void setAD_AllClients_V_UU (String AD_AllClients_V_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_UU, AD_AllClients_V_UU);
@@ -98,7 +100,7 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 
 	/** Get AD_AllClients_V_UU.
 		@return AD_AllClients_V_UU	  */
-	public String getAD_AllClients_V_UU () 
+	public String getAD_AllClients_V_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AllClients_V_UU);
 	}
@@ -106,9 +108,8 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
 	/** Set Language.
-		@param AD_Language 
-		Language for this entity
-	  */
+		@param AD_Language Language for this entity
+	*/
 	public void setAD_Language (String AD_Language)
 	{
 
@@ -118,15 +119,14 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	/** Get Language.
 		@return Language for this entity
 	  */
-	public String getAD_Language () 
+	public String getAD_Language()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_ValueNoCheck (COLUMNNAME_Description, Description);
@@ -135,15 +135,14 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_ValueNoCheck (COLUMNNAME_Name, Name);
@@ -152,15 +151,14 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_ValueNoCheck (COLUMNNAME_Value, Value);
@@ -169,7 +167,7 @@ public class X_AD_AllClients_V extends PO implements I_AD_AllClients_V, I_Persis
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

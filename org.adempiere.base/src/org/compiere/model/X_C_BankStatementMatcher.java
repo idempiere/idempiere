@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatementMatcher
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_BankStatementMatcher")
 public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMatcher, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_BankStatementMatcher (Properties ctx, int C_BankStatementMatcher_ID, String trxName)
@@ -75,21 +75,20 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
     }
 
 	/** Set Bank Statement Matcher.
-		@param C_BankStatementMatcher_ID 
-		Algorithm to match Bank Statement Info to Business Partners, Invoices and Payments
-	  */
+		@param C_BankStatementMatcher_ID Algorithm to match Bank Statement Info to Business Partners, Invoices and Payments
+	*/
 	public void setC_BankStatementMatcher_ID (int C_BankStatementMatcher_ID)
 	{
-		if (C_BankStatementMatcher_ID < 1) 
+		if (C_BankStatementMatcher_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankStatementMatcher_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankStatementMatcher_ID, Integer.valueOf(C_BankStatementMatcher_ID));
 	}
 
 	/** Get Bank Statement Matcher.
 		@return Algorithm to match Bank Statement Info to Business Partners, Invoices and Payments
 	  */
-	public int getC_BankStatementMatcher_ID () 
+	public int getC_BankStatementMatcher_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankStatementMatcher_ID);
 		if (ii == null)
@@ -98,7 +97,8 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 	}
 
 	/** Set C_BankStatementMatcher_UU.
-		@param C_BankStatementMatcher_UU C_BankStatementMatcher_UU	  */
+		@param C_BankStatementMatcher_UU C_BankStatementMatcher_UU
+	*/
 	public void setC_BankStatementMatcher_UU (String C_BankStatementMatcher_UU)
 	{
 		set_Value (COLUMNNAME_C_BankStatementMatcher_UU, C_BankStatementMatcher_UU);
@@ -106,15 +106,14 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 
 	/** Get C_BankStatementMatcher_UU.
 		@return C_BankStatementMatcher_UU	  */
-	public String getC_BankStatementMatcher_UU () 
+	public String getC_BankStatementMatcher_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BankStatementMatcher_UU);
 	}
 
 	/** Set Classname.
-		@param Classname 
-		Java Classname
-	  */
+		@param Classname Java Classname
+	*/
 	public void setClassname (String Classname)
 	{
 		set_Value (COLUMNNAME_Classname, Classname);
@@ -123,15 +122,14 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 	/** Get Classname.
 		@return Java Classname
 	  */
-	public String getClassname () 
+	public String getClassname()
 	{
 		return (String)get_Value(COLUMNNAME_Classname);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -140,15 +138,14 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -157,7 +154,7 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -171,9 +168,8 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -182,7 +178,7 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

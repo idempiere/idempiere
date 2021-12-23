@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestTypeUpdates
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestTypeUpdates")
 public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -102,9 +101,8 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -113,7 +111,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -132,21 +130,20 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	}
 
 	/** Set Request Type.
-		@param R_RequestType_ID 
-		Type of request (e.g. Inquiry, Complaint, ..)
-	  */
+		@param R_RequestType_ID Type of request (e.g. Inquiry, Complaint, ..)
+	*/
 	public void setR_RequestType_ID (int R_RequestType_ID)
 	{
-		if (R_RequestType_ID < 1) 
+		if (R_RequestType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_RequestType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_RequestType_ID, Integer.valueOf(R_RequestType_ID));
 	}
 
 	/** Get Request Type.
 		@return Type of request (e.g. Inquiry, Complaint, ..)
 	  */
-	public int getR_RequestType_ID () 
+	public int getR_RequestType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestType_ID);
 		if (ii == null)
@@ -155,7 +152,8 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	}
 
 	/** Set R_RequestTypeUpdates_UU.
-		@param R_RequestTypeUpdates_UU R_RequestTypeUpdates_UU	  */
+		@param R_RequestTypeUpdates_UU R_RequestTypeUpdates_UU
+	*/
 	public void setR_RequestTypeUpdates_UU (String R_RequestTypeUpdates_UU)
 	{
 		set_Value (COLUMNNAME_R_RequestTypeUpdates_UU, R_RequestTypeUpdates_UU);
@@ -163,7 +161,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 
 	/** Get R_RequestTypeUpdates_UU.
 		@return R_RequestTypeUpdates_UU	  */
-	public String getR_RequestTypeUpdates_UU () 
+	public String getR_RequestTypeUpdates_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_RequestTypeUpdates_UU);
 	}

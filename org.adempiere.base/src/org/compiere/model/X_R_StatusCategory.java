@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_StatusCategory
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_StatusCategory")
 public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_StatusCategory (Properties ctx, int R_StatusCategory_ID, String trxName)
@@ -74,9 +74,8 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,15 +84,14 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -102,15 +100,14 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -119,7 +116,7 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -132,9 +129,8 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -143,7 +139,7 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -157,21 +153,20 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
     }
 
 	/** Set Status Category.
-		@param R_StatusCategory_ID 
-		Request Status Category
-	  */
+		@param R_StatusCategory_ID Request Status Category
+	*/
 	public void setR_StatusCategory_ID (int R_StatusCategory_ID)
 	{
-		if (R_StatusCategory_ID < 1) 
+		if (R_StatusCategory_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_StatusCategory_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_StatusCategory_ID, Integer.valueOf(R_StatusCategory_ID));
 	}
 
 	/** Get Status Category.
 		@return Request Status Category
 	  */
-	public int getR_StatusCategory_ID () 
+	public int getR_StatusCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_StatusCategory_ID);
 		if (ii == null)
@@ -180,7 +175,8 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 	}
 
 	/** Set R_StatusCategory_UU.
-		@param R_StatusCategory_UU R_StatusCategory_UU	  */
+		@param R_StatusCategory_UU R_StatusCategory_UU
+	*/
 	public void setR_StatusCategory_UU (String R_StatusCategory_UU)
 	{
 		set_Value (COLUMNNAME_R_StatusCategory_UU, R_StatusCategory_UU);
@@ -188,7 +184,7 @@ public class X_R_StatusCategory extends PO implements I_R_StatusCategory, I_Pers
 
 	/** Get R_StatusCategory_UU.
 		@return R_StatusCategory_UU	  */
-	public String getR_StatusCategory_UU () 
+	public String getR_StatusCategory_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_StatusCategory_UU);
 	}

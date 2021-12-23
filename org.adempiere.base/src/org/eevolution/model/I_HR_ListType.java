@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_ListType
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 @SuppressWarnings("all")
 public interface I_HR_ListType 

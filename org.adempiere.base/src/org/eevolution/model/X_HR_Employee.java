@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Employee
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="HR_Employee")
 public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_HR_Employee (Properties ctx, int HR_Employee_ID, String trxName)
@@ -84,21 +84,20 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -112,22 +111,21 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -136,9 +134,8 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set Validation code.
-		@param Code 
-		Validation Code
-	  */
+		@param Code Validation Code
+	*/
 	public void setCode (String Code)
 	{
 		set_Value (COLUMNNAME_Code, Code);
@@ -147,15 +144,14 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	/** Get Validation code.
 		@return Validation Code
 	  */
-	public String getCode () 
+	public String getCode()
 	{
 		return (String)get_Value(COLUMNNAME_Code);
 	}
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -164,7 +160,7 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
@@ -176,18 +172,19 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
+		@param HR_Department_ID Payroll Department
+	*/
 	public void setHR_Department_ID (int HR_Department_ID)
 	{
-		if (HR_Department_ID < 1) 
+		if (HR_Department_ID < 1)
 			set_Value (COLUMNNAME_HR_Department_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
 	}
 
 	/** Get Payroll Department.
 		@return Payroll Department	  */
-	public int getHR_Department_ID () 
+	public int getHR_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
 		if (ii == null)
@@ -196,18 +193,19 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set Payroll Employee.
-		@param HR_Employee_ID Payroll Employee	  */
+		@param HR_Employee_ID Payroll Employee
+	*/
 	public void setHR_Employee_ID (int HR_Employee_ID)
 	{
-		if (HR_Employee_ID < 1) 
+		if (HR_Employee_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Employee_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Employee_ID, Integer.valueOf(HR_Employee_ID));
 	}
 
 	/** Get Payroll Employee.
 		@return Payroll Employee	  */
-	public int getHR_Employee_ID () 
+	public int getHR_Employee_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Employee_ID);
 		if (ii == null)
@@ -216,7 +214,8 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set HR_Employee_UU.
-		@param HR_Employee_UU HR_Employee_UU	  */
+		@param HR_Employee_UU HR_Employee_UU
+	*/
 	public void setHR_Employee_UU (String HR_Employee_UU)
 	{
 		set_Value (COLUMNNAME_HR_Employee_UU, HR_Employee_UU);
@@ -224,7 +223,7 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 
 	/** Get HR_Employee_UU.
 		@return HR_Employee_UU	  */
-	public String getHR_Employee_UU () 
+	public String getHR_Employee_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Employee_UU);
 	}
@@ -236,18 +235,19 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set Payroll Job.
-		@param HR_Job_ID Payroll Job	  */
+		@param HR_Job_ID Payroll Job
+	*/
 	public void setHR_Job_ID (int HR_Job_ID)
 	{
-		if (HR_Job_ID < 1) 
+		if (HR_Job_ID < 1)
 			set_Value (COLUMNNAME_HR_Job_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Job_ID, Integer.valueOf(HR_Job_ID));
 	}
 
 	/** Get Payroll Job.
 		@return Payroll Job	  */
-	public int getHR_Job_ID () 
+	public int getHR_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Job_ID);
 		if (ii == null)
@@ -262,18 +262,19 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_Value (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -282,9 +283,8 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	}
 
 	/** Set Image URL.
-		@param ImageURL 
-		URL of  image
-	  */
+		@param ImageURL URL of  image
+	*/
 	public void setImageURL (String ImageURL)
 	{
 		set_Value (COLUMNNAME_ImageURL, ImageURL);
@@ -293,15 +293,14 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	/** Get Image URL.
 		@return URL of  image
 	  */
-	public String getImageURL () 
+	public String getImageURL()
 	{
 		return (String)get_Value(COLUMNNAME_ImageURL);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -310,7 +309,7 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -324,9 +323,8 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
     }
 
 	/** Set Name 2.
-		@param Name2 
-		Additional Name
-	  */
+		@param Name2 Additional Name
+	*/
 	public void setName2 (String Name2)
 	{
 		set_Value (COLUMNNAME_Name2, Name2);
@@ -335,13 +333,14 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	/** Get Name 2.
 		@return Additional Name
 	  */
-	public String getName2 () 
+	public String getName2()
 	{
 		return (String)get_Value(COLUMNNAME_Name2);
 	}
 
 	/** Set National Code.
-		@param NationalCode National Code	  */
+		@param NationalCode National Code
+	*/
 	public void setNationalCode (String NationalCode)
 	{
 		set_Value (COLUMNNAME_NationalCode, NationalCode);
@@ -349,13 +348,14 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 
 	/** Get National Code.
 		@return National Code	  */
-	public String getNationalCode () 
+	public String getNationalCode()
 	{
 		return (String)get_Value(COLUMNNAME_NationalCode);
 	}
 
 	/** Set Social Security Code.
-		@param SSCode Social Security Code	  */
+		@param SSCode Social Security Code
+	*/
 	public void setSSCode (String SSCode)
 	{
 		set_Value (COLUMNNAME_SSCode, SSCode);
@@ -363,15 +363,14 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 
 	/** Get Social Security Code.
 		@return Social Security Code	  */
-	public String getSSCode () 
+	public String getSSCode()
 	{
 		return (String)get_Value(COLUMNNAME_SSCode);
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -380,7 +379,7 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

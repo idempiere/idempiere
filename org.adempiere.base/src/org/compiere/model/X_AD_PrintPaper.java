@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintPaper
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintPaper")
 public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_PrintPaper (Properties ctx, int AD_PrintPaper_ID, String trxName)
@@ -88,21 +88,20 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
     }
 
 	/** Set Print Paper.
-		@param AD_PrintPaper_ID 
-		Printer paper definition
-	  */
+		@param AD_PrintPaper_ID Printer paper definition
+	*/
 	public void setAD_PrintPaper_ID (int AD_PrintPaper_ID)
 	{
-		if (AD_PrintPaper_ID < 1) 
+		if (AD_PrintPaper_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintPaper_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintPaper_ID, Integer.valueOf(AD_PrintPaper_ID));
 	}
 
 	/** Get Print Paper.
 		@return Printer paper definition
 	  */
-	public int getAD_PrintPaper_ID () 
+	public int getAD_PrintPaper_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintPaper_ID);
 		if (ii == null)
@@ -111,7 +110,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set AD_PrintPaper_UU.
-		@param AD_PrintPaper_UU AD_PrintPaper_UU	  */
+		@param AD_PrintPaper_UU AD_PrintPaper_UU
+	*/
 	public void setAD_PrintPaper_UU (String AD_PrintPaper_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintPaper_UU, AD_PrintPaper_UU);
@@ -119,15 +119,14 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 
 	/** Get AD_PrintPaper_UU.
 		@return AD_PrintPaper_UU	  */
-	public String getAD_PrintPaper_UU () 
+	public String getAD_PrintPaper_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintPaper_UU);
 	}
 
 	/** Set Validation code.
-		@param Code 
-		Validation Code
-	  */
+		@param Code Validation Code
+	*/
 	public void setCode (String Code)
 	{
 		set_Value (COLUMNNAME_Code, Code);
@@ -136,15 +135,14 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Validation code.
 		@return Validation Code
 	  */
-	public String getCode () 
+	public String getCode()
 	{
 		return (String)get_Value(COLUMNNAME_Code);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -153,7 +151,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -165,9 +163,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** MM = M */
 	public static final String DIMENSIONUNITS_MM = "M";
 	/** Set Dimension Units.
-		@param DimensionUnits 
-		Units of Dimension
-	  */
+		@param DimensionUnits Units of Dimension
+	*/
 	public void setDimensionUnits (String DimensionUnits)
 	{
 
@@ -177,15 +174,14 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Dimension Units.
 		@return Units of Dimension
 	  */
-	public String getDimensionUnits () 
+	public String getDimensionUnits()
 	{
 		return (String)get_Value(COLUMNNAME_DimensionUnits);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -194,7 +190,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -207,9 +203,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Landscape.
-		@param IsLandscape 
-		Landscape orientation
-	  */
+		@param IsLandscape Landscape orientation
+	*/
 	public void setIsLandscape (boolean IsLandscape)
 	{
 		set_Value (COLUMNNAME_IsLandscape, Boolean.valueOf(IsLandscape));
@@ -218,7 +213,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Landscape.
 		@return Landscape orientation
 	  */
-	public boolean isLandscape () 
+	public boolean isLandscape()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLandscape);
 		if (oo != null) 
@@ -231,9 +226,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Bottom Margin.
-		@param MarginBottom 
-		Bottom Space in 1/72 inch
-	  */
+		@param MarginBottom Bottom Space in 1/72 inch
+	*/
 	public void setMarginBottom (int MarginBottom)
 	{
 		set_Value (COLUMNNAME_MarginBottom, Integer.valueOf(MarginBottom));
@@ -242,7 +236,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Bottom Margin.
 		@return Bottom Space in 1/72 inch
 	  */
-	public int getMarginBottom () 
+	public int getMarginBottom()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MarginBottom);
 		if (ii == null)
@@ -251,9 +245,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Left Margin.
-		@param MarginLeft 
-		Left Space in 1/72 inch
-	  */
+		@param MarginLeft Left Space in 1/72 inch
+	*/
 	public void setMarginLeft (int MarginLeft)
 	{
 		set_Value (COLUMNNAME_MarginLeft, Integer.valueOf(MarginLeft));
@@ -262,7 +255,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Left Margin.
 		@return Left Space in 1/72 inch
 	  */
-	public int getMarginLeft () 
+	public int getMarginLeft()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MarginLeft);
 		if (ii == null)
@@ -271,9 +264,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Right Margin.
-		@param MarginRight 
-		Right Space in 1/72 inch
-	  */
+		@param MarginRight Right Space in 1/72 inch
+	*/
 	public void setMarginRight (int MarginRight)
 	{
 		set_Value (COLUMNNAME_MarginRight, Integer.valueOf(MarginRight));
@@ -282,7 +274,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Right Margin.
 		@return Right Space in 1/72 inch
 	  */
-	public int getMarginRight () 
+	public int getMarginRight()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MarginRight);
 		if (ii == null)
@@ -291,9 +283,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Top Margin.
-		@param MarginTop 
-		Top Space in 1/72 inch
-	  */
+		@param MarginTop Top Space in 1/72 inch
+	*/
 	public void setMarginTop (int MarginTop)
 	{
 		set_Value (COLUMNNAME_MarginTop, Integer.valueOf(MarginTop));
@@ -302,7 +293,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Top Margin.
 		@return Top Space in 1/72 inch
 	  */
-	public int getMarginTop () 
+	public int getMarginTop()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MarginTop);
 		if (ii == null)
@@ -311,9 +302,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -322,7 +312,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -336,7 +326,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -344,7 +335,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -357,9 +348,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Size X.
-		@param SizeX 
-		X (horizontal) dimension size
-	  */
+		@param SizeX X (horizontal) dimension size
+	*/
 	public void setSizeX (BigDecimal SizeX)
 	{
 		set_Value (COLUMNNAME_SizeX, SizeX);
@@ -368,7 +358,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Size X.
 		@return X (horizontal) dimension size
 	  */
-	public BigDecimal getSizeX () 
+	public BigDecimal getSizeX()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SizeX);
 		if (bd == null)
@@ -377,9 +367,8 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	}
 
 	/** Set Size Y.
-		@param SizeY 
-		Y (vertical) dimension size
-	  */
+		@param SizeY Y (vertical) dimension size
+	*/
 	public void setSizeY (BigDecimal SizeY)
 	{
 		set_Value (COLUMNNAME_SizeY, SizeY);
@@ -388,7 +377,7 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/** Get Size Y.
 		@return Y (vertical) dimension size
 	  */
-	public BigDecimal getSizeY () 
+	public BigDecimal getSizeY()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SizeY);
 		if (bd == null)

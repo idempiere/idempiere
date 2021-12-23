@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for PA_DocumentStatusAccess
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_DocumentStatusAccess")
 public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatusAccess, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211212L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatusAccess (Properties ctx, int PA_DocumentStatusAccess_ID, String trxName)
@@ -77,21 +77,20 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -106,26 +105,61 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Document Status Access.
+		@param PA_DocumentStatusAccess_ID Document Status Access
+	*/
+	public void setPA_DocumentStatusAccess_ID (int PA_DocumentStatusAccess_ID)
+	{
+		if (PA_DocumentStatusAccess_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatusAccess_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatusAccess_ID, Integer.valueOf(PA_DocumentStatusAccess_ID));
+	}
+
+	/** Get Document Status Access.
+		@return Document Status Access	  */
+	public int getPA_DocumentStatusAccess_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DocumentStatusAccess_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set PA_DocumentStatusAccess_UU.
+		@param PA_DocumentStatusAccess_UU PA_DocumentStatusAccess_UU
+	*/
+	public void setPA_DocumentStatusAccess_UU (String PA_DocumentStatusAccess_UU)
+	{
+		set_Value (COLUMNNAME_PA_DocumentStatusAccess_UU, PA_DocumentStatusAccess_UU);
+	}
+
+	/** Get PA_DocumentStatusAccess_UU.
+		@return PA_DocumentStatusAccess_UU	  */
+	public String getPA_DocumentStatusAccess_UU()
+	{
+		return (String)get_Value(COLUMNNAME_PA_DocumentStatusAccess_UU);
 	}
 
 	public org.compiere.model.I_PA_DocumentStatus getPA_DocumentStatus() throws RuntimeException
@@ -135,56 +169,23 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 	}
 
 	/** Set Document Status.
-		@param PA_DocumentStatus_ID Document Status	  */
+		@param PA_DocumentStatus_ID Document Status
+	*/
 	public void setPA_DocumentStatus_ID (int PA_DocumentStatus_ID)
 	{
-		if (PA_DocumentStatus_ID < 1) 
+		if (PA_DocumentStatus_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatus_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatus_ID, Integer.valueOf(PA_DocumentStatus_ID));
 	}
 
 	/** Get Document Status.
 		@return Document Status	  */
-	public int getPA_DocumentStatus_ID () 
+	public int getPA_DocumentStatus_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DocumentStatus_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Document Status Access.
-		@param PA_DocumentStatusAccess_ID Document Status Access	  */
-	public void setPA_DocumentStatusAccess_ID (int PA_DocumentStatusAccess_ID)
-	{
-		if (PA_DocumentStatusAccess_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatusAccess_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_PA_DocumentStatusAccess_ID, Integer.valueOf(PA_DocumentStatusAccess_ID));
-	}
-
-	/** Get Document Status Access.
-		@return Document Status Access	  */
-	public int getPA_DocumentStatusAccess_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DocumentStatusAccess_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set PA_DocumentStatusAccess_UU.
-		@param PA_DocumentStatusAccess_UU PA_DocumentStatusAccess_UU	  */
-	public void setPA_DocumentStatusAccess_UU (String PA_DocumentStatusAccess_UU)
-	{
-		set_Value (COLUMNNAME_PA_DocumentStatusAccess_UU, PA_DocumentStatusAccess_UU);
-	}
-
-	/** Get PA_DocumentStatusAccess_UU.
-		@return PA_DocumentStatusAccess_UU	  */
-	public String getPA_DocumentStatusAccess_UU () 
-	{
-		return (String)get_Value(COLUMNNAME_PA_DocumentStatusAccess_UU);
 	}
 }

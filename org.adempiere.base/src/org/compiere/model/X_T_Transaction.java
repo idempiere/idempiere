@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_Transaction
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="T_Transaction")
 public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_T_Transaction (Properties ctx, int T_Transaction_ID, String trxName)
@@ -87,21 +87,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_Value (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -116,21 +115,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -145,21 +143,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Project Issue.
-		@param C_ProjectIssue_ID 
-		Project Issues (Material, Labor)
-	  */
+		@param C_ProjectIssue_ID Project Issues (Material, Labor)
+	*/
 	public void setC_ProjectIssue_ID (int C_ProjectIssue_ID)
 	{
-		if (C_ProjectIssue_ID < 1) 
+		if (C_ProjectIssue_ID < 1)
 			set_Value (COLUMNNAME_C_ProjectIssue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ProjectIssue_ID, Integer.valueOf(C_ProjectIssue_ID));
 	}
 
 	/** Get Project Issue.
 		@return Project Issues (Material, Labor)
 	  */
-	public int getC_ProjectIssue_ID () 
+	public int getC_ProjectIssue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectIssue_ID);
 		if (ii == null)
@@ -174,21 +171,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -203,21 +199,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Shipment/Receipt.
-		@param M_InOut_ID 
-		Material Shipment Document
-	  */
+		@param M_InOut_ID Material Shipment Document
+	*/
 	public void setM_InOut_ID (int M_InOut_ID)
 	{
-		if (M_InOut_ID < 1) 
+		if (M_InOut_ID < 1)
 			set_Value (COLUMNNAME_M_InOut_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InOut_ID, Integer.valueOf(M_InOut_ID));
 	}
 
 	/** Get Shipment/Receipt.
 		@return Material Shipment Document
 	  */
-	public int getM_InOut_ID () 
+	public int getM_InOut_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOut_ID);
 		if (ii == null)
@@ -232,21 +227,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_Value (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -261,21 +255,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Phys.Inventory.
-		@param M_Inventory_ID 
-		Parameters for a Physical Inventory
-	  */
+		@param M_Inventory_ID Parameters for a Physical Inventory
+	*/
 	public void setM_Inventory_ID (int M_Inventory_ID)
 	{
-		if (M_Inventory_ID < 1) 
+		if (M_Inventory_ID < 1)
 			set_Value (COLUMNNAME_M_Inventory_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Inventory_ID, Integer.valueOf(M_Inventory_ID));
 	}
 
 	/** Get Phys.Inventory.
 		@return Parameters for a Physical Inventory
 	  */
-	public int getM_Inventory_ID () 
+	public int getM_Inventory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Inventory_ID);
 		if (ii == null)
@@ -290,21 +283,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Phys.Inventory Line.
-		@param M_InventoryLine_ID 
-		Unique line in an Inventory document
-	  */
+		@param M_InventoryLine_ID Unique line in an Inventory document
+	*/
 	public void setM_InventoryLine_ID (int M_InventoryLine_ID)
 	{
-		if (M_InventoryLine_ID < 1) 
+		if (M_InventoryLine_ID < 1)
 			set_Value (COLUMNNAME_M_InventoryLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InventoryLine_ID, Integer.valueOf(M_InventoryLine_ID));
 	}
 
 	/** Get Phys.Inventory Line.
 		@return Unique line in an Inventory document
 	  */
-	public int getM_InventoryLine_ID () 
+	public int getM_InventoryLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InventoryLine_ID);
 		if (ii == null)
@@ -319,21 +311,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -348,21 +339,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Inventory Move.
-		@param M_Movement_ID 
-		Movement of Inventory
-	  */
+		@param M_Movement_ID Movement of Inventory
+	*/
 	public void setM_Movement_ID (int M_Movement_ID)
 	{
-		if (M_Movement_ID < 1) 
+		if (M_Movement_ID < 1)
 			set_Value (COLUMNNAME_M_Movement_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Movement_ID, Integer.valueOf(M_Movement_ID));
 	}
 
 	/** Get Inventory Move.
 		@return Movement of Inventory
 	  */
-	public int getM_Movement_ID () 
+	public int getM_Movement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Movement_ID);
 		if (ii == null)
@@ -377,21 +367,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Move Line.
-		@param M_MovementLine_ID 
-		Inventory Move document Line
-	  */
+		@param M_MovementLine_ID Inventory Move document Line
+	*/
 	public void setM_MovementLine_ID (int M_MovementLine_ID)
 	{
-		if (M_MovementLine_ID < 1) 
+		if (M_MovementLine_ID < 1)
 			set_Value (COLUMNNAME_M_MovementLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
 	}
 
 	/** Get Move Line.
 		@return Inventory Move document Line
 	  */
-	public int getM_MovementLine_ID () 
+	public int getM_MovementLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
 		if (ii == null)
@@ -400,9 +389,8 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Movement Date.
-		@param MovementDate 
-		Date a product was moved in or out of inventory
-	  */
+		@param MovementDate Date a product was moved in or out of inventory
+	*/
 	public void setMovementDate (Timestamp MovementDate)
 	{
 		set_Value (COLUMNNAME_MovementDate, MovementDate);
@@ -411,15 +399,14 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	/** Get Movement Date.
 		@return Date a product was moved in or out of inventory
 	  */
-	public Timestamp getMovementDate () 
+	public Timestamp getMovementDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
 	}
 
 	/** Set Movement Quantity.
-		@param MovementQty 
-		Quantity of a product moved.
-	  */
+		@param MovementQty Quantity of a product moved.
+	*/
 	public void setMovementQty (BigDecimal MovementQty)
 	{
 		set_Value (COLUMNNAME_MovementQty, MovementQty);
@@ -428,7 +415,7 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	/** Get Movement Quantity.
 		@return Quantity of a product moved.
 	  */
-	public BigDecimal getMovementQty () 
+	public BigDecimal getMovementQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
 		if (bd == null)
@@ -463,9 +450,8 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	/** Work Order - = W- */
 	public static final String MOVEMENTTYPE_WorkOrder_ = "W-";
 	/** Set Movement Type.
-		@param MovementType 
-		Method of moving the inventory
-	  */
+		@param MovementType Method of moving the inventory
+	*/
 	public void setMovementType (String MovementType)
 	{
 
@@ -475,7 +461,7 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	/** Get Movement Type.
 		@return Method of moving the inventory
 	  */
-	public String getMovementType () 
+	public String getMovementType()
 	{
 		return (String)get_Value(COLUMNNAME_MovementType);
 	}
@@ -487,21 +473,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -516,21 +501,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Production.
-		@param M_Production_ID 
-		Plan for producing a product
-	  */
+		@param M_Production_ID Plan for producing a product
+	*/
 	public void setM_Production_ID (int M_Production_ID)
 	{
-		if (M_Production_ID < 1) 
+		if (M_Production_ID < 1)
 			set_Value (COLUMNNAME_M_Production_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Production_ID, Integer.valueOf(M_Production_ID));
 	}
 
 	/** Get Production.
 		@return Plan for producing a product
 	  */
-	public int getM_Production_ID () 
+	public int getM_Production_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Production_ID);
 		if (ii == null)
@@ -545,21 +529,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Production Line.
-		@param M_ProductionLine_ID 
-		Document Line representing a production
-	  */
+		@param M_ProductionLine_ID Document Line representing a production
+	*/
 	public void setM_ProductionLine_ID (int M_ProductionLine_ID)
 	{
-		if (M_ProductionLine_ID < 1) 
+		if (M_ProductionLine_ID < 1)
 			set_Value (COLUMNNAME_M_ProductionLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductionLine_ID, Integer.valueOf(M_ProductionLine_ID));
 	}
 
 	/** Get Production Line.
 		@return Document Line representing a production
 	  */
-	public int getM_ProductionLine_ID () 
+	public int getM_ProductionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductionLine_ID);
 		if (ii == null)
@@ -574,18 +557,19 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Inventory Transaction.
-		@param M_Transaction_ID Inventory Transaction	  */
+		@param M_Transaction_ID Inventory Transaction
+	*/
 	public void setM_Transaction_ID (int M_Transaction_ID)
 	{
-		if (M_Transaction_ID < 1) 
+		if (M_Transaction_ID < 1)
 			set_Value (COLUMNNAME_M_Transaction_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Transaction_ID, Integer.valueOf(M_Transaction_ID));
 	}
 
 	/** Get Inventory Transaction.
 		@return Inventory Transaction	  */
-	public int getM_Transaction_ID () 
+	public int getM_Transaction_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Transaction_ID);
 		if (ii == null)
@@ -600,21 +584,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Search Shipment/Receipt.
-		@param Search_InOut_ID 
-		Material Shipment Document
-	  */
+		@param Search_InOut_ID Material Shipment Document
+	*/
 	public void setSearch_InOut_ID (int Search_InOut_ID)
 	{
-		if (Search_InOut_ID < 1) 
+		if (Search_InOut_ID < 1)
 			set_Value (COLUMNNAME_Search_InOut_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Search_InOut_ID, Integer.valueOf(Search_InOut_ID));
 	}
 
 	/** Get Search Shipment/Receipt.
 		@return Material Shipment Document
 	  */
-	public int getSearch_InOut_ID () 
+	public int getSearch_InOut_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Search_InOut_ID);
 		if (ii == null)
@@ -629,21 +612,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Search Invoice.
-		@param Search_Invoice_ID 
-		Search Invoice Identifier
-	  */
+		@param Search_Invoice_ID Search Invoice Identifier
+	*/
 	public void setSearch_Invoice_ID (int Search_Invoice_ID)
 	{
-		if (Search_Invoice_ID < 1) 
+		if (Search_Invoice_ID < 1)
 			set_Value (COLUMNNAME_Search_Invoice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Search_Invoice_ID, Integer.valueOf(Search_Invoice_ID));
 	}
 
 	/** Get Search Invoice.
 		@return Search Invoice Identifier
 	  */
-	public int getSearch_Invoice_ID () 
+	public int getSearch_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Search_Invoice_ID);
 		if (ii == null)
@@ -658,21 +640,20 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set Search Order.
-		@param Search_Order_ID 
-		Order Identifier
-	  */
+		@param Search_Order_ID Order Identifier
+	*/
 	public void setSearch_Order_ID (int Search_Order_ID)
 	{
-		if (Search_Order_ID < 1) 
+		if (Search_Order_ID < 1)
 			set_Value (COLUMNNAME_Search_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Search_Order_ID, Integer.valueOf(Search_Order_ID));
 	}
 
 	/** Get Search Order.
 		@return Order Identifier
 	  */
-	public int getSearch_Order_ID () 
+	public int getSearch_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Search_Order_ID);
 		if (ii == null)
@@ -681,7 +662,8 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	}
 
 	/** Set T_Transaction_UU.
-		@param T_Transaction_UU T_Transaction_UU	  */
+		@param T_Transaction_UU T_Transaction_UU
+	*/
 	public void setT_Transaction_UU (String T_Transaction_UU)
 	{
 		set_Value (COLUMNNAME_T_Transaction_UU, T_Transaction_UU);
@@ -689,7 +671,7 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 
 	/** Get T_Transaction_UU.
 		@return T_Transaction_UU	  */
-	public String getT_Transaction_UU () 
+	public String getT_Transaction_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_Transaction_UU);
 	}

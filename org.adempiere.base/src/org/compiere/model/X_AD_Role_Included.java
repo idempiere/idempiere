@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Role_Included
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Role_Included")
 public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Role_Included (Properties ctx, int AD_Role_Included_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -103,7 +102,8 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	}
 
 	/** Set AD_Role_Included_UU.
-		@param AD_Role_Included_UU AD_Role_Included_UU	  */
+		@param AD_Role_Included_UU AD_Role_Included_UU
+	*/
 	public void setAD_Role_Included_UU (String AD_Role_Included_UU)
 	{
 		set_Value (COLUMNNAME_AD_Role_Included_UU, AD_Role_Included_UU);
@@ -111,7 +111,7 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 
 	/** Get AD_Role_Included_UU.
 		@return AD_Role_Included_UU	  */
-	public String getAD_Role_Included_UU () 
+	public String getAD_Role_Included_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Role_Included_UU);
 	}
@@ -123,18 +123,19 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	}
 
 	/** Set Included Role.
-		@param Included_Role_ID Included Role	  */
+		@param Included_Role_ID Included Role
+	*/
 	public void setIncluded_Role_ID (int Included_Role_ID)
 	{
-		if (Included_Role_ID < 1) 
+		if (Included_Role_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Included_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Included_Role_ID, Integer.valueOf(Included_Role_ID));
 	}
 
 	/** Get Included Role.
 		@return Included Role	  */
-	public int getIncluded_Role_ID () 
+	public int getIncluded_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Included_Role_ID);
 		if (ii == null)
@@ -143,9 +144,8 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -154,7 +154,7 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

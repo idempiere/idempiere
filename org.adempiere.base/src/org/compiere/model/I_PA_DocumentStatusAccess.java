@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DocumentStatusAccess
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 public interface I_PA_DocumentStatusAccess 
 {
@@ -121,17 +121,6 @@ public interface I_PA_DocumentStatusAccess
 	  */
 	public boolean isActive();
 
-    /** Column name PA_DocumentStatus_ID */
-    public static final String COLUMNNAME_PA_DocumentStatus_ID = "PA_DocumentStatus_ID";
-
-	/** Set Document Status	  */
-	public void setPA_DocumentStatus_ID (int PA_DocumentStatus_ID);
-
-	/** Get Document Status	  */
-	public int getPA_DocumentStatus_ID();
-
-	public org.compiere.model.I_PA_DocumentStatus getPA_DocumentStatus() throws RuntimeException;
-
     /** Column name PA_DocumentStatusAccess_ID */
     public static final String COLUMNNAME_PA_DocumentStatusAccess_ID = "PA_DocumentStatusAccess_ID";
 
@@ -149,6 +138,17 @@ public interface I_PA_DocumentStatusAccess
 
 	/** Get PA_DocumentStatusAccess_UU	  */
 	public String getPA_DocumentStatusAccess_UU();
+
+    /** Column name PA_DocumentStatus_ID */
+    public static final String COLUMNNAME_PA_DocumentStatus_ID = "PA_DocumentStatus_ID";
+
+	/** Set Document Status	  */
+	public void setPA_DocumentStatus_ID (int PA_DocumentStatus_ID);
+
+	/** Get Document Status	  */
+	public int getPA_DocumentStatus_ID();
+
+	public org.compiere.model.I_PA_DocumentStatus getPA_DocumentStatus() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

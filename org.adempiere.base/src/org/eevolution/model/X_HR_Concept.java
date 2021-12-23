@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="HR_Concept")
 public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_HR_Concept (Properties ctx, int HR_Concept_ID, String trxName)
@@ -85,9 +85,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Natural = N */
 	public static final String ACCOUNTSIGN_Natural = "N";
 	/** Set Account Sign.
-		@param AccountSign 
-		Indicates the Natural Sign of the Account as a Debit or Credit
-	  */
+		@param AccountSign Indicates the Natural Sign of the Account as a Debit or Credit
+	*/
 	public void setAccountSign (String AccountSign)
 	{
 
@@ -97,7 +96,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Account Sign.
 		@return Indicates the Natural Sign of the Account as a Debit or Credit
 	  */
-	public String getAccountSign () 
+	public String getAccountSign()
 	{
 		return (String)get_Value(COLUMNNAME_AccountSign);
 	}
@@ -109,21 +108,20 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -142,7 +140,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Text = T */
 	public static final String COLUMNTYPE_Text = "T";
 	/** Set Column Type.
-		@param ColumnType Column Type	  */
+		@param ColumnType Column Type
+	*/
 	public void setColumnType (String ColumnType)
 	{
 
@@ -151,15 +150,14 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 
 	/** Get Column Type.
 		@return Column Type	  */
-	public String getColumnType () 
+	public String getColumnType()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -168,7 +166,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -180,18 +178,19 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Payroll Concept Category.
-		@param HR_Concept_Category_ID Payroll Concept Category	  */
+		@param HR_Concept_Category_ID Payroll Concept Category
+	*/
 	public void setHR_Concept_Category_ID (int HR_Concept_Category_ID)
 	{
-		if (HR_Concept_Category_ID < 1) 
+		if (HR_Concept_Category_ID < 1)
 			set_Value (COLUMNNAME_HR_Concept_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Concept_Category_ID, Integer.valueOf(HR_Concept_Category_ID));
 	}
 
 	/** Get Payroll Concept Category.
 		@return Payroll Concept Category	  */
-	public int getHR_Concept_Category_ID () 
+	public int getHR_Concept_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Concept_Category_ID);
 		if (ii == null)
@@ -200,18 +199,19 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Payroll Concept.
-		@param HR_Concept_ID Payroll Concept	  */
+		@param HR_Concept_ID Payroll Concept
+	*/
 	public void setHR_Concept_ID (int HR_Concept_ID)
 	{
-		if (HR_Concept_ID < 1) 
+		if (HR_Concept_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Concept_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Concept_ID, Integer.valueOf(HR_Concept_ID));
 	}
 
 	/** Get Payroll Concept.
 		@return Payroll Concept	  */
-	public int getHR_Concept_ID () 
+	public int getHR_Concept_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Concept_ID);
 		if (ii == null)
@@ -220,7 +220,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set HR_Concept_UU.
-		@param HR_Concept_UU HR_Concept_UU	  */
+		@param HR_Concept_UU HR_Concept_UU
+	*/
 	public void setHR_Concept_UU (String HR_Concept_UU)
 	{
 		set_Value (COLUMNNAME_HR_Concept_UU, HR_Concept_UU);
@@ -228,7 +229,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 
 	/** Get HR_Concept_UU.
 		@return HR_Concept_UU	  */
-	public String getHR_Concept_UU () 
+	public String getHR_Concept_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Concept_UU);
 	}
@@ -240,18 +241,19 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
+		@param HR_Department_ID Payroll Department
+	*/
 	public void setHR_Department_ID (int HR_Department_ID)
 	{
-		if (HR_Department_ID < 1) 
+		if (HR_Department_ID < 1)
 			set_Value (COLUMNNAME_HR_Department_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
 	}
 
 	/** Get Payroll Department.
 		@return Payroll Department	  */
-	public int getHR_Department_ID () 
+	public int getHR_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
 		if (ii == null)
@@ -266,18 +268,19 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Payroll Job.
-		@param HR_Job_ID Payroll Job	  */
+		@param HR_Job_ID Payroll Job
+	*/
 	public void setHR_Job_ID (int HR_Job_ID)
 	{
-		if (HR_Job_ID < 1) 
+		if (HR_Job_ID < 1)
 			set_Value (COLUMNNAME_HR_Job_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Job_ID, Integer.valueOf(HR_Job_ID));
 	}
 
 	/** Get Payroll Job.
 		@return Payroll Job	  */
-	public int getHR_Job_ID () 
+	public int getHR_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Job_ID);
 		if (ii == null)
@@ -292,18 +295,19 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_Value (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -312,9 +316,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -323,7 +326,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -336,9 +339,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Employee.
-		@param IsEmployee 
-		Indicates if  this Business Partner is an employee
-	  */
+		@param IsEmployee Indicates if  this Business Partner is an employee
+	*/
 	public void setIsEmployee (boolean IsEmployee)
 	{
 		set_Value (COLUMNNAME_IsEmployee, Boolean.valueOf(IsEmployee));
@@ -347,7 +349,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Employee.
 		@return Indicates if  this Business Partner is an employee
 	  */
-	public boolean isEmployee () 
+	public boolean isEmployee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmployee);
 		if (oo != null) 
@@ -360,9 +362,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Paid.
-		@param IsPaid 
-		The document is paid
-	  */
+		@param IsPaid The document is paid
+	*/
 	public void setIsPaid (boolean IsPaid)
 	{
 		set_Value (COLUMNNAME_IsPaid, Boolean.valueOf(IsPaid));
@@ -371,7 +372,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Paid.
 		@return The document is paid
 	  */
-	public boolean isPaid () 
+	public boolean isPaid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPaid);
 		if (oo != null) 
@@ -384,9 +385,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Printed.
-		@param IsPrinted 
-		Indicates if this document / line is printed
-	  */
+		@param IsPrinted Indicates if this document / line is printed
+	*/
 	public void setIsPrinted (boolean IsPrinted)
 	{
 		set_Value (COLUMNNAME_IsPrinted, Boolean.valueOf(IsPrinted));
@@ -395,7 +395,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Printed.
 		@return Indicates if this document / line is printed
 	  */
-	public boolean isPrinted () 
+	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
 		if (oo != null) 
@@ -408,9 +408,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Read Write.
-		@param IsReadWrite 
-		Field is read / write
-	  */
+		@param IsReadWrite Field is read / write
+	*/
 	public void setIsReadWrite (boolean IsReadWrite)
 	{
 		set_Value (COLUMNNAME_IsReadWrite, Boolean.valueOf(IsReadWrite));
@@ -419,7 +418,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Read Write.
 		@return Field is read / write
 	  */
-	public boolean isReadWrite () 
+	public boolean isReadWrite()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadWrite);
 		if (oo != null) 
@@ -432,9 +431,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Receipt.
-		@param IsReceipt 
-		This is a sales transaction (receipt)
-	  */
+		@param IsReceipt This is a sales transaction (receipt)
+	*/
 	public void setIsReceipt (boolean IsReceipt)
 	{
 		set_Value (COLUMNNAME_IsReceipt, Boolean.valueOf(IsReceipt));
@@ -443,7 +441,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Receipt.
 		@return This is a sales transaction (receipt)
 	  */
-	public boolean isReceipt () 
+	public boolean isReceipt()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReceipt);
 		if (oo != null) 
@@ -456,9 +454,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Registered.
-		@param IsRegistered 
-		The application is registered.
-	  */
+		@param IsRegistered The application is registered.
+	*/
 	public void setIsRegistered (boolean IsRegistered)
 	{
 		set_Value (COLUMNNAME_IsRegistered, Boolean.valueOf(IsRegistered));
@@ -467,7 +464,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Registered.
 		@return The application is registered.
 	  */
-	public boolean isRegistered () 
+	public boolean isRegistered()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRegistered);
 		if (oo != null) 
@@ -480,9 +477,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -491,15 +487,14 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -508,7 +503,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -527,9 +522,8 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Reference = R */
 	public static final String TYPE_Reference = "R";
 	/** Set Type.
-		@param Type 
-		Type of Validation (SQL, Java Script, Java Language)
-	  */
+		@param Type Type of Validation (SQL, Java Script, Java Language)
+	*/
 	public void setType (String Type)
 	{
 
@@ -539,15 +533,14 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Type.
 		@return Type of Validation (SQL, Java Script, Java Language)
 	  */
-	public String getType () 
+	public String getType()
 	{
 		return (String)get_Value(COLUMNNAME_Type);
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -556,15 +549,14 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -573,15 +565,14 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -590,7 +581,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

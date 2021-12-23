@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservation
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservation")
 public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_StorageReservation (Properties ctx, int M_StorageReservation_ID, String trxName)
@@ -79,9 +79,8 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
     }
 
 	/** Set Date last inventory count.
-		@param DateLastInventory 
-		Date of Last Inventory Count
-	  */
+		@param DateLastInventory Date of Last Inventory Count
+	*/
 	public void setDateLastInventory (Timestamp DateLastInventory)
 	{
 		set_Value (COLUMNNAME_DateLastInventory, DateLastInventory);
@@ -90,15 +89,14 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	/** Get Date last inventory count.
 		@return Date of Last Inventory Count
 	  */
-	public Timestamp getDateLastInventory () 
+	public Timestamp getDateLastInventory()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastInventory);
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -107,7 +105,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -126,21 +124,20 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -155,21 +152,20 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -178,7 +174,8 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	}
 
 	/** Set M_StorageReservation_UU.
-		@param M_StorageReservation_UU M_StorageReservation_UU	  */
+		@param M_StorageReservation_UU M_StorageReservation_UU
+	*/
 	public void setM_StorageReservation_UU (String M_StorageReservation_UU)
 	{
 		set_Value (COLUMNNAME_M_StorageReservation_UU, M_StorageReservation_UU);
@@ -186,7 +183,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 
 	/** Get M_StorageReservation_UU.
 		@return M_StorageReservation_UU	  */
-	public String getM_StorageReservation_UU () 
+	public String getM_StorageReservation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_StorageReservation_UU);
 	}
@@ -198,21 +195,20 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -221,9 +217,8 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_ValueNoCheck (COLUMNNAME_Qty, Qty);
@@ -232,7 +227,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
