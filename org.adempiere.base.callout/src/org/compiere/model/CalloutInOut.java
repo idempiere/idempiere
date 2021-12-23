@@ -191,7 +191,6 @@ public class CalloutInOut extends CalloutEngine
 			if (rs.next())
 			{
 				//	Set Movement Type
-				String DocBaseType = rs.getString("DocBaseType");
 				// BF [2708789] Read IsSOTrx from C_DocType
 				String trxFlag = rs.getString("IsSOTrx");
 				Object isSOTrxValue = mTab.getValue("IsSOTrx");
