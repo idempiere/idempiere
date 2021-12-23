@@ -32,9 +32,7 @@ public interface IADTabpanel extends Component, Evaluatee {
 
 	/**
 	 * @param winPanel
-	 * @param windowNo
 	 * @param gridTab
-	 * @param gridWindow
 	 */
 	public void init(AbstractADWindowContent winPanel, GridTab gridTab);
 

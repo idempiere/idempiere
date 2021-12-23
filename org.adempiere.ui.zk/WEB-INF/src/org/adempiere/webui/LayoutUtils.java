@@ -288,8 +288,8 @@ public final class LayoutUtils {
 	 * @param window 
 	 * @param childOfOwn  
 	 * @param ownModel
-	 * @return when show success return IMask object, it is own window, use {@link ISupportMask#hideMask()} to hiden mask. 
-	 * other return null. with case return null (show over childOfOwn or parent of childOfOwn but childOfOwn or parent of childOfOwn isn't implement {@link ISupportMask}), please consider use {@link #showOverlapWithMask(Component, Component)}  
+	 * @return when show success return IMask object, it is own window, use {@link ISupportMask#hideMask()} to hidden mask. 
+	 * other return null.  
 	 */
 	public static ISupportMask showWindowWithMask(Window window, Component childOfOwn, int ownModel){
 		ISupportMask ownWindow = null;
@@ -316,7 +316,7 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * Show window in center of component get from {@link}
+	 * Show window in center of component
 	 * @param window
 	 * @param mask
 	 */
@@ -355,7 +355,7 @@ public final class LayoutUtils {
 	 * find parent control of child control, parent must implement {@link ISupportMask}
 	 * if parentClass != null, parent class must extends parentClass
 	 * @param child
-	 * @param ownModel
+	 * @param parentClass
 	 * @return
 	 */
 	public static ISupportMask findMaskParent (Component child, Class<?> parentClass){

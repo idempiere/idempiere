@@ -60,7 +60,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 	 *	@param M_Locator_ID wh
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID asi
-	 *	@param excludeC_OrderLine_ID exclude C_OrderLine_ID
+	 *	@param excludeDD_OrderLine_ID exclude DD_OrderLine_ID
 	 *	@return Unreserved Qty
 	 */
 	public static BigDecimal getNotReserved (Properties ctx, int M_Locator_ID, 

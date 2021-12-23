@@ -336,7 +336,6 @@ public class CacheMgt
 	 * 	Reset local Cache
 	 * 	@param tableName table name
 	 * 	@param Record_ID record if applicable or 0 for all
-	 * 	@return number of deleted cache entries
 	 */
 	protected void localNewRecord (String tableName, int Record_ID)
 	{

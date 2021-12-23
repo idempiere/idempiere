@@ -36,11 +36,11 @@ import org.compiere.util.Env;
  *  @author Armen Rizal, Goodwill Consulting
  *  	<li>BF: 2431123 Return Trx changes weighted average cost
  *  	<li>BF: 1568752 Average invoice costing: landed costs incorrectly applied
- *  @author Armen Rizal & Bayu Cahya
+ *  @author Armen Rizal and Bayu Cahya
  *  	<li>BF [ 2129781 ] Cost Detail not created properly for multi acc schema
  *  @author Teo Sarca
- *  	<li>BF [ 2847648 ] Manufacture & shipment cost errors
- *  		https://sourceforge.net/tracker/?func=detail&aid=2847648&group_id=176962&atid=934929
+ *  	<li>BF [ 2847648 ] Manufacture and shipment cost errors
+ *  		https://sourceforge.net/p/adempiere/libero/237/
  * 	@author red1 FR: [ 2214883 ] Remove SQL code and Replace for Query
  *  @version $Id: MCostDetail.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  *  

@@ -42,11 +42,10 @@ public class MWizardProcess extends X_AD_WizardProcess {
 	
 	/**
 	 * Get the wizard notes for a node in the context client
-	 *
 	 * @param ctx
 	 * @param AD_WF_Node_ID
 	 * @param AD_Client_ID
-	 * @param trxName
+	 * @return
 	 */
 	public static MWizardProcess get(Properties ctx, int AD_WF_Node_ID, int AD_Client_ID) {
 		Query query = new Query(ctx, Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID=?", null);

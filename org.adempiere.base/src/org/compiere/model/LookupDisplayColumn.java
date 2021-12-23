@@ -29,7 +29,7 @@ import org.compiere.util.Util;
  * 
  * @author Teo Sarca
  * 		<li>BF [ 2933367 ] Virtual Column Identifiers are not working
- * 			https://sourceforge.net/tracker/?func=detail&aid=2933367&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2291/
  */
 public class LookupDisplayColumn implements Serializable
 {

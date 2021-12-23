@@ -50,12 +50,13 @@ public class IDFinder {
 
 	/**
 	 * Get ID from column value for a table.
-	 *
 	 * @param tableName
-	 * @param columName
+	 * @param columnName
 	 * @param value
 	 * @param AD_Client_ID
+	 * @param ignorecase
 	 * @param trxName
+	 * @return
 	 */
 	public static int findIdByColumn (String tableName, String columnName, Object value, int AD_Client_ID, boolean ignorecase, String trxName) {
 		if (value == null)
@@ -247,13 +248,15 @@ public class IDFinder {
 	/**
      * Get ID from column value for a table with a parent id reference.
      *
-     * @param tableName
-     * @param name
-     * @param tableNameMaster
-     * @param masterID
-     * @param trx
-     */
-
+	 * @param tableName
+	 * @param columnName
+	 * @param name
+	 * @param tableNameMaster
+	 * @param masterID
+	 * @param AD_Client_ID
+	 * @param trxName
+	 * @return
+	 */
 	public static int findIdByColumnAndParentId (String tableName, String columnName, String name, String tableNameMaster, int masterID, int AD_Client_ID, String trxName) {
 		return findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, AD_Client_ID, false, trxName);
 	}

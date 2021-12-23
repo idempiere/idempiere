@@ -66,8 +66,7 @@ public abstract class PaymentProcessor
 	public static final char	EQ = '=';
 
 	/**
-	 *
-	 * @param mpp
+	 * @param mbap
 	 * @param mp
 	 */
 	public void initialize(MBankAccountProcessor mbap, PaymentInterface mp)
@@ -78,8 +77,8 @@ public abstract class PaymentProcessor
 
 	/**
 	 *  Factory
-	 * 	@param mpp payment processor model
-	 * 	@param mp payment model
+	 *  @param mbap
+	 *  @param mp
 	 *  @return initialized PaymentProcessor or null
 	 */
 	public static PaymentProcessor create (MBankAccountProcessor mbap, PaymentInterface mp)
@@ -179,7 +178,7 @@ public abstract class PaymentProcessor
 
 
 	/**************************************************************************
-	 *  Check for delimiter fields &= and add length of not encoded
+	 *  Check for delimiter fields &amp;= and add length of not encoded
 	 *  @param name name
 	 *  @param value value
 	 *  @param maxLength maximum length
@@ -198,7 +197,7 @@ public abstract class PaymentProcessor
 	}	//	createPair
 
 	/**
-	 *  Check for delimiter fields &= and add length of not encoded
+	 *  Check for delimiter fields &amp;= and add length of not encoded
 	 *  @param name name
 	 *  @param value value
 	 *  @param maxLength maximum length
@@ -213,7 +212,7 @@ public abstract class PaymentProcessor
 	}	//	createPair
 
 	/**
-	 *  Check for delimiter fields &= and add length of not encoded
+	 *  Check for delimiter fields &amp;= and add length of not encoded
 	 *  @param name name
 	 *  @param value value
 	 *  @param maxLength maximum length

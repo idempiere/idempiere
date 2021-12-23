@@ -50,12 +50,12 @@ import org.compiere.util.Ini;
  *  
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>BF [ 2782095 ] Do not log *Access records
- *  			https://sourceforge.net/tracker/?func=detail&aid=2782095&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/1867/
  *  		<li>TODO: BF [ 2782611 ] Migration scripts are not UTF8
- *  			https://sourceforge.net/tracker/?func=detail&aid=2782611&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/1869/
  *  @author Teo Sarca
  *  		<li>BF [ 3137355 ] PG query not valid when contains quotes and backslashes
- *  			https://sourceforge.net/tracker/?func=detail&aid=3137355&group_id=176962&atid=879332	
+ *  			https://sourceforge.net/p/adempiere/bugs/2560/	
  */
 public abstract class Convert
 {
@@ -289,8 +289,10 @@ public abstract class Convert
 	
 	/**
 	 * Utility method to replace quoted string with a predefined marker
-	 * @param retValue
+
+	 * @param inputValue
 	 * @param retVars
+	 * @param nonce
 	 * @return string
 	 */
 	protected String replaceQuotedStrings(String inputValue, Vector<String>retVars, String nonce) {

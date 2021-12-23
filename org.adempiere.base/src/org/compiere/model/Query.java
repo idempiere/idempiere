@@ -49,9 +49,9 @@ import org.compiere.util.Util;
  * 			<li>FR [ 2546052 ] Introduce Query aggregate methods
  * 			<li>FR [ 2726447 ] Query aggregate methods for all return types
  * 			<li>FR [ 2818547 ] Implement Query.setOnlySelection
- * 				https://sourceforge.net/tracker/?func=detail&aid=2818547&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/759/
  * 			<li>FR [ 2818646 ] Implement Query.firstId/firstIdOnly
- * 				https://sourceforge.net/tracker/?func=detail&aid=2818646&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/760/
  * @author Redhuan D. Oon
  * 			<li>FR: [ 2214883 ] Remove SQL code and Replace for Query // introducing SQL String prompt in log.info 
  *			<li>FR: [ 2214883 ] - to introduce .setClient_ID
@@ -188,7 +188,9 @@ public class Query
 
 	/**
 	 * Turn on data access filter with controls
-	 * @param flag
+	 * @param fullyQualified
+	 * @param RW
+	 * @return
 	 */
 	public Query setApplyAccessFilter(boolean fullyQualified, boolean RW)
 	{

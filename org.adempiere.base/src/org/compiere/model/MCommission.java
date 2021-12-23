@@ -30,7 +30,7 @@ import org.compiere.util.Msg;
  *	
  *  @author Jorg Janke
  *  @version $Id: MCommission.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
- *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867477 ] http://sourceforge.net/tracker/index.php?func=detail&aid=1867477&group_id=176962&atid=879332
+ *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867477 ] https://sourceforge.net/p/adempiere/bugs/924/
  *	FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
  */
 public class MCommission extends X_C_Commission

@@ -145,7 +145,7 @@ public class PrintDataElement implements Serializable
 
 	/**
 	 * 	Set ForeignName
-	 * 	@return name
+	 * @param foreignColumnName
 	 */
 	public void setForeignColumnName(String foreignColumnName) {
 		m_foreignColumnName = foreignColumnName;

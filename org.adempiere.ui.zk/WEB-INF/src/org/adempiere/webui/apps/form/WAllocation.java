@@ -94,8 +94,6 @@ public class WAllocation extends Allocation
 	
 	/**
 	 *	Initialize Panel
-	 *  @param WindowNo window
-	 *  @param frame frame
 	 */
 	public WAllocation()
 	{

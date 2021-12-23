@@ -74,9 +74,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 	/**
 	 *  Factory
+	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
-	 *  @return ValuePreference or null
 	 */
 	public static void start (Component ref, GridField mField, Object aValue)
 	{
@@ -90,10 +90,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 	/**
 	 *  Factory
+	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
 	 *  @param aDisplayValue	display value
-	 *  @return ValuePreference or null
 	 */
 	public static void start (Component ref, GridField mField, Object aValue, String aDisplayValue)
 	{

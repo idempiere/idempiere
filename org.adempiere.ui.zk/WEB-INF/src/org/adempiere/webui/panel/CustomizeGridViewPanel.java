@@ -88,9 +88,11 @@ public class CustomizeGridViewPanel extends Panel
 	/**
 	 *	Sort Tab Constructor
 	 *
-	 *  @param WindowNo Window No
-	 * @param columnsWidth 
-	 *  @param GridTab
+	 * @param WindowNo Window No
+	 * @param AD_Tab_ID
+	 * @param AD_User_ID
+	 * @param columnsWidth
+	 * @param gridFieldIds
 	 */
 	public CustomizeGridViewPanel(int WindowNo, int AD_Tab_ID, int AD_User_ID, Map<Integer, String> columnsWidth,ArrayList<Integer> gridFieldIds)
 	{

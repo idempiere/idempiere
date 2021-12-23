@@ -69,9 +69,10 @@ public class MOrderLandedCostAllocation extends X_C_OrderLandedCostAllocation {
 	}	//	setAmt
 	
 	/**
-	 * 	Get Lines of allocation
-	 * 	@param whereClause starting with AND
-	 * 	@return lines
+	 * Get Lines of allocation
+	 * @param C_OrderLine_ID
+	 * @param trxName
+	 * @return lines
 	 */
 	public static MOrderLandedCostAllocation[] getOfOrderLine(int C_OrderLine_ID, String trxName)
 	{

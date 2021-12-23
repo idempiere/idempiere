@@ -78,7 +78,7 @@ public class MLdapUser
 	
 	/**
 	 * Set the user id
-	 * @param passwd User id string
+	 * @param userId User id string
 	 */
 	public void setUserId(String userId)
 	{

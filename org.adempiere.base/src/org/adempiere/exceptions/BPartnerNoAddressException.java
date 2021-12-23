@@ -28,7 +28,6 @@ public class BPartnerNoAddressException extends BPartnerException
 	public static final String AD_Message = "BPartnerNoAddress";
 
 	/**
-	 * @param message
 	 * @param bp
 	 */
 	public BPartnerNoAddressException(I_C_BPartner bp)

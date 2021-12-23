@@ -31,7 +31,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @version $Id: MDiscountSchemaBreak.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  * 
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
- * 			<li>BF [ 2012439 ] DiscountSchemaBreak: setting product & category is allowed
+ * 			<li>BF [ 2012439 ] DiscountSchemaBreak: setting product and category is allowed
  */
 public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements ImmutablePOSupport
 {

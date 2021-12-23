@@ -38,7 +38,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * 	Invoice Not realized Gain & Loss.
+ * 	Invoice Not realized Gain and Loss.
  * 	The actual data shown is T_InvoiceGL_v
  *  @author Jorg Janke
  *  @version $Id: InvoiceNGL.java,v 1.3 2006/08/04 03:53:59 jjanke Exp $

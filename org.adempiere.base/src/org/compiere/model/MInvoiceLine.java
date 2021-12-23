@@ -44,7 +44,7 @@ import org.compiere.util.Msg;
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2804142 ] MInvoice.setRMALine should work only for CreditMemo invoices
- * 				https://sourceforge.net/tracker/?func=detail&aid=2804142&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/1937/
  * @author red1 FR: [ 2214883 ] Remove SQL code and Replace for Query
  */
 public class MInvoiceLine extends X_C_InvoiceLine
@@ -928,7 +928,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 * @param oldTax true if the old C_Tax_ID should be used
 	 * @return true if success, false otherwise
 	 *
-	 * @author teo_sarca [ 1583825 ]
+	 * author teo_sarca [ 1583825 ]
 	 */
 	protected boolean updateInvoiceTax(boolean oldTax) {
 		MInvoiceTax tax = MInvoiceTax.get (this, getPrecision(), oldTax, get_TrxName());
@@ -983,7 +983,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	}	//	afterDelete
 
 	/**
-	 *	Update Tax & Header
+	 *	Update Tax and Header
 	 *	@return true if header updated with tax
 	 */
 	public boolean updateHeaderTax()
@@ -1319,7 +1319,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	// end MZ
 
 	/**
-	 * @param rmaline
+	 * @param rmaLine
 	 */
 	public void setRMALine(MRMALine rmaLine)
 	{

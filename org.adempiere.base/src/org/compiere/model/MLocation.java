@@ -44,7 +44,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 
  * @author Teo Sarca, teo.sarca@gmail.com
  * 		<li>BF [ 3002736 ] MLocation.get cache all MLocations
- * 			https://sourceforge.net/tracker/?func=detail&aid=3002736&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2404/
  */
 public class MLocation extends X_C_Location implements Comparator<Object>, ImmutablePOSupport
 {
@@ -797,7 +797,6 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 
 	/**
 	 * 	Get edited Value (MLocation) for GoogleMaps / IDEMPIERE-147
-	 *  @param MLocation location
 	 *	@return String address
 	 */
 	public String getMapsLocation() {

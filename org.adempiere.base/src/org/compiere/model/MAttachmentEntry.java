@@ -63,10 +63,9 @@ public class MAttachmentEntry
 	
 	/**
 	 * Constructor for delayed load
-	 * @param parent
 	 * @param name
 	 * @param index
-	 * @param lazy data source
+	 * @param ds lazy data source
 	 */
 	public MAttachmentEntry (String name, int index, IAttachmentLazyDataSource ds) {
 		super ();
@@ -339,7 +338,7 @@ public class MAttachmentEntry
 
 	/**
 	 * Set the lazy data source
-	 * @param obj
+	 * @param ds
 	 */
 	public void setLazyDataSource(IAttachmentLazyDataSource ds) {
 		m_ds = ds;

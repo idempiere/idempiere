@@ -60,7 +60,7 @@ import org.compiere.util.Util;
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  *			<li> Original contributor of Distribution Functionality
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/ 
  */
 public class MDDOrder extends X_DD_Order implements DocAction
 {
@@ -257,7 +257,7 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	}	//	setShip_User_ID
 
 	/**
-	 * 	Set Business Partner Defaults & Details.
+	 * 	Set Business Partner Defaults and Details.
 	 * 	SOTrx should be set.
 	 * 	@param bp business partner
 	 */
@@ -841,7 +841,6 @@ public class MDDOrder extends X_DD_Order implements DocAction
 	 * 	Reserve Inventory. 
 	 * 	Counterpart: MMovement.completeIt()
 	 * 	@param lines distribution order lines (ordered by M_Product_ID for deadlock prevention)
-	 * 	@return true if (un) reserved
 	 */
 	public void reserveStock (MDDOrderLine[] lines)
 	{

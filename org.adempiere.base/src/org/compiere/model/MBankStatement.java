@@ -36,14 +36,14 @@ import org.compiere.util.Msg;
 *  @author Eldir Tomassen/Jorg Janke
 *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
 *   <li> BF [ 1933645 ] Wrong balance Bank Statement
-*   @see http://sourceforge.net/tracker/?func=detail&atid=879332&aid=1933645&group_id=176962
+*   @see https://sourceforge.net/p/adempiere/bugs/1145/
 * 	<li> FR [ 2520591 ] Support multiples calendar for Org 
-*	@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+*	@see https://sourceforge.net/p/adempiere/feature-requests/631/
 * 	<li> BF [ 2824951 ] The payments is not release when Bank Statement is void 
-*	@see http://sourceforge.net/tracker/?func=detail&aid=2824951&group_id=176962&atid=879332
+*	@see https://sourceforge.net/p/adempiere/bugs/1990/
 *  @author Teo Sarca, http://www.arhipac.ro
 * 	<li>FR [ 2616330 ] Use MPeriod.testPeriodOpen instead of isOpen
-* 		https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2616330&group_id=176962
+* 		https://sourceforge.net/p/adempiere/feature-requests/666/
 *  
 *   @version $Id: MBankStatement.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
 */

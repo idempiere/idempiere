@@ -118,7 +118,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 * @param AD_InfoWindow_ID
 	 * @return {@link MInfoWindow}
 	 */
@@ -142,11 +142,6 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return null;
 	}
 
-	/**
-	 * @author xolali
-	 * @param requery
-	 * @return
-	 */
 	private MInfoRelated[] m_infoRelated;
 
 	/**
@@ -155,6 +150,11 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 */
 	private MInfoProcess[]  m_infoProcess;
 
+	/**
+	 * author xolali
+	 * @param requery
+	 * @return
+	 */
 	public MInfoRelated[] getInfoRelated(boolean requery) {
 		if ((this.m_infoRelated != null) && (!requery)) {
 			set_TrxName(this.m_infoRelated, get_TrxName());
@@ -257,7 +257,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 */
 	private MInfoColumn[] m_infocolumns = null;
 
@@ -280,7 +280,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 * @return
 	 */
 	public String getSql(){

@@ -59,7 +59,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	private String orientation;
 
 	/**
-	 * @param aProcess
 	 * @param WindowNo
 	 * @param pi
 	 * @param autoStart
@@ -70,7 +69,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	}
 	
 	/**
-	 * @param aProcess
+	 * @param listener
 	 * @param WindowNo
 	 * @param pi
 	 * @param autoStart
@@ -144,7 +143,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 
 	/**
 	 * Dialog to start a process/report
-	 * @param ctx
 	 * @param parent not used
 	 * @param title not used
 	 * @param WindowNo

@@ -77,7 +77,7 @@ import org.zkoss.zul.South;
 import com.lowagie.text.pdf.PdfReader;
 
 /**
- *  Payment Print & Export
+ *  Payment Print and Export
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: VPayPrint.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $

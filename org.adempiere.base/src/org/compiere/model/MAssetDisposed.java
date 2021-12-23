@@ -343,8 +343,7 @@ implements DocAction
 	
 	/**
 	 * Copy fields from A_Asset
-	 * @param model
-	 * @param A_Asset_ID
+	 * @param bean
 	 */
 	public static void updateFromAsset(I_A_Asset_Disposed bean)
 	{

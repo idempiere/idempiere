@@ -247,7 +247,6 @@ public class MAttributeInstance extends X_M_AttributeInstance
 	 * Set ValueInt
 	 * 
 	 * @param valueInt
-	 * @param value
 	 */
 	public void setValueInt(int valueInt)
 	{

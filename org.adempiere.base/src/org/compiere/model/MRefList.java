@@ -76,7 +76,7 @@ public class MRefList extends X_AD_Ref_List
 
 	/**
 	 * Get Reference List Value Name (cached)
-	 * @param Language
+	 * @param AD_Language
 	 * @param AD_Reference_ID reference
 	 * @param Value value
 	 * @return List or ""
@@ -145,7 +145,7 @@ public class MRefList extends X_AD_Ref_List
 
 	/**
 	 * Get Reference List Value Description (cached)
-	 * @param Language
+	 * @param AD_Language
 	 * @param ListName reference
 	 * @param Value value
 	 * @return List or null

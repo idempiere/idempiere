@@ -62,7 +62,7 @@ public interface IReportViewerExportSource {
 	 * Get media/content by content type and file extension
 	 * @param contentType
 	 * @param fileExtension
-	 * @return {@link AMediae}
+	 * @return {@link AMedia}
 	 */
 	public AMedia getMedia(String contentType, String fileExtension);
 	

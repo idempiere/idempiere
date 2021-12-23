@@ -569,10 +569,10 @@ public final class Msg
 
 	/**************************************************************************
 	 *	"Translate" text.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  If checking AD_Element, the SO terminology is used.
 	 *  @param ad_language  Language
 	 *  @param isSOTrx sales order context
@@ -605,10 +605,10 @@ public final class Msg
 
 	/***
 	 *	"Translate" text (SO Context).
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  If checking AD_Element, the SO terminology is used.
 	 *  @param ad_language  Language
 	 *  @param text	Text - MsgText or Element Name
@@ -621,10 +621,10 @@ public final class Msg
 
 	/**
 	 *	"Translate" text.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  @param ctx  Context
 	 *  @param text	Text - MsgText or Element Name
 	 *  @return translated text or original text if not found
@@ -641,10 +641,10 @@ public final class Msg
 
 	/**
 	 *	"Translate" text.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  @param language Language
 	 *  @param text     Text
 	 *  @return translated text or original text if not found
@@ -723,7 +723,7 @@ public final class Msg
 	/**
 	 *  Get translated text message for AD_Message, ampersand cleaned (used to indicate shortcut)
 	 *  @param  ctx Context to retrieve language
-	 *  @param	AD_Message - Message Key
+	 *  @param	string AD_Message - Message Key
 	 *  @return translated text
 	 */
 	public static String getCleanMsg(Properties ctx, String string) {

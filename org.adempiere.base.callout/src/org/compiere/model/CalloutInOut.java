@@ -34,7 +34,7 @@ import org.compiere.util.Env;
  *
  *  @author Jorg Janke
  *  @version $Id: CalloutInOut.java,v 1.7 2006/07/30 00:51:05 jjanke Exp $
- *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867464 ] http://sourceforge.net/tracker/index.php?func=detail&aid=1867464&group_id=176962&atid=879332
+ *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867464 ] https://sourceforge.net/p/adempiere/bugs/923/
  */
 public class CalloutInOut extends CalloutEngine
 {

@@ -80,7 +80,7 @@ import com.lowagie.text.DocumentException;
  *  @author 	Jorg Janke
  *  @version 	$Id: AEnv.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *
- *  Colin Rooney (croo) & kstan_79 RFE#1670185
+ *  Colin Rooney (croo) and kstan_79 RFE#1670185
  */
 public final class AEnv
 {
@@ -133,7 +133,7 @@ public final class AEnv
 
 	/**
 	 *  Get Mnemonic character from text.
-	 *  @param text text with '&'
+	 *  @param text text with '&amp;'
 	 *  @return Mnemonic or 0
 	 */
 	public static char getMnemonic (String text)
@@ -755,7 +755,7 @@ public final class AEnv
 	 * when field lie in window, it's id of this window
 	 * when field lie in process parameter dialog it's ad_window_id of window open this process
 	 * when field lie in process parameter open in a standalone window (run process from menu) return id of dummy window
-	 * @param mField
+	 * @param windowNo
 	 * @return
 	 */
 	public static int getADWindowID (int windowNo){

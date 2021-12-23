@@ -121,7 +121,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @param m_Warehouse_ID
 	 * @param m_Product_ID
 	 * @param i
-	 * @param get_TrxName
+	 * @param trxName
 	 * @return
 	 */
 	public static MStorageReservation[] get(Properties ctx, int m_Warehouse_ID,
@@ -328,9 +328,10 @@ public class MStorageReservation extends X_M_StorageReservation {
 	/**
 	 * 	Create or Get Storage Info
 	 *	@param ctx context
-	 *	@param M_Locator_ID locator
+	 *	@param M_Warehouse_ID
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance
+	 *  @param isSOTrx
 	 *	@param trxName transaction
 	 *	@return existing/new or null
 	 */

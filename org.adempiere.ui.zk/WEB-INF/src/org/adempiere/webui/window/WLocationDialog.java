@@ -79,7 +79,7 @@ import org.zkoss.zul.Vbox;
  * 			<li>FR [ 2794312 ] Location AutoComplete
  * @author Teo Sarca, teo.sarca@gmail.com
  * 			<li>BF [ 2995212 ] NPE on Location dialog
- * 				https://sourceforge.net/tracker/?func=detail&aid=2995212&group_id=176962&atid=955896
+ * 				https://sourceforge.net/p/adempiere/zk-web-client/419/
  * 
  * @TODO: Implement fOnline button present in swing client
  *

@@ -75,8 +75,6 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 
 	/**
 	 * 	Init
-	 *	@param WindowNo
-	 *	@param frame
 	 */
 	protected void initForm()
     {

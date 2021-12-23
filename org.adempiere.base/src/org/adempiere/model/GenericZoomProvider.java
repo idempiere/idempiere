@@ -36,7 +36,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Generic provider of zoom targets. Contains pieces of {@link org.compiere.apps.AZoomAcross}
+ * Generic provider of zoom targets. Contains pieces of {@link org.adempiere.webui.WZoomAcross}
  * methods <code>getZoomTargets</code> and <code>addTarget</code>
  * 
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194  ] Advanced Zoom and RelationTypes

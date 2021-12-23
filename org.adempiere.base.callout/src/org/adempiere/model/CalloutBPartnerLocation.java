@@ -47,7 +47,7 @@ public class CalloutBPartnerLocation extends CalloutEngine
 	 *  @param mTab     Model Tab
 	 *  @param mField   Model Field
 	 *  @param value    The new value
-	 *  @param oldvalue The old value
+	 *  @param oldValue The old value
 	 *  @return Error message or ""
 	 */
 	public String formatPhone (Properties ctx, int WindowNo,

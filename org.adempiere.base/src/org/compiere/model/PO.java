@@ -90,21 +90,21 @@ import org.w3c.dom.Element;
  *			<li>BF [ 1990856 ] PO.set_Value* : truncate string more than needed
  *			<li>FR [ 2042844 ] PO.get_Translation improvements
  *			<li>FR [ 2818369 ] Implement PO.get_ValueAs*(columnName)
- *				https://sourceforge.net/tracker/?func=detail&aid=2818369&group_id=176962&atid=879335
+ *				https://sourceforge.net/p/adempiere/feature-requests/754/
  *			<li>BF [ 2849122 ] PO.AfterSave is not rollback on error
- *				https://sourceforge.net/tracker/?func=detail&aid=2849122&group_id=176962&atid=879332
+ *				https://sourceforge.net/p/adempiere/bugs/2073/
  *			<li>BF [ 2859125 ] Can't set AD_OrgBP_ID
- *				https://sourceforge.net/tracker/index.php?func=detail&aid=2859125&group_id=176962&atid=879332
+ *				https://sourceforge.net/p/adempiere/bugs/2095/
  *			<li>BF [ 2866493 ] VTreePanel is not saving who did the node move
- *				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2866493&group_id=176962
+ *				https://sourceforge.net/p/adempiere/bugs/2135/
  * @author Teo Sarca, teo.sarca@gmail.com
  * 			<li>BF [ 2876259 ] PO.insertTranslation query is not correct
- * 				https://sourceforge.net/tracker/?func=detail&aid=2876259&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/2168/
  * @author Victor Perez, e-Evolution SC
  *			<li>[ 2195894 ] Improve performance in PO engine
- *			<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2195894&group_id=176962&atid=879335
+ *			<li>https://sourceforge.net/p/adempiere/feature-requests/555/
  *			<li>BF [2947622] The replication ID (Primary Key) is not working
- *			<li>https://sourceforge.net/tracker/?func=detail&aid=2947622&group_id=176962&atid=879332
+ *			<li>https://sourceforge.net/p/adempiere/bugs/2308/
  */
 public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
@@ -151,7 +151,7 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 *  Create & Load existing Persistent Object
+	 *  Create and Load existing Persistent Object
 	 *  @param ID  The unique ID of the object
 	 *  @param ctx context
 	 *  @param trxName transaction name
@@ -162,7 +162,7 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 *  Create & Load existing Persistent Object.
+	 *  Create and Load existing Persistent Object.
 	 *  @param ctx context
 	 *  @param rs optional - load from current result set position (no navigation, not closed)
 	 *  	if null, a new record is created.
@@ -174,7 +174,7 @@ public abstract class PO
 	}	//	PO
 
 	/**
-	 *  Create & Load existing Persistent Object.
+	 *  Create and Load existing Persistent Object.
 	 *  <pre>
 	 *  You load
 	 * 		- an existing single key record with 	new PO (ctx, Record_ID)
@@ -364,7 +364,7 @@ public abstract class PO
 	 * 	Compare based on DocumentNo, Value, Name, Description
 	 *	@param o1 Object 1
 	 *	@param o2 Object 2
-	 *	@return -1 if o1 < o2
+	 *	@return -1 if o1 &lt; o2
 	 */
 	public int compare (Object o1, Object o2)
 	{
@@ -1259,7 +1259,7 @@ public abstract class PO
 	/**
 	 * 	Copy old values of From to new values of To.
 	 *  Does not copy Keys
-	 * 	@param from old, existing & unchanged PO
+	 * 	@param from old, existing and unchanged PO
 	 *  @param to new, not saved PO
 	 * 	@param AD_Client_ID client
 	 * 	@param AD_Org_ID org
@@ -1274,7 +1274,7 @@ public abstract class PO
 	/**
 	 * 	Copy old values of From to new values of To.
 	 *  Does not copy Keys and AD_Client_ID/AD_Org_ID
-	 * 	@param from old, existing & unchanged PO
+	 * 	@param from old, existing and unchanged PO
 	 *  @param to new, not saved PO
 	 */
 	public static void copyValues (PO from, PO to)
@@ -4253,7 +4253,6 @@ public abstract class PO
 	/**
 	 * 	Update parent key and seqno based on value if the tree is driven by value 
 	 * 	@param treeType MTree TREETYPE_*
-	 *	@return true if inserted
 	 */
 	public void update_Tree (String treeType)
 	{
@@ -4622,18 +4621,18 @@ public abstract class PO
 	/*************************************************************************
 	 * 	Get All IDs of Table.
 	 * 	Used for listing all Entities
-	 * 	<code>
+	 * 	<pre>{@code
 	 	int[] IDs = PO.getAllIDs ("AD_PrintFont", null);
 		for (int i = 0; i < IDs.length; i++)
 		{
 			pf = new MPrintFont(Env.getCtx(), IDs[i]);
 			System.out.println(IDs[i] + " = " + pf.getFont());
 		}
-	 *	</code>
+	 *	}</pre>
 	 * 	@param TableName table name (key column with _ID)
 	 * 	@param WhereClause optional where clause
-	 * 	@return array of IDs or null
 	 * 	@param trxName transaction
+	 * 	@return array of IDs or null
 	 */
 	public static int[] getAllIDs (String TableName, String WhereClause, String trxName)
 	{

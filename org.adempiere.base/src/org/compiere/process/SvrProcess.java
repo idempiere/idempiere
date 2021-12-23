@@ -63,7 +63,7 @@ import org.osgi.service.event.Event;
  * 			<li>BF [ 1878743 ] SvrProcess.getAD_User_ID
  *			<li>BF [ 1935093 ] SvrProcess.unlock() is setting invalid result
  *			<li>FR [ 2788006 ] SvrProcess: change access to some methods
- *				https://sourceforge.net/tracker/?func=detail&aid=2788006&group_id=176962&atid=879335
+ *				https://sourceforge.net/p/adempiere/feature-requests/709/
  */
 @org.adempiere.base.annotation.Process
 public abstract class SvrProcess implements ProcessCall
@@ -318,7 +318,7 @@ public abstract class SvrProcess implements ProcessCall
 
 	/**
 	 *  Prepare - e.g., get Parameters.
-	 *  <code>
+	 *  <pre>{@code
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
@@ -334,7 +334,7 @@ public abstract class SvrProcess implements ProcessCall
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
-	 *  </code>
+	 *  }</pre>
 	 */
 	abstract protected void prepare();
 

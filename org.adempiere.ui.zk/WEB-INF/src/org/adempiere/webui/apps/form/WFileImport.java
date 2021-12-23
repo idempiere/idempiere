@@ -126,7 +126,6 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	
 	/**
 	 *	Initialize Panel
-	 *  @param WindowNo window
 	 */
 	protected void initForm()
 	{

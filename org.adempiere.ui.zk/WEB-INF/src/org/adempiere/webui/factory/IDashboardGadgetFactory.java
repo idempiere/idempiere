@@ -24,16 +24,16 @@ import org.zkoss.zk.ui.Component;
 public interface IDashboardGadgetFactory {
 	/**
      * 
-     * @param String uri
-     * @param Component parent
+     * @param uri String
+     * @param parent Component
      * @return Component instance of DashboardPanel or null
      */
     public Component getGadget(String uri, Component parent);
 
 	/**
-	 * @param String url
-	 * @param Component parent
-	 * @param MDashboardContent dc
+	 * @param url String
+	 * @param parent Component
+	 * @param dc MDashboardContent
      * @return Component instance of DashboardPanel or null
 	 */
     default public Component getGadget(String url, Component parent, MDashboardContent dc) {

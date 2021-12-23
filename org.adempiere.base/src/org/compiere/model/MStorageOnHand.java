@@ -101,7 +101,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}	//	get
 
 	/**
-	 * 	Get all Storages for Product with ASI and QtyOnHand <> 0
+	 * 	Get all Storages for Product with ASI and QtyOnHand &lt;&gt; 0
 	 *	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param M_Locator_ID locator
@@ -146,7 +146,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}	//	getAllWithASI
 
 	/**
-	 * 	Get all Storages for Product where QtyOnHand <> 0
+	 * 	Get all Storages for Product where QtyOnHand &lt;&gt; 0
 	 *	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param M_Locator_ID locator, 0 to match all locator
@@ -160,11 +160,13 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 	
 	/**
-	 * 	Get all Storages for Product where QtyOnHand <> 0
+	 * 	Get all Storages for Product where QtyOnHand &lt;&gt; 0
 	 *	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param M_Locator_ID locator, 0 to match all locator
 	 *	@param trxName transaction
+	 *  @param forUpdate
+	 *  @param timeout
 	 *	@return existing or null
 	 */
 	public static MStorageOnHand[] getAll (Properties ctx, 
@@ -290,12 +292,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
-	 *  @param positiveOnly if true, only return storage records with qtyOnHand > 0
+	 *  @param positiveOnly if true, only return storage records with qtyOnHand &gt; 0
 	 *  @param M_Locator_ID optional locator id
 	 *	@param trxName transaction
 	 *	@return existing - ordered by location priority (desc) and/or guarantee date
@@ -311,12 +313,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
-	 *  @param positiveOnly if true, only return storage records with qtyOnHand > 0
+	 *  @param positiveOnly if true, only return storage records with qtyOnHand &gt; 0
 	 *  @param M_Locator_ID optional locator id
 	 *	@param trxName transaction
 	 *  @param forUpdate
@@ -332,15 +334,16 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
-	 *  @param positiveOnly if true, only return storage records with qtyOnHand > 0
+	 *  @param positiveOnly if true, only return storage records with qtyOnHand &gt; 0
 	 *  @param M_Locator_ID optional locator id
 	 *	@param trxName transaction
 	 *  @param forUpdate
+	 *  @param timeout
 	 *	@return existing - ordered by location priority (desc) and/or guarantee date
 	 */
 	public static MStorageOnHand[] getWarehouse (Properties ctx, int M_Warehouse_ID, 
@@ -474,7 +477,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
@@ -493,7 +496,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve storages that don't have asi, -1 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
@@ -513,7 +516,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve storages that don't have asi, -1 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
@@ -706,12 +709,11 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param M_Locator_ID locator
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID AS Instance
-	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
 	 *	@param diffQtyOnHand add on hand
 	 *	@param trxName transaction
-	 *  @deprecated
 	 *	@return true if updated
 	 */
+	@Deprecated
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand, String trxName)
@@ -727,7 +729,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param M_Locator_ID locator
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID AS Instance
-	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
 	 *	@param diffQtyOnHand add on hand
 	 *  @param dateMPolicy
 	 *	@param trxName transaction
@@ -937,7 +938,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * 
 	 * Before Save
 	 * @param newRecord new
-	 * @param success success
 	 * @return success
 	 */
 	@Override

@@ -250,7 +250,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 *  Set Description
-	 *  @param name name
+	 *  @param description
 	 */
 	public void setDescription (String description)
 	{

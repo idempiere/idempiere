@@ -75,7 +75,7 @@ import org.zkoss.zul.impl.XulElement;
  * 
  * @author Teo Sarca, teo.sarca@gmail.com
  * 		<li>BF [ 2996608 ] GridPanel is not displaying time
- * 			https://sourceforge.net/tracker/?func=detail&aid=2996608&group_id=176962&atid=955896
+ * 			https://sourceforge.net/p/adempiere/zk-web-client/420/
  */
 public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt, RendererCtrl, EventListener<Event> {
 
@@ -431,7 +431,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/**
 	 * @param row
 	 * @param data
-	 * @see RowRenderer#render(Row, Object)
+	 * @param index
 	 */
 	@Override
 	public void render(Row row, Object[] data, int index) throws Exception {

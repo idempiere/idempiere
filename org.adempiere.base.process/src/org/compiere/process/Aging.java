@@ -34,9 +34,9 @@ import org.compiere.util.TimeUtil;
  *	Based on RV_Aging.
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com  FR 1933937  Is necessary a new Aging to Date
- *  @see http://sourceforge.net/tracker/index.php?func=detail&aid=1933937&group_id=176962&atid=879335 
+ *  @see https://sourceforge.net/p/adempiere/feature-requests/408/ 
  *  @author Carlos Ruiz - globalqss  BF 2655587  Multi-org not supported in Aging
- *  @see https://sourceforge.net/tracker2/?func=detail&aid=2655587&group_id=176962&atid=879332 
+ *  @see https://sourceforge.net/p/adempiere/bugs/1786/ 
  *  @version $Id: Aging.java,v 1.5 2006/10/07 00:58:44 jjanke Exp $
  */
 @org.adempiere.base.annotation.Process

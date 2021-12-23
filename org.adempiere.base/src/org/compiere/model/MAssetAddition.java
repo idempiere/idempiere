@@ -116,7 +116,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	/**
 	 * Create Asset and asset Addition from MIFixedAsset. MAssetAddition is saved. 
 	 * (@win note, not referenced from anywhere. incomplete feature)
-	 * @param	match	match invoice
+	 * @param	ifa
 	 * @return asset addition
 	 */
 	public static MAssetAddition createAsset(MIFixedAsset ifa)
@@ -351,7 +351,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 	 * Copy fields from MatchInv+InvoiceLine+InOutLine
 	 * @param model - to copy from
 	 * @param M_MatchInv_ID - matching invoice id
-	 * @param newRecord new object model is created
 	 */
 	public static boolean setM_MatchInv(SetGetModel model, int M_MatchInv_ID)
 	{

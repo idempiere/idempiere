@@ -49,7 +49,8 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	/**
 	 * Default Constructor
 	 * @param ctx
-	 * @param infoColumn
+	 * @param infoRelated
+	 * @param windowNo
 	 */
 	public InfoRelatedVO(Properties ctx, MInfoRelated infoRelated, int windowNo) {
 		
@@ -98,7 +99,9 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	/**
 	 * Default Constructor
 	 * @param ctx
-	 * @param infoColumn
+	 * @param infoRelatedList
+	 * @param windowNo
+	 * @return
 	 */
 	public static InfoRelatedVO[] getInfoRelatedVOList(Properties ctx, MInfoRelated[] infoRelatedList, int windowNo) {
 		ArrayList<InfoRelatedVO> infoRelatedVOList = new ArrayList<InfoRelatedVO>();

@@ -403,7 +403,7 @@ public final class Fact
 	 *  Balance all segments.
 	 *  - For all balancing segments
 	 *      - For all segment values
-	 *          - If balance <> 0 create dueTo/dueFrom line
+	 *          - If balance &lt;&gt; 0 create dueTo/dueFrom line
 	 *              overwriting the segment value
 	 */
 	public void balanceSegments()

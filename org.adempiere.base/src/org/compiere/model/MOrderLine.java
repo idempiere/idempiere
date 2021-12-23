@@ -973,7 +973,7 @@ public class MOrderLine extends X_C_OrderLine
 	 * @param oldTax true if the old C_Tax_ID should be used
 	 * @return true if success, false otherwise
 	 * 
-	 * @author teo_sarca [ 1583825 ]
+	 * author teo_sarca [ 1583825 ]
 	 */
 	public boolean updateOrderTax(boolean oldTax) {
 		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
@@ -993,7 +993,7 @@ public class MOrderLine extends X_C_OrderLine
 	}
 	
 	/**
-	 *	Update Tax & Header
+	 *	Update Tax and Header
 	 *	@return true if header updated
 	 */
 	public boolean updateHeaderTax()

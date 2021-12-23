@@ -54,10 +54,10 @@ import org.compiere.model.PO;
  *  @author Teo Sarca, http://www.arhipac.ro
  *  			<li>FR [ 2080217 ] Implement TrxRunnable
  *  			<li>BF [ 2876927 ] Oracle JDBC driver problem
- *  				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2876927&group_id=176962
+ *  				https://sourceforge.net/p/adempiere/bugs/2173/
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 2849122 ] PO.AfterSave is not rollback on error - add releaseSavepoint method
- *  			https://sourceforge.net/tracker/index.php?func=detail&aid=2849122&group_id=176962&atid=879332#
+ *  			https://sourceforge.net/p/adempiere/bugs/2073/
  */
 public class Trx
 {
@@ -353,8 +353,9 @@ public class Trx
 
 	/**
 	 * 	Rollback
-	 *  @param throwException if true, re-throws exception
+	 *  @param savepoint
 	 *	@return true if success, false if failed or transaction already rollback
+	 *  @throws SQLException
 	 */
 	public boolean rollback(Savepoint savepoint) throws SQLException
 	{

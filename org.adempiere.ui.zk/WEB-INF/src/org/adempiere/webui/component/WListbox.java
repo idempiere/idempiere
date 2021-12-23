@@ -306,8 +306,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      *
      * @param   viewColumnIndex     the index of the column in the view
      * @return  the index of the corresponding column in the model
-     *
-     * @see #convertColumnIndexToVi
      */
     public int convertColumnIndexToModel(int viewColumnIndex)
     {
@@ -816,7 +814,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * deselect all current select, set all record have key in lsKey is selected
 	 * when non key column just return
 	 * @param lsKey
-	 * @return
 	 */
 	public void setSelectedByKeys (List<Integer> lsKey){		
 		// no key column because can't set selected, just return
@@ -962,7 +959,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
 	/**
 	 *  Set if Totals is Show
-	 *  @param boolean Show
+	 *  @param show
 	 */
 	public void setShowTotals(boolean show)
 	{
@@ -970,7 +967,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	}
 	/**
 	 *  get if Totals is Show
-	 *  @param boolean Show
 	 */
 	public boolean getShowTotals()
 	{

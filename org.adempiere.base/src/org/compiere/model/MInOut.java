@@ -60,13 +60,13 @@ import org.compiere.util.TimeUtil;
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li>FR [ 1948157  ]  Is necessary the reference for document reverse
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @author Armen Rizal, Goodwill Consulting
  * 			<li>BF [ 1745154 ] Cost in Reversing Material Related Docs
- *  @see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  @see https://sourceforge.net/p/adempiere/feature-requests/412/
  *  @author Teo Sarca, teo.sarca@gmail.com
  * 			<li>BF [ 2993853 ] Voiding/Reversing Receipt should void confirmations
- * 				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2993853&group_id=176962
+ * 				https://sourceforge.net/p/adempiere/bugs/2395/
  */
 public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 {
@@ -853,7 +853,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	}	//	setC_DocType_ID
 
 	/**
-	 * 	Set Business Partner Defaults & Details
+	 * 	Set Business Partner Defaults and Details
 	 * 	@param bp business partner
 	 */
 	public void setBPartner (MBPartner bp)

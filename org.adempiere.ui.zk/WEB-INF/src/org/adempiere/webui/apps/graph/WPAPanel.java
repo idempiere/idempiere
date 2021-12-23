@@ -35,8 +35,6 @@ public class WPAPanel extends Panel implements EventListener<Event>
 	
 	/**************************************************************************
 	 * 	Constructor
-	 *	@param goals
-	 * @param options 
 	 */
 	public WPAPanel ()
 	{

@@ -66,12 +66,12 @@ import org.w3c.dom.Text;
  * @author Trifon N. Trifonov
  * @author Antonio Cañaveral, e-Evolution
  * 				<li>[ 2195016 ] Implementation delete records messages
- * 				<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2195016&group_id=176962&atid=879332
+ * 				<li>https://sourceforge.net/p/adempiere/bugs/1556/
  * @author victor.perez@e-evolution.com, e-Evolution
  * 				<li>[ 2195090 ] Stabilization of replication
- * 				<li>https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2936561&group_id=176962
+ * 				<li>https://sourceforge.net/p/adempiere/bugs/2294/
  *				<li>BF [2947622] The replication ID (Primary Key) is not working
- *				<li>https://sourceforge.net/tracker/?func=detail&aid=2947622&group_id=176962&atid=879332
+ *				<li>https://sourceforge.net/p/adempiere/bugs/2308/
  *
  */
 public class ExportHelper {

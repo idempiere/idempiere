@@ -1242,7 +1242,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
     //begin vpj-cd e-evolution
 	/**
 	 * Get ID of Print Format use Name
-	 * @param String formatName
+	 * @param formatName
 	 * @param AD_Table_ID
 	 * @param AD_Client_ID
 	 * @return AD_PrintFormat_ID
@@ -1256,10 +1256,11 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	//end vpj-cd e-evolution
 
 	/**
- 	 * @param AD_Table_ID
+	 * @param AD_Table_ID
 	 * @param AD_Window_ID
-	 * @param AD_Client_ID use -1 to retrieve from all client
 	 * @param trxName
+	 * @param makeNewWhenEmpty
+	 * @return
 	 */
 	public static List<KeyNamePair> getAccessiblePrintFormats (int AD_Table_ID, int AD_Window_ID, String trxName, boolean makeNewWhenEmpty)
 	{

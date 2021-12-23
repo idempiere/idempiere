@@ -603,7 +603,6 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Copy Lines From other RMA
 	 *	@param otherRMA
 	 *	@param counter set counter info
-	 *	@param setOrder set order link
 	 *	@return number of lines copied
 	 */
 	public int copyLinesFrom (MRMA otherRMA, boolean counter)

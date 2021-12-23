@@ -229,10 +229,9 @@ public class MDistribution extends X_GL_Distribution
 	/**
 	 * 	Get All Distributions
 	 *	@param ctx ignore
-	 *	@param Account_ID id
 	 *	@return array of distributions
-	 *  @deprecated
 	 */
+	@Deprecated
 	public static MDistribution[] getAll (Properties ctx)
 	{
 		return getAll();
@@ -240,7 +239,6 @@ public class MDistribution extends X_GL_Distribution
 	
 	/**
 	 * 	Get All Distributions
-	 *	@param Account_ID id
 	 *	@return array of distributions
 	 */
 	public static MDistribution[] getAll ()

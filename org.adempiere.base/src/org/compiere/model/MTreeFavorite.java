@@ -210,7 +210,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	} // checkBuffer
 
 	/**
-	 * Get Favorite Tree ID for a specific User & Role Wise
+	 * Get Favorite Tree ID for a specific User and Role Wise
 	 * 
 	 * @param  userID
 	 * @return        Favorite Tree_ID

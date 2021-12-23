@@ -32,7 +32,7 @@ import org.compiere.util.Msg;
  *	@author Jorg Janke
  *	@author Cristina Ghita
  *  	<li>BF [ 2855807 ] AD_Org_ID from account 
- *  		https://sourceforge.net/tracker/?func=detail&aid=2855807&group_id=176962&atid=879332
+ *  		https://sourceforge.net/p/adempiere/bugs/2084/
  *	@version $Id: MJournalLine.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MJournalLine extends X_GL_JournalLine
@@ -150,7 +150,7 @@ public class MJournalLine extends X_GL_JournalLine
 	
 	/**
 	 * 	Set Currency Rate
-	 *	@param CurrencyRate check for null (->one)
+	 *	@param CurrencyRate check for null (-&gt;one)
 	 */
 	public void setCurrencyRate (BigDecimal CurrencyRate)
 	{
