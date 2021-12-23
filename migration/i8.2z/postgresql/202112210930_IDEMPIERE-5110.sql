@@ -34,3 +34,5 @@ UPDATE AD_Column SET ColumnSQL='@SQLFIND=(SELECT bomQtyOnHand(M_ProductionLine.M
 UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL, ColumnSQL='(SELECT bomQtyOnHand(M_ProductionLine.M_Product_ID,l.M_Warehouse_ID,0) - bomQtyReserved(M_ProductionLine.M_Product_ID,l.M_Warehouse_ID,0) - prodQtyReserved(M_ProductionLine.M_Product_ID,l.M_Warehouse_ID) FROM M_Locator l WHERE l.M_Locator_ID=M_ProductionLine.M_Locator_ID) ',Updated=TO_TIMESTAMP('2021-12-22 09:34:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=61971
 ;
 
+SELECT register_migration_script('202112210930_IDEMPIERE-5110.sql') FROM dual
+;
