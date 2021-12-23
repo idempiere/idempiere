@@ -560,7 +560,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 			else if (token.equals("R"))
 			{
 				if (getRegion() != null)					//	we have a region
-					outStr.append(getRegion().getName());
+					outStr.append(getRegion().getTrlName());
 				else if (super.getRegionName() != null && super.getRegionName().length() > 0)
 					outStr.append(super.getRegionName());	//	local region name
 			}
@@ -585,8 +585,16 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 
 		//	Print Region Name if entered and not part of pattern
 		if (c.getDisplaySequence().indexOf("@R@") == -1
-			&& super.getRegionName() != null && super.getRegionName().length() > 0)
-			outStr.append(" ").append(super.getRegionName());
+			&& super.getRegionName() != null && super.getRegionName().length() > 0) {
+            
+			String regName =null;
+            if(getRegion()!=null)
+                regName =getRegion().getTrlName();
+            else
+                regName =super.getRegionName();
+            
+            outStr.append(" ").append(regName);
+		}
 
 		String retValue = Util.replace(outStr.toString(), "\\n", "\n");
 		if (log.isLoggable(Level.FINEST)) log.finest("parseCRP - " + c.getDisplaySequence() + " -> " +  retValue);
