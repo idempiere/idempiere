@@ -45,7 +45,7 @@ public class MRegion extends X_C_Region
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -752467671346696325L;
+	private static final long serialVersionUID = 6956706379305907673L;
 
 	/**
 	 * 	Load Regions (cached)
