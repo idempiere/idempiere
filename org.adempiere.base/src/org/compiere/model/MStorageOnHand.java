@@ -176,7 +176,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 	
 	/**
-	 * Get all Storages for Product where QtyOnHand <> 0
+	 * Get all Storages for Product where QtyOnHand &lt;&gt; 0
 	 *	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param M_Locator_ID locator, 0 to match all locator
@@ -749,7 +749,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param M_Locator_ID locator
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID AS Instance
-	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
 	 *	@param diffQtyOnHand add on hand
 	 *  @param dateMPolicy
 	 *	@param trxName transaction
