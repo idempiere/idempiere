@@ -758,7 +758,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionUOMValidate, true, getAD_Client_ID()))
 		{
 			if (getM_Product_ID() != 0 
-				&& (newRecord || is_ValueChanged("M_Product_ID")))
+				&& (newRecord || is_ValueChanged("M_Product_ID") || is_ValueChanged("C_UOM_ID")))
 			{
 				// Check of product must be in the same transaction as the conversion being saved
 				MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
