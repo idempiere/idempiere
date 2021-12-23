@@ -131,7 +131,8 @@ public class DocumentStatusTest extends AbstractTestCase {
 		// check document status accessibility with user- GardenAdmin and role- GardenWorld User
 		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), USER_GARDENADMIN,
 				ROLE_GARDENWORLDUSER, getTrxName());
-		assertTrue(Arrays.asList(documentStatusIndicators).contains(invoiceDS), "Either User or Role Assignment matching");
+		assertFalse(Arrays.asList(documentStatusIndicators).contains(invoiceDS),
+				"User Assignment Match but role do not");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(noticeDS), "No permission assigned, should visible to every one");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(requestDS), "When Role matching, Should  Visible");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(WorkflowActivitiesDS),

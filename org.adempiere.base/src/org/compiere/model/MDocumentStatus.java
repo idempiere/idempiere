@@ -162,9 +162,9 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 			/* the only problem here is that is not easy to hide things from System role or System user
 			 * but as they are the administrators is not a problem
 			 */
-			if (access.getAD_Role_ID() == roleId)
-				return true;
-			if (access.getAD_User_ID() == userId)
+			if (   (access.getAD_Role_ID() == roleId && access.getAD_User_ID() == userId)
+				|| (access.getAD_Role_ID() == roleId && access.getAD_User_ID() == 0     )
+				|| (access.getAD_Role_ID() == 0      && access.getAD_User_ID() == userId) )
 				return true;
 		}
 
