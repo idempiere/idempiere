@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ReportView_Column
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReportView_Column")
 public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Column (Properties ctx, int AD_ReportView_Column_ID, String trxName)
@@ -78,21 +78,20 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -101,7 +100,8 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 	}
 
 	/** Set AD_ReportView_Column_UU.
-		@param AD_ReportView_Column_UU AD_ReportView_Column_UU	  */
+		@param AD_ReportView_Column_UU AD_ReportView_Column_UU
+	*/
 	public void setAD_ReportView_Column_UU (String AD_ReportView_Column_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_ReportView_Column_UU, AD_ReportView_Column_UU);
@@ -109,7 +109,7 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 
 	/** Get AD_ReportView_Column_UU.
 		@return AD_ReportView_Column_UU	  */
-	public String getAD_ReportView_Column_UU () 
+	public String getAD_ReportView_Column_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ReportView_Column_UU);
 	}
@@ -121,21 +121,20 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 	}
 
 	/** Set Report View.
-		@param AD_ReportView_ID 
-		View used to generate this report
-	  */
+		@param AD_ReportView_ID View used to generate this report
+	*/
 	public void setAD_ReportView_ID (int AD_ReportView_ID)
 	{
-		if (AD_ReportView_ID < 1) 
+		if (AD_ReportView_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ReportView_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ReportView_ID, Integer.valueOf(AD_ReportView_ID));
 	}
 
 	/** Get Report View.
 		@return View used to generate this report
 	  */
-	public int getAD_ReportView_ID () 
+	public int getAD_ReportView_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReportView_ID);
 		if (ii == null)

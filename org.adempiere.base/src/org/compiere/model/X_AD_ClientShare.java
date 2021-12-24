@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ClientShare
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_ClientShare")
 public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_ClientShare (Properties ctx, int AD_ClientShare_ID, String trxName)
@@ -75,21 +75,20 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
     }
 
 	/** Set Client Share.
-		@param AD_ClientShare_ID 
-		Force (not) sharing of client/org entities
-	  */
+		@param AD_ClientShare_ID Force (not) sharing of client/org entities
+	*/
 	public void setAD_ClientShare_ID (int AD_ClientShare_ID)
 	{
-		if (AD_ClientShare_ID < 1) 
+		if (AD_ClientShare_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ClientShare_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ClientShare_ID, Integer.valueOf(AD_ClientShare_ID));
 	}
 
 	/** Get Client Share.
 		@return Force (not) sharing of client/org entities
 	  */
-	public int getAD_ClientShare_ID () 
+	public int getAD_ClientShare_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ClientShare_ID);
 		if (ii == null)
@@ -98,7 +97,8 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	}
 
 	/** Set AD_ClientShare_UU.
-		@param AD_ClientShare_UU AD_ClientShare_UU	  */
+		@param AD_ClientShare_UU AD_ClientShare_UU
+	*/
 	public void setAD_ClientShare_UU (String AD_ClientShare_UU)
 	{
 		set_Value (COLUMNNAME_AD_ClientShare_UU, AD_ClientShare_UU);
@@ -106,7 +106,7 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 
 	/** Get AD_ClientShare_UU.
 		@return AD_ClientShare_UU	  */
-	public String getAD_ClientShare_UU () 
+	public String getAD_ClientShare_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ClientShare_UU);
 	}
@@ -118,21 +118,20 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -141,9 +140,8 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -152,15 +150,14 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -169,7 +166,7 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -191,9 +188,8 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	/** Client or Org = x */
 	public static final String SHARETYPE_ClientOrOrg = "x";
 	/** Set Share Type.
-		@param ShareType 
-		Type of sharing
-	  */
+		@param ShareType Type of sharing
+	*/
 	public void setShareType (String ShareType)
 	{
 
@@ -203,7 +199,7 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
 	/** Get Share Type.
 		@return Type of sharing
 	  */
-	public String getShareType () 
+	public String getShareType()
 	{
 		return (String)get_Value(COLUMNNAME_ShareType);
 	}

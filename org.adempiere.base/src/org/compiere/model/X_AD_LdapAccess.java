@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LdapAccess
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_LdapAccess")
 public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_LdapAccess (Properties ctx, int AD_LdapAccess_ID, String trxName)
@@ -74,21 +74,20 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
     }
 
 	/** Set Ldap Access.
-		@param AD_LdapAccess_ID 
-		Ldap Access Log
-	  */
+		@param AD_LdapAccess_ID Ldap Access Log
+	*/
 	public void setAD_LdapAccess_ID (int AD_LdapAccess_ID)
 	{
-		if (AD_LdapAccess_ID < 1) 
+		if (AD_LdapAccess_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_LdapAccess_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_LdapAccess_ID, Integer.valueOf(AD_LdapAccess_ID));
 	}
 
 	/** Get Ldap Access.
 		@return Ldap Access Log
 	  */
-	public int getAD_LdapAccess_ID () 
+	public int getAD_LdapAccess_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LdapAccess_ID);
 		if (ii == null)
@@ -97,7 +96,8 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	}
 
 	/** Set AD_LdapAccess_UU.
-		@param AD_LdapAccess_UU AD_LdapAccess_UU	  */
+		@param AD_LdapAccess_UU AD_LdapAccess_UU
+	*/
 	public void setAD_LdapAccess_UU (String AD_LdapAccess_UU)
 	{
 		set_Value (COLUMNNAME_AD_LdapAccess_UU, AD_LdapAccess_UU);
@@ -105,7 +105,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 
 	/** Get AD_LdapAccess_UU.
 		@return AD_LdapAccess_UU	  */
-	public String getAD_LdapAccess_UU () 
+	public String getAD_LdapAccess_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_LdapAccess_UU);
 	}
@@ -117,21 +117,20 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	}
 
 	/** Set Ldap Processor.
-		@param AD_LdapProcessor_ID 
-		LDAP Server to authenticate and authorize external systems based on iDempiere
-	  */
+		@param AD_LdapProcessor_ID LDAP Server to authenticate and authorize external systems based on iDempiere
+	*/
 	public void setAD_LdapProcessor_ID (int AD_LdapProcessor_ID)
 	{
-		if (AD_LdapProcessor_ID < 1) 
+		if (AD_LdapProcessor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_LdapProcessor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_LdapProcessor_ID, Integer.valueOf(AD_LdapProcessor_ID));
 	}
 
 	/** Get Ldap Processor.
 		@return LDAP Server to authenticate and authorize external systems based on iDempiere
 	  */
-	public int getAD_LdapProcessor_ID () 
+	public int getAD_LdapProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LdapProcessor_ID);
 		if (ii == null)
@@ -146,21 +145,20 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -177,9 +175,8 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -188,15 +185,14 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Error.
-		@param IsError 
-		An Error occurred in the execution
-	  */
+		@param IsError An Error occurred in the execution
+	*/
 	public void setIsError (boolean IsError)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsError, Boolean.valueOf(IsError));
@@ -205,7 +201,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	/** Get Error.
 		@return An Error occurred in the execution
 	  */
-	public boolean isError () 
+	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
 		if (oo != null) 
@@ -224,21 +220,20 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	}
 
 	/** Set Interest Area.
-		@param R_InterestArea_ID 
-		Interest Area or Topic
-	  */
+		@param R_InterestArea_ID Interest Area or Topic
+	*/
 	public void setR_InterestArea_ID (int R_InterestArea_ID)
 	{
-		if (R_InterestArea_ID < 1) 
+		if (R_InterestArea_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_InterestArea_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_InterestArea_ID, Integer.valueOf(R_InterestArea_ID));
 	}
 
 	/** Get Interest Area.
 		@return Interest Area or Topic
 	  */
-	public int getR_InterestArea_ID () 
+	public int getR_InterestArea_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_InterestArea_ID);
 		if (ii == null)
@@ -247,9 +242,8 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	}
 
 	/** Set Summary.
-		@param Summary 
-		Textual summary of this request
-	  */
+		@param Summary Textual summary of this request
+	*/
 	public void setSummary (String Summary)
 	{
 		set_ValueNoCheck (COLUMNNAME_Summary, Summary);
@@ -258,7 +252,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	/** Get Summary.
 		@return Textual summary of this request
 	  */
-	public String getSummary () 
+	public String getSummary()
 	{
 		return (String)get_Value(COLUMNNAME_Summary);
 	}

@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_MRP
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_MRP")
 public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent 
 {
@@ -35,7 +35,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PP_MRP (Properties ctx, int PP_MRP_ID, String trxName)
@@ -85,22 +85,21 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -115,21 +114,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_Value (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -144,21 +142,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Sales Order Line.
-		@param C_OrderLine_ID 
-		Sales Order Line
-	  */
+		@param C_OrderLine_ID Sales Order Line
+	*/
 	public void setC_OrderLine_ID (int C_OrderLine_ID)
 	{
-		if (C_OrderLine_ID < 1) 
+		if (C_OrderLine_ID < 1)
 			set_Value (COLUMNNAME_C_OrderLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_OrderLine_ID, Integer.valueOf(C_OrderLine_ID));
 	}
 
 	/** Get Sales Order Line.
 		@return Sales Order Line
 	  */
-	public int getC_OrderLine_ID () 
+	public int getC_OrderLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderLine_ID);
 		if (ii == null)
@@ -167,9 +164,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Date Confirm.
-		@param DateConfirm 
-		Date Confirm of this Order
-	  */
+		@param DateConfirm Date Confirm of this Order
+	*/
 	public void setDateConfirm (Timestamp DateConfirm)
 	{
 		set_Value (COLUMNNAME_DateConfirm, DateConfirm);
@@ -178,15 +174,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Date Confirm.
 		@return Date Confirm of this Order
 	  */
-	public Timestamp getDateConfirm () 
+	public Timestamp getDateConfirm()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateConfirm);
 	}
 
 	/** Set Date Finish Schedule.
-		@param DateFinishSchedule 
-		Scheduled Finish date for this Order
-	  */
+		@param DateFinishSchedule Scheduled Finish date for this Order
+	*/
 	public void setDateFinishSchedule (Timestamp DateFinishSchedule)
 	{
 		set_Value (COLUMNNAME_DateFinishSchedule, DateFinishSchedule);
@@ -195,15 +190,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Date Finish Schedule.
 		@return Scheduled Finish date for this Order
 	  */
-	public Timestamp getDateFinishSchedule () 
+	public Timestamp getDateFinishSchedule()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFinishSchedule);
 	}
 
 	/** Set Date Ordered.
-		@param DateOrdered 
-		Date of Order
-	  */
+		@param DateOrdered Date of Order
+	*/
 	public void setDateOrdered (Timestamp DateOrdered)
 	{
 		set_Value (COLUMNNAME_DateOrdered, DateOrdered);
@@ -212,15 +206,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Date Ordered.
 		@return Date of Order
 	  */
-	public Timestamp getDateOrdered () 
+	public Timestamp getDateOrdered()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateOrdered);
 	}
 
 	/** Set Date Promised.
-		@param DatePromised 
-		Date Order was promised
-	  */
+		@param DatePromised Date Order was promised
+	*/
 	public void setDatePromised (Timestamp DatePromised)
 	{
 		set_Value (COLUMNNAME_DatePromised, DatePromised);
@@ -229,15 +222,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Date Promised.
 		@return Date Order was promised
 	  */
-	public Timestamp getDatePromised () 
+	public Timestamp getDatePromised()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DatePromised);
 	}
 
 	/** Set Date Simulation.
-		@param DateSimulation 
-		Simulation date for this Material Plan
-	  */
+		@param DateSimulation Simulation date for this Material Plan
+	*/
 	public void setDateSimulation (Timestamp DateSimulation)
 	{
 		set_Value (COLUMNNAME_DateSimulation, DateSimulation);
@@ -246,15 +238,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Date Simulation.
 		@return Simulation date for this Material Plan
 	  */
-	public Timestamp getDateSimulation () 
+	public Timestamp getDateSimulation()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateSimulation);
 	}
 
 	/** Set Date Start.
-		@param DateStart 
-		Date Start for this Order
-	  */
+		@param DateStart Date Start for this Order
+	*/
 	public void setDateStart (Timestamp DateStart)
 	{
 		set_Value (COLUMNNAME_DateStart, DateStart);
@@ -263,15 +254,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Date Start.
 		@return Date Start for this Order
 	  */
-	public Timestamp getDateStart () 
+	public Timestamp getDateStart()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateStart);
 	}
 
 	/** Set Date Start Schedule.
-		@param DateStartSchedule 
-		Scheduled start date for this Order
-	  */
+		@param DateStartSchedule Scheduled start date for this Order
+	*/
 	public void setDateStartSchedule (Timestamp DateStartSchedule)
 	{
 		set_Value (COLUMNNAME_DateStartSchedule, DateStartSchedule);
@@ -280,7 +270,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Date Start Schedule.
 		@return Scheduled start date for this Order
 	  */
-	public Timestamp getDateStartSchedule () 
+	public Timestamp getDateStartSchedule()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateStartSchedule);
 	}
@@ -292,18 +282,19 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Distribution Order.
-		@param DD_Order_ID Distribution Order	  */
+		@param DD_Order_ID Distribution Order
+	*/
 	public void setDD_Order_ID (int DD_Order_ID)
 	{
-		if (DD_Order_ID < 1) 
+		if (DD_Order_ID < 1)
 			set_Value (COLUMNNAME_DD_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_DD_Order_ID, Integer.valueOf(DD_Order_ID));
 	}
 
 	/** Get Distribution Order.
 		@return Distribution Order	  */
-	public int getDD_Order_ID () 
+	public int getDD_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DD_Order_ID);
 		if (ii == null)
@@ -318,18 +309,19 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Distribution Order Line.
-		@param DD_OrderLine_ID Distribution Order Line	  */
+		@param DD_OrderLine_ID Distribution Order Line
+	*/
 	public void setDD_OrderLine_ID (int DD_OrderLine_ID)
 	{
-		if (DD_OrderLine_ID < 1) 
+		if (DD_OrderLine_ID < 1)
 			set_Value (COLUMNNAME_DD_OrderLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_DD_OrderLine_ID, Integer.valueOf(DD_OrderLine_ID));
 	}
 
 	/** Get Distribution Order Line.
 		@return Distribution Order Line	  */
-	public int getDD_OrderLine_ID () 
+	public int getDD_OrderLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DD_OrderLine_ID);
 		if (ii == null)
@@ -338,9 +330,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -349,7 +340,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -381,9 +372,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -393,15 +383,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Available.
-		@param IsAvailable 
-		Resource is available
-	  */
+		@param IsAvailable Resource is available
+	*/
 	public void setIsAvailable (boolean IsAvailable)
 	{
 		set_Value (COLUMNNAME_IsAvailable, Boolean.valueOf(IsAvailable));
@@ -410,7 +399,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Available.
 		@return Resource is available
 	  */
-	public boolean isAvailable () 
+	public boolean isAvailable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAvailable);
 		if (oo != null) 
@@ -429,21 +418,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Forecast.
-		@param M_Forecast_ID 
-		Material Forecast
-	  */
+		@param M_Forecast_ID Material Forecast
+	*/
 	public void setM_Forecast_ID (int M_Forecast_ID)
 	{
-		if (M_Forecast_ID < 1) 
+		if (M_Forecast_ID < 1)
 			set_Value (COLUMNNAME_M_Forecast_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Forecast_ID, Integer.valueOf(M_Forecast_ID));
 	}
 
 	/** Get Forecast.
 		@return Material Forecast
 	  */
-	public int getM_Forecast_ID () 
+	public int getM_Forecast_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Forecast_ID);
 		if (ii == null)
@@ -458,21 +446,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Forecast Line.
-		@param M_ForecastLine_ID 
-		Forecast Line
-	  */
+		@param M_ForecastLine_ID Forecast Line
+	*/
 	public void setM_ForecastLine_ID (int M_ForecastLine_ID)
 	{
-		if (M_ForecastLine_ID < 1) 
+		if (M_ForecastLine_ID < 1)
 			set_Value (COLUMNNAME_M_ForecastLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ForecastLine_ID, Integer.valueOf(M_ForecastLine_ID));
 	}
 
 	/** Get Forecast Line.
 		@return Forecast Line
 	  */
-	public int getM_ForecastLine_ID () 
+	public int getM_ForecastLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ForecastLine_ID);
 		if (ii == null)
@@ -487,21 +474,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -516,21 +502,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Requisition.
-		@param M_Requisition_ID 
-		Material Requisition
-	  */
+		@param M_Requisition_ID Material Requisition
+	*/
 	public void setM_Requisition_ID (int M_Requisition_ID)
 	{
-		if (M_Requisition_ID < 1) 
+		if (M_Requisition_ID < 1)
 			set_Value (COLUMNNAME_M_Requisition_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Requisition_ID, Integer.valueOf(M_Requisition_ID));
 	}
 
 	/** Get Requisition.
 		@return Material Requisition
 	  */
-	public int getM_Requisition_ID () 
+	public int getM_Requisition_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Requisition_ID);
 		if (ii == null)
@@ -545,21 +530,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Requisition Line.
-		@param M_RequisitionLine_ID 
-		Material Requisition Line
-	  */
+		@param M_RequisitionLine_ID Material Requisition Line
+	*/
 	public void setM_RequisitionLine_ID (int M_RequisitionLine_ID)
 	{
-		if (M_RequisitionLine_ID < 1) 
+		if (M_RequisitionLine_ID < 1)
 			set_Value (COLUMNNAME_M_RequisitionLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_RequisitionLine_ID, Integer.valueOf(M_RequisitionLine_ID));
 	}
 
 	/** Get Requisition Line.
 		@return Material Requisition Line
 	  */
-	public int getM_RequisitionLine_ID () 
+	public int getM_RequisitionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_RequisitionLine_ID);
 		if (ii == null)
@@ -574,21 +558,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -597,9 +580,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -608,7 +590,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -638,9 +620,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Safety Stock = STK */
 	public static final String ORDERTYPE_SafetyStock = "STK";
 	/** Set Order Type.
-		@param OrderType 
-		Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
-	  */
+		@param OrderType Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
+	*/
 	public void setOrderType (String OrderType)
 	{
 
@@ -650,7 +631,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Order Type.
 		@return Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
 	  */
-	public String getOrderType () 
+	public String getOrderType()
 	{
 		return (String)get_Value(COLUMNNAME_OrderType);
 	}
@@ -662,18 +643,19 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Planner.
-		@param Planner_ID Planner	  */
+		@param Planner_ID Planner
+	*/
 	public void setPlanner_ID (int Planner_ID)
 	{
-		if (Planner_ID < 1) 
+		if (Planner_ID < 1)
 			set_Value (COLUMNNAME_Planner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Planner_ID, Integer.valueOf(Planner_ID));
 	}
 
 	/** Get Planner.
 		@return Planner	  */
-	public int getPlanner_ID () 
+	public int getPlanner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Planner_ID);
 		if (ii == null)
@@ -682,21 +664,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Material Requirement Planning.
-		@param PP_MRP_ID 
-		MRP ID
-	  */
+		@param PP_MRP_ID MRP ID
+	*/
 	public void setPP_MRP_ID (int PP_MRP_ID)
 	{
-		if (PP_MRP_ID < 1) 
+		if (PP_MRP_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_MRP_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_MRP_ID, Integer.valueOf(PP_MRP_ID));
 	}
 
 	/** Get Material Requirement Planning.
 		@return MRP ID
 	  */
-	public int getPP_MRP_ID () 
+	public int getPP_MRP_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_MRP_ID);
 		if (ii == null)
@@ -705,7 +686,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set PP_MRP_UU.
-		@param PP_MRP_UU PP_MRP_UU	  */
+		@param PP_MRP_UU PP_MRP_UU
+	*/
 	public void setPP_MRP_UU (String PP_MRP_UU)
 	{
 		set_Value (COLUMNNAME_PP_MRP_UU, PP_MRP_UU);
@@ -713,7 +695,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 
 	/** Get PP_MRP_UU.
 		@return PP_MRP_UU	  */
-	public String getPP_MRP_UU () 
+	public String getPP_MRP_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_MRP_UU);
 	}
@@ -725,18 +707,19 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Manufacturing Order BOM Line.
-		@param PP_Order_BOMLine_ID Manufacturing Order BOM Line	  */
+		@param PP_Order_BOMLine_ID Manufacturing Order BOM Line
+	*/
 	public void setPP_Order_BOMLine_ID (int PP_Order_BOMLine_ID)
 	{
-		if (PP_Order_BOMLine_ID < 1) 
+		if (PP_Order_BOMLine_ID < 1)
 			set_Value (COLUMNNAME_PP_Order_BOMLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PP_Order_BOMLine_ID, Integer.valueOf(PP_Order_BOMLine_ID));
 	}
 
 	/** Get Manufacturing Order BOM Line.
 		@return Manufacturing Order BOM Line	  */
-	public int getPP_Order_BOMLine_ID () 
+	public int getPP_Order_BOMLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_BOMLine_ID);
 		if (ii == null)
@@ -751,21 +734,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_Value (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)
@@ -774,9 +756,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Priority.
-		@param Priority 
-		Indicates if this request is of a high, medium or low priority.
-	  */
+		@param Priority Indicates if this request is of a high, medium or low priority.
+	*/
 	public void setPriority (String Priority)
 	{
 		set_Value (COLUMNNAME_Priority, Priority);
@@ -785,15 +766,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Priority.
 		@return Indicates if this request is of a high, medium or low priority.
 	  */
-	public String getPriority () 
+	public String getPriority()
 	{
 		return (String)get_Value(COLUMNNAME_Priority);
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -802,7 +782,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -817,21 +797,20 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	}
 
 	/** Set Resource.
-		@param S_Resource_ID 
-		Resource
-	  */
+		@param S_Resource_ID Resource
+	*/
 	public void setS_Resource_ID (int S_Resource_ID)
 	{
-		if (S_Resource_ID < 1) 
+		if (S_Resource_ID < 1)
 			set_Value (COLUMNNAME_S_Resource_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
 	}
 
 	/** Get Resource.
 		@return Resource
 	  */
-	public int getS_Resource_ID () 
+	public int getS_Resource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
 		if (ii == null)
@@ -846,9 +825,8 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Supply = S */
 	public static final String TYPEMRP_Supply = "S";
 	/** Set MRP Type.
-		@param TypeMRP 
-		MRP Type determines whether a record is demand or supply
-	  */
+		@param TypeMRP MRP Type determines whether a record is demand or supply
+	*/
 	public void setTypeMRP (String TypeMRP)
 	{
 
@@ -858,15 +836,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get MRP Type.
 		@return MRP Type determines whether a record is demand or supply
 	  */
-	public String getTypeMRP () 
+	public String getTypeMRP()
 	{
 		return (String)get_Value(COLUMNNAME_TypeMRP);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -875,15 +852,14 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Version.
-		@param Version 
-		Version of the table definition
-	  */
+		@param Version Version of the table definition
+	*/
 	public void setVersion (BigDecimal Version)
 	{
 		set_Value (COLUMNNAME_Version, Version);
@@ -892,7 +868,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/** Get Version.
 		@return Version of the table definition
 	  */
-	public BigDecimal getVersion () 
+	public BigDecimal getVersion()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Version);
 		if (bd == null)

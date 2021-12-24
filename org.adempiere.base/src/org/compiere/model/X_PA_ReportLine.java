@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportLine")
 public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -91,7 +91,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Subtract (Op1-Op2) = S */
 	public static final String CALCULATIONTYPE_SubtractOp1_Op2 = "S";
 	/** Set Calculation.
-		@param CalculationType Calculation	  */
+		@param CalculationType Calculation
+	*/
 	public void setCalculationType (String CalculationType)
 	{
 
@@ -100,15 +101,14 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** Get Calculation.
 		@return Calculation	  */
-	public String getCalculationType () 
+	public String getCalculationType()
 	{
 		return (String)get_Value(COLUMNNAME_CalculationType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -117,7 +117,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -129,21 +129,20 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set Budget.
-		@param GL_Budget_ID 
-		General Ledger Budget
-	  */
+		@param GL_Budget_ID General Ledger Budget
+	*/
 	public void setGL_Budget_ID (int GL_Budget_ID)
 	{
-		if (GL_Budget_ID < 1) 
+		if (GL_Budget_ID < 1)
 			set_Value (COLUMNNAME_GL_Budget_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_Budget_ID, Integer.valueOf(GL_Budget_ID));
 	}
 
 	/** Get Budget.
 		@return General Ledger Budget
 	  */
-	public int getGL_Budget_ID () 
+	public int getGL_Budget_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Budget_ID);
 		if (ii == null)
@@ -152,9 +151,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set Inverse Operation for Debit/Credit Only Column.
-		@param IsInverseDebitCreditOnly 
-		Apply inverse operation to debit or credit only column
-	  */
+		@param IsInverseDebitCreditOnly Apply inverse operation to debit or credit only column
+	*/
 	public void setIsInverseDebitCreditOnly (boolean IsInverseDebitCreditOnly)
 	{
 		set_Value (COLUMNNAME_IsInverseDebitCreditOnly, Boolean.valueOf(IsInverseDebitCreditOnly));
@@ -163,7 +161,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Inverse Operation for Debit/Credit Only Column.
 		@return Apply inverse operation to debit or credit only column
 	  */
-	public boolean isInverseDebitCreditOnly () 
+	public boolean isInverseDebitCreditOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInverseDebitCreditOnly);
 		if (oo != null) 
@@ -176,9 +174,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set Printed.
-		@param IsPrinted 
-		Indicates if this document / line is printed
-	  */
+		@param IsPrinted Indicates if this document / line is printed
+	*/
 	public void setIsPrinted (boolean IsPrinted)
 	{
 		set_Value (COLUMNNAME_IsPrinted, Boolean.valueOf(IsPrinted));
@@ -187,7 +184,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Printed.
 		@return Indicates if this document / line is printed
 	  */
-	public boolean isPrinted () 
+	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
 		if (oo != null) 
@@ -200,9 +197,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set Show Opposite Sign.
-		@param IsShowOppositeSign 
-		Display values with the opposite sign
-	  */
+		@param IsShowOppositeSign Display values with the opposite sign
+	*/
 	public void setIsShowOppositeSign (boolean IsShowOppositeSign)
 	{
 		set_Value (COLUMNNAME_IsShowOppositeSign, Boolean.valueOf(IsShowOppositeSign));
@@ -211,7 +207,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Show Opposite Sign.
 		@return Display values with the opposite sign
 	  */
-	public boolean isShowOppositeSign () 
+	public boolean isShowOppositeSign()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowOppositeSign);
 		if (oo != null) 
@@ -232,7 +228,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Segment Value = S */
 	public static final String LINETYPE_SegmentValue = "S";
 	/** Set Line Type.
-		@param LineType Line Type	  */
+		@param LineType Line Type
+	*/
 	public void setLineType (String LineType)
 	{
 
@@ -241,15 +238,14 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** Get Line Type.
 		@return Line Type	  */
-	public String getLineType () 
+	public String getLineType()
 	{
 		return (String)get_Value(COLUMNNAME_LineType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -258,7 +254,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -278,21 +274,20 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set Operand 1.
-		@param Oper_1_ID 
-		First operand for calculation
-	  */
+		@param Oper_1_ID First operand for calculation
+	*/
 	public void setOper_1_ID (int Oper_1_ID)
 	{
-		if (Oper_1_ID < 1) 
+		if (Oper_1_ID < 1)
 			set_Value (COLUMNNAME_Oper_1_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Oper_1_ID, Integer.valueOf(Oper_1_ID));
 	}
 
 	/** Get Operand 1.
 		@return First operand for calculation
 	  */
-	public int getOper_1_ID () 
+	public int getOper_1_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Oper_1_ID);
 		if (ii == null)
@@ -307,21 +302,20 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set Operand 2.
-		@param Oper_2_ID 
-		Second operand for calculation
-	  */
+		@param Oper_2_ID Second operand for calculation
+	*/
 	public void setOper_2_ID (int Oper_2_ID)
 	{
-		if (Oper_2_ID < 1) 
+		if (Oper_2_ID < 1)
 			set_Value (COLUMNNAME_Oper_2_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Oper_2_ID, Integer.valueOf(Oper_2_ID));
 	}
 
 	/** Get Operand 2.
 		@return Second operand for calculation
 	  */
-	public int getOper_2_ID () 
+	public int getOper_2_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Oper_2_ID);
 		if (ii == null)
@@ -344,7 +338,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Solid = SD */
 	public static final String OVERLINESTROKETYPE_Solid = "SD";
 	/** Set Overline Stroke Type.
-		@param OverlineStrokeType Overline Stroke Type	  */
+		@param OverlineStrokeType Overline Stroke Type
+	*/
 	public void setOverlineStrokeType (String OverlineStrokeType)
 	{
 
@@ -353,7 +348,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** Get Overline Stroke Type.
 		@return Overline Stroke Type	  */
-	public String getOverlineStrokeType () 
+	public String getOverlineStrokeType()
 	{
 		return (String)get_Value(COLUMNNAME_OverlineStrokeType);
 	}
@@ -373,9 +368,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Balance (accounted sign) = S */
 	public static final String PAAMOUNTTYPE_BalanceAccountedSign = "S";
 	/** Set Amount Type.
-		@param PAAmountType 
-		PA Amount Type for reporting
-	  */
+		@param PAAmountType PA Amount Type for reporting
+	*/
 	public void setPAAmountType (String PAAmountType)
 	{
 
@@ -385,7 +379,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Amount Type.
 		@return PA Amount Type for reporting
 	  */
-	public String getPAAmountType () 
+	public String getPAAmountType()
 	{
 		return (String)get_Value(COLUMNNAME_PAAmountType);
 	}
@@ -401,9 +395,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Year = Y */
 	public static final String PAPERIODTYPE_Year = "Y";
 	/** Set Period Type.
-		@param PAPeriodType 
-		PA Period Type
-	  */
+		@param PAPeriodType PA Period Type
+	*/
 	public void setPAPeriodType (String PAPeriodType)
 	{
 
@@ -413,24 +406,25 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Period Type.
 		@return PA Period Type
 	  */
-	public String getPAPeriodType () 
+	public String getPAPeriodType()
 	{
 		return (String)get_Value(COLUMNNAME_PAPeriodType);
 	}
 
 	/** Set Report Line.
-		@param PA_ReportLine_ID Report Line	  */
+		@param PA_ReportLine_ID Report Line
+	*/
 	public void setPA_ReportLine_ID (int PA_ReportLine_ID)
 	{
-		if (PA_ReportLine_ID < 1) 
+		if (PA_ReportLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_ReportLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_ReportLine_ID, Integer.valueOf(PA_ReportLine_ID));
 	}
 
 	/** Get Report Line.
 		@return Report Line	  */
-	public int getPA_ReportLine_ID () 
+	public int getPA_ReportLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLine_ID);
 		if (ii == null)
@@ -445,18 +439,19 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set Report Line Set.
-		@param PA_ReportLineSet_ID Report Line Set	  */
+		@param PA_ReportLineSet_ID Report Line Set
+	*/
 	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID)
 	{
-		if (PA_ReportLineSet_ID < 1) 
+		if (PA_ReportLineSet_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, Integer.valueOf(PA_ReportLineSet_ID));
 	}
 
 	/** Get Report Line Set.
 		@return Report Line Set	  */
-	public int getPA_ReportLineSet_ID () 
+	public int getPA_ReportLineSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLineSet_ID);
 		if (ii == null)
@@ -465,7 +460,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	}
 
 	/** Set PA_ReportLine_UU.
-		@param PA_ReportLine_UU PA_ReportLine_UU	  */
+		@param PA_ReportLine_UU PA_ReportLine_UU
+	*/
 	public void setPA_ReportLine_UU (String PA_ReportLine_UU)
 	{
 		set_Value (COLUMNNAME_PA_ReportLine_UU, PA_ReportLine_UU);
@@ -473,7 +469,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** Get PA_ReportLine_UU.
 		@return PA_ReportLine_UU	  */
-	public String getPA_ReportLine_UU () 
+	public String getPA_ReportLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_ReportLine_UU);
 	}
@@ -491,9 +487,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
-		@param PostingType 
-		The type of posted amount for the transaction
-	  */
+		@param PostingType The type of posted amount for the transaction
+	*/
 	public void setPostingType (String PostingType)
 	{
 
@@ -503,15 +498,14 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get PostingType.
 		@return The type of posted amount for the transaction
 	  */
-	public String getPostingType () 
+	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -520,7 +514,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -543,7 +537,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/** Solid = SD */
 	public static final String UNDERLINESTROKETYPE_Solid = "SD";
 	/** Set Underline Stroke Type.
-		@param UnderlineStrokeType Underline Stroke Type	  */
+		@param UnderlineStrokeType Underline Stroke Type
+	*/
 	public void setUnderlineStrokeType (String UnderlineStrokeType)
 	{
 
@@ -552,7 +547,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 
 	/** Get Underline Stroke Type.
 		@return Underline Stroke Type	  */
-	public String getUnderlineStrokeType () 
+	public String getUnderlineStrokeType()
 	{
 		return (String)get_Value(COLUMNNAME_UnderlineStrokeType);
 	}

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Element
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Element")
 public class X_AD_Element extends PO implements I_AD_Element, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Element (Properties ctx, int AD_Element_ID, String trxName)
@@ -77,21 +77,20 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
     }
 
 	/** Set System Element.
-		@param AD_Element_ID 
-		System Element enables the central maintenance of column description and help.
-	  */
+		@param AD_Element_ID System Element enables the central maintenance of column description and help.
+	*/
 	public void setAD_Element_ID (int AD_Element_ID)
 	{
-		if (AD_Element_ID < 1) 
+		if (AD_Element_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Element_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Element_ID, Integer.valueOf(AD_Element_ID));
 	}
 
 	/** Get System Element.
 		@return System Element enables the central maintenance of column description and help.
 	  */
-	public int getAD_Element_ID () 
+	public int getAD_Element_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Element_ID);
 		if (ii == null)
@@ -100,7 +99,8 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	}
 
 	/** Set AD_Element_UU.
-		@param AD_Element_UU AD_Element_UU	  */
+		@param AD_Element_UU AD_Element_UU
+	*/
 	public void setAD_Element_UU (String AD_Element_UU)
 	{
 		set_Value (COLUMNNAME_AD_Element_UU, AD_Element_UU);
@@ -108,15 +108,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 
 	/** Get AD_Element_UU.
 		@return AD_Element_UU	  */
-	public String getAD_Element_UU () 
+	public String getAD_Element_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Element_UU);
 	}
 
 	/** Set DB Column Name.
-		@param ColumnName 
-		Name of the column in the database
-	  */
+		@param ColumnName Name of the column in the database
+	*/
 	public void setColumnName (String ColumnName)
 	{
 		set_Value (COLUMNNAME_ColumnName, ColumnName);
@@ -125,7 +124,7 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get DB Column Name.
 		@return Name of the column in the database
 	  */
-	public String getColumnName () 
+	public String getColumnName()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
 	}
@@ -139,9 +138,8 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -150,7 +148,7 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -158,9 +156,8 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -170,15 +167,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -187,15 +183,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -204,13 +199,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Placeholder.
-		@param Placeholder Placeholder	  */
+		@param Placeholder Placeholder
+	*/
 	public void setPlaceholder (String Placeholder)
 	{
 		set_Value (COLUMNNAME_Placeholder, Placeholder);
@@ -218,15 +214,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 
 	/** Get Placeholder.
 		@return Placeholder	  */
-	public String getPlaceholder () 
+	public String getPlaceholder()
 	{
 		return (String)get_Value(COLUMNNAME_Placeholder);
 	}
 
 	/** Set PO Description.
-		@param PO_Description 
-		Description in PO Screens
-	  */
+		@param PO_Description Description in PO Screens
+	*/
 	public void setPO_Description (String PO_Description)
 	{
 		set_Value (COLUMNNAME_PO_Description, PO_Description);
@@ -235,15 +230,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get PO Description.
 		@return Description in PO Screens
 	  */
-	public String getPO_Description () 
+	public String getPO_Description()
 	{
 		return (String)get_Value(COLUMNNAME_PO_Description);
 	}
 
 	/** Set PO Help.
-		@param PO_Help 
-		Help for PO Screens
-	  */
+		@param PO_Help Help for PO Screens
+	*/
 	public void setPO_Help (String PO_Help)
 	{
 		set_Value (COLUMNNAME_PO_Help, PO_Help);
@@ -252,15 +246,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get PO Help.
 		@return Help for PO Screens
 	  */
-	public String getPO_Help () 
+	public String getPO_Help()
 	{
 		return (String)get_Value(COLUMNNAME_PO_Help);
 	}
 
 	/** Set PO Name.
-		@param PO_Name 
-		Name on PO Screens
-	  */
+		@param PO_Name Name on PO Screens
+	*/
 	public void setPO_Name (String PO_Name)
 	{
 		set_Value (COLUMNNAME_PO_Name, PO_Name);
@@ -269,15 +262,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get PO Name.
 		@return Name on PO Screens
 	  */
-	public String getPO_Name () 
+	public String getPO_Name()
 	{
 		return (String)get_Value(COLUMNNAME_PO_Name);
 	}
 
 	/** Set PO Print name.
-		@param PO_PrintName 
-		Print name on PO Screens/Reports
-	  */
+		@param PO_PrintName Print name on PO Screens/Reports
+	*/
 	public void setPO_PrintName (String PO_PrintName)
 	{
 		set_Value (COLUMNNAME_PO_PrintName, PO_PrintName);
@@ -286,15 +278,14 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get PO Print name.
 		@return Print name on PO Screens/Reports
 	  */
-	public String getPO_PrintName () 
+	public String getPO_PrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PO_PrintName);
 	}
 
 	/** Set Print Text.
-		@param PrintName 
-		The label text to be printed on a document or correspondence.
-	  */
+		@param PrintName The label text to be printed on a document or correspondence.
+	*/
 	public void setPrintName (String PrintName)
 	{
 		set_Value (COLUMNNAME_PrintName, PrintName);
@@ -303,7 +294,7 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/** Get Print Text.
 		@return The label text to be printed on a document or correspondence.
 	  */
-	public String getPrintName () 
+	public String getPrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PrintName);
 	}

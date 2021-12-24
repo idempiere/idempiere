@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for R_RequestAction
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestAction")
 public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_RequestAction (Properties ctx, int R_RequestAction_ID, String trxName)
@@ -81,21 +81,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -110,21 +109,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -139,21 +137,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -168,21 +165,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -196,22 +192,21 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -226,21 +221,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -259,9 +253,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Private Information = P */
 	public static final String CONFIDENTIALTYPE_PrivateInformation = "P";
 	/** Set Confidentiality.
-		@param ConfidentialType 
-		Type of Confidentiality
-	  */
+		@param ConfidentialType Type of Confidentiality
+	*/
 	public void setConfidentialType (String ConfidentialType)
 	{
 
@@ -271,7 +264,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Confidentiality.
 		@return Type of Confidentiality
 	  */
-	public String getConfidentialType () 
+	public String getConfidentialType()
 	{
 		return (String)get_Value(COLUMNNAME_ConfidentialType);
 	}
@@ -283,21 +276,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -312,21 +304,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -341,21 +332,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -364,9 +354,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Complete Plan.
-		@param DateCompletePlan 
-		Planned Completion Date
-	  */
+		@param DateCompletePlan Planned Completion Date
+	*/
 	public void setDateCompletePlan (Timestamp DateCompletePlan)
 	{
 		set_Value (COLUMNNAME_DateCompletePlan, DateCompletePlan);
@@ -375,15 +364,14 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Complete Plan.
 		@return Planned Completion Date
 	  */
-	public Timestamp getDateCompletePlan () 
+	public Timestamp getDateCompletePlan()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateCompletePlan);
 	}
 
 	/** Set Date next action.
-		@param DateNextAction 
-		Date that this request should be acted on
-	  */
+		@param DateNextAction Date that this request should be acted on
+	*/
 	public void setDateNextAction (Timestamp DateNextAction)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateNextAction, DateNextAction);
@@ -392,15 +380,14 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Date next action.
 		@return Date that this request should be acted on
 	  */
-	public Timestamp getDateNextAction () 
+	public Timestamp getDateNextAction()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateNextAction);
 	}
 
 	/** Set Start Plan.
-		@param DateStartPlan 
-		Planned Start Date
-	  */
+		@param DateStartPlan Planned Start Date
+	*/
 	public void setDateStartPlan (Timestamp DateStartPlan)
 	{
 		set_Value (COLUMNNAME_DateStartPlan, DateStartPlan);
@@ -409,15 +396,14 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Start Plan.
 		@return Planned Start Date
 	  */
-	public Timestamp getDateStartPlan () 
+	public Timestamp getDateStartPlan()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateStartPlan);
 	}
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -426,7 +412,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
@@ -438,9 +424,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Yes = Y */
 	public static final String ISESCALATED_Yes = "Y";
 	/** Set Escalated.
-		@param IsEscalated 
-		This request has been escalated
-	  */
+		@param IsEscalated This request has been escalated
+	*/
 	public void setIsEscalated (String IsEscalated)
 	{
 
@@ -450,15 +435,14 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Escalated.
 		@return This request has been escalated
 	  */
-	public String getIsEscalated () 
+	public String getIsEscalated()
 	{
 		return (String)get_Value(COLUMNNAME_IsEscalated);
 	}
 
 	/** Set Invoiced.
-		@param IsInvoiced 
-		Is this invoiced?
-	  */
+		@param IsInvoiced Is this invoiced?
+	*/
 	public void setIsInvoiced (boolean IsInvoiced)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsInvoiced, Boolean.valueOf(IsInvoiced));
@@ -467,7 +451,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Invoiced.
 		@return Is this invoiced?
 	  */
-	public boolean isInvoiced () 
+	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
 		if (oo != null) 
@@ -486,9 +470,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Yes = Y */
 	public static final String ISSELFSERVICE_Yes = "Y";
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (String IsSelfService)
 	{
 
@@ -498,7 +481,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public String getIsSelfService () 
+	public String getIsSelfService()
 	{
 		return (String)get_Value(COLUMNNAME_IsSelfService);
 	}
@@ -510,21 +493,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Shipment/Receipt.
-		@param M_InOut_ID 
-		Material Shipment Document
-	  */
+		@param M_InOut_ID Material Shipment Document
+	*/
 	public void setM_InOut_ID (int M_InOut_ID)
 	{
-		if (M_InOut_ID < 1) 
+		if (M_InOut_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOut_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOut_ID, Integer.valueOf(M_InOut_ID));
 	}
 
 	/** Get Shipment/Receipt.
 		@return Material Shipment Document
 	  */
-	public int getM_InOut_ID () 
+	public int getM_InOut_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOut_ID);
 		if (ii == null)
@@ -539,21 +521,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -568,21 +549,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Product Used.
-		@param M_ProductSpent_ID 
-		Product/Resource/Service used in Request
-	  */
+		@param M_ProductSpent_ID Product/Resource/Service used in Request
+	*/
 	public void setM_ProductSpent_ID (int M_ProductSpent_ID)
 	{
-		if (M_ProductSpent_ID < 1) 
+		if (M_ProductSpent_ID < 1)
 			set_Value (COLUMNNAME_M_ProductSpent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductSpent_ID, Integer.valueOf(M_ProductSpent_ID));
 	}
 
 	/** Get Product Used.
 		@return Product/Resource/Service used in Request
 	  */
-	public int getM_ProductSpent_ID () 
+	public int getM_ProductSpent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductSpent_ID);
 		if (ii == null)
@@ -597,21 +577,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set RMA.
-		@param M_RMA_ID 
-		Return Material Authorization
-	  */
+		@param M_RMA_ID Return Material Authorization
+	*/
 	public void setM_RMA_ID (int M_RMA_ID)
 	{
-		if (M_RMA_ID < 1) 
+		if (M_RMA_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_RMA_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_RMA_ID, Integer.valueOf(M_RMA_ID));
 	}
 
 	/** Get RMA.
 		@return Return Material Authorization
 	  */
-	public int getM_RMA_ID () 
+	public int getM_RMA_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_RMA_ID);
 		if (ii == null)
@@ -620,9 +599,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Null Columns.
-		@param NullColumns 
-		Columns with NULL value
-	  */
+		@param NullColumns Columns with NULL value
+	*/
 	public void setNullColumns (String NullColumns)
 	{
 		set_ValueNoCheck (COLUMNNAME_NullColumns, NullColumns);
@@ -631,7 +609,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Null Columns.
 		@return Columns with NULL value
 	  */
-	public String getNullColumns () 
+	public String getNullColumns()
 	{
 		return (String)get_Value(COLUMNNAME_NullColumns);
 	}
@@ -649,9 +627,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Minor = 9 */
 	public static final String PRIORITY_Minor = "9";
 	/** Set Priority.
-		@param Priority 
-		Indicates if this request is of a high, medium or low priority.
-	  */
+		@param Priority Indicates if this request is of a high, medium or low priority.
+	*/
 	public void setPriority (String Priority)
 	{
 
@@ -661,7 +638,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Priority.
 		@return Indicates if this request is of a high, medium or low priority.
 	  */
-	public String getPriority () 
+	public String getPriority()
 	{
 		return (String)get_Value(COLUMNNAME_Priority);
 	}
@@ -679,9 +656,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Minor = 9 */
 	public static final String PRIORITYUSER_Minor = "9";
 	/** Set User Importance.
-		@param PriorityUser 
-		Priority of the issue for the User
-	  */
+		@param PriorityUser Priority of the issue for the User
+	*/
 	public void setPriorityUser (String PriorityUser)
 	{
 
@@ -691,15 +667,14 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get User Importance.
 		@return Priority of the issue for the User
 	  */
-	public String getPriorityUser () 
+	public String getPriorityUser()
 	{
 		return (String)get_Value(COLUMNNAME_PriorityUser);
 	}
 
 	/** Set Quantity Invoiced.
-		@param QtyInvoiced 
-		Invoiced Quantity
-	  */
+		@param QtyInvoiced Invoiced Quantity
+	*/
 	public void setQtyInvoiced (BigDecimal QtyInvoiced)
 	{
 		set_Value (COLUMNNAME_QtyInvoiced, QtyInvoiced);
@@ -708,7 +683,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Quantity Invoiced.
 		@return Invoiced Quantity
 	  */
-	public BigDecimal getQtyInvoiced () 
+	public BigDecimal getQtyInvoiced()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyInvoiced);
 		if (bd == null)
@@ -717,9 +692,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Quantity Plan.
-		@param QtyPlan 
-		Planned Quantity
-	  */
+		@param QtyPlan Planned Quantity
+	*/
 	public void setQtyPlan (BigDecimal QtyPlan)
 	{
 		set_Value (COLUMNNAME_QtyPlan, QtyPlan);
@@ -728,7 +702,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Quantity Plan.
 		@return Planned Quantity
 	  */
-	public BigDecimal getQtyPlan () 
+	public BigDecimal getQtyPlan()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyPlan);
 		if (bd == null)
@@ -737,9 +711,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Quantity Used.
-		@param QtySpent 
-		Quantity used for this event
-	  */
+		@param QtySpent Quantity used for this event
+	*/
 	public void setQtySpent (BigDecimal QtySpent)
 	{
 		set_Value (COLUMNNAME_QtySpent, QtySpent);
@@ -748,7 +721,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Quantity Used.
 		@return Quantity used for this event
 	  */
-	public BigDecimal getQtySpent () 
+	public BigDecimal getQtySpent()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtySpent);
 		if (bd == null)
@@ -763,21 +736,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Category.
-		@param R_Category_ID 
-		Request Category
-	  */
+		@param R_Category_ID Request Category
+	*/
 	public void setR_Category_ID (int R_Category_ID)
 	{
-		if (R_Category_ID < 1) 
+		if (R_Category_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Category_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Category_ID, Integer.valueOf(R_Category_ID));
 	}
 
 	/** Get Category.
 		@return Request Category
 	  */
-	public int getR_Category_ID () 
+	public int getR_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Category_ID);
 		if (ii == null)
@@ -792,21 +764,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Group.
-		@param R_Group_ID 
-		Request Group
-	  */
+		@param R_Group_ID Request Group
+	*/
 	public void setR_Group_ID (int R_Group_ID)
 	{
-		if (R_Group_ID < 1) 
+		if (R_Group_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Group_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Group_ID, Integer.valueOf(R_Group_ID));
 	}
 
 	/** Get Group.
 		@return Request Group
 	  */
-	public int getR_Group_ID () 
+	public int getR_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Group_ID);
 		if (ii == null)
@@ -815,21 +786,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Request History.
-		@param R_RequestAction_ID 
-		Request has been changed
-	  */
+		@param R_RequestAction_ID Request has been changed
+	*/
 	public void setR_RequestAction_ID (int R_RequestAction_ID)
 	{
-		if (R_RequestAction_ID < 1) 
+		if (R_RequestAction_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_RequestAction_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_RequestAction_ID, Integer.valueOf(R_RequestAction_ID));
 	}
 
 	/** Get Request History.
 		@return Request has been changed
 	  */
-	public int getR_RequestAction_ID () 
+	public int getR_RequestAction_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestAction_ID);
 		if (ii == null)
@@ -838,7 +808,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set R_RequestAction_UU.
-		@param R_RequestAction_UU R_RequestAction_UU	  */
+		@param R_RequestAction_UU R_RequestAction_UU
+	*/
 	public void setR_RequestAction_UU (String R_RequestAction_UU)
 	{
 		set_Value (COLUMNNAME_R_RequestAction_UU, R_RequestAction_UU);
@@ -846,7 +817,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 
 	/** Get R_RequestAction_UU.
 		@return R_RequestAction_UU	  */
-	public String getR_RequestAction_UU () 
+	public String getR_RequestAction_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_RequestAction_UU);
 	}
@@ -858,21 +829,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Request.
-		@param R_Request_ID 
-		Request from a Business Partner or Prospect
-	  */
+		@param R_Request_ID Request from a Business Partner or Prospect
+	*/
 	public void setR_Request_ID (int R_Request_ID)
 	{
-		if (R_Request_ID < 1) 
+		if (R_Request_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, Integer.valueOf(R_Request_ID));
 	}
 
 	/** Get Request.
 		@return Request from a Business Partner or Prospect
 	  */
-	public int getR_Request_ID () 
+	public int getR_Request_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Request_ID);
 		if (ii == null)
@@ -887,21 +857,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Request Type.
-		@param R_RequestType_ID 
-		Type of request (e.g. Inquiry, Complaint, ..)
-	  */
+		@param R_RequestType_ID Type of request (e.g. Inquiry, Complaint, ..)
+	*/
 	public void setR_RequestType_ID (int R_RequestType_ID)
 	{
-		if (R_RequestType_ID < 1) 
+		if (R_RequestType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_RequestType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_RequestType_ID, Integer.valueOf(R_RequestType_ID));
 	}
 
 	/** Get Request Type.
 		@return Type of request (e.g. Inquiry, Complaint, ..)
 	  */
-	public int getR_RequestType_ID () 
+	public int getR_RequestType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestType_ID);
 		if (ii == null)
@@ -916,21 +885,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Resolution.
-		@param R_Resolution_ID 
-		Request Resolution
-	  */
+		@param R_Resolution_ID Request Resolution
+	*/
 	public void setR_Resolution_ID (int R_Resolution_ID)
 	{
-		if (R_Resolution_ID < 1) 
+		if (R_Resolution_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Resolution_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Resolution_ID, Integer.valueOf(R_Resolution_ID));
 	}
 
 	/** Get Resolution.
 		@return Request Resolution
 	  */
-	public int getR_Resolution_ID () 
+	public int getR_Resolution_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Resolution_ID);
 		if (ii == null)
@@ -945,21 +913,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Status.
-		@param R_Status_ID 
-		Request Status
-	  */
+		@param R_Status_ID Request Status
+	*/
 	public void setR_Status_ID (int R_Status_ID)
 	{
-		if (R_Status_ID < 1) 
+		if (R_Status_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Status_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Status_ID, Integer.valueOf(R_Status_ID));
 	}
 
 	/** Get Status.
 		@return Request Status
 	  */
-	public int getR_Status_ID () 
+	public int getR_Status_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Status_ID);
 		if (ii == null)
@@ -974,21 +941,20 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Sales Representative.
-		@param SalesRep_ID 
-		Sales Representative or Company Agent
-	  */
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
 	public void setSalesRep_ID (int SalesRep_ID)
 	{
-		if (SalesRep_ID < 1) 
+		if (SalesRep_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_SalesRep_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
 	}
 
 	/** Get Sales Representative.
 		@return Sales Representative or Company Agent
 	  */
-	public int getSalesRep_ID () 
+	public int getSalesRep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)
@@ -997,9 +963,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -1008,15 +973,14 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}
 
 	/** Set Summary.
-		@param Summary 
-		Textual summary of this request
-	  */
+		@param Summary Textual summary of this request
+	*/
 	public void setSummary (String Summary)
 	{
 		set_ValueNoCheck (COLUMNNAME_Summary, Summary);
@@ -1025,7 +989,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Summary.
 		@return Textual summary of this request
 	  */
-	public String getSummary () 
+	public String getSummary()
 	{
 		return (String)get_Value(COLUMNNAME_Summary);
 	}
@@ -1051,9 +1015,8 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** 100% Complete = D */
 	public static final String TASKSTATUS_100Complete = "D";
 	/** Set Task Status.
-		@param TaskStatus 
-		Status of the Task
-	  */
+		@param TaskStatus Status of the Task
+	*/
 	public void setTaskStatus (String TaskStatus)
 	{
 
@@ -1063,7 +1026,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/** Get Task Status.
 		@return Status of the Task
 	  */
-	public String getTaskStatus () 
+	public String getTaskStatus()
 	{
 		return (String)get_Value(COLUMNNAME_TaskStatus);
 	}

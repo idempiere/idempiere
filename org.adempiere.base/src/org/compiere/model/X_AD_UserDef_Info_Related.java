@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Related
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info_Related")
 public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_Related, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -80,18 +80,19 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	}
 
 	/** Set InfoRelated.
-		@param AD_InfoRelated_ID InfoRelated	  */
+		@param AD_InfoRelated_ID InfoRelated
+	*/
 	public void setAD_InfoRelated_ID (int AD_InfoRelated_ID)
 	{
-		if (AD_InfoRelated_ID < 1) 
+		if (AD_InfoRelated_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_InfoRelated_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_InfoRelated_ID, Integer.valueOf(AD_InfoRelated_ID));
 	}
 
 	/** Get InfoRelated.
 		@return InfoRelated	  */
-	public int getAD_InfoRelated_ID () 
+	public int getAD_InfoRelated_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoRelated_ID);
 		if (ii == null)
@@ -106,18 +107,19 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	}
 
 	/** Set User defined Info Window.
-		@param AD_UserDef_Info_ID User defined Info Window	  */
+		@param AD_UserDef_Info_ID User defined Info Window
+	*/
 	public void setAD_UserDef_Info_ID (int AD_UserDef_Info_ID)
 	{
-		if (AD_UserDef_Info_ID < 1) 
+		if (AD_UserDef_Info_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Info_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Info_ID, Integer.valueOf(AD_UserDef_Info_ID));
 	}
 
 	/** Get User defined Info Window.
 		@return User defined Info Window	  */
-	public int getAD_UserDef_Info_ID () 
+	public int getAD_UserDef_Info_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Info_ID);
 		if (ii == null)
@@ -126,18 +128,19 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	}
 
 	/** Set User defined Info Related.
-		@param AD_UserDef_Info_Related_ID User defined Info Related	  */
+		@param AD_UserDef_Info_Related_ID User defined Info Related
+	*/
 	public void setAD_UserDef_Info_Related_ID (int AD_UserDef_Info_Related_ID)
 	{
-		if (AD_UserDef_Info_Related_ID < 1) 
+		if (AD_UserDef_Info_Related_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Info_Related_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Info_Related_ID, Integer.valueOf(AD_UserDef_Info_Related_ID));
 	}
 
 	/** Get User defined Info Related.
 		@return User defined Info Related	  */
-	public int getAD_UserDef_Info_Related_ID () 
+	public int getAD_UserDef_Info_Related_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Info_Related_ID);
 		if (ii == null)
@@ -146,7 +149,8 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	}
 
 	/** Set AD_UserDef_Info_Related_UU.
-		@param AD_UserDef_Info_Related_UU AD_UserDef_Info_Related_UU	  */
+		@param AD_UserDef_Info_Related_UU AD_UserDef_Info_Related_UU
+	*/
 	public void setAD_UserDef_Info_Related_UU (String AD_UserDef_Info_Related_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_UserDef_Info_Related_UU, AD_UserDef_Info_Related_UU);
@@ -154,15 +158,14 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 
 	/** Get AD_UserDef_Info_Related_UU.
 		@return AD_UserDef_Info_Related_UU	  */
-	public String getAD_UserDef_Info_Related_UU () 
+	public String getAD_UserDef_Info_Related_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Info_Related_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -171,15 +174,14 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
+		@param DisplayLogic If the Field is displayed, the result determines if the field is actually displayed
+	*/
 	public void setDisplayLogic (String DisplayLogic)
 	{
 		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
@@ -188,15 +190,14 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/** Get Display Logic.
 		@return If the Field is displayed, the result determines if the field is actually displayed
 	  */
-	public String getDisplayLogic () 
+	public String getDisplayLogic()
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -205,15 +206,14 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -222,15 +222,14 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -239,7 +238,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

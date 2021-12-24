@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table_ScriptValidator
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table_ScriptValidator")
 public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptValidator, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Table_ScriptValidator (Properties ctx, int AD_Table_ScriptValidator_ID, String trxName)
@@ -83,18 +83,19 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	}
 
 	/** Set Rule.
-		@param AD_Rule_ID Rule	  */
+		@param AD_Rule_ID Rule
+	*/
 	public void setAD_Rule_ID (int AD_Rule_ID)
 	{
-		if (AD_Rule_ID < 1) 
+		if (AD_Rule_ID < 1)
 			set_Value (COLUMNNAME_AD_Rule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Rule_ID, Integer.valueOf(AD_Rule_ID));
 	}
 
 	/** Get Rule.
 		@return Rule	  */
-	public int getAD_Rule_ID () 
+	public int getAD_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Rule_ID);
 		if (ii == null)
@@ -109,21 +110,20 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -132,18 +132,19 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	}
 
 	/** Set Table Script Validator.
-		@param AD_Table_ScriptValidator_ID Table Script Validator	  */
+		@param AD_Table_ScriptValidator_ID Table Script Validator
+	*/
 	public void setAD_Table_ScriptValidator_ID (int AD_Table_ScriptValidator_ID)
 	{
-		if (AD_Table_ScriptValidator_ID < 1) 
+		if (AD_Table_ScriptValidator_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ScriptValidator_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ScriptValidator_ID, Integer.valueOf(AD_Table_ScriptValidator_ID));
 	}
 
 	/** Get Table Script Validator.
 		@return Table Script Validator	  */
-	public int getAD_Table_ScriptValidator_ID () 
+	public int getAD_Table_ScriptValidator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ScriptValidator_ID);
 		if (ii == null)
@@ -152,7 +153,8 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	}
 
 	/** Set AD_Table_ScriptValidator_UU.
-		@param AD_Table_ScriptValidator_UU AD_Table_ScriptValidator_UU	  */
+		@param AD_Table_ScriptValidator_UU AD_Table_ScriptValidator_UU
+	*/
 	public void setAD_Table_ScriptValidator_UU (String AD_Table_ScriptValidator_UU)
 	{
 		set_Value (COLUMNNAME_AD_Table_ScriptValidator_UU, AD_Table_ScriptValidator_UU);
@@ -160,7 +162,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 
 	/** Get AD_Table_ScriptValidator_UU.
 		@return AD_Table_ScriptValidator_UU	  */
-	public String getAD_Table_ScriptValidator_UU () 
+	public String getAD_Table_ScriptValidator_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Table_ScriptValidator_UU);
 	}
@@ -218,7 +220,8 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	/** Table Before New = TBN */
 	public static final String EVENTMODELVALIDATOR_TableBeforeNew = "TBN";
 	/** Set Event Model Validator.
-		@param EventModelValidator Event Model Validator	  */
+		@param EventModelValidator Event Model Validator
+	*/
 	public void setEventModelValidator (String EventModelValidator)
 	{
 
@@ -227,7 +230,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 
 	/** Get Event Model Validator.
 		@return Event Model Validator	  */
-	public String getEventModelValidator () 
+	public String getEventModelValidator()
 	{
 		return (String)get_Value(COLUMNNAME_EventModelValidator);
 	}
@@ -241,9 +244,8 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -252,7 +254,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Document_Action_Access
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Document_Action_Access")
 public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Action_Access, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Document_Action_Access (Properties ctx, int AD_Document_Action_Access_ID, String trxName)
@@ -73,7 +73,8 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
     }
 
 	/** Set AD_Document_Action_Access_UU.
-		@param AD_Document_Action_Access_UU AD_Document_Action_Access_UU	  */
+		@param AD_Document_Action_Access_UU AD_Document_Action_Access_UU
+	*/
 	public void setAD_Document_Action_Access_UU (String AD_Document_Action_Access_UU)
 	{
 		set_Value (COLUMNNAME_AD_Document_Action_Access_UU, AD_Document_Action_Access_UU);
@@ -81,7 +82,7 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 
 	/** Get AD_Document_Action_Access_UU.
 		@return AD_Document_Action_Access_UU	  */
-	public String getAD_Document_Action_Access_UU () 
+	public String getAD_Document_Action_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Document_Action_Access_UU);
 	}
@@ -93,21 +94,20 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 	}
 
 	/** Set Reference List.
-		@param AD_Ref_List_ID 
-		Reference List based on Table
-	  */
+		@param AD_Ref_List_ID Reference List based on Table
+	*/
 	public void setAD_Ref_List_ID (int AD_Ref_List_ID)
 	{
-		if (AD_Ref_List_ID < 1) 
+		if (AD_Ref_List_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Ref_List_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Ref_List_ID, Integer.valueOf(AD_Ref_List_ID));
 	}
 
 	/** Get Reference List.
 		@return Reference List based on Table
 	  */
-	public int getAD_Ref_List_ID () 
+	public int getAD_Ref_List_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List_ID);
 		if (ii == null)
@@ -122,21 +122,20 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -151,21 +150,20 @@ public class X_AD_Document_Action_Access extends PO implements I_AD_Document_Act
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)

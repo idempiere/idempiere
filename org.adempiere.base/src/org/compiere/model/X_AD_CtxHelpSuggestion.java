@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpSuggestion
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_CtxHelpSuggestion")
 public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)
@@ -84,9 +84,8 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
     }
 
 	/** Set Accept.
-		@param AcceptSuggestion 
-		Accept suggested changes
-	  */
+		@param AcceptSuggestion Accept suggested changes
+	*/
 	public void setAcceptSuggestion (String AcceptSuggestion)
 	{
 		set_Value (COLUMNNAME_AcceptSuggestion, AcceptSuggestion);
@@ -95,7 +94,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Accept.
 		@return Accept suggested changes
 	  */
-	public String getAcceptSuggestion () 
+	public String getAcceptSuggestion()
 	{
 		return (String)get_Value(COLUMNNAME_AcceptSuggestion);
 	}
@@ -107,18 +106,19 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Context Help.
-		@param AD_CtxHelp_ID Context Help	  */
+		@param AD_CtxHelp_ID Context Help
+	*/
 	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
 	{
-		if (AD_CtxHelp_ID < 1) 
+		if (AD_CtxHelp_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
 	}
 
 	/** Get Context Help.
 		@return Context Help	  */
-	public int getAD_CtxHelp_ID () 
+	public int getAD_CtxHelp_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
 		if (ii == null)
@@ -133,18 +133,19 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Context Help Message.
-		@param AD_CtxHelpMsg_ID Context Help Message	  */
+		@param AD_CtxHelpMsg_ID Context Help Message
+	*/
 	public void setAD_CtxHelpMsg_ID (int AD_CtxHelpMsg_ID)
 	{
-		if (AD_CtxHelpMsg_ID < 1) 
+		if (AD_CtxHelpMsg_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelpMsg_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelpMsg_ID, Integer.valueOf(AD_CtxHelpMsg_ID));
 	}
 
 	/** Get Context Help Message.
 		@return Context Help Message	  */
-	public int getAD_CtxHelpMsg_ID () 
+	public int getAD_CtxHelpMsg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelpMsg_ID);
 		if (ii == null)
@@ -153,18 +154,19 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Context Help Suggestion.
-		@param AD_CtxHelpSuggestion_ID Context Help Suggestion	  */
+		@param AD_CtxHelpSuggestion_ID Context Help Suggestion
+	*/
 	public void setAD_CtxHelpSuggestion_ID (int AD_CtxHelpSuggestion_ID)
 	{
-		if (AD_CtxHelpSuggestion_ID < 1) 
+		if (AD_CtxHelpSuggestion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelpSuggestion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelpSuggestion_ID, Integer.valueOf(AD_CtxHelpSuggestion_ID));
 	}
 
 	/** Get Context Help Suggestion.
 		@return Context Help Suggestion	  */
-	public int getAD_CtxHelpSuggestion_ID () 
+	public int getAD_CtxHelpSuggestion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelpSuggestion_ID);
 		if (ii == null)
@@ -173,7 +175,8 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Context Help Suggestion UUID.
-		@param AD_CtxHelpSuggestion_UU Context Help Suggestion UUID	  */
+		@param AD_CtxHelpSuggestion_UU Context Help Suggestion UUID
+	*/
 	public void setAD_CtxHelpSuggestion_UU (String AD_CtxHelpSuggestion_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_CtxHelpSuggestion_UU, AD_CtxHelpSuggestion_UU);
@@ -181,7 +184,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 
 	/** Get Context Help Suggestion UUID.
 		@return Context Help Suggestion UUID	  */
-	public String getAD_CtxHelpSuggestion_UU () 
+	public String getAD_CtxHelpSuggestion_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_CtxHelpSuggestion_UU);
 	}
@@ -189,9 +192,8 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
 	/** Set Language.
-		@param AD_Language 
-		Language for this entity
-	  */
+		@param AD_Language Language for this entity
+	*/
 	public void setAD_Language (String AD_Language)
 	{
 
@@ -201,7 +203,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Language.
 		@return Language for this entity
 	  */
-	public String getAD_Language () 
+	public String getAD_Language()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
@@ -213,18 +215,19 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Tenant of User.
-		@param AD_UserClient_ID Tenant of User	  */
+		@param AD_UserClient_ID Tenant of User
+	*/
 	public void setAD_UserClient_ID (int AD_UserClient_ID)
 	{
-		if (AD_UserClient_ID < 1) 
+		if (AD_UserClient_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserClient_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserClient_ID, Integer.valueOf(AD_UserClient_ID));
 	}
 
 	/** Get Tenant of User.
 		@return Tenant of User	  */
-	public int getAD_UserClient_ID () 
+	public int getAD_UserClient_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserClient_ID);
 		if (ii == null)
@@ -239,21 +242,20 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -262,9 +264,8 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Compare.
-		@param CompareSuggestion 
-		Compare suggested text with original text
-	  */
+		@param CompareSuggestion Compare suggested text with original text
+	*/
 	public void setCompareSuggestion (String CompareSuggestion)
 	{
 		set_Value (COLUMNNAME_CompareSuggestion, CompareSuggestion);
@@ -273,15 +274,14 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Compare.
 		@return Compare suggested text with original text
 	  */
-	public String getCompareSuggestion () 
+	public String getCompareSuggestion()
 	{
 		return (String)get_Value(COLUMNNAME_CompareSuggestion);
 	}
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -290,7 +290,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -303,9 +303,8 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Save As Tenant Customization.
-		@param IsSaveAsTenantCustomization 
-		Apply changes as tenant customization
-	  */
+		@param IsSaveAsTenantCustomization Apply changes as tenant customization
+	*/
 	public void setIsSaveAsTenantCustomization (boolean IsSaveAsTenantCustomization)
 	{
 		set_Value (COLUMNNAME_IsSaveAsTenantCustomization, Boolean.valueOf(IsSaveAsTenantCustomization));
@@ -314,7 +313,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Save As Tenant Customization.
 		@return Apply changes as tenant customization
 	  */
-	public boolean isSaveAsTenantCustomization () 
+	public boolean isSaveAsTenantCustomization()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSaveAsTenantCustomization);
 		if (oo != null) 
@@ -327,9 +326,8 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Message Text.
-		@param MsgText 
-		Textual Informational, Menu or Error Message
-	  */
+		@param MsgText Textual Informational, Menu or Error Message
+	*/
 	public void setMsgText (String MsgText)
 	{
 		set_Value (COLUMNNAME_MsgText, MsgText);
@@ -338,15 +336,14 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Message Text.
 		@return Textual Informational, Menu or Error Message
 	  */
-	public String getMsgText () 
+	public String getMsgText()
 	{
 		return (String)get_Value(COLUMNNAME_MsgText);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -355,7 +352,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -368,9 +365,8 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	}
 
 	/** Set Reject.
-		@param RejectSuggestion 
-		Reject suggested changes
-	  */
+		@param RejectSuggestion Reject suggested changes
+	*/
 	public void setRejectSuggestion (String RejectSuggestion)
 	{
 		set_Value (COLUMNNAME_RejectSuggestion, RejectSuggestion);
@@ -379,7 +375,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/** Get Reject.
 		@return Reject suggested changes
 	  */
-	public String getRejectSuggestion () 
+	public String getRejectSuggestion()
 	{
 		return (String)get_Value(COLUMNNAME_RejectSuggestion);
 	}

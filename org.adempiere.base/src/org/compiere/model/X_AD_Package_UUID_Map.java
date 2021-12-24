@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_UUID_Map
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_UUID_Map")
 public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Package_UUID_Map (Properties ctx, int AD_Package_UUID_Map_ID, String trxName)
@@ -76,21 +76,20 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
     }
 
 	/** Set UUID Mapping.
-		@param AD_Package_UUID_Map_ID 
-		UUID Mapping between client
-	  */
+		@param AD_Package_UUID_Map_ID UUID Mapping between client
+	*/
 	public void setAD_Package_UUID_Map_ID (int AD_Package_UUID_Map_ID)
 	{
-		if (AD_Package_UUID_Map_ID < 1) 
+		if (AD_Package_UUID_Map_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_UUID_Map_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_UUID_Map_ID, Integer.valueOf(AD_Package_UUID_Map_ID));
 	}
 
 	/** Get UUID Mapping.
 		@return UUID Mapping between client
 	  */
-	public int getAD_Package_UUID_Map_ID () 
+	public int getAD_Package_UUID_Map_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_UUID_Map_ID);
 		if (ii == null)
@@ -99,7 +98,8 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	}
 
 	/** Set AD_Package_UUID_Map_UU.
-		@param AD_Package_UUID_Map_UU AD_Package_UUID_Map_UU	  */
+		@param AD_Package_UUID_Map_UU AD_Package_UUID_Map_UU
+	*/
 	public void setAD_Package_UUID_Map_UU (String AD_Package_UUID_Map_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_Package_UUID_Map_UU, AD_Package_UUID_Map_UU);
@@ -107,7 +107,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 
 	/** Get AD_Package_UUID_Map_UU.
 		@return AD_Package_UUID_Map_UU	  */
-	public String getAD_Package_UUID_Map_UU () 
+	public String getAD_Package_UUID_Map_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_UUID_Map_UU);
 	}
@@ -119,21 +119,20 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -142,9 +141,8 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	}
 
 	/** Set Source UUID.
-		@param Source_UUID 
-		UUID from the source client
-	  */
+		@param Source_UUID UUID from the source client
+	*/
 	public void setSource_UUID (String Source_UUID)
 	{
 		set_ValueNoCheck (COLUMNNAME_Source_UUID, Source_UUID);
@@ -153,7 +151,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	/** Get Source UUID.
 		@return UUID from the source client
 	  */
-	public String getSource_UUID () 
+	public String getSource_UUID()
 	{
 		return (String)get_Value(COLUMNNAME_Source_UUID);
 	}
@@ -167,9 +165,8 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
     }
 
 	/** Set Target UUID.
-		@param Target_UUID 
-		New UUID created by the pack in client
-	  */
+		@param Target_UUID New UUID created by the pack in client
+	*/
 	public void setTarget_UUID (String Target_UUID)
 	{
 		set_ValueNoCheck (COLUMNNAME_Target_UUID, Target_UUID);
@@ -178,7 +175,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	/** Get Target UUID.
 		@return New UUID created by the pack in client
 	  */
-	public String getTarget_UUID () 
+	public String getTarget_UUID()
 	{
 		return (String)get_Value(COLUMNNAME_Target_UUID);
 	}

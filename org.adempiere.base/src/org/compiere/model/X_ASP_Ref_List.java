@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Ref_List
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Ref_List")
 public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_ASP_Ref_List (Properties ctx, int ASP_Ref_List_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -109,21 +108,20 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	}
 
 	/** Set Reference List.
-		@param AD_Ref_List_ID 
-		Reference List based on Table
-	  */
+		@param AD_Ref_List_ID Reference List based on Table
+	*/
 	public void setAD_Ref_List_ID (int AD_Ref_List_ID)
 	{
-		if (AD_Ref_List_ID < 1) 
+		if (AD_Ref_List_ID < 1)
 			set_Value (COLUMNNAME_AD_Ref_List_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Ref_List_ID, Integer.valueOf(AD_Ref_List_ID));
 	}
 
 	/** Get Reference List.
 		@return Reference List based on Table
 	  */
-	public int getAD_Ref_List_ID () 
+	public int getAD_Ref_List_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List_ID);
 		if (ii == null)
@@ -138,18 +136,19 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	}
 
 	/** Set ASP Level.
-		@param ASP_Level_ID ASP Level	  */
+		@param ASP_Level_ID ASP Level
+	*/
 	public void setASP_Level_ID (int ASP_Level_ID)
 	{
-		if (ASP_Level_ID < 1) 
+		if (ASP_Level_ID < 1)
 			set_Value (COLUMNNAME_ASP_Level_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_ASP_Level_ID, Integer.valueOf(ASP_Level_ID));
 	}
 
 	/** Get ASP Level.
 		@return ASP Level	  */
-	public int getASP_Level_ID () 
+	public int getASP_Level_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Level_ID);
 		if (ii == null)
@@ -158,18 +157,19 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	}
 
 	/** Set ASP_Ref_List.
-		@param ASP_Ref_List_ID ASP_Ref_List	  */
+		@param ASP_Ref_List_ID ASP_Ref_List
+	*/
 	public void setASP_Ref_List_ID (int ASP_Ref_List_ID)
 	{
-		if (ASP_Ref_List_ID < 1) 
+		if (ASP_Ref_List_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Ref_List_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Ref_List_ID, Integer.valueOf(ASP_Ref_List_ID));
 	}
 
 	/** Get ASP_Ref_List.
 		@return ASP_Ref_List	  */
-	public int getASP_Ref_List_ID () 
+	public int getASP_Ref_List_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Ref_List_ID);
 		if (ii == null)
@@ -178,7 +178,8 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	}
 
 	/** Set ASP_Ref_List_UU.
-		@param ASP_Ref_List_UU ASP_Ref_List_UU	  */
+		@param ASP_Ref_List_UU ASP_Ref_List_UU
+	*/
 	public void setASP_Ref_List_UU (String ASP_Ref_List_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Ref_List_UU, ASP_Ref_List_UU);
@@ -186,7 +187,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 
 	/** Get ASP_Ref_List_UU.
 		@return ASP_Ref_List_UU	  */
-	public String getASP_Ref_List_UU () 
+	public String getASP_Ref_List_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Ref_List_UU);
 	}
@@ -200,7 +201,8 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -209,7 +211,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}

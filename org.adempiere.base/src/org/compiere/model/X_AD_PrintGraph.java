@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintGraph
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintGraph")
 public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_PrintGraph (Properties ctx, int AD_PrintGraph_ID, String trxName)
@@ -84,21 +84,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
+		@param AD_PrintFormat_ID Data Print Format
+	*/
 	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
 	{
-		if (AD_PrintFormat_ID < 1) 
+		if (AD_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
 	}
 
 	/** Get Print Format.
 		@return Data Print Format
 	  */
-	public int getAD_PrintFormat_ID () 
+	public int getAD_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
@@ -107,21 +106,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Graph.
-		@param AD_PrintGraph_ID 
-		Graph included in Reports
-	  */
+		@param AD_PrintGraph_ID Graph included in Reports
+	*/
 	public void setAD_PrintGraph_ID (int AD_PrintGraph_ID)
 	{
-		if (AD_PrintGraph_ID < 1) 
+		if (AD_PrintGraph_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintGraph_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintGraph_ID, Integer.valueOf(AD_PrintGraph_ID));
 	}
 
 	/** Get Graph.
 		@return Graph included in Reports
 	  */
-	public int getAD_PrintGraph_ID () 
+	public int getAD_PrintGraph_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintGraph_ID);
 		if (ii == null)
@@ -130,7 +128,8 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set AD_PrintGraph_UU.
-		@param AD_PrintGraph_UU AD_PrintGraph_UU	  */
+		@param AD_PrintGraph_UU AD_PrintGraph_UU
+	*/
 	public void setAD_PrintGraph_UU (String AD_PrintGraph_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintGraph_UU, AD_PrintGraph_UU);
@@ -138,7 +137,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 
 	/** Get AD_PrintGraph_UU.
 		@return AD_PrintGraph_UU	  */
-	public String getAD_PrintGraph_UU () 
+	public String getAD_PrintGraph_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintGraph_UU);
 	}
@@ -150,21 +149,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Data Column 2.
-		@param Data1_PrintFormatItem_ID 
-		Data Column for Line Charts
-	  */
+		@param Data1_PrintFormatItem_ID Data Column for Line Charts
+	*/
 	public void setData1_PrintFormatItem_ID (int Data1_PrintFormatItem_ID)
 	{
-		if (Data1_PrintFormatItem_ID < 1) 
+		if (Data1_PrintFormatItem_ID < 1)
 			set_Value (COLUMNNAME_Data1_PrintFormatItem_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Data1_PrintFormatItem_ID, Integer.valueOf(Data1_PrintFormatItem_ID));
 	}
 
 	/** Get Data Column 2.
 		@return Data Column for Line Charts
 	  */
-	public int getData1_PrintFormatItem_ID () 
+	public int getData1_PrintFormatItem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Data1_PrintFormatItem_ID);
 		if (ii == null)
@@ -179,21 +177,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Data Column 3.
-		@param Data2_PrintFormatItem_ID 
-		Data Column for Line Charts
-	  */
+		@param Data2_PrintFormatItem_ID Data Column for Line Charts
+	*/
 	public void setData2_PrintFormatItem_ID (int Data2_PrintFormatItem_ID)
 	{
-		if (Data2_PrintFormatItem_ID < 1) 
+		if (Data2_PrintFormatItem_ID < 1)
 			set_Value (COLUMNNAME_Data2_PrintFormatItem_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Data2_PrintFormatItem_ID, Integer.valueOf(Data2_PrintFormatItem_ID));
 	}
 
 	/** Get Data Column 3.
 		@return Data Column for Line Charts
 	  */
-	public int getData2_PrintFormatItem_ID () 
+	public int getData2_PrintFormatItem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Data2_PrintFormatItem_ID);
 		if (ii == null)
@@ -208,21 +205,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Data Column 4.
-		@param Data3_PrintFormatItem_ID 
-		Data Column for Line Charts
-	  */
+		@param Data3_PrintFormatItem_ID Data Column for Line Charts
+	*/
 	public void setData3_PrintFormatItem_ID (int Data3_PrintFormatItem_ID)
 	{
-		if (Data3_PrintFormatItem_ID < 1) 
+		if (Data3_PrintFormatItem_ID < 1)
 			set_Value (COLUMNNAME_Data3_PrintFormatItem_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Data3_PrintFormatItem_ID, Integer.valueOf(Data3_PrintFormatItem_ID));
 	}
 
 	/** Get Data Column 4.
 		@return Data Column for Line Charts
 	  */
-	public int getData3_PrintFormatItem_ID () 
+	public int getData3_PrintFormatItem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Data3_PrintFormatItem_ID);
 		if (ii == null)
@@ -237,21 +233,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Data Column 5.
-		@param Data4_PrintFormatItem_ID 
-		Data Column for Line Charts
-	  */
+		@param Data4_PrintFormatItem_ID Data Column for Line Charts
+	*/
 	public void setData4_PrintFormatItem_ID (int Data4_PrintFormatItem_ID)
 	{
-		if (Data4_PrintFormatItem_ID < 1) 
+		if (Data4_PrintFormatItem_ID < 1)
 			set_Value (COLUMNNAME_Data4_PrintFormatItem_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Data4_PrintFormatItem_ID, Integer.valueOf(Data4_PrintFormatItem_ID));
 	}
 
 	/** Get Data Column 5.
 		@return Data Column for Line Charts
 	  */
-	public int getData4_PrintFormatItem_ID () 
+	public int getData4_PrintFormatItem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Data4_PrintFormatItem_ID);
 		if (ii == null)
@@ -266,21 +261,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Data Column.
-		@param Data_PrintFormatItem_ID 
-		Data Column for Pie and Line Charts
-	  */
+		@param Data_PrintFormatItem_ID Data Column for Pie and Line Charts
+	*/
 	public void setData_PrintFormatItem_ID (int Data_PrintFormatItem_ID)
 	{
-		if (Data_PrintFormatItem_ID < 1) 
+		if (Data_PrintFormatItem_ID < 1)
 			set_Value (COLUMNNAME_Data_PrintFormatItem_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Data_PrintFormatItem_ID, Integer.valueOf(Data_PrintFormatItem_ID));
 	}
 
 	/** Get Data Column.
 		@return Data Column for Pie and Line Charts
 	  */
-	public int getData_PrintFormatItem_ID () 
+	public int getData_PrintFormatItem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Data_PrintFormatItem_ID);
 		if (ii == null)
@@ -289,9 +283,8 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -300,7 +293,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -312,21 +305,20 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	}
 
 	/** Set Description Column.
-		@param Description_PrintFormatItem_ID 
-		Description Column for Pie/Line/Bar Charts
-	  */
+		@param Description_PrintFormatItem_ID Description Column for Pie/Line/Bar Charts
+	*/
 	public void setDescription_PrintFormatItem_ID (int Description_PrintFormatItem_ID)
 	{
-		if (Description_PrintFormatItem_ID < 1) 
+		if (Description_PrintFormatItem_ID < 1)
 			set_Value (COLUMNNAME_Description_PrintFormatItem_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Description_PrintFormatItem_ID, Integer.valueOf(Description_PrintFormatItem_ID));
 	}
 
 	/** Get Description Column.
 		@return Description Column for Pie/Line/Bar Charts
 	  */
-	public int getDescription_PrintFormatItem_ID () 
+	public int getDescription_PrintFormatItem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Description_PrintFormatItem_ID);
 		if (ii == null)
@@ -343,9 +335,8 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	/** Pie Chart = P */
 	public static final String GRAPHTYPE_PieChart = "P";
 	/** Set Graph Type.
-		@param GraphType 
-		Type of graph to be painted
-	  */
+		@param GraphType Type of graph to be painted
+	*/
 	public void setGraphType (String GraphType)
 	{
 
@@ -355,15 +346,14 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	/** Get Graph Type.
 		@return Type of graph to be painted
 	  */
-	public String getGraphType () 
+	public String getGraphType()
 	{
 		return (String)get_Value(COLUMNNAME_GraphType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -372,7 +362,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

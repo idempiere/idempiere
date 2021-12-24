@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Issue
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Issue")
 public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Issue (Properties ctx, int AD_Issue_ID, String trxName)
@@ -91,21 +91,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -120,21 +119,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Special Form.
-		@param AD_Form_ID 
-		Special Form
-	  */
+		@param AD_Form_ID Special Form
+	*/
 	public void setAD_Form_ID (int AD_Form_ID)
 	{
-		if (AD_Form_ID < 1) 
+		if (AD_Form_ID < 1)
 			set_Value (COLUMNNAME_AD_Form_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Form_ID, Integer.valueOf(AD_Form_ID));
 	}
 
 	/** Get Special Form.
 		@return Special Form
 	  */
-	public int getAD_Form_ID () 
+	public int getAD_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
 		if (ii == null)
@@ -143,21 +141,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set System Issue.
-		@param AD_Issue_ID 
-		Automatically created or manually entered System Issue
-	  */
+		@param AD_Issue_ID Automatically created or manually entered System Issue
+	*/
 	public void setAD_Issue_ID (int AD_Issue_ID)
 	{
-		if (AD_Issue_ID < 1) 
+		if (AD_Issue_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Issue_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Issue_ID, Integer.valueOf(AD_Issue_ID));
 	}
 
 	/** Get System Issue.
 		@return Automatically created or manually entered System Issue
 	  */
-	public int getAD_Issue_ID () 
+	public int getAD_Issue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Issue_ID);
 		if (ii == null)
@@ -166,7 +163,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set AD_Issue_UU.
-		@param AD_Issue_UU AD_Issue_UU	  */
+		@param AD_Issue_UU AD_Issue_UU
+	*/
 	public void setAD_Issue_UU (String AD_Issue_UU)
 	{
 		set_Value (COLUMNNAME_AD_Issue_UU, AD_Issue_UU);
@@ -174,7 +172,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 
 	/** Get AD_Issue_UU.
 		@return AD_Issue_UU	  */
-	public String getAD_Issue_UU () 
+	public String getAD_Issue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Issue_UU);
 	}
@@ -186,21 +184,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -215,21 +212,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -238,9 +234,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Comments.
-		@param Comments 
-		Comments or additional information
-	  */
+		@param Comments Comments or additional information
+	*/
 	public void setComments (String Comments)
 	{
 		set_Value (COLUMNNAME_Comments, Comments);
@@ -249,15 +244,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Comments.
 		@return Comments or additional information
 	  */
-	public String getComments () 
+	public String getComments()
 	{
 		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Database.
-		@param DatabaseInfo 
-		Database Information
-	  */
+		@param DatabaseInfo Database Information
+	*/
 	public void setDatabaseInfo (String DatabaseInfo)
 	{
 		set_ValueNoCheck (COLUMNNAME_DatabaseInfo, DatabaseInfo);
@@ -266,15 +260,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Database.
 		@return Database Information
 	  */
-	public String getDatabaseInfo () 
+	public String getDatabaseInfo()
 	{
 		return (String)get_Value(COLUMNNAME_DatabaseInfo);
 	}
 
 	/** Set DB Address.
-		@param DBAddress 
-		JDBC URL of the database server
-	  */
+		@param DBAddress JDBC URL of the database server
+	*/
 	public void setDBAddress (String DBAddress)
 	{
 		set_ValueNoCheck (COLUMNNAME_DBAddress, DBAddress);
@@ -283,15 +276,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get DB Address.
 		@return JDBC URL of the database server
 	  */
-	public String getDBAddress () 
+	public String getDBAddress()
 	{
 		return (String)get_Value(COLUMNNAME_DBAddress);
 	}
 
 	/** Set Error Trace.
-		@param ErrorTrace 
-		System Error Trace
-	  */
+		@param ErrorTrace System Error Trace
+	*/
 	public void setErrorTrace (String ErrorTrace)
 	{
 		set_Value (COLUMNNAME_ErrorTrace, ErrorTrace);
@@ -300,7 +292,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Error Trace.
 		@return System Error Trace
 	  */
-	public String getErrorTrace () 
+	public String getErrorTrace()
 	{
 		return (String)get_Value(COLUMNNAME_ErrorTrace);
 	}
@@ -312,9 +304,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Yes = Y */
 	public static final String ISREPRODUCIBLE_Yes = "Y";
 	/** Set Reproducible.
-		@param IsReproducible 
-		Problem can re reproduced in Gardenworld
-	  */
+		@param IsReproducible Problem can re reproduced in Gardenworld
+	*/
 	public void setIsReproducible (String IsReproducible)
 	{
 
@@ -324,7 +315,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Reproducible.
 		@return Problem can re reproduced in Gardenworld
 	  */
-	public String getIsReproducible () 
+	public String getIsReproducible()
 	{
 		return (String)get_Value(COLUMNNAME_IsReproducible);
 	}
@@ -350,9 +341,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Form = X */
 	public static final String ISSUESOURCE_Form = "X";
 	/** Set Source.
-		@param IssueSource 
-		Issue Source
-	  */
+		@param IssueSource Issue Source
+	*/
 	public void setIssueSource (String IssueSource)
 	{
 
@@ -362,15 +352,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Source.
 		@return Issue Source
 	  */
-	public String getIssueSource () 
+	public String getIssueSource()
 	{
 		return (String)get_Value(COLUMNNAME_IssueSource);
 	}
 
 	/** Set Issue Summary.
-		@param IssueSummary 
-		Issue Summary
-	  */
+		@param IssueSummary Issue Summary
+	*/
 	public void setIssueSummary (String IssueSummary)
 	{
 		set_Value (COLUMNNAME_IssueSummary, IssueSummary);
@@ -379,7 +368,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Issue Summary.
 		@return Issue Summary
 	  */
-	public String getIssueSummary () 
+	public String getIssueSummary()
 	{
 		return (String)get_Value(COLUMNNAME_IssueSummary);
 	}
@@ -399,9 +388,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Yes = Y */
 	public static final String ISVANILLASYSTEM_Yes = "Y";
 	/** Set Vanilla System.
-		@param IsVanillaSystem 
-		The system was NOT compiled from Source - i.e. standard distribution
-	  */
+		@param IsVanillaSystem The system was NOT compiled from Source - i.e. standard distribution
+	*/
 	public void setIsVanillaSystem (String IsVanillaSystem)
 	{
 
@@ -411,15 +399,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Vanilla System.
 		@return The system was NOT compiled from Source - i.e. standard distribution
 	  */
-	public String getIsVanillaSystem () 
+	public String getIsVanillaSystem()
 	{
 		return (String)get_Value(COLUMNNAME_IsVanillaSystem);
 	}
 
 	/** Set Java Info.
-		@param JavaInfo 
-		Java Version Info
-	  */
+		@param JavaInfo Java Version Info
+	*/
 	public void setJavaInfo (String JavaInfo)
 	{
 		set_ValueNoCheck (COLUMNNAME_JavaInfo, JavaInfo);
@@ -428,15 +415,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Java Info.
 		@return Java Version Info
 	  */
-	public String getJavaInfo () 
+	public String getJavaInfo()
 	{
 		return (String)get_Value(COLUMNNAME_JavaInfo);
 	}
 
 	/** Set Line.
-		@param LineNo 
-		Line No
-	  */
+		@param LineNo Line No
+	*/
 	public void setLineNo (int LineNo)
 	{
 		set_Value (COLUMNNAME_LineNo, Integer.valueOf(LineNo));
@@ -445,7 +431,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Line.
 		@return Line No
 	  */
-	public int getLineNo () 
+	public int getLineNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LineNo);
 		if (ii == null)
@@ -454,9 +440,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Local Host.
-		@param Local_Host 
-		Local Host Info
-	  */
+		@param Local_Host Local Host Info
+	*/
 	public void setLocal_Host (String Local_Host)
 	{
 		set_ValueNoCheck (COLUMNNAME_Local_Host, Local_Host);
@@ -465,15 +450,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Local Host.
 		@return Local Host Info
 	  */
-	public String getLocal_Host () 
+	public String getLocal_Host()
 	{
 		return (String)get_Value(COLUMNNAME_Local_Host);
 	}
 
 	/** Set Logger.
-		@param LoggerName 
-		Logger Name
-	  */
+		@param LoggerName Logger Name
+	*/
 	public void setLoggerName (String LoggerName)
 	{
 		set_Value (COLUMNNAME_LoggerName, LoggerName);
@@ -482,15 +466,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Logger.
 		@return Logger Name
 	  */
-	public String getLoggerName () 
+	public String getLoggerName()
 	{
 		return (String)get_Value(COLUMNNAME_LoggerName);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_ValueNoCheck (COLUMNNAME_Name, Name);
@@ -499,15 +482,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Operating System.
-		@param OperatingSystemInfo 
-		Operating System Info
-	  */
+		@param OperatingSystemInfo Operating System Info
+	*/
 	public void setOperatingSystemInfo (String OperatingSystemInfo)
 	{
 		set_ValueNoCheck (COLUMNNAME_OperatingSystemInfo, OperatingSystemInfo);
@@ -516,15 +498,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Operating System.
 		@return Operating System Info
 	  */
-	public String getOperatingSystemInfo () 
+	public String getOperatingSystemInfo()
 	{
 		return (String)get_Value(COLUMNNAME_OperatingSystemInfo);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -533,7 +514,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -546,7 +527,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -554,7 +536,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -567,9 +549,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Profile.
-		@param ProfileInfo 
-		Information to help profiling the system for solving support issues
-	  */
+		@param ProfileInfo Information to help profiling the system for solving support issues
+	*/
 	public void setProfileInfo (String ProfileInfo)
 	{
 		set_ValueNoCheck (COLUMNNAME_ProfileInfo, ProfileInfo);
@@ -578,27 +559,26 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Profile.
 		@return Information to help profiling the system for solving support issues
 	  */
-	public String getProfileInfo () 
+	public String getProfileInfo()
 	{
 		return (String)get_Value(COLUMNNAME_ProfileInfo);
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -607,9 +587,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Release No.
-		@param ReleaseNo 
-		Internal Release Number
-	  */
+		@param ReleaseNo Internal Release Number
+	*/
 	public void setReleaseNo (String ReleaseNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_ReleaseNo, ReleaseNo);
@@ -618,15 +597,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Release No.
 		@return Internal Release Number
 	  */
-	public String getReleaseNo () 
+	public String getReleaseNo()
 	{
 		return (String)get_Value(COLUMNNAME_ReleaseNo);
 	}
 
 	/** Set Release Tag.
-		@param ReleaseTag 
-		Release Tag
-	  */
+		@param ReleaseTag Release Tag
+	*/
 	public void setReleaseTag (String ReleaseTag)
 	{
 		set_Value (COLUMNNAME_ReleaseTag, ReleaseTag);
@@ -635,15 +613,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Release Tag.
 		@return Release Tag
 	  */
-	public String getReleaseTag () 
+	public String getReleaseTag()
 	{
 		return (String)get_Value(COLUMNNAME_ReleaseTag);
 	}
 
 	/** Set Remote Addr.
-		@param Remote_Addr 
-		Remote Address
-	  */
+		@param Remote_Addr Remote Address
+	*/
 	public void setRemote_Addr (String Remote_Addr)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Addr, Remote_Addr);
@@ -652,15 +629,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Remote Addr.
 		@return Remote Address
 	  */
-	public String getRemote_Addr () 
+	public String getRemote_Addr()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Addr);
 	}
 
 	/** Set Remote Host.
-		@param Remote_Host 
-		Remote host Info
-	  */
+		@param Remote_Host Remote host Info
+	*/
 	public void setRemote_Host (String Remote_Host)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Host, Remote_Host);
@@ -669,15 +645,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Remote Host.
 		@return Remote host Info
 	  */
-	public String getRemote_Host () 
+	public String getRemote_Host()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Host);
 	}
 
 	/** Set Request Document No.
-		@param RequestDocumentNo 
-		iDempiere Request Document No
-	  */
+		@param RequestDocumentNo iDempiere Request Document No
+	*/
 	public void setRequestDocumentNo (String RequestDocumentNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_RequestDocumentNo, RequestDocumentNo);
@@ -686,15 +661,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Request Document No.
 		@return iDempiere Request Document No
 	  */
-	public String getRequestDocumentNo () 
+	public String getRequestDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_RequestDocumentNo);
 	}
 
 	/** Set Response Text.
-		@param ResponseText 
-		Request Response Text
-	  */
+		@param ResponseText Request Response Text
+	*/
 	public void setResponseText (String ResponseText)
 	{
 		set_ValueNoCheck (COLUMNNAME_ResponseText, ResponseText);
@@ -703,7 +677,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Response Text.
 		@return Request Response Text
 	  */
-	public String getResponseText () 
+	public String getResponseText()
 	{
 		return (String)get_Value(COLUMNNAME_ResponseText);
 	}
@@ -715,21 +689,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Known Issue.
-		@param R_IssueKnown_ID 
-		Known Issue
-	  */
+		@param R_IssueKnown_ID Known Issue
+	*/
 	public void setR_IssueKnown_ID (int R_IssueKnown_ID)
 	{
-		if (R_IssueKnown_ID < 1) 
+		if (R_IssueKnown_ID < 1)
 			set_Value (COLUMNNAME_R_IssueKnown_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_IssueKnown_ID, Integer.valueOf(R_IssueKnown_ID));
 	}
 
 	/** Get Known Issue.
 		@return Known Issue
 	  */
-	public int getR_IssueKnown_ID () 
+	public int getR_IssueKnown_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueKnown_ID);
 		if (ii == null)
@@ -744,21 +717,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Issue Project.
-		@param R_IssueProject_ID 
-		Implementation Projects
-	  */
+		@param R_IssueProject_ID Implementation Projects
+	*/
 	public void setR_IssueProject_ID (int R_IssueProject_ID)
 	{
-		if (R_IssueProject_ID < 1) 
+		if (R_IssueProject_ID < 1)
 			set_Value (COLUMNNAME_R_IssueProject_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_IssueProject_ID, Integer.valueOf(R_IssueProject_ID));
 	}
 
 	/** Get Issue Project.
 		@return Implementation Projects
 	  */
-	public int getR_IssueProject_ID () 
+	public int getR_IssueProject_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueProject_ID);
 		if (ii == null)
@@ -773,21 +745,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Issue System.
-		@param R_IssueSystem_ID 
-		System creating the issue
-	  */
+		@param R_IssueSystem_ID System creating the issue
+	*/
 	public void setR_IssueSystem_ID (int R_IssueSystem_ID)
 	{
-		if (R_IssueSystem_ID < 1) 
+		if (R_IssueSystem_ID < 1)
 			set_Value (COLUMNNAME_R_IssueSystem_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_IssueSystem_ID, Integer.valueOf(R_IssueSystem_ID));
 	}
 
 	/** Get Issue System.
 		@return System creating the issue
 	  */
-	public int getR_IssueSystem_ID () 
+	public int getR_IssueSystem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueSystem_ID);
 		if (ii == null)
@@ -802,21 +773,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set IssueUser.
-		@param R_IssueUser_ID 
-		User who reported issues
-	  */
+		@param R_IssueUser_ID User who reported issues
+	*/
 	public void setR_IssueUser_ID (int R_IssueUser_ID)
 	{
-		if (R_IssueUser_ID < 1) 
+		if (R_IssueUser_ID < 1)
 			set_Value (COLUMNNAME_R_IssueUser_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_IssueUser_ID, Integer.valueOf(R_IssueUser_ID));
 	}
 
 	/** Get IssueUser.
 		@return User who reported issues
 	  */
-	public int getR_IssueUser_ID () 
+	public int getR_IssueUser_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueUser_ID);
 		if (ii == null)
@@ -831,21 +801,20 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Request.
-		@param R_Request_ID 
-		Request from a Business Partner or Prospect
-	  */
+		@param R_Request_ID Request from a Business Partner or Prospect
+	*/
 	public void setR_Request_ID (int R_Request_ID)
 	{
-		if (R_Request_ID < 1) 
+		if (R_Request_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, Integer.valueOf(R_Request_ID));
 	}
 
 	/** Get Request.
 		@return Request from a Business Partner or Prospect
 	  */
-	public int getR_Request_ID () 
+	public int getR_Request_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Request_ID);
 		if (ii == null)
@@ -854,9 +823,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	}
 
 	/** Set Source Class.
-		@param SourceClassName 
-		Source Class Name
-	  */
+		@param SourceClassName Source Class Name
+	*/
 	public void setSourceClassName (String SourceClassName)
 	{
 		set_Value (COLUMNNAME_SourceClassName, SourceClassName);
@@ -865,15 +833,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Source Class.
 		@return Source Class Name
 	  */
-	public String getSourceClassName () 
+	public String getSourceClassName()
 	{
 		return (String)get_Value(COLUMNNAME_SourceClassName);
 	}
 
 	/** Set Source Method.
-		@param SourceMethodName 
-		Source Method Name
-	  */
+		@param SourceMethodName Source Method Name
+	*/
 	public void setSourceMethodName (String SourceMethodName)
 	{
 		set_Value (COLUMNNAME_SourceMethodName, SourceMethodName);
@@ -882,15 +849,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Source Method.
 		@return Source Method Name
 	  */
-	public String getSourceMethodName () 
+	public String getSourceMethodName()
 	{
 		return (String)get_Value(COLUMNNAME_SourceMethodName);
 	}
 
 	/** Set Stack Trace.
-		@param StackTrace 
-		System Log Trace
-	  */
+		@param StackTrace System Log Trace
+	*/
 	public void setStackTrace (String StackTrace)
 	{
 		set_Value (COLUMNNAME_StackTrace, StackTrace);
@@ -899,15 +865,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Stack Trace.
 		@return System Log Trace
 	  */
-	public String getStackTrace () 
+	public String getStackTrace()
 	{
 		return (String)get_Value(COLUMNNAME_StackTrace);
 	}
 
 	/** Set Statistics.
-		@param StatisticsInfo 
-		Information to help profiling the system for solving support issues
-	  */
+		@param StatisticsInfo Information to help profiling the system for solving support issues
+	*/
 	public void setStatisticsInfo (String StatisticsInfo)
 	{
 		set_ValueNoCheck (COLUMNNAME_StatisticsInfo, StatisticsInfo);
@@ -916,15 +881,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Statistics.
 		@return Information to help profiling the system for solving support issues
 	  */
-	public String getStatisticsInfo () 
+	public String getStatisticsInfo()
 	{
 		return (String)get_Value(COLUMNNAME_StatisticsInfo);
 	}
 
 	/** Set Support EMail.
-		@param SupportEMail 
-		EMail address to send support information and updates to
-	  */
+		@param SupportEMail EMail address to send support information and updates to
+	*/
 	public void setSupportEMail (String SupportEMail)
 	{
 		set_Value (COLUMNNAME_SupportEMail, SupportEMail);
@@ -933,7 +897,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Support EMail.
 		@return EMail address to send support information and updates to
 	  */
-	public String getSupportEMail () 
+	public String getSupportEMail()
 	{
 		return (String)get_Value(COLUMNNAME_SupportEMail);
 	}
@@ -947,9 +911,8 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Production = P */
 	public static final String SYSTEMSTATUS_Production = "P";
 	/** Set System Status.
-		@param SystemStatus 
-		Status of the system - Support priority depends on system status
-	  */
+		@param SystemStatus Status of the system - Support priority depends on system status
+	*/
 	public void setSystemStatus (String SystemStatus)
 	{
 
@@ -959,13 +922,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get System Status.
 		@return Status of the system - Support priority depends on system status
 	  */
-	public String getSystemStatus () 
+	public String getSystemStatus()
 	{
 		return (String)get_Value(COLUMNNAME_SystemStatus);
 	}
 
 	/** Set User Name.
-		@param UserName User Name	  */
+		@param UserName User Name
+	*/
 	public void setUserName (String UserName)
 	{
 		set_ValueNoCheck (COLUMNNAME_UserName, UserName);
@@ -973,15 +937,14 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 
 	/** Get User Name.
 		@return User Name	  */
-	public String getUserName () 
+	public String getUserName()
 	{
 		return (String)get_Value(COLUMNNAME_UserName);
 	}
 
 	/** Set Version.
-		@param Version 
-		Version of the table definition
-	  */
+		@param Version Version of the table definition
+	*/
 	public void setVersion (String Version)
 	{
 		set_ValueNoCheck (COLUMNNAME_Version, Version);
@@ -990,7 +953,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/** Get Version.
 		@return Version of the table definition
 	  */
-	public String getVersion () 
+	public String getVersion()
 	{
 		return (String)get_Value(COLUMNNAME_Version);
 	}

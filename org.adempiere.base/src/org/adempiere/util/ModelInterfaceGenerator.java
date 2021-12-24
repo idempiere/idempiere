@@ -381,10 +381,10 @@ public class ModelInterfaceGenerator
 	public void generateJavaComment(String startOfComment, String propertyName,	String description, StringBuilder result) {
 		result.append("\n")
 			  .append("\t/** ").append(startOfComment).append(" ")
-			  .append(propertyName);
+			  .append(Util.maskHTML(propertyName));
 
 		if (description != null && description.length() > 0)
-			result.append(".\n\t  * ").append(description).append(NL);
+			result.append(".\n\t  * ").append(Util.maskHTML(description)).append(NL);
 
 		result.append("\t  */\n");
 	}

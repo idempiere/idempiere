@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_RelationType
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_RelationType")
 public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_RelationType (Properties ctx, int AD_RelationType_ID, String trxName)
@@ -85,18 +85,19 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	/** Set Source Reference.
-		@param AD_Reference_Source_ID Source Reference	  */
+		@param AD_Reference_Source_ID Source Reference
+	*/
 	public void setAD_Reference_Source_ID (int AD_Reference_Source_ID)
 	{
-		if (AD_Reference_Source_ID < 1) 
+		if (AD_Reference_Source_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_Source_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_Source_ID, Integer.valueOf(AD_Reference_Source_ID));
 	}
 
 	/** Get Source Reference.
 		@return Source Reference	  */
-	public int getAD_Reference_Source_ID () 
+	public int getAD_Reference_Source_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Source_ID);
 		if (ii == null)
@@ -111,18 +112,19 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	/** Set Target Reference.
-		@param AD_Reference_Target_ID Target Reference	  */
+		@param AD_Reference_Target_ID Target Reference
+	*/
 	public void setAD_Reference_Target_ID (int AD_Reference_Target_ID)
 	{
-		if (AD_Reference_Target_ID < 1) 
+		if (AD_Reference_Target_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_Target_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_Target_ID, Integer.valueOf(AD_Reference_Target_ID));
 	}
 
 	/** Get Target Reference.
 		@return Target Reference	  */
-	public int getAD_Reference_Target_ID () 
+	public int getAD_Reference_Target_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Target_ID);
 		if (ii == null)
@@ -131,18 +133,19 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	/** Set Relation Type.
-		@param AD_RelationType_ID Relation Type	  */
+		@param AD_RelationType_ID Relation Type
+	*/
 	public void setAD_RelationType_ID (int AD_RelationType_ID)
 	{
-		if (AD_RelationType_ID < 1) 
+		if (AD_RelationType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_RelationType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_RelationType_ID, Integer.valueOf(AD_RelationType_ID));
 	}
 
 	/** Get Relation Type.
 		@return Relation Type	  */
-	public int getAD_RelationType_ID () 
+	public int getAD_RelationType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_RelationType_ID);
 		if (ii == null)
@@ -151,7 +154,8 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	/** Set AD_RelationType_UU.
-		@param AD_RelationType_UU AD_RelationType_UU	  */
+		@param AD_RelationType_UU AD_RelationType_UU
+	*/
 	public void setAD_RelationType_UU (String AD_RelationType_UU)
 	{
 		set_Value (COLUMNNAME_AD_RelationType_UU, AD_RelationType_UU);
@@ -159,15 +163,14 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 
 	/** Get AD_RelationType_UU.
 		@return AD_RelationType_UU	  */
-	public String getAD_RelationType_UU () 
+	public String getAD_RelationType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_RelationType_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -176,7 +179,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -184,9 +187,8 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -196,24 +198,23 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Directed.
-		@param IsDirected 
-		Tells whether one "sees" the other end of the relation from each end or just from the source
-	  */
+		@param IsDirected Tells whether one &quot;sees&quot; the other end of the relation from each end or just from the source
+	*/
 	public void setIsDirected (boolean IsDirected)
 	{
 		set_Value (COLUMNNAME_IsDirected, Boolean.valueOf(IsDirected));
 	}
 
 	/** Get Directed.
-		@return Tells whether one "sees" the other end of the relation from each end or just from the source
+		@return Tells whether one &quot;sees&quot; the other end of the relation from each end or just from the source
 	  */
-	public boolean isDirected () 
+	public boolean isDirected()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDirected);
 		if (oo != null) 
@@ -226,9 +227,8 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -237,7 +237,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -257,9 +257,8 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** Order = Order */
 	public static final String ROLE_SOURCE_Order = "Order";
 	/** Set Source Role.
-		@param Role_Source 
-		If set, this role will be used as label for the zoom destination instead of the destinations's window name
-	  */
+		@param Role_Source If set, this role will be used as label for the zoom destination instead of the destinations&#039;s window name
+	*/
 	public void setRole_Source (String Role_Source)
 	{
 
@@ -267,9 +266,9 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	/** Get Source Role.
-		@return If set, this role will be used as label for the zoom destination instead of the destinations's window name
+		@return If set, this role will be used as label for the zoom destination instead of the destinations&#039;s window name
 	  */
-	public String getRole_Source () 
+	public String getRole_Source()
 	{
 		return (String)get_Value(COLUMNNAME_Role_Source);
 	}
@@ -281,9 +280,8 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** Order = Order */
 	public static final String ROLE_TARGET_Order = "Order";
 	/** Set Target Role.
-		@param Role_Target 
-		If set, this role will be used as label for the zoom destination instead of the destinations's window name
-	  */
+		@param Role_Target If set, this role will be used as label for the zoom destination instead of the destinations&#039;s window name
+	*/
 	public void setRole_Target (String Role_Target)
 	{
 
@@ -291,9 +289,9 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	}
 
 	/** Get Target Role.
-		@return If set, this role will be used as label for the zoom destination instead of the destinations's window name
+		@return If set, this role will be used as label for the zoom destination instead of the destinations&#039;s window name
 	  */
-	public String getRole_Target () 
+	public String getRole_Target()
 	{
 		return (String)get_Value(COLUMNNAME_Role_Target);
 	}
@@ -305,9 +303,8 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** Implicit = I */
 	public static final String TYPE_Implicit = "I";
 	/** Set Type.
-		@param Type 
-		Type of Validation (SQL, Java Script, Java Language)
-	  */
+		@param Type Type of Validation (SQL, Java Script, Java Language)
+	*/
 	public void setType (String Type)
 	{
 
@@ -317,7 +314,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/** Get Type.
 		@return Type of Validation (SQL, Java Script, Java Language)
 	  */
-	public String getType () 
+	public String getType()
 	{
 		return (String)get_Value(COLUMNNAME_Type);
 	}

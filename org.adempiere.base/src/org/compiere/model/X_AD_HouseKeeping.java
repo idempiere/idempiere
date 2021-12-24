@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_HouseKeeping
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_HouseKeeping")
 public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_HouseKeeping (Properties ctx, int AD_HouseKeeping_ID, String trxName)
@@ -75,18 +75,19 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
     }
 
 	/** Set House Keeping Configuration.
-		@param AD_HouseKeeping_ID House Keeping Configuration	  */
+		@param AD_HouseKeeping_ID House Keeping Configuration
+	*/
 	public void setAD_HouseKeeping_ID (int AD_HouseKeeping_ID)
 	{
-		if (AD_HouseKeeping_ID < 1) 
+		if (AD_HouseKeeping_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_HouseKeeping_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_HouseKeeping_ID, Integer.valueOf(AD_HouseKeeping_ID));
 	}
 
 	/** Get House Keeping Configuration.
 		@return House Keeping Configuration	  */
-	public int getAD_HouseKeeping_ID () 
+	public int getAD_HouseKeeping_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_HouseKeeping_ID);
 		if (ii == null)
@@ -95,7 +96,8 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	}
 
 	/** Set AD_HouseKeeping_UU.
-		@param AD_HouseKeeping_UU AD_HouseKeeping_UU	  */
+		@param AD_HouseKeeping_UU AD_HouseKeeping_UU
+	*/
 	public void setAD_HouseKeeping_UU (String AD_HouseKeeping_UU)
 	{
 		set_Value (COLUMNNAME_AD_HouseKeeping_UU, AD_HouseKeeping_UU);
@@ -103,7 +105,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 
 	/** Get AD_HouseKeeping_UU.
 		@return AD_HouseKeeping_UU	  */
-	public String getAD_HouseKeeping_UU () 
+	public String getAD_HouseKeeping_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_HouseKeeping_UU);
 	}
@@ -115,21 +117,20 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -138,9 +139,8 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	}
 
 	/** Set Backup Folder.
-		@param BackupFolder 
-		Backup Folder
-	  */
+		@param BackupFolder Backup Folder
+	*/
 	public void setBackupFolder (String BackupFolder)
 	{
 		set_Value (COLUMNNAME_BackupFolder, BackupFolder);
@@ -149,15 +149,14 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/** Get Backup Folder.
 		@return Backup Folder
 	  */
-	public String getBackupFolder () 
+	public String getBackupFolder()
 	{
 		return (String)get_Value(COLUMNNAME_BackupFolder);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -166,15 +165,14 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -183,13 +181,14 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Export XML Backup.
-		@param IsExportXMLBackup Export XML Backup	  */
+		@param IsExportXMLBackup Export XML Backup
+	*/
 	public void setIsExportXMLBackup (boolean IsExportXMLBackup)
 	{
 		set_Value (COLUMNNAME_IsExportXMLBackup, Boolean.valueOf(IsExportXMLBackup));
@@ -197,7 +196,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 
 	/** Get Export XML Backup.
 		@return Export XML Backup	  */
-	public boolean isExportXMLBackup () 
+	public boolean isExportXMLBackup()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExportXMLBackup);
 		if (oo != null) 
@@ -210,7 +209,8 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	}
 
 	/** Set Save In Historic.
-		@param IsSaveInHistoric Save In Historic	  */
+		@param IsSaveInHistoric Save In Historic
+	*/
 	public void setIsSaveInHistoric (boolean IsSaveInHistoric)
 	{
 		set_Value (COLUMNNAME_IsSaveInHistoric, Boolean.valueOf(IsSaveInHistoric));
@@ -218,7 +218,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 
 	/** Get Save In Historic.
 		@return Save In Historic	  */
-	public boolean isSaveInHistoric () 
+	public boolean isSaveInHistoric()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSaveInHistoric);
 		if (oo != null) 
@@ -231,7 +231,8 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	}
 
 	/** Set Last Deleted.
-		@param LastDeleted Last Deleted	  */
+		@param LastDeleted Last Deleted
+	*/
 	public void setLastDeleted (int LastDeleted)
 	{
 		set_Value (COLUMNNAME_LastDeleted, Integer.valueOf(LastDeleted));
@@ -239,7 +240,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 
 	/** Get Last Deleted.
 		@return Last Deleted	  */
-	public int getLastDeleted () 
+	public int getLastDeleted()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LastDeleted);
 		if (ii == null)
@@ -248,7 +249,8 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	}
 
 	/** Set Last Run.
-		@param LastRun Last Run	  */
+		@param LastRun Last Run
+	*/
 	public void setLastRun (Timestamp LastRun)
 	{
 		set_Value (COLUMNNAME_LastRun, LastRun);
@@ -256,15 +258,14 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 
 	/** Get Last Run.
 		@return Last Run	  */
-	public Timestamp getLastRun () 
+	public Timestamp getLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LastRun);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -273,7 +274,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -287,7 +288,8 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -295,7 +297,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -308,9 +310,8 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	}
 
 	/** Set DB Table Name.
-		@param TableName 
-		Name of the table in the database
-	  */
+		@param TableName Name of the table in the database
+	*/
 	public void setTableName (String TableName)
 	{
 		set_Value (COLUMNNAME_TableName, TableName);
@@ -319,15 +320,14 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/** Get DB Table Name.
 		@return Name of the table in the database
 	  */
-	public String getTableName () 
+	public String getTableName()
 	{
 		return (String)get_Value(COLUMNNAME_TableName);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -336,15 +336,14 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Sql WHERE.
-		@param WhereClause 
-		Fully qualified SQL WHERE clause
-	  */
+		@param WhereClause Fully qualified SQL WHERE clause
+	*/
 	public void setWhereClause (String WhereClause)
 	{
 		set_Value (COLUMNNAME_WhereClause, WhereClause);
@@ -353,7 +352,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/** Get Sql WHERE.
 		@return Fully qualified SQL WHERE clause
 	  */
-	public String getWhereClause () 
+	public String getWhereClause()
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
 	}

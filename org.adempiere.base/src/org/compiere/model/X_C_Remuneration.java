@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Remuneration
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Remuneration")
 public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Remuneration (Properties ctx, int C_Remuneration_ID, String trxName)
@@ -81,21 +81,20 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
     }
 
 	/** Set Remuneration.
-		@param C_Remuneration_ID 
-		Wage or Salary
-	  */
+		@param C_Remuneration_ID Wage or Salary
+	*/
 	public void setC_Remuneration_ID (int C_Remuneration_ID)
 	{
-		if (C_Remuneration_ID < 1) 
+		if (C_Remuneration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Remuneration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Remuneration_ID, Integer.valueOf(C_Remuneration_ID));
 	}
 
 	/** Get Remuneration.
 		@return Wage or Salary
 	  */
-	public int getC_Remuneration_ID () 
+	public int getC_Remuneration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Remuneration_ID);
 		if (ii == null)
@@ -104,7 +103,8 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	}
 
 	/** Set C_Remuneration_UU.
-		@param C_Remuneration_UU C_Remuneration_UU	  */
+		@param C_Remuneration_UU C_Remuneration_UU
+	*/
 	public void setC_Remuneration_UU (String C_Remuneration_UU)
 	{
 		set_Value (COLUMNNAME_C_Remuneration_UU, C_Remuneration_UU);
@@ -112,15 +112,14 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 
 	/** Get C_Remuneration_UU.
 		@return C_Remuneration_UU	  */
-	public String getC_Remuneration_UU () 
+	public String getC_Remuneration_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Remuneration_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -129,15 +128,14 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Gross Amount.
-		@param GrossRAmt 
-		Gross Remuneration Amount
-	  */
+		@param GrossRAmt Gross Remuneration Amount
+	*/
 	public void setGrossRAmt (BigDecimal GrossRAmt)
 	{
 		set_Value (COLUMNNAME_GrossRAmt, GrossRAmt);
@@ -146,7 +144,7 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Gross Amount.
 		@return Gross Remuneration Amount
 	  */
-	public BigDecimal getGrossRAmt () 
+	public BigDecimal getGrossRAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_GrossRAmt);
 		if (bd == null)
@@ -155,9 +153,8 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	}
 
 	/** Set Gross Cost.
-		@param GrossRCost 
-		Gross Remuneration Costs
-	  */
+		@param GrossRCost Gross Remuneration Costs
+	*/
 	public void setGrossRCost (BigDecimal GrossRCost)
 	{
 		set_Value (COLUMNNAME_GrossRCost, GrossRCost);
@@ -166,7 +163,7 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Gross Cost.
 		@return Gross Remuneration Costs
 	  */
-	public BigDecimal getGrossRCost () 
+	public BigDecimal getGrossRCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_GrossRCost);
 		if (bd == null)
@@ -175,9 +172,8 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -186,15 +182,14 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -203,7 +198,7 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -217,9 +212,8 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
     }
 
 	/** Set Overtime Amount.
-		@param OvertimeAmt 
-		Hourly Overtime Rate
-	  */
+		@param OvertimeAmt Hourly Overtime Rate
+	*/
 	public void setOvertimeAmt (BigDecimal OvertimeAmt)
 	{
 		set_Value (COLUMNNAME_OvertimeAmt, OvertimeAmt);
@@ -228,7 +222,7 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Overtime Amount.
 		@return Hourly Overtime Rate
 	  */
-	public BigDecimal getOvertimeAmt () 
+	public BigDecimal getOvertimeAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OvertimeAmt);
 		if (bd == null)
@@ -237,9 +231,8 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	}
 
 	/** Set Overtime Cost.
-		@param OvertimeCost 
-		Hourly Overtime Cost
-	  */
+		@param OvertimeCost Hourly Overtime Cost
+	*/
 	public void setOvertimeCost (BigDecimal OvertimeCost)
 	{
 		set_Value (COLUMNNAME_OvertimeCost, OvertimeCost);
@@ -248,7 +241,7 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Overtime Cost.
 		@return Hourly Overtime Cost
 	  */
-	public BigDecimal getOvertimeCost () 
+	public BigDecimal getOvertimeCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OvertimeCost);
 		if (bd == null)
@@ -271,9 +264,8 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Weekly = W */
 	public static final String REMUNERATIONTYPE_Weekly = "W";
 	/** Set Remuneration Type.
-		@param RemunerationType 
-		Type of Remuneration
-	  */
+		@param RemunerationType Type of Remuneration
+	*/
 	public void setRemunerationType (String RemunerationType)
 	{
 
@@ -283,15 +275,14 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Remuneration Type.
 		@return Type of Remuneration
 	  */
-	public String getRemunerationType () 
+	public String getRemunerationType()
 	{
 		return (String)get_Value(COLUMNNAME_RemunerationType);
 	}
 
 	/** Set Standard Hours.
-		@param StandardHours 
-		Standard Work Hours based on Remuneration Type
-	  */
+		@param StandardHours Standard Work Hours based on Remuneration Type
+	*/
 	public void setStandardHours (int StandardHours)
 	{
 		set_Value (COLUMNNAME_StandardHours, Integer.valueOf(StandardHours));
@@ -300,7 +291,7 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/** Get Standard Hours.
 		@return Standard Work Hours based on Remuneration Type
 	  */
-	public int getStandardHours () 
+	public int getStandardHours()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_StandardHours);
 		if (ii == null)

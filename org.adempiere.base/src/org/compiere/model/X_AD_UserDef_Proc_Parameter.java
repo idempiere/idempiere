@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc_Parameter
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Proc_Parameter")
 public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc_Parameter, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc_Parameter (Properties ctx, int AD_UserDef_Proc_Parameter_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Field Group.
-		@param AD_FieldGroup_ID 
-		Logical grouping of fields
-	  */
+		@param AD_FieldGroup_ID Logical grouping of fields
+	*/
 	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
 	{
-		if (AD_FieldGroup_ID < 1) 
+		if (AD_FieldGroup_ID < 1)
 			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
 	}
 
 	/** Get Field Group.
 		@return Logical grouping of fields
 	  */
-	public int getAD_FieldGroup_ID () 
+	public int getAD_FieldGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
 		if (ii == null)
@@ -109,18 +108,19 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Process Parameter.
-		@param AD_Process_Para_ID Process Parameter	  */
+		@param AD_Process_Para_ID Process Parameter
+	*/
 	public void setAD_Process_Para_ID (int AD_Process_Para_ID)
 	{
-		if (AD_Process_Para_ID < 1) 
+		if (AD_Process_Para_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_Para_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_Para_ID, Integer.valueOf(AD_Process_Para_ID));
 	}
 
 	/** Get Process Parameter.
 		@return Process Parameter	  */
-	public int getAD_Process_Para_ID () 
+	public int getAD_Process_Para_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_Para_ID);
 		if (ii == null)
@@ -135,21 +135,20 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -164,21 +163,20 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Reference Key.
-		@param AD_Reference_Value_ID 
-		Required to specify, if data type is Table or List
-	  */
+		@param AD_Reference_Value_ID Required to specify, if data type is Table or List
+	*/
 	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
 	{
-		if (AD_Reference_Value_ID < 1) 
+		if (AD_Reference_Value_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
 	}
 
 	/** Get Reference Key.
 		@return Required to specify, if data type is Table or List
 	  */
-	public int getAD_Reference_Value_ID () 
+	public int getAD_Reference_Value_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
 		if (ii == null)
@@ -193,21 +191,20 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set User defined Process.
-		@param AD_UserDef_Proc_ID 
-		Primary Key : User defined Process
-	  */
+		@param AD_UserDef_Proc_ID Primary Key : User defined Process
+	*/
 	public void setAD_UserDef_Proc_ID (int AD_UserDef_Proc_ID)
 	{
-		if (AD_UserDef_Proc_ID < 1) 
+		if (AD_UserDef_Proc_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Proc_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Proc_ID, Integer.valueOf(AD_UserDef_Proc_ID));
 	}
 
 	/** Get User defined Process.
 		@return Primary Key : User defined Process
 	  */
-	public int getAD_UserDef_Proc_ID () 
+	public int getAD_UserDef_Proc_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Proc_ID);
 		if (ii == null)
@@ -216,21 +213,20 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set AD_UserDef_Proc_Parameter_ID.
-		@param AD_UserDef_Proc_Parameter_ID 
-		Primary Key : User defined Process Parameter
-	  */
+		@param AD_UserDef_Proc_Parameter_ID Primary Key : User defined Process Parameter
+	*/
 	public void setAD_UserDef_Proc_Parameter_ID (int AD_UserDef_Proc_Parameter_ID)
 	{
-		if (AD_UserDef_Proc_Parameter_ID < 1) 
+		if (AD_UserDef_Proc_Parameter_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Proc_Parameter_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Proc_Parameter_ID, Integer.valueOf(AD_UserDef_Proc_Parameter_ID));
 	}
 
 	/** Get AD_UserDef_Proc_Parameter_ID.
 		@return Primary Key : User defined Process Parameter
 	  */
-	public int getAD_UserDef_Proc_Parameter_ID () 
+	public int getAD_UserDef_Proc_Parameter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Proc_Parameter_ID);
 		if (ii == null)
@@ -239,7 +235,8 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set AD_UserDef_Proc_Parameter_UU.
-		@param AD_UserDef_Proc_Parameter_UU AD_UserDef_Proc_Parameter_UU	  */
+		@param AD_UserDef_Proc_Parameter_UU AD_UserDef_Proc_Parameter_UU
+	*/
 	public void setAD_UserDef_Proc_Parameter_UU (String AD_UserDef_Proc_Parameter_UU)
 	{
 		set_Value (COLUMNNAME_AD_UserDef_Proc_Parameter_UU, AD_UserDef_Proc_Parameter_UU);
@@ -247,7 +244,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 
 	/** Get AD_UserDef_Proc_Parameter_UU.
 		@return AD_UserDef_Proc_Parameter_UU	  */
-	public String getAD_UserDef_Proc_Parameter_UU () 
+	public String getAD_UserDef_Proc_Parameter_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Proc_Parameter_UU);
 	}
@@ -259,21 +256,20 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Dynamic Validation.
-		@param AD_Val_Rule_ID 
-		Dynamic Validation Rule
-	  */
+		@param AD_Val_Rule_ID Dynamic Validation Rule
+	*/
 	public void setAD_Val_Rule_ID (int AD_Val_Rule_ID)
 	{
-		if (AD_Val_Rule_ID < 1) 
+		if (AD_Val_Rule_ID < 1)
 			set_Value (COLUMNNAME_AD_Val_Rule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Val_Rule_ID, Integer.valueOf(AD_Val_Rule_ID));
 	}
 
 	/** Get Dynamic Validation.
 		@return Dynamic Validation Rule
 	  */
-	public int getAD_Val_Rule_ID () 
+	public int getAD_Val_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_ID);
 		if (ii == null)
@@ -282,9 +278,8 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Default Logic.
-		@param DefaultValue 
-		Default value hierarchy, separated by ;
-	  */
+		@param DefaultValue Default value hierarchy, separated by ;
+	*/
 	public void setDefaultValue (String DefaultValue)
 	{
 		set_Value (COLUMNNAME_DefaultValue, DefaultValue);
@@ -293,15 +288,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Default Logic.
 		@return Default value hierarchy, separated by ;
 	  */
-	public String getDefaultValue () 
+	public String getDefaultValue()
 	{
 		return (String)get_Value(COLUMNNAME_DefaultValue);
 	}
 
 	/** Set Default Logic 2.
-		@param DefaultValue2 
-		Default value hierarchy, separated by ;
-	  */
+		@param DefaultValue2 Default value hierarchy, separated by ;
+	*/
 	public void setDefaultValue2 (String DefaultValue2)
 	{
 		set_Value (COLUMNNAME_DefaultValue2, DefaultValue2);
@@ -310,15 +304,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Default Logic 2.
 		@return Default value hierarchy, separated by ;
 	  */
-	public String getDefaultValue2 () 
+	public String getDefaultValue2()
 	{
 		return (String)get_Value(COLUMNNAME_DefaultValue2);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -327,15 +320,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
+		@param DisplayLogic If the Field is displayed, the result determines if the field is actually displayed
+	*/
 	public void setDisplayLogic (String DisplayLogic)
 	{
 		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
@@ -344,15 +336,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Display Logic.
 		@return If the Field is displayed, the result determines if the field is actually displayed
 	  */
-	public String getDisplayLogic () 
+	public String getDisplayLogic()
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -361,7 +352,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
@@ -373,9 +364,8 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Yes = Y */
 	public static final String ISDISPLAYED_Yes = "Y";
 	/** Set Displayed.
-		@param IsDisplayed 
-		Determines, if this field is displayed
-	  */
+		@param IsDisplayed Determines, if this field is displayed
+	*/
 	public void setIsDisplayed (String IsDisplayed)
 	{
 
@@ -385,7 +375,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Displayed.
 		@return Determines, if this field is displayed
 	  */
-	public String getIsDisplayed () 
+	public String getIsDisplayed()
 	{
 		return (String)get_Value(COLUMNNAME_IsDisplayed);
 	}
@@ -397,9 +387,8 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Yes = Y */
 	public static final String ISMANDATORY_Yes = "Y";
 	/** Set Mandatory.
-		@param IsMandatory 
-		Data entry is required in this column
-	  */
+		@param IsMandatory Data entry is required in this column
+	*/
 	public void setIsMandatory (String IsMandatory)
 	{
 
@@ -409,15 +398,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Mandatory.
 		@return Data entry is required in this column
 	  */
-	public String getIsMandatory () 
+	public String getIsMandatory()
 	{
 		return (String)get_Value(COLUMNNAME_IsMandatory);
 	}
 
 	/** Set Range.
-		@param IsRange 
-		The parameter is a range of values
-	  */
+		@param IsRange The parameter is a range of values
+	*/
 	public void setIsRange (boolean IsRange)
 	{
 		set_Value (COLUMNNAME_IsRange, Boolean.valueOf(IsRange));
@@ -426,7 +414,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Range.
 		@return The parameter is a range of values
 	  */
-	public boolean isRange () 
+	public boolean isRange()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRange);
 		if (oo != null) 
@@ -439,7 +427,8 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Mandatory Logic.
-		@param MandatoryLogic Mandatory Logic	  */
+		@param MandatoryLogic Mandatory Logic
+	*/
 	public void setMandatoryLogic (String MandatoryLogic)
 	{
 		set_Value (COLUMNNAME_MandatoryLogic, MandatoryLogic);
@@ -447,15 +436,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 
 	/** Get Mandatory Logic.
 		@return Mandatory Logic	  */
-	public String getMandatoryLogic () 
+	public String getMandatoryLogic()
 	{
 		return (String)get_Value(COLUMNNAME_MandatoryLogic);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -464,7 +452,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -478,7 +466,8 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
     }
 
 	/** Set Placeholder.
-		@param Placeholder Placeholder	  */
+		@param Placeholder Placeholder
+	*/
 	public void setPlaceholder (String Placeholder)
 	{
 		set_Value (COLUMNNAME_Placeholder, Placeholder);
@@ -486,13 +475,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 
 	/** Get Placeholder.
 		@return Placeholder	  */
-	public String getPlaceholder () 
+	public String getPlaceholder()
 	{
 		return (String)get_Value(COLUMNNAME_Placeholder);
 	}
 
 	/** Set Placeholder2.
-		@param Placeholder2 Placeholder2	  */
+		@param Placeholder2 Placeholder2
+	*/
 	public void setPlaceholder2 (String Placeholder2)
 	{
 		set_Value (COLUMNNAME_Placeholder2, Placeholder2);
@@ -500,15 +490,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 
 	/** Get Placeholder2.
 		@return Placeholder2	  */
-	public String getPlaceholder2 () 
+	public String getPlaceholder2()
 	{
 		return (String)get_Value(COLUMNNAME_Placeholder2);
 	}
 
 	/** Set Read Only Logic.
-		@param ReadOnlyLogic 
-		Logic to determine if field is read only (applies only when field is read-write)
-	  */
+		@param ReadOnlyLogic Logic to determine if field is read only (applies only when field is read-write)
+	*/
 	public void setReadOnlyLogic (String ReadOnlyLogic)
 	{
 		set_Value (COLUMNNAME_ReadOnlyLogic, ReadOnlyLogic);
@@ -517,15 +506,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Read Only Logic.
 		@return Logic to determine if field is read only (applies only when field is read-write)
 	  */
-	public String getReadOnlyLogic () 
+	public String getReadOnlyLogic()
 	{
 		return (String)get_Value(COLUMNNAME_ReadOnlyLogic);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -534,7 +522,7 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -543,9 +531,8 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	}
 
 	/** Set Max. Value.
-		@param ValueMax 
-		Maximum Value for a field
-	  */
+		@param ValueMax Maximum Value for a field
+	*/
 	public void setValueMax (String ValueMax)
 	{
 		set_Value (COLUMNNAME_ValueMax, ValueMax);
@@ -554,15 +541,14 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Max. Value.
 		@return Maximum Value for a field
 	  */
-	public String getValueMax () 
+	public String getValueMax()
 	{
 		return (String)get_Value(COLUMNNAME_ValueMax);
 	}
 
 	/** Set Min. Value.
-		@param ValueMin 
-		Minimum Value for a field
-	  */
+		@param ValueMin Minimum Value for a field
+	*/
 	public void setValueMin (String ValueMin)
 	{
 		set_Value (COLUMNNAME_ValueMin, ValueMin);
@@ -571,24 +557,23 @@ public class X_AD_UserDef_Proc_Parameter extends PO implements I_AD_UserDef_Proc
 	/** Get Min. Value.
 		@return Minimum Value for a field
 	  */
-	public String getValueMin () 
+	public String getValueMin()
 	{
 		return (String)get_Value(COLUMNNAME_ValueMin);
 	}
 
 	/** Set Value Format.
-		@param VFormat 
-		Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
 	public void setVFormat (String VFormat)
 	{
 		set_Value (COLUMNNAME_VFormat, VFormat);
 	}
 
 	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
 	  */
-	public String getVFormat () 
+	public String getVFormat()
 	{
 		return (String)get_Value(COLUMNNAME_VFormat);
 	}

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeSet")
 public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -83,9 +83,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -94,15 +93,14 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Guarantee Days.
-		@param GuaranteeDays 
-		Number of days the product is guaranteed or available
-	  */
+		@param GuaranteeDays Number of days the product is guaranteed or available
+	*/
 	public void setGuaranteeDays (int GuaranteeDays)
 	{
 		set_Value (COLUMNNAME_GuaranteeDays, Integer.valueOf(GuaranteeDays));
@@ -111,7 +109,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Guarantee Days.
 		@return Number of days the product is guaranteed or available
 	  */
-	public int getGuaranteeDays () 
+	public int getGuaranteeDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GuaranteeDays);
 		if (ii == null)
@@ -120,7 +118,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set IsAutoGenerateLot.
-		@param IsAutoGenerateLot IsAutoGenerateLot	  */
+		@param IsAutoGenerateLot IsAutoGenerateLot
+	*/
 	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot)
 	{
 		set_Value (COLUMNNAME_IsAutoGenerateLot, Boolean.valueOf(IsAutoGenerateLot));
@@ -128,7 +127,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 
 	/** Get IsAutoGenerateLot.
 		@return IsAutoGenerateLot	  */
-	public boolean isAutoGenerateLot () 
+	public boolean isAutoGenerateLot()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoGenerateLot);
 		if (oo != null) 
@@ -141,9 +140,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Guarantee Date.
-		@param IsGuaranteeDate 
-		Product has Guarantee or Expiry Date
-	  */
+		@param IsGuaranteeDate Product has Guarantee or Expiry Date
+	*/
 	public void setIsGuaranteeDate (boolean IsGuaranteeDate)
 	{
 		set_Value (COLUMNNAME_IsGuaranteeDate, Boolean.valueOf(IsGuaranteeDate));
@@ -152,7 +150,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Guarantee Date.
 		@return Product has Guarantee or Expiry Date
 	  */
-	public boolean isGuaranteeDate () 
+	public boolean isGuaranteeDate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGuaranteeDate);
 		if (oo != null) 
@@ -165,9 +163,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Mandatory Guarantee Date.
-		@param IsGuaranteeDateMandatory 
-		The entry of a Guarantee Date is mandatory when creating a Product Instance
-	  */
+		@param IsGuaranteeDateMandatory The entry of a Guarantee Date is mandatory when creating a Product Instance
+	*/
 	public void setIsGuaranteeDateMandatory (boolean IsGuaranteeDateMandatory)
 	{
 		set_Value (COLUMNNAME_IsGuaranteeDateMandatory, Boolean.valueOf(IsGuaranteeDateMandatory));
@@ -176,7 +173,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Mandatory Guarantee Date.
 		@return The entry of a Guarantee Date is mandatory when creating a Product Instance
 	  */
-	public boolean isGuaranteeDateMandatory () 
+	public boolean isGuaranteeDateMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGuaranteeDateMandatory);
 		if (oo != null) 
@@ -189,9 +186,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Instance Attribute.
-		@param IsInstanceAttribute 
-		The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
-	  */
+		@param IsInstanceAttribute The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
+	*/
 	public void setIsInstanceAttribute (boolean IsInstanceAttribute)
 	{
 		set_Value (COLUMNNAME_IsInstanceAttribute, Boolean.valueOf(IsInstanceAttribute));
@@ -200,7 +196,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Instance Attribute.
 		@return The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
 	  */
-	public boolean isInstanceAttribute () 
+	public boolean isInstanceAttribute()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInstanceAttribute);
 		if (oo != null) 
@@ -213,9 +209,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Lot.
-		@param IsLot 
-		The product instances have a Lot Number
-	  */
+		@param IsLot The product instances have a Lot Number
+	*/
 	public void setIsLot (boolean IsLot)
 	{
 		set_Value (COLUMNNAME_IsLot, Boolean.valueOf(IsLot));
@@ -224,7 +219,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Lot.
 		@return The product instances have a Lot Number
 	  */
-	public boolean isLot () 
+	public boolean isLot()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLot);
 		if (oo != null) 
@@ -237,9 +232,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Mandatory Lot.
-		@param IsLotMandatory 
-		The entry of Lot info is mandatory when creating a Product Instance
-	  */
+		@param IsLotMandatory The entry of Lot info is mandatory when creating a Product Instance
+	*/
 	public void setIsLotMandatory (boolean IsLotMandatory)
 	{
 		set_Value (COLUMNNAME_IsLotMandatory, Boolean.valueOf(IsLotMandatory));
@@ -248,7 +242,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Mandatory Lot.
 		@return The entry of Lot info is mandatory when creating a Product Instance
 	  */
-	public boolean isLotMandatory () 
+	public boolean isLotMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLotMandatory);
 		if (oo != null) 
@@ -261,9 +255,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Serial No.
-		@param IsSerNo 
-		The product instances have Serial Numbers
-	  */
+		@param IsSerNo The product instances have Serial Numbers
+	*/
 	public void setIsSerNo (boolean IsSerNo)
 	{
 		set_Value (COLUMNNAME_IsSerNo, Boolean.valueOf(IsSerNo));
@@ -272,7 +265,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Serial No.
 		@return The product instances have Serial Numbers
 	  */
-	public boolean isSerNo () 
+	public boolean isSerNo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSerNo);
 		if (oo != null) 
@@ -285,9 +278,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Mandatory Serial No.
-		@param IsSerNoMandatory 
-		The entry of a Serial No is mandatory when creating a Product Instance
-	  */
+		@param IsSerNoMandatory The entry of a Serial No is mandatory when creating a Product Instance
+	*/
 	public void setIsSerNoMandatory (boolean IsSerNoMandatory)
 	{
 		set_Value (COLUMNNAME_IsSerNoMandatory, Boolean.valueOf(IsSerNoMandatory));
@@ -296,7 +288,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Mandatory Serial No.
 		@return The entry of a Serial No is mandatory when creating a Product Instance
 	  */
-	public boolean isSerNoMandatory () 
+	public boolean isSerNoMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSerNoMandatory);
 		if (oo != null) 
@@ -309,9 +301,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Lot Char End Overwrite.
-		@param LotCharEOverwrite 
-		Lot/Batch End Indicator overwrite - default »
-	  */
+		@param LotCharEOverwrite Lot/Batch End Indicator overwrite - default »
+	*/
 	public void setLotCharEOverwrite (String LotCharEOverwrite)
 	{
 		set_Value (COLUMNNAME_LotCharEOverwrite, LotCharEOverwrite);
@@ -320,15 +311,14 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Lot Char End Overwrite.
 		@return Lot/Batch End Indicator overwrite - default »
 	  */
-	public String getLotCharEOverwrite () 
+	public String getLotCharEOverwrite()
 	{
 		return (String)get_Value(COLUMNNAME_LotCharEOverwrite);
 	}
 
 	/** Set Lot Char Start Overwrite.
-		@param LotCharSOverwrite 
-		Lot/Batch Start Indicator overwrite - default «
-	  */
+		@param LotCharSOverwrite Lot/Batch Start Indicator overwrite - default «
+	*/
 	public void setLotCharSOverwrite (String LotCharSOverwrite)
 	{
 		set_Value (COLUMNNAME_LotCharSOverwrite, LotCharSOverwrite);
@@ -337,7 +327,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Lot Char Start Overwrite.
 		@return Lot/Batch Start Indicator overwrite - default «
 	  */
-	public String getLotCharSOverwrite () 
+	public String getLotCharSOverwrite()
 	{
 		return (String)get_Value(COLUMNNAME_LotCharSOverwrite);
 	}
@@ -351,9 +341,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Always Mandatory = Y */
 	public static final String MANDATORYTYPE_AlwaysMandatory = "Y";
 	/** Set Mandatory Type.
-		@param MandatoryType 
-		The specification of a Product Attribute Instance is mandatory
-	  */
+		@param MandatoryType The specification of a Product Attribute Instance is mandatory
+	*/
 	public void setMandatoryType (String MandatoryType)
 	{
 
@@ -363,27 +352,26 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Mandatory Type.
 		@return The specification of a Product Attribute Instance is mandatory
 	  */
-	public String getMandatoryType () 
+	public String getMandatoryType()
 	{
 		return (String)get_Value(COLUMNNAME_MandatoryType);
 	}
 
 	/** Set Attribute Set.
-		@param M_AttributeSet_ID 
-		Product Attribute Set
-	  */
+		@param M_AttributeSet_ID Product Attribute Set
+	*/
 	public void setM_AttributeSet_ID (int M_AttributeSet_ID)
 	{
-		if (M_AttributeSet_ID < 0) 
+		if (M_AttributeSet_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSet_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSet_ID, Integer.valueOf(M_AttributeSet_ID));
 	}
 
 	/** Get Attribute Set.
 		@return Product Attribute Set
 	  */
-	public int getM_AttributeSet_ID () 
+	public int getM_AttributeSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSet_ID);
 		if (ii == null)
@@ -396,7 +384,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Material Management System = MMS */
 	public static final String M_ATTRIBUTESET_TYPE_MaterialManagementSystem = "MMS";
 	/** Set AttributeSet Type.
-		@param M_AttributeSet_Type AttributeSet Type	  */
+		@param M_AttributeSet_Type AttributeSet Type
+	*/
 	public void setM_AttributeSet_Type (String M_AttributeSet_Type)
 	{
 
@@ -405,13 +394,14 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 
 	/** Get AttributeSet Type.
 		@return AttributeSet Type	  */
-	public String getM_AttributeSet_Type () 
+	public String getM_AttributeSet_Type()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeSet_Type);
 	}
 
 	/** Set M_AttributeSet_UU.
-		@param M_AttributeSet_UU M_AttributeSet_UU	  */
+		@param M_AttributeSet_UU M_AttributeSet_UU
+	*/
 	public void setM_AttributeSet_UU (String M_AttributeSet_UU)
 	{
 		set_Value (COLUMNNAME_M_AttributeSet_UU, M_AttributeSet_UU);
@@ -419,7 +409,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 
 	/** Get M_AttributeSet_UU.
 		@return M_AttributeSet_UU	  */
-	public String getM_AttributeSet_UU () 
+	public String getM_AttributeSet_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeSet_UU);
 	}
@@ -431,21 +421,20 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Lot Control.
-		@param M_LotCtl_ID 
-		Product Lot Control
-	  */
+		@param M_LotCtl_ID Product Lot Control
+	*/
 	public void setM_LotCtl_ID (int M_LotCtl_ID)
 	{
-		if (M_LotCtl_ID < 1) 
+		if (M_LotCtl_ID < 1)
 			set_Value (COLUMNNAME_M_LotCtl_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_LotCtl_ID, Integer.valueOf(M_LotCtl_ID));
 	}
 
 	/** Get Lot Control.
 		@return Product Lot Control
 	  */
-	public int getM_LotCtl_ID () 
+	public int getM_LotCtl_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_LotCtl_ID);
 		if (ii == null)
@@ -460,21 +449,20 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Serial No Control.
-		@param M_SerNoCtl_ID 
-		Product Serial Number Control
-	  */
+		@param M_SerNoCtl_ID Product Serial Number Control
+	*/
 	public void setM_SerNoCtl_ID (int M_SerNoCtl_ID)
 	{
-		if (M_SerNoCtl_ID < 1) 
+		if (M_SerNoCtl_ID < 1)
 			set_Value (COLUMNNAME_M_SerNoCtl_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_SerNoCtl_ID, Integer.valueOf(M_SerNoCtl_ID));
 	}
 
 	/** Get Serial No Control.
 		@return Product Serial Number Control
 	  */
-	public int getM_SerNoCtl_ID () 
+	public int getM_SerNoCtl_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_SerNoCtl_ID);
 		if (ii == null)
@@ -483,9 +471,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -494,7 +481,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -508,9 +495,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
     }
 
 	/** Set SerNo Char End Overwrite.
-		@param SerNoCharEOverwrite 
-		Serial Number End Indicator overwrite - default empty
-	  */
+		@param SerNoCharEOverwrite Serial Number End Indicator overwrite - default empty
+	*/
 	public void setSerNoCharEOverwrite (String SerNoCharEOverwrite)
 	{
 		set_Value (COLUMNNAME_SerNoCharEOverwrite, SerNoCharEOverwrite);
@@ -519,15 +505,14 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get SerNo Char End Overwrite.
 		@return Serial Number End Indicator overwrite - default empty
 	  */
-	public String getSerNoCharEOverwrite () 
+	public String getSerNoCharEOverwrite()
 	{
 		return (String)get_Value(COLUMNNAME_SerNoCharEOverwrite);
 	}
 
 	/** Set SerNo Char Start Overwrite.
-		@param SerNoCharSOverwrite 
-		Serial Number Start Indicator overwrite - default #
-	  */
+		@param SerNoCharSOverwrite Serial Number Start Indicator overwrite - default #
+	*/
 	public void setSerNoCharSOverwrite (String SerNoCharSOverwrite)
 	{
 		set_Value (COLUMNNAME_SerNoCharSOverwrite, SerNoCharSOverwrite);
@@ -536,13 +521,14 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/** Get SerNo Char Start Overwrite.
 		@return Serial Number Start Indicator overwrite - default #
 	  */
-	public String getSerNoCharSOverwrite () 
+	public String getSerNoCharSOverwrite()
 	{
 		return (String)get_Value(COLUMNNAME_SerNoCharSOverwrite);
 	}
 
 	/** Set Use Guarantee Date for Material Policy.
-		@param UseGuaranteeDateForMPolicy Use Guarantee Date for Material Policy	  */
+		@param UseGuaranteeDateForMPolicy Use Guarantee Date for Material Policy
+	*/
 	public void setUseGuaranteeDateForMPolicy (boolean UseGuaranteeDateForMPolicy)
 	{
 		set_Value (COLUMNNAME_UseGuaranteeDateForMPolicy, Boolean.valueOf(UseGuaranteeDateForMPolicy));
@@ -550,7 +536,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 
 	/** Get Use Guarantee Date for Material Policy.
 		@return Use Guarantee Date for Material Policy	  */
-	public boolean isUseGuaranteeDateForMPolicy () 
+	public boolean isUseGuaranteeDateForMPolicy()
 	{
 		Object oo = get_Value(COLUMNNAME_UseGuaranteeDateForMPolicy);
 		if (oo != null) 

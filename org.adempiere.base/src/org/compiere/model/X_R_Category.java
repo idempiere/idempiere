@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Category
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_Category")
 public class X_R_Category extends PO implements I_R_Category, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_Category (Properties ctx, int R_Category_ID, String trxName)
@@ -73,9 +73,8 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,15 +83,14 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -101,7 +99,7 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
@@ -113,21 +111,20 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -136,9 +133,8 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -147,7 +143,7 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -161,21 +157,20 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
     }
 
 	/** Set Category.
-		@param R_Category_ID 
-		Request Category
-	  */
+		@param R_Category_ID Request Category
+	*/
 	public void setR_Category_ID (int R_Category_ID)
 	{
-		if (R_Category_ID < 1) 
+		if (R_Category_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Category_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Category_ID, Integer.valueOf(R_Category_ID));
 	}
 
 	/** Get Category.
 		@return Request Category
 	  */
-	public int getR_Category_ID () 
+	public int getR_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Category_ID);
 		if (ii == null)
@@ -184,7 +179,8 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 	}
 
 	/** Set R_Category_UU.
-		@param R_Category_UU R_Category_UU	  */
+		@param R_Category_UU R_Category_UU
+	*/
 	public void setR_Category_UU (String R_Category_UU)
 	{
 		set_Value (COLUMNNAME_R_Category_UU, R_Category_UU);
@@ -192,7 +188,7 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
 
 	/** Get R_Category_UU.
 		@return R_Category_UU	  */
-	public String getR_Category_UU () 
+	public String getR_Category_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_Category_UU);
 	}

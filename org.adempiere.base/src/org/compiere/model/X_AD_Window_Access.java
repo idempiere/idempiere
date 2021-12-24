@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Window_Access
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Window_Access")
 public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Window_Access (Properties ctx, int AD_Window_Access_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -102,7 +101,8 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 	}
 
 	/** Set AD_Window_Access_UU.
-		@param AD_Window_Access_UU AD_Window_Access_UU	  */
+		@param AD_Window_Access_UU AD_Window_Access_UU
+	*/
 	public void setAD_Window_Access_UU (String AD_Window_Access_UU)
 	{
 		set_Value (COLUMNNAME_AD_Window_Access_UU, AD_Window_Access_UU);
@@ -110,7 +110,7 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 
 	/** Get AD_Window_Access_UU.
 		@return AD_Window_Access_UU	  */
-	public String getAD_Window_Access_UU () 
+	public String getAD_Window_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Window_Access_UU);
 	}
@@ -122,21 +122,20 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -145,9 +144,8 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 	}
 
 	/** Set Read Write.
-		@param IsReadWrite 
-		Field is read / write
-	  */
+		@param IsReadWrite Field is read / write
+	*/
 	public void setIsReadWrite (boolean IsReadWrite)
 	{
 		set_Value (COLUMNNAME_IsReadWrite, Boolean.valueOf(IsReadWrite));
@@ -156,7 +154,7 @@ public class X_AD_Window_Access extends PO implements I_AD_Window_Access, I_Pers
 	/** Get Read Write.
 		@return Field is read / write
 	  */
-	public boolean isReadWrite () 
+	public boolean isReadWrite()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadWrite);
 		if (oo != null) 

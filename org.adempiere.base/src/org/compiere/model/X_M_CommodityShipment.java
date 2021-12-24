@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_CommodityShipment
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_CommodityShipment")
 public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)
@@ -73,18 +73,19 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
     }
 
 	/** Set Country Of Manufacture.
-		@param CountryOfManufacture_ID Country Of Manufacture	  */
+		@param CountryOfManufacture_ID Country Of Manufacture
+	*/
 	public void setCountryOfManufacture_ID (int CountryOfManufacture_ID)
 	{
-		if (CountryOfManufacture_ID < 1) 
+		if (CountryOfManufacture_ID < 1)
 			set_Value (COLUMNNAME_CountryOfManufacture_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CountryOfManufacture_ID, Integer.valueOf(CountryOfManufacture_ID));
 	}
 
 	/** Get Country Of Manufacture.
 		@return Country Of Manufacture	  */
-	public int getCountryOfManufacture_ID () 
+	public int getCountryOfManufacture_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CountryOfManufacture_ID);
 		if (ii == null)
@@ -93,9 +94,8 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -104,13 +104,14 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Export License Number.
-		@param ExportLicenseNum Export License Number	  */
+		@param ExportLicenseNum Export License Number
+	*/
 	public void setExportLicenseNum (String ExportLicenseNum)
 	{
 		set_Value (COLUMNNAME_ExportLicenseNum, ExportLicenseNum);
@@ -118,13 +119,14 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 
 	/** Get Export License Number.
 		@return Export License Number	  */
-	public String getExportLicenseNum () 
+	public String getExportLicenseNum()
 	{
 		return (String)get_Value(COLUMNNAME_ExportLicenseNum);
 	}
 
 	/** Set Harmonized Code.
-		@param HarmonizedCode Harmonized Code	  */
+		@param HarmonizedCode Harmonized Code
+	*/
 	public void setHarmonizedCode (String HarmonizedCode)
 	{
 		set_Value (COLUMNNAME_HarmonizedCode, HarmonizedCode);
@@ -132,24 +134,25 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 
 	/** Get Harmonized Code.
 		@return Harmonized Code	  */
-	public String getHarmonizedCode () 
+	public String getHarmonizedCode()
 	{
 		return (String)get_Value(COLUMNNAME_HarmonizedCode);
 	}
 
 	/** Set Commodity Shipment.
-		@param M_CommodityShipment_ID Commodity Shipment	  */
+		@param M_CommodityShipment_ID Commodity Shipment
+	*/
 	public void setM_CommodityShipment_ID (int M_CommodityShipment_ID)
 	{
-		if (M_CommodityShipment_ID < 1) 
+		if (M_CommodityShipment_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CommodityShipment_ID, Integer.valueOf(M_CommodityShipment_ID));
 	}
 
 	/** Get Commodity Shipment.
 		@return Commodity Shipment	  */
-	public int getM_CommodityShipment_ID () 
+	public int getM_CommodityShipment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CommodityShipment_ID);
 		if (ii == null)
@@ -158,7 +161,8 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	}
 
 	/** Set M_CommodityShipment_UU.
-		@param M_CommodityShipment_UU M_CommodityShipment_UU	  */
+		@param M_CommodityShipment_UU M_CommodityShipment_UU
+	*/
 	public void setM_CommodityShipment_UU (String M_CommodityShipment_UU)
 	{
 		set_Value (COLUMNNAME_M_CommodityShipment_UU, M_CommodityShipment_UU);
@@ -166,7 +170,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 
 	/** Get M_CommodityShipment_UU.
 		@return M_CommodityShipment_UU	  */
-	public String getM_CommodityShipment_UU () 
+	public String getM_CommodityShipment_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_CommodityShipment_UU);
 	}
@@ -178,21 +182,20 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)

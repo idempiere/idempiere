@@ -19,15 +19,11 @@ package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for WS_WebServiceTypeAccess
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceTypeAccess")
 public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceTypeAccess, I_Persistent 
 {
@@ -35,7 +31,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_WS_WebServiceTypeAccess (Properties ctx, int WS_WebServiceTypeAccess_ID, String trxName)
@@ -85,21 +81,20 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -108,9 +103,8 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	}
 
 	/** Set Read Write.
-		@param IsReadWrite 
-		Field is read / write
-	  */
+		@param IsReadWrite Field is read / write
+	*/
 	public void setIsReadWrite (boolean IsReadWrite)
 	{
 		set_Value (COLUMNNAME_IsReadWrite, Boolean.valueOf(IsReadWrite));
@@ -119,7 +113,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	/** Get Read Write.
 		@return Field is read / write
 	  */
-	public boolean isReadWrite () 
+	public boolean isReadWrite()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadWrite);
 		if (oo != null) 
@@ -132,7 +126,8 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	}
 
 	/** Set WS_WebServiceTypeAccess_UU.
-		@param WS_WebServiceTypeAccess_UU WS_WebServiceTypeAccess_UU	  */
+		@param WS_WebServiceTypeAccess_UU WS_WebServiceTypeAccess_UU
+	*/
 	public void setWS_WebServiceTypeAccess_UU (String WS_WebServiceTypeAccess_UU)
 	{
 		set_Value (COLUMNNAME_WS_WebServiceTypeAccess_UU, WS_WebServiceTypeAccess_UU);
@@ -140,7 +135,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 
 	/** Get WS_WebServiceTypeAccess_UU.
 		@return WS_WebServiceTypeAccess_UU	  */
-	public String getWS_WebServiceTypeAccess_UU () 
+	public String getWS_WebServiceTypeAccess_UU()
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebServiceTypeAccess_UU);
 	}
@@ -152,18 +147,19 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	}
 
 	/** Set Web Service Type.
-		@param WS_WebServiceType_ID Web Service Type	  */
+		@param WS_WebServiceType_ID Web Service Type
+	*/
 	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID)
 	{
-		if (WS_WebServiceType_ID < 1) 
+		if (WS_WebServiceType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceType_ID, Integer.valueOf(WS_WebServiceType_ID));
 	}
 
 	/** Get Web Service Type.
 		@return Web Service Type	  */
-	public int getWS_WebServiceType_ID () 
+	public int getWS_WebServiceType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceType_ID);
 		if (ii == null)

@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_CostDetail
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_CostDetail")
 public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -80,9 +80,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
     }
 
 	/** Set Amount.
-		@param Amt 
-		Amount
-	  */
+		@param Amt Amount
+	*/
 	public void setAmt (BigDecimal Amt)
 	{
 		set_Value (COLUMNNAME_Amt, Amt);
@@ -91,7 +90,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Amount.
 		@return Amount
 	  */
-	public BigDecimal getAmt () 
+	public BigDecimal getAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amt);
 		if (bd == null)
@@ -106,21 +105,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -135,21 +133,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -164,21 +161,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Sales Order Line.
-		@param C_OrderLine_ID 
-		Sales Order Line
-	  */
+		@param C_OrderLine_ID Sales Order Line
+	*/
 	public void setC_OrderLine_ID (int C_OrderLine_ID)
 	{
-		if (C_OrderLine_ID < 1) 
+		if (C_OrderLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_OrderLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_OrderLine_ID, Integer.valueOf(C_OrderLine_ID));
 	}
 
 	/** Get Sales Order Line.
 		@return Sales Order Line
 	  */
-	public int getC_OrderLine_ID () 
+	public int getC_OrderLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderLine_ID);
 		if (ii == null)
@@ -193,21 +189,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Project Issue.
-		@param C_ProjectIssue_ID 
-		Project Issues (Material, Labor)
-	  */
+		@param C_ProjectIssue_ID Project Issues (Material, Labor)
+	*/
 	public void setC_ProjectIssue_ID (int C_ProjectIssue_ID)
 	{
-		if (C_ProjectIssue_ID < 1) 
+		if (C_ProjectIssue_ID < 1)
 			set_Value (COLUMNNAME_C_ProjectIssue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ProjectIssue_ID, Integer.valueOf(C_ProjectIssue_ID));
 	}
 
 	/** Get Project Issue.
 		@return Project Issues (Material, Labor)
 	  */
-	public int getC_ProjectIssue_ID () 
+	public int getC_ProjectIssue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectIssue_ID);
 		if (ii == null)
@@ -216,9 +211,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Accumulated Amt.
-		@param CumulatedAmt 
-		Total Amount
-	  */
+		@param CumulatedAmt Total Amount
+	*/
 	public void setCumulatedAmt (BigDecimal CumulatedAmt)
 	{
 		set_Value (COLUMNNAME_CumulatedAmt, CumulatedAmt);
@@ -227,7 +221,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Accumulated Amt.
 		@return Total Amount
 	  */
-	public BigDecimal getCumulatedAmt () 
+	public BigDecimal getCumulatedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CumulatedAmt);
 		if (bd == null)
@@ -236,9 +230,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Accumulated Qty.
-		@param CumulatedQty 
-		Total Quantity
-	  */
+		@param CumulatedQty Total Quantity
+	*/
 	public void setCumulatedQty (BigDecimal CumulatedQty)
 	{
 		set_Value (COLUMNNAME_CumulatedQty, CumulatedQty);
@@ -247,7 +240,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Accumulated Qty.
 		@return Total Quantity
 	  */
-	public BigDecimal getCumulatedQty () 
+	public BigDecimal getCumulatedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CumulatedQty);
 		if (bd == null)
@@ -256,9 +249,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Current Cost Price.
-		@param CurrentCostPrice 
-		The currently used cost price
-	  */
+		@param CurrentCostPrice The currently used cost price
+	*/
 	public void setCurrentCostPrice (BigDecimal CurrentCostPrice)
 	{
 		set_Value (COLUMNNAME_CurrentCostPrice, CurrentCostPrice);
@@ -267,7 +259,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Current Cost Price.
 		@return The currently used cost price
 	  */
-	public BigDecimal getCurrentCostPrice () 
+	public BigDecimal getCurrentCostPrice()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentCostPrice);
 		if (bd == null)
@@ -276,9 +268,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Current Quantity.
-		@param CurrentQty 
-		Current Quantity
-	  */
+		@param CurrentQty Current Quantity
+	*/
 	public void setCurrentQty (BigDecimal CurrentQty)
 	{
 		set_Value (COLUMNNAME_CurrentQty, CurrentQty);
@@ -287,7 +278,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Current Quantity.
 		@return Current Quantity
 	  */
-	public BigDecimal getCurrentQty () 
+	public BigDecimal getCurrentQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentQty);
 		if (bd == null)
@@ -296,9 +287,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Delta Amount.
-		@param DeltaAmt 
-		Difference Amount
-	  */
+		@param DeltaAmt Difference Amount
+	*/
 	public void setDeltaAmt (BigDecimal DeltaAmt)
 	{
 		set_Value (COLUMNNAME_DeltaAmt, DeltaAmt);
@@ -307,7 +297,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Delta Amount.
 		@return Difference Amount
 	  */
-	public BigDecimal getDeltaAmt () 
+	public BigDecimal getDeltaAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DeltaAmt);
 		if (bd == null)
@@ -316,9 +306,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Delta Quantity.
-		@param DeltaQty 
-		Quantity Difference
-	  */
+		@param DeltaQty Quantity Difference
+	*/
 	public void setDeltaQty (BigDecimal DeltaQty)
 	{
 		set_Value (COLUMNNAME_DeltaQty, DeltaQty);
@@ -327,7 +316,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Delta Quantity.
 		@return Quantity Difference
 	  */
-	public BigDecimal getDeltaQty () 
+	public BigDecimal getDeltaQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DeltaQty);
 		if (bd == null)
@@ -336,9 +325,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -347,15 +335,14 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -364,7 +351,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -383,21 +370,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -406,21 +392,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Cost Detail.
-		@param M_CostDetail_ID 
-		Cost Detail Information
-	  */
+		@param M_CostDetail_ID Cost Detail Information
+	*/
 	public void setM_CostDetail_ID (int M_CostDetail_ID)
 	{
-		if (M_CostDetail_ID < 1) 
+		if (M_CostDetail_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CostDetail_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CostDetail_ID, Integer.valueOf(M_CostDetail_ID));
 	}
 
 	/** Get Cost Detail.
 		@return Cost Detail Information
 	  */
-	public int getM_CostDetail_ID () 
+	public int getM_CostDetail_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostDetail_ID);
 		if (ii == null)
@@ -429,7 +414,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set M_CostDetail_UU.
-		@param M_CostDetail_UU M_CostDetail_UU	  */
+		@param M_CostDetail_UU M_CostDetail_UU
+	*/
 	public void setM_CostDetail_UU (String M_CostDetail_UU)
 	{
 		set_Value (COLUMNNAME_M_CostDetail_UU, M_CostDetail_UU);
@@ -437,7 +423,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 
 	/** Get M_CostDetail_UU.
 		@return M_CostDetail_UU	  */
-	public String getM_CostDetail_UU () 
+	public String getM_CostDetail_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_CostDetail_UU);
 	}
@@ -449,21 +435,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -478,21 +463,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -507,21 +491,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Phys.Inventory Line.
-		@param M_InventoryLine_ID 
-		Unique line in an Inventory document
-	  */
+		@param M_InventoryLine_ID Unique line in an Inventory document
+	*/
 	public void setM_InventoryLine_ID (int M_InventoryLine_ID)
 	{
-		if (M_InventoryLine_ID < 1) 
+		if (M_InventoryLine_ID < 1)
 			set_Value (COLUMNNAME_M_InventoryLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InventoryLine_ID, Integer.valueOf(M_InventoryLine_ID));
 	}
 
 	/** Get Phys.Inventory Line.
 		@return Unique line in an Inventory document
 	  */
-	public int getM_InventoryLine_ID () 
+	public int getM_InventoryLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InventoryLine_ID);
 		if (ii == null)
@@ -536,21 +519,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Match Invoice.
-		@param M_MatchInv_ID 
-		Match Shipment/Receipt to Invoice
-	  */
+		@param M_MatchInv_ID Match Shipment/Receipt to Invoice
+	*/
 	public void setM_MatchInv_ID (int M_MatchInv_ID)
 	{
-		if (M_MatchInv_ID < 1) 
+		if (M_MatchInv_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_MatchInv_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_MatchInv_ID, Integer.valueOf(M_MatchInv_ID));
 	}
 
 	/** Get Match Invoice.
 		@return Match Shipment/Receipt to Invoice
 	  */
-	public int getM_MatchInv_ID () 
+	public int getM_MatchInv_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MatchInv_ID);
 		if (ii == null)
@@ -565,21 +547,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Move Line.
-		@param M_MovementLine_ID 
-		Inventory Move document Line
-	  */
+		@param M_MovementLine_ID Inventory Move document Line
+	*/
 	public void setM_MovementLine_ID (int M_MovementLine_ID)
 	{
-		if (M_MovementLine_ID < 1) 
+		if (M_MovementLine_ID < 1)
 			set_Value (COLUMNNAME_M_MovementLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
 	}
 
 	/** Get Move Line.
 		@return Inventory Move document Line
 	  */
-	public int getM_MovementLine_ID () 
+	public int getM_MovementLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
 		if (ii == null)
@@ -594,21 +575,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -623,21 +603,20 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Production Line.
-		@param M_ProductionLine_ID 
-		Document Line representing a production
-	  */
+		@param M_ProductionLine_ID Document Line representing a production
+	*/
 	public void setM_ProductionLine_ID (int M_ProductionLine_ID)
 	{
-		if (M_ProductionLine_ID < 1) 
+		if (M_ProductionLine_ID < 1)
 			set_Value (COLUMNNAME_M_ProductionLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductionLine_ID, Integer.valueOf(M_ProductionLine_ID));
 	}
 
 	/** Get Production Line.
 		@return Document Line representing a production
 	  */
-	public int getM_ProductionLine_ID () 
+	public int getM_ProductionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductionLine_ID);
 		if (ii == null)
@@ -652,18 +631,19 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Manufacturing Cost Collector.
-		@param PP_Cost_Collector_ID Manufacturing Cost Collector	  */
+		@param PP_Cost_Collector_ID Manufacturing Cost Collector
+	*/
 	public void setPP_Cost_Collector_ID (int PP_Cost_Collector_ID)
 	{
-		if (PP_Cost_Collector_ID < 1) 
+		if (PP_Cost_Collector_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Cost_Collector_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Cost_Collector_ID, Integer.valueOf(PP_Cost_Collector_ID));
 	}
 
 	/** Get Manufacturing Cost Collector.
 		@return Manufacturing Cost Collector	  */
-	public int getPP_Cost_Collector_ID () 
+	public int getPP_Cost_Collector_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Cost_Collector_ID);
 		if (ii == null)
@@ -672,9 +652,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Price.
-		@param Price 
-		Price
-	  */
+		@param Price Price
+	*/
 	public void setPrice (BigDecimal Price)
 	{
 		throw new IllegalArgumentException ("Price is virtual column");	}
@@ -682,7 +661,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Price.
 		@return Price
 	  */
-	public BigDecimal getPrice () 
+	public BigDecimal getPrice()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Price);
 		if (bd == null)
@@ -691,9 +670,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -702,7 +680,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -715,9 +693,8 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -726,7 +703,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)

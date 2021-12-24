@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormat
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintFormat")
 public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
@@ -94,21 +94,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Print Color.
-		@param AD_PrintColor_ID 
-		Color used for printing and display
-	  */
+		@param AD_PrintColor_ID Color used for printing and display
+	*/
 	public void setAD_PrintColor_ID (int AD_PrintColor_ID)
 	{
-		if (AD_PrintColor_ID < 1) 
+		if (AD_PrintColor_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor_ID, Integer.valueOf(AD_PrintColor_ID));
 	}
 
 	/** Get Print Color.
 		@return Color used for printing and display
 	  */
-	public int getAD_PrintColor_ID () 
+	public int getAD_PrintColor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor_ID);
 		if (ii == null)
@@ -123,21 +122,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Print Font.
-		@param AD_PrintFont_ID 
-		Maintain Print Font
-	  */
+		@param AD_PrintFont_ID Maintain Print Font
+	*/
 	public void setAD_PrintFont_ID (int AD_PrintFont_ID)
 	{
-		if (AD_PrintFont_ID < 1) 
+		if (AD_PrintFont_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFont_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFont_ID, Integer.valueOf(AD_PrintFont_ID));
 	}
 
 	/** Get Print Font.
 		@return Maintain Print Font
 	  */
-	public int getAD_PrintFont_ID () 
+	public int getAD_PrintFont_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFont_ID);
 		if (ii == null)
@@ -146,21 +144,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
+		@param AD_PrintFormat_ID Data Print Format
+	*/
 	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
 	{
-		if (AD_PrintFormat_ID < 1) 
+		if (AD_PrintFormat_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
 	}
 
 	/** Get Print Format.
 		@return Data Print Format
 	  */
-	public int getAD_PrintFormat_ID () 
+	public int getAD_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
@@ -169,7 +166,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set AD_PrintFormat_UU.
-		@param AD_PrintFormat_UU AD_PrintFormat_UU	  */
+		@param AD_PrintFormat_UU AD_PrintFormat_UU
+	*/
 	public void setAD_PrintFormat_UU (String AD_PrintFormat_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintFormat_UU, AD_PrintFormat_UU);
@@ -177,7 +175,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 
 	/** Get AD_PrintFormat_UU.
 		@return AD_PrintFormat_UU	  */
-	public String getAD_PrintFormat_UU () 
+	public String getAD_PrintFormat_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintFormat_UU);
 	}
@@ -189,18 +187,19 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Print Header/Footer.
-		@param AD_PrintHeaderFooter_ID Print Header/Footer	  */
+		@param AD_PrintHeaderFooter_ID Print Header/Footer
+	*/
 	public void setAD_PrintHeaderFooter_ID (int AD_PrintHeaderFooter_ID)
 	{
-		if (AD_PrintHeaderFooter_ID < 1) 
+		if (AD_PrintHeaderFooter_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintHeaderFooter_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintHeaderFooter_ID, Integer.valueOf(AD_PrintHeaderFooter_ID));
 	}
 
 	/** Get Print Header/Footer.
 		@return Print Header/Footer	  */
-	public int getAD_PrintHeaderFooter_ID () 
+	public int getAD_PrintHeaderFooter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintHeaderFooter_ID);
 		if (ii == null)
@@ -215,21 +214,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Print Paper.
-		@param AD_PrintPaper_ID 
-		Printer paper definition
-	  */
+		@param AD_PrintPaper_ID Printer paper definition
+	*/
 	public void setAD_PrintPaper_ID (int AD_PrintPaper_ID)
 	{
-		if (AD_PrintPaper_ID < 1) 
+		if (AD_PrintPaper_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintPaper_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintPaper_ID, Integer.valueOf(AD_PrintPaper_ID));
 	}
 
 	/** Get Print Paper.
 		@return Printer paper definition
 	  */
-	public int getAD_PrintPaper_ID () 
+	public int getAD_PrintPaper_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintPaper_ID);
 		if (ii == null)
@@ -244,21 +242,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Print Table Format.
-		@param AD_PrintTableFormat_ID 
-		Table Format in Reports
-	  */
+		@param AD_PrintTableFormat_ID Table Format in Reports
+	*/
 	public void setAD_PrintTableFormat_ID (int AD_PrintTableFormat_ID)
 	{
-		if (AD_PrintTableFormat_ID < 1) 
+		if (AD_PrintTableFormat_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintTableFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintTableFormat_ID, Integer.valueOf(AD_PrintTableFormat_ID));
 	}
 
 	/** Get Print Table Format.
 		@return Table Format in Reports
 	  */
-	public int getAD_PrintTableFormat_ID () 
+	public int getAD_PrintTableFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintTableFormat_ID);
 		if (ii == null)
@@ -273,21 +270,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Report View.
-		@param AD_ReportView_ID 
-		View used to generate this report
-	  */
+		@param AD_ReportView_ID View used to generate this report
+	*/
 	public void setAD_ReportView_ID (int AD_ReportView_ID)
 	{
-		if (AD_ReportView_ID < 1) 
+		if (AD_ReportView_ID < 1)
 			set_Value (COLUMNNAME_AD_ReportView_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_ReportView_ID, Integer.valueOf(AD_ReportView_ID));
 	}
 
 	/** Get Report View.
 		@return View used to generate this report
 	  */
-	public int getAD_ReportView_ID () 
+	public int getAD_ReportView_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReportView_ID);
 		if (ii == null)
@@ -302,21 +298,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -331,21 +326,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -354,7 +348,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Create Copy.
-		@param CreateCopy Create Copy	  */
+		@param CreateCopy Create Copy
+	*/
 	public void setCreateCopy (String CreateCopy)
 	{
 		set_Value (COLUMNNAME_CreateCopy, CreateCopy);
@@ -362,15 +357,14 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 
 	/** Get Create Copy.
 		@return Create Copy	  */
-	public String getCreateCopy () 
+	public String getCreateCopy()
 	{
 		return (String)get_Value(COLUMNNAME_CreateCopy);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -379,15 +373,14 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Footer Margin.
-		@param FooterMargin 
-		Margin of the Footer in 1/72 of an inch
-	  */
+		@param FooterMargin Margin of the Footer in 1/72 of an inch
+	*/
 	public void setFooterMargin (int FooterMargin)
 	{
 		set_Value (COLUMNNAME_FooterMargin, Integer.valueOf(FooterMargin));
@@ -396,7 +389,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Footer Margin.
 		@return Margin of the Footer in 1/72 of an inch
 	  */
-	public int getFooterMargin () 
+	public int getFooterMargin()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_FooterMargin);
 		if (ii == null)
@@ -405,9 +398,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Header Margin.
-		@param HeaderMargin 
-		Margin of the Header in 1/72 of an inch
-	  */
+		@param HeaderMargin Margin of the Header in 1/72 of an inch
+	*/
 	public void setHeaderMargin (int HeaderMargin)
 	{
 		set_Value (COLUMNNAME_HeaderMargin, Integer.valueOf(HeaderMargin));
@@ -416,7 +408,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Header Margin.
 		@return Margin of the Header in 1/72 of an inch
 	  */
-	public int getHeaderMargin () 
+	public int getHeaderMargin()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HeaderMargin);
 		if (ii == null)
@@ -425,9 +417,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Page break per record.
-		@param IsBreakPagePerRecord 
-		Page Break after each record
-	  */
+		@param IsBreakPagePerRecord Page Break after each record
+	*/
 	public void setIsBreakPagePerRecord (boolean IsBreakPagePerRecord)
 	{
 		set_Value (COLUMNNAME_IsBreakPagePerRecord, Boolean.valueOf(IsBreakPagePerRecord));
@@ -436,7 +427,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Page break per record.
 		@return Page Break after each record
 	  */
-	public boolean isBreakPagePerRecord () 
+	public boolean isBreakPagePerRecord()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBreakPagePerRecord);
 		if (oo != null) 
@@ -449,9 +440,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -460,7 +450,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -473,9 +463,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Form.
-		@param IsForm 
-		If Selected, a Form is printed, if not selected a columnar List report
-	  */
+		@param IsForm If Selected, a Form is printed, if not selected a columnar List report
+	*/
 	public void setIsForm (boolean IsForm)
 	{
 		set_Value (COLUMNNAME_IsForm, Boolean.valueOf(IsForm));
@@ -484,7 +473,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Form.
 		@return If Selected, a Form is printed, if not selected a columnar List report
 	  */
-	public boolean isForm () 
+	public boolean isForm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsForm);
 		if (oo != null) 
@@ -497,9 +486,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Standard Header/Footer.
-		@param IsStandardHeaderFooter 
-		The standard Header and Footer is used
-	  */
+		@param IsStandardHeaderFooter The standard Header and Footer is used
+	*/
 	public void setIsStandardHeaderFooter (boolean IsStandardHeaderFooter)
 	{
 		set_Value (COLUMNNAME_IsStandardHeaderFooter, Boolean.valueOf(IsStandardHeaderFooter));
@@ -508,7 +496,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Standard Header/Footer.
 		@return The standard Header and Footer is used
 	  */
-	public boolean isStandardHeaderFooter () 
+	public boolean isStandardHeaderFooter()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStandardHeaderFooter);
 		if (oo != null) 
@@ -521,9 +509,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Table Based.
-		@param IsTableBased 
-		Table based List Reporting
-	  */
+		@param IsTableBased Table based List Reporting
+	*/
 	public void setIsTableBased (boolean IsTableBased)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsTableBased, Boolean.valueOf(IsTableBased));
@@ -532,7 +519,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Table Based.
 		@return Table based List Reporting
 	  */
-	public boolean isTableBased () 
+	public boolean isTableBased()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTableBased);
 		if (oo != null) 
@@ -551,21 +538,20 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Jasper Process.
-		@param JasperProcess_ID 
-		The Jasper Process used by the printengine if any process defined
-	  */
+		@param JasperProcess_ID The Jasper Process used by the printengine if any process defined
+	*/
 	public void setJasperProcess_ID (int JasperProcess_ID)
 	{
-		if (JasperProcess_ID < 1) 
+		if (JasperProcess_ID < 1)
 			set_Value (COLUMNNAME_JasperProcess_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_JasperProcess_ID, Integer.valueOf(JasperProcess_ID));
 	}
 
 	/** Get Jasper Process.
 		@return The Jasper Process used by the printengine if any process defined
 	  */
-	public int getJasperProcess_ID () 
+	public int getJasperProcess_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_JasperProcess_ID);
 		if (ii == null)
@@ -574,9 +560,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -585,7 +570,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -599,9 +584,8 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
     }
 
 	/** Set Printer Name.
-		@param PrinterName 
-		Name of the Printer
-	  */
+		@param PrinterName Name of the Printer
+	*/
 	public void setPrinterName (String PrinterName)
 	{
 		set_Value (COLUMNNAME_PrinterName, PrinterName);
@@ -610,7 +594,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/** Get Printer Name.
 		@return Name of the Printer
 	  */
-	public String getPrinterName () 
+	public String getPrinterName()
 	{
 		return (String)get_Value(COLUMNNAME_PrinterName);
 	}

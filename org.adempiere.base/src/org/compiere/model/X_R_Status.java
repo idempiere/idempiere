@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Status
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_Status")
 public class X_R_Status extends PO implements I_R_Status, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_Status (Properties ctx, int R_Status_ID, String trxName)
@@ -83,9 +83,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -94,15 +93,14 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -111,15 +109,14 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Closed Status.
-		@param IsClosed 
-		The status is closed
-	  */
+		@param IsClosed The status is closed
+	*/
 	public void setIsClosed (boolean IsClosed)
 	{
 		set_Value (COLUMNNAME_IsClosed, Boolean.valueOf(IsClosed));
@@ -128,7 +125,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Closed Status.
 		@return The status is closed
 	  */
-	public boolean isClosed () 
+	public boolean isClosed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsClosed);
 		if (oo != null) 
@@ -141,9 +138,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -152,7 +148,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -165,9 +161,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Final Close.
-		@param IsFinalClose 
-		Entries with Final Close cannot be re-opened
-	  */
+		@param IsFinalClose Entries with Final Close cannot be re-opened
+	*/
 	public void setIsFinalClose (boolean IsFinalClose)
 	{
 		set_Value (COLUMNNAME_IsFinalClose, Boolean.valueOf(IsFinalClose));
@@ -176,7 +171,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Final Close.
 		@return Entries with Final Close cannot be re-opened
 	  */
-	public boolean isFinalClose () 
+	public boolean isFinalClose()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFinalClose);
 		if (oo != null) 
@@ -189,9 +184,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Open Status.
-		@param IsOpen 
-		The status is closed
-	  */
+		@param IsOpen The status is closed
+	*/
 	public void setIsOpen (boolean IsOpen)
 	{
 		set_Value (COLUMNNAME_IsOpen, Boolean.valueOf(IsOpen));
@@ -200,7 +194,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Open Status.
 		@return The status is closed
 	  */
-	public boolean isOpen () 
+	public boolean isOpen()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOpen);
 		if (oo != null) 
@@ -213,9 +207,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Web Can Update.
-		@param IsWebCanUpdate 
-		Entry can be updated from the Web
-	  */
+		@param IsWebCanUpdate Entry can be updated from the Web
+	*/
 	public void setIsWebCanUpdate (boolean IsWebCanUpdate)
 	{
 		set_Value (COLUMNNAME_IsWebCanUpdate, Boolean.valueOf(IsWebCanUpdate));
@@ -224,7 +217,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Web Can Update.
 		@return Entry can be updated from the Web
 	  */
-	public boolean isWebCanUpdate () 
+	public boolean isWebCanUpdate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsWebCanUpdate);
 		if (oo != null) 
@@ -237,9 +230,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -248,7 +240,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -260,21 +252,20 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Next Status.
-		@param Next_Status_ID 
-		Move to next status automatically after timeout
-	  */
+		@param Next_Status_ID Move to next status automatically after timeout
+	*/
 	public void setNext_Status_ID (int Next_Status_ID)
 	{
-		if (Next_Status_ID < 1) 
+		if (Next_Status_ID < 1)
 			set_Value (COLUMNNAME_Next_Status_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Next_Status_ID, Integer.valueOf(Next_Status_ID));
 	}
 
 	/** Get Next Status.
 		@return Move to next status automatically after timeout
 	  */
-	public int getNext_Status_ID () 
+	public int getNext_Status_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Next_Status_ID);
 		if (ii == null)
@@ -289,21 +280,20 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Status Category.
-		@param R_StatusCategory_ID 
-		Request Status Category
-	  */
+		@param R_StatusCategory_ID Request Status Category
+	*/
 	public void setR_StatusCategory_ID (int R_StatusCategory_ID)
 	{
-		if (R_StatusCategory_ID < 1) 
+		if (R_StatusCategory_ID < 1)
 			set_Value (COLUMNNAME_R_StatusCategory_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_StatusCategory_ID, Integer.valueOf(R_StatusCategory_ID));
 	}
 
 	/** Get Status Category.
 		@return Request Status Category
 	  */
-	public int getR_StatusCategory_ID () 
+	public int getR_StatusCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_StatusCategory_ID);
 		if (ii == null)
@@ -312,21 +302,20 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Status.
-		@param R_Status_ID 
-		Request Status
-	  */
+		@param R_Status_ID Request Status
+	*/
 	public void setR_Status_ID (int R_Status_ID)
 	{
-		if (R_Status_ID < 1) 
+		if (R_Status_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Status_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Status_ID, Integer.valueOf(R_Status_ID));
 	}
 
 	/** Get Status.
 		@return Request Status
 	  */
-	public int getR_Status_ID () 
+	public int getR_Status_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Status_ID);
 		if (ii == null)
@@ -335,7 +324,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set R_Status_UU.
-		@param R_Status_UU R_Status_UU	  */
+		@param R_Status_UU R_Status_UU
+	*/
 	public void setR_Status_UU (String R_Status_UU)
 	{
 		set_Value (COLUMNNAME_R_Status_UU, R_Status_UU);
@@ -343,15 +333,14 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 
 	/** Get R_Status_UU.
 		@return R_Status_UU	  */
-	public String getR_Status_UU () 
+	public String getR_Status_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_Status_UU);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -360,7 +349,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -377,9 +366,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
     }
 
 	/** Set Timeout in Days.
-		@param TimeoutDays 
-		Timeout in Days to change Status automatically
-	  */
+		@param TimeoutDays Timeout in Days to change Status automatically
+	*/
 	public void setTimeoutDays (int TimeoutDays)
 	{
 		set_Value (COLUMNNAME_TimeoutDays, Integer.valueOf(TimeoutDays));
@@ -388,7 +376,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Timeout in Days.
 		@return Timeout in Days to change Status automatically
 	  */
-	public int getTimeoutDays () 
+	public int getTimeoutDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TimeoutDays);
 		if (ii == null)
@@ -403,21 +391,20 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Update Status.
-		@param Update_Status_ID 
-		Automatically change the status after entry from web
-	  */
+		@param Update_Status_ID Automatically change the status after entry from web
+	*/
 	public void setUpdate_Status_ID (int Update_Status_ID)
 	{
-		if (Update_Status_ID < 1) 
+		if (Update_Status_ID < 1)
 			set_Value (COLUMNNAME_Update_Status_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Update_Status_ID, Integer.valueOf(Update_Status_ID));
 	}
 
 	/** Get Update Status.
 		@return Automatically change the status after entry from web
 	  */
-	public int getUpdate_Status_ID () 
+	public int getUpdate_Status_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Update_Status_ID);
 		if (ii == null)
@@ -426,9 +413,8 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -437,7 +423,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

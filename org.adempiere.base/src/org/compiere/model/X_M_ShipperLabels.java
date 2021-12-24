@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_ShipperLabels
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperLabels")
 public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_ShipperLabels (Properties ctx, int M_ShipperLabels_ID, String trxName)
@@ -76,9 +76,8 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
     }
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -87,7 +86,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -108,7 +107,8 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	/** Zebra = Z */
 	public static final String LABELPRINTMETHOD_Zebra = "Z";
 	/** Set Label Print Method.
-		@param LabelPrintMethod Label Print Method	  */
+		@param LabelPrintMethod Label Print Method
+	*/
 	public void setLabelPrintMethod (String LabelPrintMethod)
 	{
 
@@ -117,7 +117,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 
 	/** Get Label Print Method.
 		@return Label Print Method	  */
-	public String getLabelPrintMethod () 
+	public String getLabelPrintMethod()
 	{
 		return (String)get_Value(COLUMNNAME_LabelPrintMethod);
 	}
@@ -129,21 +129,20 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	}
 
 	/** Set Shipper.
-		@param M_Shipper_ID 
-		Method or manner of product delivery
-	  */
+		@param M_Shipper_ID Method or manner of product delivery
+	*/
 	public void setM_Shipper_ID (int M_Shipper_ID)
 	{
-		if (M_Shipper_ID < 1) 
+		if (M_Shipper_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
 	}
 
 	/** Get Shipper.
 		@return Method or manner of product delivery
 	  */
-	public int getM_Shipper_ID () 
+	public int getM_Shipper_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
 		if (ii == null)
@@ -158,18 +157,19 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	}
 
 	/** Set Shipper Labels Configuration.
-		@param M_ShipperLabelsCfg_ID Shipper Labels Configuration	  */
+		@param M_ShipperLabelsCfg_ID Shipper Labels Configuration
+	*/
 	public void setM_ShipperLabelsCfg_ID (int M_ShipperLabelsCfg_ID)
 	{
-		if (M_ShipperLabelsCfg_ID < 1) 
+		if (M_ShipperLabelsCfg_ID < 1)
 			set_Value (COLUMNNAME_M_ShipperLabelsCfg_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ShipperLabelsCfg_ID, Integer.valueOf(M_ShipperLabelsCfg_ID));
 	}
 
 	/** Get Shipper Labels Configuration.
 		@return Shipper Labels Configuration	  */
-	public int getM_ShipperLabelsCfg_ID () 
+	public int getM_ShipperLabelsCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperLabelsCfg_ID);
 		if (ii == null)
@@ -178,18 +178,19 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	}
 
 	/** Set Shipper Labels.
-		@param M_ShipperLabels_ID Shipper Labels	  */
+		@param M_ShipperLabels_ID Shipper Labels
+	*/
 	public void setM_ShipperLabels_ID (int M_ShipperLabels_ID)
 	{
-		if (M_ShipperLabels_ID < 1) 
+		if (M_ShipperLabels_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ShipperLabels_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ShipperLabels_ID, Integer.valueOf(M_ShipperLabels_ID));
 	}
 
 	/** Get Shipper Labels.
 		@return Shipper Labels	  */
-	public int getM_ShipperLabels_ID () 
+	public int getM_ShipperLabels_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperLabels_ID);
 		if (ii == null)
@@ -198,7 +199,8 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	}
 
 	/** Set M_ShipperLabels_UU.
-		@param M_ShipperLabels_UU M_ShipperLabels_UU	  */
+		@param M_ShipperLabels_UU M_ShipperLabels_UU
+	*/
 	public void setM_ShipperLabels_UU (String M_ShipperLabels_UU)
 	{
 		set_Value (COLUMNNAME_M_ShipperLabels_UU, M_ShipperLabels_UU);
@@ -206,15 +208,14 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 
 	/** Get M_ShipperLabels_UU.
 		@return M_ShipperLabels_UU	  */
-	public String getM_ShipperLabels_UU () 
+	public String getM_ShipperLabels_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperLabels_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -223,7 +224,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

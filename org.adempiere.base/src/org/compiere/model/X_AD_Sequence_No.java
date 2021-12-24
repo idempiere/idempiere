@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Sequence_No
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Sequence_No")
 public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Sequence_No (Properties ctx, int AD_Sequence_No_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	}
 
 	/** Set Sequence.
-		@param AD_Sequence_ID 
-		Document Sequence
-	  */
+		@param AD_Sequence_ID Document Sequence
+	*/
 	public void setAD_Sequence_ID (int AD_Sequence_ID)
 	{
-		if (AD_Sequence_ID < 1) 
+		if (AD_Sequence_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Sequence_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Sequence_ID, Integer.valueOf(AD_Sequence_ID));
 	}
 
 	/** Get Sequence.
 		@return Document Sequence
 	  */
-	public int getAD_Sequence_ID () 
+	public int getAD_Sequence_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Sequence_ID);
 		if (ii == null)
@@ -102,7 +101,8 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	}
 
 	/** Set AD_Sequence_No_UU.
-		@param AD_Sequence_No_UU AD_Sequence_No_UU	  */
+		@param AD_Sequence_No_UU AD_Sequence_No_UU
+	*/
 	public void setAD_Sequence_No_UU (String AD_Sequence_No_UU)
 	{
 		set_Value (COLUMNNAME_AD_Sequence_No_UU, AD_Sequence_No_UU);
@@ -110,15 +110,14 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 
 	/** Get AD_Sequence_No_UU.
 		@return AD_Sequence_No_UU	  */
-	public String getAD_Sequence_No_UU () 
+	public String getAD_Sequence_No_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Sequence_No_UU);
 	}
 
 	/** Set YearMonth.
-		@param CalendarYearMonth 
-		YYYYMM
-	  */
+		@param CalendarYearMonth YYYYMM
+	*/
 	public void setCalendarYearMonth (String CalendarYearMonth)
 	{
 		set_ValueNoCheck (COLUMNNAME_CalendarYearMonth, CalendarYearMonth);
@@ -127,15 +126,14 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/** Get YearMonth.
 		@return YYYYMM
 	  */
-	public String getCalendarYearMonth () 
+	public String getCalendarYearMonth()
 	{
 		return (String)get_Value(COLUMNNAME_CalendarYearMonth);
 	}
 
 	/** Set Current Next.
-		@param CurrentNext 
-		The next number to be used
-	  */
+		@param CurrentNext The next number to be used
+	*/
 	public void setCurrentNext (int CurrentNext)
 	{
 		set_Value (COLUMNNAME_CurrentNext, Integer.valueOf(CurrentNext));
@@ -144,7 +142,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/** Get Current Next.
 		@return The next number to be used
 	  */
-	public int getCurrentNext () 
+	public int getCurrentNext()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CurrentNext);
 		if (ii == null)

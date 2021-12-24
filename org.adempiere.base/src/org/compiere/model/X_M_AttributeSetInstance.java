@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSetInstance
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeSetInstance")
 public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInstance, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_AttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName)
@@ -74,9 +74,8 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,15 +84,14 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Guarantee Date.
-		@param GuaranteeDate 
-		Date when guarantee expires
-	  */
+		@param GuaranteeDate Date when guarantee expires
+	*/
 	public void setGuaranteeDate (Timestamp GuaranteeDate)
 	{
 		set_Value (COLUMNNAME_GuaranteeDate, GuaranteeDate);
@@ -102,15 +100,14 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	/** Get Guarantee Date.
 		@return Date when guarantee expires
 	  */
-	public Timestamp getGuaranteeDate () 
+	public Timestamp getGuaranteeDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_GuaranteeDate);
 	}
 
 	/** Set Lot No.
-		@param Lot 
-		Lot number (alphanumeric)
-	  */
+		@param Lot Lot number (alphanumeric)
+	*/
 	public void setLot (String Lot)
 	{
 		set_Value (COLUMNNAME_Lot, Lot);
@@ -119,7 +116,7 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	/** Get Lot No.
 		@return Lot number (alphanumeric)
 	  */
-	public String getLot () 
+	public String getLot()
 	{
 		return (String)get_Value(COLUMNNAME_Lot);
 	}
@@ -131,21 +128,20 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	}
 
 	/** Set Attribute Set.
-		@param M_AttributeSet_ID 
-		Product Attribute Set
-	  */
+		@param M_AttributeSet_ID Product Attribute Set
+	*/
 	public void setM_AttributeSet_ID (int M_AttributeSet_ID)
 	{
-		if (M_AttributeSet_ID < 0) 
+		if (M_AttributeSet_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSet_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSet_ID, Integer.valueOf(M_AttributeSet_ID));
 	}
 
 	/** Get Attribute Set.
 		@return Product Attribute Set
 	  */
-	public int getM_AttributeSet_ID () 
+	public int getM_AttributeSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSet_ID);
 		if (ii == null)
@@ -154,21 +150,20 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -185,7 +180,8 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
     }
 
 	/** Set M_AttributeSetInstance_UU.
-		@param M_AttributeSetInstance_UU M_AttributeSetInstance_UU	  */
+		@param M_AttributeSetInstance_UU M_AttributeSetInstance_UU
+	*/
 	public void setM_AttributeSetInstance_UU (String M_AttributeSetInstance_UU)
 	{
 		set_Value (COLUMNNAME_M_AttributeSetInstance_UU, M_AttributeSetInstance_UU);
@@ -193,7 +189,7 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 
 	/** Get M_AttributeSetInstance_UU.
 		@return M_AttributeSetInstance_UU	  */
-	public String getM_AttributeSetInstance_UU () 
+	public String getM_AttributeSetInstance_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeSetInstance_UU);
 	}
@@ -205,21 +201,20 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	}
 
 	/** Set Lot.
-		@param M_Lot_ID 
-		Product Lot Definition
-	  */
+		@param M_Lot_ID Product Lot Definition
+	*/
 	public void setM_Lot_ID (int M_Lot_ID)
 	{
-		if (M_Lot_ID < 1) 
+		if (M_Lot_ID < 1)
 			set_Value (COLUMNNAME_M_Lot_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Lot_ID, Integer.valueOf(M_Lot_ID));
 	}
 
 	/** Get Lot.
 		@return Product Lot Definition
 	  */
-	public int getM_Lot_ID () 
+	public int getM_Lot_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Lot_ID);
 		if (ii == null)
@@ -228,9 +223,8 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	}
 
 	/** Set Serial No.
-		@param SerNo 
-		Product Serial Number 
-	  */
+		@param SerNo Product Serial Number 
+	*/
 	public void setSerNo (String SerNo)
 	{
 		set_Value (COLUMNNAME_SerNo, SerNo);
@@ -239,7 +233,7 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	/** Get Serial No.
 		@return Product Serial Number 
 	  */
-	public String getSerNo () 
+	public String getSerNo()
 	{
 		return (String)get_Value(COLUMNNAME_SerNo);
 	}

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReportView
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReportView")
 public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_ReportView (Properties ctx, int AD_ReportView_ID, String trxName)
@@ -76,21 +76,20 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
     }
 
 	/** Set Report View.
-		@param AD_ReportView_ID 
-		View used to generate this report
-	  */
+		@param AD_ReportView_ID View used to generate this report
+	*/
 	public void setAD_ReportView_ID (int AD_ReportView_ID)
 	{
-		if (AD_ReportView_ID < 1) 
+		if (AD_ReportView_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ReportView_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ReportView_ID, Integer.valueOf(AD_ReportView_ID));
 	}
 
 	/** Get Report View.
 		@return View used to generate this report
 	  */
-	public int getAD_ReportView_ID () 
+	public int getAD_ReportView_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReportView_ID);
 		if (ii == null)
@@ -99,7 +98,8 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	}
 
 	/** Set AD_ReportView_UU.
-		@param AD_ReportView_UU AD_ReportView_UU	  */
+		@param AD_ReportView_UU AD_ReportView_UU
+	*/
 	public void setAD_ReportView_UU (String AD_ReportView_UU)
 	{
 		set_Value (COLUMNNAME_AD_ReportView_UU, AD_ReportView_UU);
@@ -107,7 +107,7 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 
 	/** Get AD_ReportView_UU.
 		@return AD_ReportView_UU	  */
-	public String getAD_ReportView_UU () 
+	public String getAD_ReportView_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ReportView_UU);
 	}
@@ -119,21 +119,20 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -142,9 +141,8 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -153,7 +151,7 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -161,9 +159,8 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -173,15 +170,14 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -190,7 +186,7 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -204,9 +200,8 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
     }
 
 	/** Set Sql ORDER BY.
-		@param OrderByClause 
-		Fully qualified ORDER BY clause
-	  */
+		@param OrderByClause Fully qualified ORDER BY clause
+	*/
 	public void setOrderByClause (String OrderByClause)
 	{
 		set_Value (COLUMNNAME_OrderByClause, OrderByClause);
@@ -215,15 +210,14 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/** Get Sql ORDER BY.
 		@return Fully qualified ORDER BY clause
 	  */
-	public String getOrderByClause () 
+	public String getOrderByClause()
 	{
 		return (String)get_Value(COLUMNNAME_OrderByClause);
 	}
 
 	/** Set Sql WHERE.
-		@param WhereClause 
-		Fully qualified SQL WHERE clause
-	  */
+		@param WhereClause Fully qualified SQL WHERE clause
+	*/
 	public void setWhereClause (String WhereClause)
 	{
 		set_Value (COLUMNNAME_WhereClause, WhereClause);
@@ -232,7 +226,7 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/** Get Sql WHERE.
 		@return Fully qualified SQL WHERE clause
 	  */
-	public String getWhereClause () 
+	public String getWhereClause()
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
 	}

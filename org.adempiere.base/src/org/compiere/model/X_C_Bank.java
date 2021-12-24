@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Bank
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Bank")
 public class X_C_Bank extends PO implements I_C_Bank, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Bank (Properties ctx, int C_Bank_ID, String trxName)
@@ -76,21 +76,20 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
     }
 
 	/** Set Bank.
-		@param C_Bank_ID 
-		Bank
-	  */
+		@param C_Bank_ID Bank
+	*/
 	public void setC_Bank_ID (int C_Bank_ID)
 	{
-		if (C_Bank_ID < 1) 
+		if (C_Bank_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Bank_ID, Integer.valueOf(C_Bank_ID));
 	}
 
 	/** Get Bank.
 		@return Bank
 	  */
-	public int getC_Bank_ID () 
+	public int getC_Bank_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Bank_ID);
 		if (ii == null)
@@ -99,7 +98,8 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	}
 
 	/** Set C_Bank_UU.
-		@param C_Bank_UU C_Bank_UU	  */
+		@param C_Bank_UU C_Bank_UU
+	*/
 	public void setC_Bank_UU (String C_Bank_UU)
 	{
 		set_Value (COLUMNNAME_C_Bank_UU, C_Bank_UU);
@@ -107,7 +107,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 
 	/** Get C_Bank_UU.
 		@return C_Bank_UU	  */
-	public String getC_Bank_UU () 
+	public String getC_Bank_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Bank_UU);
 	}
@@ -119,21 +119,20 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	}
 
 	/** Set Address.
-		@param C_Location_ID 
-		Location or Address
-	  */
+		@param C_Location_ID Location or Address
+	*/
 	public void setC_Location_ID (int C_Location_ID)
 	{
-		if (C_Location_ID < 1) 
+		if (C_Location_ID < 1)
 			set_Value (COLUMNNAME_C_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
 	}
 
 	/** Get Address.
 		@return Location or Address
 	  */
-	public int getC_Location_ID () 
+	public int getC_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
@@ -142,9 +141,8 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -153,15 +151,14 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Own Bank.
-		@param IsOwnBank 
-		Bank for this Organization
-	  */
+		@param IsOwnBank Bank for this Organization
+	*/
 	public void setIsOwnBank (boolean IsOwnBank)
 	{
 		set_Value (COLUMNNAME_IsOwnBank, Boolean.valueOf(IsOwnBank));
@@ -170,7 +167,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	/** Get Own Bank.
 		@return Bank for this Organization
 	  */
-	public boolean isOwnBank () 
+	public boolean isOwnBank()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOwnBank);
 		if (oo != null) 
@@ -183,9 +180,8 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -194,7 +190,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -208,9 +204,8 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
     }
 
 	/** Set Routing No.
-		@param RoutingNo 
-		Bank Routing Number
-	  */
+		@param RoutingNo Bank Routing Number
+	*/
 	public void setRoutingNo (String RoutingNo)
 	{
 		set_Value (COLUMNNAME_RoutingNo, RoutingNo);
@@ -219,15 +214,14 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	/** Get Routing No.
 		@return Bank Routing Number
 	  */
-	public String getRoutingNo () 
+	public String getRoutingNo()
 	{
 		return (String)get_Value(COLUMNNAME_RoutingNo);
 	}
 
 	/** Set Swift code.
-		@param SwiftCode 
-		Swift Code or BIC
-	  */
+		@param SwiftCode Swift Code or BIC
+	*/
 	public void setSwiftCode (String SwiftCode)
 	{
 		set_Value (COLUMNNAME_SwiftCode, SwiftCode);
@@ -236,7 +230,7 @@ public class X_C_Bank extends PO implements I_C_Bank, I_Persistent
 	/** Get Swift code.
 		@return Swift Code or BIC
 	  */
-	public String getSwiftCode () 
+	public String getSwiftCode()
 	{
 		return (String)get_Value(COLUMNNAME_SwiftCode);
 	}

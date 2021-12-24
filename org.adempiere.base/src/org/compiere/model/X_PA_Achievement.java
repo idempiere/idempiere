@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Achievement
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_Achievement")
 public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)
@@ -80,9 +80,8 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
     }
 
 	/** Set Document Date.
-		@param DateDoc 
-		Date of the Document
-	  */
+		@param DateDoc Date of the Document
+	*/
 	public void setDateDoc (Timestamp DateDoc)
 	{
 		set_Value (COLUMNNAME_DateDoc, DateDoc);
@@ -91,15 +90,14 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/** Get Document Date.
 		@return Date of the Document
 	  */
-	public Timestamp getDateDoc () 
+	public Timestamp getDateDoc()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -108,15 +106,14 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Achieved.
-		@param IsAchieved 
-		The goal is achieved
-	  */
+		@param IsAchieved The goal is achieved
+	*/
 	public void setIsAchieved (boolean IsAchieved)
 	{
 		set_Value (COLUMNNAME_IsAchieved, Boolean.valueOf(IsAchieved));
@@ -125,7 +122,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/** Get Achieved.
 		@return The goal is achieved
 	  */
-	public boolean isAchieved () 
+	public boolean isAchieved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAchieved);
 		if (oo != null) 
@@ -138,9 +135,8 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	}
 
 	/** Set Manual Actual.
-		@param ManualActual 
-		Manually entered actual value
-	  */
+		@param ManualActual Manually entered actual value
+	*/
 	public void setManualActual (BigDecimal ManualActual)
 	{
 		set_Value (COLUMNNAME_ManualActual, ManualActual);
@@ -149,7 +145,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/** Get Manual Actual.
 		@return Manually entered actual value
 	  */
-	public BigDecimal getManualActual () 
+	public BigDecimal getManualActual()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ManualActual);
 		if (bd == null)
@@ -158,9 +154,8 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -169,7 +164,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -183,9 +178,8 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
     }
 
 	/** Set Note.
-		@param Note 
-		Optional additional user defined information
-	  */
+		@param Note Optional additional user defined information
+	*/
 	public void setNote (String Note)
 	{
 		set_Value (COLUMNNAME_Note, Note);
@@ -194,27 +188,26 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/** Get Note.
 		@return Optional additional user defined information
 	  */
-	public String getNote () 
+	public String getNote()
 	{
 		return (String)get_Value(COLUMNNAME_Note);
 	}
 
 	/** Set Achievement.
-		@param PA_Achievement_ID 
-		Performance Achievement
-	  */
+		@param PA_Achievement_ID Performance Achievement
+	*/
 	public void setPA_Achievement_ID (int PA_Achievement_ID)
 	{
-		if (PA_Achievement_ID < 1) 
+		if (PA_Achievement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_Achievement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_Achievement_ID, Integer.valueOf(PA_Achievement_ID));
 	}
 
 	/** Get Achievement.
 		@return Performance Achievement
 	  */
-	public int getPA_Achievement_ID () 
+	public int getPA_Achievement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Achievement_ID);
 		if (ii == null)
@@ -223,7 +216,8 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	}
 
 	/** Set PA_Achievement_UU.
-		@param PA_Achievement_UU PA_Achievement_UU	  */
+		@param PA_Achievement_UU PA_Achievement_UU
+	*/
 	public void setPA_Achievement_UU (String PA_Achievement_UU)
 	{
 		set_Value (COLUMNNAME_PA_Achievement_UU, PA_Achievement_UU);
@@ -231,7 +225,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 
 	/** Get PA_Achievement_UU.
 		@return PA_Achievement_UU	  */
-	public String getPA_Achievement_UU () 
+	public String getPA_Achievement_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_Achievement_UU);
 	}
@@ -243,21 +237,20 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	}
 
 	/** Set Measure.
-		@param PA_Measure_ID 
-		Concrete Performance Measurement
-	  */
+		@param PA_Measure_ID Concrete Performance Measurement
+	*/
 	public void setPA_Measure_ID (int PA_Measure_ID)
 	{
-		if (PA_Measure_ID < 1) 
+		if (PA_Measure_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_Measure_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_Measure_ID, Integer.valueOf(PA_Measure_ID));
 	}
 
 	/** Get Measure.
 		@return Concrete Performance Measurement
 	  */
-	public int getPA_Measure_ID () 
+	public int getPA_Measure_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Measure_ID);
 		if (ii == null)
@@ -266,9 +259,8 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -277,7 +269,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

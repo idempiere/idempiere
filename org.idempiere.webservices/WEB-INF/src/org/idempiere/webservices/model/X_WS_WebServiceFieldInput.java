@@ -19,16 +19,12 @@ package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldInput
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceFieldInput")
 public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFieldInput, I_Persistent 
 {
@@ -36,7 +32,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, int WS_WebServiceFieldInput_ID, String trxName)
@@ -84,21 +80,20 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -113,21 +108,20 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -142,21 +136,20 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set Reference Key.
-		@param AD_Reference_Value_ID 
-		Required to specify, if data type is Table or List
-	  */
+		@param AD_Reference_Value_ID Required to specify, if data type is Table or List
+	*/
 	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
 	{
-		if (AD_Reference_Value_ID < 1) 
+		if (AD_Reference_Value_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
 	}
 
 	/** Get Reference Key.
 		@return Required to specify, if data type is Table or List
 	  */
-	public int getAD_Reference_Value_ID () 
+	public int getAD_Reference_Value_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
 		if (ii == null)
@@ -165,9 +158,8 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set DB Column Name.
-		@param ColumnName 
-		Name of the column in the database
-	  */
+		@param ColumnName Name of the column in the database
+	*/
 	public void setColumnName (String ColumnName)
 	{
 		set_Value (COLUMNNAME_ColumnName, ColumnName);
@@ -176,13 +168,14 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	/** Get DB Column Name.
 		@return Name of the column in the database
 	  */
-	public String getColumnName () 
+	public String getColumnName()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
 	}
 
 	/** Set Identifier Logic.
-		@param IdentifierLogic Identifier Logic	  */
+		@param IdentifierLogic Identifier Logic
+	*/
 	public void setIdentifierLogic (String IdentifierLogic)
 	{
 		set_Value (COLUMNNAME_IdentifierLogic, IdentifierLogic);
@@ -190,15 +183,14 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 
 	/** Get Identifier Logic.
 		@return Identifier Logic	  */
-	public String getIdentifierLogic () 
+	public String getIdentifierLogic()
 	{
 		return (String)get_Value(COLUMNNAME_IdentifierLogic);
 	}
 
 	/** Set Identifier.
-		@param IsIdentifier 
-		This column is part of the record identifier
-	  */
+		@param IsIdentifier This column is part of the record identifier
+	*/
 	public void setIsIdentifier (boolean IsIdentifier)
 	{
 		set_Value (COLUMNNAME_IsIdentifier, Boolean.valueOf(IsIdentifier));
@@ -207,7 +199,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	/** Get Identifier.
 		@return This column is part of the record identifier
 	  */
-	public boolean isIdentifier () 
+	public boolean isIdentifier()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIdentifier);
 		if (oo != null) 
@@ -220,9 +212,8 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set Allow Null Value.
-		@param IsNullIdentifier 
-		Should allow null value for identifiere field
-	  */
+		@param IsNullIdentifier Should allow null value for identifiere field
+	*/
 	public void setIsNullIdentifier (boolean IsNullIdentifier)
 	{
 		set_Value (COLUMNNAME_IsNullIdentifier, Boolean.valueOf(IsNullIdentifier));
@@ -231,7 +222,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	/** Get Allow Null Value.
 		@return Should allow null value for identifiere field
 	  */
-	public boolean isNullIdentifier () 
+	public boolean isNullIdentifier()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNullIdentifier);
 		if (oo != null) 
@@ -244,18 +235,19 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set Web Service Field Input.
-		@param WS_WebServiceFieldInput_ID Web Service Field Input	  */
+		@param WS_WebServiceFieldInput_ID Web Service Field Input
+	*/
 	public void setWS_WebServiceFieldInput_ID (int WS_WebServiceFieldInput_ID)
 	{
-		if (WS_WebServiceFieldInput_ID < 1) 
+		if (WS_WebServiceFieldInput_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceFieldInput_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceFieldInput_ID, Integer.valueOf(WS_WebServiceFieldInput_ID));
 	}
 
 	/** Get Web Service Field Input.
 		@return Web Service Field Input	  */
-	public int getWS_WebServiceFieldInput_ID () 
+	public int getWS_WebServiceFieldInput_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceFieldInput_ID);
 		if (ii == null)
@@ -272,7 +264,8 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
     }
 
 	/** Set WS_WebServiceFieldInput_UU.
-		@param WS_WebServiceFieldInput_UU WS_WebServiceFieldInput_UU	  */
+		@param WS_WebServiceFieldInput_UU WS_WebServiceFieldInput_UU
+	*/
 	public void setWS_WebServiceFieldInput_UU (String WS_WebServiceFieldInput_UU)
 	{
 		set_Value (COLUMNNAME_WS_WebServiceFieldInput_UU, WS_WebServiceFieldInput_UU);
@@ -280,7 +273,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 
 	/** Get WS_WebServiceFieldInput_UU.
 		@return WS_WebServiceFieldInput_UU	  */
-	public String getWS_WebServiceFieldInput_UU () 
+	public String getWS_WebServiceFieldInput_UU()
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebServiceFieldInput_UU);
 	}
@@ -292,18 +285,19 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set Web Service Type.
-		@param WS_WebServiceType_ID Web Service Type	  */
+		@param WS_WebServiceType_ID Web Service Type
+	*/
 	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID)
 	{
-		if (WS_WebServiceType_ID < 1) 
+		if (WS_WebServiceType_ID < 1)
 			set_Value (COLUMNNAME_WS_WebServiceType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_WS_WebServiceType_ID, Integer.valueOf(WS_WebServiceType_ID));
 	}
 
 	/** Get Web Service Type.
 		@return Web Service Type	  */
-	public int getWS_WebServiceType_ID () 
+	public int getWS_WebServiceType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceType_ID);
 		if (ii == null)

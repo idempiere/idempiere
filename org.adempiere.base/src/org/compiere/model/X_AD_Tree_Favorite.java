@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tree_Favorite
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tree_Favorite")
 public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Tree_Favorite (Properties ctx, int AD_Tree_Favorite_ID, String trxName)
@@ -72,18 +72,19 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
     }
 
 	/** Set Favorite Tree.
-		@param AD_Tree_Favorite_ID Favorite Tree	  */
+		@param AD_Tree_Favorite_ID Favorite Tree
+	*/
 	public void setAD_Tree_Favorite_ID (int AD_Tree_Favorite_ID)
 	{
-		if (AD_Tree_Favorite_ID < 1) 
+		if (AD_Tree_Favorite_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_ID, Integer.valueOf(AD_Tree_Favorite_ID));
 	}
 
 	/** Get Favorite Tree.
 		@return Favorite Tree	  */
-	public int getAD_Tree_Favorite_ID () 
+	public int getAD_Tree_Favorite_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Favorite_ID);
 		if (ii == null)
@@ -92,7 +93,8 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
 	}
 
 	/** Set Favorite Tree.
-		@param AD_Tree_Favorite_UU Favorite Tree	  */
+		@param AD_Tree_Favorite_UU Favorite Tree
+	*/
 	public void setAD_Tree_Favorite_UU (String AD_Tree_Favorite_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_UU, AD_Tree_Favorite_UU);
@@ -100,7 +102,7 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
 
 	/** Get Favorite Tree.
 		@return Favorite Tree	  */
-	public String getAD_Tree_Favorite_UU () 
+	public String getAD_Tree_Favorite_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Tree_Favorite_UU);
 	}
@@ -112,21 +114,20 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)

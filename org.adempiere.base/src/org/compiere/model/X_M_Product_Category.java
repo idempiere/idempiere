@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_Category
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_Category")
 public class X_M_Product_Category extends PO implements I_M_Product_Category, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_Product_Category (Properties ctx, int M_Product_Category_ID, String trxName)
@@ -88,21 +88,20 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	/** Set Asset Group.
-		@param A_Asset_Group_ID 
-		Group of Assets
-	  */
+		@param A_Asset_Group_ID Group of Assets
+	*/
 	public void setA_Asset_Group_ID (int A_Asset_Group_ID)
 	{
-		if (A_Asset_Group_ID < 1) 
+		if (A_Asset_Group_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_Group_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_Group_ID, Integer.valueOf(A_Asset_Group_ID));
 	}
 
 	/** Get Asset Group.
 		@return Group of Assets
 	  */
-	public int getA_Asset_Group_ID () 
+	public int getA_Asset_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Group_ID);
 		if (ii == null)
@@ -117,21 +116,20 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	/** Set Print Color.
-		@param AD_PrintColor_ID 
-		Color used for printing and display
-	  */
+		@param AD_PrintColor_ID Color used for printing and display
+	*/
 	public void setAD_PrintColor_ID (int AD_PrintColor_ID)
 	{
-		if (AD_PrintColor_ID < 1) 
+		if (AD_PrintColor_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor_ID, Integer.valueOf(AD_PrintColor_ID));
 	}
 
 	/** Get Print Color.
 		@return Color used for printing and display
 	  */
-	public int getAD_PrintColor_ID () 
+	public int getAD_PrintColor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor_ID);
 		if (ii == null)
@@ -140,9 +138,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -151,15 +148,14 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -168,7 +164,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -181,9 +177,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -192,7 +187,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -211,9 +206,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/** LiFo = L */
 	public static final String MMPOLICY_LiFo = "L";
 	/** Set Material Policy.
-		@param MMPolicy 
-		Material Movement Policy
-	  */
+		@param MMPolicy Material Movement Policy
+	*/
 	public void setMMPolicy (String MMPolicy)
 	{
 
@@ -223,27 +217,26 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/** Get Material Policy.
 		@return Material Movement Policy
 	  */
-	public String getMMPolicy () 
+	public String getMMPolicy()
 	{
 		return (String)get_Value(COLUMNNAME_MMPolicy);
 	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -258,18 +251,19 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	/** Set Parent Product Category.
-		@param M_Product_Category_Parent_ID Parent Product Category	  */
+		@param M_Product_Category_Parent_ID Parent Product Category
+	*/
 	public void setM_Product_Category_Parent_ID (int M_Product_Category_Parent_ID)
 	{
-		if (M_Product_Category_Parent_ID < 1) 
+		if (M_Product_Category_Parent_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_Parent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_Parent_ID, Integer.valueOf(M_Product_Category_Parent_ID));
 	}
 
 	/** Get Parent Product Category.
 		@return Parent Product Category	  */
-	public int getM_Product_Category_Parent_ID () 
+	public int getM_Product_Category_Parent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_Parent_ID);
 		if (ii == null)
@@ -278,7 +272,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	/** Set M_Product_Category_UU.
-		@param M_Product_Category_UU M_Product_Category_UU	  */
+		@param M_Product_Category_UU M_Product_Category_UU
+	*/
 	public void setM_Product_Category_UU (String M_Product_Category_UU)
 	{
 		set_Value (COLUMNNAME_M_Product_Category_UU, M_Product_Category_UU);
@@ -286,15 +281,14 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 
 	/** Get M_Product_Category_UU.
 		@return M_Product_Category_UU	  */
-	public String getM_Product_Category_UU () 
+	public String getM_Product_Category_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Product_Category_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -303,7 +297,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -317,18 +311,17 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
     }
 
 	/** Set Planned Margin %.
-		@param PlannedMargin 
-		Project's planned margin as a percentage
-	  */
+		@param PlannedMargin Project&#039;s planned margin as a percentage
+	*/
 	public void setPlannedMargin (BigDecimal PlannedMargin)
 	{
 		set_Value (COLUMNNAME_PlannedMargin, PlannedMargin);
 	}
 
 	/** Get Planned Margin %.
-		@return Project's planned margin as a percentage
+		@return Project&#039;s planned margin as a percentage
 	  */
-	public BigDecimal getPlannedMargin () 
+	public BigDecimal getPlannedMargin()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PlannedMargin);
 		if (bd == null)
@@ -337,9 +330,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -348,7 +340,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DemandDetail
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_DemandDetail")
 public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_DemandDetail (Properties ctx, int M_DemandDetail_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	/** Set Sales Order Line.
-		@param C_OrderLine_ID 
-		Sales Order Line
-	  */
+		@param C_OrderLine_ID Sales Order Line
+	*/
 	public void setC_OrderLine_ID (int C_OrderLine_ID)
 	{
-		if (C_OrderLine_ID < 1) 
+		if (C_OrderLine_ID < 1)
 			set_Value (COLUMNNAME_C_OrderLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_OrderLine_ID, Integer.valueOf(C_OrderLine_ID));
 	}
 
 	/** Get Sales Order Line.
 		@return Sales Order Line
 	  */
-	public int getC_OrderLine_ID () 
+	public int getC_OrderLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderLine_ID);
 		if (ii == null)
@@ -102,21 +101,20 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	/** Set Demand Detail.
-		@param M_DemandDetail_ID 
-		Material Demand Line Source Detail
-	  */
+		@param M_DemandDetail_ID Material Demand Line Source Detail
+	*/
 	public void setM_DemandDetail_ID (int M_DemandDetail_ID)
 	{
-		if (M_DemandDetail_ID < 1) 
+		if (M_DemandDetail_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DemandDetail_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DemandDetail_ID, Integer.valueOf(M_DemandDetail_ID));
 	}
 
 	/** Get Demand Detail.
 		@return Material Demand Line Source Detail
 	  */
-	public int getM_DemandDetail_ID () 
+	public int getM_DemandDetail_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DemandDetail_ID);
 		if (ii == null)
@@ -133,7 +131,8 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
     }
 
 	/** Set M_DemandDetail_UU.
-		@param M_DemandDetail_UU M_DemandDetail_UU	  */
+		@param M_DemandDetail_UU M_DemandDetail_UU
+	*/
 	public void setM_DemandDetail_UU (String M_DemandDetail_UU)
 	{
 		set_Value (COLUMNNAME_M_DemandDetail_UU, M_DemandDetail_UU);
@@ -141,7 +140,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 
 	/** Get M_DemandDetail_UU.
 		@return M_DemandDetail_UU	  */
-	public String getM_DemandDetail_UU () 
+	public String getM_DemandDetail_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_DemandDetail_UU);
 	}
@@ -153,21 +152,20 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	/** Set Demand Line.
-		@param M_DemandLine_ID 
-		Material Demand Line
-	  */
+		@param M_DemandLine_ID Material Demand Line
+	*/
 	public void setM_DemandLine_ID (int M_DemandLine_ID)
 	{
-		if (M_DemandLine_ID < 1) 
+		if (M_DemandLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DemandLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DemandLine_ID, Integer.valueOf(M_DemandLine_ID));
 	}
 
 	/** Get Demand Line.
 		@return Material Demand Line
 	  */
-	public int getM_DemandLine_ID () 
+	public int getM_DemandLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DemandLine_ID);
 		if (ii == null)
@@ -182,21 +180,20 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	/** Set Forecast Line.
-		@param M_ForecastLine_ID 
-		Forecast Line
-	  */
+		@param M_ForecastLine_ID Forecast Line
+	*/
 	public void setM_ForecastLine_ID (int M_ForecastLine_ID)
 	{
-		if (M_ForecastLine_ID < 1) 
+		if (M_ForecastLine_ID < 1)
 			set_Value (COLUMNNAME_M_ForecastLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ForecastLine_ID, Integer.valueOf(M_ForecastLine_ID));
 	}
 
 	/** Get Forecast Line.
 		@return Forecast Line
 	  */
-	public int getM_ForecastLine_ID () 
+	public int getM_ForecastLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ForecastLine_ID);
 		if (ii == null)
@@ -211,21 +208,20 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	}
 
 	/** Set Requisition Line.
-		@param M_RequisitionLine_ID 
-		Material Requisition Line
-	  */
+		@param M_RequisitionLine_ID Material Requisition Line
+	*/
 	public void setM_RequisitionLine_ID (int M_RequisitionLine_ID)
 	{
-		if (M_RequisitionLine_ID < 1) 
+		if (M_RequisitionLine_ID < 1)
 			set_Value (COLUMNNAME_M_RequisitionLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_RequisitionLine_ID, Integer.valueOf(M_RequisitionLine_ID));
 	}
 
 	/** Get Requisition Line.
 		@return Material Requisition Line
 	  */
-	public int getM_RequisitionLine_ID () 
+	public int getM_RequisitionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_RequisitionLine_ID);
 		if (ii == null)

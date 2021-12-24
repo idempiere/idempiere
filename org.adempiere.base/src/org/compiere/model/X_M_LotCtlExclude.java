@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_LotCtlExclude
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_LotCtlExclude")
 public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_LotCtlExclude (Properties ctx, int M_LotCtlExclude_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -103,9 +102,8 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -114,7 +112,7 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -127,21 +125,20 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	}
 
 	/** Set Exclude Lot.
-		@param M_LotCtlExclude_ID 
-		Exclude the ability to create Lots in Attribute Sets
-	  */
+		@param M_LotCtlExclude_ID Exclude the ability to create Lots in Attribute Sets
+	*/
 	public void setM_LotCtlExclude_ID (int M_LotCtlExclude_ID)
 	{
-		if (M_LotCtlExclude_ID < 1) 
+		if (M_LotCtlExclude_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_LotCtlExclude_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_LotCtlExclude_ID, Integer.valueOf(M_LotCtlExclude_ID));
 	}
 
 	/** Get Exclude Lot.
 		@return Exclude the ability to create Lots in Attribute Sets
 	  */
-	public int getM_LotCtlExclude_ID () 
+	public int getM_LotCtlExclude_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_LotCtlExclude_ID);
 		if (ii == null)
@@ -150,7 +147,8 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	}
 
 	/** Set M_LotCtlExclude_UU.
-		@param M_LotCtlExclude_UU M_LotCtlExclude_UU	  */
+		@param M_LotCtlExclude_UU M_LotCtlExclude_UU
+	*/
 	public void setM_LotCtlExclude_UU (String M_LotCtlExclude_UU)
 	{
 		set_Value (COLUMNNAME_M_LotCtlExclude_UU, M_LotCtlExclude_UU);
@@ -158,7 +156,7 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 
 	/** Get M_LotCtlExclude_UU.
 		@return M_LotCtlExclude_UU	  */
-	public String getM_LotCtlExclude_UU () 
+	public String getM_LotCtlExclude_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_LotCtlExclude_UU);
 	}
@@ -170,21 +168,20 @@ public class X_M_LotCtlExclude extends PO implements I_M_LotCtlExclude, I_Persis
 	}
 
 	/** Set Lot Control.
-		@param M_LotCtl_ID 
-		Product Lot Control
-	  */
+		@param M_LotCtl_ID Product Lot Control
+	*/
 	public void setM_LotCtl_ID (int M_LotCtl_ID)
 	{
-		if (M_LotCtl_ID < 1) 
+		if (M_LotCtl_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_LotCtl_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_LotCtl_ID, Integer.valueOf(M_LotCtl_ID));
 	}
 
 	/** Get Lot Control.
 		@return Product Lot Control
 	  */
-	public int getM_LotCtl_ID () 
+	public int getM_LotCtl_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_LotCtl_ID);
 		if (ii == null)

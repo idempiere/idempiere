@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Image
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Image")
 public class X_AD_Image extends PO implements I_AD_Image, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Image (Properties ctx, int AD_Image_ID, String trxName)
@@ -75,21 +75,20 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
     }
 
 	/** Set Image.
-		@param AD_Image_ID 
-		Image or Icon
-	  */
+		@param AD_Image_ID Image or Icon
+	*/
 	public void setAD_Image_ID (int AD_Image_ID)
 	{
-		if (AD_Image_ID < 1) 
+		if (AD_Image_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Image_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Image_ID, Integer.valueOf(AD_Image_ID));
 	}
 
 	/** Get Image.
 		@return Image or Icon
 	  */
-	public int getAD_Image_ID () 
+	public int getAD_Image_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Image_ID);
 		if (ii == null)
@@ -98,7 +97,8 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	}
 
 	/** Set AD_Image_UU.
-		@param AD_Image_UU AD_Image_UU	  */
+		@param AD_Image_UU AD_Image_UU
+	*/
 	public void setAD_Image_UU (String AD_Image_UU)
 	{
 		set_Value (COLUMNNAME_AD_Image_UU, AD_Image_UU);
@@ -106,7 +106,7 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 
 	/** Get AD_Image_UU.
 		@return AD_Image_UU	  */
-	public String getAD_Image_UU () 
+	public String getAD_Image_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Image_UU);
 	}
@@ -118,18 +118,19 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	}
 
 	/** Set Storage Provider.
-		@param AD_StorageProvider_ID Storage Provider	  */
+		@param AD_StorageProvider_ID Storage Provider
+	*/
 	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
 	{
-		if (AD_StorageProvider_ID < 1) 
+		if (AD_StorageProvider_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
 	}
 
 	/** Get Storage Provider.
 		@return Storage Provider	  */
-	public int getAD_StorageProvider_ID () 
+	public int getAD_StorageProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
 		if (ii == null)
@@ -138,9 +139,8 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	}
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (byte[] BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, BinaryData);
@@ -149,15 +149,14 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public byte[] getBinaryData () 
+	public byte[] getBinaryData()
 	{
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -166,7 +165,7 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -174,9 +173,8 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -186,15 +184,14 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Image URL.
-		@param ImageURL 
-		URL of  image
-	  */
+		@param ImageURL URL of  image
+	*/
 	public void setImageURL (String ImageURL)
 	{
 		set_Value (COLUMNNAME_ImageURL, ImageURL);
@@ -203,15 +200,14 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	/** Get Image URL.
 		@return URL of  image
 	  */
-	public String getImageURL () 
+	public String getImageURL()
 	{
 		return (String)get_Value(COLUMNNAME_ImageURL);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -220,7 +216,7 @@ public class X_AD_Image extends PO implements I_AD_Image, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

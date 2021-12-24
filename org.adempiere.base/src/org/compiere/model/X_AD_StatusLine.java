@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StatusLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_StatusLine")
 public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_StatusLine (Properties ctx, int AD_StatusLine_ID, String trxName)
@@ -83,21 +83,20 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	}
 
 	/** Set Message.
-		@param AD_Message_ID 
-		System Message
-	  */
+		@param AD_Message_ID System Message
+	*/
 	public void setAD_Message_ID (int AD_Message_ID)
 	{
-		if (AD_Message_ID < 1) 
+		if (AD_Message_ID < 1)
 			set_Value (COLUMNNAME_AD_Message_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Message_ID, Integer.valueOf(AD_Message_ID));
 	}
 
 	/** Get Message.
 		@return System Message
 	  */
-	public int getAD_Message_ID () 
+	public int getAD_Message_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Message_ID);
 		if (ii == null)
@@ -106,18 +105,19 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	}
 
 	/** Set Status Line.
-		@param AD_StatusLine_ID Status Line	  */
+		@param AD_StatusLine_ID Status Line
+	*/
 	public void setAD_StatusLine_ID (int AD_StatusLine_ID)
 	{
-		if (AD_StatusLine_ID < 1) 
+		if (AD_StatusLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, Integer.valueOf(AD_StatusLine_ID));
 	}
 
 	/** Get Status Line.
 		@return Status Line	  */
-	public int getAD_StatusLine_ID () 
+	public int getAD_StatusLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StatusLine_ID);
 		if (ii == null)
@@ -126,7 +126,8 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	}
 
 	/** Set AD_StatusLine_UU.
-		@param AD_StatusLine_UU AD_StatusLine_UU	  */
+		@param AD_StatusLine_UU AD_StatusLine_UU
+	*/
 	public void setAD_StatusLine_UU (String AD_StatusLine_UU)
 	{
 		set_Value (COLUMNNAME_AD_StatusLine_UU, AD_StatusLine_UU);
@@ -134,7 +135,7 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 
 	/** Get AD_StatusLine_UU.
 		@return AD_StatusLine_UU	  */
-	public String getAD_StatusLine_UU () 
+	public String getAD_StatusLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_StatusLine_UU);
 	}
@@ -142,9 +143,8 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -154,15 +154,14 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -171,7 +170,7 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -184,16 +183,17 @@ public class X_AD_StatusLine extends PO implements I_AD_StatusLine, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
-	/** Set SQLStatement.
-		@param SQLStatement SQLStatement	  */
+	/** Set SQL Expression/Statement.
+		@param SQLStatement SQL Expression/Statement
+	*/
 	public void setSQLStatement (String SQLStatement)
 	{
 		set_Value (COLUMNNAME_SQLStatement, SQLStatement);
 	}
 
-	/** Get SQLStatement.
-		@return SQLStatement	  */
-	public String getSQLStatement () 
+	/** Get SQL Expression/Statement.
+		@return SQL Expression/Statement	  */
+	public String getSQLStatement()
 	{
 		return (String)get_Value(COLUMNNAME_SQLStatement);
 	}

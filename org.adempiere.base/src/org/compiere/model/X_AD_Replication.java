@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Replication")
 public class X_AD_Replication extends PO implements I_AD_Replication, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Replication (Properties ctx, int AD_Replication_ID, String trxName)
@@ -84,21 +84,20 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
     }
 
 	/** Set Replication.
-		@param AD_Replication_ID 
-		Data Replication Target
-	  */
+		@param AD_Replication_ID Data Replication Target
+	*/
 	public void setAD_Replication_ID (int AD_Replication_ID)
 	{
-		if (AD_Replication_ID < 1) 
+		if (AD_Replication_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_ID, Integer.valueOf(AD_Replication_ID));
 	}
 
 	/** Get Replication.
 		@return Data Replication Target
 	  */
-	public int getAD_Replication_ID () 
+	public int getAD_Replication_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Replication_ID);
 		if (ii == null)
@@ -113,21 +112,20 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set Replication Strategy.
-		@param AD_ReplicationStrategy_ID 
-		Data Replication Strategy
-	  */
+		@param AD_ReplicationStrategy_ID Data Replication Strategy
+	*/
 	public void setAD_ReplicationStrategy_ID (int AD_ReplicationStrategy_ID)
 	{
-		if (AD_ReplicationStrategy_ID < 1) 
+		if (AD_ReplicationStrategy_ID < 1)
 			set_Value (COLUMNNAME_AD_ReplicationStrategy_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_ReplicationStrategy_ID, Integer.valueOf(AD_ReplicationStrategy_ID));
 	}
 
 	/** Get Replication Strategy.
 		@return Data Replication Strategy
 	  */
-	public int getAD_ReplicationStrategy_ID () 
+	public int getAD_ReplicationStrategy_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationStrategy_ID);
 		if (ii == null)
@@ -136,7 +134,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set AD_Replication_UU.
-		@param AD_Replication_UU AD_Replication_UU	  */
+		@param AD_Replication_UU AD_Replication_UU
+	*/
 	public void setAD_Replication_UU (String AD_Replication_UU)
 	{
 		set_Value (COLUMNNAME_AD_Replication_UU, AD_Replication_UU);
@@ -144,15 +143,14 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 
 	/** Get AD_Replication_UU.
 		@return AD_Replication_UU	  */
-	public String getAD_Replication_UU () 
+	public String getAD_Replication_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Replication_UU);
 	}
 
 	/** Set Date last run.
-		@param DateLastRun 
-		Date the process was last run.
-	  */
+		@param DateLastRun Date the process was last run.
+	*/
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateLastRun, DateLastRun);
@@ -161,15 +159,14 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Date last run.
 		@return Date the process was last run.
 	  */
-	public Timestamp getDateLastRun () 
+	public Timestamp getDateLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -178,15 +175,14 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -195,15 +191,14 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Host Address.
-		@param HostAddress 
-		Host Address URL or DNS
-	  */
+		@param HostAddress Host Address URL or DNS
+	*/
 	public void setHostAddress (String HostAddress)
 	{
 		set_Value (COLUMNNAME_HostAddress, HostAddress);
@@ -212,15 +207,14 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Host Address.
 		@return Host Address URL or DNS
 	  */
-	public String getHostAddress () 
+	public String getHostAddress()
 	{
 		return (String)get_Value(COLUMNNAME_HostAddress);
 	}
 
 	/** Set Host port.
-		@param HostPort 
-		Host Communication Port
-	  */
+		@param HostPort Host Communication Port
+	*/
 	public void setHostPort (int HostPort)
 	{
 		set_Value (COLUMNNAME_HostPort, Integer.valueOf(HostPort));
@@ -229,7 +223,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Host port.
 		@return Host Communication Port
 	  */
-	public int getHostPort () 
+	public int getHostPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HostPort);
 		if (ii == null)
@@ -238,9 +232,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set ID Range End.
-		@param IDRangeEnd 
-		End if the ID Range used
-	  */
+		@param IDRangeEnd End if the ID Range used
+	*/
 	public void setIDRangeEnd (BigDecimal IDRangeEnd)
 	{
 		set_Value (COLUMNNAME_IDRangeEnd, IDRangeEnd);
@@ -249,7 +242,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get ID Range End.
 		@return End if the ID Range used
 	  */
-	public BigDecimal getIDRangeEnd () 
+	public BigDecimal getIDRangeEnd()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_IDRangeEnd);
 		if (bd == null)
@@ -258,9 +251,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set ID Range Start.
-		@param IDRangeStart 
-		Start of the ID Range used
-	  */
+		@param IDRangeStart Start of the ID Range used
+	*/
 	public void setIDRangeStart (BigDecimal IDRangeStart)
 	{
 		set_Value (COLUMNNAME_IDRangeStart, IDRangeStart);
@@ -269,7 +261,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get ID Range Start.
 		@return Start of the ID Range used
 	  */
-	public BigDecimal getIDRangeStart () 
+	public BigDecimal getIDRangeStart()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_IDRangeStart);
 		if (bd == null)
@@ -278,9 +270,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set Tunnel via HTTP.
-		@param IsRMIoverHTTP 
-		Connect to Server via HTTP Tunnel
-	  */
+		@param IsRMIoverHTTP Connect to Server via HTTP Tunnel
+	*/
 	public void setIsRMIoverHTTP (boolean IsRMIoverHTTP)
 	{
 		set_Value (COLUMNNAME_IsRMIoverHTTP, Boolean.valueOf(IsRMIoverHTTP));
@@ -289,7 +280,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Tunnel via HTTP.
 		@return Connect to Server via HTTP Tunnel
 	  */
-	public boolean isRMIoverHTTP () 
+	public boolean isRMIoverHTTP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRMIoverHTTP);
 		if (oo != null) 
@@ -302,9 +293,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -313,7 +303,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -327,9 +317,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
     }
 
 	/** Set Prefix.
-		@param Prefix 
-		Prefix before the sequence number
-	  */
+		@param Prefix Prefix before the sequence number
+	*/
 	public void setPrefix (String Prefix)
 	{
 		set_Value (COLUMNNAME_Prefix, Prefix);
@@ -338,13 +327,14 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Prefix.
 		@return Prefix before the sequence number
 	  */
-	public String getPrefix () 
+	public String getPrefix()
 	{
 		return (String)get_Value(COLUMNNAME_Prefix);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -352,7 +342,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -365,21 +355,20 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set Remote Client.
-		@param Remote_Client_ID 
-		Remote Client to be used to replicate / synchronize data with.
-	  */
+		@param Remote_Client_ID Remote Client to be used to replicate / synchronize data with.
+	*/
 	public void setRemote_Client_ID (int Remote_Client_ID)
 	{
-		if (Remote_Client_ID < 1) 
+		if (Remote_Client_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Remote_Client_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Remote_Client_ID, Integer.valueOf(Remote_Client_ID));
 	}
 
 	/** Get Remote Client.
 		@return Remote Client to be used to replicate / synchronize data with.
 	  */
-	public int getRemote_Client_ID () 
+	public int getRemote_Client_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Remote_Client_ID);
 		if (ii == null)
@@ -388,21 +377,20 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set Remote Organization.
-		@param Remote_Org_ID 
-		Remote Organization to be used to replicate / synchronize data with.
-	  */
+		@param Remote_Org_ID Remote Organization to be used to replicate / synchronize data with.
+	*/
 	public void setRemote_Org_ID (int Remote_Org_ID)
 	{
-		if (Remote_Org_ID < 1) 
+		if (Remote_Org_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Remote_Org_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Remote_Org_ID, Integer.valueOf(Remote_Org_ID));
 	}
 
 	/** Get Remote Organization.
 		@return Remote Organization to be used to replicate / synchronize data with.
 	  */
-	public int getRemote_Org_ID () 
+	public int getRemote_Org_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Remote_Org_ID);
 		if (ii == null)
@@ -411,9 +399,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	}
 
 	/** Set Suffix.
-		@param Suffix 
-		Suffix after the number
-	  */
+		@param Suffix Suffix after the number
+	*/
 	public void setSuffix (String Suffix)
 	{
 		set_Value (COLUMNNAME_Suffix, Suffix);
@@ -422,7 +409,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/** Get Suffix.
 		@return Suffix after the number
 	  */
-	public String getSuffix () 
+	public String getSuffix()
 	{
 		return (String)get_Value(COLUMNNAME_Suffix);
 	}

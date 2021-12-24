@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="S_Training")
 public class X_S_Training extends PO implements I_S_Training, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_S_Training (Properties ctx, int S_Training_ID, String trxName)
@@ -82,21 +82,20 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	}
 
 	/** Set Tax Category.
-		@param C_TaxCategory_ID 
-		Tax Category
-	  */
+		@param C_TaxCategory_ID Tax Category
+	*/
 	public void setC_TaxCategory_ID (int C_TaxCategory_ID)
 	{
-		if (C_TaxCategory_ID < 1) 
+		if (C_TaxCategory_ID < 1)
 			set_Value (COLUMNNAME_C_TaxCategory_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TaxCategory_ID, Integer.valueOf(C_TaxCategory_ID));
 	}
 
 	/** Get Tax Category.
 		@return Tax Category
 	  */
-	public int getC_TaxCategory_ID () 
+	public int getC_TaxCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxCategory_ID);
 		if (ii == null)
@@ -111,21 +110,20 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -134,9 +132,8 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -145,15 +142,14 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Description URL.
-		@param DescriptionURL 
-		URL for the description
-	  */
+		@param DescriptionURL URL for the description
+	*/
 	public void setDescriptionURL (String DescriptionURL)
 	{
 		set_Value (COLUMNNAME_DescriptionURL, DescriptionURL);
@@ -162,15 +158,14 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/** Get Description URL.
 		@return URL for the description
 	  */
-	public String getDescriptionURL () 
+	public String getDescriptionURL()
 	{
 		return (String)get_Value(COLUMNNAME_DescriptionURL);
 	}
 
 	/** Set Document Note.
-		@param DocumentNote 
-		Additional information for a Document
-	  */
+		@param DocumentNote Additional information for a Document
+	*/
 	public void setDocumentNote (String DocumentNote)
 	{
 		set_Value (COLUMNNAME_DocumentNote, DocumentNote);
@@ -179,15 +174,14 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/** Get Document Note.
 		@return Additional information for a Document
 	  */
-	public String getDocumentNote () 
+	public String getDocumentNote()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNote);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -196,15 +190,14 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Image URL.
-		@param ImageURL 
-		URL of  image
-	  */
+		@param ImageURL URL of  image
+	*/
 	public void setImageURL (String ImageURL)
 	{
 		set_Value (COLUMNNAME_ImageURL, ImageURL);
@@ -213,7 +206,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/** Get Image URL.
 		@return URL of  image
 	  */
-	public String getImageURL () 
+	public String getImageURL()
 	{
 		return (String)get_Value(COLUMNNAME_ImageURL);
 	}
@@ -225,21 +218,20 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -248,9 +240,8 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -259,7 +250,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -273,7 +264,8 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -281,7 +273,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -294,21 +286,20 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	}
 
 	/** Set Training.
-		@param S_Training_ID 
-		Repeated Training
-	  */
+		@param S_Training_ID Repeated Training
+	*/
 	public void setS_Training_ID (int S_Training_ID)
 	{
-		if (S_Training_ID < 1) 
+		if (S_Training_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_Training_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_Training_ID, Integer.valueOf(S_Training_ID));
 	}
 
 	/** Get Training.
 		@return Repeated Training
 	  */
-	public int getS_Training_ID () 
+	public int getS_Training_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Training_ID);
 		if (ii == null)
@@ -317,7 +308,8 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 	}
 
 	/** Set S_Training_UU.
-		@param S_Training_UU S_Training_UU	  */
+		@param S_Training_UU S_Training_UU
+	*/
 	public void setS_Training_UU (String S_Training_UU)
 	{
 		set_Value (COLUMNNAME_S_Training_UU, S_Training_UU);
@@ -325,7 +317,7 @@ public class X_S_Training extends PO implements I_S_Training, I_Persistent
 
 	/** Get S_Training_UU.
 		@return S_Training_UU	  */
-	public String getS_Training_UU () 
+	public String getS_Training_UU()
 	{
 		return (String)get_Value(COLUMNNAME_S_Training_UU);
 	}

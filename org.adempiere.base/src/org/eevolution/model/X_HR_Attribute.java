@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for HR_Attribute
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="HR_Attribute")
 public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_HR_Attribute (Properties ctx, int HR_Attribute_ID, String trxName)
@@ -83,18 +83,19 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Rule.
-		@param AD_Rule_ID Rule	  */
+		@param AD_Rule_ID Rule
+	*/
 	public void setAD_Rule_ID (int AD_Rule_ID)
 	{
-		if (AD_Rule_ID < 1) 
+		if (AD_Rule_ID < 1)
 			set_Value (COLUMNNAME_AD_Rule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Rule_ID, Integer.valueOf(AD_Rule_ID));
 	}
 
 	/** Get Rule.
 		@return Rule	  */
-	public int getAD_Rule_ID () 
+	public int getAD_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Rule_ID);
 		if (ii == null)
@@ -103,9 +104,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Amount.
-		@param Amount 
-		Amount in a defined currency
-	  */
+		@param Amount Amount in a defined currency
+	*/
 	public void setAmount (BigDecimal Amount)
 	{
 		set_Value (COLUMNNAME_Amount, Amount);
@@ -114,7 +114,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Amount.
 		@return Amount in a defined currency
 	  */
-	public BigDecimal getAmount () 
+	public BigDecimal getAmount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amount);
 		if (bd == null)
@@ -128,22 +128,21 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -162,7 +161,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Text = T */
 	public static final String COLUMNTYPE_Text = "T";
 	/** Set Column Type.
-		@param ColumnType Column Type	  */
+		@param ColumnType Column Type
+	*/
 	public void setColumnType (String ColumnType)
 	{
 
@@ -171,15 +171,14 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 
 	/** Get Column Type.
 		@return Column Type	  */
-	public String getColumnType () 
+	public String getColumnType()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -188,7 +187,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -200,7 +199,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Payroll Attribute Account.
-		@param HR_Attribute_Acct Payroll Attribute Account	  */
+		@param HR_Attribute_Acct Payroll Attribute Account
+	*/
 	public void setHR_Attribute_Acct (int HR_Attribute_Acct)
 	{
 		set_Value (COLUMNNAME_HR_Attribute_Acct, Integer.valueOf(HR_Attribute_Acct));
@@ -208,7 +208,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 
 	/** Get Payroll Attribute Account.
 		@return Payroll Attribute Account	  */
-	public int getHR_Attribute_Acct () 
+	public int getHR_Attribute_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Attribute_Acct);
 		if (ii == null)
@@ -217,18 +217,19 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Payroll Employee Attribute.
-		@param HR_Attribute_ID Payroll Employee Attribute	  */
+		@param HR_Attribute_ID Payroll Employee Attribute
+	*/
 	public void setHR_Attribute_ID (int HR_Attribute_ID)
 	{
-		if (HR_Attribute_ID < 1) 
+		if (HR_Attribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Attribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Attribute_ID, Integer.valueOf(HR_Attribute_ID));
 	}
 
 	/** Get Payroll Employee Attribute.
 		@return Payroll Employee Attribute	  */
-	public int getHR_Attribute_ID () 
+	public int getHR_Attribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Attribute_ID);
 		if (ii == null)
@@ -237,7 +238,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set HR_Attribute_UU.
-		@param HR_Attribute_UU HR_Attribute_UU	  */
+		@param HR_Attribute_UU HR_Attribute_UU
+	*/
 	public void setHR_Attribute_UU (String HR_Attribute_UU)
 	{
 		set_Value (COLUMNNAME_HR_Attribute_UU, HR_Attribute_UU);
@@ -245,7 +247,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 
 	/** Get HR_Attribute_UU.
 		@return HR_Attribute_UU	  */
-	public String getHR_Attribute_UU () 
+	public String getHR_Attribute_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Attribute_UU);
 	}
@@ -257,18 +259,19 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Payroll Concept.
-		@param HR_Concept_ID Payroll Concept	  */
+		@param HR_Concept_ID Payroll Concept
+	*/
 	public void setHR_Concept_ID (int HR_Concept_ID)
 	{
-		if (HR_Concept_ID < 1) 
+		if (HR_Concept_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Concept_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Concept_ID, Integer.valueOf(HR_Concept_ID));
 	}
 
 	/** Get Payroll Concept.
 		@return Payroll Concept	  */
-	public int getHR_Concept_ID () 
+	public int getHR_Concept_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Concept_ID);
 		if (ii == null)
@@ -283,18 +286,19 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
+		@param HR_Department_ID Payroll Department
+	*/
 	public void setHR_Department_ID (int HR_Department_ID)
 	{
-		if (HR_Department_ID < 1) 
+		if (HR_Department_ID < 1)
 			set_Value (COLUMNNAME_HR_Department_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
 	}
 
 	/** Get Payroll Department.
 		@return Payroll Department	  */
-	public int getHR_Department_ID () 
+	public int getHR_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
 		if (ii == null)
@@ -309,18 +313,19 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Payroll Employee.
-		@param HR_Employee_ID Payroll Employee	  */
+		@param HR_Employee_ID Payroll Employee
+	*/
 	public void setHR_Employee_ID (int HR_Employee_ID)
 	{
-		if (HR_Employee_ID < 1) 
+		if (HR_Employee_ID < 1)
 			set_Value (COLUMNNAME_HR_Employee_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Employee_ID, Integer.valueOf(HR_Employee_ID));
 	}
 
 	/** Get Payroll Employee.
 		@return Payroll Employee	  */
-	public int getHR_Employee_ID () 
+	public int getHR_Employee_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Employee_ID);
 		if (ii == null)
@@ -335,18 +340,19 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Payroll Job.
-		@param HR_Job_ID Payroll Job	  */
+		@param HR_Job_ID Payroll Job
+	*/
 	public void setHR_Job_ID (int HR_Job_ID)
 	{
-		if (HR_Job_ID < 1) 
+		if (HR_Job_ID < 1)
 			set_Value (COLUMNNAME_HR_Job_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Job_ID, Integer.valueOf(HR_Job_ID));
 	}
 
 	/** Get Payroll Job.
 		@return Payroll Job	  */
-	public int getHR_Job_ID () 
+	public int getHR_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Job_ID);
 		if (ii == null)
@@ -361,18 +367,19 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_Value (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -381,9 +388,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Printed.
-		@param IsPrinted 
-		Indicates if this document / line is printed
-	  */
+		@param IsPrinted Indicates if this document / line is printed
+	*/
 	public void setIsPrinted (boolean IsPrinted)
 	{
 		set_Value (COLUMNNAME_IsPrinted, Boolean.valueOf(IsPrinted));
@@ -392,7 +398,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Printed.
 		@return Indicates if this document / line is printed
 	  */
-	public boolean isPrinted () 
+	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
 		if (oo != null) 
@@ -405,7 +411,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Max Value.
-		@param MaxValue Max Value	  */
+		@param MaxValue Max Value
+	*/
 	public void setMaxValue (int MaxValue)
 	{
 		set_Value (COLUMNNAME_MaxValue, Integer.valueOf(MaxValue));
@@ -413,7 +420,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 
 	/** Get Max Value.
 		@return Max Value	  */
-	public int getMaxValue () 
+	public int getMaxValue()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MaxValue);
 		if (ii == null)
@@ -422,7 +429,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Min Value.
-		@param MinValue Min Value	  */
+		@param MinValue Min Value
+	*/
 	public void setMinValue (int MinValue)
 	{
 		set_Value (COLUMNNAME_MinValue, Integer.valueOf(MinValue));
@@ -430,7 +438,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 
 	/** Get Min Value.
 		@return Min Value	  */
-	public int getMinValue () 
+	public int getMinValue()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MinValue);
 		if (ii == null)
@@ -439,9 +447,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -450,7 +457,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -459,9 +466,8 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	}
 
 	/** Set Service date.
-		@param ServiceDate 
-		Date service was provided
-	  */
+		@param ServiceDate Date service was provided
+	*/
 	public void setServiceDate (Timestamp ServiceDate)
 	{
 		set_Value (COLUMNNAME_ServiceDate, ServiceDate);
@@ -470,15 +476,14 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Service date.
 		@return Date service was provided
 	  */
-	public Timestamp getServiceDate () 
+	public Timestamp getServiceDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ServiceDate);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -487,15 +492,14 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -504,15 +508,14 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -521,7 +524,7 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

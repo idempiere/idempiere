@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StyleLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_StyleLine")
 public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_StyleLine (Properties ctx, int AD_StyleLine_ID, String trxName)
@@ -85,21 +85,20 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	}
 
 	/** Set Style.
-		@param AD_Style_ID 
-		CSS style for field and label
-	  */
+		@param AD_Style_ID CSS style for field and label
+	*/
 	public void setAD_Style_ID (int AD_Style_ID)
 	{
-		if (AD_Style_ID < 1) 
+		if (AD_Style_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Style_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Style_ID, Integer.valueOf(AD_Style_ID));
 	}
 
 	/** Get Style.
 		@return CSS style for field and label
 	  */
-	public int getAD_Style_ID () 
+	public int getAD_Style_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Style_ID);
 		if (ii == null)
@@ -108,21 +107,20 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	}
 
 	/** Set Style Line.
-		@param AD_StyleLine_ID 
-		CSS Style Line
-	  */
+		@param AD_StyleLine_ID CSS Style Line
+	*/
 	public void setAD_StyleLine_ID (int AD_StyleLine_ID)
 	{
-		if (AD_StyleLine_ID < 1) 
+		if (AD_StyleLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_StyleLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_StyleLine_ID, Integer.valueOf(AD_StyleLine_ID));
 	}
 
 	/** Get Style Line.
 		@return CSS Style Line
 	  */
-	public int getAD_StyleLine_ID () 
+	public int getAD_StyleLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StyleLine_ID);
 		if (ii == null)
@@ -131,9 +129,8 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	}
 
 	/** Set Style Line.
-		@param AD_StyleLine_UU 
-		CSS Style Line
-	  */
+		@param AD_StyleLine_UU CSS Style Line
+	*/
 	public void setAD_StyleLine_UU (String AD_StyleLine_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_StyleLine_UU, AD_StyleLine_UU);
@@ -142,15 +139,14 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/** Get Style Line.
 		@return CSS Style Line
 	  */
-	public String getAD_StyleLine_UU () 
+	public String getAD_StyleLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_StyleLine_UU);
 	}
 
 	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
+		@param DisplayLogic If the Field is displayed, the result determines if the field is actually displayed
+	*/
 	public void setDisplayLogic (String DisplayLogic)
 	{
 		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
@@ -159,7 +155,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/** Get Display Logic.
 		@return If the Field is displayed, the result determines if the field is actually displayed
 	  */
-	public String getDisplayLogic () 
+	public String getDisplayLogic()
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
@@ -167,9 +163,8 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -179,15 +174,14 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Inline Style.
-		@param InlineStyle 
-		CSS Inline Style
-	  */
+		@param InlineStyle CSS Inline Style
+	*/
 	public void setInlineStyle (String InlineStyle)
 	{
 		set_Value (COLUMNNAME_InlineStyle, InlineStyle);
@@ -196,15 +190,14 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/** Get Inline Style.
 		@return CSS Inline Style
 	  */
-	public String getInlineStyle () 
+	public String getInlineStyle()
 	{
 		return (String)get_Value(COLUMNNAME_InlineStyle);
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -213,7 +206,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -230,9 +223,8 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
     }
 
 	/** Set Theme.
-		@param Theme 
-		Theme name
-	  */
+		@param Theme Theme name
+	*/
 	public void setTheme (String Theme)
 	{
 		set_Value (COLUMNNAME_Theme, Theme);
@@ -241,7 +233,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/** Get Theme.
 		@return Theme name
 	  */
-	public String getTheme () 
+	public String getTheme()
 	{
 		return (String)get_Value(COLUMNNAME_Theme);
 	}

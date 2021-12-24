@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AllUsers_V
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_AllUsers_V")
 public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_AllUsers_V (Properties ctx, int AD_AllUsers_V_ID, String trxName)
@@ -77,18 +77,19 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set Client (All).
-		@param AD_AllClients_V_ID Client (All)	  */
+		@param AD_AllClients_V_ID Client (All)
+	*/
 	public void setAD_AllClients_V_ID (int AD_AllClients_V_ID)
 	{
-		if (AD_AllClients_V_ID < 1) 
+		if (AD_AllClients_V_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_ID, Integer.valueOf(AD_AllClients_V_ID));
 	}
 
 	/** Get Client (All).
 		@return Client (All)	  */
-	public int getAD_AllClients_V_ID () 
+	public int getAD_AllClients_V_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AllClients_V_ID);
 		if (ii == null)
@@ -97,18 +98,19 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set User (All).
-		@param AD_AllUsers_V_ID User (All)	  */
+		@param AD_AllUsers_V_ID User (All)
+	*/
 	public void setAD_AllUsers_V_ID (int AD_AllUsers_V_ID)
 	{
-		if (AD_AllUsers_V_ID < 1) 
+		if (AD_AllUsers_V_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AllUsers_V_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AllUsers_V_ID, Integer.valueOf(AD_AllUsers_V_ID));
 	}
 
 	/** Get User (All).
 		@return User (All)	  */
-	public int getAD_AllUsers_V_ID () 
+	public int getAD_AllUsers_V_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AllUsers_V_ID);
 		if (ii == null)
@@ -117,7 +119,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set AD_AllUsers_V_UU.
-		@param AD_AllUsers_V_UU AD_AllUsers_V_UU	  */
+		@param AD_AllUsers_V_UU AD_AllUsers_V_UU
+	*/
 	public void setAD_AllUsers_V_UU (String AD_AllUsers_V_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_AllUsers_V_UU, AD_AllUsers_V_UU);
@@ -125,13 +128,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get AD_AllUsers_V_UU.
 		@return AD_AllUsers_V_UU	  */
-	public String getAD_AllUsers_V_UU () 
+	public String getAD_AllUsers_V_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AllUsers_V_UU);
 	}
 
 	/** Set Date Account Locked.
-		@param DateAccountLocked Date Account Locked	  */
+		@param DateAccountLocked Date Account Locked
+	*/
 	public void setDateAccountLocked (Timestamp DateAccountLocked)
 	{
 		set_Value (COLUMNNAME_DateAccountLocked, DateAccountLocked);
@@ -139,13 +143,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get Date Account Locked.
 		@return Date Account Locked	  */
-	public Timestamp getDateAccountLocked () 
+	public Timestamp getDateAccountLocked()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAccountLocked);
 	}
 
 	/** Set Date Last Login.
-		@param DateLastLogin Date Last Login	  */
+		@param DateLastLogin Date Last Login
+	*/
 	public void setDateLastLogin (Timestamp DateLastLogin)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateLastLogin, DateLastLogin);
@@ -153,13 +158,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get Date Last Login.
 		@return Date Last Login	  */
-	public Timestamp getDateLastLogin () 
+	public Timestamp getDateLastLogin()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastLogin);
 	}
 
 	/** Set Date Password Changed.
-		@param DatePasswordChanged Date Password Changed	  */
+		@param DatePasswordChanged Date Password Changed
+	*/
 	public void setDatePasswordChanged (Timestamp DatePasswordChanged)
 	{
 		set_ValueNoCheck (COLUMNNAME_DatePasswordChanged, DatePasswordChanged);
@@ -167,15 +173,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get Date Password Changed.
 		@return Date Password Changed	  */
-	public Timestamp getDatePasswordChanged () 
+	public Timestamp getDatePasswordChanged()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DatePasswordChanged);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_ValueNoCheck (COLUMNNAME_Description, Description);
@@ -184,15 +189,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_ValueNoCheck (COLUMNNAME_EMail, EMail);
@@ -201,13 +205,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set Failed Login Count.
-		@param FailedLoginCount Failed Login Count	  */
+		@param FailedLoginCount Failed Login Count
+	*/
 	public void setFailedLoginCount (int FailedLoginCount)
 	{
 		set_ValueNoCheck (COLUMNNAME_FailedLoginCount, Integer.valueOf(FailedLoginCount));
@@ -215,7 +220,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get Failed Login Count.
 		@return Failed Login Count	  */
-	public int getFailedLoginCount () 
+	public int getFailedLoginCount()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_FailedLoginCount);
 		if (ii == null)
@@ -224,7 +229,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set Expired.
-		@param IsExpired Expired	  */
+		@param IsExpired Expired
+	*/
 	public void setIsExpired (boolean IsExpired)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsExpired, Boolean.valueOf(IsExpired));
@@ -232,7 +238,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get Expired.
 		@return Expired	  */
-	public boolean isExpired () 
+	public boolean isExpired()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExpired);
 		if (oo != null) 
@@ -245,7 +251,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set Locked.
-		@param IsLocked Locked	  */
+		@param IsLocked Locked
+	*/
 	public void setIsLocked (boolean IsLocked)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsLocked, Boolean.valueOf(IsLocked));
@@ -253,7 +260,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get Locked.
 		@return Locked	  */
-	public boolean isLocked () 
+	public boolean isLocked()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLocked);
 		if (oo != null) 
@@ -266,7 +273,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set No Expire.
-		@param IsNoExpire No Expire	  */
+		@param IsNoExpire No Expire
+	*/
 	public void setIsNoExpire (boolean IsNoExpire)
 	{
 		set_Value (COLUMNNAME_IsNoExpire, Boolean.valueOf(IsNoExpire));
@@ -274,7 +282,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get No Expire.
 		@return No Expire	  */
-	public boolean isNoExpire () 
+	public boolean isNoExpire()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoExpire);
 		if (oo != null) 
@@ -287,7 +295,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set No Password Reset.
-		@param IsNoPasswordReset No Password Reset	  */
+		@param IsNoPasswordReset No Password Reset
+	*/
 	public void setIsNoPasswordReset (boolean IsNoPasswordReset)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsNoPasswordReset, Boolean.valueOf(IsNoPasswordReset));
@@ -295,7 +304,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get No Password Reset.
 		@return No Password Reset	  */
-	public boolean isNoPasswordReset () 
+	public boolean isNoPasswordReset()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoPasswordReset);
 		if (oo != null) 
@@ -308,7 +317,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set Support User.
-		@param IsSupportUser Support User	  */
+		@param IsSupportUser Support User
+	*/
 	public void setIsSupportUser (boolean IsSupportUser)
 	{
 		set_Value (COLUMNNAME_IsSupportUser, Boolean.valueOf(IsSupportUser));
@@ -316,7 +326,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get Support User.
 		@return Support User	  */
-	public boolean isSupportUser () 
+	public boolean isSupportUser()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSupportUser);
 		if (oo != null) 
@@ -329,9 +339,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	}
 
 	/** Set LDAP User Name.
-		@param LDAPUser 
-		User Name used for authorization via LDAP (directory) services
-	  */
+		@param LDAPUser User Name used for authorization via LDAP (directory) services
+	*/
 	public void setLDAPUser (String LDAPUser)
 	{
 		set_ValueNoCheck (COLUMNNAME_LDAPUser, LDAPUser);
@@ -340,15 +349,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/** Get LDAP User Name.
 		@return User Name used for authorization via LDAP (directory) services
 	  */
-	public String getLDAPUser () 
+	public String getLDAPUser()
 	{
 		return (String)get_Value(COLUMNNAME_LDAPUser);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_ValueNoCheck (COLUMNNAME_Name, Name);
@@ -357,15 +365,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
+		@param Password Password of any length (case sensitive)
+	*/
 	public void setPassword (String Password)
 	{
 		set_ValueNoCheck (COLUMNNAME_Password, Password);
@@ -374,15 +381,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/** Get Password.
 		@return Password of any length (case sensitive)
 	  */
-	public String getPassword () 
+	public String getPassword()
 	{
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
 	/** Set Salt.
-		@param Salt 
-		Random data added to improve password hash effectiveness
-	  */
+		@param Salt Random data added to improve password hash effectiveness
+	*/
 	public void setSalt (String Salt)
 	{
 		set_ValueNoCheck (COLUMNNAME_Salt, Salt);
@@ -391,13 +397,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/** Get Salt.
 		@return Random data added to improve password hash effectiveness
 	  */
-	public String getSalt () 
+	public String getSalt()
 	{
 		return (String)get_Value(COLUMNNAME_Salt);
 	}
 
 	/** Set User PIN.
-		@param UserPIN User PIN	  */
+		@param UserPIN User PIN
+	*/
 	public void setUserPIN (String UserPIN)
 	{
 		set_ValueNoCheck (COLUMNNAME_UserPIN, UserPIN);
@@ -405,15 +412,14 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 
 	/** Get User PIN.
 		@return User PIN	  */
-	public String getUserPIN () 
+	public String getUserPIN()
 	{
 		return (String)get_Value(COLUMNNAME_UserPIN);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_ValueNoCheck (COLUMNNAME_Value, Value);
@@ -422,7 +428,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

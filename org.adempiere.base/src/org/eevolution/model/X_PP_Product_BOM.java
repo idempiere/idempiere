@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_BOM
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_Product_BOM")
 public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PP_Product_BOM (Properties ctx, int PP_Product_BOM_ID, String trxName)
@@ -44,8 +44,6 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 			setM_Product_ID (0);
 			setName (null);
 			setPP_Product_BOM_ID (0);
-			setValidFrom (new Timestamp( System.currentTimeMillis() ));
-// @#Date@
 			setValue (null);
         } */
     }
@@ -99,9 +97,8 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Previous, Spare = S */
 	public static final String BOMTYPE_PreviousSpare = "S";
 	/** Set BOM Type.
-		@param BOMType 
-		Type of BOM
-	  */
+		@param BOMType Type of BOM
+	*/
 	public void setBOMType (String BOMType)
 	{
 
@@ -111,7 +108,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get BOM Type.
 		@return Type of BOM
 	  */
-	public String getBOMType () 
+	public String getBOMType()
 	{
 		return (String)get_Value(COLUMNNAME_BOMType);
 	}
@@ -129,9 +126,8 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Quality = Q */
 	public static final String BOMUSE_Quality = "Q";
 	/** Set BOM Use.
-		@param BOMUse 
-		The use of the Bill of Material
-	  */
+		@param BOMUse The use of the Bill of Material
+	*/
 	public void setBOMUse (String BOMUse)
 	{
 
@@ -141,15 +137,14 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get BOM Use.
 		@return The use of the Bill of Material
 	  */
-	public String getBOMUse () 
+	public String getBOMUse()
 	{
 		return (String)get_Value(COLUMNNAME_BOMUse);
 	}
 
 	/** Set Copy From.
-		@param CopyFrom 
-		Copy From Record
-	  */
+		@param CopyFrom Copy From Record
+	*/
 	public void setCopyFrom (String CopyFrom)
 	{
 		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
@@ -158,7 +153,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get Copy From.
 		@return Copy From Record
 	  */
-	public String getCopyFrom () 
+	public String getCopyFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
@@ -170,21 +165,20 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -193,9 +187,8 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -204,32 +197,14 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
-	public void setDocumentNo (String DocumentNo)
-	{
-		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
-	}
-
-	/** Get Document No.
-		@return Document sequence number of the document
-	  */
-	public String getDocumentNo () 
-	{
-		return (String)get_Value(COLUMNNAME_DocumentNo);
-	}
-
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -238,7 +213,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
@@ -250,21 +225,20 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -279,21 +253,20 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set Change Notice.
-		@param M_ChangeNotice_ID 
-		Bill of Materials (Engineering) Change Notice (Version)
-	  */
+		@param M_ChangeNotice_ID Bill of Materials (Engineering) Change Notice (Version)
+	*/
 	public void setM_ChangeNotice_ID (int M_ChangeNotice_ID)
 	{
-		if (M_ChangeNotice_ID < 1) 
+		if (M_ChangeNotice_ID < 1)
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, Integer.valueOf(M_ChangeNotice_ID));
 	}
 
 	/** Get Change Notice.
 		@return Bill of Materials (Engineering) Change Notice (Version)
 	  */
-	public int getM_ChangeNotice_ID () 
+	public int getM_ChangeNotice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ChangeNotice_ID);
 		if (ii == null)
@@ -308,21 +281,20 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -331,9 +303,8 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -342,27 +313,26 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set BOM & Formula.
-		@param PP_Product_BOM_ID 
-		BOM & Formula
-	  */
+	/** Set BOM &amp; Formula.
+		@param PP_Product_BOM_ID BOM &amp; Formula
+	*/
 	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
 	{
-		if (PP_Product_BOM_ID < 1) 
+		if (PP_Product_BOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
 	}
 
-	/** Get BOM & Formula.
-		@return BOM & Formula
+	/** Get BOM &amp; Formula.
+		@return BOM &amp; Formula
 	  */
-	public int getPP_Product_BOM_ID () 
+	public int getPP_Product_BOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
 		if (ii == null)
@@ -371,7 +341,8 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set PP_Product_BOM_UU.
-		@param PP_Product_BOM_UU PP_Product_BOM_UU	  */
+		@param PP_Product_BOM_UU PP_Product_BOM_UU
+	*/
 	public void setPP_Product_BOM_UU (String PP_Product_BOM_UU)
 	{
 		set_Value (COLUMNNAME_PP_Product_BOM_UU, PP_Product_BOM_UU);
@@ -379,13 +350,14 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 
 	/** Get PP_Product_BOM_UU.
 		@return PP_Product_BOM_UU	  */
-	public String getPP_Product_BOM_UU () 
+	public String getPP_Product_BOM_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Product_BOM_UU);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -393,7 +365,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -406,7 +378,8 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	}
 
 	/** Set Revision.
-		@param Revision Revision	  */
+		@param Revision Revision
+	*/
 	public void setRevision (String Revision)
 	{
 		set_Value (COLUMNNAME_Revision, Revision);
@@ -414,15 +387,14 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 
 	/** Get Revision.
 		@return Revision	  */
-	public String getRevision () 
+	public String getRevision()
 	{
 		return (String)get_Value(COLUMNNAME_Revision);
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -431,15 +403,14 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -448,15 +419,14 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -465,7 +435,7 @@ public class X_PP_Product_BOM extends PO implements I_PP_Product_BOM, I_Persiste
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

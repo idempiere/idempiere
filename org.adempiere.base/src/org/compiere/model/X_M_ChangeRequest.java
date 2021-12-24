@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ChangeRequest
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_ChangeRequest")
 public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_ChangeRequest (Properties ctx, int M_ChangeRequest_ID, String trxName)
@@ -77,9 +77,8 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -88,15 +87,14 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Detail Information.
-		@param DetailInfo 
-		Additional Detail Information
-	  */
+		@param DetailInfo Additional Detail Information
+	*/
 	public void setDetailInfo (String DetailInfo)
 	{
 		set_Value (COLUMNNAME_DetailInfo, DetailInfo);
@@ -105,15 +103,14 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/** Get Detail Information.
 		@return Additional Detail Information
 	  */
-	public String getDetailInfo () 
+	public String getDetailInfo()
 	{
 		return (String)get_Value(COLUMNNAME_DetailInfo);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -122,7 +119,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -136,9 +133,8 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
     }
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -147,15 +143,14 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -164,7 +159,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -183,21 +178,20 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	}
 
 	/** Set Change Notice.
-		@param M_ChangeNotice_ID 
-		Bill of Materials (Engineering) Change Notice (Version)
-	  */
+		@param M_ChangeNotice_ID Bill of Materials (Engineering) Change Notice (Version)
+	*/
 	public void setM_ChangeNotice_ID (int M_ChangeNotice_ID)
 	{
-		if (M_ChangeNotice_ID < 1) 
+		if (M_ChangeNotice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ChangeNotice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ChangeNotice_ID, Integer.valueOf(M_ChangeNotice_ID));
 	}
 
 	/** Get Change Notice.
 		@return Bill of Materials (Engineering) Change Notice (Version)
 	  */
-	public int getM_ChangeNotice_ID () 
+	public int getM_ChangeNotice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ChangeNotice_ID);
 		if (ii == null)
@@ -206,21 +200,20 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	}
 
 	/** Set Change Request.
-		@param M_ChangeRequest_ID 
-		BOM (Engineering) Change Request
-	  */
+		@param M_ChangeRequest_ID BOM (Engineering) Change Request
+	*/
 	public void setM_ChangeRequest_ID (int M_ChangeRequest_ID)
 	{
-		if (M_ChangeRequest_ID < 1) 
+		if (M_ChangeRequest_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ChangeRequest_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ChangeRequest_ID, Integer.valueOf(M_ChangeRequest_ID));
 	}
 
 	/** Get Change Request.
 		@return BOM (Engineering) Change Request
 	  */
-	public int getM_ChangeRequest_ID () 
+	public int getM_ChangeRequest_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ChangeRequest_ID);
 		if (ii == null)
@@ -229,7 +222,8 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	}
 
 	/** Set M_ChangeRequest_UU.
-		@param M_ChangeRequest_UU M_ChangeRequest_UU	  */
+		@param M_ChangeRequest_UU M_ChangeRequest_UU
+	*/
 	public void setM_ChangeRequest_UU (String M_ChangeRequest_UU)
 	{
 		set_Value (COLUMNNAME_M_ChangeRequest_UU, M_ChangeRequest_UU);
@@ -237,7 +231,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 
 	/** Get M_ChangeRequest_UU.
 		@return M_ChangeRequest_UU	  */
-	public String getM_ChangeRequest_UU () 
+	public String getM_ChangeRequest_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ChangeRequest_UU);
 	}
@@ -249,21 +243,20 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	}
 
 	/** Set Fixed in.
-		@param M_FixChangeNotice_ID 
-		Fixed in Change Notice
-	  */
+		@param M_FixChangeNotice_ID Fixed in Change Notice
+	*/
 	public void setM_FixChangeNotice_ID (int M_FixChangeNotice_ID)
 	{
-		if (M_FixChangeNotice_ID < 1) 
+		if (M_FixChangeNotice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_FixChangeNotice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_FixChangeNotice_ID, Integer.valueOf(M_FixChangeNotice_ID));
 	}
 
 	/** Get Fixed in.
 		@return Fixed in Change Notice
 	  */
-	public int getM_FixChangeNotice_ID () 
+	public int getM_FixChangeNotice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_FixChangeNotice_ID);
 		if (ii == null)
@@ -272,9 +265,8 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -283,7 +275,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -294,22 +286,21 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 			.getPO(getPP_Product_BOM_ID(), get_TrxName());
 	}
 
-	/** Set BOM & Formula.
-		@param PP_Product_BOM_ID 
-		BOM & Formula
-	  */
+	/** Set BOM &amp; Formula.
+		@param PP_Product_BOM_ID BOM &amp; Formula
+	*/
 	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
 	{
-		if (PP_Product_BOM_ID < 1) 
+		if (PP_Product_BOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
 	}
 
-	/** Get BOM & Formula.
-		@return BOM & Formula
+	/** Get BOM &amp; Formula.
+		@return BOM &amp; Formula
 	  */
-	public int getPP_Product_BOM_ID () 
+	public int getPP_Product_BOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
 		if (ii == null)
@@ -318,9 +309,8 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -329,7 +319,7 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 

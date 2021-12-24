@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for U_Web_Properties
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="U_Web_Properties")
 public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_U_Web_Properties (Properties ctx, int U_Web_Properties_ID, String trxName)
@@ -73,7 +73,8 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
     }
 
 	/** Set Key.
-		@param U_Key Key	  */
+		@param U_Key Key
+	*/
 	public void setU_Key (String U_Key)
 	{
 		set_Value (COLUMNNAME_U_Key, U_Key);
@@ -81,13 +82,14 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 
 	/** Get Key.
 		@return Key	  */
-	public String getU_Key () 
+	public String getU_Key()
 	{
 		return (String)get_Value(COLUMNNAME_U_Key);
 	}
 
 	/** Set Value.
-		@param U_Value Value	  */
+		@param U_Value Value
+	*/
 	public void setU_Value (String U_Value)
 	{
 		set_Value (COLUMNNAME_U_Value, U_Value);
@@ -95,24 +97,25 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 
 	/** Get Value.
 		@return Value	  */
-	public String getU_Value () 
+	public String getU_Value()
 	{
 		return (String)get_Value(COLUMNNAME_U_Value);
 	}
 
 	/** Set Web Properties.
-		@param U_Web_Properties_ID Web Properties	  */
+		@param U_Web_Properties_ID Web Properties
+	*/
 	public void setU_Web_Properties_ID (int U_Web_Properties_ID)
 	{
-		if (U_Web_Properties_ID < 1) 
+		if (U_Web_Properties_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_U_Web_Properties_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_U_Web_Properties_ID, Integer.valueOf(U_Web_Properties_ID));
 	}
 
 	/** Get Web Properties.
 		@return Web Properties	  */
-	public int getU_Web_Properties_ID () 
+	public int getU_Web_Properties_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_U_Web_Properties_ID);
 		if (ii == null)
@@ -121,7 +124,8 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 	}
 
 	/** Set U_Web_Properties_UU.
-		@param U_Web_Properties_UU U_Web_Properties_UU	  */
+		@param U_Web_Properties_UU U_Web_Properties_UU
+	*/
 	public void setU_Web_Properties_UU (String U_Web_Properties_UU)
 	{
 		set_Value (COLUMNNAME_U_Web_Properties_UU, U_Web_Properties_UU);
@@ -129,7 +133,7 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 
 	/** Get U_Web_Properties_UU.
 		@return U_Web_Properties_UU	  */
-	public String getU_Web_Properties_UU () 
+	public String getU_Web_Properties_UU()
 	{
 		return (String)get_Value(COLUMNNAME_U_Web_Properties_UU);
 	}

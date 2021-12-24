@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for T_MRP_CRP
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="T_MRP_CRP")
 public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_T_MRP_CRP (Properties ctx, int T_MRP_CRP_ID, String trxName)
@@ -78,21 +78,20 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_Value (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -101,9 +100,8 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -112,15 +110,14 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -129,7 +126,7 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -137,19 +134,20 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Temporal MRP & CRP.
-		@param T_MRP_CRP_ID Temporal MRP & CRP	  */
+	/** Set Temporal MRP &amp; CRP.
+		@param T_MRP_CRP_ID Temporal MRP &amp; CRP
+	*/
 	public void setT_MRP_CRP_ID (int T_MRP_CRP_ID)
 	{
-		if (T_MRP_CRP_ID < 1) 
+		if (T_MRP_CRP_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_T_MRP_CRP_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_T_MRP_CRP_ID, Integer.valueOf(T_MRP_CRP_ID));
 	}
 
-	/** Get Temporal MRP & CRP.
-		@return Temporal MRP & CRP	  */
-	public int getT_MRP_CRP_ID () 
+	/** Get Temporal MRP &amp; CRP.
+		@return Temporal MRP &amp; CRP	  */
+	public int getT_MRP_CRP_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_T_MRP_CRP_ID);
 		if (ii == null)
@@ -158,7 +156,8 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	}
 
 	/** Set T_MRP_CRP_UU.
-		@param T_MRP_CRP_UU T_MRP_CRP_UU	  */
+		@param T_MRP_CRP_UU T_MRP_CRP_UU
+	*/
 	public void setT_MRP_CRP_UU (String T_MRP_CRP_UU)
 	{
 		set_Value (COLUMNNAME_T_MRP_CRP_UU, T_MRP_CRP_UU);
@@ -166,7 +165,7 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 
 	/** Get T_MRP_CRP_UU.
 		@return T_MRP_CRP_UU	  */
-	public String getT_MRP_CRP_UU () 
+	public String getT_MRP_CRP_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_MRP_CRP_UU);
 	}

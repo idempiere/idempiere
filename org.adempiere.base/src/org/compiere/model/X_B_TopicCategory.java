@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_TopicCategory
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="B_TopicCategory")
 public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_B_TopicCategory (Properties ctx, int B_TopicCategory_ID, String trxName)
@@ -74,21 +74,20 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
     }
 
 	/** Set Topic Category.
-		@param B_TopicCategory_ID 
-		Auction Topic Category
-	  */
+		@param B_TopicCategory_ID Auction Topic Category
+	*/
 	public void setB_TopicCategory_ID (int B_TopicCategory_ID)
 	{
-		if (B_TopicCategory_ID < 1) 
+		if (B_TopicCategory_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_TopicCategory_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_TopicCategory_ID, Integer.valueOf(B_TopicCategory_ID));
 	}
 
 	/** Get Topic Category.
 		@return Auction Topic Category
 	  */
-	public int getB_TopicCategory_ID () 
+	public int getB_TopicCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_TopicCategory_ID);
 		if (ii == null)
@@ -97,7 +96,8 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	}
 
 	/** Set B_TopicCategory_UU.
-		@param B_TopicCategory_UU B_TopicCategory_UU	  */
+		@param B_TopicCategory_UU B_TopicCategory_UU
+	*/
 	public void setB_TopicCategory_UU (String B_TopicCategory_UU)
 	{
 		set_Value (COLUMNNAME_B_TopicCategory_UU, B_TopicCategory_UU);
@@ -105,7 +105,7 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 
 	/** Get B_TopicCategory_UU.
 		@return B_TopicCategory_UU	  */
-	public String getB_TopicCategory_UU () 
+	public String getB_TopicCategory_UU()
 	{
 		return (String)get_Value(COLUMNNAME_B_TopicCategory_UU);
 	}
@@ -117,21 +117,20 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	}
 
 	/** Set Topic Type.
-		@param B_TopicType_ID 
-		Auction Topic Type
-	  */
+		@param B_TopicType_ID Auction Topic Type
+	*/
 	public void setB_TopicType_ID (int B_TopicType_ID)
 	{
-		if (B_TopicType_ID < 1) 
+		if (B_TopicType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_TopicType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_TopicType_ID, Integer.valueOf(B_TopicType_ID));
 	}
 
 	/** Get Topic Type.
 		@return Auction Topic Type
 	  */
-	public int getB_TopicType_ID () 
+	public int getB_TopicType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_TopicType_ID);
 		if (ii == null)
@@ -140,9 +139,8 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -151,15 +149,14 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -168,7 +165,7 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
