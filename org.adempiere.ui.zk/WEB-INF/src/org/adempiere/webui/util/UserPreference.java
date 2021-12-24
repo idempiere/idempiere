@@ -23,6 +23,7 @@ import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 
 /**
  *
@@ -110,7 +111,7 @@ public final class UserPreference implements Serializable {
 				String attribute = PROPERTIES[i];
 				String value = props.getProperty(attribute);
 
-				if (value != null) {
+				if (!Util.isEmpty(value)) {
 					MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
 					if (preference == null) {
 						preference = new MUserPreference(Env.getCtx(), 0, null);
@@ -153,7 +154,6 @@ public final class UserPreference implements Serializable {
 				if (preference != null && preference.getValue() != null) {
 					value = preference.getValue();
 				}
-
 				props.setProperty(attribute, value);
 			}
 		}
