@@ -30,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +41,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
+import org.compiere.model.MTest;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Element;
@@ -333,4 +336,23 @@ public class QueryTest extends AbstractTestCase {
 			assertEquals(expected, ids[i], "Element "+i+" not equals");
 		}
 	}
+
+	@Test
+	public void testVirtualColumnLoad() {
+		// create bogus record
+		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		testPo.save();
+
+		BigDecimal expected = new BigDecimal(123.45d).setScale(2, RoundingMode.HALF_DOWN);
+
+		// test with virtual column lazy loading
+		Query query = new Query(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_Test_ID + "=?", getTrxName());
+		testPo = query.setParameters(testPo.get_ID()).first();
+		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);
+
+		// test without virtual column lazy loading
+		testPo = query.setNoVirtualColumn(false).setParameters(testPo.get_ID()).first();
+		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);		
+	}
+
 }

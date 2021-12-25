@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Properties;
 
 import org.adempiere.exceptions.DBException;
@@ -449,4 +451,13 @@ public class POTest extends AbstractTestCase
 		msg2 = new MMessage(Env.getCtx(), msg1.getAD_Message_ID(), getTrxName());
 		assertEquals(msg1.getMsgText(), msg2.getMsgText());
 	}
+
+	@Test
+	public void testVirtualColumnLoad() {
+		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		testPo.save();
+		BigDecimal expected = new BigDecimal(123.45d).setScale(2, RoundingMode.HALF_DOWN);
+		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);
+	}
+
 }

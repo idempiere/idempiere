@@ -79,7 +79,7 @@ public class Query
 	private boolean onlyClient_ID = false;
 	private int onlySelection_ID = -1;
 	private boolean forUpdate = false;
-	private boolean noVirtualColumn = false;
+	private boolean noVirtualColumn = true;
 	private int queryTimeout = 0;
 	private List<String> joinClauseList = new ArrayList<String>();
 	
@@ -247,7 +247,13 @@ public class Query
 		this.forUpdate = forUpdate;
 		return this;
 	}
-	
+
+	/**
+	 * Virtual columns are lazy loaded by default. In case lazy loading is not desired use this method with
+	 * the <code>false</code> value.  
+	 * @param noVirtualColumn Whether to load all declared virtual columns at once or use lazy loading.
+	 * @return
+	 */
 	public Query setNoVirtualColumn(boolean noVirtualColumn)
 	{
 		this.noVirtualColumn = noVirtualColumn;
