@@ -267,7 +267,7 @@ public class ModelClassGenerator
 			+ "FROM AD_Column c "
 			+ "WHERE c.AD_Table_ID=?"
 			+ " AND c.ColumnName NOT IN ('AD_Client_ID', 'AD_Org_ID', 'IsActive', 'Created', 'CreatedBy', 'Updated', 'UpdatedBy')"
-			+ " AND c.IsActive='Y'"
+			+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') "
 			+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 			+ " ORDER BY c.ColumnName";
 		boolean isKeyNamePairCreated = false; // true if the method "getKeyNamePair" is already generated
