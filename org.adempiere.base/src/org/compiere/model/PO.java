@@ -298,6 +298,7 @@ public abstract class PO
 	private String[] m_optimisticLockingColumns = new String[] {"Updated"};
 	private Boolean m_useOptimisticLocking = null;
 
+	/** Indices of virtual columns that were already resolved */
 	private Set<Integer> loadedVirtualColumns = new HashSet<>();
 
 	/** Access Level S__ 100	4	System info			*/
@@ -1392,6 +1393,7 @@ public abstract class PO
 	 */
 	protected boolean load (String uuID,String trxName)
 	{
+		loadedVirtualColumns.clear();
 		m_trxName = trxName;
 		boolean success = true;
 		StringBuilder sql = new StringBuilder("SELECT ");
