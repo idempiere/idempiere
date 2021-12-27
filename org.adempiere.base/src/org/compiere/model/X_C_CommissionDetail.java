@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionDetail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_CommissionDetail")
 public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_CommissionDetail (Properties ctx, int C_CommissionDetail_ID, String trxName)
@@ -78,9 +79,8 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
     }
 
 	/** Set Actual Amount.
-		@param ActualAmt 
-		The actual amount
-	  */
+		@param ActualAmt The actual amount
+	*/
 	public void setActualAmt (BigDecimal ActualAmt)
 	{
 		set_Value (COLUMNNAME_ActualAmt, ActualAmt);
@@ -89,7 +89,7 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	/** Get Actual Amount.
 		@return The actual amount
 	  */
-	public BigDecimal getActualAmt () 
+	public BigDecimal getActualAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ActualAmt);
 		if (bd == null)
@@ -98,9 +98,8 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	/** Set Actual Quantity.
-		@param ActualQty 
-		The actual quantity
-	  */
+		@param ActualQty The actual quantity
+	*/
 	public void setActualQty (BigDecimal ActualQty)
 	{
 		set_Value (COLUMNNAME_ActualQty, ActualQty);
@@ -109,7 +108,7 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	/** Get Actual Quantity.
 		@return The actual quantity
 	  */
-	public BigDecimal getActualQty () 
+	public BigDecimal getActualQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ActualQty);
 		if (bd == null)
@@ -118,26 +117,26 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	public org.compiere.model.I_C_CommissionAmt getC_CommissionAmt() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_CommissionAmt)MTable.get(getCtx(), org.compiere.model.I_C_CommissionAmt.Table_Name)
-			.getPO(getC_CommissionAmt_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_CommissionAmt)MTable.get(getCtx(), org.compiere.model.I_C_CommissionAmt.Table_ID)
+			.getPO(getC_CommissionAmt_ID(), get_TrxName());
+	}
 
 	/** Set Commission Amount.
-		@param C_CommissionAmt_ID 
-		Generated Commission Amount 
-	  */
+		@param C_CommissionAmt_ID Generated Commission Amount 
+	*/
 	public void setC_CommissionAmt_ID (int C_CommissionAmt_ID)
 	{
-		if (C_CommissionAmt_ID < 1) 
+		if (C_CommissionAmt_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CommissionAmt_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CommissionAmt_ID, Integer.valueOf(C_CommissionAmt_ID));
 	}
 
 	/** Get Commission Amount.
 		@return Generated Commission Amount 
 	  */
-	public int getC_CommissionAmt_ID () 
+	public int getC_CommissionAmt_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CommissionAmt_ID);
 		if (ii == null)
@@ -146,21 +145,20 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	/** Set Commission Detail.
-		@param C_CommissionDetail_ID 
-		Supporting information for Commission Amounts
-	  */
+		@param C_CommissionDetail_ID Supporting information for Commission Amounts
+	*/
 	public void setC_CommissionDetail_ID (int C_CommissionDetail_ID)
 	{
-		if (C_CommissionDetail_ID < 1) 
+		if (C_CommissionDetail_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CommissionDetail_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CommissionDetail_ID, Integer.valueOf(C_CommissionDetail_ID));
 	}
 
 	/** Get Commission Detail.
 		@return Supporting information for Commission Amounts
 	  */
-	public int getC_CommissionDetail_ID () 
+	public int getC_CommissionDetail_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CommissionDetail_ID);
 		if (ii == null)
@@ -169,7 +167,8 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	/** Set C_CommissionDetail_UU.
-		@param C_CommissionDetail_UU C_CommissionDetail_UU	  */
+		@param C_CommissionDetail_UU C_CommissionDetail_UU
+	*/
 	public void setC_CommissionDetail_UU (String C_CommissionDetail_UU)
 	{
 		set_Value (COLUMNNAME_C_CommissionDetail_UU, C_CommissionDetail_UU);
@@ -177,32 +176,32 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 
 	/** Get C_CommissionDetail_UU.
 		@return C_CommissionDetail_UU	  */
-	public String getC_CommissionDetail_UU () 
+	public String getC_CommissionDetail_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CommissionDetail_UU);
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -211,26 +210,26 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -239,9 +238,8 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	/** Set Converted Amount.
-		@param ConvertedAmt 
-		Converted Amount
-	  */
+		@param ConvertedAmt Converted Amount
+	*/
 	public void setConvertedAmt (BigDecimal ConvertedAmt)
 	{
 		set_Value (COLUMNNAME_ConvertedAmt, ConvertedAmt);
@@ -250,7 +248,7 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	/** Get Converted Amount.
 		@return Converted Amount
 	  */
-	public BigDecimal getConvertedAmt () 
+	public BigDecimal getConvertedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ConvertedAmt);
 		if (bd == null)
@@ -259,26 +257,26 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
-		@param C_OrderLine_ID 
-		Sales Order Line
-	  */
+		@param C_OrderLine_ID Sales Order Line
+	*/
 	public void setC_OrderLine_ID (int C_OrderLine_ID)
 	{
-		if (C_OrderLine_ID < 1) 
+		if (C_OrderLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_OrderLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_OrderLine_ID, Integer.valueOf(C_OrderLine_ID));
 	}
 
 	/** Get Sales Order Line.
 		@return Sales Order Line
 	  */
-	public int getC_OrderLine_ID () 
+	public int getC_OrderLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderLine_ID);
 		if (ii == null)
@@ -287,9 +285,8 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	}
 
 	/** Set Info.
-		@param Info 
-		Information
-	  */
+		@param Info Information
+	*/
 	public void setInfo (String Info)
 	{
 		set_Value (COLUMNNAME_Info, Info);
@@ -298,15 +295,14 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	/** Get Info.
 		@return Information
 	  */
-	public String getInfo () 
+	public String getInfo()
 	{
 		return (String)get_Value(COLUMNNAME_Info);
 	}
 
 	/** Set Reference.
-		@param Reference 
-		Reference for this record
-	  */
+		@param Reference Reference for this record
+	*/
 	public void setReference (String Reference)
 	{
 		set_Value (COLUMNNAME_Reference, Reference);
@@ -315,7 +311,7 @@ public class X_C_CommissionDetail extends PO implements I_C_CommissionDetail, I_
 	/** Get Reference.
 		@return Reference for this record
 	  */
-	public String getReference () 
+	public String getReference()
 	{
 		return (String)get_Value(COLUMNNAME_Reference);
 	}

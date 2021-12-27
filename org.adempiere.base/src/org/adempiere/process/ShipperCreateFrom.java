@@ -9,6 +9,7 @@ import org.compiere.model.X_M_ShipperPackagingCfg;
 import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.SvrProcess;
 
+@org.adempiere.base.annotation.Process
 public class ShipperCreateFrom extends SvrProcess
 {
 	private MShipper m_shipper;

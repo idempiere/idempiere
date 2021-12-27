@@ -101,7 +101,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}	//	get
 
 	/**
-	 * 	Get all Storages for Product with ASI and QtyOnHand <> 0
+	 * 	Get all Storages for Product with ASI and QtyOnHand &lt;&gt; 0
 	 *	@param ctx context
 	 *	@param M_Product_ID product
 	 *	@param M_Locator_ID locator
@@ -146,10 +146,10 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}	//	getAllWithASI
 
 	/**
-	 * 	Get all Storages for Product where QtyOnHand <> 0
+	 * 	Get all Storages for Product where QtyOnHand &lt;&gt; 0
 	 *	@param ctx context
 	 *	@param M_Product_ID product
-	 *	@param M_Locator_ID locator
+	 *	@param M_Locator_ID locator, 0 to match all locator
 	 *	@param trxName transaction
 	 *	@return existing or null
 	 */
@@ -160,28 +160,73 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 	
 	/**
-	 * 	Get all Storages for Product where QtyOnHand <> 0
+	 * 	Get all Storages for Product where QtyOnHand &lt;&gt; 0
 	 *	@param ctx context
 	 *	@param M_Product_ID product
-	 *	@param M_Locator_ID locator
+	 *	@param M_Locator_ID locator, 0 to match all locator
 	 *	@param trxName transaction
+	 *  @param forUpdate
+	 *  @param timeout
 	 *	@return existing or null
 	 */
 	public static MStorageOnHand[] getAll (Properties ctx, 
 		int M_Product_ID, int M_Locator_ID, String trxName, boolean forUpdate, int timeout)
 	{
-		String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND QtyOnHand <> 0";
-		Query query = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName)
-								.setParameters(M_Product_ID, M_Locator_ID);
+		return getAll(ctx, M_Product_ID, M_Locator_ID, false, true, trxName, forUpdate, timeout);
+	}
+	
+	/**
+	 * Get all Storages for Product where QtyOnHand &lt;&gt; 0
+	 *	@param ctx context
+	 *	@param M_Product_ID product
+	 *	@param M_Locator_ID locator, 0 to match all locator
+	 * @param locatorPriority If true, sort descending by locator Priority No 
+	 * @param fifo Sort ascending(fifo) or descending(lifo) by date material policy, m_attributesetinstance_id
+	 *	@param trxName transaction
+	 * @param forUpdate If true, acquire db lock for update
+	 * @param timeout timeout for the acquisition of db update lock
+	 *	@return existing or null
+	 */
+	public static MStorageOnHand[] getAll (Properties ctx, 
+		int M_Product_ID, int M_Locator_ID, boolean locatorPriority, boolean fifo, String trxName, boolean forUpdate, int timeout)
+	{
+		String sqlWhere = "M_Product_ID=? AND QtyOnHand <> 0";
+		if (M_Locator_ID > 0)
+			sqlWhere = sqlWhere + " AND M_Locator_ID=? ";
+		Query query = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName);
+		if (M_Locator_ID > 0)
+			query.setParameters(M_Product_ID, M_Locator_ID);
+		else
+			query.setParameters(M_Product_ID);		
 		MProduct product = MProduct.get(ctx, M_Product_ID);
+		StringBuilder orderBy = new StringBuilder();
+		if (locatorPriority)
+		{
+			query.addJoinClause("JOIN M_Locator locator ON (M_StorageOnHand.M_Locator_ID=locator.M_Locator_ID) ");
+			orderBy.append("locator.PriorityNo DESC, ");
+		}
 		if (product.isUseGuaranteeDateForMPolicy()) 
 		{
-			query.addJoinClause(" LEFT OUTER JOIN M_AttributeSetInstance asi ON (M_StorageOnHand.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID) ")
-				 .setOrderBy("asi."+I_M_AttributeSetInstance.COLUMNNAME_GuaranteeDate);
+			query.addJoinClause(" LEFT OUTER JOIN M_AttributeSetInstance asi ON (M_StorageOnHand.M_AttributeSetInstance_ID=asi.M_AttributeSetInstance_ID) ");
+			orderBy.append("asi.").append(I_M_AttributeSetInstance.COLUMNNAME_GuaranteeDate);
+			if (!fifo)
+				orderBy.append(" DESC");
+			orderBy.append(", ");
+			orderBy.append(MStorageOnHand.Table_Name).append(".").append(MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID);
+			if (!fifo)
+				orderBy.append(" DESC");
+			query.setOrderBy(orderBy.toString());
 		}
 		else
 		{
-			query.setOrderBy(MStorageOnHand.COLUMNNAME_DateMaterialPolicy+","+ MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID);
+			orderBy.append(MStorageOnHand.Table_Name).append(".").append(MStorageOnHand.COLUMNNAME_DateMaterialPolicy);
+			if (!fifo)
+				orderBy.append(" DESC");
+			orderBy.append(", ");
+			orderBy.append(MStorageOnHand.Table_Name).append(".").append(MStorageOnHand.COLUMNNAME_M_AttributeSetInstance_ID);
+			if (!fifo)
+				orderBy.append(" DESC");
+			query.setOrderBy(orderBy.toString());
 		}
 		if (forUpdate)
 		{
@@ -247,12 +292,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
-	 *  @param positiveOnly if true, only return storage records with qtyOnHand > 0
+	 *  @param positiveOnly if true, only return storage records with qtyOnHand &gt; 0
 	 *  @param M_Locator_ID optional locator id
 	 *	@param trxName transaction
 	 *	@return existing - ordered by location priority (desc) and/or guarantee date
@@ -268,12 +313,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
-	 *  @param positiveOnly if true, only return storage records with qtyOnHand > 0
+	 *  @param positiveOnly if true, only return storage records with qtyOnHand &gt; 0
 	 *  @param M_Locator_ID optional locator id
 	 *	@param trxName transaction
 	 *  @param forUpdate
@@ -289,15 +334,16 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
 	 *	@param FiFo first in-first-out
-	 *  @param positiveOnly if true, only return storage records with qtyOnHand > 0
+	 *  @param positiveOnly if true, only return storage records with qtyOnHand &gt; 0
 	 *  @param M_Locator_ID optional locator id
 	 *	@param trxName transaction
 	 *  @param forUpdate
+	 *  @param timeout
 	 *	@return existing - ordered by location priority (desc) and/or guarantee date
 	 */
 	public static MStorageOnHand[] getWarehouse (Properties ctx, int M_Warehouse_ID, 
@@ -431,7 +477,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
@@ -450,7 +496,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve storages that don't have asi, -1 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
@@ -470,7 +516,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	/**
 	 * 	Get Storage Info for Warehouse or locator
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID ignore if M_Locator_ID > 0
+	 *	@param M_Warehouse_ID ignore if M_Locator_ID &gt; 0
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance id, 0 to retrieve storages that don't have asi, -1 to retrieve all instance
 	 *	@param minGuaranteeDate optional minimum guarantee date if all attribute instances
@@ -663,12 +709,11 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@param M_Locator_ID locator
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID AS Instance
-	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
 	 *	@param diffQtyOnHand add on hand
 	 *	@param trxName transaction
-	 *  @deprecated
 	 *	@return true if updated
 	 */
+	@Deprecated
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand, String trxName)
@@ -680,17 +725,36 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * 	Update Storage Info add.
 	 * 	Called from MProjectIssue
 	 *	@param ctx context
-	 *	@param M_Warehouse_ID warehouse
+	 *	@param M_Warehouse_ID warehouse, not use
 	 *	@param M_Locator_ID locator
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID AS Instance
-	 *	@param reservationAttributeSetInstance_ID reservation AS Instance
+	 *	@param diffQtyOnHand add on hand
+	 *  @param dateMPolicy
+	 *	@param trxName transaction
+	 *	@return true if updated
+	 *  @deprecated
+	 */
+	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
+	{
+		return add(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, dateMPolicy, trxName);
+	}
+	
+	/**
+	 * 	Update Storage Info add.
+	 * 	Called from MProjectIssue
+	 *	@param ctx context
+	 *	@param M_Locator_ID locator
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID AS Instance
 	 *	@param diffQtyOnHand add on hand
 	 *  @param dateMPolicy
 	 *	@param trxName transaction
 	 *	@return true if updated
 	 */
-	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
+	public static boolean add (Properties ctx, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
 	{
@@ -744,10 +808,10 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * 	Get Location with highest Locator Priority and a sufficient OnHand Qty
 	 * 	@param M_Warehouse_ID warehouse
 	 * 	@param M_Product_ID product
-	 * 	@param M_AttributeSetInstance_ID asi
+	 * 	@param M_AttributeSetInstance_ID asi id, use negative value (for e.g -1) to match all asi including 0
 	 * 	@param Qty qty
 	 *	@param trxName transaction
-	 * 	@return id
+	 * 	@return locator id (0 if no match found)
 	 */
 	public static int getM_Locator_ID (int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, BigDecimal Qty,
@@ -758,12 +822,14 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		String sql = "SELECT s.M_Locator_ID, s.QtyOnHand "
 			+ "FROM M_StorageOnHand s"
 			+ " INNER JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)"
-			+ " INNER JOIN M_Product p ON (s.M_Product_ID=p.M_Product_ID)"
-			+ " LEFT OUTER JOIN M_AttributeSet mas ON (p.M_AttributeSet_ID=mas.M_AttributeSet_ID) "
-			+ "WHERE l.M_Warehouse_ID=?"
-			+ " AND s.M_Product_ID=?"
-			+ " AND (mas.IsInstanceAttribute IS NULL OR mas.IsInstanceAttribute='N' OR s.M_AttributeSetInstance_ID=?)"
-			+ " AND l.IsActive='Y' "
+			+ " INNER JOIN M_Product p ON (s.M_Product_ID=p.M_Product_ID) ";
+		if (M_AttributeSetInstance_ID >= 0)
+			sql = sql + " LEFT OUTER JOIN M_AttributeSet mas ON (p.M_AttributeSet_ID=mas.M_AttributeSet_ID) ";
+		sql = sql + "WHERE l.M_Warehouse_ID=? "
+			+ " AND s.M_Product_ID=? ";
+		if (M_AttributeSetInstance_ID >= 0)
+			sql = sql + " AND (mas.IsInstanceAttribute IS NULL OR mas.IsInstanceAttribute='N' OR s.M_AttributeSetInstance_ID=?) ";
+		sql = sql + " AND l.IsActive='Y' "
 			+ "ORDER BY l.PriorityNo DESC, s.QtyOnHand DESC";
 		
 		PreparedStatement pstmt = null;
@@ -773,7 +839,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, M_Warehouse_ID);
 			pstmt.setInt(2, M_Product_ID);
-			pstmt.setInt(3, M_AttributeSetInstance_ID);
+			if (M_AttributeSetInstance_ID >= 0)
+				pstmt.setInt(3, M_AttributeSetInstance_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -870,7 +937,6 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * 
 	 * Before Save
 	 * @param newRecord new
-	 * @param success success
 	 * @return success
 	 */
 	@Override
@@ -948,6 +1014,32 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 
 	/**
+	 * Get Quantity On Hand of Warehouse with ASI=0
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandWithASIZero(int M_Product_ID, int M_Warehouse_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=?")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	
+	/**
 	 * Get Quantity On Hand of Warehouse Available for Reservation
 	 * @param M_Product_ID
 	 * @param M_Warehouse_ID
@@ -981,6 +1073,33 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 
 	/**
+	 * Get Quantity On Hand of Warehouse Available for Reservation with ASI=0
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForReservationWithASIZero(int M_Product_ID, int M_Warehouse_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh"
+				+ " JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)"
+				+ " LEFT JOIN M_LocatorType lt ON (loc.M_LocatorType_ID=lt.M_LocatorType_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=? AND COALESCE(lt.IsAvailableForReservation,'Y')='Y'")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		BigDecimal qty = DB.getSQLValueBDEx(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	/**
 	 * Get Quantity On Hand of Warehouse that's available for shipping
 	 * @param M_Product_ID
 	 * @param M_Warehouse_ID
@@ -1013,6 +1132,32 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}
 	
 	/**
+	 * Get Quantity On Hand of Warehouse that's available for shipping with ASI=0
+	 * @param M_Product_ID
+	 * @param M_Warehouse_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForShippingWithASIZero(int M_Product_ID, int M_Warehouse_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(QtyOnHand) FROM M_StorageOnHand oh JOIN M_Locator loc ON (oh.M_Locator_ID=loc.M_Locator_ID)")
+			.append(" LEFT JOIN M_LocatorType lt ON (loc.M_LocatorType_ID=lt.M_LocatorType_ID)")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND loc.M_Warehouse_ID=? AND COALESCE(lt.IsAvailableForShipping,'Y')='Y'")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Warehouse_ID);
+
+		BigDecimal qty = DB.getSQLValueBDEx(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	/**
 	 * Get Quantity On Hand of Locator
 	 * @param M_Product_ID
 	 * @param M_Locator_ID
@@ -1035,6 +1180,31 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			sql.append(" AND oh.M_AttributeSetInstance_ID=?");
 			params.add(M_AttributeSetInstance_ID);
 		}
+
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	/**
+	 * Get Quantity On Hand of Locator wtih ASI=0
+	 * @param M_Product_ID
+	 * @param M_Locator_ID
+	 * @param trxName
+	 * @return QtyOnHand
+	 */
+	public static BigDecimal getQtyOnHandForLocatorWithASIZero(int M_Product_ID, int M_Locator_ID, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SUM(oh.QtyOnHand) FROM M_StorageOnHand oh")
+			.append(" WHERE oh.M_Product_ID=?")
+			.append(" AND oh.M_Locator_ID=?")
+			.append(" AND oh.M_AttributeSetInstance_ID=0");
+
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Locator_ID);
 
 		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
 		if (qty == null)

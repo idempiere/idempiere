@@ -7,6 +7,7 @@ import org.compiere.model.MPackage;
 import org.compiere.model.MShipperLabels;
 import org.compiere.process.SvrProcess;
 
+@org.adempiere.base.annotation.Process
 public class PrintShippingLabel extends SvrProcess 
 {
 	private MPackage m_package;

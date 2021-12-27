@@ -45,7 +45,7 @@ public class GraphElement extends PrintElement
 
 	/**
 	 * 	Layout and Calculate Size
-	 * 	Set p_width & p_height
+	 * 	Set p_width and p_height
 	 * 	@return true if calculated
 	 */
 	protected boolean calculateSize()

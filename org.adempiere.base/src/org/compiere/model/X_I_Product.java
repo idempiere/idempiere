@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Product
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="I_Product")
 public class X_I_Product extends PO implements I_I_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210209L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_I_Product (Properties ctx, int I_Product_ID, String trxName)
@@ -75,9 +76,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
     }
 
 	/** Set Business Partner Key.
-		@param BPartner_Value 
-		The Key of the Business Partner
-	  */
+		@param BPartner_Value The Key of the Business Partner
+	*/
 	public void setBPartner_Value (String BPartner_Value)
 	{
 		set_Value (COLUMNNAME_BPartner_Value, BPartner_Value);
@@ -86,32 +86,32 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Business Partner Key.
 		@return The Key of the Business Partner
 	  */
-	public String getBPartner_Value () 
+	public String getBPartner_Value()
 	{
 		return (String)get_Value(COLUMNNAME_BPartner_Value);
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -120,26 +120,26 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -148,9 +148,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Classification.
-		@param Classification 
-		Classification for grouping
-	  */
+		@param Classification Classification for grouping
+	*/
 	public void setClassification (String Classification)
 	{
 		set_Value (COLUMNNAME_Classification, Classification);
@@ -159,15 +158,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Classification.
 		@return Classification for grouping
 	  */
-	public String getClassification () 
+	public String getClassification()
 	{
 		return (String)get_Value(COLUMNNAME_Classification);
 	}
 
 	/** Set Cost per Order.
-		@param CostPerOrder 
-		Fixed Cost Per Order
-	  */
+		@param CostPerOrder Fixed Cost Per Order
+	*/
 	public void setCostPerOrder (BigDecimal CostPerOrder)
 	{
 		set_Value (COLUMNNAME_CostPerOrder, CostPerOrder);
@@ -176,7 +174,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Cost per Order.
 		@return Fixed Cost Per Order
 	  */
-	public BigDecimal getCostPerOrder () 
+	public BigDecimal getCostPerOrder()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostPerOrder);
 		if (bd == null)
@@ -185,26 +183,26 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -213,9 +211,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Customs Tariff Number.
-		@param CustomsTariffNumber 
-		Customs Tariff Number, usually the HS-Code
-	  */
+		@param CustomsTariffNumber Customs Tariff Number, usually the HS-Code
+	*/
 	public void setCustomsTariffNumber (String CustomsTariffNumber)
 	{
 		set_Value (COLUMNNAME_CustomsTariffNumber, CustomsTariffNumber);
@@ -224,15 +221,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Customs Tariff Number.
 		@return Customs Tariff Number, usually the HS-Code
 	  */
-	public String getCustomsTariffNumber () 
+	public String getCustomsTariffNumber()
 	{
 		return (String)get_Value(COLUMNNAME_CustomsTariffNumber);
 	}
 
 	/** Set Promised Delivery Time.
-		@param DeliveryTime_Promised 
-		Promised days between order and delivery
-	  */
+		@param DeliveryTime_Promised Promised days between order and delivery
+	*/
 	public void setDeliveryTime_Promised (int DeliveryTime_Promised)
 	{
 		set_Value (COLUMNNAME_DeliveryTime_Promised, Integer.valueOf(DeliveryTime_Promised));
@@ -241,7 +237,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Promised Delivery Time.
 		@return Promised days between order and delivery
 	  */
-	public int getDeliveryTime_Promised () 
+	public int getDeliveryTime_Promised()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DeliveryTime_Promised);
 		if (ii == null)
@@ -250,9 +246,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -261,15 +256,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Description URL.
-		@param DescriptionURL 
-		URL for the description
-	  */
+		@param DescriptionURL URL for the description
+	*/
 	public void setDescriptionURL (String DescriptionURL)
 	{
 		set_Value (COLUMNNAME_DescriptionURL, DescriptionURL);
@@ -278,15 +272,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Description URL.
 		@return URL for the description
 	  */
-	public String getDescriptionURL () 
+	public String getDescriptionURL()
 	{
 		return (String)get_Value(COLUMNNAME_DescriptionURL);
 	}
 
 	/** Set Discontinued.
-		@param Discontinued 
-		This product is no longer available
-	  */
+		@param Discontinued This product is no longer available
+	*/
 	public void setDiscontinued (boolean Discontinued)
 	{
 		set_Value (COLUMNNAME_Discontinued, Boolean.valueOf(Discontinued));
@@ -295,7 +288,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Discontinued.
 		@return This product is no longer available
 	  */
-	public boolean isDiscontinued () 
+	public boolean isDiscontinued()
 	{
 		Object oo = get_Value(COLUMNNAME_Discontinued);
 		if (oo != null) 
@@ -308,9 +301,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Discontinued At.
-		@param DiscontinuedAt 
-		Discontinued At indicates Date when product was discontinued
-	  */
+		@param DiscontinuedAt Discontinued At indicates Date when product was discontinued
+	*/
 	public void setDiscontinuedAt (Timestamp DiscontinuedAt)
 	{
 		set_Value (COLUMNNAME_DiscontinuedAt, DiscontinuedAt);
@@ -319,15 +311,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Discontinued At.
 		@return Discontinued At indicates Date when product was discontinued
 	  */
-	public Timestamp getDiscontinuedAt () 
+	public Timestamp getDiscontinuedAt()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DiscontinuedAt);
 	}
 
 	/** Set Document Note.
-		@param DocumentNote 
-		Additional information for a Document
-	  */
+		@param DocumentNote Additional information for a Document
+	*/
 	public void setDocumentNote (String DocumentNote)
 	{
 		set_Value (COLUMNNAME_DocumentNote, DocumentNote);
@@ -336,13 +327,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Document Note.
 		@return Additional information for a Document
 	  */
-	public String getDocumentNote () 
+	public String getDocumentNote()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNote);
 	}
 
 	/** Set Group1.
-		@param Group1 Group1	  */
+		@param Group1 Group1
+	*/
 	public void setGroup1 (String Group1)
 	{
 		set_Value (COLUMNNAME_Group1, Group1);
@@ -350,13 +342,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 
 	/** Get Group1.
 		@return Group1	  */
-	public String getGroup1 () 
+	public String getGroup1()
 	{
 		return (String)get_Value(COLUMNNAME_Group1);
 	}
 
 	/** Set Group2.
-		@param Group2 Group2	  */
+		@param Group2 Group2
+	*/
 	public void setGroup2 (String Group2)
 	{
 		set_Value (COLUMNNAME_Group2, Group2);
@@ -364,15 +357,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 
 	/** Get Group2.
 		@return Group2	  */
-	public String getGroup2 () 
+	public String getGroup2()
 	{
 		return (String)get_Value(COLUMNNAME_Group2);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -381,15 +373,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -398,15 +389,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -415,7 +405,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -428,9 +418,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Image URL.
-		@param ImageURL 
-		URL of  image
-	  */
+		@param ImageURL URL of  image
+	*/
 	public void setImageURL (String ImageURL)
 	{
 		set_Value (COLUMNNAME_ImageURL, ImageURL);
@@ -439,27 +428,26 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Image URL.
 		@return URL of  image
 	  */
-	public String getImageURL () 
+	public String getImageURL()
 	{
 		return (String)get_Value(COLUMNNAME_ImageURL);
 	}
 
 	/** Set Import Product.
-		@param I_Product_ID 
-		Import Item or Service
-	  */
+		@param I_Product_ID Import Item or Service
+	*/
 	public void setI_Product_ID (int I_Product_ID)
 	{
-		if (I_Product_ID < 1) 
+		if (I_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_Product_ID, Integer.valueOf(I_Product_ID));
 	}
 
 	/** Get Import Product.
 		@return Import Item or Service
 	  */
-	public int getI_Product_ID () 
+	public int getI_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_Product_ID);
 		if (ii == null)
@@ -468,7 +456,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set I_Product_UU.
-		@param I_Product_UU I_Product_UU	  */
+		@param I_Product_UU I_Product_UU
+	*/
 	public void setI_Product_UU (String I_Product_UU)
 	{
 		set_Value (COLUMNNAME_I_Product_UU, I_Product_UU);
@@ -476,15 +465,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 
 	/** Get I_Product_UU.
 		@return I_Product_UU	  */
-	public String getI_Product_UU () 
+	public String getI_Product_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_Product_UU);
 	}
 
 	/** Set ISO Currency Code.
-		@param ISO_Code 
-		Three letter ISO 4217 Code of the Currency
-	  */
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
 	public void setISO_Code (String ISO_Code)
 	{
 		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
@@ -493,15 +481,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get ISO Currency Code.
 		@return Three letter ISO 4217 Code of the Currency
 	  */
-	public String getISO_Code () 
+	public String getISO_Code()
 	{
 		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Manufacturer.
-		@param Manufacturer 
-		Manufacturer of the Product
-	  */
+		@param Manufacturer Manufacturer of the Product
+	*/
 	public void setManufacturer (String Manufacturer)
 	{
 		set_Value (COLUMNNAME_Manufacturer, Manufacturer);
@@ -510,32 +497,32 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Manufacturer.
 		@return Manufacturer of the Product
 	  */
-	public String getManufacturer () 
+	public String getManufacturer()
 	{
 		return (String)get_Value(COLUMNNAME_Manufacturer);
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_ID(), get_TrxName());
+	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -544,26 +531,26 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -572,9 +559,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -583,15 +569,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Minimum Order Qty.
-		@param Order_Min 
-		Minimum order quantity in UOM
-	  */
+		@param Order_Min Minimum order quantity in UOM
+	*/
 	public void setOrder_Min (int Order_Min)
 	{
 		set_Value (COLUMNNAME_Order_Min, Integer.valueOf(Order_Min));
@@ -600,7 +585,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Minimum Order Qty.
 		@return Minimum order quantity in UOM
 	  */
-	public int getOrder_Min () 
+	public int getOrder_Min()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Order_Min);
 		if (ii == null)
@@ -609,9 +594,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Order Pack Qty.
-		@param Order_Pack 
-		Package order size in UOM (e.g. order set of 5 units)
-	  */
+		@param Order_Pack Package order size in UOM (e.g. order set of 5 units)
+	*/
 	public void setOrder_Pack (int Order_Pack)
 	{
 		set_Value (COLUMNNAME_Order_Pack, Integer.valueOf(Order_Pack));
@@ -620,7 +604,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Order Pack Qty.
 		@return Package order size in UOM (e.g. order set of 5 units)
 	  */
-	public int getOrder_Pack () 
+	public int getOrder_Pack()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Order_Pack);
 		if (ii == null)
@@ -629,9 +613,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Price effective.
-		@param PriceEffective 
-		Effective Date of Price
-	  */
+		@param PriceEffective Effective Date of Price
+	*/
 	public void setPriceEffective (Timestamp PriceEffective)
 	{
 		set_Value (COLUMNNAME_PriceEffective, PriceEffective);
@@ -640,15 +623,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Price effective.
 		@return Effective Date of Price
 	  */
-	public Timestamp getPriceEffective () 
+	public Timestamp getPriceEffective()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_PriceEffective);
 	}
 
 	/** Set Limit Price.
-		@param PriceLimit 
-		Lowest price for a product
-	  */
+		@param PriceLimit Lowest price for a product
+	*/
 	public void setPriceLimit (BigDecimal PriceLimit)
 	{
 		set_Value (COLUMNNAME_PriceLimit, PriceLimit);
@@ -657,7 +639,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Limit Price.
 		@return Lowest price for a product
 	  */
-	public BigDecimal getPriceLimit () 
+	public BigDecimal getPriceLimit()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceLimit);
 		if (bd == null)
@@ -666,9 +648,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set List Price.
-		@param PriceList 
-		List Price
-	  */
+		@param PriceList List Price
+	*/
 	public void setPriceList (BigDecimal PriceList)
 	{
 		set_Value (COLUMNNAME_PriceList, PriceList);
@@ -677,7 +658,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get List Price.
 		@return List Price
 	  */
-	public BigDecimal getPriceList () 
+	public BigDecimal getPriceList()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceList);
 		if (bd == null)
@@ -686,9 +667,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set PO Price.
-		@param PricePO 
-		Price based on a purchase order
-	  */
+		@param PricePO Price based on a purchase order
+	*/
 	public void setPricePO (BigDecimal PricePO)
 	{
 		set_Value (COLUMNNAME_PricePO, PricePO);
@@ -697,7 +677,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get PO Price.
 		@return Price based on a purchase order
 	  */
-	public BigDecimal getPricePO () 
+	public BigDecimal getPricePO()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PricePO);
 		if (bd == null)
@@ -706,9 +686,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Standard Price.
-		@param PriceStd 
-		Standard Price
-	  */
+		@param PriceStd Standard Price
+	*/
 	public void setPriceStd (BigDecimal PriceStd)
 	{
 		set_Value (COLUMNNAME_PriceStd, PriceStd);
@@ -717,7 +696,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Standard Price.
 		@return Standard Price
 	  */
-	public BigDecimal getPriceStd () 
+	public BigDecimal getPriceStd()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceStd);
 		if (bd == null)
@@ -726,9 +705,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -737,7 +715,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -750,7 +728,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -758,7 +737,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -771,7 +750,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Product Category Key.
-		@param ProductCategory_Value Product Category Key	  */
+		@param ProductCategory_Value Product Category Key
+	*/
 	public void setProductCategory_Value (String ProductCategory_Value)
 	{
 		set_Value (COLUMNNAME_ProductCategory_Value, ProductCategory_Value);
@@ -779,29 +759,28 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 
 	/** Get Product Category Key.
 		@return Product Category Key	  */
-	public String getProductCategory_Value () 
+	public String getProductCategory_Value()
 	{
 		return (String)get_Value(COLUMNNAME_ProductCategory_Value);
 	}
 
 	/** ProductType AD_Reference_ID=270 */
 	public static final int PRODUCTTYPE_AD_Reference_ID=270;
-	/** Item = I */
-	public static final String PRODUCTTYPE_Item = "I";
-	/** Service = S */
-	public static final String PRODUCTTYPE_Service = "S";
-	/** Resource = R */
-	public static final String PRODUCTTYPE_Resource = "R";
-	/** Expense type = E */
-	public static final String PRODUCTTYPE_ExpenseType = "E";
-	/** Online = O */
-	public static final String PRODUCTTYPE_Online = "O";
 	/** Asset = A */
 	public static final String PRODUCTTYPE_Asset = "A";
+	/** Expense type = E */
+	public static final String PRODUCTTYPE_ExpenseType = "E";
+	/** Item = I */
+	public static final String PRODUCTTYPE_Item = "I";
+	/** Online = O */
+	public static final String PRODUCTTYPE_Online = "O";
+	/** Resource = R */
+	public static final String PRODUCTTYPE_Resource = "R";
+	/** Service = S */
+	public static final String PRODUCTTYPE_Service = "S";
 	/** Set Product Type.
-		@param ProductType 
-		Type of product
-	  */
+		@param ProductType Type of product
+	*/
 	public void setProductType (String ProductType)
 	{
 
@@ -811,15 +790,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Product Type.
 		@return Type of product
 	  */
-	public String getProductType () 
+	public String getProductType()
 	{
 		return (String)get_Value(COLUMNNAME_ProductType);
 	}
 
 	/** Set Royalty Amount.
-		@param RoyaltyAmt 
-		(Included) Amount for copyright, etc.
-	  */
+		@param RoyaltyAmt (Included) Amount for copyright, etc.
+	*/
 	public void setRoyaltyAmt (BigDecimal RoyaltyAmt)
 	{
 		set_Value (COLUMNNAME_RoyaltyAmt, RoyaltyAmt);
@@ -828,7 +806,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Royalty Amount.
 		@return (Included) Amount for copyright, etc.
 	  */
-	public BigDecimal getRoyaltyAmt () 
+	public BigDecimal getRoyaltyAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_RoyaltyAmt);
 		if (bd == null)
@@ -837,9 +815,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Shelf Depth.
-		@param ShelfDepth 
-		Shelf depth required
-	  */
+		@param ShelfDepth Shelf depth required
+	*/
 	public void setShelfDepth (int ShelfDepth)
 	{
 		set_Value (COLUMNNAME_ShelfDepth, Integer.valueOf(ShelfDepth));
@@ -848,7 +825,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Shelf Depth.
 		@return Shelf depth required
 	  */
-	public int getShelfDepth () 
+	public int getShelfDepth()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ShelfDepth);
 		if (ii == null)
@@ -857,9 +834,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Shelf Height.
-		@param ShelfHeight 
-		Shelf height required
-	  */
+		@param ShelfHeight Shelf height required
+	*/
 	public void setShelfHeight (BigDecimal ShelfHeight)
 	{
 		set_Value (COLUMNNAME_ShelfHeight, ShelfHeight);
@@ -868,7 +844,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Shelf Height.
 		@return Shelf height required
 	  */
-	public BigDecimal getShelfHeight () 
+	public BigDecimal getShelfHeight()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ShelfHeight);
 		if (bd == null)
@@ -877,9 +853,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Shelf Width.
-		@param ShelfWidth 
-		Shelf width required
-	  */
+		@param ShelfWidth Shelf width required
+	*/
 	public void setShelfWidth (int ShelfWidth)
 	{
 		set_Value (COLUMNNAME_ShelfWidth, Integer.valueOf(ShelfWidth));
@@ -888,7 +863,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Shelf Width.
 		@return Shelf width required
 	  */
-	public int getShelfWidth () 
+	public int getShelfWidth()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ShelfWidth);
 		if (ii == null)
@@ -897,9 +872,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set SKU.
-		@param SKU 
-		Stock Keeping Unit
-	  */
+		@param SKU Stock Keeping Unit
+	*/
 	public void setSKU (String SKU)
 	{
 		set_Value (COLUMNNAME_SKU, SKU);
@@ -908,15 +882,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get SKU.
 		@return Stock Keeping Unit
 	  */
-	public String getSKU () 
+	public String getSKU()
 	{
 		return (String)get_Value(COLUMNNAME_SKU);
 	}
 
 	/** Set Units Per Pallet.
-		@param UnitsPerPallet 
-		Units Per Pallet
-	  */
+		@param UnitsPerPallet Units Per Pallet
+	*/
 	public void setUnitsPerPallet (int UnitsPerPallet)
 	{
 		set_Value (COLUMNNAME_UnitsPerPallet, Integer.valueOf(UnitsPerPallet));
@@ -925,7 +898,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Units Per Pallet.
 		@return Units Per Pallet
 	  */
-	public int getUnitsPerPallet () 
+	public int getUnitsPerPallet()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_UnitsPerPallet);
 		if (ii == null)
@@ -934,9 +907,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set UPC/EAN.
-		@param UPC 
-		Bar Code (Universal Product Code or its superset European Article Number)
-	  */
+		@param UPC Bar Code (Universal Product Code or its superset European Article Number)
+	*/
 	public void setUPC (String UPC)
 	{
 		set_Value (COLUMNNAME_UPC, UPC);
@@ -945,15 +917,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get UPC/EAN.
 		@return Bar Code (Universal Product Code or its superset European Article Number)
 	  */
-	public String getUPC () 
+	public String getUPC()
 	{
 		return (String)get_Value(COLUMNNAME_UPC);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -962,7 +933,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
@@ -976,9 +947,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
     }
 
 	/** Set Partner Category.
-		@param VendorCategory 
-		Product Category of the Business Partner
-	  */
+		@param VendorCategory Product Category of the Business Partner
+	*/
 	public void setVendorCategory (String VendorCategory)
 	{
 		set_Value (COLUMNNAME_VendorCategory, VendorCategory);
@@ -987,15 +957,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Partner Category.
 		@return Product Category of the Business Partner
 	  */
-	public String getVendorCategory () 
+	public String getVendorCategory()
 	{
 		return (String)get_Value(COLUMNNAME_VendorCategory);
 	}
 
 	/** Set Partner Product Key.
-		@param VendorProductNo 
-		Product Key of the Business Partner
-	  */
+		@param VendorProductNo Product Key of the Business Partner
+	*/
 	public void setVendorProductNo (String VendorProductNo)
 	{
 		set_Value (COLUMNNAME_VendorProductNo, VendorProductNo);
@@ -1004,15 +973,14 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Partner Product Key.
 		@return Product Key of the Business Partner
 	  */
-	public String getVendorProductNo () 
+	public String getVendorProductNo()
 	{
 		return (String)get_Value(COLUMNNAME_VendorProductNo);
 	}
 
 	/** Set Volume.
-		@param Volume 
-		Volume of a product
-	  */
+		@param Volume Volume of a product
+	*/
 	public void setVolume (BigDecimal Volume)
 	{
 		set_Value (COLUMNNAME_Volume, Volume);
@@ -1021,7 +989,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Volume.
 		@return Volume of a product
 	  */
-	public BigDecimal getVolume () 
+	public BigDecimal getVolume()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Volume);
 		if (bd == null)
@@ -1030,9 +998,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set Weight.
-		@param Weight 
-		Weight of a product
-	  */
+		@param Weight Weight of a product
+	*/
 	public void setWeight (BigDecimal Weight)
 	{
 		set_Value (COLUMNNAME_Weight, Weight);
@@ -1041,7 +1008,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get Weight.
 		@return Weight of a product
 	  */
-	public BigDecimal getWeight () 
+	public BigDecimal getWeight()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Weight);
 		if (bd == null)
@@ -1050,9 +1017,8 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	}
 
 	/** Set UOM Code.
-		@param X12DE355 
-		UOM EDI X12 Code
-	  */
+		@param X12DE355 UOM EDI X12 Code
+	*/
 	public void setX12DE355 (String X12DE355)
 	{
 		set_Value (COLUMNNAME_X12DE355, X12DE355);
@@ -1061,7 +1027,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	/** Get UOM Code.
 		@return UOM EDI X12 Code
 	  */
-	public String getX12DE355 () 
+	public String getX12DE355()
 	{
 		return (String)get_Value(COLUMNNAME_X12DE355);
 	}

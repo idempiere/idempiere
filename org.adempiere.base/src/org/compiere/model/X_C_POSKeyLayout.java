@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSKeyLayout
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_POSKeyLayout")
 public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_POSKeyLayout (Properties ctx, int C_POSKeyLayout_ID, String trxName)
@@ -72,26 +73,26 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
     }
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor_ID(), get_TrxName());
+	}
 
 	/** Set Print Color.
-		@param AD_PrintColor_ID 
-		Color used for printing and display
-	  */
+		@param AD_PrintColor_ID Color used for printing and display
+	*/
 	public void setAD_PrintColor_ID (int AD_PrintColor_ID)
 	{
-		if (AD_PrintColor_ID < 1) 
+		if (AD_PrintColor_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor_ID, Integer.valueOf(AD_PrintColor_ID));
 	}
 
 	/** Get Print Color.
 		@return Color used for printing and display
 	  */
-	public int getAD_PrintColor_ID () 
+	public int getAD_PrintColor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor_ID);
 		if (ii == null)
@@ -100,26 +101,26 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
-			.getPO(getAD_PrintFont_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)
+			.getPO(getAD_PrintFont_ID(), get_TrxName());
+	}
 
 	/** Set Print Font.
-		@param AD_PrintFont_ID 
-		Maintain Print Font
-	  */
+		@param AD_PrintFont_ID Maintain Print Font
+	*/
 	public void setAD_PrintFont_ID (int AD_PrintFont_ID)
 	{
-		if (AD_PrintFont_ID < 1) 
+		if (AD_PrintFont_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFont_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFont_ID, Integer.valueOf(AD_PrintFont_ID));
 	}
 
 	/** Get Print Font.
 		@return Maintain Print Font
 	  */
-	public int getAD_PrintFont_ID () 
+	public int getAD_PrintFont_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFont_ID);
 		if (ii == null)
@@ -128,9 +129,8 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	}
 
 	/** Set Columns.
-		@param Columns 
-		Number of columns
-	  */
+		@param Columns Number of columns
+	*/
 	public void setColumns (int Columns)
 	{
 		set_Value (COLUMNNAME_Columns, Integer.valueOf(Columns));
@@ -139,7 +139,7 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/** Get Columns.
 		@return Number of columns
 	  */
-	public int getColumns () 
+	public int getColumns()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Columns);
 		if (ii == null)
@@ -148,21 +148,20 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	}
 
 	/** Set POS Key Layout.
-		@param C_POSKeyLayout_ID 
-		POS Function Key Layout
-	  */
+		@param C_POSKeyLayout_ID POS Function Key Layout
+	*/
 	public void setC_POSKeyLayout_ID (int C_POSKeyLayout_ID)
 	{
-		if (C_POSKeyLayout_ID < 1) 
+		if (C_POSKeyLayout_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_POSKeyLayout_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_POSKeyLayout_ID, Integer.valueOf(C_POSKeyLayout_ID));
 	}
 
 	/** Get POS Key Layout.
 		@return POS Function Key Layout
 	  */
-	public int getC_POSKeyLayout_ID () 
+	public int getC_POSKeyLayout_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSKeyLayout_ID);
 		if (ii == null)
@@ -171,7 +170,8 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	}
 
 	/** Set C_POSKeyLayout_UU.
-		@param C_POSKeyLayout_UU C_POSKeyLayout_UU	  */
+		@param C_POSKeyLayout_UU C_POSKeyLayout_UU
+	*/
 	public void setC_POSKeyLayout_UU (String C_POSKeyLayout_UU)
 	{
 		set_Value (COLUMNNAME_C_POSKeyLayout_UU, C_POSKeyLayout_UU);
@@ -179,15 +179,14 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 
 	/** Get C_POSKeyLayout_UU.
 		@return C_POSKeyLayout_UU	  */
-	public String getC_POSKeyLayout_UU () 
+	public String getC_POSKeyLayout_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_POSKeyLayout_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -196,15 +195,14 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -213,15 +211,14 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -230,7 +227,7 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -252,9 +249,8 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/** Product = P */
 	public static final String POSKEYLAYOUTTYPE_Product = "P";
 	/** Set POS Key Layout Type.
-		@param POSKeyLayoutType 
-		The type of Key Layout
-	  */
+		@param POSKeyLayoutType The type of Key Layout
+	*/
 	public void setPOSKeyLayoutType (String POSKeyLayoutType)
 	{
 
@@ -264,7 +260,7 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/** Get POS Key Layout Type.
 		@return The type of Key Layout
 	  */
-	public String getPOSKeyLayoutType () 
+	public String getPOSKeyLayoutType()
 	{
 		return (String)get_Value(COLUMNNAME_POSKeyLayoutType);
 	}

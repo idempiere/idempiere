@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Scheduler
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Scheduler")
 public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -78,26 +79,26 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
+		@param AD_PrintFormat_ID Data Print Format
+	*/
 	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
 	{
-		if (AD_PrintFormat_ID < 1) 
+		if (AD_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
 	}
 
 	/** Get Print Format.
 		@return Data Print Format
 	  */
-	public int getAD_PrintFormat_ID () 
+	public int getAD_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
@@ -106,26 +107,26 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -134,23 +135,25 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
-			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_ID)
+			.getPO(getAD_Schedule_ID(), get_TrxName());
+	}
 
 	/** Set Schedule.
-		@param AD_Schedule_ID Schedule	  */
+		@param AD_Schedule_ID Schedule
+	*/
 	public void setAD_Schedule_ID (int AD_Schedule_ID)
 	{
-		if (AD_Schedule_ID < 1) 
+		if (AD_Schedule_ID < 1)
 			set_Value (COLUMNNAME_AD_Schedule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
 	}
 
 	/** Get Schedule.
 		@return Schedule	  */
-	public int getAD_Schedule_ID () 
+	public int getAD_Schedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
 		if (ii == null)
@@ -159,21 +162,20 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	/** Set Scheduler.
-		@param AD_Scheduler_ID 
-		Schedule Processes
-	  */
+		@param AD_Scheduler_ID Schedule Processes
+	*/
 	public void setAD_Scheduler_ID (int AD_Scheduler_ID)
 	{
-		if (AD_Scheduler_ID < 1) 
+		if (AD_Scheduler_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Scheduler_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Scheduler_ID, Integer.valueOf(AD_Scheduler_ID));
 	}
 
 	/** Get Scheduler.
 		@return Schedule Processes
 	  */
-	public int getAD_Scheduler_ID () 
+	public int getAD_Scheduler_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Scheduler_ID);
 		if (ii == null)
@@ -182,7 +184,8 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	/** Set AD_Scheduler_UU.
-		@param AD_Scheduler_UU AD_Scheduler_UU	  */
+		@param AD_Scheduler_UU AD_Scheduler_UU
+	*/
 	public void setAD_Scheduler_UU (String AD_Scheduler_UU)
 	{
 		set_Value (COLUMNNAME_AD_Scheduler_UU, AD_Scheduler_UU);
@@ -190,32 +193,32 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 
 	/** Get AD_Scheduler_UU.
 		@return AD_Scheduler_UU	  */
-	public String getAD_Scheduler_UU () 
+	public String getAD_Scheduler_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Scheduler_UU);
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -224,9 +227,8 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	/** Set Date last run.
-		@param DateLastRun 
-		Date the process was last run.
-	  */
+		@param DateLastRun Date the process was last run.
+	*/
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
@@ -235,15 +237,14 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/** Get Date last run.
 		@return Date the process was last run.
 	  */
-	public Timestamp getDateLastRun () 
+	public Timestamp getDateLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
 	/** Set Date next run.
-		@param DateNextRun 
-		Date the process will run next
-	  */
+		@param DateNextRun Date the process will run next
+	*/
 	public void setDateNextRun (Timestamp DateNextRun)
 	{
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
@@ -252,15 +253,14 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/** Get Date next run.
 		@return Date the process will run next
 	  */
-	public Timestamp getDateNextRun () 
+	public Timestamp getDateNextRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateNextRun);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -269,15 +269,14 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Days to keep Log.
-		@param KeepLogDays 
-		Number of days to keep the log entries
-	  */
+		@param KeepLogDays Number of days to keep the log entries
+	*/
 	public void setKeepLogDays (int KeepLogDays)
 	{
 		set_Value (COLUMNNAME_KeepLogDays, Integer.valueOf(KeepLogDays));
@@ -286,7 +285,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/** Get Days to keep Log.
 		@return Number of days to keep the log entries
 	  */
-	public int getKeepLogDays () 
+	public int getKeepLogDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_KeepLogDays);
 		if (ii == null)
@@ -295,9 +294,8 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -306,7 +304,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -320,7 +318,8 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -328,7 +327,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -341,21 +340,20 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_Value (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -365,18 +363,19 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 
 	/** ReportOutputType AD_Reference_ID=200169 */
 	public static final int REPORTOUTPUTTYPE_AD_Reference_ID=200169;
-	/** PDF = PDF */
-	public static final String REPORTOUTPUTTYPE_PDF = "PDF";
-	/** HTML = HTML */
-	public static final String REPORTOUTPUTTYPE_HTML = "HTML";
-	/** XLS = XLS */
-	public static final String REPORTOUTPUTTYPE_XLS = "XLS";
 	/** CSV = CSV */
 	public static final String REPORTOUTPUTTYPE_CSV = "CSV";
+	/** HTML = HTML */
+	public static final String REPORTOUTPUTTYPE_HTML = "HTML";
+	/** PDF = PDF */
+	public static final String REPORTOUTPUTTYPE_PDF = "PDF";
+	/** XLS = XLS */
+	public static final String REPORTOUTPUTTYPE_XLS = "XLS";
 	/** XLSX = XLSX */
 	public static final String REPORTOUTPUTTYPE_XLSX = "XLSX";
 	/** Set Report Output Type.
-		@param ReportOutputType Report Output Type	  */
+		@param ReportOutputType Report Output Type
+	*/
 	public void setReportOutputType (String ReportOutputType)
 	{
 
@@ -385,32 +384,32 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 
 	/** Get Report Output Type.
 		@return Report Output Type	  */
-	public String getReportOutputType () 
+	public String getReportOutputType()
 	{
 		return (String)get_Value(COLUMNNAME_ReportOutputType);
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Mail Template.
-		@param R_MailText_ID 
-		Text templates for mailings
-	  */
+		@param R_MailText_ID Text templates for mailings
+	*/
 	public void setR_MailText_ID (int R_MailText_ID)
 	{
-		if (R_MailText_ID < 1) 
+		if (R_MailText_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, Integer.valueOf(R_MailText_ID));
 	}
 
 	/** Get Mail Template.
 		@return Text templates for mailings
 	  */
-	public int getR_MailText_ID () 
+	public int getR_MailText_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_MailText_ID);
 		if (ii == null)
@@ -419,9 +418,8 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	}
 
 	/** Set Scheduler State.
-		@param SchedulerState 
-		State of this scheduler record (not scheduled, started or stopped)
-	  */
+		@param SchedulerState State of this scheduler record (not scheduled, started or stopped)
+	*/
 	public void setSchedulerState (Object SchedulerState)
 	{
 		throw new IllegalArgumentException ("SchedulerState is virtual column");	}
@@ -429,32 +427,32 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/** Get Scheduler State.
 		@return State of this scheduler record (not scheduled, started or stopped)
 	  */
-	public Object getSchedulerState () 
+	public Object getSchedulerState()
 	{
 				return get_Value(COLUMNNAME_SchedulerState);
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
-		@param Supervisor_ID 
-		Supervisor for this user/organization - used for escalation and approval
-	  */
+		@param Supervisor_ID Supervisor for this user/organization - used for escalation and approval
+	*/
 	public void setSupervisor_ID (int Supervisor_ID)
 	{
-		if (Supervisor_ID < 1) 
+		if (Supervisor_ID < 1)
 			set_Value (COLUMNNAME_Supervisor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Supervisor_ID, Integer.valueOf(Supervisor_ID));
 	}
 
 	/** Get Supervisor.
 		@return Supervisor for this user/organization - used for escalation and approval
 	  */
-	public int getSupervisor_ID () 
+	public int getSupervisor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Supervisor_ID);
 		if (ii == null)

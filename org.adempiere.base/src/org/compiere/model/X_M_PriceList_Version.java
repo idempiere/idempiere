@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList_Version
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_PriceList_Version")
 public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_PriceList_Version (Properties ctx, int M_PriceList_Version_ID, String trxName)
@@ -78,9 +79,8 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -89,32 +89,32 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_Name)
-			.getPO(getM_DiscountSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
+			.getPO(getM_DiscountSchema_ID(), get_TrxName());
+	}
 
 	/** Set Discount Schema.
-		@param M_DiscountSchema_ID 
-		Schema to calculate the trade discount percentage
-	  */
+		@param M_DiscountSchema_ID Schema to calculate the trade discount percentage
+	*/
 	public void setM_DiscountSchema_ID (int M_DiscountSchema_ID)
 	{
-		if (M_DiscountSchema_ID < 1) 
+		if (M_DiscountSchema_ID < 1)
 			set_Value (COLUMNNAME_M_DiscountSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_DiscountSchema_ID, Integer.valueOf(M_DiscountSchema_ID));
 	}
 
 	/** Get Discount Schema.
 		@return Schema to calculate the trade discount percentage
 	  */
-	public int getM_DiscountSchema_ID () 
+	public int getM_DiscountSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DiscountSchema_ID);
 		if (ii == null)
@@ -123,26 +123,26 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	}
 
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
-			.getPO(getM_PriceList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
+			.getPO(getM_PriceList_ID(), get_TrxName());
+	}
 
 	/** Set Price List.
-		@param M_PriceList_ID 
-		Unique identifier of a Price List
-	  */
+		@param M_PriceList_ID Unique identifier of a Price List
+	*/
 	public void setM_PriceList_ID (int M_PriceList_ID)
 	{
-		if (M_PriceList_ID < 1) 
+		if (M_PriceList_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PriceList_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PriceList_ID, Integer.valueOf(M_PriceList_ID));
 	}
 
 	/** Get Price List.
 		@return Unique identifier of a Price List
 	  */
-	public int getM_PriceList_ID () 
+	public int getM_PriceList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PriceList_ID);
 		if (ii == null)
@@ -151,26 +151,26 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	}
 
 	public org.compiere.model.I_M_PriceList_Version getM_Pricelist_Version_Base() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_Name)
-			.getPO(getM_Pricelist_Version_Base_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
+			.getPO(getM_Pricelist_Version_Base_ID(), get_TrxName());
+	}
 
 	/** Set Base Price List.
-		@param M_Pricelist_Version_Base_ID 
-		Source for Price list calculations
-	  */
+		@param M_Pricelist_Version_Base_ID Source for Price list calculations
+	*/
 	public void setM_Pricelist_Version_Base_ID (int M_Pricelist_Version_Base_ID)
 	{
-		if (M_Pricelist_Version_Base_ID < 1) 
+		if (M_Pricelist_Version_Base_ID < 1)
 			set_Value (COLUMNNAME_M_Pricelist_Version_Base_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Pricelist_Version_Base_ID, Integer.valueOf(M_Pricelist_Version_Base_ID));
 	}
 
 	/** Get Base Price List.
 		@return Source for Price list calculations
 	  */
-	public int getM_Pricelist_Version_Base_ID () 
+	public int getM_Pricelist_Version_Base_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Pricelist_Version_Base_ID);
 		if (ii == null)
@@ -179,21 +179,20 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	}
 
 	/** Set Price List Version.
-		@param M_PriceList_Version_ID 
-		Identifies a unique instance of a Price List
-	  */
+		@param M_PriceList_Version_ID Identifies a unique instance of a Price List
+	*/
 	public void setM_PriceList_Version_ID (int M_PriceList_Version_ID)
 	{
-		if (M_PriceList_Version_ID < 1) 
+		if (M_PriceList_Version_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PriceList_Version_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PriceList_Version_ID, Integer.valueOf(M_PriceList_Version_ID));
 	}
 
 	/** Get Price List Version.
 		@return Identifies a unique instance of a Price List
 	  */
-	public int getM_PriceList_Version_ID () 
+	public int getM_PriceList_Version_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PriceList_Version_ID);
 		if (ii == null)
@@ -202,7 +201,8 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	}
 
 	/** Set M_PriceList_Version_UU.
-		@param M_PriceList_Version_UU M_PriceList_Version_UU	  */
+		@param M_PriceList_Version_UU M_PriceList_Version_UU
+	*/
 	public void setM_PriceList_Version_UU (String M_PriceList_Version_UU)
 	{
 		set_Value (COLUMNNAME_M_PriceList_Version_UU, M_PriceList_Version_UU);
@@ -210,15 +210,14 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 
 	/** Get M_PriceList_Version_UU.
 		@return M_PriceList_Version_UU	  */
-	public String getM_PriceList_Version_UU () 
+	public String getM_PriceList_Version_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_PriceList_Version_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -227,7 +226,7 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -241,7 +240,8 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
     }
 
 	/** Set Create.
-		@param ProcCreate Create	  */
+		@param ProcCreate Create
+	*/
 	public void setProcCreate (String ProcCreate)
 	{
 		set_Value (COLUMNNAME_ProcCreate, ProcCreate);
@@ -249,15 +249,14 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 
 	/** Get Create.
 		@return Create	  */
-	public String getProcCreate () 
+	public String getProcCreate()
 	{
 		return (String)get_Value(COLUMNNAME_ProcCreate);
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -266,7 +265,7 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}

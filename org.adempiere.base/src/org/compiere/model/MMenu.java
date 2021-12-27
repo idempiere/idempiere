@@ -34,7 +34,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *	
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com
- *  @see FR [ 1966326 ] Is necessary create method to get ID menu use menu Name http://sourceforge.net/tracker/index.php?func=detail&aid=1966326&group_id=176962&atid=879335
+ *  see FR [ 1966326 ] Is necessary create method to get ID menu use menu Name https://sourceforge.net/p/adempiere/feature-requests/426/
  *  @author red1 - FR: [ 2214883 ] Remove SQL code and Replace for Query
  *  @version $Id: MMenu.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
  */
@@ -223,7 +223,7 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 	/**
 	 *  FR [ 1966326 ]
 	 * 	get Menu ID
-	 *	@param String Menu Name
+	 *	@param menuName String Menu Name
 	 *	@return int retValue
 	 */
 	public static int getMenu_ID(String menuName) {

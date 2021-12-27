@@ -39,6 +39,7 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: PaySelectionCreateFrom.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class PaySelectionCreateFrom extends SvrProcess
 {
 	/**	Only When Discount			*/
@@ -172,7 +173,6 @@ public class PaySelectionCreateFrom extends SvrProcess
 				sqlWhere.append(" OR ");
 			else
 				sqlWhere.append(" AND ");
-			// sql.append("paymentTermDueDays(C_PaymentTerm_ID, DateInvoiced, ?) >= 0");	//	##
 			sqlWhere.append("i.DueDate<=?");	//	##
 			if (p_OnlyDiscount)
 				sqlWhere.append(")");

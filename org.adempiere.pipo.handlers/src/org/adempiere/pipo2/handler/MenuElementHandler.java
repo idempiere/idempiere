@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -157,7 +158,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 							oldseqNo = seqNo;
 					}
 	
-				} catch (Exception e) {
+				} catch (SQLException e) {
 					throw new DBException(e);
 				} finally {
 					DB.close(rs, pstmt);
@@ -335,6 +336,14 @@ public class MenuElementHandler extends AbstractElementHandler {
 				addTypeName(atts, "table");
 				document.startElement("", "", I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
+
+				packOut.getCtx().ctx.put("Table_Name",X_AD_Menu.Table_Name);
+				try {
+					new CommonTranslationHandler().packOut(packOut,document,null,m_Menu.get_ID());
+				} catch(Exception e) {
+					if (log.isLoggable(Level.INFO)) log.info(e.toString());
+				}
+
 				if (rs.getInt("AD_WINDOW_ID") > 0
 						|| rs.getInt("AD_PROCESS_ID") > 0
 						|| rs.getInt("AD_TASK_ID") > 0

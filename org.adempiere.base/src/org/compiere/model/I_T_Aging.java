@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Aging
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_T_Aging 
 {
@@ -95,12 +95,12 @@ public interface I_T_Aging
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -298,10 +298,12 @@ public interface I_T_Aging
     /** Column name Due31_Plus */
     public static final String COLUMNNAME_Due31_Plus = "Due31_Plus";
 
-	/** Set Due > 31	  */
+	/** Set Due &gt;
+ 31	  */
 	public void setDue31_Plus (BigDecimal Due31_Plus);
 
-	/** Get Due > 31	  */
+	/** Get Due &gt;
+ 31	  */
 	public BigDecimal getDue31_Plus();
 
     /** Column name Due61_90 */
@@ -316,10 +318,12 @@ public interface I_T_Aging
     /** Column name Due61_Plus */
     public static final String COLUMNNAME_Due61_Plus = "Due61_Plus";
 
-	/** Set Due > 61	  */
+	/** Set Due &gt;
+ 61	  */
 	public void setDue61_Plus (BigDecimal Due61_Plus);
 
-	/** Get Due > 61	  */
+	/** Get Due &gt;
+ 61	  */
 	public BigDecimal getDue61_Plus();
 
     /** Column name Due8_30 */
@@ -334,10 +338,12 @@ public interface I_T_Aging
     /** Column name Due91_Plus */
     public static final String COLUMNNAME_Due91_Plus = "Due91_Plus";
 
-	/** Set Due > 91	  */
+	/** Set Due &gt;
+ 91	  */
 	public void setDue91_Plus (BigDecimal Due91_Plus);
 
-	/** Get Due > 91	  */
+	/** Get Due &gt;
+ 91	  */
 	public BigDecimal getDue91_Plus();
 
     /** Column name DueAmt */
@@ -461,10 +467,12 @@ public interface I_T_Aging
     /** Column name PastDue31_Plus */
     public static final String COLUMNNAME_PastDue31_Plus = "PastDue31_Plus";
 
-	/** Set Past Due > 31	  */
+	/** Set Past Due &gt;
+ 31	  */
 	public void setPastDue31_Plus (BigDecimal PastDue31_Plus);
 
-	/** Get Past Due > 31	  */
+	/** Get Past Due &gt;
+ 31	  */
 	public BigDecimal getPastDue31_Plus();
 
     /** Column name PastDue61_90 */
@@ -479,10 +487,12 @@ public interface I_T_Aging
     /** Column name PastDue61_Plus */
     public static final String COLUMNNAME_PastDue61_Plus = "PastDue61_Plus";
 
-	/** Set Past Due > 61	  */
+	/** Set Past Due &gt;
+ 61	  */
 	public void setPastDue61_Plus (BigDecimal PastDue61_Plus);
 
-	/** Get Past Due > 61	  */
+	/** Get Past Due &gt;
+ 61	  */
 	public BigDecimal getPastDue61_Plus();
 
     /** Column name PastDue8_30 */
@@ -497,10 +507,12 @@ public interface I_T_Aging
     /** Column name PastDue91_Plus */
     public static final String COLUMNNAME_PastDue91_Plus = "PastDue91_Plus";
 
-	/** Set Past Due > 91	  */
+	/** Set Past Due &gt;
+ 91	  */
 	public void setPastDue91_Plus (BigDecimal PastDue91_Plus);
 
-	/** Get Past Due > 91	  */
+	/** Get Past Due &gt;
+ 91	  */
 	public BigDecimal getPastDue91_Plus();
 
     /** Column name PastDueAmt */

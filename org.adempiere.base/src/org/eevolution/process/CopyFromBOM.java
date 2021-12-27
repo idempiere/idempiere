@@ -34,6 +34,7 @@ import org.eevolution.model.MPPProductBOMLine;
  *  @author Tony Snook
  *  @version $Id: CopyFromBOM.java,v 1.0 2008/07/04 05:24:03 tspc Exp $
  */
+@org.adempiere.base.annotation.Process
 public class CopyFromBOM extends SvrProcess {
 	/**					*/
 	private int	p_Record_ID = 0;

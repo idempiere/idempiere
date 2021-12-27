@@ -178,8 +178,6 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			getMovementQty().negate(), getMovementDate(), get_TrxName());
 		mTrx.setC_ProjectIssue_ID(getC_ProjectIssue_ID());
 		//
-		MLocator loc = MLocator.get(getCtx(), getM_Locator_ID());
-		
 		Timestamp dateMPolicy = getMovementDate();
 		
 		if(getM_AttributeSetInstance_ID()>0){
@@ -217,14 +215,14 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 				}
 				if (qtyToIssue.signum() > 0)
 				{
-					ok = MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+					ok = MStorageOnHand.add(getCtx(), getM_Locator_ID(), 
 							getM_Product_ID(), getM_AttributeSetInstance_ID(),
 							qtyToIssue.negate(),dateMPolicy, get_TrxName());
 				}
 			} 
 			else 
 			{
-				ok = MStorageOnHand.add(getCtx(), loc.getM_Warehouse_ID(), getM_Locator_ID(), 
+				ok = MStorageOnHand.add(getCtx(), getM_Locator_ID(), 
 						getM_Product_ID(), getM_AttributeSetInstance_ID(),
 						getMovementQty().negate(),dateMPolicy, get_TrxName());				
 			}

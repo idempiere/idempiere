@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for PA_DashboardContent_Access
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PA_DashboardContent_Access")
 public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardContent_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)
@@ -48,7 +49,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 7 - System - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -70,26 +71,26 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -98,26 +99,26 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -126,18 +127,19 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	/** Set PA_DashboardContent_Access_ID.
-		@param PA_DashboardContent_Access_ID PA_DashboardContent_Access_ID	  */
+		@param PA_DashboardContent_Access_ID PA_DashboardContent_Access_ID
+	*/
 	public void setPA_DashboardContent_Access_ID (int PA_DashboardContent_Access_ID)
 	{
-		if (PA_DashboardContent_Access_ID < 1) 
+		if (PA_DashboardContent_Access_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_Access_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_Access_ID, Integer.valueOf(PA_DashboardContent_Access_ID));
 	}
 
 	/** Get PA_DashboardContent_Access_ID.
 		@return PA_DashboardContent_Access_ID	  */
-	public int getPA_DashboardContent_Access_ID () 
+	public int getPA_DashboardContent_Access_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DashboardContent_Access_ID);
 		if (ii == null)
@@ -146,7 +148,8 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	/** Set PA_DashboardContent_Access_UU.
-		@param PA_DashboardContent_Access_UU PA_DashboardContent_Access_UU	  */
+		@param PA_DashboardContent_Access_UU PA_DashboardContent_Access_UU
+	*/
 	public void setPA_DashboardContent_Access_UU (String PA_DashboardContent_Access_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_Access_UU, PA_DashboardContent_Access_UU);
@@ -154,29 +157,31 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 
 	/** Get PA_DashboardContent_Access_UU.
 		@return PA_DashboardContent_Access_UU	  */
-	public String getPA_DashboardContent_Access_UU () 
+	public String getPA_DashboardContent_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_DashboardContent_Access_UU);
 	}
 
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_Name)
-			.getPO(getPA_DashboardContent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_ID)
+			.getPO(getPA_DashboardContent_ID(), get_TrxName());
+	}
 
 	/** Set Dashboard Content.
-		@param PA_DashboardContent_ID Dashboard Content	  */
+		@param PA_DashboardContent_ID Dashboard Content
+	*/
 	public void setPA_DashboardContent_ID (int PA_DashboardContent_ID)
 	{
-		if (PA_DashboardContent_ID < 1) 
+		if (PA_DashboardContent_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_ID, Integer.valueOf(PA_DashboardContent_ID));
 	}
 
 	/** Get Dashboard Content.
 		@return Dashboard Content	  */
-	public int getPA_DashboardContent_ID () 
+	public int getPA_DashboardContent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DashboardContent_ID);
 		if (ii == null)

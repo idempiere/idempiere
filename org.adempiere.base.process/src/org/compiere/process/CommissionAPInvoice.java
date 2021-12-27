@@ -34,6 +34,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: CommissionAPInvoice.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class CommissionAPInvoice extends SvrProcess
 {
 	/**
@@ -69,8 +70,8 @@ public class CommissionAPInvoice extends SvrProcess
 		MCommission com = new MCommission (getCtx(), comRun.getC_Commission_ID(), get_TrxName());
 		if (com.get_ID() == 0)
 			throw new IllegalArgumentException("CommissionAPInvoice - No Commission");
-		if (com.getC_Charge_ID() == 0)
-			throw new IllegalArgumentException("CommissionAPInvoice - No Charge on Commission");
+		if (com.getC_Charge_ID() == 0 && com.getM_Product_ID() == 0)
+			throw new IllegalArgumentException("CommissionAPInvoice - No Charge or Product on Commission");
 		MBPartner bp = new MBPartner (getCtx(), com.getC_BPartner_ID(), get_TrxName());
 		if (bp.get_ID() == 0)
 			throw new IllegalArgumentException("CommissionAPInvoice - No BPartner");
@@ -80,7 +81,6 @@ public class CommissionAPInvoice extends SvrProcess
 		invoice.setClientOrg(com.getAD_Client_ID(), com.getAD_Org_ID());
 		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);	//	API
 		invoice.setBPartner(bp);
-	//	invoice.setDocumentNo (comRun.getDocumentNo());		//	may cause unique constraint
 		invoice.setSalesRep_ID(getAD_User_ID());	//	caller
 		//
 		if (com.getC_Currency_ID() != invoice.getC_Currency_ID())
@@ -91,7 +91,10 @@ public class CommissionAPInvoice extends SvrProcess
 			
  		//	Create Invoice Line
  		MInvoiceLine iLine = new MInvoiceLine(invoice);
-		iLine.setC_Charge_ID(com.getC_Charge_ID());
+ 		if (com.getC_Charge_ID() > 0)
+ 			iLine.setC_Charge_ID(com.getC_Charge_ID());
+ 		else
+ 			iLine.setM_Product_ID(com.getM_Product_ID());
  		iLine.setQty(1);
  		iLine.setPrice(comRun.getGrandTotal());
 		iLine.setTax();

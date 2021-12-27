@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_SalesStage
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_SalesStage")
 public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_SalesStage (Properties ctx, int C_SalesStage_ID, String trxName)
@@ -78,21 +79,20 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
     }
 
 	/** Set Sales Stage.
-		@param C_SalesStage_ID 
-		Stages of the sales process
-	  */
+		@param C_SalesStage_ID Stages of the sales process
+	*/
 	public void setC_SalesStage_ID (int C_SalesStage_ID)
 	{
-		if (C_SalesStage_ID < 1) 
+		if (C_SalesStage_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_SalesStage_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_SalesStage_ID, Integer.valueOf(C_SalesStage_ID));
 	}
 
 	/** Get Sales Stage.
 		@return Stages of the sales process
 	  */
-	public int getC_SalesStage_ID () 
+	public int getC_SalesStage_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesStage_ID);
 		if (ii == null)
@@ -101,7 +101,8 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	}
 
 	/** Set C_SalesStage_UU.
-		@param C_SalesStage_UU C_SalesStage_UU	  */
+		@param C_SalesStage_UU C_SalesStage_UU
+	*/
 	public void setC_SalesStage_UU (String C_SalesStage_UU)
 	{
 		set_Value (COLUMNNAME_C_SalesStage_UU, C_SalesStage_UU);
@@ -109,15 +110,14 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 
 	/** Get C_SalesStage_UU.
 		@return C_SalesStage_UU	  */
-	public String getC_SalesStage_UU () 
+	public String getC_SalesStage_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_SalesStage_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -126,15 +126,14 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Closed Status.
-		@param IsClosed 
-		The status is closed
-	  */
+		@param IsClosed The status is closed
+	*/
 	public void setIsClosed (boolean IsClosed)
 	{
 		set_Value (COLUMNNAME_IsClosed, Boolean.valueOf(IsClosed));
@@ -143,7 +142,7 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	/** Get Closed Status.
 		@return The status is closed
 	  */
-	public boolean isClosed () 
+	public boolean isClosed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsClosed);
 		if (oo != null) 
@@ -156,9 +155,8 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	}
 
 	/** Set Won.
-		@param IsWon 
-		The opportunity was won
-	  */
+		@param IsWon The opportunity was won
+	*/
 	public void setIsWon (boolean IsWon)
 	{
 		set_Value (COLUMNNAME_IsWon, Boolean.valueOf(IsWon));
@@ -167,7 +165,7 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	/** Get Won.
 		@return The opportunity was won
 	  */
-	public boolean isWon () 
+	public boolean isWon()
 	{
 		Object oo = get_Value(COLUMNNAME_IsWon);
 		if (oo != null) 
@@ -180,9 +178,8 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -191,7 +188,7 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -205,7 +202,8 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
     }
 
 	/** Set Probability.
-		@param Probability Probability	  */
+		@param Probability Probability
+	*/
 	public void setProbability (BigDecimal Probability)
 	{
 		set_Value (COLUMNNAME_Probability, Probability);
@@ -213,7 +211,7 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 
 	/** Get Probability.
 		@return Probability	  */
-	public BigDecimal getProbability () 
+	public BigDecimal getProbability()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Probability);
 		if (bd == null)
@@ -222,9 +220,8 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -233,7 +230,7 @@ public class X_C_SalesStage extends PO implements I_C_SalesStage, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

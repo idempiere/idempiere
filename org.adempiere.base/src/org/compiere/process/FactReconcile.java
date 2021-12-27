@@ -21,16 +21,20 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.process.UUIDGenerator;
+import org.compiere.model.MColumn;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRule;
 import org.compiere.model.MSequence;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 
 /**
  *	Suspense account reconciliation report
  *  @author Paul Bowden (phib)
  */
+@org.adempiere.base.annotation.Process
 public class FactReconcile extends SvrProcess
 {
 	private MElementValue account;
@@ -144,6 +148,10 @@ public class FactReconcile extends SvrProcess
 			count = pstmt.executeUpdate();
 			DB.close(pstmt); pstmt = null;
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Inserted " + count + " new facts into Fact_Reconciliation");
+			if (DB.isGenerateUUIDSupported())
+				DB.executeUpdateEx("UPDATE Fact_Reconciliation SET Fact_Reconciliation_UU=generate_uuid() WHERE Fact_Reconciliation_UU IS NULL", get_TrxName());
+			else
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), MFactReconciliation.Table_Name, PO.getUUIDColumnName(MFactReconciliation.Table_Name)), get_TrxName());
 			
 			// set the matchcode based on the rule found in AD_Rule
 			// which is a sql fragment that returns a string based on the accounting fact

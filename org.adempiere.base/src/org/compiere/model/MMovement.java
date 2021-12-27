@@ -40,9 +40,9 @@ import org.compiere.util.TimeUtil;
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li>FR [ 1948157  ]  Is necessary the reference for document reverse
- *  		@see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  		@see https://sourceforge.net/p/adempiere/feature-requests/412/
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @author Armen Rizal, Goodwill Consulting
  * 			<li>BF [ 1745154 ] Cost in Reversing Material Related Docs  
  *  @author Teo Sarca, www.arhipac.ro
@@ -110,7 +110,7 @@ public class MMovement extends X_M_Movement implements DocAction
 		final String whereClause = "M_Movement_ID=?";
 		List<MMovementLine> list = new Query(getCtx(), I_M_MovementLine.Table_Name, whereClause, get_TrxName())
 		 										.setParameters(getM_Movement_ID())
-		 										.setOrderBy(MMovementLine.COLUMNNAME_Line)
+		 										.setOrderBy(MMovementLine.COLUMNNAME_Line+","+MMovementLine.COLUMNNAME_M_MovementLine_ID)
 		 										.list();
 		m_lines = new MMovementLine[list.size ()];
 		list.toArray (m_lines);
@@ -294,7 +294,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			//      Mandatory Instance
 			MProduct product = line.getProduct();
 			if (line.getM_AttributeSetInstance_ID() == 0) {
-				if (product != null && product.isASIMandatory(true)) {
+				if (product != null && product.isASIMandatoryFor(null, true)) {
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, true)) {  // outgoing
 						BigDecimal qtyDiff = line.getMovementQty();
 						// verify if the ASIs are captured on lineMA
@@ -315,7 +315,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			}
 			if (line.getM_AttributeSetInstanceTo_ID() == 0)
 			{
-				if (product != null && product.isASIMandatory(false) && line.getM_AttributeSetInstanceTo_ID() == 0)
+				if (product != null && product.isASIMandatoryFor(null, false) && line.getM_AttributeSetInstanceTo_ID() == 0)
 				{
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MMovementLine.Table_ID, false)) { // incoming
 						m_processMsg = "@Line@ " + line.getLine() + ": @FillMandatory@ @M_AttributeSetInstanceTo_ID@";
@@ -444,9 +444,8 @@ public class MMovement extends X_M_Movement implements DocAction
 						{
 							MMovementLineMA ma = mas[j];
 							//
-							MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
 							//Update Storage 
-							if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(),
 									line.getM_Locator_ID(),
 									line.getM_Product_ID(), 
 									ma.getM_AttributeSetInstance_ID(),
@@ -464,8 +463,7 @@ public class MMovement extends X_M_Movement implements DocAction
 								M_AttributeSetInstanceTo_ID = ma.getM_AttributeSetInstance_ID();
 							}
 							//Update Storage 
-							MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
-							if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(),
 									line.getM_LocatorTo_ID(),
 									line.getM_Product_ID(), 
 									M_AttributeSetInstanceTo_ID,
@@ -528,12 +526,11 @@ public class MMovement extends X_M_Movement implements DocAction
 						if (dateMPolicy == null && storages.length > 0)
 							dateMPolicy = storages[0].getDateMaterialPolicy();
 						
-						MLocator locator = new MLocator (getCtx(), line.getM_Locator_ID(), get_TrxName());
 						//Update Storage 
 						Timestamp effDateMPolicy = dateMPolicy;
 						if (dateMPolicy == null && line.getMovementQty().negate().signum() > 0)
 							effDateMPolicy = getMovementDate();
-						if (!MStorageOnHand.add(getCtx(),locator.getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(),
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstance_ID(),
@@ -548,8 +545,7 @@ public class MMovement extends X_M_Movement implements DocAction
 						effDateMPolicy = dateMPolicy;
 						if (dateMPolicy == null && line.getMovementQty().signum() > 0)
 							effDateMPolicy = getMovementDate();
-						MLocator locatorTo = new MLocator (getCtx(), line.getM_LocatorTo_ID(), get_TrxName());
-						if (!MStorageOnHand.add(getCtx(),locatorTo.getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(),
 								line.getM_LocatorTo_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstanceTo_ID(),

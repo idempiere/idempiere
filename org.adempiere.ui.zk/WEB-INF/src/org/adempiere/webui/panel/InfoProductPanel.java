@@ -173,9 +173,10 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 	
 	/**
 	 *	Standard Constructor
-	 * 	@param WindowNo window no
+	 * 	@param windowNo window no
 	 * 	@param M_Warehouse_ID warehouse
 	 * 	@param M_PriceList_ID price list
+	 *  @param multipleSelection
 	 * 	@param value    Query Value or Name if enclosed in @
 	 * 	@param whereClause where clause
 	 */
@@ -188,11 +189,13 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 
 	/**
 	 *	Standard Constructor
-	 * 	@param WindowNo window no
+	 * 	@param windowNo window no
 	 * 	@param M_Warehouse_ID warehouse
 	 * 	@param M_PriceList_ID price list
+	 *  @param multipleSelection
 	 * 	@param value    Query Value or Name if enclosed in @
 	 * 	@param whereClause where clause
+	 *  @param lookup
 	 */
 	public InfoProductPanel(int windowNo,
 		int M_Warehouse_ID, int M_PriceList_ID, boolean multipleSelection,String value,

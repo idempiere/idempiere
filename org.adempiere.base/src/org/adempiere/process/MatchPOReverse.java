@@ -26,6 +26,7 @@ import org.compiere.util.Env;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class MatchPOReverse extends SvrProcess {
 	private int		p_M_MatchPO_ID = 0;
 	
@@ -52,7 +53,7 @@ public class MatchPOReverse extends SvrProcess {
 			if (reversalDate == null) {
 				reversalDate = new Timestamp(System.currentTimeMillis());
 			}
-			if (!po.reverse(reversalDate))
+			if (!po.reverse(reversalDate, true))
 				throw new AdempiereException("Failed to reverse matching");
 		}
 		return "@OK@";

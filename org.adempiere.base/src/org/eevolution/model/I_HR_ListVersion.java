@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_ListVersion
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 @SuppressWarnings("all")
 public interface I_HR_ListVersion 

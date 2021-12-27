@@ -145,17 +145,17 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @version $Revision: 0.10 $
  *
  * @author Cristina Ghita, www.arhipac.ro
- * @see FR [ 2877111 ] See identifiers columns when delete records https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2877111&group_id=176962
+ * see FR [ 2877111 ] See identifiers columns when delete records https://sourceforge.net/p/adempiere/feature-requests/855/
  *
  * @author hengsin, hengsin.low@idalica.com
- * @see FR [2887701] https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2887701&group_id=176962
+ * see FR [2887701] https://sourceforge.net/p/adempiere/feature-requests/866/
  * @sponsor www.metas.de
  *
  * @author Teo Sarca, teo.sarca@gmail.com
  *  	<li>BF [ 2992540 ] Grid/Panel not refreshed after process run
- *  		https://sourceforge.net/tracker/?func=detail&aid=2992540&group_id=176962&atid=955896
+ *  		https://sourceforge.net/p/adempiere/zk-web-client/418/
  *  	<li>BF [ 2985892 ] Opening a window using a new record query is not working
- *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
+ *  		https://sourceforge.net/p/adempiere/zk-web-client/411/
  */
 public abstract class AbstractADWindowContent extends AbstractUIPart implements ToolbarListener,
         EventListener<Event>, DataStatusListener, ActionListener, ITabOnSelectHandler
@@ -290,7 +290,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     protected abstract void switchEditStatus(boolean editStatus);
     
-    private void focusToActivePanel() {
+    /**
+     * set focus to active panel
+     */
+    public void focusToActivePanel() {
     	IADTabpanel adTabPanel = adTabbox.getSelectedTabpanel();
 		focusToTabpanel(adTabPanel);
 	}
@@ -302,7 +305,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
     /**
-     * @param adWindowId
      * @param query
      * @return boolean
      */
@@ -310,7 +312,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     {
 		// This temporary validation code is added to check the reported bug
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
-		// https://sourceforge.net/tracker/?func=detail&atid=955896&aid=2832968&group_id=176962
+		// https://sourceforge.net/p/adempiere/zk-web-client/303/
 		// it's harmless, if there is no bug then this must never fail
 		Session currSess = Executions.getCurrent().getDesktop().getSession();
 		int checkad_user_id = -1;
@@ -761,7 +763,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             GridField[] findFields = mTab.getFields();
             FindWindow findWindow = new FindWindow(curWindowNo, mTab.getTabNo(),
                     mTab.getName(), mTab.getAD_Table_ID(), mTab.getTableName(),
-                    where.toString(), findFields, 10, mTab.getAD_Tab_ID()); // no query below 10
+                    where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this); // no query below 10
            	tabFindWindowHashMap.put(mTab, findWindow);
             setupEmbeddedFindwindow(findWindow);
             if (findWindow.initialize())
@@ -1302,7 +1304,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else if (event.getName().equals(ON_FOCUS_DEFER_EVENT)) {
     		HtmlBasedComponent comp = (HtmlBasedComponent) event.getData();
-    		comp.focus();
+    		if (comp instanceof ADTabpanel)
+    			((ADTabpanel)comp).focusToFirstEditor(false);
+    		else
+    			comp.focus();
+    		// 
     	}    		
     }
 
@@ -3745,7 +3751,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		} else {
 			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID());
+					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
 
 			setupEmbeddedFindwindow(findWindow);
 			if (!findWindow.initialize()) {
@@ -3882,4 +3888,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		return true;
 	} // registerQuickFormTab
+	
+	/**
+	 * 
+	 * @return {@link GridWindow}
+	 */
+	public GridWindow getGridWindow() {
+		return gridWindow;
+	}
 }

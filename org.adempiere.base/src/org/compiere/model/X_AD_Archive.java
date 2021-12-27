@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Archive
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Archive")
 public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210416L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Archive (Properties ctx, int AD_Archive_ID, String trxName)
@@ -74,21 +75,20 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
     }
 
 	/** Set Archive.
-		@param AD_Archive_ID 
-		Document and Report Archive
-	  */
+		@param AD_Archive_ID Document and Report Archive
+	*/
 	public void setAD_Archive_ID (int AD_Archive_ID)
 	{
-		if (AD_Archive_ID < 1) 
+		if (AD_Archive_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Archive_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Archive_ID, Integer.valueOf(AD_Archive_ID));
 	}
 
 	/** Get Archive.
 		@return Document and Report Archive
 	  */
-	public int getAD_Archive_ID () 
+	public int getAD_Archive_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Archive_ID);
 		if (ii == null)
@@ -97,7 +97,8 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	}
 
 	/** Set AD_Archive_UU.
-		@param AD_Archive_UU AD_Archive_UU	  */
+		@param AD_Archive_UU AD_Archive_UU
+	*/
 	public void setAD_Archive_UU (String AD_Archive_UU)
 	{
 		set_Value (COLUMNNAME_AD_Archive_UU, AD_Archive_UU);
@@ -105,32 +106,32 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 
 	/** Get AD_Archive_UU.
 		@return AD_Archive_UU	  */
-	public String getAD_Archive_UU () 
+	public String getAD_Archive_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Archive_UU);
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -139,23 +140,25 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_Name)
-			.getPO(getAD_StorageProvider_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_ID)
+			.getPO(getAD_StorageProvider_ID(), get_TrxName());
+	}
 
 	/** Set Storage Provider.
-		@param AD_StorageProvider_ID Storage Provider	  */
+		@param AD_StorageProvider_ID Storage Provider
+	*/
 	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
 	{
-		if (AD_StorageProvider_ID < 1) 
+		if (AD_StorageProvider_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
 	}
 
 	/** Get Storage Provider.
 		@return Storage Provider	  */
-	public int getAD_StorageProvider_ID () 
+	public int getAD_StorageProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
 		if (ii == null)
@@ -164,26 +167,26 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -192,9 +195,8 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	}
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (byte[] BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, BinaryData);
@@ -203,32 +205,32 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public byte[] getBinaryData () 
+	public byte[] getBinaryData()
 	{
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -237,9 +239,8 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -248,15 +249,14 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -265,15 +265,14 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Report.
-		@param IsReport 
-		Indicates a Report record
-	  */
+		@param IsReport Indicates a Report record
+	*/
 	public void setIsReport (boolean IsReport)
 	{
 		set_Value (COLUMNNAME_IsReport, Boolean.valueOf(IsReport));
@@ -282,7 +281,7 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	/** Get Report.
 		@return Indicates a Report record
 	  */
-	public boolean isReport () 
+	public boolean isReport()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReport);
 		if (oo != null) 
@@ -295,9 +294,8 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -306,7 +304,7 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -320,21 +318,20 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
     }
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_Value (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)

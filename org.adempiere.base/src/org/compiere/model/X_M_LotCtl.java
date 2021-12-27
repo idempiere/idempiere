@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_LotCtl
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_LotCtl")
 public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_LotCtl (Properties ctx, int M_LotCtl_ID, String trxName)
@@ -78,9 +79,8 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
     }
 
 	/** Set Current Next.
-		@param CurrentNext 
-		The next number to be used
-	  */
+		@param CurrentNext The next number to be used
+	*/
 	public void setCurrentNext (int CurrentNext)
 	{
 		set_Value (COLUMNNAME_CurrentNext, Integer.valueOf(CurrentNext));
@@ -89,7 +89,7 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	/** Get Current Next.
 		@return The next number to be used
 	  */
-	public int getCurrentNext () 
+	public int getCurrentNext()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CurrentNext);
 		if (ii == null)
@@ -98,9 +98,8 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -109,15 +108,14 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Increment.
-		@param IncrementNo 
-		The number to increment the last document number by
-	  */
+		@param IncrementNo The number to increment the last document number by
+	*/
 	public void setIncrementNo (int IncrementNo)
 	{
 		set_Value (COLUMNNAME_IncrementNo, Integer.valueOf(IncrementNo));
@@ -126,7 +124,7 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	/** Get Increment.
 		@return The number to increment the last document number by
 	  */
-	public int getIncrementNo () 
+	public int getIncrementNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IncrementNo);
 		if (ii == null)
@@ -135,21 +133,20 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	}
 
 	/** Set Lot Control.
-		@param M_LotCtl_ID 
-		Product Lot Control
-	  */
+		@param M_LotCtl_ID Product Lot Control
+	*/
 	public void setM_LotCtl_ID (int M_LotCtl_ID)
 	{
-		if (M_LotCtl_ID < 1) 
+		if (M_LotCtl_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_LotCtl_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_LotCtl_ID, Integer.valueOf(M_LotCtl_ID));
 	}
 
 	/** Get Lot Control.
 		@return Product Lot Control
 	  */
-	public int getM_LotCtl_ID () 
+	public int getM_LotCtl_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_LotCtl_ID);
 		if (ii == null)
@@ -158,7 +155,8 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	}
 
 	/** Set M_LotCtl_UU.
-		@param M_LotCtl_UU M_LotCtl_UU	  */
+		@param M_LotCtl_UU M_LotCtl_UU
+	*/
 	public void setM_LotCtl_UU (String M_LotCtl_UU)
 	{
 		set_Value (COLUMNNAME_M_LotCtl_UU, M_LotCtl_UU);
@@ -166,15 +164,14 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 
 	/** Get M_LotCtl_UU.
 		@return M_LotCtl_UU	  */
-	public String getM_LotCtl_UU () 
+	public String getM_LotCtl_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_LotCtl_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -183,7 +180,7 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -197,9 +194,8 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
     }
 
 	/** Set Prefix.
-		@param Prefix 
-		Prefix before the sequence number
-	  */
+		@param Prefix Prefix before the sequence number
+	*/
 	public void setPrefix (String Prefix)
 	{
 		set_Value (COLUMNNAME_Prefix, Prefix);
@@ -208,15 +204,14 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	/** Get Prefix.
 		@return Prefix before the sequence number
 	  */
-	public String getPrefix () 
+	public String getPrefix()
 	{
 		return (String)get_Value(COLUMNNAME_Prefix);
 	}
 
 	/** Set Start No.
-		@param StartNo 
-		Starting number/position
-	  */
+		@param StartNo Starting number/position
+	*/
 	public void setStartNo (int StartNo)
 	{
 		set_Value (COLUMNNAME_StartNo, Integer.valueOf(StartNo));
@@ -225,7 +220,7 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	/** Get Start No.
 		@return Starting number/position
 	  */
-	public int getStartNo () 
+	public int getStartNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_StartNo);
 		if (ii == null)
@@ -234,9 +229,8 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	}
 
 	/** Set Suffix.
-		@param Suffix 
-		Suffix after the number
-	  */
+		@param Suffix Suffix after the number
+	*/
 	public void setSuffix (String Suffix)
 	{
 		set_Value (COLUMNNAME_Suffix, Suffix);
@@ -245,7 +239,7 @@ public class X_M_LotCtl extends PO implements I_M_LotCtl, I_Persistent
 	/** Get Suffix.
 		@return Suffix after the number
 	  */
-	public String getSuffix () 
+	public String getSuffix()
 	{
 		return (String)get_Value(COLUMNNAME_Suffix);
 	}

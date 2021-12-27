@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BP_Price
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_BP_Price")
 public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_BP_Price (Properties ctx, int M_BP_Price_ID, String trxName)
@@ -81,9 +82,8 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
     }
 
 	/** Set Break Value.
-		@param BreakValue 
-		Low Value of trade discount break level
-	  */
+		@param BreakValue Low Value of trade discount break level
+	*/
 	public void setBreakValue (BigDecimal BreakValue)
 	{
 		set_ValueNoCheck (COLUMNNAME_BreakValue, BreakValue);
@@ -92,7 +92,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Break Value.
 		@return Low Value of trade discount break level
 	  */
-	public BigDecimal getBreakValue () 
+	public BigDecimal getBreakValue()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_BreakValue);
 		if (bd == null)
@@ -101,26 +101,26 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -129,26 +129,26 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -157,9 +157,8 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	/** Set Comments.
-		@param Comments 
-		Comments or additional information
-	  */
+		@param Comments Comments or additional information
+	*/
 	public void setComments (String Comments)
 	{
 		set_Value (COLUMNNAME_Comments, Comments);
@@ -168,15 +167,14 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Comments.
 		@return Comments or additional information
 	  */
-	public String getComments () 
+	public String getComments()
 	{
 		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Discount %.
-		@param Discount 
-		Discount in percent
-	  */
+		@param Discount Discount in percent
+	*/
 	public void setDiscount (BigDecimal Discount)
 	{
 		set_Value (COLUMNNAME_Discount, Discount);
@@ -185,7 +183,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Discount %.
 		@return Discount in percent
 	  */
-	public BigDecimal getDiscount () 
+	public BigDecimal getDiscount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Discount);
 		if (bd == null)
@@ -194,9 +192,8 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	/** Set Net Price.
-		@param IsNetPrice 
-		Net Price including all discounts
-	  */
+		@param IsNetPrice Net Price including all discounts
+	*/
 	public void setIsNetPrice (boolean IsNetPrice)
 	{
 		set_Value (COLUMNNAME_IsNetPrice, Boolean.valueOf(IsNetPrice));
@@ -205,7 +202,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Net Price.
 		@return Net Price including all discounts
 	  */
-	public boolean isNetPrice () 
+	public boolean isNetPrice()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNetPrice);
 		if (oo != null) 
@@ -218,18 +215,19 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	/** Set Business Partner Price.
-		@param M_BP_Price_ID Business Partner Price	  */
+		@param M_BP_Price_ID Business Partner Price
+	*/
 	public void setM_BP_Price_ID (int M_BP_Price_ID)
 	{
-		if (M_BP_Price_ID < 1) 
+		if (M_BP_Price_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_BP_Price_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_BP_Price_ID, Integer.valueOf(M_BP_Price_ID));
 	}
 
 	/** Get Business Partner Price.
 		@return Business Partner Price	  */
-	public int getM_BP_Price_ID () 
+	public int getM_BP_Price_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_BP_Price_ID);
 		if (ii == null)
@@ -238,7 +236,8 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	/** Set M_BP_Price_UU.
-		@param M_BP_Price_UU M_BP_Price_UU	  */
+		@param M_BP_Price_UU M_BP_Price_UU
+	*/
 	public void setM_BP_Price_UU (String M_BP_Price_UU)
 	{
 		set_Value (COLUMNNAME_M_BP_Price_UU, M_BP_Price_UU);
@@ -246,32 +245,32 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 
 	/** Get M_BP_Price_UU.
 		@return M_BP_Price_UU	  */
-	public String getM_BP_Price_UU () 
+	public String getM_BP_Price_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_BP_Price_UU);
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -288,9 +287,8 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
     }
 
 	/** Set Limit Price.
-		@param PriceLimit 
-		Lowest price for a product
-	  */
+		@param PriceLimit Lowest price for a product
+	*/
 	public void setPriceLimit (BigDecimal PriceLimit)
 	{
 		set_Value (COLUMNNAME_PriceLimit, PriceLimit);
@@ -299,7 +297,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Limit Price.
 		@return Lowest price for a product
 	  */
-	public BigDecimal getPriceLimit () 
+	public BigDecimal getPriceLimit()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceLimit);
 		if (bd == null)
@@ -308,9 +306,8 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	/** Set List Price.
-		@param PriceList 
-		List Price
-	  */
+		@param PriceList List Price
+	*/
 	public void setPriceList (BigDecimal PriceList)
 	{
 		set_Value (COLUMNNAME_PriceList, PriceList);
@@ -319,7 +316,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get List Price.
 		@return List Price
 	  */
-	public BigDecimal getPriceList () 
+	public BigDecimal getPriceList()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceList);
 		if (bd == null)
@@ -329,14 +326,13 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 
 	/** PriceOverrideType AD_Reference_ID=53410 */
 	public static final int PRICEOVERRIDETYPE_AD_Reference_ID=53410;
-	/** Fixed Price = P */
-	public static final String PRICEOVERRIDETYPE_FixedPrice = "P";
 	/** Discount = D */
 	public static final String PRICEOVERRIDETYPE_Discount = "D";
+	/** Fixed Price = P */
+	public static final String PRICEOVERRIDETYPE_FixedPrice = "P";
 	/** Set Price Override Type.
-		@param PriceOverrideType 
-		Type of price override, fixed price or discount off list
-	  */
+		@param PriceOverrideType Type of price override, fixed price or discount off list
+	*/
 	public void setPriceOverrideType (String PriceOverrideType)
 	{
 
@@ -346,15 +342,14 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Price Override Type.
 		@return Type of price override, fixed price or discount off list
 	  */
-	public String getPriceOverrideType () 
+	public String getPriceOverrideType()
 	{
 		return (String)get_Value(COLUMNNAME_PriceOverrideType);
 	}
 
 	/** Set Standard Price.
-		@param PriceStd 
-		Standard Price
-	  */
+		@param PriceStd Standard Price
+	*/
 	public void setPriceStd (BigDecimal PriceStd)
 	{
 		set_Value (COLUMNNAME_PriceStd, PriceStd);
@@ -363,7 +358,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Standard Price.
 		@return Standard Price
 	  */
-	public BigDecimal getPriceStd () 
+	public BigDecimal getPriceStd()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceStd);
 		if (bd == null)
@@ -372,9 +367,8 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -383,15 +377,14 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -400,7 +393,7 @@ public class X_M_BP_Price extends PO implements I_M_BP_Price, I_Persistent
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

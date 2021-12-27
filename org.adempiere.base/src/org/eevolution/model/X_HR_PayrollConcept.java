@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_PayrollConcept
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="HR_PayrollConcept")
 public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_HR_PayrollConcept (Properties ctx, int HR_PayrollConcept_ID, String trxName)
@@ -76,23 +77,25 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
     }
 
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_Name)
-			.getPO(getAD_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_ID)
+			.getPO(getAD_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Rule.
-		@param AD_Rule_ID Rule	  */
+		@param AD_Rule_ID Rule
+	*/
 	public void setAD_Rule_ID (int AD_Rule_ID)
 	{
-		if (AD_Rule_ID < 1) 
+		if (AD_Rule_ID < 1)
 			set_Value (COLUMNNAME_AD_Rule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Rule_ID, Integer.valueOf(AD_Rule_ID));
 	}
 
 	/** Get Rule.
 		@return Rule	  */
-	public int getAD_Rule_ID () 
+	public int getAD_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Rule_ID);
 		if (ii == null)
@@ -101,23 +104,25 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	}
 
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_Name)
-			.getPO(getHR_Concept_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_ID)
+			.getPO(getHR_Concept_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Concept.
-		@param HR_Concept_ID Payroll Concept	  */
+		@param HR_Concept_ID Payroll Concept
+	*/
 	public void setHR_Concept_ID (int HR_Concept_ID)
 	{
-		if (HR_Concept_ID < 1) 
+		if (HR_Concept_ID < 1)
 			set_Value (COLUMNNAME_HR_Concept_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Concept_ID, Integer.valueOf(HR_Concept_ID));
 	}
 
 	/** Get Payroll Concept.
 		@return Payroll Concept	  */
-	public int getHR_Concept_ID () 
+	public int getHR_Concept_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Concept_ID);
 		if (ii == null)
@@ -126,18 +131,19 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	}
 
 	/** Set Payroll Concept.
-		@param HR_PayrollConcept_ID Payroll Concept	  */
+		@param HR_PayrollConcept_ID Payroll Concept
+	*/
 	public void setHR_PayrollConcept_ID (int HR_PayrollConcept_ID)
 	{
-		if (HR_PayrollConcept_ID < 1) 
+		if (HR_PayrollConcept_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_PayrollConcept_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_PayrollConcept_ID, Integer.valueOf(HR_PayrollConcept_ID));
 	}
 
 	/** Get Payroll Concept.
 		@return Payroll Concept	  */
-	public int getHR_PayrollConcept_ID () 
+	public int getHR_PayrollConcept_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_PayrollConcept_ID);
 		if (ii == null)
@@ -146,7 +152,8 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	}
 
 	/** Set HR_PayrollConcept_UU.
-		@param HR_PayrollConcept_UU HR_PayrollConcept_UU	  */
+		@param HR_PayrollConcept_UU HR_PayrollConcept_UU
+	*/
 	public void setHR_PayrollConcept_UU (String HR_PayrollConcept_UU)
 	{
 		set_Value (COLUMNNAME_HR_PayrollConcept_UU, HR_PayrollConcept_UU);
@@ -154,29 +161,31 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 
 	/** Get HR_PayrollConcept_UU.
 		@return HR_PayrollConcept_UU	  */
-	public String getHR_PayrollConcept_UU () 
+	public String getHR_PayrollConcept_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_PayrollConcept_UU);
 	}
 
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_Name)
-			.getPO(getHR_Payroll_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
+			.getPO(getHR_Payroll_ID(), get_TrxName());
+	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -185,9 +194,8 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	}
 
 	/** Set Displayed.
-		@param IsDisplayed 
-		Determines, if this field is displayed
-	  */
+		@param IsDisplayed Determines, if this field is displayed
+	*/
 	public void setIsDisplayed (boolean IsDisplayed)
 	{
 		set_Value (COLUMNNAME_IsDisplayed, Boolean.valueOf(IsDisplayed));
@@ -196,7 +204,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/** Get Displayed.
 		@return Determines, if this field is displayed
 	  */
-	public boolean isDisplayed () 
+	public boolean isDisplayed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisplayed);
 		if (oo != null) 
@@ -209,9 +217,8 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	}
 
 	/** Set Included.
-		@param IsInclude 
-		Defines whether this content / template is included into another one
-	  */
+		@param IsInclude Defines whether this content / template is included into another one
+	*/
 	public void setIsInclude (boolean IsInclude)
 	{
 		set_Value (COLUMNNAME_IsInclude, Boolean.valueOf(IsInclude));
@@ -220,7 +227,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/** Get Included.
 		@return Defines whether this content / template is included into another one
 	  */
-	public boolean isInclude () 
+	public boolean isInclude()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInclude);
 		if (oo != null) 
@@ -233,9 +240,8 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	}
 
 	/** Set Printed.
-		@param IsPrinted 
-		Indicates if this document / line is printed
-	  */
+		@param IsPrinted Indicates if this document / line is printed
+	*/
 	public void setIsPrinted (boolean IsPrinted)
 	{
 		set_Value (COLUMNNAME_IsPrinted, Boolean.valueOf(IsPrinted));
@@ -244,7 +250,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/** Get Printed.
 		@return Indicates if this document / line is printed
 	  */
-	public boolean isPrinted () 
+	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
 		if (oo != null) 
@@ -257,9 +263,8 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -268,7 +273,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -282,9 +287,8 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -293,7 +297,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

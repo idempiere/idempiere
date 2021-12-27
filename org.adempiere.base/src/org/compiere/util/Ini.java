@@ -37,7 +37,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.ModelValidationEngine;
 
 /**
- *	Load & Save INI Settings from property file
+ *	Load and Save INI Settings from property file
  *	Initiated in Adempiere.startup
  *	Settings activated in ALogin.getIni
  *
@@ -88,7 +88,7 @@ public final class Ini implements Serializable
 	/** Data Source			*/
 	public static final String  P_CONTEXT = 		"DataSource";
 	private static final String	DEFAULT_CONTEXT	= 	"java:adempiereDB";
-	/** Look & Feel			*/
+	/** Look and Feel			*/
 	public static final String	P_UI_LOOK =			"UILookFeel";
 
     private static final String	DEFAULT_UI_LOOK =	"Adempiere";

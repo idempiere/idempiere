@@ -1,6 +1,9 @@
-<?xml version="1.0"?><!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd">
 
-<!-- ============================================================= --><!-- SSL ContextFactory configuration                              --><!-- ============================================================= -->
+<!-- ============================================================= -->
+<!-- SSL ContextFactory configuration                              -->
+<!-- ============================================================= -->
 
 <!-- 
   To configure Includes / Excludes for Cipher Suites or Protocols see tweak-ssl.xml example at 

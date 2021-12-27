@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_Group
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_R_Group 
 {
@@ -148,13 +148,17 @@ public interface I_R_Group
     /** Column name PP_Product_BOM_ID */
     public static final String COLUMNNAME_PP_Product_BOM_ID = "PP_Product_BOM_ID";
 
-	/** Set BOM & Formula.
-	  * BOM & Formula
+	/** Set BOM &amp;
+ Formula.
+	  * BOM &amp;
+ Formula
 	  */
 	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID);
 
-	/** Get BOM & Formula.
-	  * BOM & Formula
+	/** Get BOM &amp;
+ Formula.
+	  * BOM &amp;
+ Formula
 	  */
 	public int getPP_Product_BOM_ID();
 

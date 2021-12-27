@@ -35,6 +35,8 @@ import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
+import org.adempiere.util.DefaultReservationTracerFactory;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.Callout;
@@ -152,7 +154,7 @@ public class Core {
 	/**
 	 *
 	 * @param className
-	 * @param method 
+	 * @param methodName 
 	 * @return callout for className
 	 */
 	public static Callout getCallout(String className, String methodName) {
@@ -1016,7 +1018,7 @@ public class Core {
 	
 	/**
 	 * Get print header/footer instance
-	 * @param print header/footer
+	 * @param printHeaderFooter print header/footer
 	 * @return print header/footer instance or null if not found
 	 */
 	public static IPrintHeaderFooter getPrintHeaderFooter(I_AD_PrintHeaderFooter printHeaderFooter) {
@@ -1046,5 +1048,17 @@ public class Core {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Get {@link IReservationTracerFactory} component
+	 * @return {@link IReservationTracerFactory} implementation
+	 */
+	public static IReservationTracerFactory getReservationTracerFactory() {
+		IServiceHolder<IReservationTracerFactory> serviceHolder = Service.locator().locate(IReservationTracerFactory.class);
+		if (serviceHolder != null && serviceHolder.getService() != null)
+			return serviceHolder.getService();
+		
+		return DefaultReservationTracerFactory.getInstance();
 	}
 }

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Module
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Module")
 public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_ASP_Module (Properties ctx, int ASP_Module_ID, String trxName)
@@ -73,18 +74,19 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
     }
 
 	/** Set ASP Module.
-		@param ASP_Module_ID ASP Module	  */
+		@param ASP_Module_ID ASP Module
+	*/
 	public void setASP_Module_ID (int ASP_Module_ID)
 	{
-		if (ASP_Module_ID < 1) 
+		if (ASP_Module_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Module_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Module_ID, Integer.valueOf(ASP_Module_ID));
 	}
 
 	/** Get ASP Module.
 		@return ASP Module	  */
-	public int getASP_Module_ID () 
+	public int getASP_Module_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Module_ID);
 		if (ii == null)
@@ -93,7 +95,8 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 	}
 
 	/** Set ASP_Module_UU.
-		@param ASP_Module_UU ASP_Module_UU	  */
+		@param ASP_Module_UU ASP_Module_UU
+	*/
 	public void setASP_Module_UU (String ASP_Module_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Module_UU, ASP_Module_UU);
@@ -101,15 +104,14 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 
 	/** Get ASP_Module_UU.
 		@return ASP_Module_UU	  */
-	public String getASP_Module_UU () 
+	public String getASP_Module_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Module_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -118,15 +120,14 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -135,15 +136,14 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -152,7 +152,7 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -166,9 +166,8 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -177,7 +176,7 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

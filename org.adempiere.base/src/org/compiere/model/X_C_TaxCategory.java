@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxCategory
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_TaxCategory")
 public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_TaxCategory (Properties ctx, int C_TaxCategory_ID, String trxName)
@@ -73,9 +74,8 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
     }
 
 	/** Set Commodity Code.
-		@param CommodityCode 
-		Commodity code used for tax calculation
-	  */
+		@param CommodityCode Commodity code used for tax calculation
+	*/
 	public void setCommodityCode (String CommodityCode)
 	{
 		set_Value (COLUMNNAME_CommodityCode, CommodityCode);
@@ -84,27 +84,26 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	/** Get Commodity Code.
 		@return Commodity code used for tax calculation
 	  */
-	public String getCommodityCode () 
+	public String getCommodityCode()
 	{
 		return (String)get_Value(COLUMNNAME_CommodityCode);
 	}
 
 	/** Set Tax Category.
-		@param C_TaxCategory_ID 
-		Tax Category
-	  */
+		@param C_TaxCategory_ID Tax Category
+	*/
 	public void setC_TaxCategory_ID (int C_TaxCategory_ID)
 	{
-		if (C_TaxCategory_ID < 1) 
+		if (C_TaxCategory_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxCategory_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxCategory_ID, Integer.valueOf(C_TaxCategory_ID));
 	}
 
 	/** Get Tax Category.
 		@return Tax Category
 	  */
-	public int getC_TaxCategory_ID () 
+	public int getC_TaxCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxCategory_ID);
 		if (ii == null)
@@ -113,7 +112,8 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	}
 
 	/** Set C_TaxCategory_UU.
-		@param C_TaxCategory_UU C_TaxCategory_UU	  */
+		@param C_TaxCategory_UU C_TaxCategory_UU
+	*/
 	public void setC_TaxCategory_UU (String C_TaxCategory_UU)
 	{
 		set_Value (COLUMNNAME_C_TaxCategory_UU, C_TaxCategory_UU);
@@ -121,15 +121,14 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 
 	/** Get C_TaxCategory_UU.
 		@return C_TaxCategory_UU	  */
-	public String getC_TaxCategory_UU () 
+	public String getC_TaxCategory_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxCategory_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -138,15 +137,14 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -155,7 +153,7 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -168,9 +166,8 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -179,7 +176,7 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

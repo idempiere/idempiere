@@ -111,10 +111,9 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 */
 	@Override
 	public void openInfo(int infoId) {
-		InfoPanel infoPanel = InfoManager.create(infoId);
+		InfoPanel infoPanel = InfoManager.create(infoId, getPredefinedContextVariables());
 		
 		if (infoPanel != null) {
-			Env.setPredefinedVariables(Env.getCtx(), infoPanel.getWindowNo(), getPredefinedContextVariables());
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
 			infoPanel.setParent(tabPanel);
 			String title = infoPanel.getTitle();
@@ -143,9 +142,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	
 	/**
 	 *
-	 * @param <T>
 	 * @param windowId
-	 * @return ADWindow
+	 * @param callback
 	 */
 	public void openWindow(int windowId, Callback<ADWindow> callback) {
 		openWindow(windowId, null, callback);
@@ -155,7 +153,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 *
 	 * @param windowId
      * @param query
-	 * @return ADWindow
+     * @param callback
 	 */
 	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback) {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);

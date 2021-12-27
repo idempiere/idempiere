@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MatchPO
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_MatchPO")
 public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_MatchPO (Properties ctx, int M_MatchPO_ID, String trxName)
@@ -83,26 +84,26 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
     }
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -111,26 +112,26 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_Name)
-			.getPO(getC_OrderLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
+			.getPO(getC_OrderLine_ID(), get_TrxName());
+	}
 
 	/** Set Sales Order Line.
-		@param C_OrderLine_ID 
-		Sales Order Line
-	  */
+		@param C_OrderLine_ID Sales Order Line
+	*/
 	public void setC_OrderLine_ID (int C_OrderLine_ID)
 	{
-		if (C_OrderLine_ID < 1) 
+		if (C_OrderLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_OrderLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_OrderLine_ID, Integer.valueOf(C_OrderLine_ID));
 	}
 
 	/** Get Sales Order Line.
 		@return Sales Order Line
 	  */
-	public int getC_OrderLine_ID () 
+	public int getC_OrderLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderLine_ID);
 		if (ii == null)
@@ -139,9 +140,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -150,15 +150,14 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Transaction Date.
-		@param DateTrx 
-		Transaction Date
-	  */
+		@param DateTrx Transaction Date
+	*/
 	public void setDateTrx (Timestamp DateTrx)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateTrx, DateTrx);
@@ -167,15 +166,14 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Transaction Date.
 		@return Transaction Date
 	  */
-	public Timestamp getDateTrx () 
+	public Timestamp getDateTrx()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTrx);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -184,15 +182,14 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -201,7 +198,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -215,9 +212,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
     }
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -226,7 +222,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -239,26 +235,26 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -267,26 +263,26 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -295,21 +291,20 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Match PO.
-		@param M_MatchPO_ID 
-		Match Purchase Order to Shipment/Receipt and Invoice
-	  */
+		@param M_MatchPO_ID Match Purchase Order to Shipment/Receipt and Invoice
+	*/
 	public void setM_MatchPO_ID (int M_MatchPO_ID)
 	{
-		if (M_MatchPO_ID < 1) 
+		if (M_MatchPO_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_MatchPO_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_MatchPO_ID, Integer.valueOf(M_MatchPO_ID));
 	}
 
 	/** Get Match PO.
 		@return Match Purchase Order to Shipment/Receipt and Invoice
 	  */
-	public int getM_MatchPO_ID () 
+	public int getM_MatchPO_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MatchPO_ID);
 		if (ii == null)
@@ -318,7 +313,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set M_MatchPO_UU.
-		@param M_MatchPO_UU M_MatchPO_UU	  */
+		@param M_MatchPO_UU M_MatchPO_UU
+	*/
 	public void setM_MatchPO_UU (String M_MatchPO_UU)
 	{
 		set_Value (COLUMNNAME_M_MatchPO_UU, M_MatchPO_UU);
@@ -326,32 +322,32 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 
 	/** Get M_MatchPO_UU.
 		@return M_MatchPO_UU	  */
-	public String getM_MatchPO_UU () 
+	public String getM_MatchPO_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_MatchPO_UU);
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -360,9 +356,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Posted.
-		@param Posted 
-		Posting status
-	  */
+		@param Posted Posting status
+	*/
 	public void setPosted (boolean Posted)
 	{
 		set_ValueNoCheck (COLUMNNAME_Posted, Boolean.valueOf(Posted));
@@ -371,7 +366,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Posted.
 		@return Posting status
 	  */
-	public boolean isPosted () 
+	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
 		if (oo != null) 
@@ -384,9 +379,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Price Match Difference.
-		@param PriceMatchDifference 
-		Difference between Purchase and Invoice Price per matched line
-	  */
+		@param PriceMatchDifference Difference between Purchase and Invoice Price per matched line
+	*/
 	public void setPriceMatchDifference (BigDecimal PriceMatchDifference)
 	{
 		set_Value (COLUMNNAME_PriceMatchDifference, PriceMatchDifference);
@@ -395,7 +389,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Price Match Difference.
 		@return Difference between Purchase and Invoice Price per matched line
 	  */
-	public BigDecimal getPriceMatchDifference () 
+	public BigDecimal getPriceMatchDifference()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceMatchDifference);
 		if (bd == null)
@@ -404,9 +398,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -415,7 +408,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -428,9 +421,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Processed On.
-		@param ProcessedOn 
-		The date+time (expressed in decimal format) when the document has been processed
-	  */
+		@param ProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
 	public void setProcessedOn (BigDecimal ProcessedOn)
 	{
 		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
@@ -439,7 +431,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Processed On.
 		@return The date+time (expressed in decimal format) when the document has been processed
 	  */
-	public BigDecimal getProcessedOn () 
+	public BigDecimal getProcessedOn()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
 		if (bd == null)
@@ -448,7 +440,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -456,7 +449,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -469,9 +462,8 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_ValueNoCheck (COLUMNNAME_Qty, Qty);
@@ -480,7 +472,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -489,23 +481,25 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	public org.compiere.model.I_M_MatchPO getRef_MatchPO() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_MatchPO)MTable.get(getCtx(), org.compiere.model.I_M_MatchPO.Table_Name)
-			.getPO(getRef_MatchPO_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_MatchPO)MTable.get(getCtx(), org.compiere.model.I_M_MatchPO.Table_ID)
+			.getPO(getRef_MatchPO_ID(), get_TrxName());
+	}
 
 	/** Set Referenced Match PO.
-		@param Ref_MatchPO_ID Referenced Match PO	  */
+		@param Ref_MatchPO_ID Referenced Match PO
+	*/
 	public void setRef_MatchPO_ID (int Ref_MatchPO_ID)
 	{
-		if (Ref_MatchPO_ID < 1) 
+		if (Ref_MatchPO_ID < 1)
 			set_Value (COLUMNNAME_Ref_MatchPO_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Ref_MatchPO_ID, Integer.valueOf(Ref_MatchPO_ID));
 	}
 
 	/** Get Referenced Match PO.
 		@return Referenced Match PO	  */
-	public int getRef_MatchPO_ID () 
+	public int getRef_MatchPO_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Ref_MatchPO_ID);
 		if (ii == null)
@@ -514,26 +508,26 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	}
 
 	public org.compiere.model.I_M_MatchPO getReversal() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_MatchPO)MTable.get(getCtx(), org.compiere.model.I_M_MatchPO.Table_Name)
-			.getPO(getReversal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_MatchPO)MTable.get(getCtx(), org.compiere.model.I_M_MatchPO.Table_ID)
+			.getPO(getReversal_ID(), get_TrxName());
+	}
 
 	/** Set Reversal ID.
-		@param Reversal_ID 
-		ID of document reversal
-	  */
+		@param Reversal_ID ID of document reversal
+	*/
 	public void setReversal_ID (int Reversal_ID)
 	{
-		if (Reversal_ID < 1) 
+		if (Reversal_ID < 1)
 			set_Value (COLUMNNAME_Reversal_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Reversal_ID, Integer.valueOf(Reversal_ID));
 	}
 
 	/** Get Reversal ID.
 		@return ID of document reversal
 	  */
-	public int getReversal_ID () 
+	public int getReversal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Reversal_ID);
 		if (ii == null)

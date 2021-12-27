@@ -29,6 +29,7 @@ import org.compiere.model.MOrder;
  *  @author Jorg Janke
  *  @version $Id: CopyOrder.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class CopyOrder extends SvrProcess
 {
 	/** Order to Copy				*/
@@ -111,8 +112,6 @@ public class CopyOrder extends SvrProcess
 			original.saveEx();
 		}
 		//
-	//	Env.setSOTrx(getCtx(), newOrder.isSOTrx());
-	//	return "@C_Order_ID@ " + newOrder.getDocumentNo();
 		StringBuilder msgreturn = new StringBuilder().append(dt.getName()).append(": ").append(newOrder.getDocumentNo());
 		addLog(0, null, null, msgreturn.toString(), newOrder.get_Table_ID(), newOrder.getC_Order_ID());
 		return "@C_Order_ID@ @Created@";

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ConversionType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_ConversionType")
 public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_ConversionType (Properties ctx, int C_ConversionType_ID, String trxName)
@@ -74,21 +75,20 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
     }
 
 	/** Set Currency Type.
-		@param C_ConversionType_ID 
-		Currency Conversion Rate Type
-	  */
+		@param C_ConversionType_ID Currency Conversion Rate Type
+	*/
 	public void setC_ConversionType_ID (int C_ConversionType_ID)
 	{
-		if (C_ConversionType_ID < 1) 
+		if (C_ConversionType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_ConversionType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_ConversionType_ID, Integer.valueOf(C_ConversionType_ID));
 	}
 
 	/** Get Currency Type.
 		@return Currency Conversion Rate Type
 	  */
-	public int getC_ConversionType_ID () 
+	public int getC_ConversionType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ConversionType_ID);
 		if (ii == null)
@@ -97,7 +97,8 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 	}
 
 	/** Set C_ConversionType_UU.
-		@param C_ConversionType_UU C_ConversionType_UU	  */
+		@param C_ConversionType_UU C_ConversionType_UU
+	*/
 	public void setC_ConversionType_UU (String C_ConversionType_UU)
 	{
 		set_Value (COLUMNNAME_C_ConversionType_UU, C_ConversionType_UU);
@@ -105,15 +106,14 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 
 	/** Get C_ConversionType_UU.
 		@return C_ConversionType_UU	  */
-	public String getC_ConversionType_UU () 
+	public String getC_ConversionType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ConversionType_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -122,15 +122,14 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -139,7 +138,7 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -152,9 +151,8 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -163,7 +161,7 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -177,9 +175,8 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -188,7 +185,7 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

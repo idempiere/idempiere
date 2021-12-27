@@ -52,17 +52,16 @@ import org.eevolution.model.MDDOrderLine;
  *  @author Jorg Janke
  *  @author  victor.perez@e-evolution.com
  * 			<li>FR Let use the Distribution List and Distribution Run for DO
- * 	@see 	http://sourceforge.net/tracker/index.php?func=detail&aid=2030865&group_id=176962&atid=879335		
+ * 	@see 	https://sourceforge.net/p/adempiere/feature-requests/488/		
  *  @version $Id: DistributionRun.java,v 1.4 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class DistributionRun extends SvrProcess
 {
 	/**	The Run to execute		*/
 	private int					p_M_DistributionRun_ID = 0;
 	/**	Date Promised			*/
 	private Timestamp			p_DatePromised = null;
-	/**	Date Promised To			*/
-	//private Timestamp			p_DatePromised_To = null;
 	/** Document Type			*/
 	private int					p_C_DocType_ID = 0;
 	/** Test Mode				*/
@@ -100,7 +99,7 @@ public class DistributionRun extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-		//	log.fine("prepare - " + para[i]);
+
 			if (para[i].getParameter() == null)
 				;
 			else if (name.equals("C_DocType_ID"))
@@ -111,7 +110,6 @@ public class DistributionRun extends SvrProcess
 			else if (name.equals("DatePromised"))
 			{	
 				p_DatePromised = (Timestamp)para[i].getParameter();
-				//p_DatePromised_To = (Timestamp)para[i].getParameter_To();
 			}	
 			else if (name.equals("IsTest"))
 				p_IsTest = "Y".equals(para[i].getParameter());
@@ -672,7 +670,6 @@ public class DistributionRun extends SvrProcess
  	    {
  	            pstmt = DB.prepareStatement (sql, get_TrxName());
  	    		pstmt.setTimestamp(1, p_DatePromised);
- 	    		//pstmt.setTimestamp(2, p_DatePromised_To);
  	    		pstmt.setInt(2, p_M_Warehouse_ID);
  	    		pstmt.setInt(3, M_Product_ID);
  	    		
@@ -732,7 +729,6 @@ public class DistributionRun extends SvrProcess
 			.append("INNER JOIN M_DistributionListLine ll ON (rl.M_DistributionList_ID=ll.M_DistributionList_ID) ")
 			.append("INNER JOIN DD_Order o ON (o.C_BPartner_ID=ll.C_BPartner_ID) ")
 			.append("INNER JOIN DD_OrderLine ol ON (ol.DD_Order_ID=o.DD_Order_ID AND ol.M_Product_ID=rl.M_Product_ID) AND ol.DatePromised")
-			//+ " BETWEEN " + DB.TO_DATE(p_DatePromised)  +" AND "+ DB.TO_DATE(p_DatePromised_To) 
 			.append( "<=").append(DB.TO_DATE(p_DatePromised))
 			.append(" INNER JOIN M_Locator loc ON (loc.M_Locator_ID=ol.M_Locator_ID AND loc.M_Warehouse_ID=").append(p_M_Warehouse_ID).append(") ")
 			.append(" WHERE rl.M_DistributionRun_ID=").append(p_M_DistributionRun_ID).append(" AND l.RatioTotal<>0 AND rl.IsActive='Y' AND ll.IsActive='Y'");	
@@ -814,8 +810,6 @@ public class DistributionRun extends SvrProcess
 			 	   			line.setDescription(m_run.getName());
 			 	   			line.saveEx();
 			 	   			break;
-			 	   			//addLog(0,null, detail.getActualAllocation(), order.getDocumentNo() 
-			 	   			//	+ ": " + bp.getName() + " - " + product.getName());
 		 	            }
 	 	           
 		 		}
@@ -1026,7 +1020,6 @@ public class DistributionRun extends SvrProcess
 					
 					line.setQty(QtyAllocation);
 					line.setQtyEntered(QtyAllocation);
-					//line.setTargetQty(detail.getActualAllocation());
 					line.setTargetQty(Env.ZERO);
 					String Description ="";
 					if (m_run.getName() != null)
@@ -1034,7 +1027,6 @@ public class DistributionRun extends SvrProcess
 					StringBuilder msgline = new StringBuilder(Description).append(" ").append(Msg.translate(getCtx(), "Qty"))
 							.append(" = ").append(QtyAllocation).append(" ");
 					line.setDescription(msgline.toString());
-					//line.setConfirmedQty(QtyAllocation);
 					line.saveEx();
 				}
 				else 
@@ -1051,7 +1043,6 @@ public class DistributionRun extends SvrProcess
 					StringBuilder msgline = new StringBuilder(Description).append(" ").append(Msg.translate(getCtx(), "Qty")).append(" = ").append(QtyAllocation).append(" ");
 					line.setDescription(msgline.toString());
 					line.setQty(line.getQtyEntered().add(QtyAllocation));
-					//line.setConfirmedQty(line.getConfirmedQty().add( QtyAllocation));
 					line.saveEx();
 				}
 			}
@@ -1061,12 +1052,6 @@ public class DistributionRun extends SvrProcess
 				MDDOrderLine line = new MDDOrderLine(order);
 				if (counter && bp.getAD_OrgBP_ID() > 0)
 					;	//	don't overwrite counter doc
-				/*else	//	normal - optionally overwrite
-				{
-					line.setC_BPartner_ID(detail.getC_BPartner_ID());
-					if (detail.getC_BPartner_Location_ID() != 0)
-						line.setC_BPartner_Location_ID(detail.getC_BPartner_Location_ID());
-				}*/
 				//
 				line.setAD_Org_ID(bp.getAD_OrgBP_ID());
 				line.setM_Locator_ID(m_locator.getM_Locator_ID());
@@ -1075,9 +1060,7 @@ public class DistributionRun extends SvrProcess
 				line.setProduct(product);
 				line.setQty(detail.getActualAllocation());
 				line.setQtyEntered(detail.getActualAllocation());
-				//line.setTargetQty(detail.getActualAllocation());
 				line.setTargetQty(Env.ZERO);
-				//line.setConfirmedQty(detail.getActualAllocation());
 				String Description ="";
 				if (m_run.getName() != null)
 					Description =Description.concat(m_run.getName());

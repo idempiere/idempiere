@@ -90,21 +90,21 @@ import org.w3c.dom.Element;
  *			<li>BF [ 1990856 ] PO.set_Value* : truncate string more than needed
  *			<li>FR [ 2042844 ] PO.get_Translation improvements
  *			<li>FR [ 2818369 ] Implement PO.get_ValueAs*(columnName)
- *				https://sourceforge.net/tracker/?func=detail&aid=2818369&group_id=176962&atid=879335
+ *				https://sourceforge.net/p/adempiere/feature-requests/754/
  *			<li>BF [ 2849122 ] PO.AfterSave is not rollback on error
- *				https://sourceforge.net/tracker/?func=detail&aid=2849122&group_id=176962&atid=879332
+ *				https://sourceforge.net/p/adempiere/bugs/2073/
  *			<li>BF [ 2859125 ] Can't set AD_OrgBP_ID
- *				https://sourceforge.net/tracker/index.php?func=detail&aid=2859125&group_id=176962&atid=879332
+ *				https://sourceforge.net/p/adempiere/bugs/2095/
  *			<li>BF [ 2866493 ] VTreePanel is not saving who did the node move
- *				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2866493&group_id=176962
+ *				https://sourceforge.net/p/adempiere/bugs/2135/
  * @author Teo Sarca, teo.sarca@gmail.com
  * 			<li>BF [ 2876259 ] PO.insertTranslation query is not correct
- * 				https://sourceforge.net/tracker/?func=detail&aid=2876259&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/2168/
  * @author Victor Perez, e-Evolution SC
  *			<li>[ 2195894 ] Improve performance in PO engine
- *			<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2195894&group_id=176962&atid=879335
+ *			<li>https://sourceforge.net/p/adempiere/feature-requests/555/
  *			<li>BF [2947622] The replication ID (Primary Key) is not working
- *			<li>https://sourceforge.net/tracker/?func=detail&aid=2947622&group_id=176962&atid=879332
+ *			<li>https://sourceforge.net/p/adempiere/bugs/2308/
  */
 public abstract class PO
 	implements Serializable, Comparator<Object>, Evaluatee, Cloneable
@@ -112,11 +112,13 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 571979727987834997L;
+	private static final long serialVersionUID = 3153695115162945843L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
 	private static final String USE_TIMEOUT_FOR_UPDATE = "org.adempiere.po.useTimeoutForUpdate";
+	
+	private static final String USE_OPTIMISTIC_LOCKING = "org.idempiere.po.useOptimisticLocking";
 
 	/** default timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
@@ -149,7 +151,7 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 *  Create & Load existing Persistent Object
+	 *  Create and Load existing Persistent Object
 	 *  @param ID  The unique ID of the object
 	 *  @param ctx context
 	 *  @param trxName transaction name
@@ -160,7 +162,7 @@ public abstract class PO
 	}   //  PO
 
 	/**
-	 *  Create & Load existing Persistent Object.
+	 *  Create and Load existing Persistent Object.
 	 *  @param ctx context
 	 *  @param rs optional - load from current result set position (no navigation, not closed)
 	 *  	if null, a new record is created.
@@ -172,7 +174,7 @@ public abstract class PO
 	}	//	PO
 
 	/**
-	 *  Create & Load existing Persistent Object.
+	 *  Create and Load existing Persistent Object.
 	 *  <pre>
 	 *  You load
 	 * 		- an existing single key record with 	new PO (ctx, Record_ID)
@@ -290,6 +292,9 @@ public abstract class PO
 	
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
+	
+	private String[] m_optimisticLockingColumns = new String[] {"Updated"};
+	private Boolean m_useOptimisticLocking = null;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -359,7 +364,7 @@ public abstract class PO
 	 * 	Compare based on DocumentNo, Value, Name, Description
 	 *	@param o1 Object 1
 	 *	@param o2 Object 2
-	 *	@return -1 if o1 < o2
+	 *	@return -1 if o1 &lt; o2
 	 */
 	public int compare (Object o1, Object o2)
 	{
@@ -1254,7 +1259,7 @@ public abstract class PO
 	/**
 	 * 	Copy old values of From to new values of To.
 	 *  Does not copy Keys
-	 * 	@param from old, existing & unchanged PO
+	 * 	@param from old, existing and unchanged PO
 	 *  @param to new, not saved PO
 	 * 	@param AD_Client_ID client
 	 * 	@param AD_Org_ID org
@@ -1269,7 +1274,7 @@ public abstract class PO
 	/**
 	 * 	Copy old values of From to new values of To.
 	 *  Does not copy Keys and AD_Client_ID/AD_Org_ID
-	 * 	@param from old, existing & unchanged PO
+	 * 	@param from old, existing and unchanged PO
 	 *  @param to new, not saved PO
 	 */
 	public static void copyValues (PO from, PO to)
@@ -2548,6 +2553,14 @@ public abstract class PO
 		List<Object> params = new ArrayList<Object>();
 				
 		String where = get_WhereClause(true);
+		
+		List<Object> optimisticLockingParams = new ArrayList<Object>();
+		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
+		{
+			StringBuilder builder = new StringBuilder(where);
+			addOptimisticLockingClause(optimisticLockingParams, builder);
+			where = builder.toString();
+		}
 		//
 		boolean changes = false;
 		StringBuilder sql = new StringBuilder ("UPDATE ");
@@ -2785,9 +2798,12 @@ public abstract class PO
 				}
 			}
 			sql.append(" WHERE ").append(where);
-			/** @todo status locking goes here */
 
 			if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
+			
+			if (is_UseOptimisticLocking() && optimisticLockingParams.size() > 0)
+				params.addAll(optimisticLockingParams);
+			
 			int no = 0;
 			if (isUseTimeoutForUpdate())
 				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, QUERY_TIME_OUT)
@@ -2827,7 +2843,95 @@ public abstract class PO
 			return true;
 		}
 	}
+	
+	private void addOptimisticLockingClause(List<Object> optimisticLockingParams, StringBuilder where) {
+		for(String oc : m_optimisticLockingColumns)
+		{
+			int index = get_ColumnIndex(oc); 
+			if (index >= 0)
+			{
+				Class<?> c = p_info.getColumnClass(index);
+				int dt = p_info.getColumnDisplayType(index);
+				if (DisplayType.isLOB(dt))
+					continue;
+				Object value = get_ValueOld(oc);
+				if (value == null)
+				{
+					where.append(" AND ").append(oc).append(" IS NULL ");
+				}
+				else if (value instanceof Timestamp)
+				{
+					if (dt == DisplayType.Date)
+						where.append(" AND ").append(oc).append(" = trunc(cast(? as date))");
+					else
+						where.append(" AND ").append(oc).append(" = ? ");
+					optimisticLockingParams.add(value);
+				}
+				else if (c == Boolean.class)
+				{
+					where.append(" AND ").append(oc).append(" = ? ");
+					boolean bValue = false;
+					if (value instanceof Boolean)
+						bValue = ((Boolean)value).booleanValue();
+					else
+						bValue = "Y".equals(value);
+					optimisticLockingParams.add(encrypt(index,bValue ? "Y" : "N"));
+				}
+				else if (c == String.class)
+				{
+					if (value.toString().length() == 0) {
+						where.append(" AND ").append(oc).append(" = '' ");
+					} else {
+						where.append(" AND ").append(oc).append(" = ? ");
+						optimisticLockingParams.add(encrypt(index,value));
+					}
+				}
+				else
+				{
+					where.append(" AND ").append(oc).append(" = ? ");
+					optimisticLockingParams.add(value);
+				}
+				
+			}
+		}
+	}
 
+	/**
+	 * 
+	 * @return true if optimistic locking is enable
+	 */
+	public boolean is_UseOptimisticLocking() {
+		if (m_useOptimisticLocking != null)
+			return m_useOptimisticLocking;
+		else
+			return "true".equalsIgnoreCase(System.getProperty(USE_OPTIMISTIC_LOCKING, "false"));
+	}
+	
+	/**
+	 * enable/disable optimistic locking
+	 * @param enable
+	 */
+	public void set_UseOptimisticLocking(boolean enable) {
+		m_useOptimisticLocking = enable;
+	}
+	
+	/**
+	 * 
+	 * @return optimistic locking columns
+	 */
+	public String[] get_OptimisticLockingColumns() {
+		return m_optimisticLockingColumns;
+	}
+
+	/**
+	 * set columns use for optimistic locking (auto add to where clause for update
+	 * and delete)
+	 * @param columns
+	 */
+	public void set_OptimisticLockingColumns(String[] columns) {
+		m_optimisticLockingColumns = columns;
+	}
+	
 	private boolean isUseTimeoutForUpdate() {
 		return "true".equalsIgnoreCase(System.getProperty(USE_TIMEOUT_FOR_UPDATE, "false"))
 			&& DB.getDatabase().isQueryTimeoutSupported();
@@ -3469,15 +3573,27 @@ public abstract class PO
 				}
 		
 				//	The Delete Statement
+				String where = get_WhereClause(true);
+				List<Object> optimisticLockingParams = new ArrayList<Object>();
+				if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
+				{
+					StringBuilder builder = new StringBuilder(where);
+					addOptimisticLockingClause(optimisticLockingParams, builder);
+					where = builder.toString();
+				}
 				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
 					.append(p_info.getTableName())
 					.append(" WHERE ")
-					.append(get_WhereClause(true));
+					.append(where);
 				int no = 0;
 				if (isUseTimeoutForUpdate())
-					no = DB.executeUpdateEx(sql.toString(), localTrxName, QUERY_TIME_OUT);
+					no = optimisticLockingParams.isEmpty() 
+						 ? DB.executeUpdateEx(sql.toString(), localTrxName, QUERY_TIME_OUT)
+						 : DB.executeUpdateEx(sql.toString(), optimisticLockingParams.toArray(), localTrxName, QUERY_TIME_OUT);
 				else
-					no = DB.executeUpdate(sql.toString(), localTrxName);
+					no = optimisticLockingParams.isEmpty() 
+						 ? DB.executeUpdate(sql.toString(), localTrxName)
+						 : DB.executeUpdate(sql.toString(), optimisticLockingParams.toArray(), false, localTrxName);
 				success = no == 1;
 			}
 			catch (Exception e)
@@ -4137,7 +4253,6 @@ public abstract class PO
 	/**
 	 * 	Update parent key and seqno based on value if the tree is driven by value 
 	 * 	@param treeType MTree TREETYPE_*
-	 *	@return true if inserted
 	 */
 	public void update_Tree (String treeType)
 	{
@@ -4506,18 +4621,18 @@ public abstract class PO
 	/*************************************************************************
 	 * 	Get All IDs of Table.
 	 * 	Used for listing all Entities
-	 * 	<code>
+	 * 	<pre>{@code
 	 	int[] IDs = PO.getAllIDs ("AD_PrintFont", null);
 		for (int i = 0; i < IDs.length; i++)
 		{
 			pf = new MPrintFont(Env.getCtx(), IDs[i]);
 			System.out.println(IDs[i] + " = " + pf.getFont());
 		}
-	 *	</code>
+	 *	}</pre>
 	 * 	@param TableName table name (key column with _ID)
 	 * 	@param WhereClause optional where clause
-	 * 	@return array of IDs or null
 	 * 	@param trxName transaction
+	 * 	@return array of IDs or null
 	 */
 	public static int[] getAllIDs (String TableName, String WhereClause, String trxName)
 	{

@@ -69,7 +69,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2166149559040327486L;
+	private static final long serialVersionUID = -3218367479851088526L;
 
 	private Label lblDocAction;
 	private Label label;
@@ -94,6 +94,11 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 	public WDocActionPanel(GridTab mgridTab)
 	{
+		this(mgridTab, false);
+	}
+
+	public WDocActionPanel(GridTab mgridTab, boolean fromMenu)
+	{
 		gridTab = mgridTab;
 		DocStatus = (String)gridTab.getValue("DocStatus");
 		DocAction = (String)gridTab.getValue("DocAction");
@@ -102,15 +107,16 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 		readReference();
 		initComponents();
-		dynInit();
+		dynInit(fromMenu);
 
 		init();
 	}
 
 	/**
 	 *	Dynamic Init - determine valid DocActions based on DocStatus for the different documents.
+	 * @param fromMenu 
 	 */
-	private void dynInit()
+	private void dynInit(boolean fromMenu)
 	{
 
 		//
@@ -149,7 +155,8 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		String wfStatus = MWFActivity.getActiveInfo(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID());
 		if (wfStatus != null)
 		{
-			FDialog.error(gridTab.getWindowNo(), this, "WFActiveForRecord", wfStatus);
+			if (! fromMenu)
+				FDialog.error(gridTab.getWindowNo(), this, "WFActiveForRecord", wfStatus);
 			return;
 		}
 

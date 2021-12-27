@@ -179,7 +179,7 @@ public class MProject extends X_C_Project
 		final String whereClause = "C_Project_ID=?";
 		List <MProjectLine> list = new Query(getCtx(), I_C_ProjectLine.Table_Name, whereClause, get_TrxName())
 			.setParameters(getC_Project_ID())
-			.setOrderBy("Line")
+			.setOrderBy("Line,C_ProjectLine_ID")
 			.list();
 		//
 		MProjectLine[] retValue = new MProjectLine[list.size()];
@@ -449,7 +449,7 @@ public class MProject extends X_C_Project
 	/**
 	 * 	Return the Invoices Generated for this Project
 	 *	@return invoices
-	 *	@author monhate
+	 *	author monhate
 	 */	
 	public MInvoice[] getMInvoices(){
 		StringBuilder sb = new StringBuilder();

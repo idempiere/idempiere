@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_MRP_CRP
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 @SuppressWarnings("all")
 public interface I_T_MRP_CRP 
@@ -139,10 +139,12 @@ public interface I_T_MRP_CRP
     /** Column name T_MRP_CRP_ID */
     public static final String COLUMNNAME_T_MRP_CRP_ID = "T_MRP_CRP_ID";
 
-	/** Set Temporal MRP & CRP	  */
+	/** Set Temporal MRP &amp;
+ CRP	  */
 	public void setT_MRP_CRP_ID (int T_MRP_CRP_ID);
 
-	/** Get Temporal MRP & CRP	  */
+	/** Get Temporal MRP &amp;
+ CRP	  */
 	public int getT_MRP_CRP_ID();
 
     /** Column name T_MRP_CRP_UU */

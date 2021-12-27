@@ -37,7 +37,8 @@ public class MAssetChange extends X_A_Asset_Change
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
-	 *	@param M_InventoryLine_ID line
+	 *  @param A_Asset_Change_ID
+	 *  @param trxName
 	 */
 	public MAssetChange (Properties ctx, int A_Asset_Change_ID, String trxName)
 	{
@@ -129,14 +130,12 @@ public class MAssetChange extends X_A_Asset_Change
 	/** ARHIPAC: TEO: END ------------------------------------------------------------------ */
 	
 	/**
-	 * 
 	 * @param ctx
 	 * @param A_Asset_ID
-	 * @param postingType
+	 * @param changeType
 	 * @param trxName
-	 * @param Account Schema
-	 * @return assetChange
-	 * @see #get(Properties, int, String, String)
+	 * @param C_AcctSchema_ID
+	 * @return
 	 */
 	public static MAssetChange get (Properties ctx, int A_Asset_ID, String changeType,  String trxName, int C_AcctSchema_ID)
 	{

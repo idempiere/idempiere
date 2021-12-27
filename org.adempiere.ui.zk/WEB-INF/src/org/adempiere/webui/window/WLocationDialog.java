@@ -79,7 +79,7 @@ import org.zkoss.zul.Vbox;
  * 			<li>FR [ 2794312 ] Location AutoComplete
  * @author Teo Sarca, teo.sarca@gmail.com
  * 			<li>BF [ 2995212 ] NPE on Location dialog
- * 				https://sourceforge.net/tracker/?func=detail&aid=2995212&group_id=176962&atid=955896
+ * 				https://sourceforge.net/p/adempiere/zk-web-client/419/
  * 
  * @TODO: Implement fOnline button present in swing client
  *
@@ -192,7 +192,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		lstRegion.appendItem("", null);
 		for (MRegion region : MRegion.getRegions(m_origCountry_ID))
 		{
-			lstRegion.appendItem(region.getName(),region);
+			lstRegion.appendItem(region.getTrlName(),region);
 		}
 		if (m_location.getCountry().isHasRegion()) {
 			if (m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName) != null
@@ -543,7 +543,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				lstRegion.appendItem("", null);
 				for (MRegion region : MRegion.getRegions(country.getC_Country_ID()))
 				{
-					lstRegion.appendItem(region.getName(),region);
+					lstRegion.appendItem(region.getTrlName(),region);
 				}
 				if (m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName) != null
 						&& m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName).trim().length() > 0)

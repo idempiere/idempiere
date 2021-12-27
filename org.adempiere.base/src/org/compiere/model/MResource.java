@@ -35,7 +35,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 				<li>FR [ 2051056 ] MResource[Type] should be cached
  * 				<li>BF [ 2227901 ] MRP (Calculate Material Plan) fails if resource is empty
  * 				<li>BF [ 2824795 ] Deleting Resource product should be forbidden
- * 					https://sourceforge.net/tracker/?func=detail&aid=2824795&group_id=176962&atid=879332
+ * 					https://sourceforge.net/p/adempiere/bugs/1988/
  */
 public class MResource extends X_S_Resource implements ImmutablePOSupport
 {

@@ -52,8 +52,8 @@ import org.compiere.util.Trx;
  *  	<li>FR: [ 2214883 ] Remove SQL code and Replace for Query - red1 (only non-join query)
  *  
  *  @author Teo Sarca
- *  	<li>BF [ 2847648 ] Manufacture & shipment cost errors
- *  		https://sourceforge.net/tracker/?func=detail&aid=2847648&group_id=176962&atid=934929
+ *  	<li>BF [ 2847648 ] Manufacture and shipment cost errors
+ *  		https://sourceforge.net/p/adempiere/libero/237/
  */
 public class MCost extends X_M_Cost
 {
@@ -62,6 +62,21 @@ public class MCost extends X_M_Cost
 	 */
 	private static final long serialVersionUID = -9054858267574839079L;
 
+	/**
+	 * 
+	 * @param product
+	 * @param M_AttributeSetInstance_ID
+	 * @param trxName
+	 * @return current product cost
+	 */
+	public static BigDecimal getCurrentCost(MProduct product, int M_AttributeSetInstance_ID, String trxName)
+	{
+		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
+		MAcctSchema as = MClient.get(Env.getAD_Client_ID(Env.getCtx())).getAcctSchema();
+		String costingMethod = product.getCostingMethod(as);
+		return getCurrentCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID, costingMethod, new BigDecimal("1"), 0, true, trxName); 
+	}
+	
 	/**
 	 * 	Retrieve/Calculate Current Cost Price
 	 *	@param product product
@@ -1363,8 +1378,11 @@ public class MCost extends X_M_Cost
 		//FR: [ 2214883 ] - end -
 		//	New
 		if (cost == null)
+		{
 			cost = new MCost (product, M_AttributeSetInstance_ID,
 				as, AD_Org_ID, M_CostElement_ID);
+			cost.set_TrxName(trxName);
+		}
 		return cost;
 	}	//	get
 
@@ -1551,7 +1569,7 @@ public class MCost extends X_M_Cost
 	}	//	setWeightedAverage
 
 	/**
-	 *	@param amt unit amt
+	 *	@param amtUnit unit amt
 	 */
 	public void setWeightedAverageInitial (BigDecimal amtUnit)
 	{
@@ -1589,7 +1607,7 @@ public class MCost extends X_M_Cost
 
 	/**
 	 * 	Get History Average (Amt/Qty)
-	 *	@return average if amt/aty <> 0 otherwise null
+	 *	@return average if amt/aty &lt;&gt; 0 otherwise null
 	 */
 	public BigDecimal getHistoryAverage()
 	{

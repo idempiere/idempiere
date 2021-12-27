@@ -41,7 +41,7 @@ import org.jfree.io.IOUtils;
  *	Keys set for
  *	- Menu Reports - AD_Report_ID
  *	- Win Report - AD_Table_ID
- *	- Documents - AD_Table_ID & Record_ID & C_Customer_ID 
+ *	- Documents - AD_Table_ID and Record_ID and C_Customer_ID 
  *	
  *  @author Jorg Janke
  *  @version $Id: ArchiveEngine.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -63,14 +63,6 @@ public class ArchiveEngine
 		String aa = aaClient;
 		if (aa == null)
 			aa = MClient.AUTOARCHIVE_None;
-		/* String aaRole = null; 	//	role.getAutoArchive();	//	TODO
-		if (aaRole != null)
-		{
-			if (aaRole.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
-				aa = aaRole;
-			else if (aaRole.equals(MClient.AUTOARCHIVE_Documents) && !aaClient.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
-				aa = aaRole;
-		}*/
 		//	Nothing to Archive
 		if (aa.equals(MClient.AUTOARCHIVE_None))
 			return null;
@@ -113,14 +105,6 @@ public class ArchiveEngine
 		String aa = aaClient;
 		if (aa == null)
 			aa = MClient.AUTOARCHIVE_None;
-		/* String aaRole = null; 	//	role.getAutoArchive();	//	TODO
-		if (aaRole != null)
-		{
-			if (aaRole.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
-				aa = aaRole;
-			else if (aaRole.equals(MClient.AUTOARCHIVE_Documents) && !aaClient.equals(MClient.AUTOARCHIVE_AllReportsDocuments))
-				aa = aaRole;
-		}*/
 		//	Nothing to Archive
 		if (aa.equals(MClient.AUTOARCHIVE_None))
 			return;
@@ -207,10 +191,4 @@ public class ArchiveEngine
 		if (s_engine == null)
 			s_engine = this;
 	}	//	ArchiveEngine
-
-	/** The base document			*/
-//	private PDFDocument m_document = Document.createBlank();
-	
-	
-	
 }	//	ArchiveEngine

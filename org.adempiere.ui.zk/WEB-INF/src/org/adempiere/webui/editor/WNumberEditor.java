@@ -46,7 +46,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Low Heng Sin
  * @author Cristina Ghita, www.arhipac.ro
  *  	   <li> BF [3058780] WNumberEditor allow only BigDecimal
- *  	   @see https://sourceforge.net/tracker/?func=detail&aid=3058780&group_id=176962&atid=955896
+ *  	   @see https://sourceforge.net/p/adempiere/zk-web-client/433/
  */
 public class WNumberEditor extends WEditor implements ContextMenuListener
 {

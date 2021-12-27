@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ViewComponent
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_AD_ViewComponent 
 {
@@ -177,6 +177,19 @@ public interface I_AD_ViewComponent
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsUnionAll */
+    public static final String COLUMNNAME_IsUnionAll = "IsUnionAll";
+
+	/** Set Is UNION ALL.
+	  * The component view is UNION ALL
+	  */
+	public void setIsUnionAll (boolean IsUnionAll);
+
+	/** Get Is UNION ALL.
+	  * The component view is UNION ALL
+	  */
+	public boolean isUnionAll();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

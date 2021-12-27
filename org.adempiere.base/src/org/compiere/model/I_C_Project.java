@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Project
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_C_Project 
 {
@@ -108,12 +108,12 @@ public interface I_C_Project
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -368,12 +368,12 @@ public interface I_C_Project
     /** Column name InvoicedQty */
     public static final String COLUMNNAME_InvoicedQty = "InvoicedQty";
 
-	/** Set Quantity Invoiced .
+	/** Set Quantity Invoiced.
 	  * The quantity invoiced
 	  */
 	public void setInvoicedQty (BigDecimal InvoicedQty);
 
-	/** Get Quantity Invoiced .
+	/** Get Quantity Invoiced.
 	  * The quantity invoiced
 	  */
 	public BigDecimal getInvoicedQty();
@@ -503,12 +503,14 @@ public interface I_C_Project
     public static final String COLUMNNAME_PlannedMarginAmt = "PlannedMarginAmt";
 
 	/** Set Planned Margin.
-	  * Project's planned margin amount
+	  * Project&#039;
+s planned margin amount
 	  */
 	public void setPlannedMarginAmt (BigDecimal PlannedMarginAmt);
 
 	/** Get Planned Margin.
-	  * Project's planned margin amount
+	  * Project&#039;
+s planned margin amount
 	  */
 	public BigDecimal getPlannedMarginAmt();
 

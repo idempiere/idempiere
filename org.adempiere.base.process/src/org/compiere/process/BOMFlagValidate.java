@@ -10,6 +10,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 
+@org.adempiere.base.annotation.Process
 public class BOMFlagValidate extends SvrProcess {
 
 	/** Product Category	*/
@@ -38,12 +39,12 @@ public class BOMFlagValidate extends SvrProcess {
 		return "@OK@";
 	}
 	
-	private void flagNonBOMs() throws SQLException
+	private void flagNonBOMs() throws Exception
 	{
 		
 		//Select Products where there's a BOM, and there are no lines
 		StringBuilder sql = new StringBuilder("SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'Y' AND ") 
-			.append("M_Product_ID NOT IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
+			.append("M_Product_ID NOT IN (SELECT M_Product_ID FROM PP_Product_BOM ) AND "); 
 		if (p_M_Product_Category_ID == 0)
 			sql.append("AD_Client_ID= ?");
 	        
@@ -61,7 +62,7 @@ public class BOMFlagValidate extends SvrProcess {
 
 			while (rs.next())
 			{
-				StringBuilder msglog=new StringBuilder().append(rs.getString(1)).append(" BOM without BOM lines");
+				StringBuilder msglog=new StringBuilder().append(rs.getString(1)).append(" Has Been Flagged as NonBOM as it has no lines");
 				addBufferLog(0, null, null, msglog.toString(), MProduct.Table_ID, rs.getInt(2));
 			}
 		} catch (SQLException e) {
@@ -73,8 +74,8 @@ public class BOMFlagValidate extends SvrProcess {
 
 		PreparedStatement upstmt = null;
 		try {
-			StringBuilder update = new StringBuilder("UPDATE M_Product SET IsBOM = 'N' WHERE IsBOM = 'Y' AND M_Product_ID NOT IN ")
-					.append("(SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
+			StringBuilder update = new StringBuilder("UPDATE M_Product SET ISBOM = 'N' WHERE ISBOM = 'Y' AND M_PRODUCT_ID NOT IN ")
+					.append("(SELECT b.M_PRODUCT_ID FROM PP_PRODUCT_BOM b JOIN PP_PRODUCT_BOMLINE bl ON bl.PP_PRODUCT_BOM_ID = b.PP_PRODUCT_BOM_ID ) AND "); 
 			if (p_M_Product_Category_ID == 0)
 				update.append("AD_Client_ID= ?");
 			else
@@ -99,7 +100,7 @@ public class BOMFlagValidate extends SvrProcess {
 		
 		//Select Products where there's a BOM, and there are no lines
 		StringBuilder sql = new StringBuilder("SELECT Name, M_Product_ID FROM M_Product WHERE IsBOM = 'N' AND ") 
-			.append("M_Product_ID IN (SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
+			.append("M_PRODUCT_ID IN (SELECT b.M_PRODUCT_ID FROM PP_PRODUCT_BOM b JOIN PP_PRODUCT_BOMLINE bl ON b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID ) AND "); 
 		if (p_M_Product_Category_ID == 0)
 			sql.append("AD_Client_ID= ?");
 	        
@@ -117,7 +118,7 @@ public class BOMFlagValidate extends SvrProcess {
 
 			while (rs.next())
 			{
-				StringBuilder msglog = new StringBuilder().append(rs.getString(1)).append(" not BOM with BOM lines");
+				StringBuilder msglog = new StringBuilder().append(rs.getString(1)).append(" Has Been Flagged as BOM as it has BOM lines");
 				addBufferLog(0, null, null, msglog.toString(), MProduct.Table_ID, rs.getInt(2));
 			}
 		} catch (SQLException e) {
@@ -128,7 +129,7 @@ public class BOMFlagValidate extends SvrProcess {
 		}
 		
 		StringBuilder update = new StringBuilder("UPDATE M_Product SET ISBOM = 'Y' WHERE IsBOM = 'N' AND M_Product_ID IN ")
-				.append("(SELECT M_Product_ID FROM M_Product_BOM ) AND "); 
+				.append("(SELECT b.M_PRODUCT_ID FROM PP_PRODUCT_BOM b JOIN PP_PRODUCT_BOMLINE bl ON b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID  ) AND "); 
 		if (p_M_Product_Category_ID == 0)
 			update.append("AD_Client_ID= ?");
 		else

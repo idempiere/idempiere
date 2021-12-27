@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InventoryValue
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="T_InventoryValue")
 public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_T_InventoryValue (Properties ctx, int T_InventoryValue_ID, String trxName)
@@ -76,26 +77,26 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
     }
 
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_Name)
-			.getPO(getAD_PInstance_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
+			.getPO(getAD_PInstance_ID(), get_TrxName());
+	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -104,26 +105,26 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -132,9 +133,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Cost.
-		@param Cost 
-		Cost information
-	  */
+		@param Cost Cost information
+	*/
 	public void setCost (BigDecimal Cost)
 	{
 		set_Value (COLUMNNAME_Cost, Cost);
@@ -143,7 +143,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Cost.
 		@return Cost information
 	  */
-	public BigDecimal getCost () 
+	public BigDecimal getCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Cost);
 		if (bd == null)
@@ -152,9 +152,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Cost Value.
-		@param CostAmt 
-		Value with Cost
-	  */
+		@param CostAmt Value with Cost
+	*/
 	public void setCostAmt (BigDecimal CostAmt)
 	{
 		set_Value (COLUMNNAME_CostAmt, CostAmt);
@@ -163,7 +162,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Cost Value.
 		@return Value with Cost
 	  */
-	public BigDecimal getCostAmt () 
+	public BigDecimal getCostAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostAmt);
 		if (bd == null)
@@ -172,9 +171,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Standard Cost.
-		@param CostStandard 
-		Standard Costs
-	  */
+		@param CostStandard Standard Costs
+	*/
 	public void setCostStandard (BigDecimal CostStandard)
 	{
 		set_Value (COLUMNNAME_CostStandard, CostStandard);
@@ -183,7 +181,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Standard Cost.
 		@return Standard Costs
 	  */
-	public BigDecimal getCostStandard () 
+	public BigDecimal getCostStandard()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostStandard);
 		if (bd == null)
@@ -192,9 +190,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Standard Cost Value.
-		@param CostStandardAmt 
-		Value in Standard Costs
-	  */
+		@param CostStandardAmt Value in Standard Costs
+	*/
 	public void setCostStandardAmt (BigDecimal CostStandardAmt)
 	{
 		set_Value (COLUMNNAME_CostStandardAmt, CostStandardAmt);
@@ -203,7 +200,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Standard Cost Value.
 		@return Value in Standard Costs
 	  */
-	public BigDecimal getCostStandardAmt () 
+	public BigDecimal getCostStandardAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostStandardAmt);
 		if (bd == null)
@@ -212,9 +209,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Valuation Date.
-		@param DateValue 
-		Date of valuation
-	  */
+		@param DateValue Date of valuation
+	*/
 	public void setDateValue (Timestamp DateValue)
 	{
 		set_Value (COLUMNNAME_DateValue, DateValue);
@@ -223,32 +219,32 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Valuation Date.
 		@return Date of valuation
 	  */
-	public Timestamp getDateValue () 
+	public Timestamp getDateValue()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateValue);
 	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-    {
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_Name)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());	}
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -257,26 +253,26 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_Name)
-			.getPO(getM_CostElement_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
+			.getPO(getM_CostElement_ID(), get_TrxName());
+	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_Value (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -285,26 +281,26 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_Name)
-			.getPO(getM_PriceList_Version_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
+			.getPO(getM_PriceList_Version_ID(), get_TrxName());
+	}
 
 	/** Set Price List Version.
-		@param M_PriceList_Version_ID 
-		Identifies a unique instance of a Price List
-	  */
+		@param M_PriceList_Version_ID Identifies a unique instance of a Price List
+	*/
 	public void setM_PriceList_Version_ID (int M_PriceList_Version_ID)
 	{
-		if (M_PriceList_Version_ID < 1) 
+		if (M_PriceList_Version_ID < 1)
 			set_Value (COLUMNNAME_M_PriceList_Version_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_PriceList_Version_ID, Integer.valueOf(M_PriceList_Version_ID));
 	}
 
 	/** Get Price List Version.
 		@return Identifies a unique instance of a Price List
 	  */
-	public int getM_PriceList_Version_ID () 
+	public int getM_PriceList_Version_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PriceList_Version_ID);
 		if (ii == null)
@@ -313,26 +309,26 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -341,26 +337,26 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -369,9 +365,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Limit Price.
-		@param PriceLimit 
-		Lowest price for a product
-	  */
+		@param PriceLimit Lowest price for a product
+	*/
 	public void setPriceLimit (BigDecimal PriceLimit)
 	{
 		set_Value (COLUMNNAME_PriceLimit, PriceLimit);
@@ -380,7 +375,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Limit Price.
 		@return Lowest price for a product
 	  */
-	public BigDecimal getPriceLimit () 
+	public BigDecimal getPriceLimit()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceLimit);
 		if (bd == null)
@@ -389,9 +384,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Limit price Value.
-		@param PriceLimitAmt 
-		Value with limit price
-	  */
+		@param PriceLimitAmt Value with limit price
+	*/
 	public void setPriceLimitAmt (BigDecimal PriceLimitAmt)
 	{
 		set_Value (COLUMNNAME_PriceLimitAmt, PriceLimitAmt);
@@ -400,7 +394,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Limit price Value.
 		@return Value with limit price
 	  */
-	public BigDecimal getPriceLimitAmt () 
+	public BigDecimal getPriceLimitAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceLimitAmt);
 		if (bd == null)
@@ -409,9 +403,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set List Price.
-		@param PriceList 
-		List Price
-	  */
+		@param PriceList List Price
+	*/
 	public void setPriceList (BigDecimal PriceList)
 	{
 		set_Value (COLUMNNAME_PriceList, PriceList);
@@ -420,7 +413,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get List Price.
 		@return List Price
 	  */
-	public BigDecimal getPriceList () 
+	public BigDecimal getPriceList()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceList);
 		if (bd == null)
@@ -429,9 +422,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set List price Value.
-		@param PriceListAmt 
-		Valuation with List Price
-	  */
+		@param PriceListAmt Valuation with List Price
+	*/
 	public void setPriceListAmt (BigDecimal PriceListAmt)
 	{
 		set_Value (COLUMNNAME_PriceListAmt, PriceListAmt);
@@ -440,7 +432,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get List price Value.
 		@return Valuation with List Price
 	  */
-	public BigDecimal getPriceListAmt () 
+	public BigDecimal getPriceListAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceListAmt);
 		if (bd == null)
@@ -449,9 +441,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set PO Price.
-		@param PricePO 
-		Price based on a purchase order
-	  */
+		@param PricePO Price based on a purchase order
+	*/
 	public void setPricePO (BigDecimal PricePO)
 	{
 		set_Value (COLUMNNAME_PricePO, PricePO);
@@ -460,7 +451,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get PO Price.
 		@return Price based on a purchase order
 	  */
-	public BigDecimal getPricePO () 
+	public BigDecimal getPricePO()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PricePO);
 		if (bd == null)
@@ -469,9 +460,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set PO Price Value.
-		@param PricePOAmt 
-		Valuation with PO Price
-	  */
+		@param PricePOAmt Valuation with PO Price
+	*/
 	public void setPricePOAmt (BigDecimal PricePOAmt)
 	{
 		set_Value (COLUMNNAME_PricePOAmt, PricePOAmt);
@@ -480,7 +470,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get PO Price Value.
 		@return Valuation with PO Price
 	  */
-	public BigDecimal getPricePOAmt () 
+	public BigDecimal getPricePOAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PricePOAmt);
 		if (bd == null)
@@ -489,9 +479,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Standard Price.
-		@param PriceStd 
-		Standard Price
-	  */
+		@param PriceStd Standard Price
+	*/
 	public void setPriceStd (BigDecimal PriceStd)
 	{
 		set_Value (COLUMNNAME_PriceStd, PriceStd);
@@ -500,7 +489,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Standard Price.
 		@return Standard Price
 	  */
-	public BigDecimal getPriceStd () 
+	public BigDecimal getPriceStd()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceStd);
 		if (bd == null)
@@ -509,9 +498,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set Std Price Value.
-		@param PriceStdAmt 
-		Valuation with standard price
-	  */
+		@param PriceStdAmt Valuation with standard price
+	*/
 	public void setPriceStdAmt (BigDecimal PriceStdAmt)
 	{
 		set_Value (COLUMNNAME_PriceStdAmt, PriceStdAmt);
@@ -520,7 +508,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get Std Price Value.
 		@return Valuation with standard price
 	  */
-	public BigDecimal getPriceStdAmt () 
+	public BigDecimal getPriceStdAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceStdAmt);
 		if (bd == null)
@@ -529,9 +517,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set On Hand Quantity.
-		@param QtyOnHand 
-		On Hand Quantity
-	  */
+		@param QtyOnHand On Hand Quantity
+	*/
 	public void setQtyOnHand (BigDecimal QtyOnHand)
 	{
 		set_Value (COLUMNNAME_QtyOnHand, QtyOnHand);
@@ -540,7 +527,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/** Get On Hand Quantity.
 		@return On Hand Quantity
 	  */
-	public BigDecimal getQtyOnHand () 
+	public BigDecimal getQtyOnHand()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOnHand);
 		if (bd == null)
@@ -549,7 +536,8 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	}
 
 	/** Set T_InventoryValue_UU.
-		@param T_InventoryValue_UU T_InventoryValue_UU	  */
+		@param T_InventoryValue_UU T_InventoryValue_UU
+	*/
 	public void setT_InventoryValue_UU (String T_InventoryValue_UU)
 	{
 		set_Value (COLUMNNAME_T_InventoryValue_UU, T_InventoryValue_UU);
@@ -557,7 +545,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 
 	/** Get T_InventoryValue_UU.
 		@return T_InventoryValue_UU	  */
-	public String getT_InventoryValue_UU () 
+	public String getT_InventoryValue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_InventoryValue_UU);
 	}

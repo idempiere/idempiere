@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_ViewColumn
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_ViewColumn")
 public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 			setAD_ViewComponent_ID (0);
 			setColumnName (null);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
         } */
     }
 
@@ -74,18 +75,19 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
     }
 
 	/** Set Database View Column.
-		@param AD_ViewColumn_ID Database View Column	  */
+		@param AD_ViewColumn_ID Database View Column
+	*/
 	public void setAD_ViewColumn_ID (int AD_ViewColumn_ID)
 	{
-		if (AD_ViewColumn_ID < 1) 
+		if (AD_ViewColumn_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ViewColumn_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ViewColumn_ID, Integer.valueOf(AD_ViewColumn_ID));
 	}
 
 	/** Get Database View Column.
 		@return Database View Column	  */
-	public int getAD_ViewColumn_ID () 
+	public int getAD_ViewColumn_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ViewColumn_ID);
 		if (ii == null)
@@ -94,7 +96,8 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	}
 
 	/** Set AD_ViewColumn_UU.
-		@param AD_ViewColumn_UU AD_ViewColumn_UU	  */
+		@param AD_ViewColumn_UU AD_ViewColumn_UU
+	*/
 	public void setAD_ViewColumn_UU (String AD_ViewColumn_UU)
 	{
 		set_Value (COLUMNNAME_AD_ViewColumn_UU, AD_ViewColumn_UU);
@@ -102,29 +105,31 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 
 	/** Get AD_ViewColumn_UU.
 		@return AD_ViewColumn_UU	  */
-	public String getAD_ViewColumn_UU () 
+	public String getAD_ViewColumn_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ViewColumn_UU);
 	}
 
 	public org.compiere.model.I_AD_ViewComponent getAD_ViewComponent() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ViewComponent)MTable.get(getCtx(), org.compiere.model.I_AD_ViewComponent.Table_Name)
-			.getPO(getAD_ViewComponent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ViewComponent)MTable.get(getCtx(), org.compiere.model.I_AD_ViewComponent.Table_ID)
+			.getPO(getAD_ViewComponent_ID(), get_TrxName());
+	}
 
 	/** Set Database View Component.
-		@param AD_ViewComponent_ID Database View Component	  */
+		@param AD_ViewComponent_ID Database View Component
+	*/
 	public void setAD_ViewComponent_ID (int AD_ViewComponent_ID)
 	{
-		if (AD_ViewComponent_ID < 1) 
+		if (AD_ViewComponent_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ViewComponent_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ViewComponent_ID, Integer.valueOf(AD_ViewComponent_ID));
 	}
 
 	/** Get Database View Component.
 		@return Database View Component	  */
-	public int getAD_ViewComponent_ID () 
+	public int getAD_ViewComponent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ViewComponent_ID);
 		if (ii == null)
@@ -133,9 +138,8 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	}
 
 	/** Set DB Column Name.
-		@param ColumnName 
-		Name of the column in the database
-	  */
+		@param ColumnName Name of the column in the database
+	*/
 	public void setColumnName (String ColumnName)
 	{
 		set_Value (COLUMNNAME_ColumnName, ColumnName);
@@ -144,15 +148,14 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** Get DB Column Name.
 		@return Name of the column in the database
 	  */
-	public String getColumnName () 
+	public String getColumnName()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
 	}
 
 	/** Set Column SQL.
-		@param ColumnSQL 
-		Virtual Column (r/o)
-	  */
+		@param ColumnSQL Virtual Column (r/o)
+	*/
 	public void setColumnSQL (String ColumnSQL)
 	{
 		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
@@ -161,7 +164,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** Get Column SQL.
 		@return Virtual Column (r/o)
 	  */
-	public String getColumnSQL () 
+	public String getColumnSQL()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnSQL);
 	}
@@ -185,7 +188,8 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** Character Variable = V */
 	public static final String DBDATATYPE_CharacterVariable = "V";
 	/** Set Database Data Type.
-		@param DBDataType Database Data Type	  */
+		@param DBDataType Database Data Type
+	*/
 	public void setDBDataType (String DBDataType)
 	{
 
@@ -194,15 +198,14 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 
 	/** Get Database Data Type.
 		@return Database Data Type	  */
-	public String getDBDataType () 
+	public String getDBDataType()
 	{
 		return (String)get_Value(COLUMNNAME_DBDataType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -211,7 +214,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -219,9 +222,8 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -231,15 +233,14 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -248,15 +249,14 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -265,7 +265,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

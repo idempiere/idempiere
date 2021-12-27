@@ -302,4 +302,39 @@ public class ServletContextAdaptor implements ServletContext {
 	public String getVirtualServerName() {
 		return servletContext.getVirtualServerName();
 	}
+
+	@Override
+	public javax.servlet.ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
+		return servletContext.addJspFile(servletName, jspFile);
+	}
+
+	@Override
+	public int getSessionTimeout() {
+		return servletContext.getSessionTimeout();
+	}
+
+	@Override
+	public void setSessionTimeout(int sessionTimeout) {
+		servletContext.setSessionTimeout(sessionTimeout);
+	}
+
+	@Override
+	public String getRequestCharacterEncoding() {
+		return servletContext.getRequestCharacterEncoding();
+	}
+
+	@Override
+	public void setRequestCharacterEncoding(String encoding) {
+		servletContext.setRequestCharacterEncoding(encoding);
+	}
+
+	@Override
+	public String getResponseCharacterEncoding() {
+		return servletContext.getResponseCharacterEncoding();
+	}
+
+	@Override
+	public void setResponseCharacterEncoding(String encoding) {
+		servletContext.setResponseCharacterEncoding(encoding);
+	}
 }

@@ -43,7 +43,7 @@ public class Doc_Payment extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schema
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
@@ -83,7 +83,6 @@ public class Doc_Payment extends Doc
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
-	//	log.config( toString() + " Balance=" + retValue);
 		return retValue;
 	}   //  getBalance
 

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ColorSchema
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PA_ColorSchema")
 public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_ColorSchema (Properties ctx, int PA_ColorSchema_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 			setAD_PrintColor1_ID (0);
 			setAD_PrintColor2_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setMark1Percent (0);
 			setMark2Percent (0);
 			setName (null);
@@ -78,26 +79,26 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
     }
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor1() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor1_ID(), get_TrxName());
+	}
 
 	/** Set Color 1.
-		@param AD_PrintColor1_ID 
-		First color used
-	  */
+		@param AD_PrintColor1_ID First color used
+	*/
 	public void setAD_PrintColor1_ID (int AD_PrintColor1_ID)
 	{
-		if (AD_PrintColor1_ID < 1) 
+		if (AD_PrintColor1_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor1_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor1_ID, Integer.valueOf(AD_PrintColor1_ID));
 	}
 
 	/** Get Color 1.
 		@return First color used
 	  */
-	public int getAD_PrintColor1_ID () 
+	public int getAD_PrintColor1_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor1_ID);
 		if (ii == null)
@@ -106,26 +107,26 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor2() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor2_ID(), get_TrxName());
+	}
 
 	/** Set Color 2.
-		@param AD_PrintColor2_ID 
-		Second color used
-	  */
+		@param AD_PrintColor2_ID Second color used
+	*/
 	public void setAD_PrintColor2_ID (int AD_PrintColor2_ID)
 	{
-		if (AD_PrintColor2_ID < 1) 
+		if (AD_PrintColor2_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor2_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor2_ID, Integer.valueOf(AD_PrintColor2_ID));
 	}
 
 	/** Get Color 2.
 		@return Second color used
 	  */
-	public int getAD_PrintColor2_ID () 
+	public int getAD_PrintColor2_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor2_ID);
 		if (ii == null)
@@ -134,26 +135,26 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor3() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor3_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor3_ID(), get_TrxName());
+	}
 
 	/** Set Color 3.
-		@param AD_PrintColor3_ID 
-		Third color used
-	  */
+		@param AD_PrintColor3_ID Third color used
+	*/
 	public void setAD_PrintColor3_ID (int AD_PrintColor3_ID)
 	{
-		if (AD_PrintColor3_ID < 1) 
+		if (AD_PrintColor3_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor3_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor3_ID, Integer.valueOf(AD_PrintColor3_ID));
 	}
 
 	/** Get Color 3.
 		@return Third color used
 	  */
-	public int getAD_PrintColor3_ID () 
+	public int getAD_PrintColor3_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor3_ID);
 		if (ii == null)
@@ -162,26 +163,26 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor4() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor4_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor4_ID(), get_TrxName());
+	}
 
 	/** Set Color 4.
-		@param AD_PrintColor4_ID 
-		Forth color used
-	  */
+		@param AD_PrintColor4_ID Forth color used
+	*/
 	public void setAD_PrintColor4_ID (int AD_PrintColor4_ID)
 	{
-		if (AD_PrintColor4_ID < 1) 
+		if (AD_PrintColor4_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor4_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor4_ID, Integer.valueOf(AD_PrintColor4_ID));
 	}
 
 	/** Get Color 4.
 		@return Forth color used
 	  */
-	public int getAD_PrintColor4_ID () 
+	public int getAD_PrintColor4_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor4_ID);
 		if (ii == null)
@@ -190,9 +191,8 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -201,7 +201,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -209,9 +209,8 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -221,15 +220,14 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Mark 1 Percent.
-		@param Mark1Percent 
-		Percentage up to this color is used
-	  */
+		@param Mark1Percent Percentage up to this color is used
+	*/
 	public void setMark1Percent (int Mark1Percent)
 	{
 		set_Value (COLUMNNAME_Mark1Percent, Integer.valueOf(Mark1Percent));
@@ -238,7 +236,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** Get Mark 1 Percent.
 		@return Percentage up to this color is used
 	  */
-	public int getMark1Percent () 
+	public int getMark1Percent()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Mark1Percent);
 		if (ii == null)
@@ -247,9 +245,8 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	/** Set Mark 2 Percent.
-		@param Mark2Percent 
-		Percentage up to this color is used
-	  */
+		@param Mark2Percent Percentage up to this color is used
+	*/
 	public void setMark2Percent (int Mark2Percent)
 	{
 		set_Value (COLUMNNAME_Mark2Percent, Integer.valueOf(Mark2Percent));
@@ -258,7 +255,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** Get Mark 2 Percent.
 		@return Percentage up to this color is used
 	  */
-	public int getMark2Percent () 
+	public int getMark2Percent()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Mark2Percent);
 		if (ii == null)
@@ -267,9 +264,8 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	/** Set Mark 3 Percent.
-		@param Mark3Percent 
-		Percentage up to this color is used
-	  */
+		@param Mark3Percent Percentage up to this color is used
+	*/
 	public void setMark3Percent (int Mark3Percent)
 	{
 		set_Value (COLUMNNAME_Mark3Percent, Integer.valueOf(Mark3Percent));
@@ -278,7 +274,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** Get Mark 3 Percent.
 		@return Percentage up to this color is used
 	  */
-	public int getMark3Percent () 
+	public int getMark3Percent()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Mark3Percent);
 		if (ii == null)
@@ -287,9 +283,8 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	/** Set Mark 4 Percent.
-		@param Mark4Percent 
-		Percentage up to this color is used
-	  */
+		@param Mark4Percent Percentage up to this color is used
+	*/
 	public void setMark4Percent (int Mark4Percent)
 	{
 		set_Value (COLUMNNAME_Mark4Percent, Integer.valueOf(Mark4Percent));
@@ -298,7 +293,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** Get Mark 4 Percent.
 		@return Percentage up to this color is used
 	  */
-	public int getMark4Percent () 
+	public int getMark4Percent()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Mark4Percent);
 		if (ii == null)
@@ -307,9 +302,8 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -318,7 +312,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -332,21 +326,20 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
     }
 
 	/** Set Color Schema.
-		@param PA_ColorSchema_ID 
-		Performance Color Schema
-	  */
+		@param PA_ColorSchema_ID Performance Color Schema
+	*/
 	public void setPA_ColorSchema_ID (int PA_ColorSchema_ID)
 	{
-		if (PA_ColorSchema_ID < 1) 
+		if (PA_ColorSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_ColorSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_ColorSchema_ID, Integer.valueOf(PA_ColorSchema_ID));
 	}
 
 	/** Get Color Schema.
 		@return Performance Color Schema
 	  */
-	public int getPA_ColorSchema_ID () 
+	public int getPA_ColorSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ColorSchema_ID);
 		if (ii == null)
@@ -355,7 +348,8 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	}
 
 	/** Set PA_ColorSchema_UU.
-		@param PA_ColorSchema_UU PA_ColorSchema_UU	  */
+		@param PA_ColorSchema_UU PA_ColorSchema_UU
+	*/
 	public void setPA_ColorSchema_UU (String PA_ColorSchema_UU)
 	{
 		set_Value (COLUMNNAME_PA_ColorSchema_UU, PA_ColorSchema_UU);
@@ -363,7 +357,7 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 
 	/** Get PA_ColorSchema_UU.
 		@return PA_ColorSchema_UU	  */
-	public String getPA_ColorSchema_UU () 
+	public String getPA_ColorSchema_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_ColorSchema_UU);
 	}

@@ -42,6 +42,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.LegacyLogicEvaluator;
@@ -563,6 +564,34 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
 		Env.setContext(Env.getCtx(), "ColumnSQL", "now()");
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+
+	@Test
+	public void testOSEnvVariable() {
+		String username = System.getenv("USER");
+		if (username == null)
+			username = "";
+		String expr = "@$env.USER@='" + username + "'";
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+
+	@Test
+	public void testNestedProperty() {
+		String expr = "@Processed@=Y & @M_Product_ID.IsBOM@=Y";
+		Env.setContext(Env.getCtx(), 1, "Processed", (String)null);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(new DefaultEvaluatee(null, 1, 0), expr));
+		
+		int pchair = 133;
+		Env.setContext(Env.getCtx(), 1, "Processed", "Y");
+		Env.setContext(Env.getCtx(), 1, "M_Product_ID", pchair);
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(new DefaultEvaluatee(null, 1, 0), expr));
+		
+		Env.setContext(Env.getCtx(), 1, "Processed", (String)null);
+		assertFalse(LogicEvaluator.evaluateLogic(new DefaultEvaluatee(null, 1, 0), expr));
+		
+		Env.setContext(Env.getCtx(), 1, "Processed", "Y");
+		Env.setContext(Env.getCtx(), 1, "M_Product_ID", pchair);
+		assertTrue(LogicEvaluator.evaluateLogic(new DefaultEvaluatee(null, 1, 0), expr));
 	}
 	
 	private static class ContextEvaluatee implements Evaluatee {

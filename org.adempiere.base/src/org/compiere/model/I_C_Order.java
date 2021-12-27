@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_C_Order 
 {
@@ -171,12 +171,12 @@ public interface I_C_Order
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -752,12 +752,12 @@ public interface I_C_Order
     public static final String COLUMNNAME_IsDropShip = "IsDropShip";
 
 	/** Set Drop Shipment.
-	  * Drop Shipments are sent from the Vendor directly to the Customer
+	  * Drop Shipments are sent directly to the Drop Shipment Location
 	  */
 	public void setIsDropShip (boolean IsDropShip);
 
 	/** Get Drop Shipment.
-	  * Drop Shipments are sent from the Vendor directly to the Customer
+	  * Drop Shipments are sent directly to the Drop Shipment Location
 	  */
 	public boolean isDropShip();
 

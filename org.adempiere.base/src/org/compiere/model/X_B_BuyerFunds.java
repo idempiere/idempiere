@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_BuyerFunds
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="B_BuyerFunds")
 public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_B_BuyerFunds (Properties ctx, int B_BuyerFunds_ID, String trxName)
@@ -76,26 +77,26 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -112,21 +113,20 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
     }
 
 	/** Set Buyer Funds.
-		@param B_BuyerFunds_ID 
-		Buyer Funds for Bids on Topics
-	  */
+		@param B_BuyerFunds_ID Buyer Funds for Bids on Topics
+	*/
 	public void setB_BuyerFunds_ID (int B_BuyerFunds_ID)
 	{
-		if (B_BuyerFunds_ID < 1) 
+		if (B_BuyerFunds_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_BuyerFunds_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_BuyerFunds_ID, Integer.valueOf(B_BuyerFunds_ID));
 	}
 
 	/** Get Buyer Funds.
 		@return Buyer Funds for Bids on Topics
 	  */
-	public int getB_BuyerFunds_ID () 
+	public int getB_BuyerFunds_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_BuyerFunds_ID);
 		if (ii == null)
@@ -135,7 +135,8 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	}
 
 	/** Set B_BuyerFunds_UU.
-		@param B_BuyerFunds_UU B_BuyerFunds_UU	  */
+		@param B_BuyerFunds_UU B_BuyerFunds_UU
+	*/
 	public void setB_BuyerFunds_UU (String B_BuyerFunds_UU)
 	{
 		set_Value (COLUMNNAME_B_BuyerFunds_UU, B_BuyerFunds_UU);
@@ -143,15 +144,14 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 
 	/** Get B_BuyerFunds_UU.
 		@return B_BuyerFunds_UU	  */
-	public String getB_BuyerFunds_UU () 
+	public String getB_BuyerFunds_UU()
 	{
 		return (String)get_Value(COLUMNNAME_B_BuyerFunds_UU);
 	}
 
 	/** Set Committed Amount.
-		@param CommittedAmt 
-		The (legal) commitment amount
-	  */
+		@param CommittedAmt The (legal) commitment amount
+	*/
 	public void setCommittedAmt (BigDecimal CommittedAmt)
 	{
 		set_Value (COLUMNNAME_CommittedAmt, CommittedAmt);
@@ -160,7 +160,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	/** Get Committed Amount.
 		@return The (legal) commitment amount
 	  */
-	public BigDecimal getCommittedAmt () 
+	public BigDecimal getCommittedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CommittedAmt);
 		if (bd == null)
@@ -169,26 +169,26 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -197,26 +197,26 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -225,9 +225,8 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	}
 
 	/** Set Not Committed Aount.
-		@param NonCommittedAmt 
-		Amount not committed yet
-	  */
+		@param NonCommittedAmt Amount not committed yet
+	*/
 	public void setNonCommittedAmt (BigDecimal NonCommittedAmt)
 	{
 		set_Value (COLUMNNAME_NonCommittedAmt, NonCommittedAmt);
@@ -236,7 +235,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	/** Get Not Committed Aount.
 		@return Amount not committed yet
 	  */
-	public BigDecimal getNonCommittedAmt () 
+	public BigDecimal getNonCommittedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_NonCommittedAmt);
 		if (bd == null)

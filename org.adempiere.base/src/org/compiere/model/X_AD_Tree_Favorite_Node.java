@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tree_Favorite_Node
  *  @author iDempiere (generated) 
- *  @version Release 8.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Tree_Favorite_Node")
 public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_Node, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201109L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Tree_Favorite_Node (Properties ctx, int AD_Tree_Favorite_Node_ID, String trxName)
@@ -78,26 +79,26 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
     }
 
 	public org.compiere.model.I_AD_Menu getAD_Menu() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Menu)MTable.get(getCtx(), org.compiere.model.I_AD_Menu.Table_Name)
-			.getPO(getAD_Menu_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Menu)MTable.get(getCtx(), org.compiere.model.I_AD_Menu.Table_ID)
+			.getPO(getAD_Menu_ID(), get_TrxName());
+	}
 
 	/** Set Menu.
-		@param AD_Menu_ID 
-		Identifies a Menu
-	  */
+		@param AD_Menu_ID Identifies a Menu
+	*/
 	public void setAD_Menu_ID (int AD_Menu_ID)
 	{
-		if (AD_Menu_ID < 1) 
+		if (AD_Menu_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Menu_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Menu_ID, Integer.valueOf(AD_Menu_ID));
 	}
 
 	/** Get Menu.
 		@return Identifies a Menu
 	  */
-	public int getAD_Menu_ID () 
+	public int getAD_Menu_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Menu_ID);
 		if (ii == null)
@@ -106,23 +107,25 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	public org.compiere.model.I_AD_Tree_Favorite getAD_Tree_Favorite() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree_Favorite)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite.Table_Name)
-			.getPO(getAD_Tree_Favorite_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree_Favorite)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite.Table_ID)
+			.getPO(getAD_Tree_Favorite_ID(), get_TrxName());
+	}
 
 	/** Set Favorite Tree.
-		@param AD_Tree_Favorite_ID Favorite Tree	  */
+		@param AD_Tree_Favorite_ID Favorite Tree
+	*/
 	public void setAD_Tree_Favorite_ID (int AD_Tree_Favorite_ID)
 	{
-		if (AD_Tree_Favorite_ID < 1) 
+		if (AD_Tree_Favorite_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_ID, Integer.valueOf(AD_Tree_Favorite_ID));
 	}
 
 	/** Get Favorite Tree.
 		@return Favorite Tree	  */
-	public int getAD_Tree_Favorite_ID () 
+	public int getAD_Tree_Favorite_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Favorite_ID);
 		if (ii == null)
@@ -131,18 +134,19 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	/** Set Favorite Node Tree.
-		@param AD_Tree_Favorite_Node_ID Favorite Node Tree	  */
+		@param AD_Tree_Favorite_Node_ID Favorite Node Tree
+	*/
 	public void setAD_Tree_Favorite_Node_ID (int AD_Tree_Favorite_Node_ID)
 	{
-		if (AD_Tree_Favorite_Node_ID < 1) 
+		if (AD_Tree_Favorite_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_Node_ID, Integer.valueOf(AD_Tree_Favorite_Node_ID));
 	}
 
 	/** Get Favorite Node Tree.
 		@return Favorite Node Tree	  */
-	public int getAD_Tree_Favorite_Node_ID () 
+	public int getAD_Tree_Favorite_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Favorite_Node_ID);
 		if (ii == null)
@@ -151,7 +155,8 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	/** Set Favorite Node Tree.
-		@param AD_Tree_Favorite_Node_UU Favorite Node Tree	  */
+		@param AD_Tree_Favorite_Node_UU Favorite Node Tree
+	*/
 	public void setAD_Tree_Favorite_Node_UU (String AD_Tree_Favorite_Node_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_Tree_Favorite_Node_UU, AD_Tree_Favorite_Node_UU);
@@ -159,15 +164,14 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 
 	/** Get Favorite Node Tree.
 		@return Favorite Node Tree	  */
-	public String getAD_Tree_Favorite_Node_UU () 
+	public String getAD_Tree_Favorite_Node_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Tree_Favorite_Node_UU);
 	}
 
 	/** Set Collapsible.
-		@param IsCollapsible 
-		Flag to indicate the state of the dashboard panel
-	  */
+		@param IsCollapsible Flag to indicate the state of the dashboard panel
+	*/
 	public void setIsCollapsible (boolean IsCollapsible)
 	{
 		set_Value (COLUMNNAME_IsCollapsible, Boolean.valueOf(IsCollapsible));
@@ -176,7 +180,7 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	/** Get Collapsible.
 		@return Flag to indicate the state of the dashboard panel
 	  */
-	public boolean isCollapsible () 
+	public boolean isCollapsible()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCollapsible);
 		if (oo != null) 
@@ -189,9 +193,8 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	/** Set Favourite.
-		@param IsFavourite 
-		This record is a favourite
-	  */
+		@param IsFavourite This record is a favourite
+	*/
 	public void setIsFavourite (boolean IsFavourite)
 	{
 		set_Value (COLUMNNAME_IsFavourite, Boolean.valueOf(IsFavourite));
@@ -200,7 +203,7 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	/** Get Favourite.
 		@return This record is a favourite
 	  */
-	public boolean isFavourite () 
+	public boolean isFavourite()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFavourite);
 		if (oo != null) 
@@ -213,9 +216,8 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	/** Set Summary Level.
-		@param IsSummary 
-		This is a summary entity
-	  */
+		@param IsSummary This is a summary entity
+	*/
 	public void setIsSummary (boolean IsSummary)
 	{
 		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(IsSummary));
@@ -224,7 +226,7 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	/** Get Summary Level.
 		@return This is a summary entity
 	  */
-	public boolean isSummary () 
+	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
 		if (oo != null) 
@@ -237,9 +239,8 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	/** Set Login automatic open sequence.
-		@param LoginOpenSeqNo 
-		Determine the order items will be automatically opened when user logs in
-	  */
+		@param LoginOpenSeqNo Determine the order items will be automatically opened when user logs in
+	*/
 	public void setLoginOpenSeqNo (int LoginOpenSeqNo)
 	{
 		set_Value (COLUMNNAME_LoginOpenSeqNo, Integer.valueOf(LoginOpenSeqNo));
@@ -248,7 +249,7 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	/** Get Login automatic open sequence.
 		@return Determine the order items will be automatically opened when user logs in
 	  */
-	public int getLoginOpenSeqNo () 
+	public int getLoginOpenSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LoginOpenSeqNo);
 		if (ii == null)
@@ -257,9 +258,8 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -268,32 +268,32 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	public org.compiere.model.I_AD_Tree_Favorite_Node getParent() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tree_Favorite_Node)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite_Node.Table_Name)
-			.getPO(getParent_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tree_Favorite_Node)MTable.get(getCtx(), org.compiere.model.I_AD_Tree_Favorite_Node.Table_ID)
+			.getPO(getParent_ID(), get_TrxName());
+	}
 
 	/** Set Parent.
-		@param Parent_ID 
-		Parent of Entity
-	  */
+		@param Parent_ID Parent of Entity
+	*/
 	public void setParent_ID (int Parent_ID)
 	{
-		if (Parent_ID < 1) 
+		if (Parent_ID < 1)
 			set_Value (COLUMNNAME_Parent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Parent_ID, Integer.valueOf(Parent_ID));
 	}
 
 	/** Get Parent.
 		@return Parent of Entity
 	  */
-	public int getParent_ID () 
+	public int getParent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Parent_ID);
 		if (ii == null)
@@ -302,9 +302,8 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -313,7 +312,7 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Region
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Region")
 public class X_C_Region extends PO implements I_C_Region, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Region (Properties ctx, int C_Region_ID, String trxName)
@@ -73,26 +74,26 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
     }
 
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
-			.getPO(getC_Country_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
+			.getPO(getC_Country_ID(), get_TrxName());
+	}
 
 	/** Set Country.
-		@param C_Country_ID 
-		Country 
-	  */
+		@param C_Country_ID Country 
+	*/
 	public void setC_Country_ID (int C_Country_ID)
 	{
-		if (C_Country_ID < 1) 
+		if (C_Country_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Country_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Country_ID, Integer.valueOf(C_Country_ID));
 	}
 
 	/** Get Country.
 		@return Country 
 	  */
-	public int getC_Country_ID () 
+	public int getC_Country_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Country_ID);
 		if (ii == null)
@@ -101,21 +102,20 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
 	}
 
 	/** Set Region.
-		@param C_Region_ID 
-		Identifies a geographical Region
-	  */
+		@param C_Region_ID Identifies a geographical Region
+	*/
 	public void setC_Region_ID (int C_Region_ID)
 	{
-		if (C_Region_ID < 1) 
+		if (C_Region_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Region_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Region_ID, Integer.valueOf(C_Region_ID));
 	}
 
 	/** Get Region.
 		@return Identifies a geographical Region
 	  */
-	public int getC_Region_ID () 
+	public int getC_Region_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_ID);
 		if (ii == null)
@@ -124,7 +124,8 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
 	}
 
 	/** Set C_Region_UU.
-		@param C_Region_UU C_Region_UU	  */
+		@param C_Region_UU C_Region_UU
+	*/
 	public void setC_Region_UU (String C_Region_UU)
 	{
 		set_Value (COLUMNNAME_C_Region_UU, C_Region_UU);
@@ -132,15 +133,14 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
 
 	/** Get C_Region_UU.
 		@return C_Region_UU	  */
-	public String getC_Region_UU () 
+	public String getC_Region_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Region_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -149,15 +149,14 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -166,7 +165,7 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -179,9 +178,8 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -190,7 +188,7 @@ public class X_C_Region extends PO implements I_C_Region, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.LogRecord;
 
 import org.compiere.model.MBPartner;
@@ -126,7 +126,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertEquals(false, invoice.isPaid(), "Invoice isPaid() is not false");
 		assertTrue(payment1.isPosted(), "Payment not posted");
 		
-		ArrayList<PO> postProcessDocs = payment1.getDocsPostProcess();
+		List<PO> postProcessDocs = payment1.getDocsPostProcess();
 		for(PO postProcessDoc : postProcessDocs) {
 			assertTrue(postProcessDoc.get_ValueAsBoolean("Posted"), "Post Process Doc not posted: " + postProcessDoc);
 		}

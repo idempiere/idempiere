@@ -30,6 +30,7 @@ import org.compiere.model.MRfQLineQty;
  *  @author Jorg Janke
  *  @version $Id: RfQCopyLines.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class RfQCopyLines extends SvrProcess
 {
 	/**	From RfQ 			*/
@@ -83,8 +84,6 @@ public class RfQCopyLines extends SvrProcess
 			newLine.setHelp(lines[i].getHelp());
 			newLine.setM_Product_ID(lines[i].getM_Product_ID());
 			newLine.setM_AttributeSetInstance_ID(lines[i].getM_AttributeSetInstance_ID());
-		//	newLine.setDateWorkStart();
-		//	newLine.setDateWorkComplete();
 			newLine.setDeliveryDays(lines[i].getDeliveryDays());
 			newLine.saveEx();
 			//	Copy Qtys

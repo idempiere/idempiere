@@ -223,7 +223,7 @@ public class QueryDataLookup extends Lookup {
 	}
 
 	/**
-	 *	Refresh & return number of items read.
+	 *	Refresh and return number of items read.
 	 * 	Get get data of parent lookups
 	 *  @return no of items read
 	 */

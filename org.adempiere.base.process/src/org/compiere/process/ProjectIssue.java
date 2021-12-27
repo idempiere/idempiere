@@ -37,6 +37,7 @@ import org.compiere.wf.MWorkflow;
  *	@author Jorg Janke
  *	@version $Id: ProjectIssue.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ProjectIssue extends SvrProcess
 {
 	/**	Project - Mandatory Parameter		*/
@@ -237,9 +238,7 @@ public class ProjectIssue extends SvrProcess
 
 			//	Find Location
 			int M_Locator_ID = 0;
-		//	MProduct product = new MProduct (getCtx(), expenseLines[i].getM_Product_ID());
-		//	if (product.isStocked())
-				M_Locator_ID = MStorageOnHand.getM_Locator_ID(expense.getM_Warehouse_ID(), 
+			M_Locator_ID = MStorageOnHand.getM_Locator_ID(expense.getM_Warehouse_ID(), 
 					expenseLines[i].getM_Product_ID(), 0, 	//	no ASI
 					expenseLines[i].getQty(), null);
 			if (M_Locator_ID == 0)	//	Service/Expense - get default (and fallback)

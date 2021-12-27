@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -40,7 +41,51 @@ public class GridWindowVO implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 6884332743173214735L;
+	
+	private static final CLogger log = CLogger.getCLogger(GridWindowVO.class);
 
+	/**	Window Cache		*/
+	private static CCache<Integer,GridWindowVO>	s_windowsvo
+		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
+	
+	/**
+	 * 
+	 * @param AD_Window_ID
+	 * @param windowNo
+	 * @return {@link GridWindowVO}
+	 */
+	public static GridWindowVO get(int AD_Window_ID, int windowNo)
+	{
+		return get(AD_Window_ID, windowNo, -1);
+	}
+	
+	/**
+	 * 
+	 * @param AD_Window_ID
+	 * @param windowNo
+	 * @param AD_Menu_ID
+	 * @return {@link GridWindowVO}
+	 */
+	public static GridWindowVO get(int AD_Window_ID, int windowNo, int AD_Menu_ID) 
+	{
+		GridWindowVO mWindowVO = s_windowsvo.get(AD_Window_ID);
+		if (mWindowVO != null)
+		{
+			mWindowVO = mWindowVO.clone(windowNo);
+			if (log.isLoggable(Level.INFO)) log.info("Cached=" + mWindowVO);
+		}
+		if (mWindowVO == null)
+		{
+			if (log.isLoggable(Level.CONFIG)) log.config("create local");
+			mWindowVO = GridWindowVO.create (Env.getCtx(), windowNo, AD_Window_ID, AD_Menu_ID);
+			if (mWindowVO != null) 
+			{
+				s_windowsvo.put(AD_Window_ID, mWindowVO);
+			}
+		}
+		return mWindowVO;
+	}
+	
 	/**
 	 *  Create Window Value Object
 	 *  @param WindowNo window no for ctx
@@ -120,60 +165,34 @@ public class GridWindowVO implements Serializable
 
 		//  --  Get Window
 
-		StringBuilder sql = new StringBuilder("SELECT Name,Description,Help,WindowType, "
-			+ "AD_Color_ID,AD_Image_ID,WinHeight,WinWidth, "
-			+ "IsSOTrx, AD_Window_UU ");
-
-		if (Env.isBaseLanguage(vo.ctx, "AD_Window"))
-			sql.append("FROM AD_Window w WHERE w.AD_Window_ID=? AND w.IsActive='Y'");
+		MWindow window = MWindow.get(AD_Window_ID);
+		boolean base = Env.isBaseLanguage(vo.ctx, "AD_Window");
+		if (window != null)
+		{
+			vo.Name = base ? window.getName() : window.get_Translation(MWindow.COLUMNNAME_Name); 
+			vo.Description = base ? window.getDescription() : window.get_Translation(MWindow.COLUMNNAME_Description);
+			if (vo.Description == null)
+				vo.Description = "";
+			vo.Help = base ? window.getHelp() : window.get_Translation(MWindow.COLUMNNAME_Help);
+			if (vo.Help == null)
+				vo.Help = "";
+			vo.WindowType = window.getWindowType();
+			//
+			vo.AD_Color_ID = window.getAD_Color_ID();
+			vo.AD_Image_ID = window.getAD_Image_ID();
+			//vo.IsReadWrite = rs.getString(7);
+			//
+			vo.WinHeight = window.getWinHeight();
+			vo.WinWidth = window.getWinWidth();
+			//
+			vo.IsSOTrx = window.isSOTrx();
+			vo.AD_Window_UU = window.getAD_Window_UU();
+		}
 		else
-			sql.append("FROM AD_Window_vt w WHERE w.AD_Window_ID=?")
-				.append(" AND AD_Language='")
-				.append(Env.getAD_Language(vo.ctx)).append("'");
-
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
 		{
-			//	create statement
-			pstmt = DB.prepareStatement(sql.toString(), null);
-			pstmt.setInt(1, vo.AD_Window_ID);
-			// 	get data
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				vo.Name = rs.getString(1);
-				vo.Description = rs.getString(2);
-				if (vo.Description == null)
-					vo.Description = "";
-				vo.Help = rs.getString(3);
-				if (vo.Help == null)
-					vo.Help = "";
-				vo.WindowType = rs.getString(4);
-				//
-				vo.AD_Color_ID = rs.getInt(5);
-				vo.AD_Image_ID = rs.getInt(6);
-				//vo.IsReadWrite = rs.getString(7);
-				//
-				vo.WinHeight = rs.getInt(7);
-				vo.WinWidth = rs.getInt(8);
-				//
-				vo.IsSOTrx = "Y".equals(rs.getString(9));
-				vo.AD_Window_UU = rs.getString(10);
-			}
-			else
-				vo = null;
+			vo = null;
 		}
-		catch (SQLException ex)
-		{
-			CLogger.get().log(Level.SEVERE, sql.toString(), ex);
-			return null;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		
 		// Ensure ASP exceptions
 		MRole role = MRole.getDefault(ctx, false);
 		final Boolean windowAccess = vo!=null ? role.getWindowAccess(vo.AD_Window_ID) : null;
@@ -184,7 +203,7 @@ public class GridWindowVO implements Serializable
 		if (vo == null)
 		{
 			CLogger.get().log(Level.SEVERE, "No Window - AD_Window_ID=" + AD_Window_ID
-				+ ", AD_Role_ID=" + role + " - " + sql);
+				+ ", AD_Role_ID=" + role);
 			CLogger.get().saveError("AccessTableNoView", "(Not found)");
 			return null;
 		}

@@ -75,6 +75,7 @@ import org.zkoss.zul.Vbox;
  *  
  */
 
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VFileImport")
 public class WFileImport extends ADForm implements EventListener<Event>
 {
 	/**
@@ -125,7 +126,6 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	
 	/**
 	 *	Initialize Panel
-	 *  @param WindowNo window
 	 */
 	protected void initForm()
 	{

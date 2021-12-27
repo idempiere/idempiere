@@ -377,7 +377,7 @@ public class AlertProcessor extends AdempiereServer
 	 * @param sql sql select
 	 * @param trxName transaction
 	 * @param attachments (ignored)
-	 * @return list of rows & values
+	 * @return list of rows and values
 	 * @throws Exception
 	 */
 	protected String getPlainTextReport(MAlertRule rule, String sql, String trxName, Collection<File> attachments)

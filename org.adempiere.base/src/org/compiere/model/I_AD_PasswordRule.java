@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PasswordRule
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_AD_PasswordRule 
 {
@@ -178,12 +178,14 @@ public interface I_AD_PasswordRule
     public static final String COLUMNNAME_IsUserNameRule = "IsUserNameRule";
 
 	/** Set User Name Rule.
-	  * Validate the password doesn't contain user name (ignore case and match backwards)
+	  * Validate the password doesn&#039;
+t contain user name (ignore case and match backwards)
 	  */
 	public void setIsUserNameRule (boolean IsUserNameRule);
 
 	/** Get User Name Rule.
-	  * Validate the password doesn't contain user name (ignore case and match backwards)
+	  * Validate the password doesn&#039;
+t contain user name (ignore case and match backwards)
 	  */
 	public boolean isUserNameRule();
 

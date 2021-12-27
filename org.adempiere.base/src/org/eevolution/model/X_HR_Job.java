@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Job
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="HR_Job")
 public class X_HR_Job extends PO implements I_HR_Job, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_HR_Job (Properties ctx, int HR_Job_ID, String trxName)
@@ -73,9 +74,8 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,29 +84,31 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_Name)
-			.getPO(getHR_Department_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
+			.getPO(getHR_Department_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
+		@param HR_Department_ID Payroll Department
+	*/
 	public void setHR_Department_ID (int HR_Department_ID)
 	{
-		if (HR_Department_ID < 1) 
+		if (HR_Department_ID < 1)
 			set_Value (COLUMNNAME_HR_Department_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
 	}
 
 	/** Get Payroll Department.
 		@return Payroll Department	  */
-	public int getHR_Department_ID () 
+	public int getHR_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
 		if (ii == null)
@@ -115,18 +117,19 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	/** Set Payroll Job.
-		@param HR_Job_ID Payroll Job	  */
+		@param HR_Job_ID Payroll Job
+	*/
 	public void setHR_Job_ID (int HR_Job_ID)
 	{
-		if (HR_Job_ID < 1) 
+		if (HR_Job_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Job_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Job_ID, Integer.valueOf(HR_Job_ID));
 	}
 
 	/** Get Payroll Job.
 		@return Payroll Job	  */
-	public int getHR_Job_ID () 
+	public int getHR_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Job_ID);
 		if (ii == null)
@@ -135,7 +138,8 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	/** Set HR_Job_UU.
-		@param HR_Job_UU HR_Job_UU	  */
+		@param HR_Job_UU HR_Job_UU
+	*/
 	public void setHR_Job_UU (String HR_Job_UU)
 	{
 		set_Value (COLUMNNAME_HR_Job_UU, HR_Job_UU);
@@ -143,15 +147,14 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 
 	/** Get HR_Job_UU.
 		@return HR_Job_UU	  */
-	public String getHR_Job_UU () 
+	public String getHR_Job_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Job_UU);
 	}
 
 	/** Set Parent link column.
-		@param IsParent 
-		This column is a link to the parent table (e.g. header from lines) - incl. Association key columns
-	  */
+		@param IsParent This column is a link to the parent table (e.g. header from lines) - incl. Association key columns
+	*/
 	public void setIsParent (boolean IsParent)
 	{
 		set_Value (COLUMNNAME_IsParent, Boolean.valueOf(IsParent));
@@ -160,7 +163,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	/** Get Parent link column.
 		@return This column is a link to the parent table (e.g. header from lines) - incl. Association key columns
 	  */
-	public boolean isParent () 
+	public boolean isParent()
 	{
 		Object oo = get_Value(COLUMNNAME_IsParent);
 		if (oo != null) 
@@ -173,7 +176,8 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	/** Set Job Cant.
-		@param JobCant Job Cant	  */
+		@param JobCant Job Cant
+	*/
 	public void setJobCant (int JobCant)
 	{
 		set_Value (COLUMNNAME_JobCant, Integer.valueOf(JobCant));
@@ -181,7 +185,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 
 	/** Get Job Cant.
 		@return Job Cant	  */
-	public int getJobCant () 
+	public int getJobCant()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_JobCant);
 		if (ii == null)
@@ -190,9 +194,8 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -201,7 +204,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -215,23 +218,25 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
     }
 
 	public org.eevolution.model.I_HR_Job getNext_Job() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_Name)
-			.getPO(getNext_Job_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_ID)
+			.getPO(getNext_Job_ID(), get_TrxName());
+	}
 
 	/** Set Next Job.
-		@param Next_Job_ID Next Job	  */
+		@param Next_Job_ID Next Job
+	*/
 	public void setNext_Job_ID (int Next_Job_ID)
 	{
-		if (Next_Job_ID < 1) 
+		if (Next_Job_ID < 1)
 			set_Value (COLUMNNAME_Next_Job_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Next_Job_ID, Integer.valueOf(Next_Job_ID));
 	}
 
 	/** Get Next Job.
 		@return Next Job	  */
-	public int getNext_Job_ID () 
+	public int getNext_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Next_Job_ID);
 		if (ii == null)
@@ -240,26 +245,26 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
-		@param Supervisor_ID 
-		Supervisor for this user/organization - used for escalation and approval
-	  */
+		@param Supervisor_ID Supervisor for this user/organization - used for escalation and approval
+	*/
 	public void setSupervisor_ID (int Supervisor_ID)
 	{
-		if (Supervisor_ID < 1) 
+		if (Supervisor_ID < 1)
 			set_Value (COLUMNNAME_Supervisor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Supervisor_ID, Integer.valueOf(Supervisor_ID));
 	}
 
 	/** Get Supervisor.
 		@return Supervisor for this user/organization - used for escalation and approval
 	  */
-	public int getSupervisor_ID () 
+	public int getSupervisor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Supervisor_ID);
 		if (ii == null)
@@ -268,9 +273,8 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -279,7 +283,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

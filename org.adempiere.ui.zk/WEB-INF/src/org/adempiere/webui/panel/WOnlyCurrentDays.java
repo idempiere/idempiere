@@ -49,8 +49,6 @@ public class WOnlyCurrentDays extends Window implements EventListener<Event>, Di
 
 	/**
 	 *	Constructor
-	 *  @param parent parent frame
-	 *  @param buttonLocation lower left corner of the button
 	 */
 	public WOnlyCurrentDays()
 	{

@@ -43,7 +43,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 			<li>FR [ 2093551 ] Refactor/Add org.compiere.model.MProduct.getCostingLevel
  * 			<li>FR [ 2093569 ] Refactor/Add org.compiere.model.MProduct.getCostingMethod
  * 			<li>BF [ 2824795 ] Deleting Resource product should be forbidden
- * 				https://sourceforge.net/tracker/?func=detail&aid=2824795&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/1988/
  * 
  * @author Mark Ostermann (mark_o), metas consult GmbH
  * 			<li>BF [ 2814628 ] Wrong evaluation of Product inactive in beforeSave()
@@ -453,7 +453,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public boolean setResource (MResourceType parent)
 	{
 		boolean changed = false;
-		if (PRODUCTTYPE_Resource.equals(getProductType()))
+		if (!PRODUCTTYPE_Resource.equals(getProductType()))
 		{
 			setProductType(PRODUCTTYPE_Resource);
 			changed = true;
@@ -882,8 +882,18 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param isSOTrx is outgoing trx?
 	 * @return true if ASI is mandatory, false otherwise
 	 */
+	@Deprecated
 	public boolean isASIMandatory(boolean isSOTrx) {
-		//
+		return isASIMandatoryFor(null, isSOTrx);
+	}
+	
+	/**
+	 * Check if ASI is mandatory according to mandatory type
+	 * @param mandatoryType
+	 * @param isSOTrx
+	 * @return true if ASI is mandatory, false otherwise
+	 */
+	public boolean isASIMandatoryFor(String mandatoryType, boolean isSOTrx) {
 		//	If CostingLevel is BatchLot ASI is always mandatory - check all client acct schemas
 		MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
 		for (MAcctSchema as : mass)
@@ -899,14 +909,15 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		if (M_AttributeSet_ID != 0)
 		{
 			MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
-			if (mas == null || !mas.isInstanceAttribute())
+			if (mas == null || !mas.isInstanceAttribute()){
 				return false;
-			// Outgoing transaction
-			else if (isSOTrx)
-				return mas.isMandatory();
+			} else if (isSOTrx){ // Outgoing transaction
+				return mas.isMandatoryAlways() || (mas.isMandatory() && mas.getMandatoryType().equals(mandatoryType));
+			}
 			// Incoming transaction
-			else // isSOTrx == false
+			else{ // isSOTrx == false
 				return mas.isMandatoryAlways();
+			}
 		}
 		//
 		// Default not mandatory
@@ -931,7 +942,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	
 	/**
 	 * Get Product Costing Method
-	 * @param C_AcctSchema_ID accounting schema ID
+	 * @param as accounting schema
 	 * @return product costing method
 	 */
 	public String getCostingMethod(MAcctSchema as)

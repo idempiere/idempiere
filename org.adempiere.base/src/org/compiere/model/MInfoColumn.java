@@ -29,6 +29,7 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Info Window Column Model
@@ -36,12 +37,12 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: MInfoColumn.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
+public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6313260451237775302L;
+	private static final long serialVersionUID = 3909164419255524834L;
 
 	/**
 	 * 	Stanfard Constructor
@@ -103,14 +104,24 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 	 */
 	public boolean isColumnAccess(TableInfo[] tableInfos)
 	{
+		String synonym = null;
+		String column = null;
 		int index = getSelectClause().indexOf(".");
 		if (index == getSelectClause().lastIndexOf(".") && index >= 0)
 		{
-			String synonym = getSelectClause().substring(0, index);
-			String column = getSelectClause().substring(index+1);
+			synonym = getSelectClause().substring(0, index);
+			column = getSelectClause().substring(index+1);
+		}
+		else if (tableInfos.length == 1)
+		{
+			synonym = Util.isEmpty(tableInfos[0].getSynonym(), true) ? tableInfos[0].getTableName() : tableInfos[0].getSynonym();
+			column = getSelectClause();
+		}
+		if (!Util.isEmpty(synonym, true) && !Util.isEmpty(column, true))
+		{
 			for(TableInfo tableInfo : tableInfos)
 			{
-				if (tableInfo.getSynonym() != null && tableInfo.getSynonym().equals(synonym))
+				if ((!Util.isEmpty(tableInfo.getSynonym(),true) && tableInfo.getSynonym().equals(synonym)) || (Util.isEmpty(tableInfo.getSynonym(),true) && tableInfo.getTableName().equals(synonym)))
 				{
 					String tableName = tableInfo.getTableName();
 					MTable mTable = MTable.get(Env.getCtx(), tableName);
@@ -225,5 +236,17 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn
 	@Override
 	public I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException {
 		return MValRule.getCopy(getCtx(), getAD_Val_Rule_ID(), get_TrxName());
+	}
+
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_parent != null && !m_parent.is_Immutable())
+			m_parent.markImmutable();
+		
+		return this;
 	}
 }	//	MInfoColumn

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Error
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Error")
 public class X_AD_Error extends PO implements I_AD_Error, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Error (Properties ctx, int AD_Error_ID, String trxName)
@@ -72,18 +73,19 @@ public class X_AD_Error extends PO implements I_AD_Error, I_Persistent
     }
 
 	/** Set Error.
-		@param AD_Error_ID Error	  */
+		@param AD_Error_ID Error
+	*/
 	public void setAD_Error_ID (int AD_Error_ID)
 	{
-		if (AD_Error_ID < 1) 
+		if (AD_Error_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Error_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Error_ID, Integer.valueOf(AD_Error_ID));
 	}
 
 	/** Get Error.
 		@return Error	  */
-	public int getAD_Error_ID () 
+	public int getAD_Error_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Error_ID);
 		if (ii == null)
@@ -92,7 +94,8 @@ public class X_AD_Error extends PO implements I_AD_Error, I_Persistent
 	}
 
 	/** Set AD_Error_UU.
-		@param AD_Error_UU AD_Error_UU	  */
+		@param AD_Error_UU AD_Error_UU
+	*/
 	public void setAD_Error_UU (String AD_Error_UU)
 	{
 		set_Value (COLUMNNAME_AD_Error_UU, AD_Error_UU);
@@ -100,7 +103,7 @@ public class X_AD_Error extends PO implements I_AD_Error, I_Persistent
 
 	/** Get AD_Error_UU.
 		@return AD_Error_UU	  */
-	public String getAD_Error_UU () 
+	public String getAD_Error_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Error_UU);
 	}
@@ -108,9 +111,8 @@ public class X_AD_Error extends PO implements I_AD_Error, I_Persistent
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
 	/** Set Language.
-		@param AD_Language 
-		Language for this entity
-	  */
+		@param AD_Language Language for this entity
+	*/
 	public void setAD_Language (String AD_Language)
 	{
 
@@ -120,15 +122,14 @@ public class X_AD_Error extends PO implements I_AD_Error, I_Persistent
 	/** Get Language.
 		@return Language for this entity
 	  */
-	public String getAD_Language () 
+	public String getAD_Language()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
 	/** Set Validation code.
-		@param Code 
-		Validation Code
-	  */
+		@param Code Validation Code
+	*/
 	public void setCode (String Code)
 	{
 		set_Value (COLUMNNAME_Code, Code);
@@ -137,15 +138,14 @@ public class X_AD_Error extends PO implements I_AD_Error, I_Persistent
 	/** Get Validation code.
 		@return Validation Code
 	  */
-	public String getCode () 
+	public String getCode()
 	{
 		return (String)get_Value(COLUMNNAME_Code);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -154,7 +154,7 @@ public class X_AD_Error extends PO implements I_AD_Error, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

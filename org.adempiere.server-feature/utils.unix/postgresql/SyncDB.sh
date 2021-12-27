@@ -59,11 +59,16 @@ APPLIED=N
 comm -13 $TMPFOLDER/lisDB_$$.txt $TMPFOLDER/lisFS_$$.txt > $TMPFOLDER/lisPENDING_$$.txt
 if [ -s $TMPFOLDER/lisPENDING_$$.txt ]
 then
-    mkdir $TMPFOLDER/SyncDB_out_$$
     while read -r FILE
     do
 	SCRIPT=$(find . -name "$FILE" | grep "/$ADEMPIERE_DB_PATH/")
-	OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$FILE" .sql).out
+	echo "$SCRIPT" >> $TMPFOLDER/lisPENDINGFOL_$$.txt
+    done < $TMPFOLDER/lisPENDING_$$.txt
+    sort -o $TMPFOLDER/lisPENDINGFOL_$$.txt $TMPFOLDER/lisPENDINGFOL_$$.txt
+    mkdir $TMPFOLDER/SyncDB_out_$$
+    while read -r SCRIPT
+    do
+	OUTFILE=$TMPFOLDER/SyncDB_out_$$/$(basename "$SCRIPT" .sql).out
 	echo "Applying $SCRIPT"
 	$CMD < "$SCRIPT" 2>&1 | tee "$OUTFILE"
 	APPLIED=Y
@@ -73,7 +78,7 @@ then
 	    # Stop processing to allow user to fix the problem before processing additional files
 	    break
 	fi
-    done < $TMPFOLDER/lisPENDING_$$.txt
+    done < $TMPFOLDER/lisPENDINGFOL_$$.txt
 else
     if [ -s $TMPFOLDER/lisFS_$$.txt ]
     then

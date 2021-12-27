@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImportTemplate
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_ImportTemplate")
 public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName)
@@ -76,18 +77,19 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
     }
 
 	/** Set Import Template.
-		@param AD_ImportTemplate_ID Import Template	  */
+		@param AD_ImportTemplate_ID Import Template
+	*/
 	public void setAD_ImportTemplate_ID (int AD_ImportTemplate_ID)
 	{
-		if (AD_ImportTemplate_ID < 1) 
+		if (AD_ImportTemplate_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ImportTemplate_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ImportTemplate_ID, Integer.valueOf(AD_ImportTemplate_ID));
 	}
 
 	/** Get Import Template.
 		@return Import Template	  */
-	public int getAD_ImportTemplate_ID () 
+	public int getAD_ImportTemplate_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ImportTemplate_ID);
 		if (ii == null)
@@ -96,7 +98,8 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	}
 
 	/** Set AD_ImportTemplate_UU.
-		@param AD_ImportTemplate_UU AD_ImportTemplate_UU	  */
+		@param AD_ImportTemplate_UU AD_ImportTemplate_UU
+	*/
 	public void setAD_ImportTemplate_UU (String AD_ImportTemplate_UU)
 	{
 		set_Value (COLUMNNAME_AD_ImportTemplate_UU, AD_ImportTemplate_UU);
@@ -104,32 +107,32 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 
 	/** Get AD_ImportTemplate_UU.
 		@return AD_ImportTemplate_UU	  */
-	public String getAD_ImportTemplate_UU () 
+	public String getAD_ImportTemplate_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ImportTemplate_UU);
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
-		@param AD_Tab_ID 
-		Tab within a Window
-	  */
+		@param AD_Tab_ID Tab within a Window
+	*/
 	public void setAD_Tab_ID (int AD_Tab_ID)
 	{
-		if (AD_Tab_ID < 1) 
+		if (AD_Tab_ID < 1)
 			set_Value (COLUMNNAME_AD_Tab_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
 	}
 
 	/** Get Tab.
 		@return Tab within a Window
 	  */
-	public int getAD_Tab_ID () 
+	public int getAD_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
 		if (ii == null)
@@ -138,26 +141,26 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -166,7 +169,8 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	}
 
 	/** Set Character Set.
-		@param CharacterSet Character Set	  */
+		@param CharacterSet Character Set
+	*/
 	public void setCharacterSet (String CharacterSet)
 	{
 		set_Value (COLUMNNAME_CharacterSet, CharacterSet);
@@ -174,13 +178,14 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 
 	/** Get Character Set.
 		@return Character Set	  */
-	public String getCharacterSet () 
+	public String getCharacterSet()
 	{
 		return (String)get_Value(COLUMNNAME_CharacterSet);
 	}
 
 	/** Set CSV Alias Header.
-		@param CSVAliasHeader CSV Alias Header	  */
+		@param CSVAliasHeader CSV Alias Header
+	*/
 	public void setCSVAliasHeader (String CSVAliasHeader)
 	{
 		set_Value (COLUMNNAME_CSVAliasHeader, CSVAliasHeader);
@@ -188,13 +193,14 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 
 	/** Get CSV Alias Header.
 		@return CSV Alias Header	  */
-	public String getCSVAliasHeader () 
+	public String getCSVAliasHeader()
 	{
 		return (String)get_Value(COLUMNNAME_CSVAliasHeader);
 	}
 
 	/** Set CSV Header.
-		@param CSVHeader CSV Header	  */
+		@param CSVHeader CSV Header
+	*/
 	public void setCSVHeader (String CSVHeader)
 	{
 		set_Value (COLUMNNAME_CSVHeader, CSVHeader);
@@ -202,15 +208,14 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 
 	/** Get CSV Header.
 		@return CSV Header	  */
-	public String getCSVHeader () 
+	public String getCSVHeader()
 	{
 		return (String)get_Value(COLUMNNAME_CSVHeader);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -219,15 +224,14 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -236,7 +240,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

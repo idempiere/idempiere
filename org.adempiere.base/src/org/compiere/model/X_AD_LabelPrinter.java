@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LabelPrinter
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_LabelPrinter")
 public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_LabelPrinter (Properties ctx, int AD_LabelPrinter_ID, String trxName)
@@ -72,21 +73,20 @@ public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persis
     }
 
 	/** Set Label printer.
-		@param AD_LabelPrinter_ID 
-		Label Printer Definition
-	  */
+		@param AD_LabelPrinter_ID Label Printer Definition
+	*/
 	public void setAD_LabelPrinter_ID (int AD_LabelPrinter_ID)
 	{
-		if (AD_LabelPrinter_ID < 1) 
+		if (AD_LabelPrinter_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_LabelPrinter_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_LabelPrinter_ID, Integer.valueOf(AD_LabelPrinter_ID));
 	}
 
 	/** Get Label printer.
 		@return Label Printer Definition
 	  */
-	public int getAD_LabelPrinter_ID () 
+	public int getAD_LabelPrinter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LabelPrinter_ID);
 		if (ii == null)
@@ -95,7 +95,8 @@ public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persis
 	}
 
 	/** Set AD_LabelPrinter_UU.
-		@param AD_LabelPrinter_UU AD_LabelPrinter_UU	  */
+		@param AD_LabelPrinter_UU AD_LabelPrinter_UU
+	*/
 	public void setAD_LabelPrinter_UU (String AD_LabelPrinter_UU)
 	{
 		set_Value (COLUMNNAME_AD_LabelPrinter_UU, AD_LabelPrinter_UU);
@@ -103,15 +104,14 @@ public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persis
 
 	/** Get AD_LabelPrinter_UU.
 		@return AD_LabelPrinter_UU	  */
-	public String getAD_LabelPrinter_UU () 
+	public String getAD_LabelPrinter_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_LabelPrinter_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -120,15 +120,14 @@ public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -137,7 +136,7 @@ public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

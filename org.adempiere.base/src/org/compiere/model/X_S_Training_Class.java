@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training_Class
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="S_Training_Class")
 public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName)
@@ -76,9 +77,8 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
     }
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -87,32 +87,32 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -121,9 +121,8 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -132,7 +131,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}
@@ -146,21 +145,20 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
     }
 
 	/** Set Training Class.
-		@param S_Training_Class_ID 
-		The actual training class instance
-	  */
+		@param S_Training_Class_ID The actual training class instance
+	*/
 	public void setS_Training_Class_ID (int S_Training_Class_ID)
 	{
-		if (S_Training_Class_ID < 1) 
+		if (S_Training_Class_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_Training_Class_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_Training_Class_ID, Integer.valueOf(S_Training_Class_ID));
 	}
 
 	/** Get Training Class.
 		@return The actual training class instance
 	  */
-	public int getS_Training_Class_ID () 
+	public int getS_Training_Class_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Training_Class_ID);
 		if (ii == null)
@@ -169,7 +167,8 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 	}
 
 	/** Set S_Training_Class_UU.
-		@param S_Training_Class_UU S_Training_Class_UU	  */
+		@param S_Training_Class_UU S_Training_Class_UU
+	*/
 	public void setS_Training_Class_UU (String S_Training_Class_UU)
 	{
 		set_Value (COLUMNNAME_S_Training_Class_UU, S_Training_Class_UU);
@@ -177,32 +176,32 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 
 	/** Get S_Training_Class_UU.
 		@return S_Training_Class_UU	  */
-	public String getS_Training_Class_UU () 
+	public String getS_Training_Class_UU()
 	{
 		return (String)get_Value(COLUMNNAME_S_Training_Class_UU);
 	}
 
 	public org.compiere.model.I_S_Training getS_Training() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Training)MTable.get(getCtx(), org.compiere.model.I_S_Training.Table_Name)
-			.getPO(getS_Training_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Training)MTable.get(getCtx(), org.compiere.model.I_S_Training.Table_ID)
+			.getPO(getS_Training_ID(), get_TrxName());
+	}
 
 	/** Set Training.
-		@param S_Training_ID 
-		Repeated Training
-	  */
+		@param S_Training_ID Repeated Training
+	*/
 	public void setS_Training_ID (int S_Training_ID)
 	{
-		if (S_Training_ID < 1) 
+		if (S_Training_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_Training_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_Training_ID, Integer.valueOf(S_Training_ID));
 	}
 
 	/** Get Training.
 		@return Repeated Training
 	  */
-	public int getS_Training_ID () 
+	public int getS_Training_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Training_ID);
 		if (ii == null)

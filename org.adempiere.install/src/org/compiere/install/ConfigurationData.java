@@ -1478,7 +1478,7 @@ public class ConfigurationData
 			p_panel.fSystemPassword.setEnabled(enable);
 	}
 	/**
-	 * @param ADEMPIERE_DB_EXISTS
+	 * @param dbExists ADEMPIERE_DB_EXISTS
 	 */
 	public void setDatabaseExists(String dbExists)
 	{

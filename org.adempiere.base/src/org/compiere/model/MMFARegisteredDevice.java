@@ -63,14 +63,13 @@ public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 
 	/**
 	 * Validate if there is a non-expired device registered with that code
-	 * @param registerCookie
+	 * @param identifier
 	 * @return true if device is valid
 	 */
 	public static boolean isValid(String identifier) {
-		final String where = "AD_User_ID=? AND MFADeviceIdentifier=? AND Expiration>SYSDATE";
+		final String where = "AD_Client_ID IN (0,?) AND AD_User_ID=? AND MFADeviceIdentifier=? AND Expiration>SYSDATE";
 		MMFARegisteredDevice rd = new Query(Env.getCtx(), Table_Name, where, null)
-				.setParameters(Env.getAD_User_ID(Env.getCtx()), identifier)
-				.setClient_ID()
+				.setParameters(Env.getAD_Client_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()), identifier)
 				.setOnlyActiveRecords(true)
 				.first();
 		return (rd != null);

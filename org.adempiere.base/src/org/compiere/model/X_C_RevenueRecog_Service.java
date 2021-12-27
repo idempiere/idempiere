@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecog_Service
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_RevenueRecog_Service")
 public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Service, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_RevenueRecog_Service (Properties ctx, int C_RevenueRecog_Service_ID, String trxName)
@@ -74,26 +75,26 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
     }
 
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_Name)
-			.getPO(getC_RevenueRecognition_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
+			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
+	}
 
 	/** Set Revenue Recognition.
-		@param C_RevenueRecognition_ID 
-		Method for recording revenue
-	  */
+		@param C_RevenueRecognition_ID Method for recording revenue
+	*/
 	public void setC_RevenueRecognition_ID (int C_RevenueRecognition_ID)
 	{
-		if (C_RevenueRecognition_ID < 1) 
+		if (C_RevenueRecognition_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_ID, Integer.valueOf(C_RevenueRecognition_ID));
 	}
 
 	/** Get Revenue Recognition.
 		@return Method for recording revenue
 	  */
-	public int getC_RevenueRecognition_ID () 
+	public int getC_RevenueRecognition_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_ID);
 		if (ii == null)
@@ -110,18 +111,19 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
     }
 
 	/** Set Revenue Recognition Service.
-		@param C_RevenueRecog_Service_ID Revenue Recognition Service	  */
+		@param C_RevenueRecog_Service_ID Revenue Recognition Service
+	*/
 	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID)
 	{
-		if (C_RevenueRecog_Service_ID < 1) 
+		if (C_RevenueRecog_Service_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecog_Service_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecog_Service_ID, Integer.valueOf(C_RevenueRecog_Service_ID));
 	}
 
 	/** Get Revenue Recognition Service.
 		@return Revenue Recognition Service	  */
-	public int getC_RevenueRecog_Service_ID () 
+	public int getC_RevenueRecog_Service_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecog_Service_ID);
 		if (ii == null)
@@ -130,7 +132,8 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	}
 
 	/** Set C_RevenueRecog_Service_UU.
-		@param C_RevenueRecog_Service_UU C_RevenueRecog_Service_UU	  */
+		@param C_RevenueRecog_Service_UU C_RevenueRecog_Service_UU
+	*/
 	public void setC_RevenueRecog_Service_UU (String C_RevenueRecog_Service_UU)
 	{
 		set_Value (COLUMNNAME_C_RevenueRecog_Service_UU, C_RevenueRecog_Service_UU);
@@ -138,15 +141,14 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 
 	/** Get C_RevenueRecog_Service_UU.
 		@return C_RevenueRecog_Service_UU	  */
-	public String getC_RevenueRecog_Service_UU () 
+	public String getC_RevenueRecog_Service_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RevenueRecog_Service_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -155,15 +157,14 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -172,7 +173,7 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -181,9 +182,8 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	}
 
 	/** Set Percent.
-		@param Percent 
-		Percentage
-	  */
+		@param Percent Percentage
+	*/
 	public void setPercent (BigDecimal Percent)
 	{
 		set_Value (COLUMNNAME_Percent, Percent);
@@ -192,7 +192,7 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	/** Get Percent.
 		@return Percentage
 	  */
-	public BigDecimal getPercent () 
+	public BigDecimal getPercent()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Percent);
 		if (bd == null)

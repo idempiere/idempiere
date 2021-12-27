@@ -50,6 +50,24 @@ public class InfoAssetWindow extends InfoWindow {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param whereClause
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param predefinedContextVariables
+	 */
+	public InfoAssetWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, String whereClause,
+			int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				whereClause, AD_InfoWindow_ID, lookup, null, predefinedContextVariables);
+	}
+	
 	@Override
 	protected void saveSelectionDetail() {
         int row = contentPanel.getSelectedRow();

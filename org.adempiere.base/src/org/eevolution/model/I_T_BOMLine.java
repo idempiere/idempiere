@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_BOMLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 @SuppressWarnings("all")
 public interface I_T_BOMLine 
@@ -197,12 +197,16 @@ public interface I_T_BOMLine
     public static final String COLUMNNAME_Implosion = "Implosion";
 
 	/** Set Implosion.
-	  * Implosion of a Bill of Materials refers to finding all the BOM''s in which a component is used.
+	  * Implosion of a Bill of Materials refers to finding all the BOM&#039;
+&#039;
+s in which a component is used.
 	  */
 	public void setImplosion (boolean Implosion);
 
 	/** Get Implosion.
-	  * Implosion of a Bill of Materials refers to finding all the BOM''s in which a component is used.
+	  * Implosion of a Bill of Materials refers to finding all the BOM&#039;
+&#039;
+s in which a component is used.
 	  */
 	public boolean isImplosion();
 
@@ -298,13 +302,17 @@ public interface I_T_BOMLine
     /** Column name PP_Product_BOM_ID */
     public static final String COLUMNNAME_PP_Product_BOM_ID = "PP_Product_BOM_ID";
 
-	/** Set BOM & Formula.
-	  * BOM & Formula
+	/** Set BOM &amp;
+ Formula.
+	  * BOM &amp;
+ Formula
 	  */
 	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID);
 
-	/** Get BOM & Formula.
-	  * BOM & Formula
+	/** Get BOM &amp;
+ Formula.
+	  * BOM &amp;
+ Formula
 	  */
 	public int getPP_Product_BOM_ID();
 

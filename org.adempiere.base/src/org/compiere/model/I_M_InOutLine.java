@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InOutLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_M_InOutLine 
 {
@@ -250,6 +250,19 @@ public interface I_M_InOutLine
 	  */
 	public boolean isActive();
 
+    /** Column name IsAutoProduce */
+    public static final String COLUMNNAME_IsAutoProduce = "IsAutoProduce";
+
+	/** Set Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce);
+
+	/** Get Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce();
+
     /** Column name IsDescription */
     public static final String COLUMNNAME_IsDescription = "IsDescription";
 
@@ -433,19 +446,6 @@ public interface I_M_InOutLine
 	  * The Quantity Entered is based on the selected UoM
 	  */
 	public BigDecimal getQtyEntered();
-
-    /** Column name QtyOverReceipt */
-    public static final String COLUMNNAME_QtyOverReceipt = "QtyOverReceipt";
-
-	/** Set Over Receipt.
-	  * Over Receipt Quantity
-	  */
-	public void setQtyOverReceipt (BigDecimal QtyOverReceipt);
-
-	/** Get Over Receipt.
-	  * Over Receipt Quantity
-	  */
-	public BigDecimal getQtyOverReceipt();
 
     /** Column name Ref_InOutLine_ID */
     public static final String COLUMNNAME_Ref_InOutLine_ID = "Ref_InOutLine_ID";

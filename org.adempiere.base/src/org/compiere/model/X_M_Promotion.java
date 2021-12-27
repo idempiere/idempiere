@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Promotion
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_Promotion")
 public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_Promotion (Properties ctx, int M_Promotion_ID, String trxName)
@@ -74,26 +75,26 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
     }
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -102,9 +103,8 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -113,24 +113,25 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Promotion.
-		@param M_Promotion_ID Promotion	  */
+		@param M_Promotion_ID Promotion
+	*/
 	public void setM_Promotion_ID (int M_Promotion_ID)
 	{
-		if (M_Promotion_ID < 1) 
+		if (M_Promotion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, Integer.valueOf(M_Promotion_ID));
 	}
 
 	/** Get Promotion.
 		@return Promotion	  */
-	public int getM_Promotion_ID () 
+	public int getM_Promotion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Promotion_ID);
 		if (ii == null)
@@ -139,7 +140,8 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
 	}
 
 	/** Set M_Promotion_UU.
-		@param M_Promotion_UU M_Promotion_UU	  */
+		@param M_Promotion_UU M_Promotion_UU
+	*/
 	public void setM_Promotion_UU (String M_Promotion_UU)
 	{
 		set_Value (COLUMNNAME_M_Promotion_UU, M_Promotion_UU);
@@ -147,15 +149,14 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
 
 	/** Get M_Promotion_UU.
 		@return M_Promotion_UU	  */
-	public String getM_Promotion_UU () 
+	public String getM_Promotion_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Promotion_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -164,7 +165,7 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -178,9 +179,8 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
     }
 
 	/** Set Relative Priority.
-		@param PromotionPriority 
-		Which promotion should be apply to a product
-	  */
+		@param PromotionPriority Which promotion should be apply to a product
+	*/
 	public void setPromotionPriority (int PromotionPriority)
 	{
 		set_Value (COLUMNNAME_PromotionPriority, Integer.valueOf(PromotionPriority));
@@ -189,7 +189,7 @@ public class X_M_Promotion extends PO implements I_M_Promotion, I_Persistent
 	/** Get Relative Priority.
 		@return Which promotion should be apply to a product
 	  */
-	public int getPromotionPriority () 
+	public int getPromotionPriority()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PromotionPriority);
 		if (ii == null)

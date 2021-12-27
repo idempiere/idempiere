@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StorageProvider
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_StorageProvider")
 public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210416L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_StorageProvider (Properties ctx, int AD_StorageProvider_ID, String trxName)
@@ -74,18 +75,19 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
     }
 
 	/** Set Storage Provider.
-		@param AD_StorageProvider_ID Storage Provider	  */
+		@param AD_StorageProvider_ID Storage Provider
+	*/
 	public void setAD_StorageProvider_ID (int AD_StorageProvider_ID)
 	{
-		if (AD_StorageProvider_ID < 1) 
+		if (AD_StorageProvider_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_StorageProvider_ID, Integer.valueOf(AD_StorageProvider_ID));
 	}
 
 	/** Get Storage Provider.
 		@return Storage Provider	  */
-	public int getAD_StorageProvider_ID () 
+	public int getAD_StorageProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StorageProvider_ID);
 		if (ii == null)
@@ -94,7 +96,8 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	}
 
 	/** Set AD_StorageProvider_UU.
-		@param AD_StorageProvider_UU AD_StorageProvider_UU	  */
+		@param AD_StorageProvider_UU AD_StorageProvider_UU
+	*/
 	public void setAD_StorageProvider_UU (String AD_StorageProvider_UU)
 	{
 		set_Value (COLUMNNAME_AD_StorageProvider_UU, AD_StorageProvider_UU);
@@ -102,15 +105,14 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 
 	/** Get AD_StorageProvider_UU.
 		@return AD_StorageProvider_UU	  */
-	public String getAD_StorageProvider_UU () 
+	public String getAD_StorageProvider_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_StorageProvider_UU);
 	}
 
 	/** Set Folder.
-		@param Folder 
-		A folder on a local or remote system to store data into
-	  */
+		@param Folder A folder on a local or remote system to store data into
+	*/
 	public void setFolder (String Folder)
 	{
 		set_Value (COLUMNNAME_Folder, Folder);
@@ -119,15 +121,14 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	/** Get Folder.
 		@return A folder on a local or remote system to store data into
 	  */
-	public String getFolder () 
+	public String getFolder()
 	{
 		return (String)get_Value(COLUMNNAME_Folder);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -136,7 +137,7 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -150,12 +151,13 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 
 	/** Method AD_Reference_ID=200019 */
 	public static final int METHOD_AD_Reference_ID=200019;
-	/** File System = FileSystem */
-	public static final String METHOD_FileSystem = "FileSystem";
 	/** Database = DB */
 	public static final String METHOD_Database = "DB";
+	/** File System = FileSystem */
+	public static final String METHOD_FileSystem = "FileSystem";
 	/** Set Method.
-		@param Method Method	  */
+		@param Method Method
+	*/
 	public void setMethod (String Method)
 	{
 
@@ -164,15 +166,14 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 
 	/** Get Method.
 		@return Method	  */
-	public String getMethod () 
+	public String getMethod()
 	{
 		return (String)get_Value(COLUMNNAME_Method);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -181,7 +182,7 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -195,9 +196,8 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
     }
 
 	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
+		@param Password Password of any length (case sensitive)
+	*/
 	public void setPassword (String Password)
 	{
 		set_Value (COLUMNNAME_Password, Password);
@@ -206,15 +206,14 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	/** Get Password.
 		@return Password of any length (case sensitive)
 	  */
-	public String getPassword () 
+	public String getPassword()
 	{
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
 	/** Set URL.
-		@param URL 
-		Full URL address - e.g. http://www.idempiere.org
-	  */
+		@param URL Full URL address - e.g. http://www.idempiere.org
+	*/
 	public void setURL (String URL)
 	{
 		set_Value (COLUMNNAME_URL, URL);
@@ -223,13 +222,14 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	/** Get URL.
 		@return Full URL address - e.g. http://www.idempiere.org
 	  */
-	public String getURL () 
+	public String getURL()
 	{
 		return (String)get_Value(COLUMNNAME_URL);
 	}
 
 	/** Set User Name.
-		@param UserName User Name	  */
+		@param UserName User Name
+	*/
 	public void setUserName (String UserName)
 	{
 		set_Value (COLUMNNAME_UserName, UserName);
@@ -237,7 +237,7 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 
 	/** Get User Name.
 		@return User Name	  */
-	public String getUserName () 
+	public String getUserName()
 	{
 		return (String)get_Value(COLUMNNAME_UserName);
 	}

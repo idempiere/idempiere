@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserMail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_UserMail")
 public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_UserMail (Properties ctx, int AD_UserMail_ID, String trxName)
@@ -72,26 +73,26 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -108,21 +109,20 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
     }
 
 	/** Set User Mail.
-		@param AD_UserMail_ID 
-		Mail sent to the user
-	  */
+		@param AD_UserMail_ID Mail sent to the user
+	*/
 	public void setAD_UserMail_ID (int AD_UserMail_ID)
 	{
-		if (AD_UserMail_ID < 1) 
+		if (AD_UserMail_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserMail_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserMail_ID, Integer.valueOf(AD_UserMail_ID));
 	}
 
 	/** Get User Mail.
 		@return Mail sent to the user
 	  */
-	public int getAD_UserMail_ID () 
+	public int getAD_UserMail_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserMail_ID);
 		if (ii == null)
@@ -131,7 +131,8 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	}
 
 	/** Set AD_UserMail_UU.
-		@param AD_UserMail_UU AD_UserMail_UU	  */
+		@param AD_UserMail_UU AD_UserMail_UU
+	*/
 	public void setAD_UserMail_UU (String AD_UserMail_UU)
 	{
 		set_Value (COLUMNNAME_AD_UserMail_UU, AD_UserMail_UU);
@@ -139,15 +140,14 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 
 	/** Get AD_UserMail_UU.
 		@return AD_UserMail_UU	  */
-	public String getAD_UserMail_UU () 
+	public String getAD_UserMail_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_UserMail_UU);
 	}
 
 	/** Set Delivery Confirmation.
-		@param DeliveryConfirmation 
-		EMail Delivery confirmation
-	  */
+		@param DeliveryConfirmation EMail Delivery confirmation
+	*/
 	public void setDeliveryConfirmation (String DeliveryConfirmation)
 	{
 		set_ValueNoCheck (COLUMNNAME_DeliveryConfirmation, DeliveryConfirmation);
@@ -156,13 +156,14 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	/** Get Delivery Confirmation.
 		@return EMail Delivery confirmation
 	  */
-	public String getDeliveryConfirmation () 
+	public String getDeliveryConfirmation()
 	{
 		return (String)get_Value(COLUMNNAME_DeliveryConfirmation);
 	}
 
 	/** Set EMail sent from.
-		@param EMailFrom EMail sent from	  */
+		@param EMailFrom EMail sent from
+	*/
 	public void setEMailFrom (String EMailFrom)
 	{
 		set_Value (COLUMNNAME_EMailFrom, EMailFrom);
@@ -170,19 +171,20 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 
 	/** Get EMail sent from.
 		@return EMail sent from	  */
-	public String getEMailFrom () 
+	public String getEMailFrom()
 	{
 		return (String)get_Value(COLUMNNAME_EMailFrom);
 	}
 
 	/** IsDelivered AD_Reference_ID=319 */
 	public static final int ISDELIVERED_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDELIVERED_Yes = "Y";
 	/** No = N */
 	public static final String ISDELIVERED_No = "N";
+	/** Yes = Y */
+	public static final String ISDELIVERED_Yes = "Y";
 	/** Set Delivered.
-		@param IsDelivered Delivered	  */
+		@param IsDelivered Delivered
+	*/
 	public void setIsDelivered (String IsDelivered)
 	{
 
@@ -191,15 +193,14 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 
 	/** Get Delivered.
 		@return Delivered	  */
-	public String getIsDelivered () 
+	public String getIsDelivered()
 	{
 		return (String)get_Value(COLUMNNAME_IsDelivered);
 	}
 
 	/** Set Mail Text.
-		@param MailText 
-		Text used for Mail message
-	  */
+		@param MailText Text used for Mail message
+	*/
 	public void setMailText (String MailText)
 	{
 		set_Value (COLUMNNAME_MailText, MailText);
@@ -208,15 +209,14 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	/** Get Mail Text.
 		@return Text used for Mail message
 	  */
-	public String getMailText () 
+	public String getMailText()
 	{
 		return (String)get_Value(COLUMNNAME_MailText);
 	}
 
 	/** Set Message ID.
-		@param MessageID 
-		EMail Message ID
-	  */
+		@param MessageID EMail Message ID
+	*/
 	public void setMessageID (String MessageID)
 	{
 		set_ValueNoCheck (COLUMNNAME_MessageID, MessageID);
@@ -225,13 +225,14 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	/** Get Message ID.
 		@return EMail Message ID
 	  */
-	public String getMessageID () 
+	public String getMessageID()
 	{
 		return (String)get_Value(COLUMNNAME_MessageID);
 	}
 
 	/** Set Bcc.
-		@param RecipientBcc Bcc	  */
+		@param RecipientBcc Bcc
+	*/
 	public void setRecipientBcc (String RecipientBcc)
 	{
 		set_Value (COLUMNNAME_RecipientBcc, RecipientBcc);
@@ -239,13 +240,14 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 
 	/** Get Bcc.
 		@return Bcc	  */
-	public String getRecipientBcc () 
+	public String getRecipientBcc()
 	{
 		return (String)get_Value(COLUMNNAME_RecipientBcc);
 	}
 
 	/** Set Cc.
-		@param RecipientCc Cc	  */
+		@param RecipientCc Cc
+	*/
 	public void setRecipientCc (String RecipientCc)
 	{
 		set_Value (COLUMNNAME_RecipientCc, RecipientCc);
@@ -253,13 +255,14 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 
 	/** Get Cc.
 		@return Cc	  */
-	public String getRecipientCc () 
+	public String getRecipientCc()
 	{
 		return (String)get_Value(COLUMNNAME_RecipientCc);
 	}
 
 	/** Set To.
-		@param RecipientTo To	  */
+		@param RecipientTo To
+	*/
 	public void setRecipientTo (String RecipientTo)
 	{
 		set_Value (COLUMNNAME_RecipientTo, RecipientTo);
@@ -267,32 +270,32 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 
 	/** Get To.
 		@return To	  */
-	public String getRecipientTo () 
+	public String getRecipientTo()
 	{
 		return (String)get_Value(COLUMNNAME_RecipientTo);
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Mail Template.
-		@param R_MailText_ID 
-		Text templates for mailings
-	  */
+		@param R_MailText_ID Text templates for mailings
+	*/
 	public void setR_MailText_ID (int R_MailText_ID)
 	{
-		if (R_MailText_ID < 1) 
+		if (R_MailText_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, Integer.valueOf(R_MailText_ID));
 	}
 
 	/** Get Mail Template.
 		@return Text templates for mailings
 	  */
-	public int getR_MailText_ID () 
+	public int getR_MailText_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_MailText_ID);
 		if (ii == null)
@@ -301,9 +304,8 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	}
 
 	/** Set Subject.
-		@param Subject 
-		Email Message Subject
-	  */
+		@param Subject Email Message Subject
+	*/
 	public void setSubject (String Subject)
 	{
 		set_Value (COLUMNNAME_Subject, Subject);
@@ -312,7 +314,7 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	/** Get Subject.
 		@return Email Message Subject
 	  */
-	public String getSubject () 
+	public String getSubject()
 	{
 		return (String)get_Value(COLUMNNAME_Subject);
 	}

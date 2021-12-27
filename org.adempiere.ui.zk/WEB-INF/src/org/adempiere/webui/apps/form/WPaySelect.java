@@ -68,14 +68,18 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
@@ -90,12 +94,13 @@ import org.zkoss.zul.Space;
  *  @author Jorg Janke
  *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPaySelect")
 public class WPaySelect extends PaySelect
 	implements IFormController, EventListener<Event>, WTableModelListener, IProcessUI, ValueChangeListener
 {
 	/** @todo withholding */
 	
-	private CustomForm form = new CustomForm();
+	protected CustomForm form = new CustomForm();
 
 	//
 	private Panel mainPanel = new Panel();
@@ -128,6 +133,7 @@ public class WPaySelect extends PaySelect
 	@SuppressWarnings("unused")
 	private ProcessInfo m_pi;
 	private boolean m_isLock;
+	private Hlayout statusBar = new Hlayout();
 	
 	/**
 	 *	Initialize Panel
@@ -296,7 +302,9 @@ public class WPaySelect extends PaySelect
 		south.setStyle("border: none");
 		mainLayout.appendChild(south);
 		southPanel = new Panel();
-		southPanel.appendChild(dataStatus);
+		statusBar.appendChild(dataStatus);
+		statusBar.setVflex("min");		
+		southPanel.appendChild(statusBar);
 		south.appendChild(southPanel);
 		Center center = new Center();
 		mainLayout.appendChild(center);
@@ -343,7 +351,7 @@ public class WPaySelect extends PaySelect
 	/**
 	 *  Load Bank Info - Load Info from Bank Account and valid Documents (PaymentRule)
 	 */
-	private void loadBankInfo()
+	protected void loadBankInfo()
 	{		
 		if (fieldBankAccount.getItemCount() == 0)
 			return;
@@ -365,8 +373,13 @@ public class WPaySelect extends PaySelect
 	/**
 	 *  Query and create TableInfo
 	 */
-	private void loadTableInfo()
+	protected void loadTableInfo()
 	{
+		if (statusBar.getChildren().size() > 1) {
+			statusBar.getChildren().clear();
+			statusBar.appendChild(dataStatus);
+		}
+		
 		Timestamp payDate = (Timestamp)fieldPayDate.getValue();
 		
 		//IDEMPIERE-2657, pritesh shah
@@ -415,7 +428,11 @@ public class WPaySelect extends PaySelect
 	{
 		//  Update Bank Info
 		if (e.getTarget() == fieldBankAccount)
+		{
 			loadBankInfo();
+			if (miniTable.getRowCount() > 0)
+				loadTableInfo();
+		}
 
 		//  Generate PaySelection
 		else if (e.getTarget() == bGenerate)
@@ -432,27 +449,49 @@ public class WPaySelect extends PaySelect
 			loadTableInfo();
 
 		else if (DialogEvents.ON_WINDOW_CLOSE.equals(e.getName())) {
-
-			//  Ask to Open Print Form
-			FDialog.ask(m_WindowNo, form, "VPaySelectPrint?", new Callback<Boolean>() {
-
-				@Override
-				public void onCallback(Boolean result) 
-				{
-					if (result)
+			m_ps.load(null);
+			if (m_ps.isProcessed()) {
+				loadTableInfo();
+				
+				//  Ask to Open Print Form
+				FDialog.ask(m_WindowNo, form, "VPaySelectPrint?", new Callback<Boolean>() {
+	
+					@Override
+					public void onCallback(Boolean result) 
 					{
-						//  Start PayPrint
-						int AD_Form_ID = FORM_PAYMENT_PRINT_EXPORT;	//	Payment Print/Export
-						ADForm form = SessionManager.getAppDesktop().openForm(AD_Form_ID);
-						if (m_ps != null)
+						if (result)
 						{
-							WPayPrint pp = (WPayPrint) form.getICustomForm();
-							pp.setPaySelection(m_ps.getC_PaySelection_ID());
+							//  Start PayPrint
+							int AD_Form_ID = FORM_PAYMENT_PRINT_EXPORT;	//	Payment Print/Export
+							ADForm form = SessionManager.getAppDesktop().openForm(AD_Form_ID);
+							if (m_ps != null)
+							{
+								WPayPrint pp = (WPayPrint) form.getICustomForm();
+								pp.setPaySelection(m_ps.getC_PaySelection_ID());
+							}
 						}
 					}
-					
-				}
-			});
+				});
+			}
+			
+			//show link to generated pay selection
+			if (m_ps != null) 
+			{
+				A link = new A(m_ps.getName());
+				link.setAttribute("Record_ID", m_ps.get_ID());
+				link.setAttribute("AD_Table_ID", m_ps.get_Table_ID());
+				link.addEventListener(Events.ON_CLICK, (Event event) -> {
+						Component comp = event.getTarget();
+						Integer Record_ID = (Integer) comp.getAttribute("Record_ID");
+						Integer AD_Table_ID = (Integer) comp.getAttribute("AD_Table_ID");
+						if (Record_ID != null && Record_ID > 0 && AD_Table_ID != null && AD_Table_ID > 0)
+						{
+							AEnv.zoom(AD_Table_ID, Record_ID);
+						}
+				});
+				statusBar.appendChild(new Space());
+				statusBar.appendChild(link);
+			}
 		}
 		else if (e.getTarget().equals(chkOnePaymentPerInv))
 		{
@@ -490,11 +529,10 @@ public class WPaySelect extends PaySelect
 	/**
 	 *  Generate PaySelection
 	 */
-	private void generatePaySelect()
+	protected void generatePaySelect()
 	{
 		if (miniTable.getRowCount() == 0)
 			return;
-		miniTable.setSelectedIndices(new int[]{0});
 		calculateSelection();
 		if (m_noSelected == 0)
 			return;
@@ -514,7 +552,7 @@ public class WPaySelect extends PaySelect
 			return;
 		}
 
-		loadTableInfo();
+		
 		if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE, true, m_ps.getAD_Client_ID(), m_ps.getAD_Org_ID())) {
 		  //  Ask to Post it
 		  FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", new Callback<Boolean>() {
@@ -524,7 +562,9 @@ public class WPaySelect extends PaySelect
 			{
 				if (result)
 				{
-				//  Prepare Process 
+					miniTable.clearSelection();
+					loadTableInfo();
+					//  Prepare Process 
 					int AD_Proces_ID = PROCESS_C_PAYSELECTION_CREATEPAYMENT;	//	C_PaySelection_CreatePayment
 
 					//	Execute Process
@@ -539,6 +579,21 @@ public class WPaySelect extends PaySelect
 							// Create instance parameters. Parameters you want to send to the process.
 							ProcessInfoParameter piParam = new ProcessInfoParameter(MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice, m_isOnePaymentPerInvoice, "", "", "");
 							dialog.getProcessInfo().setParameter(new ProcessInfoParameter[] {piParam});
+							
+							dialog.focus();
+							
+							dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+								@Override
+								public void onEvent(Event event) throws Exception {
+									if (!dialog.isCancel()) {
+										if (dialog.getProcessInfo().isError()) {
+											FDialog.error(m_WindowNo, form, Msg.parseTranslation(Env.getCtx(), dialog.getProcessInfo().getSummary()));
+											return;
+										}
+									}
+								}
+							});
+							
 						} catch (SuspendNotAllowedException e) {
 							log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 						}
@@ -548,6 +603,8 @@ public class WPaySelect extends PaySelect
 			}
 		  });				
 		} else {
+			miniTable.clearSelection();
+			loadTableInfo();
 			AEnv.zoom(MPaySelection.Table_ID, m_ps.getC_PaySelection_ID());
 		}
 	}   //  generatePaySelect

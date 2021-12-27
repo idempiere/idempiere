@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import org.compiere.model.MTableIndex;
 import org.compiere.util.DB;
 
+@org.adempiere.base.annotation.Process
 public class TableIndexDrop extends SvrProcess {
 
 	private int		p_AD_TableIndex_ID = 0; 

@@ -37,6 +37,7 @@ import org.compiere.util.Msg;
  *  @version $Id: BPartnerValidate.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  *  FR: [ 2214883 ] Remove SQL code and Replace for Query - red1, teo_sarca
  */
+@org.adempiere.base.annotation.Process
 public class BPartnerValidate extends SvrProcess
 {
 	/**	BPartner ID			*/
@@ -115,7 +116,6 @@ public class BPartnerValidate extends SvrProcess
 		bp.setActualLifeTimeValue();
 		bp.saveEx();
 		//
-	//	if (bp.getSO_CreditUsed().signum() != 0)
 		addLog(0, null, bp.getSO_CreditUsed(), Msg.getElement(getCtx(), "SO_CreditUsed"));
 		addLog(0, null, bp.getTotalOpenBalance(), Msg.getElement(getCtx(), "TotalOpenBalance"));
 		addLog(0, null, bp.getActualLifeTimeValue(), Msg.getElement(getCtx(), "ActualLifeTimeValue"));

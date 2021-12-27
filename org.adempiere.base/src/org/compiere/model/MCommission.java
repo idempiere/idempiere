@@ -22,13 +22,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.util.Msg;
+
 /**
  *	Model for Commission.
  *	(has Lines)
  *	
  *  @author Jorg Janke
  *  @version $Id: MCommission.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
- *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867477 ] http://sourceforge.net/tracker/index.php?func=detail&aid=1867477&group_id=176962&atid=879332
+ *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867477 ] https://sourceforge.net/p/adempiere/bugs/924/
  *	FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
  */
 public class MCommission extends X_C_Commission
@@ -36,7 +38,7 @@ public class MCommission extends X_C_Commission
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1786202619739310928L;
+	private static final long serialVersionUID = 2702487404398723180L;
 
 	/**
 	 * 	Standard Constructor
@@ -77,7 +79,7 @@ public class MCommission extends X_C_Commission
 		final String whereClause = "IsActive='Y' AND C_Commission_ID=?";
 		List<MCommissionLine> list  = new Query(getCtx(), I_C_CommissionLine.Table_Name, whereClause, get_TrxName())
 		.setParameters(getC_Commission_ID())
-		.setOrderBy("Line")
+		.setOrderBy("Line,C_CommissionLine_ID")
 		.list();	
 		//	Convert
 		MCommissionLine[] retValue = new MCommissionLine[list.size()];
@@ -118,5 +120,17 @@ public class MCommission extends X_C_Commission
 			log.log(Level.SEVERE, "copyLinesFrom - Line difference - From=" + fromLines.length + " <> Saved=" + count);
 		return count;
 	}	//	copyLinesFrom
+
+	/**
+	 * Validations before saving record
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (getC_Charge_ID() == 0 && getM_Product_ID() == 0) {
+			log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
+			return false;
+		}
+		return true;
+	}
 
 }	//	MCommission

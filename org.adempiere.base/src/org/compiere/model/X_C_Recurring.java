@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Recurring
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Recurring")
 public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Recurring (Properties ctx, int C_Recurring_ID, String trxName)
@@ -79,26 +80,26 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
     }
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -107,26 +108,26 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_Name)
-			.getPO(getC_Order_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_Value (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -135,26 +136,26 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -163,26 +164,26 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -191,23 +192,25 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	public org.compiere.model.I_C_RecurringGroup getC_RecurringGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RecurringGroup)MTable.get(getCtx(), org.compiere.model.I_C_RecurringGroup.Table_Name)
-			.getPO(getC_RecurringGroup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RecurringGroup)MTable.get(getCtx(), org.compiere.model.I_C_RecurringGroup.Table_ID)
+			.getPO(getC_RecurringGroup_ID(), get_TrxName());
+	}
 
 	/** Set Recurring Group.
-		@param C_RecurringGroup_ID Recurring Group	  */
+		@param C_RecurringGroup_ID Recurring Group
+	*/
 	public void setC_RecurringGroup_ID (int C_RecurringGroup_ID)
 	{
-		if (C_RecurringGroup_ID < 1) 
+		if (C_RecurringGroup_ID < 1)
 			set_Value (COLUMNNAME_C_RecurringGroup_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_RecurringGroup_ID, Integer.valueOf(C_RecurringGroup_ID));
 	}
 
 	/** Get Recurring Group.
 		@return Recurring Group	  */
-	public int getC_RecurringGroup_ID () 
+	public int getC_RecurringGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RecurringGroup_ID);
 		if (ii == null)
@@ -216,21 +219,20 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	/** Set Recurring.
-		@param C_Recurring_ID 
-		Recurring Document
-	  */
+		@param C_Recurring_ID Recurring Document
+	*/
 	public void setC_Recurring_ID (int C_Recurring_ID)
 	{
-		if (C_Recurring_ID < 1) 
+		if (C_Recurring_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Recurring_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Recurring_ID, Integer.valueOf(C_Recurring_ID));
 	}
 
 	/** Get Recurring.
 		@return Recurring Document
 	  */
-	public int getC_Recurring_ID () 
+	public int getC_Recurring_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Recurring_ID);
 		if (ii == null)
@@ -239,7 +241,8 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	/** Set C_Recurring_UU.
-		@param C_Recurring_UU C_Recurring_UU	  */
+		@param C_Recurring_UU C_Recurring_UU
+	*/
 	public void setC_Recurring_UU (String C_Recurring_UU)
 	{
 		set_Value (COLUMNNAME_C_Recurring_UU, C_Recurring_UU);
@@ -247,15 +250,14 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 
 	/** Get C_Recurring_UU.
 		@return C_Recurring_UU	  */
-	public String getC_Recurring_UU () 
+	public String getC_Recurring_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Recurring_UU);
 	}
 
 	/** Set Date last run.
-		@param DateLastRun 
-		Date the process was last run.
-	  */
+		@param DateLastRun Date the process was last run.
+	*/
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateLastRun, DateLastRun);
@@ -264,15 +266,14 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Date last run.
 		@return Date the process was last run.
 	  */
-	public Timestamp getDateLastRun () 
+	public Timestamp getDateLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
 	/** Set Date next run.
-		@param DateNextRun 
-		Date the process will run next
-	  */
+		@param DateNextRun Date the process will run next
+	*/
 	public void setDateNextRun (Timestamp DateNextRun)
 	{
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
@@ -281,15 +282,14 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Date next run.
 		@return Date the process will run next
 	  */
-	public Timestamp getDateNextRun () 
+	public Timestamp getDateNextRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateNextRun);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -298,15 +298,14 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
+		@param Frequency Frequency of events
+	*/
 	public void setFrequency (int Frequency)
 	{
 		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
@@ -315,7 +314,7 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Frequency.
 		@return Frequency of events
 	  */
-	public int getFrequency () 
+	public int getFrequency()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
 		if (ii == null)
@@ -327,16 +326,15 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	public static final int FREQUENCYTYPE_AD_Reference_ID=283;
 	/** Daily = D */
 	public static final String FREQUENCYTYPE_Daily = "D";
-	/** Weekly = W */
-	public static final String FREQUENCYTYPE_Weekly = "W";
 	/** Monthly = M */
 	public static final String FREQUENCYTYPE_Monthly = "M";
 	/** Quarterly = Q */
 	public static final String FREQUENCYTYPE_Quarterly = "Q";
+	/** Weekly = W */
+	public static final String FREQUENCYTYPE_Weekly = "W";
 	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
+		@param FrequencyType Frequency of event
+	*/
 	public void setFrequencyType (String FrequencyType)
 	{
 
@@ -346,32 +344,32 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Frequency Type.
 		@return Frequency of event
 	  */
-	public String getFrequencyType () 
+	public String getFrequencyType()
 	{
 		return (String)get_Value(COLUMNNAME_FrequencyType);
 	}
 
 	public org.compiere.model.I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_Name)
-			.getPO(getGL_JournalBatch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_ID)
+			.getPO(getGL_JournalBatch_ID(), get_TrxName());
+	}
 
 	/** Set Journal Batch.
-		@param GL_JournalBatch_ID 
-		General Ledger Journal Batch
-	  */
+		@param GL_JournalBatch_ID General Ledger Journal Batch
+	*/
 	public void setGL_JournalBatch_ID (int GL_JournalBatch_ID)
 	{
-		if (GL_JournalBatch_ID < 1) 
+		if (GL_JournalBatch_ID < 1)
 			set_Value (COLUMNNAME_GL_JournalBatch_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_JournalBatch_ID, Integer.valueOf(GL_JournalBatch_ID));
 	}
 
 	/** Get Journal Batch.
 		@return General Ledger Journal Batch
 	  */
-	public int getGL_JournalBatch_ID () 
+	public int getGL_JournalBatch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalBatch_ID);
 		if (ii == null)
@@ -380,9 +378,8 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -391,15 +388,14 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -408,7 +404,7 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -422,7 +418,8 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -430,7 +427,7 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -444,20 +441,19 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 
 	/** RecurringType AD_Reference_ID=282 */
 	public static final int RECURRINGTYPE_AD_Reference_ID=282;
-	/** Invoice = I */
-	public static final String RECURRINGTYPE_Invoice = "I";
-	/** Order = O */
-	public static final String RECURRINGTYPE_Order = "O";
 	/** GL Journal = G */
 	public static final String RECURRINGTYPE_GLJournal = "G";
+	/** Invoice = I */
+	public static final String RECURRINGTYPE_Invoice = "I";
 	/** Project = J */
 	public static final String RECURRINGTYPE_Project = "J";
+	/** Order = O */
+	public static final String RECURRINGTYPE_Order = "O";
 	/** Payment = P */
 	public static final String RECURRINGTYPE_Payment = "P";
 	/** Set Recurring Type.
-		@param RecurringType 
-		Type of Recurring Document
-	  */
+		@param RecurringType Type of Recurring Document
+	*/
 	public void setRecurringType (String RecurringType)
 	{
 
@@ -467,15 +463,14 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Recurring Type.
 		@return Type of Recurring Document
 	  */
-	public String getRecurringType () 
+	public String getRecurringType()
 	{
 		return (String)get_Value(COLUMNNAME_RecurringType);
 	}
 
 	/** Set Maximum Runs.
-		@param RunsMax 
-		Number of recurring runs
-	  */
+		@param RunsMax Number of recurring runs
+	*/
 	public void setRunsMax (int RunsMax)
 	{
 		set_Value (COLUMNNAME_RunsMax, Integer.valueOf(RunsMax));
@@ -484,7 +479,7 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Maximum Runs.
 		@return Number of recurring runs
 	  */
-	public int getRunsMax () 
+	public int getRunsMax()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RunsMax);
 		if (ii == null)
@@ -493,9 +488,8 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	}
 
 	/** Set Remaining Runs.
-		@param RunsRemaining 
-		Number of recurring runs remaining
-	  */
+		@param RunsRemaining Number of recurring runs remaining
+	*/
 	public void setRunsRemaining (int RunsRemaining)
 	{
 		set_ValueNoCheck (COLUMNNAME_RunsRemaining, Integer.valueOf(RunsRemaining));
@@ -504,7 +498,7 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/** Get Remaining Runs.
 		@return Number of recurring runs remaining
 	  */
-	public int getRunsRemaining () 
+	public int getRunsRemaining()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RunsRemaining);
 		if (ii == null)

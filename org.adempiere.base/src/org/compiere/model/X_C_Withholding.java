@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Withholding
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Withholding")
 public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Withholding (Properties ctx, int C_Withholding_ID, String trxName)
@@ -80,14 +81,14 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
     }
 
 	public org.compiere.model.I_C_BPartner getBenefici() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getBeneficiary(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getBeneficiary(), get_TrxName());
+	}
 
 	/** Set Beneficiary.
-		@param Beneficiary 
-		Business Partner to whom payment is made
-	  */
+		@param Beneficiary Business Partner to whom payment is made
+	*/
 	public void setBeneficiary (int Beneficiary)
 	{
 		set_Value (COLUMNNAME_Beneficiary, Integer.valueOf(Beneficiary));
@@ -96,7 +97,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Beneficiary.
 		@return Business Partner to whom payment is made
 	  */
-	public int getBeneficiary () 
+	public int getBeneficiary()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Beneficiary);
 		if (ii == null)
@@ -105,26 +106,26 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_Name)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
 
 	/** Set Payment Term.
-		@param C_PaymentTerm_ID 
-		The terms of Payment (timing, discount)
-	  */
+		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
+	*/
 	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
 	{
-		if (C_PaymentTerm_ID < 1) 
+		if (C_PaymentTerm_ID < 1)
 			set_Value (COLUMNNAME_C_PaymentTerm_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
 	}
 
 	/** Get Payment Term.
 		@return The terms of Payment (timing, discount)
 	  */
-	public int getC_PaymentTerm_ID () 
+	public int getC_PaymentTerm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
 		if (ii == null)
@@ -133,21 +134,20 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Withholding.
-		@param C_Withholding_ID 
-		Withholding type defined
-	  */
+		@param C_Withholding_ID Withholding type defined
+	*/
 	public void setC_Withholding_ID (int C_Withholding_ID)
 	{
-		if (C_Withholding_ID < 1) 
+		if (C_Withholding_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Withholding_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Withholding_ID, Integer.valueOf(C_Withholding_ID));
 	}
 
 	/** Get Withholding.
 		@return Withholding type defined
 	  */
-	public int getC_Withholding_ID () 
+	public int getC_Withholding_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Withholding_ID);
 		if (ii == null)
@@ -156,7 +156,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set C_Withholding_UU.
-		@param C_Withholding_UU C_Withholding_UU	  */
+		@param C_Withholding_UU C_Withholding_UU
+	*/
 	public void setC_Withholding_UU (String C_Withholding_UU)
 	{
 		set_Value (COLUMNNAME_C_Withholding_UU, C_Withholding_UU);
@@ -164,15 +165,14 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 
 	/** Get C_Withholding_UU.
 		@return C_Withholding_UU	  */
-	public String getC_Withholding_UU () 
+	public String getC_Withholding_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Withholding_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -181,15 +181,14 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Fix amount.
-		@param FixAmt 
-		Fix amounted amount to be levied or paid
-	  */
+		@param FixAmt Fix amounted amount to be levied or paid
+	*/
 	public void setFixAmt (BigDecimal FixAmt)
 	{
 		set_Value (COLUMNNAME_FixAmt, FixAmt);
@@ -198,7 +197,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Fix amount.
 		@return Fix amounted amount to be levied or paid
 	  */
-	public BigDecimal getFixAmt () 
+	public BigDecimal getFixAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FixAmt);
 		if (bd == null)
@@ -207,9 +206,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Paid to third party.
-		@param IsPaidTo3Party 
-		Amount paid to someone other than the Business Partner
-	  */
+		@param IsPaidTo3Party Amount paid to someone other than the Business Partner
+	*/
 	public void setIsPaidTo3Party (boolean IsPaidTo3Party)
 	{
 		set_Value (COLUMNNAME_IsPaidTo3Party, Boolean.valueOf(IsPaidTo3Party));
@@ -218,7 +216,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Paid to third party.
 		@return Amount paid to someone other than the Business Partner
 	  */
-	public boolean isPaidTo3Party () 
+	public boolean isPaidTo3Party()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPaidTo3Party);
 		if (oo != null) 
@@ -231,9 +229,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Percent withholding.
-		@param IsPercentWithholding 
-		Withholding amount is a percentage of the invoice amount
-	  */
+		@param IsPercentWithholding Withholding amount is a percentage of the invoice amount
+	*/
 	public void setIsPercentWithholding (boolean IsPercentWithholding)
 	{
 		set_Value (COLUMNNAME_IsPercentWithholding, Boolean.valueOf(IsPercentWithholding));
@@ -242,7 +239,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Percent withholding.
 		@return Withholding amount is a percentage of the invoice amount
 	  */
-	public boolean isPercentWithholding () 
+	public boolean isPercentWithholding()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPercentWithholding);
 		if (oo != null) 
@@ -255,9 +252,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Prorate tax.
-		@param IsTaxProrated 
-		Tax is Prorated
-	  */
+		@param IsTaxProrated Tax is Prorated
+	*/
 	public void setIsTaxProrated (boolean IsTaxProrated)
 	{
 		set_Value (COLUMNNAME_IsTaxProrated, Boolean.valueOf(IsTaxProrated));
@@ -266,7 +262,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Prorate tax.
 		@return Tax is Prorated
 	  */
-	public boolean isTaxProrated () 
+	public boolean isTaxProrated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxProrated);
 		if (oo != null) 
@@ -279,9 +275,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Tax withholding.
-		@param IsTaxWithholding 
-		This is a tax related withholding
-	  */
+		@param IsTaxWithholding This is a tax related withholding
+	*/
 	public void setIsTaxWithholding (boolean IsTaxWithholding)
 	{
 		set_Value (COLUMNNAME_IsTaxWithholding, Boolean.valueOf(IsTaxWithholding));
@@ -290,7 +285,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Tax withholding.
 		@return This is a tax related withholding
 	  */
-	public boolean isTaxWithholding () 
+	public boolean isTaxWithholding()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxWithholding);
 		if (oo != null) 
@@ -303,9 +298,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Max Amount.
-		@param MaxAmt 
-		Maximum Amount in invoice currency
-	  */
+		@param MaxAmt Maximum Amount in invoice currency
+	*/
 	public void setMaxAmt (BigDecimal MaxAmt)
 	{
 		set_Value (COLUMNNAME_MaxAmt, MaxAmt);
@@ -314,7 +308,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Max Amount.
 		@return Maximum Amount in invoice currency
 	  */
-	public BigDecimal getMaxAmt () 
+	public BigDecimal getMaxAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxAmt);
 		if (bd == null)
@@ -323,9 +317,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Min Amount.
-		@param MinAmt 
-		Minimum Amount in invoice currency
-	  */
+		@param MinAmt Minimum Amount in invoice currency
+	*/
 	public void setMinAmt (BigDecimal MinAmt)
 	{
 		set_Value (COLUMNNAME_MinAmt, MinAmt);
@@ -334,7 +327,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Min Amount.
 		@return Minimum Amount in invoice currency
 	  */
-	public BigDecimal getMinAmt () 
+	public BigDecimal getMinAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MinAmt);
 		if (bd == null)
@@ -343,9 +336,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -354,7 +346,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -368,9 +360,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
     }
 
 	/** Set Percent.
-		@param Percent 
-		Percentage
-	  */
+		@param Percent Percentage
+	*/
 	public void setPercent (BigDecimal Percent)
 	{
 		set_Value (COLUMNNAME_Percent, Percent);
@@ -379,7 +370,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Percent.
 		@return Percentage
 	  */
-	public BigDecimal getPercent () 
+	public BigDecimal getPercent()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Percent);
 		if (bd == null)
@@ -388,9 +379,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Threshold max.
-		@param ThresholdMax 
-		Maximum gross amount for withholding calculation  (0=no limit)
-	  */
+		@param ThresholdMax Maximum gross amount for withholding calculation  (0=no limit)
+	*/
 	public void setThresholdMax (BigDecimal ThresholdMax)
 	{
 		set_Value (COLUMNNAME_ThresholdMax, ThresholdMax);
@@ -399,7 +389,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Threshold max.
 		@return Maximum gross amount for withholding calculation  (0=no limit)
 	  */
-	public BigDecimal getThresholdMax () 
+	public BigDecimal getThresholdMax()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ThresholdMax);
 		if (bd == null)
@@ -408,9 +398,8 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	}
 
 	/** Set Threshold min.
-		@param Thresholdmin 
-		Minimum gross amount for withholding calculation
-	  */
+		@param Thresholdmin Minimum gross amount for withholding calculation
+	*/
 	public void setThresholdmin (BigDecimal Thresholdmin)
 	{
 		set_Value (COLUMNNAME_Thresholdmin, Thresholdmin);
@@ -419,7 +408,7 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/** Get Threshold min.
 		@return Minimum gross amount for withholding calculation
 	  */
-	public BigDecimal getThresholdmin () 
+	public BigDecimal getThresholdmin()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Thresholdmin);
 		if (bd == null)

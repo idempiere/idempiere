@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Reference")
 public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
         {
 			setAD_Reference_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setValidationType (null);
         } */
@@ -75,26 +76,26 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_Name)
-			.getPO(getAD_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
+			.getPO(getAD_Element_ID(), get_TrxName());
+	}
 
 	/** Set System Element.
-		@param AD_Element_ID 
-		System Element enables the central maintenance of column description and help.
-	  */
+		@param AD_Element_ID System Element enables the central maintenance of column description and help.
+	*/
 	public void setAD_Element_ID (int AD_Element_ID)
 	{
-		if (AD_Element_ID < 1) 
+		if (AD_Element_ID < 1)
 			set_Value (COLUMNNAME_AD_Element_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Element_ID, Integer.valueOf(AD_Element_ID));
 	}
 
 	/** Get System Element.
 		@return System Element enables the central maintenance of column description and help.
 	  */
-	public int getAD_Element_ID () 
+	public int getAD_Element_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Element_ID);
 		if (ii == null)
@@ -103,21 +104,20 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -126,7 +126,8 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	}
 
 	/** Set AD_Reference_UU.
-		@param AD_Reference_UU AD_Reference_UU	  */
+		@param AD_Reference_UU AD_Reference_UU
+	*/
 	public void setAD_Reference_UU (String AD_Reference_UU)
 	{
 		set_Value (COLUMNNAME_AD_Reference_UU, AD_Reference_UU);
@@ -134,15 +135,14 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 
 	/** Get AD_Reference_UU.
 		@return AD_Reference_UU	  */
-	public String getAD_Reference_UU () 
+	public String getAD_Reference_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Reference_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -151,7 +151,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -159,9 +159,8 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -171,15 +170,14 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -188,15 +186,14 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Order By Value.
-		@param IsOrderByValue 
-		Order list using the value column instead of the name column
-	  */
+		@param IsOrderByValue Order list using the value column instead of the name column
+	*/
 	public void setIsOrderByValue (boolean IsOrderByValue)
 	{
 		set_Value (COLUMNNAME_IsOrderByValue, Boolean.valueOf(IsOrderByValue));
@@ -205,7 +202,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/** Get Order By Value.
 		@return Order list using the value column instead of the name column
 	  */
-	public boolean isOrderByValue () 
+	public boolean isOrderByValue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOrderByValue);
 		if (oo != null) 
@@ -218,9 +215,8 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -229,7 +225,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -244,16 +240,15 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 
 	/** ValidationType AD_Reference_ID=2 */
 	public static final int VALIDATIONTYPE_AD_Reference_ID=2;
-	/** List Validation = L */
-	public static final String VALIDATIONTYPE_ListValidation = "L";
 	/** DataType = D */
 	public static final String VALIDATIONTYPE_DataType = "D";
+	/** List Validation = L */
+	public static final String VALIDATIONTYPE_ListValidation = "L";
 	/** Table Validation = T */
 	public static final String VALIDATIONTYPE_TableValidation = "T";
 	/** Set Validation type.
-		@param ValidationType 
-		Different method of validating data
-	  */
+		@param ValidationType Different method of validating data
+	*/
 	public void setValidationType (String ValidationType)
 	{
 
@@ -263,24 +258,23 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/** Get Validation type.
 		@return Different method of validating data
 	  */
-	public String getValidationType () 
+	public String getValidationType()
 	{
 		return (String)get_Value(COLUMNNAME_ValidationType);
 	}
 
 	/** Set Value Format.
-		@param VFormat 
-		Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
 	public void setVFormat (String VFormat)
 	{
 		set_Value (COLUMNNAME_VFormat, VFormat);
 	}
 
 	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
 	  */
-	public String getVFormat () 
+	public String getVFormat()
 	{
 		return (String)get_Value(COLUMNNAME_VFormat);
 	}

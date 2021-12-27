@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>8.2.0-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.adempiere.report.jasper.library</artifactId>
@@ -62,11 +62,6 @@
 									<groupId>com.adobe.xmp</groupId>
 									<artifactId>xmpcore</artifactId>
 									<version>5.1.3</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.zaxxer</groupId>
-									<artifactId>SparseBitSet</artifactId>
-									<version>1.2</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

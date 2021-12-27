@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Withholding
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_BP_Withholding")
 public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_BP_Withholding (Properties ctx, int C_BP_Withholding_ID, String trxName)
@@ -74,26 +75,26 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -110,7 +111,8 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
     }
 
 	/** Set C_BP_Withholding_UU.
-		@param C_BP_Withholding_UU C_BP_Withholding_UU	  */
+		@param C_BP_Withholding_UU C_BP_Withholding_UU
+	*/
 	public void setC_BP_Withholding_UU (String C_BP_Withholding_UU)
 	{
 		set_Value (COLUMNNAME_C_BP_Withholding_UU, C_BP_Withholding_UU);
@@ -118,32 +120,32 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 
 	/** Get C_BP_Withholding_UU.
 		@return C_BP_Withholding_UU	  */
-	public String getC_BP_Withholding_UU () 
+	public String getC_BP_Withholding_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BP_Withholding_UU);
 	}
 
 	public org.compiere.model.I_C_Withholding getC_Withholding() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Withholding)MTable.get(getCtx(), org.compiere.model.I_C_Withholding.Table_Name)
-			.getPO(getC_Withholding_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Withholding)MTable.get(getCtx(), org.compiere.model.I_C_Withholding.Table_ID)
+			.getPO(getC_Withholding_ID(), get_TrxName());
+	}
 
 	/** Set Withholding.
-		@param C_Withholding_ID 
-		Withholding type defined
-	  */
+		@param C_Withholding_ID Withholding type defined
+	*/
 	public void setC_Withholding_ID (int C_Withholding_ID)
 	{
-		if (C_Withholding_ID < 1) 
+		if (C_Withholding_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Withholding_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Withholding_ID, Integer.valueOf(C_Withholding_ID));
 	}
 
 	/** Get Withholding.
 		@return Withholding type defined
 	  */
-	public int getC_Withholding_ID () 
+	public int getC_Withholding_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Withholding_ID);
 		if (ii == null)
@@ -152,9 +154,8 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 	}
 
 	/** Set Exempt reason.
-		@param ExemptReason 
-		Reason for not withholding
-	  */
+		@param ExemptReason Reason for not withholding
+	*/
 	public void setExemptReason (String ExemptReason)
 	{
 		set_Value (COLUMNNAME_ExemptReason, ExemptReason);
@@ -163,15 +164,14 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 	/** Get Exempt reason.
 		@return Reason for not withholding
 	  */
-	public String getExemptReason () 
+	public String getExemptReason()
 	{
 		return (String)get_Value(COLUMNNAME_ExemptReason);
 	}
 
 	/** Set Mandatory Withholding.
-		@param IsMandatoryWithholding 
-		Monies must be withheld
-	  */
+		@param IsMandatoryWithholding Monies must be withheld
+	*/
 	public void setIsMandatoryWithholding (boolean IsMandatoryWithholding)
 	{
 		set_Value (COLUMNNAME_IsMandatoryWithholding, Boolean.valueOf(IsMandatoryWithholding));
@@ -180,7 +180,7 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 	/** Get Mandatory Withholding.
 		@return Monies must be withheld
 	  */
-	public boolean isMandatoryWithholding () 
+	public boolean isMandatoryWithholding()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatoryWithholding);
 		if (oo != null) 
@@ -193,9 +193,8 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 	}
 
 	/** Set Temporary exempt.
-		@param IsTemporaryExempt 
-		Temporarily do not withhold taxes
-	  */
+		@param IsTemporaryExempt Temporarily do not withhold taxes
+	*/
 	public void setIsTemporaryExempt (boolean IsTemporaryExempt)
 	{
 		set_Value (COLUMNNAME_IsTemporaryExempt, Boolean.valueOf(IsTemporaryExempt));
@@ -204,7 +203,7 @@ public class X_C_BP_Withholding extends PO implements I_C_BP_Withholding, I_Pers
 	/** Get Temporary exempt.
 		@return Temporarily do not withhold taxes
 	  */
-	public boolean isTemporaryExempt () 
+	public boolean isTemporaryExempt()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTemporaryExempt);
 		if (oo != null) 

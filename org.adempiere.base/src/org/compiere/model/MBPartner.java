@@ -157,7 +157,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	/**
 	 * 	Get BPartner with Value
 	 *	@param ctx context 
-	 *	@param Value value
+	 *  @param C_BPartner_ID
 	 *	@return BPartner or null
 	 */
 	public static MBPartner get (Properties ctx, int C_BPartner_ID)
@@ -169,7 +169,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	/**
 	 * 	Get BPartner with Value in a transaction
 	 *	@param ctx context 
-	 *	@param Value value
+	 *  @param C_BPartner_ID
 	 * 	@param trxName transaction
 	 *	@return BPartner or null
 	 */

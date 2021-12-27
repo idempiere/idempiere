@@ -24,9 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.compiere.Adempiere;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
@@ -46,7 +48,10 @@ public class CacheMgt
 	public static synchronized CacheMgt get()
 	{
 		if (s_cache == null)
+		{
 			s_cache = new CacheMgt();
+			startCacheMonitor();
+		}
 		return s_cache;
 	}	//	get
 
@@ -66,7 +71,11 @@ public class CacheMgt
 	private ArrayList<String>	m_tableNames = new ArrayList<String>();
 	/** Logger							*/
 	private static CLogger		log = CLogger.getCLogger(CacheMgt.class);
-
+	/** Cache change listeners **/
+	private List<CacheChangeListener> m_listeners = new ArrayList<CacheChangeListener>();
+	/** Background monitor to clear expire cache */
+	private static final CacheMgt.CacheMonitor s_monitor = new CacheMgt.CacheMonitor();
+	/** Default maximum cache size **/
 	public static int MAX_SIZE = 1000;
 	static 
 	{
@@ -103,6 +112,12 @@ public class CacheMgt
 			m_tableNames.add(tableName);
 		
 		m_instances.add (instance);
+		
+		if (tableName == null && instance instanceof CacheChangeListener)
+		{
+			m_listeners.add((CacheChangeListener) instance);
+		}
+		
 		Map<K, V> map = null;
 		if (distributed) 
 		{
@@ -305,6 +320,15 @@ public class CacheMgt
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(tableName + ": #" + counter + " (" + total + ")");
 
+		CacheChangeListener[] listeners = m_listeners.toArray(new CacheChangeListener[0]);
+		for(CacheChangeListener listener : listeners)
+		{
+			if (Record_ID == -1)
+				listener.reset(tableName);
+			else
+				listener.reset(tableName, Record_ID);
+		}
+		
 		return total;
 	}
 	
@@ -312,7 +336,6 @@ public class CacheMgt
 	 * 	Reset local Cache
 	 * 	@param tableName table name
 	 * 	@param Record_ID record if applicable or 0 for all
-	 * 	@return number of deleted cache entries
 	 */
 	protected void localNewRecord (String tableName, int Record_ID)
 	{
@@ -335,7 +358,7 @@ public class CacheMgt
 					}
 				}
 			}
-		}
+		}		
 	}
 	
 	/**
@@ -423,5 +446,36 @@ public class CacheMgt
 	    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 	        return maxSize <= 0 ? false : size() > maxSize;
 	    }
+	}
+	
+	private static synchronized void startCacheMonitor()
+	{
+		Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(s_monitor, 5, 5, TimeUnit.MINUTES);
+	}
+
+	private static class CacheMonitor implements Runnable
+	{
+
+		public void run()
+		{
+			CacheMgt instance = CacheMgt.get();
+			if (!instance.m_instances.isEmpty())
+			{
+				CacheInterface[] caches = instance.m_instances.toArray(new CacheInterface[0]);
+				for(int i = 0; i < caches.length; i++)
+				{
+					if (!(caches[i] instanceof CCache<?, ?>))
+						continue;
+					CCache<?, ?> cache = (CCache<?, ?>) caches[i];
+					if (cache.isDistributed() || cache.getExpireMinutes() <= 0)
+						continue;
+
+					if (cache.isExpire())
+					{
+						cache.reset();
+					}
+				}
+			}
+		}
 	}
 }	//	CCache

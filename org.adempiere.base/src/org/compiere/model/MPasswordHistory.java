@@ -29,7 +29,7 @@ public class MPasswordHistory extends X_AD_Password_History {
 	}
 	
 	/**
-	 * get list password history has age <= passwordMaxDay + daysReuse
+	 * get list password history has age &lt;= passwordMaxDay + daysReuse
 	 * @param daysReuse max day can't reuse password, get from password rule
 	 * @param userId
 	 * @return

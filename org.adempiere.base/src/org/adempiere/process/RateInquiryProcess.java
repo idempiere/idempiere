@@ -9,6 +9,7 @@ import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
+@org.adempiere.base.annotation.Process
 public class RateInquiryProcess extends SvrProcess 
 {
 	private boolean p_IsPriviledgedRate = false;

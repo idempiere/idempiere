@@ -62,6 +62,7 @@ import org.eevolution.model.MDDOrderLine;
  *  Carlos Ruiz globalqss - integrate bug fixing from Chris Farley
  *    [ 1619517 ] Replenish report fails when no records in m_storage
  */
+@org.adempiere.base.annotation.Process
 public class ReplenishReportProduction extends SvrProcess
 {
 	/** Warehouse				*/
@@ -685,7 +686,6 @@ public class ReplenishReportProduction extends SvrProcess
 				// Set BPartner Link to Org
 				order.setBPartner(bp);
 				order.setDateOrdered(new Timestamp(System.currentTimeMillis()));
-				//order.setDatePromised(DatePromised);
 				order.setDeliveryRule(MDDOrder.DELIVERYRULE_Availability);
 				order.setDeliveryViaRule(MDDOrder.DELIVERYVIARULE_Delivery);
 				order.setPriorityRule(MDDOrder.PRIORITYRULE_Medium);
@@ -722,46 +722,6 @@ public class ReplenishReportProduction extends SvrProcess
 			int M_Locator_ID = whSource.getDefaultLocator().getM_Locator_ID();
 			if(M_LocatorTo_ID == 0 || M_Locator_ID==0)
 			throw new AdempiereUserError(Msg.translate(getCtx(), "M_Locator_ID")+" @FillMandatory@ ");
-			
-			//	From: Look-up Storage
-			/*MProduct product = MProduct.get(getCtx(), replenish.getM_Product_ID());
-			MProductCategory pc = MProductCategory.get(getCtx(), product.getM_Product_Category_ID());
-			String MMPolicy = pc.getMMPolicy();
-			if (MMPolicy == null || MMPolicy.length() == 0)
-				MMPolicy = client.getMMPolicy();
-			//
-			MStorage[] storages = MStorage.getWarehouse(getCtx(), 
-				whSource.getM_Warehouse_ID(), replenish.getM_Product_ID(), 0, 0,
-				true, null, 
-				MClient.MMPOLICY_FiFo.equals(MMPolicy), get_TrxName());
-			
-			
-			BigDecimal target = replenish.getQtyToOrder();
-			for (int j = 0; j < storages.length; j++)
-			{
-				MStorage storage = storages[j];
-				if (storage.getQtyOnHand().signum() <= 0)
-					continue;
-				BigDecimal moveQty = target;
-				if (storage.getQtyOnHand().compareTo(moveQty) < 0)
-					moveQty = storage.getQtyOnHand();
-				//
-				MDDOrderLine line = new MDDOrderLine(order);
-				line.setM_Product_ID(replenish.getM_Product_ID());
-				line.setQtyEntered(moveQty);
-				if (replenish.getQtyToOrder().compareTo(moveQty) != 0)
-					line.setDescription("Total: " + replenish.getQtyToOrder());
-				line.setM_Locator_ID(storage.getM_Locator_ID());		//	from
-				line.setM_AttributeSetInstance_ID(storage.getM_AttributeSetInstance_ID());
-				line.setM_LocatorTo_ID(M_LocatorTo_ID);					//	to
-				line.setM_AttributeSetInstanceTo_ID(storage.getM_AttributeSetInstance_ID());
-				line.setIsInvoiced(false);
-				line.saveEx();
-				//
-				target = target.subtract(moveQty);
-				if (target.signum() == 0)
-					break;
-			}*/
 			
 			MDDOrderLine line = new MDDOrderLine(order);
 			line.setM_Product_ID(replenish.getM_Product_ID());

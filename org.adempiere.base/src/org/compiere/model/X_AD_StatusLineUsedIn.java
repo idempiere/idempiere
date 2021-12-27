@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_StatusLineUsedIn
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_StatusLineUsedIn")
 public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 			setAD_StatusLine_ID (0);
 			setAD_StatusLineUsedIn_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStatusLine (true);
 // Y
         } */
@@ -75,23 +76,25 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
     }
 
 	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_Name)
-			.getPO(getAD_StatusLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_ID)
+			.getPO(getAD_StatusLine_ID(), get_TrxName());
+	}
 
 	/** Set Status Line.
-		@param AD_StatusLine_ID Status Line	  */
+		@param AD_StatusLine_ID Status Line
+	*/
 	public void setAD_StatusLine_ID (int AD_StatusLine_ID)
 	{
-		if (AD_StatusLine_ID < 1) 
+		if (AD_StatusLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_StatusLine_ID, Integer.valueOf(AD_StatusLine_ID));
 	}
 
 	/** Get Status Line.
 		@return Status Line	  */
-	public int getAD_StatusLine_ID () 
+	public int getAD_StatusLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StatusLine_ID);
 		if (ii == null)
@@ -100,18 +103,19 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	}
 
 	/** Set AD_StatusLineUsedIn.
-		@param AD_StatusLineUsedIn_ID AD_StatusLineUsedIn	  */
+		@param AD_StatusLineUsedIn_ID AD_StatusLineUsedIn
+	*/
 	public void setAD_StatusLineUsedIn_ID (int AD_StatusLineUsedIn_ID)
 	{
-		if (AD_StatusLineUsedIn_ID < 1) 
+		if (AD_StatusLineUsedIn_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_StatusLineUsedIn_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_StatusLineUsedIn_ID, Integer.valueOf(AD_StatusLineUsedIn_ID));
 	}
 
 	/** Get AD_StatusLineUsedIn.
 		@return AD_StatusLineUsedIn	  */
-	public int getAD_StatusLineUsedIn_ID () 
+	public int getAD_StatusLineUsedIn_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StatusLineUsedIn_ID);
 		if (ii == null)
@@ -120,7 +124,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	}
 
 	/** Set AD_StatusLineUsedIn_UU.
-		@param AD_StatusLineUsedIn_UU AD_StatusLineUsedIn_UU	  */
+		@param AD_StatusLineUsedIn_UU AD_StatusLineUsedIn_UU
+	*/
 	public void setAD_StatusLineUsedIn_UU (String AD_StatusLineUsedIn_UU)
 	{
 		set_Value (COLUMNNAME_AD_StatusLineUsedIn_UU, AD_StatusLineUsedIn_UU);
@@ -128,32 +133,32 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 
 	/** Get AD_StatusLineUsedIn_UU.
 		@return AD_StatusLineUsedIn_UU	  */
-	public String getAD_StatusLineUsedIn_UU () 
+	public String getAD_StatusLineUsedIn_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_StatusLineUsedIn_UU);
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
-		@param AD_Tab_ID 
-		Tab within a Window
-	  */
+		@param AD_Tab_ID Tab within a Window
+	*/
 	public void setAD_Tab_ID (int AD_Tab_ID)
 	{
-		if (AD_Tab_ID < 1) 
+		if (AD_Tab_ID < 1)
 			set_Value (COLUMNNAME_AD_Tab_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
 	}
 
 	/** Get Tab.
 		@return Tab within a Window
 	  */
-	public int getAD_Tab_ID () 
+	public int getAD_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
 		if (ii == null)
@@ -162,26 +167,26 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -190,26 +195,26 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -220,9 +225,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -232,15 +236,14 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Status Line.
-		@param IsStatusLine 
-		Defines if this record refers to a status line or to a help widget
-	  */
+		@param IsStatusLine Defines if this record refers to a status line or to a help widget
+	*/
 	public void setIsStatusLine (boolean IsStatusLine)
 	{
 		set_Value (COLUMNNAME_IsStatusLine, Boolean.valueOf(IsStatusLine));
@@ -249,7 +252,7 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	/** Get Status Line.
 		@return Defines if this record refers to a status line or to a help widget
 	  */
-	public boolean isStatusLine () 
+	public boolean isStatusLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStatusLine);
 		if (oo != null) 
@@ -262,9 +265,8 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -273,7 +275,7 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

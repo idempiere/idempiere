@@ -32,7 +32,7 @@ import org.compiere.util.Env;
  *  @version $Id: MWFEventAudit.java,v 1.3 2006/07/30 00:51:06 jjanke Exp $
  * 
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
- * 			<li>BF [ 1801842 ] DB connection fix & improvements for concurrent threads
+ * 			<li>BF [ 1801842 ] DB connection fix and improvements for concurrent threads
  * 			<li>BF [ 1943723 ] WF Activity History is not translated
  */
 public class MWFEventAudit extends X_AD_WF_EventAudit

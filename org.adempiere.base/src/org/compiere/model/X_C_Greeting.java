@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Greeting
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Greeting")
 public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Greeting (Properties ctx, int C_Greeting_ID, String trxName)
@@ -74,21 +75,20 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
     }
 
 	/** Set Greeting.
-		@param C_Greeting_ID 
-		Greeting to print on correspondence
-	  */
+		@param C_Greeting_ID Greeting to print on correspondence
+	*/
 	public void setC_Greeting_ID (int C_Greeting_ID)
 	{
-		if (C_Greeting_ID < 1) 
+		if (C_Greeting_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Greeting_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Greeting_ID, Integer.valueOf(C_Greeting_ID));
 	}
 
 	/** Get Greeting.
 		@return Greeting to print on correspondence
 	  */
-	public int getC_Greeting_ID () 
+	public int getC_Greeting_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Greeting_ID);
 		if (ii == null)
@@ -97,7 +97,8 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 	}
 
 	/** Set C_Greeting_UU.
-		@param C_Greeting_UU C_Greeting_UU	  */
+		@param C_Greeting_UU C_Greeting_UU
+	*/
 	public void setC_Greeting_UU (String C_Greeting_UU)
 	{
 		set_Value (COLUMNNAME_C_Greeting_UU, C_Greeting_UU);
@@ -105,32 +106,30 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 
 	/** Get C_Greeting_UU.
 		@return C_Greeting_UU	  */
-	public String getC_Greeting_UU () 
+	public String getC_Greeting_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Greeting_UU);
 	}
 
 	/** Set Greeting.
-		@param Greeting 
-		For letters, e.g. "Dear {0}" or "Dear Mr. {0}" - At runtime, "{0}" is replaced by the name
-	  */
+		@param Greeting For letters, e.g. &quot;Dear {0}&quot; or &quot;Dear Mr. {0}&quot; - At runtime, &quot;{0}&quot; is replaced by the name
+	*/
 	public void setGreeting (String Greeting)
 	{
 		set_Value (COLUMNNAME_Greeting, Greeting);
 	}
 
 	/** Get Greeting.
-		@return For letters, e.g. "Dear {0}" or "Dear Mr. {0}" - At runtime, "{0}" is replaced by the name
+		@return For letters, e.g. &quot;Dear {0}&quot; or &quot;Dear Mr. {0}&quot; - At runtime, &quot;{0}&quot; is replaced by the name
 	  */
-	public String getGreeting () 
+	public String getGreeting()
 	{
 		return (String)get_Value(COLUMNNAME_Greeting);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -139,7 +138,7 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -152,9 +151,8 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 	}
 
 	/** Set First name only.
-		@param IsFirstNameOnly 
-		Print only the first name in greetings
-	  */
+		@param IsFirstNameOnly Print only the first name in greetings
+	*/
 	public void setIsFirstNameOnly (boolean IsFirstNameOnly)
 	{
 		set_Value (COLUMNNAME_IsFirstNameOnly, Boolean.valueOf(IsFirstNameOnly));
@@ -163,7 +161,7 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 	/** Get First name only.
 		@return Print only the first name in greetings
 	  */
-	public boolean isFirstNameOnly () 
+	public boolean isFirstNameOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFirstNameOnly);
 		if (oo != null) 
@@ -176,9 +174,8 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -187,7 +184,7 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

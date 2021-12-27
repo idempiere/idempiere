@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueKnown
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_IssueKnown")
 public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_IssueKnown (Properties ctx, int R_IssueKnown_ID, String trxName)
@@ -73,9 +74,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,15 +84,14 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Issue Status.
-		@param IssueStatus 
-		Current Status of the Issue
-	  */
+		@param IssueStatus Current Status of the Issue
+	*/
 	public void setIssueStatus (String IssueStatus)
 	{
 		set_Value (COLUMNNAME_IssueStatus, IssueStatus);
@@ -101,15 +100,14 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Issue Status.
 		@return Current Status of the Issue
 	  */
-	public String getIssueStatus () 
+	public String getIssueStatus()
 	{
 		return (String)get_Value(COLUMNNAME_IssueStatus);
 	}
 
 	/** Set Issue Summary.
-		@param IssueSummary 
-		Issue Summary
-	  */
+		@param IssueSummary Issue Summary
+	*/
 	public void setIssueSummary (String IssueSummary)
 	{
 		set_Value (COLUMNNAME_IssueSummary, IssueSummary);
@@ -118,15 +116,14 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Issue Summary.
 		@return Issue Summary
 	  */
-	public String getIssueSummary () 
+	public String getIssueSummary()
 	{
 		return (String)get_Value(COLUMNNAME_IssueSummary);
 	}
 
 	/** Set Line.
-		@param LineNo 
-		Line No
-	  */
+		@param LineNo Line No
+	*/
 	public void setLineNo (int LineNo)
 	{
 		set_Value (COLUMNNAME_LineNo, Integer.valueOf(LineNo));
@@ -135,7 +132,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Line.
 		@return Line No
 	  */
-	public int getLineNo () 
+	public int getLineNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LineNo);
 		if (ii == null)
@@ -144,9 +141,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	}
 
 	/** Set Logger.
-		@param LoggerName 
-		Logger Name
-	  */
+		@param LoggerName Logger Name
+	*/
 	public void setLoggerName (String LoggerName)
 	{
 		set_Value (COLUMNNAME_LoggerName, LoggerName);
@@ -155,13 +151,14 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Logger.
 		@return Logger Name
 	  */
-	public String getLoggerName () 
+	public String getLoggerName()
 	{
 		return (String)get_Value(COLUMNNAME_LoggerName);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -169,7 +166,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -182,9 +179,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	}
 
 	/** Set Release No.
-		@param ReleaseNo 
-		Internal Release Number
-	  */
+		@param ReleaseNo Internal Release Number
+	*/
 	public void setReleaseNo (String ReleaseNo)
 	{
 		set_Value (COLUMNNAME_ReleaseNo, ReleaseNo);
@@ -193,7 +189,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Release No.
 		@return Internal Release Number
 	  */
-	public String getReleaseNo () 
+	public String getReleaseNo()
 	{
 		return (String)get_Value(COLUMNNAME_ReleaseNo);
 	}
@@ -207,21 +203,20 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
     }
 
 	/** Set Known Issue.
-		@param R_IssueKnown_ID 
-		Known Issue
-	  */
+		@param R_IssueKnown_ID Known Issue
+	*/
 	public void setR_IssueKnown_ID (int R_IssueKnown_ID)
 	{
-		if (R_IssueKnown_ID < 1) 
+		if (R_IssueKnown_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_IssueKnown_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_IssueKnown_ID, Integer.valueOf(R_IssueKnown_ID));
 	}
 
 	/** Get Known Issue.
 		@return Known Issue
 	  */
-	public int getR_IssueKnown_ID () 
+	public int getR_IssueKnown_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueKnown_ID);
 		if (ii == null)
@@ -230,7 +225,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	}
 
 	/** Set R_IssueKnown_UU.
-		@param R_IssueKnown_UU R_IssueKnown_UU	  */
+		@param R_IssueKnown_UU R_IssueKnown_UU
+	*/
 	public void setR_IssueKnown_UU (String R_IssueKnown_UU)
 	{
 		set_Value (COLUMNNAME_R_IssueKnown_UU, R_IssueKnown_UU);
@@ -238,32 +234,32 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 
 	/** Get R_IssueKnown_UU.
 		@return R_IssueKnown_UU	  */
-	public String getR_IssueKnown_UU () 
+	public String getR_IssueKnown_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_IssueKnown_UU);
 	}
 
 	public org.compiere.model.I_R_IssueRecommendation getR_IssueRecommendation() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_IssueRecommendation)MTable.get(getCtx(), org.compiere.model.I_R_IssueRecommendation.Table_Name)
-			.getPO(getR_IssueRecommendation_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_IssueRecommendation)MTable.get(getCtx(), org.compiere.model.I_R_IssueRecommendation.Table_ID)
+			.getPO(getR_IssueRecommendation_ID(), get_TrxName());
+	}
 
 	/** Set Issue Recommendation.
-		@param R_IssueRecommendation_ID 
-		Recommendations how to fix an Issue
-	  */
+		@param R_IssueRecommendation_ID Recommendations how to fix an Issue
+	*/
 	public void setR_IssueRecommendation_ID (int R_IssueRecommendation_ID)
 	{
-		if (R_IssueRecommendation_ID < 1) 
+		if (R_IssueRecommendation_ID < 1)
 			set_Value (COLUMNNAME_R_IssueRecommendation_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_IssueRecommendation_ID, Integer.valueOf(R_IssueRecommendation_ID));
 	}
 
 	/** Get Issue Recommendation.
 		@return Recommendations how to fix an Issue
 	  */
-	public int getR_IssueRecommendation_ID () 
+	public int getR_IssueRecommendation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueRecommendation_ID);
 		if (ii == null)
@@ -272,26 +268,26 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	}
 
 	public org.compiere.model.I_R_IssueStatus getR_IssueStatus() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_IssueStatus)MTable.get(getCtx(), org.compiere.model.I_R_IssueStatus.Table_Name)
-			.getPO(getR_IssueStatus_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_IssueStatus)MTable.get(getCtx(), org.compiere.model.I_R_IssueStatus.Table_ID)
+			.getPO(getR_IssueStatus_ID(), get_TrxName());
+	}
 
 	/** Set Issue Status.
-		@param R_IssueStatus_ID 
-		Status of an Issue
-	  */
+		@param R_IssueStatus_ID Status of an Issue
+	*/
 	public void setR_IssueStatus_ID (int R_IssueStatus_ID)
 	{
-		if (R_IssueStatus_ID < 1) 
+		if (R_IssueStatus_ID < 1)
 			set_Value (COLUMNNAME_R_IssueStatus_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_IssueStatus_ID, Integer.valueOf(R_IssueStatus_ID));
 	}
 
 	/** Get Issue Status.
 		@return Status of an Issue
 	  */
-	public int getR_IssueStatus_ID () 
+	public int getR_IssueStatus_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueStatus_ID);
 		if (ii == null)
@@ -300,26 +296,26 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	}
 
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_Name)
-			.getPO(getR_Request_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)
+			.getPO(getR_Request_ID(), get_TrxName());
+	}
 
 	/** Set Request.
-		@param R_Request_ID 
-		Request from a Business Partner or Prospect
-	  */
+		@param R_Request_ID Request from a Business Partner or Prospect
+	*/
 	public void setR_Request_ID (int R_Request_ID)
 	{
-		if (R_Request_ID < 1) 
+		if (R_Request_ID < 1)
 			set_Value (COLUMNNAME_R_Request_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_Request_ID, Integer.valueOf(R_Request_ID));
 	}
 
 	/** Get Request.
 		@return Request from a Business Partner or Prospect
 	  */
-	public int getR_Request_ID () 
+	public int getR_Request_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Request_ID);
 		if (ii == null)
@@ -328,9 +324,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	}
 
 	/** Set Source Class.
-		@param SourceClassName 
-		Source Class Name
-	  */
+		@param SourceClassName Source Class Name
+	*/
 	public void setSourceClassName (String SourceClassName)
 	{
 		set_Value (COLUMNNAME_SourceClassName, SourceClassName);
@@ -339,15 +334,14 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Source Class.
 		@return Source Class Name
 	  */
-	public String getSourceClassName () 
+	public String getSourceClassName()
 	{
 		return (String)get_Value(COLUMNNAME_SourceClassName);
 	}
 
 	/** Set Source Method.
-		@param SourceMethodName 
-		Source Method Name
-	  */
+		@param SourceMethodName Source Method Name
+	*/
 	public void setSourceMethodName (String SourceMethodName)
 	{
 		set_Value (COLUMNNAME_SourceMethodName, SourceMethodName);
@@ -356,7 +350,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/** Get Source Method.
 		@return Source Method Name
 	  */
-	public String getSourceMethodName () 
+	public String getSourceMethodName()
 	{
 		return (String)get_Value(COLUMNNAME_SourceMethodName);
 	}

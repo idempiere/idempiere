@@ -35,6 +35,7 @@ import org.compiere.util.Trx;
  *  @author Jorg Janke
  *  @version $Id: AllocationReset.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class AllocationReset extends SvrProcess
 {
 	/** BP Group				*/
@@ -196,24 +197,5 @@ public class AllocationReset extends SvrProcess
 			m_trx.rollback();
 		return success;
 	}	//	delete
-	
-	
-	/**
-	 * 	Set BPartner (may not be required
-	 */
-	/*private void setBPartner()
-	{
-		
-		UPDATE C_AllocationLine al
-		SET C_BPartner_ID=(SELECT C_BPartner_ID FROM C_Payment p WHERE al.C_Payment_ID=p.C_Payment_ID)
-		WHERE C_BPartner_ID IS NULL AND C_Payment_ID IS NOT NULL;
-		UPDATE C_AllocationLine al
-		SET C_BPartner_ID=(SELECT C_BPartner_ID FROM C_Invoice i WHERE al.C_Invoice_ID=i.C_Invoice_ID)
-		WHERE C_BPartner_ID IS NULL AND C_Invoice_ID IS NOT NULL;
-		UPDATE C_AllocationLine al
-		SET C_BPartner_ID=(SELECT C_BPartner_ID FROM C_Order o WHERE al.C_Order_ID=o.C_Order_ID)
-		WHERE C_BPartner_ID IS NULL AND C_Order_ID IS NOT NULL;
-		COMMIT
-	}	//	setBPartner*/
 
 }	//	AllocationReset

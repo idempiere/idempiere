@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Report
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_PA_Report 
 {
@@ -135,6 +135,15 @@ public interface I_PA_Report
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name ExcludeAdjustmentPeriods */
+    public static final String COLUMNNAME_ExcludeAdjustmentPeriods = "ExcludeAdjustmentPeriods";
+
+	/** Set Exclude Adjustment Periods	  */
+	public void setExcludeAdjustmentPeriods (String ExcludeAdjustmentPeriods);
+
+	/** Get Exclude Adjustment Periods	  */
+	public String getExcludeAdjustmentPeriods();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

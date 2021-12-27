@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_M_Product 
 {
@@ -325,6 +325,19 @@ public interface I_M_Product
 	  */
 	public boolean isActive();
 
+    /** Column name IsAutoProduce */
+    public static final String COLUMNNAME_IsAutoProduce = "IsAutoProduce";
+
+	/** Set Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public void setIsAutoProduce (boolean IsAutoProduce);
+
+	/** Get Auto Produce.
+	  * Auto create production to fulfill shipment
+	  */
+	public boolean isAutoProduce();
+
     /** Column name IsBOM */
     public static final String COLUMNNAME_IsBOM = "IsBOM";
 
@@ -342,12 +355,12 @@ public interface I_M_Product
     public static final String COLUMNNAME_IsDropShip = "IsDropShip";
 
 	/** Set Drop Shipment.
-	  * Drop Shipments are sent from the Vendor directly to the Customer
+	  * Drop Shipments are sent directly to the Drop Shipment Location
 	  */
 	public void setIsDropShip (boolean IsDropShip);
 
 	/** Get Drop Shipment.
-	  * Drop Shipments are sent from the Vendor directly to the Customer
+	  * Drop Shipments are sent directly to the Drop Shipment Location
 	  */
 	public boolean isDropShip();
 
@@ -367,12 +380,12 @@ public interface I_M_Product
     /** Column name IsInvoicePrintDetails */
     public static final String COLUMNNAME_IsInvoicePrintDetails = "IsInvoicePrintDetails";
 
-	/** Set Print detail records on invoice .
+	/** Set Print detail records on invoice.
 	  * Print detail BOM elements on the invoice
 	  */
 	public void setIsInvoicePrintDetails (boolean IsInvoicePrintDetails);
 
-	/** Get Print detail records on invoice .
+	/** Get Print detail records on invoice.
 	  * Print detail BOM elements on the invoice
 	  */
 	public boolean isInvoicePrintDetails();

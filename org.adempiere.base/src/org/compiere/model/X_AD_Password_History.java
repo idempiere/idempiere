@@ -23,14 +23,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Password_History
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Password_History")
 public class X_AD_Password_History extends PO implements I_AD_Password_History, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Password_History (Properties ctx, int AD_Password_History_ID, String trxName)
@@ -71,18 +72,19 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
     }
 
 	/** Set Password History ID.
-		@param AD_Password_History_ID Password History ID	  */
+		@param AD_Password_History_ID Password History ID
+	*/
 	public void setAD_Password_History_ID (int AD_Password_History_ID)
 	{
-		if (AD_Password_History_ID < 1) 
+		if (AD_Password_History_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Password_History_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Password_History_ID, Integer.valueOf(AD_Password_History_ID));
 	}
 
 	/** Get Password History ID.
 		@return Password History ID	  */
-	public int getAD_Password_History_ID () 
+	public int getAD_Password_History_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Password_History_ID);
 		if (ii == null)
@@ -91,7 +93,8 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
 	}
 
 	/** Set AD_Password_History_UU.
-		@param AD_Password_History_UU AD_Password_History_UU	  */
+		@param AD_Password_History_UU AD_Password_History_UU
+	*/
 	public void setAD_Password_History_UU (String AD_Password_History_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_Password_History_UU, AD_Password_History_UU);
@@ -99,32 +102,32 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
 
 	/** Get AD_Password_History_UU.
 		@return AD_Password_History_UU	  */
-	public String getAD_Password_History_UU () 
+	public String getAD_Password_History_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Password_History_UU);
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -133,7 +136,8 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
 	}
 
 	/** Set Date Password Changed.
-		@param DatePasswordChanged Date Password Changed	  */
+		@param DatePasswordChanged Date Password Changed
+	*/
 	public void setDatePasswordChanged (Timestamp DatePasswordChanged)
 	{
 		set_Value (COLUMNNAME_DatePasswordChanged, DatePasswordChanged);
@@ -141,15 +145,14 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
 
 	/** Get Date Password Changed.
 		@return Date Password Changed	  */
-	public Timestamp getDatePasswordChanged () 
+	public Timestamp getDatePasswordChanged()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DatePasswordChanged);
 	}
 
 	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
+		@param Password Password of any length (case sensitive)
+	*/
 	public void setPassword (String Password)
 	{
 		set_Value (COLUMNNAME_Password, Password);
@@ -158,15 +161,14 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
 	/** Get Password.
 		@return Password of any length (case sensitive)
 	  */
-	public String getPassword () 
+	public String getPassword()
 	{
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
 	/** Set Salt.
-		@param Salt 
-		Random data added to improve password hash effectiveness
-	  */
+		@param Salt Random data added to improve password hash effectiveness
+	*/
 	public void setSalt (String Salt)
 	{
 		set_ValueNoCheck (COLUMNNAME_Salt, Salt);
@@ -175,7 +177,7 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
 	/** Get Salt.
 		@return Random data added to improve password hash effectiveness
 	  */
-	public String getSalt () 
+	public String getSalt()
 	{
 		return (String)get_Value(COLUMNNAME_Salt);
 	}

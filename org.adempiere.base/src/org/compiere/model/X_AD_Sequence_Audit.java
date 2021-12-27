@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Sequence_Audit
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Sequence_Audit")
 public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Sequence_Audit (Properties ctx, int AD_Sequence_Audit_ID, String trxName)
@@ -73,7 +74,8 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
     }
 
 	/** Set AD_Sequence_Audit_UU.
-		@param AD_Sequence_Audit_UU AD_Sequence_Audit_UU	  */
+		@param AD_Sequence_Audit_UU AD_Sequence_Audit_UU
+	*/
 	public void setAD_Sequence_Audit_UU (String AD_Sequence_Audit_UU)
 	{
 		set_Value (COLUMNNAME_AD_Sequence_Audit_UU, AD_Sequence_Audit_UU);
@@ -81,32 +83,32 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 
 	/** Get AD_Sequence_Audit_UU.
 		@return AD_Sequence_Audit_UU	  */
-	public String getAD_Sequence_Audit_UU () 
+	public String getAD_Sequence_Audit_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Sequence_Audit_UU);
 	}
 
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getAD_Sequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getAD_Sequence_ID(), get_TrxName());
+	}
 
 	/** Set Sequence.
-		@param AD_Sequence_ID 
-		Document Sequence
-	  */
+		@param AD_Sequence_ID Document Sequence
+	*/
 	public void setAD_Sequence_ID (int AD_Sequence_ID)
 	{
-		if (AD_Sequence_ID < 1) 
+		if (AD_Sequence_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Sequence_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Sequence_ID, Integer.valueOf(AD_Sequence_ID));
 	}
 
 	/** Get Sequence.
 		@return Document Sequence
 	  */
-	public int getAD_Sequence_ID () 
+	public int getAD_Sequence_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Sequence_ID);
 		if (ii == null)
@@ -115,26 +117,26 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -143,9 +145,8 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_DocumentNo, DocumentNo);
@@ -154,27 +155,26 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)

@@ -52,6 +52,7 @@ import org.compiere.util.Msg;
  *	
  *  @author Diego Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class HouseKeeping extends SvrProcess{
 	
 	private int		p_AD_HouseKeeping_ID = 0;

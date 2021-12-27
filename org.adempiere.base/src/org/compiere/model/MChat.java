@@ -240,7 +240,7 @@ public class MChat extends X_CM_Chat
 	/**
 	 * IDEMPIERE-530
 	 * Get the chat ID based on table_id and record_id
-	 * @param AD_Table_ID
+	 * @param Table_ID
 	 * @param Record_ID
 	 * @return CM_Chat_ID 
 	 */

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
  * Throw when product price is not found in price list
  * @author teo.sarca@gmail.com
  *			<li>FR [ 2872255 ] Introduce ProductNotOnPriceListException
- *				https://sourceforge.net/tracker/?func=detail&aid=2872255&group_id=176962&atid=879335
+ *				https://sourceforge.net/p/adempiere/feature-requests/841/
  */
 public class ProductNotOnPriceListException extends AdempiereException
 {

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product_Category
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_M_Product_Category 
 {
@@ -223,12 +223,14 @@ public interface I_M_Product_Category
     public static final String COLUMNNAME_PlannedMargin = "PlannedMargin";
 
 	/** Set Planned Margin %.
-	  * Project's planned margin as a percentage
+	  * Project&#039;
+s planned margin as a percentage
 	  */
 	public void setPlannedMargin (BigDecimal PlannedMargin);
 
 	/** Get Planned Margin %.
-	  * Project's planned margin as a percentage
+	  * Project&#039;
+s planned margin as a percentage
 	  */
 	public BigDecimal getPlannedMargin();
 

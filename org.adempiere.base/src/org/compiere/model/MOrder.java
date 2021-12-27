@@ -37,6 +37,8 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -49,6 +51,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 
 
 /**
@@ -61,13 +65,13 @@ import org.compiere.util.Util;
  *
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @version $Id: MOrder.java,v 1.5 2006/10/06 00:42:24 jjanke Exp $
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2419978 ] Voiding PO, requisition don't set on NULL
  * 			<li>BF [ 2892578 ] Order should autoset only active price lists
- * 				https://sourceforge.net/tracker/?func=detail&aid=2892578&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/873/
  * @author Michael Judd, www.akunagroup.com
  *          <li>BF [ 2804888 ] Incorrect reservation of products with attributes
  */
@@ -438,7 +442,7 @@ public class MOrder extends X_C_Order implements DocAction
 
 
 	/**
-	 * 	Set Business Partner Defaults & Details.
+	 * 	Set Business Partner Defaults and Details.
 	 * 	SOTrx should be set.
 	 * 	@param bp business partner
 	 */
@@ -709,7 +713,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (orderBy != null && orderBy.length() > 0)
 			orderClause += orderBy;
 		else
-			orderClause += "Line";
+			orderClause += "Line,C_OrderLine_ID";
 		m_lines = getLines(null, orderClause);
 		return m_lines;
 	}	//	getLines
@@ -1369,7 +1373,7 @@ public class MOrder extends X_C_Order implements DocAction
 		for (MOrderLine line : getLines()) {
 			if (line.getM_Product_ID() > 0 && line.getM_AttributeSetInstance_ID() == 0) {
 				MProduct product = line.getProduct();
-				if (product.isASIMandatory(isSOTrx())) {
+				if (product.isASIMandatoryFor(null, isSOTrx())) {
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MOrderLine.Table_ID, isSOTrx())) {
 						StringBuilder msg = new StringBuilder("@M_AttributeSet_ID@ @IsMandatory@ (@Line@ #")
 							.append(line.getLine())
@@ -1634,14 +1638,17 @@ public class MOrder extends X_C_Order implements DocAction
 				if (log.isLoggable(Level.FINE)) log.fine(product.getName());
 				//	New Lines
 				int lineNo = line.getLine ();
-				for (MProductBOM bom : MProductBOM.getBOMLines(product))
+				MPPProductBOM bom = MPPProductBOM.getDefault(product, get_TrxName());
+				if (bom == null)
+					continue;
+				for (MPPProductBOMLine bomLine : bom.getLines())
 				{
 					MOrderLine newLine = new MOrderLine(this);
 					newLine.setLine(++lineNo);
-					newLine.setM_Product_ID(bom.getM_ProductBOM_ID(), true);
-					newLine.setQty(line.getQtyOrdered().multiply(bom.getBOMQty()));
-					if (bom.getDescription() != null)
-						newLine.setDescription(bom.getDescription());
+					newLine.setM_Product_ID(bomLine.getM_Product_ID(), true);
+					newLine.setQty(line.getQtyOrdered().multiply(bomLine.getQtyBOM()));
+					if (bomLine.getDescription() != null)
+						newLine.setDescription(bomLine.getDescription());
 					newLine.setPrice();
 					newLine.saveEx(get_TrxName());
 				}
@@ -1718,9 +1725,8 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 			//	Binding
 			BigDecimal target = binding ? line.getQtyOrdered() : Env.ZERO; 
-			BigDecimal difference = target
-				.subtract(line.getQtyReserved())
-				.subtract(line.getQtyDelivered()); 
+			BigDecimal difference = target.compareTo(line.getQtyDelivered()) > 0 ? target.subtract(line.getQtyDelivered()) : Env.ZERO;
+			difference = difference.subtract(line.getQtyReserved()); 
 
 			if (difference.signum() == 0 || line.getQtyOrdered().signum() < 0)
 			{
@@ -1751,11 +1757,19 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				if (product.isStocked())
 				{
+					IReservationTracer tracer = null;
+					IReservationTracerFactory factory = Core.getReservationTracerFactory();
+					if (factory != null) {
+						tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), line.getLine(), 
+								line.get_Table_ID(), line.get_ID(), line.getM_Warehouse_ID(), 
+								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), isSOTrx(), 
+								get_TrxName());
+					}
 					//	Update Reservation Storage
 					if (!MStorageReservation.add(getCtx(), line.getM_Warehouse_ID(), 
 						line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(),
-						difference, isSOTrx, get_TrxName()))
+						difference, isSOTrx, get_TrxName(), tracer))
 						return false;
 				}	//	stocked
 				//	update line
@@ -1989,6 +2003,8 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
+		updateOverReceipt();
+		
 		setProcessed(true);	
 		m_processMsg = info.toString();
 		//
@@ -1996,7 +2012,15 @@ public class MOrder extends X_C_Order implements DocAction
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
 	
-	
+	private void updateOverReceipt() {
+		for(MOrderLine line : m_lines) {
+			if (line.getM_Product_ID() <= 0) continue;
+			if (line.getQtyDelivered().signum() > 0 && line.getQtyOrdered().compareTo(line.getQtyDelivered()) >= 0) {
+				DB.executeUpdateEx("UPDATE M_InOutLine Set QtyOverReceipt=0 WHERE C_OrderLine_ID=? AND QtyOverReceipt>0", 
+						new Object[] {line.getC_OrderLine_ID()}, get_TrxName());
+			}
+		}
+	}
 	
 	protected String landedCostAllocation() {
 		MOrderLandedCost[] landedCosts = MOrderLandedCost.getOfOrder(getC_Order_ID(), get_TrxName());
@@ -2570,6 +2594,27 @@ public class MOrder extends X_C_Order implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
+		// Validate In Progress MInOUt
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT io.DocumentNo FROM M_InOut io ")
+				.append("JOIN M_InOutLine iol ON (io.M_InOut_ID=iol.M_InOut_ID) ")
+				.append("JOIN C_OrderLine ol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID) ")
+				.append("WHERE io.DocStatus='IP' AND ol.QtyOrdered != 0 AND (ol.M_Product_ID > 0 OR ol.C_Charge_ID > 0) ")
+				.append("AND ol.IsActive='Y' AND iol.IsActive='Y' ")
+				.append("AND ol.C_Order_ID=? ");
+		List<List<Object>> openShipments = DB.getSQLArrayObjectsEx(get_TrxName(), sql.toString(), getC_Order_ID());
+		if (openShipments != null && openShipments.size() > 0) 
+		{
+			m_processMsg = Msg.getMsg(p_ctx,"MInOutInProgress")+" (";
+			for(int i = 0; i< openShipments.size(); i++)
+			{
+				if (i > 0)
+					m_processMsg += ", ";
+				m_processMsg += openShipments.get(i).get(0).toString();
+			}
+			m_processMsg += ")";
+			return false;
+		}
+		
 		//	Close Not delivered Qty - SO/PO
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 		for (int i = 0; i < lines.length; i++)
@@ -2577,9 +2622,16 @@ public class MOrder extends X_C_Order implements DocAction
 			MOrderLine line = lines[i];
 			BigDecimal old = line.getQtyOrdered();
 			if (old.compareTo(line.getQtyDelivered()) != 0)
-			{
-				line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));
-				line.setQtyOrdered(line.getQtyDelivered());
+			{				
+				if (line.getQtyOrdered().compareTo(line.getQtyDelivered()) > 0)
+				{
+					line.setQtyLostSales(line.getQtyOrdered().subtract(line.getQtyDelivered()));
+					line.setQtyOrdered(line.getQtyDelivered());
+				}
+				else
+				{
+					line.setQtyLostSales(Env.ZERO);
+				}
 				//	QtyEntered unchanged
 				line.addDescription("Close (" + old + ")");
 				line.saveEx(get_TrxName());

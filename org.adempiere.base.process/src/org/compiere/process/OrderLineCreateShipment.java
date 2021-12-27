@@ -33,6 +33,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: OrderLineCreateShipment.java,v 1.1 2007/07/23 05:34:35 mfuggle Exp $
  */
+@org.adempiere.base.annotation.Process
 public class OrderLineCreateShipment extends SvrProcess
 {
 	/**	Shipment					*/
@@ -98,7 +99,6 @@ public class OrderLineCreateShipment extends SvrProcess
 		
 		MInOutLine sline = new MInOutLine( shipment );
 		sline.setOrderLine(line, 0, line.getQtyReserved());
-		//sline.setDatePromised(line.getDatePromised());
 		sline.setQtyEntered(line.getQtyReserved());
 		sline.setC_UOM_ID(line.getC_UOM_ID());
 		sline.setQty(line.getQtyReserved());

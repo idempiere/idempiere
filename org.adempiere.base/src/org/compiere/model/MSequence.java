@@ -285,7 +285,7 @@ public class MSequence extends X_AD_Sequence
 	 *	@param AD_Client_ID client
 	 *	@param TableName table name
 	 * 	@param trxName optional Transaction Name
-	 *  @param PO - used to get the date, org and parse context variables
+	 *  @param po - used to get the date, org and parse context variables
 	 *	@return document no or null
 	 */
 	public static String getDocumentNo (int AD_Client_ID, String TableName, String trxName, PO po)
@@ -1091,9 +1091,7 @@ public class MSequence extends X_AD_Sequence
 
 	/**
 	 *	Get next number for Key column
-	 *  @param AD_Client_ID client
 	 *  @param TableName table name
-	 * 	@param trxName optional Transaction Name
 	 *  @return next no or (-1=error)
 	 */
 	public static synchronized int getNextOfficialID_HTTP (String TableName)
@@ -1112,9 +1110,7 @@ public class MSequence extends X_AD_Sequence
 
 	/**
 	 *	Get next number for Key column
-	 *  @param AD_Client_ID client
 	 *  @param TableName table name
-	 * 	@param trxName optional Transaction Name
 	 *  @return next no or (-1=error)
 	 */
 	public static synchronized int getNextProjectID_HTTP (String TableName)

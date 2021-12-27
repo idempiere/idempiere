@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_NonBusinessDay
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_NonBusinessDay")
 public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_NonBusinessDay (Properties ctx, int C_NonBusinessDay_ID, String trxName)
@@ -74,26 +75,26 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
     }
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
-		@param C_Calendar_ID 
-		Accounting Calendar Name
-	  */
+		@param C_Calendar_ID Accounting Calendar Name
+	*/
 	public void setC_Calendar_ID (int C_Calendar_ID)
 	{
-		if (C_Calendar_ID < 1) 
+		if (C_Calendar_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Calendar_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Calendar_ID, Integer.valueOf(C_Calendar_ID));
 	}
 
 	/** Get Calendar.
 		@return Accounting Calendar Name
 	  */
-	public int getC_Calendar_ID () 
+	public int getC_Calendar_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Calendar_ID);
 		if (ii == null)
@@ -102,26 +103,26 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	}
 
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_Name)
-			.getPO(getC_Country_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
+			.getPO(getC_Country_ID(), get_TrxName());
+	}
 
 	/** Set Country.
-		@param C_Country_ID 
-		Country 
-	  */
+		@param C_Country_ID Country 
+	*/
 	public void setC_Country_ID (int C_Country_ID)
 	{
-		if (C_Country_ID < 1) 
+		if (C_Country_ID < 1)
 			set_Value (COLUMNNAME_C_Country_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Country_ID, Integer.valueOf(C_Country_ID));
 	}
 
 	/** Get Country.
 		@return Country 
 	  */
-	public int getC_Country_ID () 
+	public int getC_Country_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Country_ID);
 		if (ii == null)
@@ -130,21 +131,20 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	}
 
 	/** Set Non Business Day.
-		@param C_NonBusinessDay_ID 
-		Day on which business is not transacted
-	  */
+		@param C_NonBusinessDay_ID Day on which business is not transacted
+	*/
 	public void setC_NonBusinessDay_ID (int C_NonBusinessDay_ID)
 	{
-		if (C_NonBusinessDay_ID < 1) 
+		if (C_NonBusinessDay_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_NonBusinessDay_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_NonBusinessDay_ID, Integer.valueOf(C_NonBusinessDay_ID));
 	}
 
 	/** Get Non Business Day.
 		@return Day on which business is not transacted
 	  */
-	public int getC_NonBusinessDay_ID () 
+	public int getC_NonBusinessDay_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_NonBusinessDay_ID);
 		if (ii == null)
@@ -153,7 +153,8 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	}
 
 	/** Set C_NonBusinessDay_UU.
-		@param C_NonBusinessDay_UU C_NonBusinessDay_UU	  */
+		@param C_NonBusinessDay_UU C_NonBusinessDay_UU
+	*/
 	public void setC_NonBusinessDay_UU (String C_NonBusinessDay_UU)
 	{
 		set_Value (COLUMNNAME_C_NonBusinessDay_UU, C_NonBusinessDay_UU);
@@ -161,15 +162,14 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 
 	/** Get C_NonBusinessDay_UU.
 		@return C_NonBusinessDay_UU	  */
-	public String getC_NonBusinessDay_UU () 
+	public String getC_NonBusinessDay_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_NonBusinessDay_UU);
 	}
 
 	/** Set Date.
-		@param Date1 
-		Date when business is not conducted
-	  */
+		@param Date1 Date when business is not conducted
+	*/
 	public void setDate1 (Timestamp Date1)
 	{
 		set_Value (COLUMNNAME_Date1, Date1);
@@ -178,15 +178,14 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	/** Get Date.
 		@return Date when business is not conducted
 	  */
-	public Timestamp getDate1 () 
+	public Timestamp getDate1()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_Date1);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -195,7 +194,7 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

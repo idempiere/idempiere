@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportCube
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PA_ReportCube")
 public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_ReportCube (Properties ctx, int PA_ReportCube_ID, String trxName)
@@ -76,26 +77,26 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
     }
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
-		@param C_Calendar_ID 
-		Accounting Calendar Name
-	  */
+		@param C_Calendar_ID Accounting Calendar Name
+	*/
 	public void setC_Calendar_ID (int C_Calendar_ID)
 	{
-		if (C_Calendar_ID < 1) 
+		if (C_Calendar_ID < 1)
 			set_Value (COLUMNNAME_C_Calendar_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Calendar_ID, Integer.valueOf(C_Calendar_ID));
 	}
 
 	/** Get Calendar.
 		@return Accounting Calendar Name
 	  */
-	public int getC_Calendar_ID () 
+	public int getC_Calendar_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Calendar_ID);
 		if (ii == null)
@@ -104,9 +105,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -115,15 +115,14 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Activity Dimension.
-		@param IsActivityDim 
-		Include Activity as a cube dimension
-	  */
+		@param IsActivityDim Include Activity as a cube dimension
+	*/
 	public void setIsActivityDim (boolean IsActivityDim)
 	{
 		set_Value (COLUMNNAME_IsActivityDim, Boolean.valueOf(IsActivityDim));
@@ -132,7 +131,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Activity Dimension.
 		@return Include Activity as a cube dimension
 	  */
-	public boolean isActivityDim () 
+	public boolean isActivityDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsActivityDim);
 		if (oo != null) 
@@ -145,9 +144,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Business Partner Dimension.
-		@param IsBPartnerDim 
-		Include Business Partner as a cube dimension
-	  */
+		@param IsBPartnerDim Include Business Partner as a cube dimension
+	*/
 	public void setIsBPartnerDim (boolean IsBPartnerDim)
 	{
 		set_Value (COLUMNNAME_IsBPartnerDim, Boolean.valueOf(IsBPartnerDim));
@@ -156,7 +154,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Business Partner Dimension.
 		@return Include Business Partner as a cube dimension
 	  */
-	public boolean isBPartnerDim () 
+	public boolean isBPartnerDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBPartnerDim);
 		if (oo != null) 
@@ -169,9 +167,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Campaign Dimension.
-		@param IsCampaignDim 
-		Include Campaign as a cube dimension
-	  */
+		@param IsCampaignDim Include Campaign as a cube dimension
+	*/
 	public void setIsCampaignDim (boolean IsCampaignDim)
 	{
 		set_Value (COLUMNNAME_IsCampaignDim, Boolean.valueOf(IsCampaignDim));
@@ -180,7 +177,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Campaign Dimension.
 		@return Include Campaign as a cube dimension
 	  */
-	public boolean isCampaignDim () 
+	public boolean isCampaignDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCampaignDim);
 		if (oo != null) 
@@ -193,9 +190,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set GL Budget Dimension.
-		@param IsGLBudgetDim 
-		Include GL Budget as a cube dimension
-	  */
+		@param IsGLBudgetDim Include GL Budget as a cube dimension
+	*/
 	public void setIsGLBudgetDim (boolean IsGLBudgetDim)
 	{
 		set_Value (COLUMNNAME_IsGLBudgetDim, Boolean.valueOf(IsGLBudgetDim));
@@ -204,7 +200,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get GL Budget Dimension.
 		@return Include GL Budget as a cube dimension
 	  */
-	public boolean isGLBudgetDim () 
+	public boolean isGLBudgetDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGLBudgetDim);
 		if (oo != null) 
@@ -217,9 +213,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Location From Dimension.
-		@param IsLocFromDim 
-		Include Location From as a cube dimension
-	  */
+		@param IsLocFromDim Include Location From as a cube dimension
+	*/
 	public void setIsLocFromDim (boolean IsLocFromDim)
 	{
 		set_Value (COLUMNNAME_IsLocFromDim, Boolean.valueOf(IsLocFromDim));
@@ -228,7 +223,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Location From Dimension.
 		@return Include Location From as a cube dimension
 	  */
-	public boolean isLocFromDim () 
+	public boolean isLocFromDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLocFromDim);
 		if (oo != null) 
@@ -241,9 +236,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Location To  Dimension.
-		@param IsLocToDim 
-		Include Location To as a cube dimension
-	  */
+		@param IsLocToDim Include Location To as a cube dimension
+	*/
 	public void setIsLocToDim (boolean IsLocToDim)
 	{
 		set_Value (COLUMNNAME_IsLocToDim, Boolean.valueOf(IsLocToDim));
@@ -252,7 +246,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Location To  Dimension.
 		@return Include Location To as a cube dimension
 	  */
-	public boolean isLocToDim () 
+	public boolean isLocToDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLocToDim);
 		if (oo != null) 
@@ -265,9 +259,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set OrgTrx Dimension.
-		@param IsOrgTrxDim 
-		Include OrgTrx as a cube dimension
-	  */
+		@param IsOrgTrxDim Include OrgTrx as a cube dimension
+	*/
 	public void setIsOrgTrxDim (boolean IsOrgTrxDim)
 	{
 		set_Value (COLUMNNAME_IsOrgTrxDim, Boolean.valueOf(IsOrgTrxDim));
@@ -276,7 +269,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get OrgTrx Dimension.
 		@return Include OrgTrx as a cube dimension
 	  */
-	public boolean isOrgTrxDim () 
+	public boolean isOrgTrxDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOrgTrxDim);
 		if (oo != null) 
@@ -289,9 +282,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Product Dimension.
-		@param IsProductDim 
-		Include Product as a cube dimension
-	  */
+		@param IsProductDim Include Product as a cube dimension
+	*/
 	public void setIsProductDim (boolean IsProductDim)
 	{
 		set_Value (COLUMNNAME_IsProductDim, Boolean.valueOf(IsProductDim));
@@ -300,7 +292,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Product Dimension.
 		@return Include Product as a cube dimension
 	  */
-	public boolean isProductDim () 
+	public boolean isProductDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsProductDim);
 		if (oo != null) 
@@ -313,9 +305,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Project Dimension.
-		@param IsProjectDim 
-		Include Project as a cube dimension
-	  */
+		@param IsProjectDim Include Project as a cube dimension
+	*/
 	public void setIsProjectDim (boolean IsProjectDim)
 	{
 		set_Value (COLUMNNAME_IsProjectDim, Boolean.valueOf(IsProjectDim));
@@ -324,7 +315,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Project Dimension.
 		@return Include Project as a cube dimension
 	  */
-	public boolean isProjectDim () 
+	public boolean isProjectDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsProjectDim);
 		if (oo != null) 
@@ -337,9 +328,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Project Phase  Dimension.
-		@param IsProjectPhaseDim 
-		Include Project Phase as a cube dimension
-	  */
+		@param IsProjectPhaseDim Include Project Phase as a cube dimension
+	*/
 	public void setIsProjectPhaseDim (boolean IsProjectPhaseDim)
 	{
 		set_Value (COLUMNNAME_IsProjectPhaseDim, Boolean.valueOf(IsProjectPhaseDim));
@@ -348,7 +338,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Project Phase  Dimension.
 		@return Include Project Phase as a cube dimension
 	  */
-	public boolean isProjectPhaseDim () 
+	public boolean isProjectPhaseDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsProjectPhaseDim);
 		if (oo != null) 
@@ -361,9 +351,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Project Task  Dimension.
-		@param IsProjectTaskDim 
-		Include Project Task as a cube dimension
-	  */
+		@param IsProjectTaskDim Include Project Task as a cube dimension
+	*/
 	public void setIsProjectTaskDim (boolean IsProjectTaskDim)
 	{
 		set_Value (COLUMNNAME_IsProjectTaskDim, Boolean.valueOf(IsProjectTaskDim));
@@ -372,7 +361,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Project Task  Dimension.
 		@return Include Project Task as a cube dimension
 	  */
-	public boolean isProjectTaskDim () 
+	public boolean isProjectTaskDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsProjectTaskDim);
 		if (oo != null) 
@@ -385,9 +374,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Sales Region Dimension.
-		@param IsSalesRegionDim 
-		Include Sales Region as a cube dimension
-	  */
+		@param IsSalesRegionDim Include Sales Region as a cube dimension
+	*/
 	public void setIsSalesRegionDim (boolean IsSalesRegionDim)
 	{
 		set_Value (COLUMNNAME_IsSalesRegionDim, Boolean.valueOf(IsSalesRegionDim));
@@ -396,7 +384,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Sales Region Dimension.
 		@return Include Sales Region as a cube dimension
 	  */
-	public boolean isSalesRegionDim () 
+	public boolean isSalesRegionDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSalesRegionDim);
 		if (oo != null) 
@@ -409,9 +397,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Sub Acct Dimension.
-		@param IsSubAcctDim 
-		Include Sub Acct as a cube dimension
-	  */
+		@param IsSubAcctDim Include Sub Acct as a cube dimension
+	*/
 	public void setIsSubAcctDim (boolean IsSubAcctDim)
 	{
 		set_Value (COLUMNNAME_IsSubAcctDim, Boolean.valueOf(IsSubAcctDim));
@@ -420,7 +407,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Sub Acct Dimension.
 		@return Include Sub Acct as a cube dimension
 	  */
-	public boolean isSubAcctDim () 
+	public boolean isSubAcctDim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSubAcctDim);
 		if (oo != null) 
@@ -433,9 +420,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set User Element List 1 Dimension.
-		@param IsUser1Dim 
-		Include User Element List 1 as a cube dimension
-	  */
+		@param IsUser1Dim Include User Element List 1 as a cube dimension
+	*/
 	public void setIsUser1Dim (boolean IsUser1Dim)
 	{
 		set_Value (COLUMNNAME_IsUser1Dim, Boolean.valueOf(IsUser1Dim));
@@ -444,7 +430,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get User Element List 1 Dimension.
 		@return Include User Element List 1 as a cube dimension
 	  */
-	public boolean isUser1Dim () 
+	public boolean isUser1Dim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUser1Dim);
 		if (oo != null) 
@@ -457,9 +443,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set User Element List 2 Dimension.
-		@param IsUser2Dim 
-		Include User Element List 2 as a cube dimension
-	  */
+		@param IsUser2Dim Include User Element List 2 as a cube dimension
+	*/
 	public void setIsUser2Dim (boolean IsUser2Dim)
 	{
 		set_Value (COLUMNNAME_IsUser2Dim, Boolean.valueOf(IsUser2Dim));
@@ -468,7 +453,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get User Element List 2 Dimension.
 		@return Include User Element List 2 as a cube dimension
 	  */
-	public boolean isUser2Dim () 
+	public boolean isUser2Dim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUser2Dim);
 		if (oo != null) 
@@ -481,9 +466,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set User Column 1 Dimension.
-		@param IsUserElement1Dim 
-		Include User Element 1 as a cube dimension
-	  */
+		@param IsUserElement1Dim Include User Element 1 as a cube dimension
+	*/
 	public void setIsUserElement1Dim (boolean IsUserElement1Dim)
 	{
 		set_Value (COLUMNNAME_IsUserElement1Dim, Boolean.valueOf(IsUserElement1Dim));
@@ -492,7 +476,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get User Column 1 Dimension.
 		@return Include User Element 1 as a cube dimension
 	  */
-	public boolean isUserElement1Dim () 
+	public boolean isUserElement1Dim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserElement1Dim);
 		if (oo != null) 
@@ -505,9 +489,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set User Column 2 Dimension.
-		@param IsUserElement2Dim 
-		Include User Element 2 as a cube dimension
-	  */
+		@param IsUserElement2Dim Include User Element 2 as a cube dimension
+	*/
 	public void setIsUserElement2Dim (boolean IsUserElement2Dim)
 	{
 		set_Value (COLUMNNAME_IsUserElement2Dim, Boolean.valueOf(IsUserElement2Dim));
@@ -516,7 +499,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get User Column 2 Dimension.
 		@return Include User Element 2 as a cube dimension
 	  */
-	public boolean isUserElement2Dim () 
+	public boolean isUserElement2Dim()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserElement2Dim);
 		if (oo != null) 
@@ -529,9 +512,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set Last Recalculated.
-		@param LastRecalculated 
-		The time last recalculated.
-	  */
+		@param LastRecalculated The time last recalculated.
+	*/
 	public void setLastRecalculated (Timestamp LastRecalculated)
 	{
 		set_Value (COLUMNNAME_LastRecalculated, LastRecalculated);
@@ -540,15 +522,14 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Last Recalculated.
 		@return The time last recalculated.
 	  */
-	public Timestamp getLastRecalculated () 
+	public Timestamp getLastRecalculated()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LastRecalculated);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -557,7 +538,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -571,21 +552,20 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
     }
 
 	/** Set Report Cube.
-		@param PA_ReportCube_ID 
-		Define reporting cube for pre-calculation of summary accounting data.
-	  */
+		@param PA_ReportCube_ID Define reporting cube for pre-calculation of summary accounting data.
+	*/
 	public void setPA_ReportCube_ID (int PA_ReportCube_ID)
 	{
-		if (PA_ReportCube_ID < 1) 
+		if (PA_ReportCube_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_ReportCube_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_ReportCube_ID, Integer.valueOf(PA_ReportCube_ID));
 	}
 
 	/** Get Report Cube.
 		@return Define reporting cube for pre-calculation of summary accounting data.
 	  */
-	public int getPA_ReportCube_ID () 
+	public int getPA_ReportCube_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportCube_ID);
 		if (ii == null)
@@ -594,7 +574,8 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	}
 
 	/** Set PA_ReportCube_UU.
-		@param PA_ReportCube_UU PA_ReportCube_UU	  */
+		@param PA_ReportCube_UU PA_ReportCube_UU
+	*/
 	public void setPA_ReportCube_UU (String PA_ReportCube_UU)
 	{
 		set_Value (COLUMNNAME_PA_ReportCube_UU, PA_ReportCube_UU);
@@ -602,13 +583,14 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 
 	/** Get PA_ReportCube_UU.
 		@return PA_ReportCube_UU	  */
-	public String getPA_ReportCube_UU () 
+	public String getPA_ReportCube_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_ReportCube_UU);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -616,7 +598,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

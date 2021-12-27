@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="HR_ListLine")
 public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_HR_ListLine (Properties ctx, int HR_ListLine_ID, String trxName)
@@ -76,7 +77,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
     }
 
 	/** Set Col_1.
-		@param Col_1 Col_1	  */
+		@param Col_1 Col_1
+	*/
 	public void setCol_1 (BigDecimal Col_1)
 	{
 		set_Value (COLUMNNAME_Col_1, Col_1);
@@ -84,7 +86,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_1.
 		@return Col_1	  */
-	public BigDecimal getCol_1 () 
+	public BigDecimal getCol_1()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_1);
 		if (bd == null)
@@ -93,7 +95,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Col_2.
-		@param Col_2 Col_2	  */
+		@param Col_2 Col_2
+	*/
 	public void setCol_2 (BigDecimal Col_2)
 	{
 		set_Value (COLUMNNAME_Col_2, Col_2);
@@ -101,7 +104,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_2.
 		@return Col_2	  */
-	public BigDecimal getCol_2 () 
+	public BigDecimal getCol_2()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_2);
 		if (bd == null)
@@ -110,7 +113,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Col_3.
-		@param Col_3 Col_3	  */
+		@param Col_3 Col_3
+	*/
 	public void setCol_3 (BigDecimal Col_3)
 	{
 		set_Value (COLUMNNAME_Col_3, Col_3);
@@ -118,7 +122,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_3.
 		@return Col_3	  */
-	public BigDecimal getCol_3 () 
+	public BigDecimal getCol_3()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_3);
 		if (bd == null)
@@ -127,7 +131,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Col_4.
-		@param Col_4 Col_4	  */
+		@param Col_4 Col_4
+	*/
 	public void setCol_4 (BigDecimal Col_4)
 	{
 		set_Value (COLUMNNAME_Col_4, Col_4);
@@ -135,7 +140,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_4.
 		@return Col_4	  */
-	public BigDecimal getCol_4 () 
+	public BigDecimal getCol_4()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_4);
 		if (bd == null)
@@ -144,7 +149,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Col_5.
-		@param Col_5 Col_5	  */
+		@param Col_5 Col_5
+	*/
 	public void setCol_5 (BigDecimal Col_5)
 	{
 		set_Value (COLUMNNAME_Col_5, Col_5);
@@ -152,7 +158,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_5.
 		@return Col_5	  */
-	public BigDecimal getCol_5 () 
+	public BigDecimal getCol_5()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_5);
 		if (bd == null)
@@ -161,7 +167,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Col_6.
-		@param Col_6 Col_6	  */
+		@param Col_6 Col_6
+	*/
 	public void setCol_6 (BigDecimal Col_6)
 	{
 		set_Value (COLUMNNAME_Col_6, Col_6);
@@ -169,7 +176,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_6.
 		@return Col_6	  */
-	public BigDecimal getCol_6 () 
+	public BigDecimal getCol_6()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_6);
 		if (bd == null)
@@ -178,7 +185,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Col_7.
-		@param Col_7 Col_7	  */
+		@param Col_7 Col_7
+	*/
 	public void setCol_7 (BigDecimal Col_7)
 	{
 		set_Value (COLUMNNAME_Col_7, Col_7);
@@ -186,7 +194,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_7.
 		@return Col_7	  */
-	public BigDecimal getCol_7 () 
+	public BigDecimal getCol_7()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_7);
 		if (bd == null)
@@ -195,7 +203,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Col_8.
-		@param Col_8 Col_8	  */
+		@param Col_8 Col_8
+	*/
 	public void setCol_8 (BigDecimal Col_8)
 	{
 		set_Value (COLUMNNAME_Col_8, Col_8);
@@ -203,7 +212,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Col_8.
 		@return Col_8	  */
-	public BigDecimal getCol_8 () 
+	public BigDecimal getCol_8()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Col_8);
 		if (bd == null)
@@ -212,18 +221,19 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Payroll List Line.
-		@param HR_ListLine_ID Payroll List Line	  */
+		@param HR_ListLine_ID Payroll List Line
+	*/
 	public void setHR_ListLine_ID (int HR_ListLine_ID)
 	{
-		if (HR_ListLine_ID < 1) 
+		if (HR_ListLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_ListLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_ListLine_ID, Integer.valueOf(HR_ListLine_ID));
 	}
 
 	/** Get Payroll List Line.
 		@return Payroll List Line	  */
-	public int getHR_ListLine_ID () 
+	public int getHR_ListLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_ListLine_ID);
 		if (ii == null)
@@ -232,7 +242,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set HR_ListLine_UU.
-		@param HR_ListLine_UU HR_ListLine_UU	  */
+		@param HR_ListLine_UU HR_ListLine_UU
+	*/
 	public void setHR_ListLine_UU (String HR_ListLine_UU)
 	{
 		set_Value (COLUMNNAME_HR_ListLine_UU, HR_ListLine_UU);
@@ -240,29 +251,31 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get HR_ListLine_UU.
 		@return HR_ListLine_UU	  */
-	public String getHR_ListLine_UU () 
+	public String getHR_ListLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_ListLine_UU);
 	}
 
 	public org.eevolution.model.I_HR_ListVersion getHR_ListVersion() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_ListVersion)MTable.get(getCtx(), org.eevolution.model.I_HR_ListVersion.Table_Name)
-			.getPO(getHR_ListVersion_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_ListVersion)MTable.get(getCtx(), org.eevolution.model.I_HR_ListVersion.Table_ID)
+			.getPO(getHR_ListVersion_ID(), get_TrxName());
+	}
 
 	/** Set Payroll List Version.
-		@param HR_ListVersion_ID Payroll List Version	  */
+		@param HR_ListVersion_ID Payroll List Version
+	*/
 	public void setHR_ListVersion_ID (int HR_ListVersion_ID)
 	{
-		if (HR_ListVersion_ID < 1) 
+		if (HR_ListVersion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_ListVersion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_ListVersion_ID, Integer.valueOf(HR_ListVersion_ID));
 	}
 
 	/** Get Payroll List Version.
 		@return Payroll List Version	  */
-	public int getHR_ListVersion_ID () 
+	public int getHR_ListVersion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_ListVersion_ID);
 		if (ii == null)
@@ -271,7 +284,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Max Value.
-		@param MaxValue Max Value	  */
+		@param MaxValue Max Value
+	*/
 	public void setMaxValue (BigDecimal MaxValue)
 	{
 		set_Value (COLUMNNAME_MaxValue, MaxValue);
@@ -279,7 +293,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Max Value.
 		@return Max Value	  */
-	public BigDecimal getMaxValue () 
+	public BigDecimal getMaxValue()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxValue);
 		if (bd == null)
@@ -288,7 +302,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Min Value.
-		@param MinValue Min Value	  */
+		@param MinValue Min Value
+	*/
 	public void setMinValue (BigDecimal MinValue)
 	{
 		set_Value (COLUMNNAME_MinValue, MinValue);
@@ -296,7 +311,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 
 	/** Get Min Value.
 		@return Min Value	  */
-	public BigDecimal getMinValue () 
+	public BigDecimal getMinValue()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MinValue);
 		if (bd == null)
@@ -305,9 +320,8 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -316,7 +330,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

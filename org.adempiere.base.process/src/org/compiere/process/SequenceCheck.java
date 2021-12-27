@@ -22,10 +22,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MSequence;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -37,6 +35,7 @@ import org.compiere.util.Trx;
  *  @author Jorg Janke
  *  @version $Id: SequenceCheck.java,v 1.3 2006/07/30 00:54:44 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class SequenceCheck extends SvrProcess
 {
 	/**	Static Logger	*/
@@ -264,21 +263,4 @@ public class SequenceCheck extends SvrProcess
 		
 	}	//	checkClientSequences
 	
-	//add main method, preparing for nightly build
-	public static void main(String[] args) 
-	{
-		Adempiere.startupEnvironment(false);
-		CLogMgt.setLevel(Level.FINE);
-		s_log.info("Sequence Check");
-		s_log.info("--------------");
-		ProcessInfo pi = new ProcessInfo("Sequence Check", 258);
-		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
-		
-		SequenceCheck sc = new SequenceCheck();
-		sc.startProcess(Env.getCtx(), pi, null);
-		
-		StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle()).append(" Error=").append(pi.isError()).append(" Summary=").append(pi.getSummary());
-		System.out.println(msgout.toString());
-	}
 }	//	SequenceCheck

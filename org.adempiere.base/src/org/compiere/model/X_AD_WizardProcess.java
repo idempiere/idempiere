@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_WizardProcess
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_WizardProcess")
 public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_WizardProcess (Properties ctx, int AD_WizardProcess_ID, String trxName)
@@ -71,26 +72,26 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -99,26 +100,26 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
-		@param AD_WF_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
 	{
-		if (AD_WF_Node_ID < 1) 
+		if (AD_WF_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
 	}
 
 	/** Get Node.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getAD_WF_Node_ID () 
+	public int getAD_WF_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
 		if (ii == null)
@@ -127,18 +128,19 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 	}
 
 	/** Set Wizard Process.
-		@param AD_WizardProcess_ID Wizard Process	  */
+		@param AD_WizardProcess_ID Wizard Process
+	*/
 	public void setAD_WizardProcess_ID (int AD_WizardProcess_ID)
 	{
-		if (AD_WizardProcess_ID < 1) 
+		if (AD_WizardProcess_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WizardProcess_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WizardProcess_ID, Integer.valueOf(AD_WizardProcess_ID));
 	}
 
 	/** Get Wizard Process.
 		@return Wizard Process	  */
-	public int getAD_WizardProcess_ID () 
+	public int getAD_WizardProcess_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WizardProcess_ID);
 		if (ii == null)
@@ -147,7 +149,8 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 	}
 
 	/** Set AD_WizardProcess_UU.
-		@param AD_WizardProcess_UU AD_WizardProcess_UU	  */
+		@param AD_WizardProcess_UU AD_WizardProcess_UU
+	*/
 	public void setAD_WizardProcess_UU (String AD_WizardProcess_UU)
 	{
 		set_Value (COLUMNNAME_AD_WizardProcess_UU, AD_WizardProcess_UU);
@@ -155,15 +158,14 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 
 	/** Get AD_WizardProcess_UU.
 		@return AD_WizardProcess_UU	  */
-	public String getAD_WizardProcess_UU () 
+	public String getAD_WizardProcess_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WizardProcess_UU);
 	}
 
 	/** Set Note.
-		@param Note 
-		Optional additional user defined information
-	  */
+		@param Note Optional additional user defined information
+	*/
 	public void setNote (String Note)
 	{
 		set_Value (COLUMNNAME_Note, Note);
@@ -172,27 +174,28 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 	/** Get Note.
 		@return Optional additional user defined information
 	  */
-	public String getNote () 
+	public String getNote()
 	{
 		return (String)get_Value(COLUMNNAME_Note);
 	}
 
 	/** WizardStatus AD_Reference_ID=200003 */
 	public static final int WIZARDSTATUS_AD_Reference_ID=200003;
-	/** New = N */
-	public static final String WIZARDSTATUS_New = "N";
-	/** Pending = P */
-	public static final String WIZARDSTATUS_Pending = "P";
+	/** Delayed = D */
+	public static final String WIZARDSTATUS_Delayed = "D";
 	/** Finished = F */
 	public static final String WIZARDSTATUS_Finished = "F";
 	/** In-Progress = I */
 	public static final String WIZARDSTATUS_In_Progress = "I";
+	/** New = N */
+	public static final String WIZARDSTATUS_New = "N";
+	/** Pending = P */
+	public static final String WIZARDSTATUS_Pending = "P";
 	/** Skipped = S */
 	public static final String WIZARDSTATUS_Skipped = "S";
-	/** Delayed = D */
-	public static final String WIZARDSTATUS_Delayed = "D";
 	/** Set Wizard Status.
-		@param WizardStatus Wizard Status	  */
+		@param WizardStatus Wizard Status
+	*/
 	public void setWizardStatus (String WizardStatus)
 	{
 
@@ -201,7 +204,7 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 
 	/** Get Wizard Status.
 		@return Wizard Status	  */
-	public String getWizardStatus () 
+	public String getWizardStatus()
 	{
 		return (String)get_Value(COLUMNNAME_WizardStatus);
 	}

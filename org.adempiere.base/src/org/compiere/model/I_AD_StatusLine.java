@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_StatusLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_AD_StatusLine 
 {
@@ -155,10 +155,10 @@ public interface I_AD_StatusLine
     /** Column name SQLStatement */
     public static final String COLUMNNAME_SQLStatement = "SQLStatement";
 
-	/** Set SQLStatement	  */
+	/** Set SQL Expression/Statement	  */
 	public void setSQLStatement (String SQLStatement);
 
-	/** Get SQLStatement	  */
+	/** Get SQL Expression/Statement	  */
 	public String getSQLStatement();
 
     /** Column name Updated */

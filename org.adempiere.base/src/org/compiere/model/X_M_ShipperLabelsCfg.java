@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShipperLabelsCfg
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_ShipperLabelsCfg")
 public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_ShipperLabelsCfg (Properties ctx, int M_ShipperLabelsCfg_ID, String trxName)
@@ -78,9 +79,8 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -89,13 +89,14 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Height.
-		@param Height Height	  */
+		@param Height Height
+	*/
 	public void setHeight (BigDecimal Height)
 	{
 		set_Value (COLUMNNAME_Height, Height);
@@ -103,7 +104,7 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 
 	/** Get Height.
 		@return Height	  */
-	public BigDecimal getHeight () 
+	public BigDecimal getHeight()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Height);
 		if (bd == null)
@@ -112,9 +113,8 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -123,7 +123,7 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -144,7 +144,8 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/** Zebra = Z */
 	public static final String LABELPRINTMETHOD_Zebra = "Z";
 	/** Set Label Print Method.
-		@param LabelPrintMethod Label Print Method	  */
+		@param LabelPrintMethod Label Print Method
+	*/
 	public void setLabelPrintMethod (String LabelPrintMethod)
 	{
 
@@ -153,29 +154,31 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 
 	/** Get Label Print Method.
 		@return Label Print Method	  */
-	public String getLabelPrintMethod () 
+	public String getLabelPrintMethod()
 	{
 		return (String)get_Value(COLUMNNAME_LabelPrintMethod);
 	}
 
 	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_Name)
-			.getPO(getM_ShipperCfg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_ID)
+			.getPO(getM_ShipperCfg_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Configuration.
-		@param M_ShipperCfg_ID Shipper Configuration	  */
+		@param M_ShipperCfg_ID Shipper Configuration
+	*/
 	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID)
 	{
-		if (M_ShipperCfg_ID < 1) 
+		if (M_ShipperCfg_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, Integer.valueOf(M_ShipperCfg_ID));
 	}
 
 	/** Get Shipper Configuration.
 		@return Shipper Configuration	  */
-	public int getM_ShipperCfg_ID () 
+	public int getM_ShipperCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperCfg_ID);
 		if (ii == null)
@@ -184,18 +187,19 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	}
 
 	/** Set Shipper Labels Configuration.
-		@param M_ShipperLabelsCfg_ID Shipper Labels Configuration	  */
+		@param M_ShipperLabelsCfg_ID Shipper Labels Configuration
+	*/
 	public void setM_ShipperLabelsCfg_ID (int M_ShipperLabelsCfg_ID)
 	{
-		if (M_ShipperLabelsCfg_ID < 1) 
+		if (M_ShipperLabelsCfg_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ShipperLabelsCfg_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ShipperLabelsCfg_ID, Integer.valueOf(M_ShipperLabelsCfg_ID));
 	}
 
 	/** Get Shipper Labels Configuration.
 		@return Shipper Labels Configuration	  */
-	public int getM_ShipperLabelsCfg_ID () 
+	public int getM_ShipperLabelsCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperLabelsCfg_ID);
 		if (ii == null)
@@ -204,7 +208,8 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	}
 
 	/** Set M_ShipperLabelsCfg_UU.
-		@param M_ShipperLabelsCfg_UU M_ShipperLabelsCfg_UU	  */
+		@param M_ShipperLabelsCfg_UU M_ShipperLabelsCfg_UU
+	*/
 	public void setM_ShipperLabelsCfg_UU (String M_ShipperLabelsCfg_UU)
 	{
 		set_Value (COLUMNNAME_M_ShipperLabelsCfg_UU, M_ShipperLabelsCfg_UU);
@@ -212,15 +217,14 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 
 	/** Get M_ShipperLabelsCfg_UU.
 		@return M_ShipperLabelsCfg_UU	  */
-	public String getM_ShipperLabelsCfg_UU () 
+	public String getM_ShipperLabelsCfg_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperLabelsCfg_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -229,7 +233,7 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -243,9 +247,8 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -254,13 +257,14 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Width.
-		@param Width Width	  */
+		@param Width Width
+	*/
 	public void setWidth (BigDecimal Width)
 	{
 		set_Value (COLUMNNAME_Width, Width);
@@ -268,7 +272,7 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 
 	/** Get Width.
 		@return Width	  */
-	public BigDecimal getWidth () 
+	public BigDecimal getWidth()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Width);
 		if (bd == null)

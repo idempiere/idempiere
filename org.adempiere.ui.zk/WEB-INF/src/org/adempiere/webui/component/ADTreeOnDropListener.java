@@ -14,6 +14,11 @@ package org.adempiere.webui.component;
 
 import java.util.logging.Level;
 
+import org.adempiere.webui.adwindow.ADTabpanel;
+import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.ADWindowContent;
+import org.adempiere.webui.adwindow.IADTabpanel;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.MTree;
@@ -24,10 +29,13 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
@@ -183,6 +191,25 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			}
 			//	COMMIT          *********************
 			trx.commit(true);
+			
+			Component c = SessionManager.getAppDesktop().getActiveWindow();
+			ADWindow adwindow = ADWindow.findADWindow(c);
+			if (adwindow != null) {
+				ADWindowContent adwindowContent = adwindow.getADWindowContent();
+				if (trx.hasChangesMadeByEventListener()) {
+					Clients.showBusy(null);
+					Executions.schedule(c.getDesktop(), e -> {
+						adwindowContent.onRefresh();
+						Executions.schedule(c.getDesktop(), e1 -> Clients.clearBusy(), new Event("onEchangeIndicatorchoClearBusy"));
+					}, new Event("onPostTreeOnDrop"));
+				} else {
+					adwindowContent.focusToActivePanel();
+					IADTabpanel selected = adwindowContent.getADTab().getSelectedTabpanel();
+					if (selected instanceof ADTabpanel) {
+						((ADTabpanel)selected).setSelectedNode();
+					}
+				}
+			}
 		}
         catch (Exception e)
 		{

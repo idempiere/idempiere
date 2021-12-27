@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -93,26 +94,26 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
+		@param AD_PrintFormat_ID Data Print Format
+	*/
 	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
 	{
-		if (AD_PrintFormat_ID < 1) 
+		if (AD_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
 	}
 
 	/** Get Print Format.
 		@return Data Print Format
 	  */
-	public int getAD_PrintFormat_ID () 
+	public int getAD_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
@@ -121,26 +122,26 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeDifference() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeDifference_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeDifference_ID(), get_TrxName());
+	}
 
 	/** Set Difference Document.
-		@param C_DocTypeDifference_ID 
-		Document type for generating in dispute Shipments
-	  */
+		@param C_DocTypeDifference_ID Document type for generating in dispute Shipments
+	*/
 	public void setC_DocTypeDifference_ID (int C_DocTypeDifference_ID)
 	{
-		if (C_DocTypeDifference_ID < 1) 
+		if (C_DocTypeDifference_ID < 1)
 			set_Value (COLUMNNAME_C_DocTypeDifference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocTypeDifference_ID, Integer.valueOf(C_DocTypeDifference_ID));
 	}
 
 	/** Get Difference Document.
 		@return Document type for generating in dispute Shipments
 	  */
-	public int getC_DocTypeDifference_ID () 
+	public int getC_DocTypeDifference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocTypeDifference_ID);
 		if (ii == null)
@@ -149,21 +150,20 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -172,26 +172,26 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeInvoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeInvoice_ID(), get_TrxName());
+	}
 
 	/** Set Document Type for Invoice.
-		@param C_DocTypeInvoice_ID 
-		Document type used for invoices generated from this sales document
-	  */
+		@param C_DocTypeInvoice_ID Document type used for invoices generated from this sales document
+	*/
 	public void setC_DocTypeInvoice_ID (int C_DocTypeInvoice_ID)
 	{
-		if (C_DocTypeInvoice_ID < 1) 
+		if (C_DocTypeInvoice_ID < 1)
 			set_Value (COLUMNNAME_C_DocTypeInvoice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocTypeInvoice_ID, Integer.valueOf(C_DocTypeInvoice_ID));
 	}
 
 	/** Get Document Type for Invoice.
 		@return Document type used for invoices generated from this sales document
 	  */
-	public int getC_DocTypeInvoice_ID () 
+	public int getC_DocTypeInvoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocTypeInvoice_ID);
 		if (ii == null)
@@ -200,26 +200,26 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeProforma() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeProforma_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeProforma_ID(), get_TrxName());
+	}
 
 	/** Set Document Type for ProForma.
-		@param C_DocTypeProforma_ID 
-		Document type used for pro forma invoices generated from this sales document
-	  */
+		@param C_DocTypeProforma_ID Document type used for pro forma invoices generated from this sales document
+	*/
 	public void setC_DocTypeProforma_ID (int C_DocTypeProforma_ID)
 	{
-		if (C_DocTypeProforma_ID < 1) 
+		if (C_DocTypeProforma_ID < 1)
 			set_Value (COLUMNNAME_C_DocTypeProforma_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocTypeProforma_ID, Integer.valueOf(C_DocTypeProforma_ID));
 	}
 
 	/** Get Document Type for ProForma.
 		@return Document type used for pro forma invoices generated from this sales document
 	  */
-	public int getC_DocTypeProforma_ID () 
+	public int getC_DocTypeProforma_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocTypeProforma_ID);
 		if (ii == null)
@@ -228,26 +228,26 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocTypeShipment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocTypeShipment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocTypeShipment_ID(), get_TrxName());
+	}
 
 	/** Set Document Type for Shipment.
-		@param C_DocTypeShipment_ID 
-		Document type used for shipments generated from this sales document
-	  */
+		@param C_DocTypeShipment_ID Document type used for shipments generated from this sales document
+	*/
 	public void setC_DocTypeShipment_ID (int C_DocTypeShipment_ID)
 	{
-		if (C_DocTypeShipment_ID < 1) 
+		if (C_DocTypeShipment_ID < 1)
 			set_Value (COLUMNNAME_C_DocTypeShipment_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocTypeShipment_ID, Integer.valueOf(C_DocTypeShipment_ID));
 	}
 
 	/** Get Document Type for Shipment.
 		@return Document type used for shipments generated from this sales document
 	  */
-	public int getC_DocTypeShipment_ID () 
+	public int getC_DocTypeShipment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocTypeShipment_ID);
 		if (ii == null)
@@ -256,7 +256,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set C_DocType_UU.
-		@param C_DocType_UU C_DocType_UU	  */
+		@param C_DocType_UU C_DocType_UU
+	*/
 	public void setC_DocType_UU (String C_DocType_UU)
 	{
 		set_Value (COLUMNNAME_C_DocType_UU, C_DocType_UU);
@@ -264,29 +265,31 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** Get C_DocType_UU.
 		@return C_DocType_UU	  */
-	public String getC_DocType_UU () 
+	public String getC_DocType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DocType_UU);
 	}
 
 	public org.compiere.model.I_AD_Sequence getDefiniteSequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getDefiniteSequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getDefiniteSequence_ID(), get_TrxName());
+	}
 
 	/** Set Definite Sequence.
-		@param DefiniteSequence_ID Definite Sequence	  */
+		@param DefiniteSequence_ID Definite Sequence
+	*/
 	public void setDefiniteSequence_ID (int DefiniteSequence_ID)
 	{
-		if (DefiniteSequence_ID < 1) 
+		if (DefiniteSequence_ID < 1)
 			set_Value (COLUMNNAME_DefiniteSequence_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_DefiniteSequence_ID, Integer.valueOf(DefiniteSequence_ID));
 	}
 
 	/** Get Definite Sequence.
 		@return Definite Sequence	  */
-	public int getDefiniteSequence_ID () 
+	public int getDefiniteSequence_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DefiniteSequence_ID);
 		if (ii == null)
@@ -295,9 +298,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -306,81 +308,80 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocBaseType AD_Reference_ID=183 */
 	public static final int DOCBASETYPE_AD_Reference_ID=183;
-	/** GL Journal = GLJ */
-	public static final String DOCBASETYPE_GLJournal = "GLJ";
-	/** GL Document = GLD */
-	public static final String DOCBASETYPE_GLDocument = "GLD";
+	/** AP Credit Memo = APC */
+	public static final String DOCBASETYPE_APCreditMemo = "APC";
 	/** AP Invoice = API */
 	public static final String DOCBASETYPE_APInvoice = "API";
 	/** AP Payment = APP */
 	public static final String DOCBASETYPE_APPayment = "APP";
+	/** AR Credit Memo = ARC */
+	public static final String DOCBASETYPE_ARCreditMemo = "ARC";
+	/** AR Pro Forma Invoice = ARF */
+	public static final String DOCBASETYPE_ARProFormaInvoice = "ARF";
 	/** AR Invoice = ARI */
 	public static final String DOCBASETYPE_ARInvoice = "ARI";
 	/** AR Receipt = ARR */
 	public static final String DOCBASETYPE_ARReceipt = "ARR";
-	/** Sales Order = SOO */
-	public static final String DOCBASETYPE_SalesOrder = "SOO";
-	/** AR Pro Forma Invoice = ARF */
-	public static final String DOCBASETYPE_ARProFormaInvoice = "ARF";
-	/** Material Delivery = MMS */
-	public static final String DOCBASETYPE_MaterialDelivery = "MMS";
-	/** Material Receipt = MMR */
-	public static final String DOCBASETYPE_MaterialReceipt = "MMR";
-	/** Material Movement = MMM */
-	public static final String DOCBASETYPE_MaterialMovement = "MMM";
-	/** Purchase Order = POO */
-	public static final String DOCBASETYPE_PurchaseOrder = "POO";
-	/** Purchase Requisition = POR */
-	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
-	/** Material Physical Inventory = MMI */
-	public static final String DOCBASETYPE_MaterialPhysicalInventory = "MMI";
-	/** AP Credit Memo = APC */
-	public static final String DOCBASETYPE_APCreditMemo = "APC";
-	/** AR Credit Memo = ARC */
-	public static final String DOCBASETYPE_ARCreditMemo = "ARC";
+	/** Payment Allocation = CMA */
+	public static final String DOCBASETYPE_PaymentAllocation = "CMA";
 	/** Bank Statement = CMB */
 	public static final String DOCBASETYPE_BankStatement = "CMB";
 	/** Cash Journal = CMC */
 	public static final String DOCBASETYPE_CashJournal = "CMC";
-	/** Payment Allocation = CMA */
-	public static final String DOCBASETYPE_PaymentAllocation = "CMA";
-	/** Material Production = MMP */
-	public static final String DOCBASETYPE_MaterialProduction = "MMP";
-	/** Match Invoice = MXI */
-	public static final String DOCBASETYPE_MatchInvoice = "MXI";
-	/** Match PO = MXP */
-	public static final String DOCBASETYPE_MatchPO = "MXP";
-	/** Project Issue = PJI */
-	public static final String DOCBASETYPE_ProjectIssue = "PJI";
-	/** Maintenance Order = MOF */
-	public static final String DOCBASETYPE_MaintenanceOrder = "MOF";
-	/** Manufacturing Order = MOP */
-	public static final String DOCBASETYPE_ManufacturingOrder = "MOP";
-	/** Quality Order = MQO */
-	public static final String DOCBASETYPE_QualityOrder = "MQO";
-	/** Payroll = HRP */
-	public static final String DOCBASETYPE_Payroll = "HRP";
 	/** Distribution Order = DOO */
 	public static final String DOCBASETYPE_DistributionOrder = "DOO";
-	/** Manufacturing Cost Collector = MCC */
-	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
 	/** Fixed Assets Addition = FAA */
 	public static final String DOCBASETYPE_FixedAssetsAddition = "FAA";
 	/** Fixed Assets Disposal = FAD */
 	public static final String DOCBASETYPE_FixedAssetsDisposal = "FAD";
 	/** Fixed Assets Depreciation = FDP */
 	public static final String DOCBASETYPE_FixedAssetsDepreciation = "FDP";
+	/** GL Document = GLD */
+	public static final String DOCBASETYPE_GLDocument = "GLD";
+	/** GL Journal = GLJ */
+	public static final String DOCBASETYPE_GLJournal = "GLJ";
+	/** Payroll = HRP */
+	public static final String DOCBASETYPE_Payroll = "HRP";
+	/** Manufacturing Cost Collector = MCC */
+	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
+	/** Material Physical Inventory = MMI */
+	public static final String DOCBASETYPE_MaterialPhysicalInventory = "MMI";
+	/** Material Movement = MMM */
+	public static final String DOCBASETYPE_MaterialMovement = "MMM";
+	/** Material Production = MMP */
+	public static final String DOCBASETYPE_MaterialProduction = "MMP";
+	/** Material Receipt = MMR */
+	public static final String DOCBASETYPE_MaterialReceipt = "MMR";
+	/** Material Delivery = MMS */
+	public static final String DOCBASETYPE_MaterialDelivery = "MMS";
+	/** Maintenance Order = MOF */
+	public static final String DOCBASETYPE_MaintenanceOrder = "MOF";
+	/** Manufacturing Order = MOP */
+	public static final String DOCBASETYPE_ManufacturingOrder = "MOP";
+	/** Quality Order = MQO */
+	public static final String DOCBASETYPE_QualityOrder = "MQO";
+	/** Match Invoice = MXI */
+	public static final String DOCBASETYPE_MatchInvoice = "MXI";
+	/** Match PO = MXP */
+	public static final String DOCBASETYPE_MatchPO = "MXP";
+	/** Project Issue = PJI */
+	public static final String DOCBASETYPE_ProjectIssue = "PJI";
+	/** Purchase Order = POO */
+	public static final String DOCBASETYPE_PurchaseOrder = "POO";
+	/** Purchase Requisition = POR */
+	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
+	/** Sales Order = SOO */
+	public static final String DOCBASETYPE_SalesOrder = "SOO";
 	/** Set Document BaseType.
-		@param DocBaseType 
-		Logical type of document
-	  */
+		@param DocBaseType Logical type of document
+	*/
 	public void setDocBaseType (String DocBaseType)
 	{
 
@@ -390,32 +391,32 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Document BaseType.
 		@return Logical type of document
 	  */
-	public String getDocBaseType () 
+	public String getDocBaseType()
 	{
 		return (String)get_Value(COLUMNNAME_DocBaseType);
 	}
 
 	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_Name)
-			.getPO(getDocNoSequence_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
+			.getPO(getDocNoSequence_ID(), get_TrxName());
+	}
 
 	/** Set Document Sequence.
-		@param DocNoSequence_ID 
-		Document sequence determines the numbering of documents
-	  */
+		@param DocNoSequence_ID Document sequence determines the numbering of documents
+	*/
 	public void setDocNoSequence_ID (int DocNoSequence_ID)
 	{
-		if (DocNoSequence_ID < 1) 
+		if (DocNoSequence_ID < 1)
 			set_Value (COLUMNNAME_DocNoSequence_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_DocNoSequence_ID, Integer.valueOf(DocNoSequence_ID));
 	}
 
 	/** Get Document Sequence.
 		@return Document sequence determines the numbering of documents
 	  */
-	public int getDocNoSequence_ID () 
+	public int getDocNoSequence_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DocNoSequence_ID);
 		if (ii == null)
@@ -425,16 +426,15 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** DocSubTypeInv AD_Reference_ID=200068 */
 	public static final int DOCSUBTYPEINV_AD_Reference_ID=200068;
-	/** Physical Inventory = PI */
-	public static final String DOCSUBTYPEINV_PhysicalInventory = "PI";
-	/** Internal Use Inventory = IU */
-	public static final String DOCSUBTYPEINV_InternalUseInventory = "IU";
 	/** Cost Adjustment = CA */
 	public static final String DOCSUBTYPEINV_CostAdjustment = "CA";
+	/** Internal Use Inventory = IU */
+	public static final String DOCSUBTYPEINV_InternalUseInventory = "IU";
+	/** Physical Inventory = PI */
+	public static final String DOCSUBTYPEINV_PhysicalInventory = "PI";
 	/** Set Inv Sub Type.
-		@param DocSubTypeInv 
-		Inventory Sub Type
-	  */
+		@param DocSubTypeInv Inventory Sub Type
+	*/
 	public void setDocSubTypeInv (String DocSubTypeInv)
 	{
 
@@ -444,33 +444,32 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Inv Sub Type.
 		@return Inventory Sub Type
 	  */
-	public String getDocSubTypeInv () 
+	public String getDocSubTypeInv()
 	{
 		return (String)get_Value(COLUMNNAME_DocSubTypeInv);
 	}
 
 	/** DocSubTypeSO AD_Reference_ID=148 */
 	public static final int DOCSUBTYPESO_AD_Reference_ID=148;
-	/** On Credit Order = WI */
-	public static final String DOCSUBTYPESO_OnCreditOrder = "WI";
-	/** POS Order = WR */
-	public static final String DOCSUBTYPESO_POSOrder = "WR";
-	/** Warehouse Order = WP */
-	public static final String DOCSUBTYPESO_WarehouseOrder = "WP";
-	/** Standard Order = SO */
-	public static final String DOCSUBTYPESO_StandardOrder = "SO";
-	/** Proposal = ON */
-	public static final String DOCSUBTYPESO_Proposal = "ON";
 	/** Quotation = OB */
 	public static final String DOCSUBTYPESO_Quotation = "OB";
-	/** Return Material = RM */
-	public static final String DOCSUBTYPESO_ReturnMaterial = "RM";
+	/** Proposal = ON */
+	public static final String DOCSUBTYPESO_Proposal = "ON";
 	/** Prepay Order = PR */
 	public static final String DOCSUBTYPESO_PrepayOrder = "PR";
+	/** Return Material = RM */
+	public static final String DOCSUBTYPESO_ReturnMaterial = "RM";
+	/** Standard Order = SO */
+	public static final String DOCSUBTYPESO_StandardOrder = "SO";
+	/** On Credit Order = WI */
+	public static final String DOCSUBTYPESO_OnCreditOrder = "WI";
+	/** Warehouse Order = WP */
+	public static final String DOCSUBTYPESO_WarehouseOrder = "WP";
+	/** POS Order = WR */
+	public static final String DOCSUBTYPESO_POSOrder = "WR";
 	/** Set SO Sub Type.
-		@param DocSubTypeSO 
-		Sales Order Sub Type
-	  */
+		@param DocSubTypeSO Sales Order Sub Type
+	*/
 	public void setDocSubTypeSO (String DocSubTypeSO)
 	{
 
@@ -480,15 +479,14 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get SO Sub Type.
 		@return Sales Order Sub Type
 	  */
-	public String getDocSubTypeSO () 
+	public String getDocSubTypeSO()
 	{
 		return (String)get_Value(COLUMNNAME_DocSubTypeSO);
 	}
 
 	/** Set Document Copies.
-		@param DocumentCopies 
-		Number of copies to be printed
-	  */
+		@param DocumentCopies Number of copies to be printed
+	*/
 	public void setDocumentCopies (int DocumentCopies)
 	{
 		set_Value (COLUMNNAME_DocumentCopies, Integer.valueOf(DocumentCopies));
@@ -497,7 +495,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Document Copies.
 		@return Number of copies to be printed
 	  */
-	public int getDocumentCopies () 
+	public int getDocumentCopies()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DocumentCopies);
 		if (ii == null)
@@ -506,9 +504,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Document Note.
-		@param DocumentNote 
-		Additional information for a Document
-	  */
+		@param DocumentNote Additional information for a Document
+	*/
 	public void setDocumentNote (String DocumentNote)
 	{
 		set_Value (COLUMNNAME_DocumentNote, DocumentNote);
@@ -517,32 +514,32 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Document Note.
 		@return Additional information for a Document
 	  */
-	public String getDocumentNote () 
+	public String getDocumentNote()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNote);
 	}
 
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
-			.getPO(getGL_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
+			.getPO(getGL_Category_ID(), get_TrxName());
+	}
 
 	/** Set GL Category.
-		@param GL_Category_ID 
-		General Ledger Category
-	  */
+		@param GL_Category_ID General Ledger Category
+	*/
 	public void setGL_Category_ID (int GL_Category_ID)
 	{
-		if (GL_Category_ID < 1) 
+		if (GL_Category_ID < 1)
 			set_Value (COLUMNNAME_GL_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_Category_ID, Integer.valueOf(GL_Category_ID));
 	}
 
 	/** Get GL Category.
 		@return General Ledger Category
 	  */
-	public int getGL_Category_ID () 
+	public int getGL_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Category_ID);
 		if (ii == null)
@@ -551,9 +548,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Charges.
-		@param HasCharges 
-		Charges can be added to the document
-	  */
+		@param HasCharges Charges can be added to the document
+	*/
 	public void setHasCharges (boolean HasCharges)
 	{
 		set_Value (COLUMNNAME_HasCharges, Boolean.valueOf(HasCharges));
@@ -562,7 +558,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Charges.
 		@return Charges can be added to the document
 	  */
-	public boolean isHasCharges () 
+	public boolean isHasCharges()
 	{
 		Object oo = get_Value(COLUMNNAME_HasCharges);
 		if (oo != null) 
@@ -575,9 +571,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Pro forma Invoice.
-		@param HasProforma 
-		Indicates if Pro Forma Invoices can be generated from this document
-	  */
+		@param HasProforma Indicates if Pro Forma Invoices can be generated from this document
+	*/
 	public void setHasProforma (boolean HasProforma)
 	{
 		set_Value (COLUMNNAME_HasProforma, Boolean.valueOf(HasProforma));
@@ -586,7 +581,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Pro forma Invoice.
 		@return Indicates if Pro Forma Invoices can be generated from this document
 	  */
-	public boolean isHasProforma () 
+	public boolean isHasProforma()
 	{
 		Object oo = get_Value(COLUMNNAME_HasProforma);
 		if (oo != null) 
@@ -599,7 +594,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Mandatory Charge or Product.
-		@param IsChargeOrProductMandatory Mandatory Charge or Product	  */
+		@param IsChargeOrProductMandatory Mandatory Charge or Product
+	*/
 	public void setIsChargeOrProductMandatory (boolean IsChargeOrProductMandatory)
 	{
 		set_Value (COLUMNNAME_IsChargeOrProductMandatory, Boolean.valueOf(IsChargeOrProductMandatory));
@@ -607,7 +603,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** Get Mandatory Charge or Product.
 		@return Mandatory Charge or Product	  */
-	public boolean isChargeOrProductMandatory () 
+	public boolean isChargeOrProductMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsChargeOrProductMandatory);
 		if (oo != null) 
@@ -620,9 +616,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Create Counter Document.
-		@param IsCreateCounter 
-		Create Counter Document
-	  */
+		@param IsCreateCounter Create Counter Document
+	*/
 	public void setIsCreateCounter (boolean IsCreateCounter)
 	{
 		set_Value (COLUMNNAME_IsCreateCounter, Boolean.valueOf(IsCreateCounter));
@@ -631,7 +626,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Create Counter Document.
 		@return Create Counter Document
 	  */
-	public boolean isCreateCounter () 
+	public boolean isCreateCounter()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreateCounter);
 		if (oo != null) 
@@ -644,9 +639,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -655,7 +649,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -668,9 +662,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Default Counter Document.
-		@param IsDefaultCounterDoc 
-		The document type is the default counter document type
-	  */
+		@param IsDefaultCounterDoc The document type is the default counter document type
+	*/
 	public void setIsDefaultCounterDoc (boolean IsDefaultCounterDoc)
 	{
 		set_Value (COLUMNNAME_IsDefaultCounterDoc, Boolean.valueOf(IsDefaultCounterDoc));
@@ -679,7 +672,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Default Counter Document.
 		@return The document type is the default counter document type
 	  */
-	public boolean isDefaultCounterDoc () 
+	public boolean isDefaultCounterDoc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefaultCounterDoc);
 		if (oo != null) 
@@ -692,9 +685,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Document is Number Controlled.
-		@param IsDocNoControlled 
-		The document has a document sequence
-	  */
+		@param IsDocNoControlled The document has a document sequence
+	*/
 	public void setIsDocNoControlled (boolean IsDocNoControlled)
 	{
 		set_Value (COLUMNNAME_IsDocNoControlled, Boolean.valueOf(IsDocNoControlled));
@@ -703,7 +695,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Document is Number Controlled.
 		@return The document has a document sequence
 	  */
-	public boolean isDocNoControlled () 
+	public boolean isDocNoControlled()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDocNoControlled);
 		if (oo != null) 
@@ -716,9 +708,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Indexed.
-		@param IsIndexed 
-		Index the document for the internal search engine
-	  */
+		@param IsIndexed Index the document for the internal search engine
+	*/
 	public void setIsIndexed (boolean IsIndexed)
 	{
 		set_Value (COLUMNNAME_IsIndexed, Boolean.valueOf(IsIndexed));
@@ -727,7 +718,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Indexed.
 		@return Index the document for the internal search engine
 	  */
-	public boolean isIndexed () 
+	public boolean isIndexed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIndexed);
 		if (oo != null) 
@@ -740,9 +731,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set In Transit.
-		@param IsInTransit 
-		Movement is in transit
-	  */
+		@param IsInTransit Movement is in transit
+	*/
 	public void setIsInTransit (boolean IsInTransit)
 	{
 		set_Value (COLUMNNAME_IsInTransit, Boolean.valueOf(IsInTransit));
@@ -751,7 +741,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get In Transit.
 		@return Movement is in transit
 	  */
-	public boolean isInTransit () 
+	public boolean isInTransit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInTransit);
 		if (oo != null) 
@@ -763,8 +753,31 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
+	/** Set Allow Product Without Pricelist.
+		@param IsNoPriceListCheck Allow Product Without Pricelist
+	*/
+	public void setIsNoPriceListCheck (boolean IsNoPriceListCheck)
+	{
+		set_Value (COLUMNNAME_IsNoPriceListCheck, Boolean.valueOf(IsNoPriceListCheck));
+	}
+
+	/** Get Allow Product Without Pricelist.
+		@return Allow Product Without Pricelist	  */
+	public boolean isNoPriceListCheck()
+	{
+		Object oo = get_Value(COLUMNNAME_IsNoPriceListCheck);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Overwrite Date on Complete.
-		@param IsOverwriteDateOnComplete Overwrite Date on Complete	  */
+		@param IsOverwriteDateOnComplete Overwrite Date on Complete
+	*/
 	public void setIsOverwriteDateOnComplete (boolean IsOverwriteDateOnComplete)
 	{
 		set_Value (COLUMNNAME_IsOverwriteDateOnComplete, Boolean.valueOf(IsOverwriteDateOnComplete));
@@ -772,7 +785,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** Get Overwrite Date on Complete.
 		@return Overwrite Date on Complete	  */
-	public boolean isOverwriteDateOnComplete () 
+	public boolean isOverwriteDateOnComplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOverwriteDateOnComplete);
 		if (oo != null) 
@@ -785,7 +798,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Overwrite Sequence on Complete.
-		@param IsOverwriteSeqOnComplete Overwrite Sequence on Complete	  */
+		@param IsOverwriteSeqOnComplete Overwrite Sequence on Complete
+	*/
 	public void setIsOverwriteSeqOnComplete (boolean IsOverwriteSeqOnComplete)
 	{
 		set_Value (COLUMNNAME_IsOverwriteSeqOnComplete, Boolean.valueOf(IsOverwriteSeqOnComplete));
@@ -793,7 +807,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 
 	/** Get Overwrite Sequence on Complete.
 		@return Overwrite Sequence on Complete	  */
-	public boolean isOverwriteSeqOnComplete () 
+	public boolean isOverwriteSeqOnComplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOverwriteSeqOnComplete);
 		if (oo != null) 
@@ -806,9 +820,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Pick/QA Confirmation.
-		@param IsPickQAConfirm 
-		Require Pick or QA Confirmation before processing
-	  */
+		@param IsPickQAConfirm Require Pick or QA Confirmation before processing
+	*/
 	public void setIsPickQAConfirm (boolean IsPickQAConfirm)
 	{
 		set_Value (COLUMNNAME_IsPickQAConfirm, Boolean.valueOf(IsPickQAConfirm));
@@ -817,7 +830,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Pick/QA Confirmation.
 		@return Require Pick or QA Confirmation before processing
 	  */
-	public boolean isPickQAConfirm () 
+	public boolean isPickQAConfirm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPickQAConfirm);
 		if (oo != null) 
@@ -830,9 +843,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Prepare Split Document.
-		@param IsPrepareSplitDocument 
-		Prepare generated split shipment/receipt document
-	  */
+		@param IsPrepareSplitDocument Prepare generated split shipment/receipt document
+	*/
 	public void setIsPrepareSplitDocument (boolean IsPrepareSplitDocument)
 	{
 		set_Value (COLUMNNAME_IsPrepareSplitDocument, Boolean.valueOf(IsPrepareSplitDocument));
@@ -841,7 +853,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Prepare Split Document.
 		@return Prepare generated split shipment/receipt document
 	  */
-	public boolean isPrepareSplitDocument () 
+	public boolean isPrepareSplitDocument()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrepareSplitDocument);
 		if (oo != null) 
@@ -854,9 +866,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Ship/Receipt Confirmation.
-		@param IsShipConfirm 
-		Require Ship or Receipt Confirmation before processing
-	  */
+		@param IsShipConfirm Require Ship or Receipt Confirmation before processing
+	*/
 	public void setIsShipConfirm (boolean IsShipConfirm)
 	{
 		set_Value (COLUMNNAME_IsShipConfirm, Boolean.valueOf(IsShipConfirm));
@@ -865,7 +876,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Ship/Receipt Confirmation.
 		@return Require Ship or Receipt Confirmation before processing
 	  */
-	public boolean isShipConfirm () 
+	public boolean isShipConfirm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShipConfirm);
 		if (oo != null) 
@@ -878,9 +889,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -889,7 +899,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -902,9 +912,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Split when Difference.
-		@param IsSplitWhenDifference 
-		Split document when there is a difference
-	  */
+		@param IsSplitWhenDifference Split document when there is a difference
+	*/
 	public void setIsSplitWhenDifference (boolean IsSplitWhenDifference)
 	{
 		set_Value (COLUMNNAME_IsSplitWhenDifference, Boolean.valueOf(IsSplitWhenDifference));
@@ -913,7 +922,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Split when Difference.
 		@return Split document when there is a difference
 	  */
-	public boolean isSplitWhenDifference () 
+	public boolean isSplitWhenDifference()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSplitWhenDifference);
 		if (oo != null) 
@@ -926,9 +935,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -937,7 +945,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -951,9 +959,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
     }
 
 	/** Set Print Text.
-		@param PrintName 
-		The label text to be printed on a document or correspondence.
-	  */
+		@param PrintName The label text to be printed on a document or correspondence.
+	*/
 	public void setPrintName (String PrintName)
 	{
 		set_Value (COLUMNNAME_PrintName, PrintName);
@@ -962,7 +969,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/** Get Print Text.
 		@return The label text to be printed on a document or correspondence.
 	  */
-	public String getPrintName () 
+	public String getPrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PrintName);
 	}

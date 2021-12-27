@@ -24,14 +24,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionReward
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_PromotionReward")
 public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_PromotionReward (Properties ctx, int M_PromotionReward_ID, String trxName)
@@ -79,9 +80,8 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
     }
 
 	/** Set Amount.
-		@param Amount 
-		Amount in a defined currency
-	  */
+		@param Amount Amount in a defined currency
+	*/
 	public void setAmount (BigDecimal Amount)
 	{
 		set_Value (COLUMNNAME_Amount, Amount);
@@ -90,7 +90,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Get Amount.
 		@return Amount in a defined currency
 	  */
-	public BigDecimal getAmount () 
+	public BigDecimal getAmount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amount);
 		if (bd == null)
@@ -99,26 +99,26 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
-		@param C_Charge_ID 
-		Additional document charges
-	  */
+		@param C_Charge_ID Additional document charges
+	*/
 	public void setC_Charge_ID (int C_Charge_ID)
 	{
-		if (C_Charge_ID < 1) 
+		if (C_Charge_ID < 1)
 			set_Value (COLUMNNAME_C_Charge_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
 	}
 
 	/** Get Charge.
 		@return Additional document charges
 	  */
-	public int getC_Charge_ID () 
+	public int getC_Charge_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
@@ -133,9 +133,8 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Descending = D */
 	public static final String DISTRIBUTIONSORTING_Descending = "D";
 	/** Set Distribution Sorting.
-		@param DistributionSorting 
-		Quantity distribution sorting by unit price
-	  */
+		@param DistributionSorting Quantity distribution sorting by unit price
+	*/
 	public void setDistributionSorting (String DistributionSorting)
 	{
 
@@ -145,15 +144,14 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Get Distribution Sorting.
 		@return Quantity distribution sorting by unit price
 	  */
-	public String getDistributionSorting () 
+	public String getDistributionSorting()
 	{
 		return (String)get_Value(COLUMNNAME_DistributionSorting);
 	}
 
 	/** Set For all distribution.
-		@param IsForAllDistribution 
-		This reward is for all distribution
-	  */
+		@param IsForAllDistribution This reward is for all distribution
+	*/
 	public void setIsForAllDistribution (boolean IsForAllDistribution)
 	{
 		set_Value (COLUMNNAME_IsForAllDistribution, Boolean.valueOf(IsForAllDistribution));
@@ -162,7 +160,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Get For all distribution.
 		@return This reward is for all distribution
 	  */
-	public boolean isForAllDistribution () 
+	public boolean isForAllDistribution()
 	{
 		Object oo = get_Value(COLUMNNAME_IsForAllDistribution);
 		if (oo != null) 
@@ -175,9 +173,8 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	}
 
 	/** Set Same distribution for source and target.
-		@param IsSameDistribution 
-		Use the same distribution for source and target
-	  */
+		@param IsSameDistribution Use the same distribution for source and target
+	*/
 	public void setIsSameDistribution (boolean IsSameDistribution)
 	{
 		set_Value (COLUMNNAME_IsSameDistribution, Boolean.valueOf(IsSameDistribution));
@@ -186,7 +183,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Get Same distribution for source and target.
 		@return Use the same distribution for source and target
 	  */
-	public boolean isSameDistribution () 
+	public boolean isSameDistribution()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameDistribution);
 		if (oo != null) 
@@ -199,23 +196,25 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	}
 
 	public org.compiere.model.I_M_PromotionDistribution getM_PromotionDistribution() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PromotionDistribution)MTable.get(getCtx(), org.compiere.model.I_M_PromotionDistribution.Table_Name)
-			.getPO(getM_PromotionDistribution_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PromotionDistribution)MTable.get(getCtx(), org.compiere.model.I_M_PromotionDistribution.Table_ID)
+			.getPO(getM_PromotionDistribution_ID(), get_TrxName());
+	}
 
 	/** Set Promotion Distribution.
-		@param M_PromotionDistribution_ID Promotion Distribution	  */
+		@param M_PromotionDistribution_ID Promotion Distribution
+	*/
 	public void setM_PromotionDistribution_ID (int M_PromotionDistribution_ID)
 	{
-		if (M_PromotionDistribution_ID < 1) 
+		if (M_PromotionDistribution_ID < 1)
 			set_Value (COLUMNNAME_M_PromotionDistribution_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_PromotionDistribution_ID, Integer.valueOf(M_PromotionDistribution_ID));
 	}
 
 	/** Get Promotion Distribution.
 		@return Promotion Distribution	  */
-	public int getM_PromotionDistribution_ID () 
+	public int getM_PromotionDistribution_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionDistribution_ID);
 		if (ii == null)
@@ -224,23 +223,25 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	}
 
 	public org.compiere.model.I_M_Promotion getM_Promotion() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_Name)
-			.getPO(getM_Promotion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_ID)
+			.getPO(getM_Promotion_ID(), get_TrxName());
+	}
 
 	/** Set Promotion.
-		@param M_Promotion_ID Promotion	  */
+		@param M_Promotion_ID Promotion
+	*/
 	public void setM_Promotion_ID (int M_Promotion_ID)
 	{
-		if (M_Promotion_ID < 1) 
+		if (M_Promotion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, Integer.valueOf(M_Promotion_ID));
 	}
 
 	/** Get Promotion.
 		@return Promotion	  */
-	public int getM_Promotion_ID () 
+	public int getM_Promotion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Promotion_ID);
 		if (ii == null)
@@ -249,18 +250,19 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	}
 
 	/** Set Promotion Reward.
-		@param M_PromotionReward_ID Promotion Reward	  */
+		@param M_PromotionReward_ID Promotion Reward
+	*/
 	public void setM_PromotionReward_ID (int M_PromotionReward_ID)
 	{
-		if (M_PromotionReward_ID < 1) 
+		if (M_PromotionReward_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PromotionReward_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PromotionReward_ID, Integer.valueOf(M_PromotionReward_ID));
 	}
 
 	/** Get Promotion Reward.
 		@return Promotion Reward	  */
-	public int getM_PromotionReward_ID () 
+	public int getM_PromotionReward_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionReward_ID);
 		if (ii == null)
@@ -269,7 +271,8 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	}
 
 	/** Set M_PromotionReward_UU.
-		@param M_PromotionReward_UU M_PromotionReward_UU	  */
+		@param M_PromotionReward_UU M_PromotionReward_UU
+	*/
 	public void setM_PromotionReward_UU (String M_PromotionReward_UU)
 	{
 		set_Value (COLUMNNAME_M_PromotionReward_UU, M_PromotionReward_UU);
@@ -277,32 +280,32 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 
 	/** Get M_PromotionReward_UU.
 		@return M_PromotionReward_UU	  */
-	public String getM_PromotionReward_UU () 
+	public String getM_PromotionReward_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_PromotionReward_UU);
 	}
 
 	public org.compiere.model.I_M_PromotionDistribution getM_TargetDistribution() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PromotionDistribution)MTable.get(getCtx(), org.compiere.model.I_M_PromotionDistribution.Table_Name)
-			.getPO(getM_TargetDistribution_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PromotionDistribution)MTable.get(getCtx(), org.compiere.model.I_M_PromotionDistribution.Table_ID)
+			.getPO(getM_TargetDistribution_ID(), get_TrxName());
+	}
 
 	/** Set Target distribution.
-		@param M_TargetDistribution_ID 
-		Get product from target distribution to apply the promotion reward
-	  */
+		@param M_TargetDistribution_ID Get product from target distribution to apply the promotion reward
+	*/
 	public void setM_TargetDistribution_ID (int M_TargetDistribution_ID)
 	{
-		if (M_TargetDistribution_ID < 1) 
+		if (M_TargetDistribution_ID < 1)
 			set_Value (COLUMNNAME_M_TargetDistribution_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_TargetDistribution_ID, Integer.valueOf(M_TargetDistribution_ID));
 	}
 
 	/** Get Target distribution.
 		@return Get product from target distribution to apply the promotion reward
 	  */
-	public int getM_TargetDistribution_ID () 
+	public int getM_TargetDistribution_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_TargetDistribution_ID);
 		if (ii == null)
@@ -311,9 +314,8 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -322,7 +324,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -332,16 +334,15 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 
 	/** RewardType AD_Reference_ID=53298 */
 	public static final int REWARDTYPE_AD_Reference_ID=53298;
-	/** Percentage = P */
-	public static final String REWARDTYPE_Percentage = "P";
-	/** Flat Discount = F */
-	public static final String REWARDTYPE_FlatDiscount = "F";
 	/** Absolute Amount = A */
 	public static final String REWARDTYPE_AbsoluteAmount = "A";
+	/** Flat Discount = F */
+	public static final String REWARDTYPE_FlatDiscount = "F";
+	/** Percentage = P */
+	public static final String REWARDTYPE_Percentage = "P";
 	/** Set Reward Type.
-		@param RewardType 
-		Type of reward which consists of percentage discount, flat discount or absolute amount
-	  */
+		@param RewardType Type of reward which consists of percentage discount, flat discount or absolute amount
+	*/
 	public void setRewardType (String RewardType)
 	{
 
@@ -351,15 +352,14 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Get Reward Type.
 		@return Type of reward which consists of percentage discount, flat discount or absolute amount
 	  */
-	public String getRewardType () 
+	public String getRewardType()
 	{
 		return (String)get_Value(COLUMNNAME_RewardType);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -368,7 +368,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

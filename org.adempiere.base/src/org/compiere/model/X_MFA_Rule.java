@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for MFA_Rule
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="MFA_Rule")
 public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210605L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_MFA_Rule (Properties ctx, int MFA_Rule_ID, String trxName)
@@ -71,9 +72,8 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
     }
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -82,32 +82,32 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
-    {
-		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_Name)
-			.getPO(getMFA_Method_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_ID)
+			.getPO(getMFA_Method_ID(), get_TrxName());
+	}
 
 	/** Set MFA Method.
-		@param MFA_Method_ID 
-		Multi-factor Authentication Method
-	  */
+		@param MFA_Method_ID Multi-factor Authentication Method
+	*/
 	public void setMFA_Method_ID (int MFA_Method_ID)
 	{
-		if (MFA_Method_ID < 1) 
+		if (MFA_Method_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_MFA_Method_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_MFA_Method_ID, Integer.valueOf(MFA_Method_ID));
 	}
 
 	/** Get MFA Method.
 		@return Multi-factor Authentication Method
 	  */
-	public int getMFA_Method_ID () 
+	public int getMFA_Method_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_Method_ID);
 		if (ii == null)
@@ -116,21 +116,20 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	}
 
 	/** Set MFA Rule.
-		@param MFA_Rule_ID 
-		Multi-factor Authentication Rule
-	  */
+		@param MFA_Rule_ID Multi-factor Authentication Rule
+	*/
 	public void setMFA_Rule_ID (int MFA_Rule_ID)
 	{
-		if (MFA_Rule_ID < 1) 
+		if (MFA_Rule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_MFA_Rule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_MFA_Rule_ID, Integer.valueOf(MFA_Rule_ID));
 	}
 
 	/** Get MFA Rule.
 		@return Multi-factor Authentication Rule
 	  */
-	public int getMFA_Rule_ID () 
+	public int getMFA_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_Rule_ID);
 		if (ii == null)
@@ -139,7 +138,8 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	}
 
 	/** Set MFA_Rule_UU.
-		@param MFA_Rule_UU MFA_Rule_UU	  */
+		@param MFA_Rule_UU MFA_Rule_UU
+	*/
 	public void setMFA_Rule_UU (String MFA_Rule_UU)
 	{
 		set_Value (COLUMNNAME_MFA_Rule_UU, MFA_Rule_UU);
@@ -147,7 +147,7 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 
 	/** Get MFA_Rule_UU.
 		@return MFA_Rule_UU	  */
-	public String getMFA_Rule_UU () 
+	public String getMFA_Rule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_MFA_Rule_UU);
 	}

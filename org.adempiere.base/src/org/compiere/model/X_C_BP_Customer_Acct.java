@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_BP_Customer_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_BP_Customer_Acct")
 public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_BP_Customer_Acct (Properties ctx, int C_BP_Customer_Acct_ID, String trxName)
@@ -74,26 +75,26 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -102,26 +103,26 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -130,7 +131,8 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	/** Set C_BP_Customer_Acct_UU.
-		@param C_BP_Customer_Acct_UU C_BP_Customer_Acct_UU	  */
+		@param C_BP_Customer_Acct_UU C_BP_Customer_Acct_UU
+	*/
 	public void setC_BP_Customer_Acct_UU (String C_BP_Customer_Acct_UU)
 	{
 		set_Value (COLUMNNAME_C_BP_Customer_Acct_UU, C_BP_Customer_Acct_UU);
@@ -138,20 +140,20 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 
 	/** Get C_BP_Customer_Acct_UU.
 		@return C_BP_Customer_Acct_UU	  */
-	public String getC_BP_Customer_Acct_UU () 
+	public String getC_BP_Customer_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BP_Customer_Acct_UU);
 	}
 
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Prepayment_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Prepayment_Acct(), get_TrxName());
+	}
 
 	/** Set Customer Prepayment.
-		@param C_Prepayment_Acct 
-		Account for customer prepayments
-	  */
+		@param C_Prepayment_Acct Account for customer prepayments
+	*/
 	public void setC_Prepayment_Acct (int C_Prepayment_Acct)
 	{
 		set_Value (COLUMNNAME_C_Prepayment_Acct, Integer.valueOf(C_Prepayment_Acct));
@@ -160,7 +162,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	/** Get Customer Prepayment.
 		@return Account for customer prepayments
 	  */
-	public int getC_Prepayment_Acct () 
+	public int getC_Prepayment_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Prepayment_Acct);
 		if (ii == null)
@@ -169,14 +171,14 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Receivable_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Receivable_Acct(), get_TrxName());
+	}
 
 	/** Set Customer Receivables.
-		@param C_Receivable_Acct 
-		Account for Customer Receivables
-	  */
+		@param C_Receivable_Acct Account for Customer Receivables
+	*/
 	public void setC_Receivable_Acct (int C_Receivable_Acct)
 	{
 		set_Value (COLUMNNAME_C_Receivable_Acct, Integer.valueOf(C_Receivable_Acct));
@@ -185,7 +187,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	/** Get Customer Receivables.
 		@return Account for Customer Receivables
 	  */
-	public int getC_Receivable_Acct () 
+	public int getC_Receivable_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Receivable_Acct);
 		if (ii == null)
@@ -194,14 +196,14 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	}
 
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getC_Receivable_Services_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getC_Receivable_Services_Acct(), get_TrxName());
+	}
 
 	/** Set Receivable Services.
-		@param C_Receivable_Services_Acct 
-		Customer Accounts Receivables Services Account
-	  */
+		@param C_Receivable_Services_Acct Customer Accounts Receivables Services Account
+	*/
 	public void setC_Receivable_Services_Acct (int C_Receivable_Services_Acct)
 	{
 		set_Value (COLUMNNAME_C_Receivable_Services_Acct, Integer.valueOf(C_Receivable_Services_Acct));
@@ -210,7 +212,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	/** Get Receivable Services.
 		@return Customer Accounts Receivables Services Account
 	  */
-	public int getC_Receivable_Services_Acct () 
+	public int getC_Receivable_Services_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Receivable_Services_Acct);
 		if (ii == null)

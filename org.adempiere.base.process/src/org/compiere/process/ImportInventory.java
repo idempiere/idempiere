@@ -55,6 +55,7 @@ import org.compiere.util.ValueNamePair;
  *  Carlos Ruiz - globalqss - IDEMPIERE-281 Extend Import Inventory to support also internal use
  *  Deepak Pansheriya - logilite - IDEMPIERE-2314 Making import inventory process extendible
  */
+@org.adempiere.base.annotation.Process
 public class ImportInventory extends SvrProcess implements ImportProcess
 {
 	/**	Client to be imported to		*/

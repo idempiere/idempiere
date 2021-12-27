@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Tab
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Tab")
 public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_ASP_Tab (Properties ctx, int ASP_Tab_ID, String trxName)
@@ -73,26 +74,26 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
-		@param AD_Tab_ID 
-		Tab within a Window
-	  */
+		@param AD_Tab_ID Tab within a Window
+	*/
 	public void setAD_Tab_ID (int AD_Tab_ID)
 	{
-		if (AD_Tab_ID < 1) 
+		if (AD_Tab_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tab_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
 	}
 
 	/** Get Tab.
 		@return Tab within a Window
 	  */
-	public int getAD_Tab_ID () 
+	public int getAD_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
 		if (ii == null)
@@ -101,7 +102,8 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 	}
 
 	/** Set AllFields.
-		@param AllFields AllFields	  */
+		@param AllFields AllFields
+	*/
 	public void setAllFields (boolean AllFields)
 	{
 		set_Value (COLUMNNAME_AllFields, Boolean.valueOf(AllFields));
@@ -109,7 +111,7 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 
 	/** Get AllFields.
 		@return AllFields	  */
-	public boolean isAllFields () 
+	public boolean isAllFields()
 	{
 		Object oo = get_Value(COLUMNNAME_AllFields);
 		if (oo != null) 
@@ -130,7 +132,8 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -139,24 +142,25 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}
 
 	/** Set ASP Tab.
-		@param ASP_Tab_ID ASP Tab	  */
+		@param ASP_Tab_ID ASP Tab
+	*/
 	public void setASP_Tab_ID (int ASP_Tab_ID)
 	{
-		if (ASP_Tab_ID < 1) 
+		if (ASP_Tab_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Tab_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Tab_ID, Integer.valueOf(ASP_Tab_ID));
 	}
 
 	/** Get ASP Tab.
 		@return ASP Tab	  */
-	public int getASP_Tab_ID () 
+	public int getASP_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Tab_ID);
 		if (ii == null)
@@ -165,7 +169,8 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 	}
 
 	/** Set ASP_Tab_UU.
-		@param ASP_Tab_UU ASP_Tab_UU	  */
+		@param ASP_Tab_UU ASP_Tab_UU
+	*/
 	public void setASP_Tab_UU (String ASP_Tab_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Tab_UU, ASP_Tab_UU);
@@ -173,29 +178,31 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 
 	/** Get ASP_Tab_UU.
 		@return ASP_Tab_UU	  */
-	public String getASP_Tab_UU () 
+	public String getASP_Tab_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Tab_UU);
 	}
 
 	public org.compiere.model.I_ASP_Window getASP_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Window)MTable.get(getCtx(), org.compiere.model.I_ASP_Window.Table_Name)
-			.getPO(getASP_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Window)MTable.get(getCtx(), org.compiere.model.I_ASP_Window.Table_ID)
+			.getPO(getASP_Window_ID(), get_TrxName());
+	}
 
 	/** Set ASP Window.
-		@param ASP_Window_ID ASP Window	  */
+		@param ASP_Window_ID ASP Window
+	*/
 	public void setASP_Window_ID (int ASP_Window_ID)
 	{
-		if (ASP_Window_ID < 1) 
+		if (ASP_Window_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Window_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Window_ID, Integer.valueOf(ASP_Window_ID));
 	}
 
 	/** Get ASP Window.
 		@return ASP Window	  */
-	public int getASP_Window_ID () 
+	public int getASP_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Window_ID);
 		if (ii == null)
@@ -212,7 +219,8 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -220,7 +228,7 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

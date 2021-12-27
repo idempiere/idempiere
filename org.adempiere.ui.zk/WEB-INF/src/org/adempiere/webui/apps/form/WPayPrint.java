@@ -77,7 +77,7 @@ import org.zkoss.zul.South;
 import com.lowagie.text.pdf.PdfReader;
 
 /**
- *  Payment Print & Export
+ *  Payment Print and Export
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: VPayPrint.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
@@ -86,6 +86,7 @@ import com.lowagie.text.pdf.PdfReader;
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank 
  *    Markus Bozem:  IDEMPIERE-1546 / IDEMPIERE-3286 
 */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPayPrint")
 public class WPayPrint extends PayPrint implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private CustomForm form = new CustomForm();

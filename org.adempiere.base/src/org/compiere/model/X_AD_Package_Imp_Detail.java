@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Package_Imp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Package_Imp_Detail")
 public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Detail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Detail (Properties ctx, int AD_Package_Imp_Detail_ID, String trxName)
@@ -72,9 +73,8 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
     }
 
 	/** Set Action.
-		@param Action 
-		Indicates the Action to be performed
-	  */
+		@param Action Indicates the Action to be performed
+	*/
 	public void setAction (String Action)
 	{
 		set_Value (COLUMNNAME_Action, Action);
@@ -83,24 +83,25 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	/** Get Action.
 		@return Indicates the Action to be performed
 	  */
-	public String getAction () 
+	public String getAction()
 	{
 		return (String)get_Value(COLUMNNAME_Action);
 	}
 
 	/** Set Backup.
-		@param AD_Backup_ID Backup	  */
+		@param AD_Backup_ID Backup
+	*/
 	public void setAD_Backup_ID (int AD_Backup_ID)
 	{
-		if (AD_Backup_ID < 1) 
+		if (AD_Backup_ID < 1)
 			set_Value (COLUMNNAME_AD_Backup_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Backup_ID, Integer.valueOf(AD_Backup_ID));
 	}
 
 	/** Get Backup.
 		@return Backup	  */
-	public int getAD_Backup_ID () 
+	public int getAD_Backup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Backup_ID);
 		if (ii == null)
@@ -109,18 +110,19 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	}
 
 	/** Set Imp. Package Detail.
-		@param AD_Package_Imp_Detail_ID Imp. Package Detail	  */
+		@param AD_Package_Imp_Detail_ID Imp. Package Detail
+	*/
 	public void setAD_Package_Imp_Detail_ID (int AD_Package_Imp_Detail_ID)
 	{
-		if (AD_Package_Imp_Detail_ID < 1) 
+		if (AD_Package_Imp_Detail_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Detail_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Detail_ID, Integer.valueOf(AD_Package_Imp_Detail_ID));
 	}
 
 	/** Get Imp. Package Detail.
 		@return Imp. Package Detail	  */
-	public int getAD_Package_Imp_Detail_ID () 
+	public int getAD_Package_Imp_Detail_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_Detail_ID);
 		if (ii == null)
@@ -129,7 +131,8 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	}
 
 	/** Set AD_Package_Imp_Detail_UU.
-		@param AD_Package_Imp_Detail_UU AD_Package_Imp_Detail_UU	  */
+		@param AD_Package_Imp_Detail_UU AD_Package_Imp_Detail_UU
+	*/
 	public void setAD_Package_Imp_Detail_UU (String AD_Package_Imp_Detail_UU)
 	{
 		set_Value (COLUMNNAME_AD_Package_Imp_Detail_UU, AD_Package_Imp_Detail_UU);
@@ -137,29 +140,31 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 
 	/** Get AD_Package_Imp_Detail_UU.
 		@return AD_Package_Imp_Detail_UU	  */
-	public String getAD_Package_Imp_Detail_UU () 
+	public String getAD_Package_Imp_Detail_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Detail_UU);
 	}
 
 	public org.compiere.model.I_AD_Package_Imp getAD_Package_Imp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Package_Imp)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp.Table_Name)
-			.getPO(getAD_Package_Imp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Package_Imp)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp.Table_ID)
+			.getPO(getAD_Package_Imp_ID(), get_TrxName());
+	}
 
 	/** Set Package Imp..
-		@param AD_Package_Imp_ID Package Imp.	  */
+		@param AD_Package_Imp_ID Package Imp.
+	*/
 	public void setAD_Package_Imp_ID (int AD_Package_Imp_ID)
 	{
-		if (AD_Package_Imp_ID < 1) 
+		if (AD_Package_Imp_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_ID, Integer.valueOf(AD_Package_Imp_ID));
 	}
 
 	/** Get Package Imp..
 		@return Package Imp.	  */
-	public int getAD_Package_Imp_ID () 
+	public int getAD_Package_Imp_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_ID);
 		if (ii == null)
@@ -168,26 +173,26 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -195,10 +200,24 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		return ii.intValue();
 	}
 
+	/** Set Execution Code.
+		@param ExecCode Execution Code
+	*/
+	public void setExecCode (String ExecCode)
+	{
+		set_Value (COLUMNNAME_ExecCode, ExecCode);
+	}
+
+	/** Get Execution Code.
+		@return Execution Code	  */
+	public String getExecCode()
+	{
+		return (String)get_Value(COLUMNNAME_ExecCode);
+	}
+
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -207,27 +226,26 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_Value (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -235,8 +253,25 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		return ii.intValue();
 	}
 
+	/** Set Result.
+		@param Result Result of the action taken
+	*/
+	public void setResult (String Result)
+	{
+		set_ValueNoCheck (COLUMNNAME_Result, Result);
+	}
+
+	/** Get Result.
+		@return Result of the action taken
+	  */
+	public String getResult()
+	{
+		return (String)get_Value(COLUMNNAME_Result);
+	}
+
 	/** Set Success.
-		@param Success Success	  */
+		@param Success Success
+	*/
 	public void setSuccess (String Success)
 	{
 		set_Value (COLUMNNAME_Success, Success);
@@ -244,15 +279,14 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 
 	/** Get Success.
 		@return Success	  */
-	public String getSuccess () 
+	public String getSuccess()
 	{
 		return (String)get_Value(COLUMNNAME_Success);
 	}
 
 	/** Set DB Table Name.
-		@param TableName 
-		Name of the table in the database
-	  */
+		@param TableName Name of the table in the database
+	*/
 	public void setTableName (String TableName)
 	{
 		set_Value (COLUMNNAME_TableName, TableName);
@@ -261,15 +295,14 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	/** Get DB Table Name.
 		@return Name of the table in the database
 	  */
-	public String getTableName () 
+	public String getTableName()
 	{
 		return (String)get_Value(COLUMNNAME_TableName);
 	}
 
 	/** Set Type.
-		@param Type 
-		Type of Validation (SQL, Java Script, Java Language)
-	  */
+		@param Type Type of Validation (SQL, Java Script, Java Language)
+	*/
 	public void setType (String Type)
 	{
 		set_Value (COLUMNNAME_Type, Type);
@@ -278,13 +311,14 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	/** Get Type.
 		@return Type of Validation (SQL, Java Script, Java Language)
 	  */
-	public String getType () 
+	public String getType()
 	{
 		return (String)get_Value(COLUMNNAME_Type);
 	}
 
 	/** Set Uninstall.
-		@param Uninstall Uninstall	  */
+		@param Uninstall Uninstall
+	*/
 	public void setUninstall (boolean Uninstall)
 	{
 		set_ValueNoCheck (COLUMNNAME_Uninstall, Boolean.valueOf(Uninstall));
@@ -292,7 +326,7 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 
 	/** Get Uninstall.
 		@return Uninstall	  */
-	public boolean isUninstall () 
+	public boolean isUninstall()
 	{
 		Object oo = get_Value(COLUMNNAME_Uninstall);
 		if (oo != null) 

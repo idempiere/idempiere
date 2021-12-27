@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for M_Product_Acct
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_Product_Acct")
 public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_Product_Acct (Properties ctx, int M_Product_Acct_ID, String trxName)
@@ -82,26 +83,26 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -110,7 +111,8 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	/** Set M_Product_Acct_UU.
-		@param M_Product_Acct_UU M_Product_Acct_UU	  */
+		@param M_Product_Acct_UU M_Product_Acct_UU
+	*/
 	public void setM_Product_Acct_UU (String M_Product_Acct_UU)
 	{
 		set_Value (COLUMNNAME_M_Product_Acct_UU, M_Product_Acct_UU);
@@ -118,32 +120,32 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 
 	/** Get M_Product_Acct_UU.
 		@return M_Product_Acct_UU	  */
-	public String getM_Product_Acct_UU () 
+	public String getM_Product_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Product_Acct_UU);
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -152,14 +154,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Product Asset.
-		@param P_Asset_Acct 
-		Account for Product Asset (Inventory)
-	  */
+		@param P_Asset_Acct Account for Product Asset (Inventory)
+	*/
 	public void setP_Asset_Acct (int P_Asset_Acct)
 	{
 		set_Value (COLUMNNAME_P_Asset_Acct, Integer.valueOf(P_Asset_Acct));
@@ -168,7 +170,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Product Asset.
 		@return Account for Product Asset (Inventory)
 	  */
-	public int getP_Asset_Acct () 
+	public int getP_Asset_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_Asset_Acct);
 		if (ii == null)
@@ -177,14 +179,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_AverageCostVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_AverageCostVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Average Cost Variance.
-		@param P_AverageCostVariance_Acct 
-		Average Cost Variance
-	  */
+		@param P_AverageCostVariance_Acct Average Cost Variance
+	*/
 	public void setP_AverageCostVariance_Acct (int P_AverageCostVariance_Acct)
 	{
 		set_Value (COLUMNNAME_P_AverageCostVariance_Acct, Integer.valueOf(P_AverageCostVariance_Acct));
@@ -193,7 +195,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Average Cost Variance.
 		@return Average Cost Variance
 	  */
-	public int getP_AverageCostVariance_Acct () 
+	public int getP_AverageCostVariance_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_AverageCostVariance_Acct);
 		if (ii == null)
@@ -202,14 +204,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_COGS_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_COGS_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_COGS_Acct(), get_TrxName());
+	}
 
 	/** Set Product COGS.
-		@param P_COGS_Acct 
-		Account for Cost of Goods Sold
-	  */
+		@param P_COGS_Acct Account for Cost of Goods Sold
+	*/
 	public void setP_COGS_Acct (int P_COGS_Acct)
 	{
 		set_Value (COLUMNNAME_P_COGS_Acct, Integer.valueOf(P_COGS_Acct));
@@ -218,7 +220,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Product COGS.
 		@return Account for Cost of Goods Sold
 	  */
-	public int getP_COGS_Acct () 
+	public int getP_COGS_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_COGS_Acct);
 		if (ii == null)
@@ -227,14 +229,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_CostAdjustment_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_CostAdjustment_Acct(), get_TrxName());
+	}
 
 	/** Set Cost Adjustment.
-		@param P_CostAdjustment_Acct 
-		Product Cost Adjustment Account
-	  */
+		@param P_CostAdjustment_Acct Product Cost Adjustment Account
+	*/
 	public void setP_CostAdjustment_Acct (int P_CostAdjustment_Acct)
 	{
 		set_Value (COLUMNNAME_P_CostAdjustment_Acct, Integer.valueOf(P_CostAdjustment_Acct));
@@ -243,7 +245,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Cost Adjustment.
 		@return Product Cost Adjustment Account
 	  */
-	public int getP_CostAdjustment_Acct () 
+	public int getP_CostAdjustment_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_CostAdjustment_Acct);
 		if (ii == null)
@@ -252,14 +254,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_Expense_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Expense_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Expense_Acct(), get_TrxName());
+	}
 
 	/** Set Product Expense.
-		@param P_Expense_Acct 
-		Account for Product Expense
-	  */
+		@param P_Expense_Acct Account for Product Expense
+	*/
 	public void setP_Expense_Acct (int P_Expense_Acct)
 	{
 		set_Value (COLUMNNAME_P_Expense_Acct, Integer.valueOf(P_Expense_Acct));
@@ -268,7 +270,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Product Expense.
 		@return Account for Product Expense
 	  */
-	public int getP_Expense_Acct () 
+	public int getP_Expense_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_Expense_Acct);
 		if (ii == null)
@@ -277,14 +279,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_InventoryClearing_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_InventoryClearing_Acct(), get_TrxName());
+	}
 
 	/** Set Inventory Clearing.
-		@param P_InventoryClearing_Acct 
-		Product Inventory Clearing Account
-	  */
+		@param P_InventoryClearing_Acct Product Inventory Clearing Account
+	*/
 	public void setP_InventoryClearing_Acct (int P_InventoryClearing_Acct)
 	{
 		set_Value (COLUMNNAME_P_InventoryClearing_Acct, Integer.valueOf(P_InventoryClearing_Acct));
@@ -293,7 +295,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Inventory Clearing.
 		@return Product Inventory Clearing Account
 	  */
-	public int getP_InventoryClearing_Acct () 
+	public int getP_InventoryClearing_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_InventoryClearing_Acct);
 		if (ii == null)
@@ -302,14 +304,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_InvoicePriceVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_InvoicePriceVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Invoice Price Variance.
-		@param P_InvoicePriceVariance_Acct 
-		Difference between Costs and Invoice Price (IPV)
-	  */
+		@param P_InvoicePriceVariance_Acct Difference between Costs and Invoice Price (IPV)
+	*/
 	public void setP_InvoicePriceVariance_Acct (int P_InvoicePriceVariance_Acct)
 	{
 		set_Value (COLUMNNAME_P_InvoicePriceVariance_Acct, Integer.valueOf(P_InvoicePriceVariance_Acct));
@@ -318,7 +320,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Invoice Price Variance.
 		@return Difference between Costs and Invoice Price (IPV)
 	  */
-	public int getP_InvoicePriceVariance_Acct () 
+	public int getP_InvoicePriceVariance_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_InvoicePriceVariance_Acct);
 		if (ii == null)
@@ -327,14 +329,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_LandedCostClearing_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_LandedCostClearing_Acct(), get_TrxName());
+	}
 
 	/** Set Landed Cost Clearing.
-		@param P_LandedCostClearing_Acct 
-		Product Landed Cost Clearing Account
-	  */
+		@param P_LandedCostClearing_Acct Product Landed Cost Clearing Account
+	*/
 	public void setP_LandedCostClearing_Acct (int P_LandedCostClearing_Acct)
 	{
 		set_Value (COLUMNNAME_P_LandedCostClearing_Acct, Integer.valueOf(P_LandedCostClearing_Acct));
@@ -343,7 +345,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Landed Cost Clearing.
 		@return Product Landed Cost Clearing Account
 	  */
-	public int getP_LandedCostClearing_Acct () 
+	public int getP_LandedCostClearing_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_LandedCostClearing_Acct);
 		if (ii == null)
@@ -352,14 +354,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_PurchasePriceVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_PurchasePriceVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_PurchasePriceVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Purchase Price Variance.
-		@param P_PurchasePriceVariance_Acct 
-		Difference between Standard Cost and Purchase Price (PPV)
-	  */
+		@param P_PurchasePriceVariance_Acct Difference between Standard Cost and Purchase Price (PPV)
+	*/
 	public void setP_PurchasePriceVariance_Acct (int P_PurchasePriceVariance_Acct)
 	{
 		set_Value (COLUMNNAME_P_PurchasePriceVariance_Acct, Integer.valueOf(P_PurchasePriceVariance_Acct));
@@ -368,7 +370,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Purchase Price Variance.
 		@return Difference between Standard Cost and Purchase Price (PPV)
 	  */
-	public int getP_PurchasePriceVariance_Acct () 
+	public int getP_PurchasePriceVariance_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_PurchasePriceVariance_Acct);
 		if (ii == null)
@@ -377,14 +379,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_RateVariance_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_RateVariance_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_RateVariance_Acct(), get_TrxName());
+	}
 
 	/** Set Rate Variance.
-		@param P_RateVariance_Acct 
-		The Rate Variance account is the account used Manufacturing Order
-	  */
+		@param P_RateVariance_Acct The Rate Variance account is the account used Manufacturing Order
+	*/
 	public void setP_RateVariance_Acct (int P_RateVariance_Acct)
 	{
 		set_Value (COLUMNNAME_P_RateVariance_Acct, Integer.valueOf(P_RateVariance_Acct));
@@ -393,7 +395,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Rate Variance.
 		@return The Rate Variance account is the account used Manufacturing Order
 	  */
-	public int getP_RateVariance_Acct () 
+	public int getP_RateVariance_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_RateVariance_Acct);
 		if (ii == null)
@@ -402,14 +404,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_Revenue_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Revenue_Acct(), get_TrxName());
+	}
 
 	/** Set Product Revenue.
-		@param P_Revenue_Acct 
-		Account for Product Revenue (Sales Account)
-	  */
+		@param P_Revenue_Acct Account for Product Revenue (Sales Account)
+	*/
 	public void setP_Revenue_Acct (int P_Revenue_Acct)
 	{
 		set_Value (COLUMNNAME_P_Revenue_Acct, Integer.valueOf(P_Revenue_Acct));
@@ -418,7 +420,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Product Revenue.
 		@return Account for Product Revenue (Sales Account)
 	  */
-	public int getP_Revenue_Acct () 
+	public int getP_Revenue_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_Revenue_Acct);
 		if (ii == null)
@@ -427,14 +429,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_TradeDiscountGrant_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_TradeDiscountGrant_Acct(), get_TrxName());
+	}
 
 	/** Set Trade Discount Granted.
-		@param P_TradeDiscountGrant_Acct 
-		Trade Discount Granted Account
-	  */
+		@param P_TradeDiscountGrant_Acct Trade Discount Granted Account
+	*/
 	public void setP_TradeDiscountGrant_Acct (int P_TradeDiscountGrant_Acct)
 	{
 		set_Value (COLUMNNAME_P_TradeDiscountGrant_Acct, Integer.valueOf(P_TradeDiscountGrant_Acct));
@@ -443,7 +445,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Trade Discount Granted.
 		@return Trade Discount Granted Account
 	  */
-	public int getP_TradeDiscountGrant_Acct () 
+	public int getP_TradeDiscountGrant_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_TradeDiscountGrant_Acct);
 		if (ii == null)
@@ -452,14 +454,14 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getP_TradeDiscountRec_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_TradeDiscountRec_Acct(), get_TrxName());
+	}
 
 	/** Set Trade Discount Received.
-		@param P_TradeDiscountRec_Acct 
-		Trade Discount Receivable Account
-	  */
+		@param P_TradeDiscountRec_Acct Trade Discount Receivable Account
+	*/
 	public void setP_TradeDiscountRec_Acct (int P_TradeDiscountRec_Acct)
 	{
 		set_Value (COLUMNNAME_P_TradeDiscountRec_Acct, Integer.valueOf(P_TradeDiscountRec_Acct));
@@ -468,7 +470,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/** Get Trade Discount Received.
 		@return Trade Discount Receivable Account
 	  */
-	public int getP_TradeDiscountRec_Acct () 
+	public int getP_TradeDiscountRec_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_TradeDiscountRec_Acct);
 		if (ii == null)

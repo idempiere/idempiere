@@ -47,10 +47,10 @@ public class StandardHeaderFooter implements IPrintHeaderFooter {
 
 	/**************************************************************************
 	 *	Create Standard Header/Footer
-	 *  <pre>
+	 *  <pre>{@code
 	 *  title           C        Page x of x
 	 *  Copyright      who         date&time
-	 *  </pre>
+	 *  }</pre>
 	 */
 	@Override
 	public void createHeaderFooter(MPrintFormat m_format, HeaderFooter m_headerFooter, Rectangle m_header, Rectangle m_footer, MQuery m_query)

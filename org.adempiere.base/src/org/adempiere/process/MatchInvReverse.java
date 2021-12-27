@@ -27,6 +27,7 @@ import org.compiere.util.Env;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class MatchInvReverse extends SvrProcess {
 	private int		p_M_MatchInv_ID = 0;
 	

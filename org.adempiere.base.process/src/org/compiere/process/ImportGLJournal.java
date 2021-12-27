@@ -39,6 +39,7 @@ import org.compiere.util.TimeUtil;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ImportGLJournal.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ImportGLJournal extends SvrProcess
 {
 	/**	Client to be imported to		*/
@@ -569,17 +570,6 @@ public class ImportGLJournal extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Zero Acct Balance=" + no);
-		//AZ Goodwill
-		//BF: 2391401 Remove account balance limitation in Import GL Journal 
-		/*
-		sql = new StringBuilder ("UPDATE I_GLJournal i "
-			+ "SET I_ErrorMsg=I_ErrorMsg||'WARN=Check Acct Balance, ' "
-			+ "WHERE ABS(AmtAcctDr-AmtAcctCr)>100000000"	//	100 mio
-			+ " AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (no != 0)
-			log.warning ("Check Acct Balance=" + no);
-		*/
 
 		/*********************************************************************/
 

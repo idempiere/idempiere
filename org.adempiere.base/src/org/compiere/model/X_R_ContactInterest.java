@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_ContactInterest
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_ContactInterest")
 public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_ContactInterest (Properties ctx, int R_ContactInterest_ID, String trxName)
@@ -74,26 +75,26 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -110,9 +111,8 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
     }
 
 	/** Set Opt-out Date.
-		@param OptOutDate 
-		Date the contact opted out
-	  */
+		@param OptOutDate Date the contact opted out
+	*/
 	public void setOptOutDate (Timestamp OptOutDate)
 	{
 		set_Value (COLUMNNAME_OptOutDate, OptOutDate);
@@ -121,13 +121,14 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 	/** Get Opt-out Date.
 		@return Date the contact opted out
 	  */
-	public Timestamp getOptOutDate () 
+	public Timestamp getOptOutDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_OptOutDate);
 	}
 
 	/** Set R_ContactInterest_UU.
-		@param R_ContactInterest_UU R_ContactInterest_UU	  */
+		@param R_ContactInterest_UU R_ContactInterest_UU
+	*/
 	public void setR_ContactInterest_UU (String R_ContactInterest_UU)
 	{
 		set_Value (COLUMNNAME_R_ContactInterest_UU, R_ContactInterest_UU);
@@ -135,32 +136,32 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 
 	/** Get R_ContactInterest_UU.
 		@return R_ContactInterest_UU	  */
-	public String getR_ContactInterest_UU () 
+	public String getR_ContactInterest_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_ContactInterest_UU);
 	}
 
 	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_InterestArea)MTable.get(getCtx(), org.compiere.model.I_R_InterestArea.Table_Name)
-			.getPO(getR_InterestArea_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_InterestArea)MTable.get(getCtx(), org.compiere.model.I_R_InterestArea.Table_ID)
+			.getPO(getR_InterestArea_ID(), get_TrxName());
+	}
 
 	/** Set Interest Area.
-		@param R_InterestArea_ID 
-		Interest Area or Topic
-	  */
+		@param R_InterestArea_ID Interest Area or Topic
+	*/
 	public void setR_InterestArea_ID (int R_InterestArea_ID)
 	{
-		if (R_InterestArea_ID < 1) 
+		if (R_InterestArea_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_InterestArea_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_InterestArea_ID, Integer.valueOf(R_InterestArea_ID));
 	}
 
 	/** Get Interest Area.
 		@return Interest Area or Topic
 	  */
-	public int getR_InterestArea_ID () 
+	public int getR_InterestArea_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_InterestArea_ID);
 		if (ii == null)
@@ -169,9 +170,8 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 	}
 
 	/** Set Subscribe Date.
-		@param SubscribeDate 
-		Date the contact actively subscribed
-	  */
+		@param SubscribeDate Date the contact actively subscribed
+	*/
 	public void setSubscribeDate (Timestamp SubscribeDate)
 	{
 		set_Value (COLUMNNAME_SubscribeDate, SubscribeDate);
@@ -180,7 +180,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 	/** Get Subscribe Date.
 		@return Date the contact actively subscribed
 	  */
-	public Timestamp getSubscribeDate () 
+	public Timestamp getSubscribeDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_SubscribeDate);
 	}

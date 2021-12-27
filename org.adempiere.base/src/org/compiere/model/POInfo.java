@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ import org.compiere.util.Env;
  *  @version $Id: POInfo.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  *  @author Victor Perez, e-Evolution SC
  *			<li>[ 2195894 ] Improve performance in PO engine
- *			<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2195894&group_id=176962&atid=879335
+ *			<li>https://sourceforge.net/p/adempiere/feature-requests/555/
  */
 public class POInfo implements Serializable
 {
@@ -747,6 +748,13 @@ public class POInfo implements Serializable
 					return "LessThanMinValue"+";"+m_columns[index].ValueMin_BD.toPlainString();
 				}
 			}
+			else if (value instanceof Timestamp && m_columns[index].ValueMin_TS != null)    // Date
+			{
+				if (((Timestamp) value).before(m_columns[index].ValueMin_TS))
+				{
+					return "LessThanMinValue"+";"+m_columns[index].ValueMin;
+				}
+			}
 			else	//	String
 			{
 				int comp = m_columns[index].ValueMin.compareTo(value.toString());
@@ -772,6 +780,13 @@ public class POInfo implements Serializable
 				if (comp < 0)
 				{
 					return "MoreThanMaxValue"+";"+m_columns[index].ValueMax_BD.toPlainString();
+				}
+			}
+			else if (value instanceof Timestamp && m_columns[index].ValueMax_TS != null)    // Date
+			{
+				if (((Timestamp) value).after(m_columns[index].ValueMax_TS))
+				{
+					return "MoreThanMaxValue"+";"+m_columns[index].ValueMax;
 				}
 			}
 			else	//	String

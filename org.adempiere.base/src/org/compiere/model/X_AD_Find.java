@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Find
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Find")
 public class X_AD_Find extends PO implements I_AD_Find, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
@@ -80,26 +81,26 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -108,18 +109,19 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	}
 
 	/** Set Find.
-		@param AD_Find_ID Find	  */
+		@param AD_Find_ID Find
+	*/
 	public void setAD_Find_ID (int AD_Find_ID)
 	{
-		if (AD_Find_ID < 1) 
+		if (AD_Find_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Find_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Find_ID, Integer.valueOf(AD_Find_ID));
 	}
 
 	/** Get Find.
 		@return Find	  */
-	public int getAD_Find_ID () 
+	public int getAD_Find_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Find_ID);
 		if (ii == null)
@@ -136,7 +138,8 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
     }
 
 	/** Set AD_Find_UU.
-		@param AD_Find_UU AD_Find_UU	  */
+		@param AD_Find_UU AD_Find_UU
+	*/
 	public void setAD_Find_UU (String AD_Find_UU)
 	{
 		set_Value (COLUMNNAME_AD_Find_UU, AD_Find_UU);
@@ -144,7 +147,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 
 	/** Get AD_Find_UU.
 		@return AD_Find_UU	  */
-	public String getAD_Find_UU () 
+	public String getAD_Find_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Find_UU);
 	}
@@ -156,9 +159,8 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/** Or = O */
 	public static final String ANDOR_Or = "O";
 	/** Set And/Or.
-		@param AndOr 
-		Logical operation: AND or OR
-	  */
+		@param AndOr Logical operation: AND or OR
+	*/
 	public void setAndOr (String AndOr)
 	{
 
@@ -168,13 +170,14 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/** Get And/Or.
 		@return Logical operation: AND or OR
 	  */
-	public String getAndOr () 
+	public String getAndOr()
 	{
 		return (String)get_Value(COLUMNNAME_AndOr);
 	}
 
 	/** Set Find.
-		@param Find_ID Find	  */
+		@param Find_ID Find
+	*/
 	public void setFind_ID (BigDecimal Find_ID)
 	{
 		set_Value (COLUMNNAME_Find_ID, Find_ID);
@@ -182,7 +185,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 
 	/** Get Find.
 		@return Find	  */
-	public BigDecimal getFind_ID () 
+	public BigDecimal getFind_ID()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Find_ID);
 		if (bd == null)
@@ -192,28 +195,27 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 
 	/** Operation AD_Reference_ID=205 */
 	public static final int OPERATION_AD_Reference_ID=205;
+	/** != = != */
+	public static final String OPERATION_NotEq = "!=";
+	/** &lt; = &lt;&lt; */
+	public static final String OPERATION_Le = "<<";
+	/** &lt;= = &lt;= */
+	public static final String OPERATION_LeEq = "<=";
 	/**  = = == */
 	public static final String OPERATION_Eq = "==";
-	/** >= = >= */
+	/** &gt;= = &gt;= */
 	public static final String OPERATION_GtEq = ">=";
-	/** > = >> */
+	/** &gt; = &gt;&gt; */
 	public static final String OPERATION_Gt = ">>";
-	/** < = << */
-	public static final String OPERATION_Le = "<<";
 	/**  ~ = ~~ */
 	public static final String OPERATION_Like = "~~";
-	/** <= = <= */
-	public static final String OPERATION_LeEq = "<=";
-	/** |<x>| = AB */
+	/** |&lt;x&gt;| = AB */
 	public static final String OPERATION_X = "AB";
 	/** sql = SQ */
 	public static final String OPERATION_Sql = "SQ";
-	/** != = != */
-	public static final String OPERATION_NotEq = "!=";
 	/** Set Operation.
-		@param Operation 
-		Compare Operation
-	  */
+		@param Operation Compare Operation
+	*/
 	public void setOperation (String Operation)
 	{
 
@@ -223,15 +225,14 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/** Get Operation.
 		@return Compare Operation
 	  */
-	public String getOperation () 
+	public String getOperation()
 	{
 		return (String)get_Value(COLUMNNAME_Operation);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -240,15 +241,14 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Value To.
-		@param Value2 
-		Value To
-	  */
+		@param Value2 Value To
+	*/
 	public void setValue2 (String Value2)
 	{
 		set_Value (COLUMNNAME_Value2, Value2);
@@ -257,7 +257,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/** Get Value To.
 		@return Value To
 	  */
-	public String getValue2 () 
+	public String getValue2()
 	{
 		return (String)get_Value(COLUMNNAME_Value2);
 	}

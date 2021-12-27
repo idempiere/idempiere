@@ -120,8 +120,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 	Get MColumn given TableName and ColumnName
 	 *	@param ctx context
-	 * 	@param TableName
-	 * 	@param ColumnName
+	 * 	@param tableName
+	 * 	@param columnName
 	 *	@return MColumn
 	 */
 	public static MColumn get (Properties ctx, String tableName, String columnName)
@@ -133,9 +133,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 	Get MColumn given TableName and ColumnName
 	 *	@param ctx context
-	 * 	@param TableName
-	 * 	@param ColumnName
-	 * 	@param TrxName
+	 *  @param tableName
+	 *  @param columnName
+	 *  @param trxName
 	 *	@return MColumn
 	 */
 	public static MColumn get (Properties ctx, String tableName, String columnName, String trxName)
@@ -526,11 +526,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		}
 
 		// IDEMPIERE-4911
-		MTable table = MTable.get(getAD_Table_ID());
+		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
 		String tableName = table.getTableName();
 		if (tableName.toLowerCase().endsWith("_trl")) {
 			String parentTable = tableName.substring(0, tableName.length()-4);
-			MColumn column = MColumn.get(getCtx(), parentTable, colname);
+			MColumn column = MColumn.get(getCtx(), parentTable, colname, get_TrxName());
 			if (column != null && column.isTranslated()) {
 				if (getFieldLength() < column.getFieldLength()) {
 					log.saveWarning("Warning", "Size increased to " + column.getFieldLength() + " in translated column " + tableName + "." + colname);
@@ -688,8 +688,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	//begin vpj-cd e-evolution
 	/**
 	 * 	get Column ID
-	 *  @param String windowName
-	 *	@param String columnName
+	 *  @param TableName
+	 *	@param columnName
 	 *	@return int retValue
 	 */
 	public static int getColumn_ID(String TableName,String columnName) {

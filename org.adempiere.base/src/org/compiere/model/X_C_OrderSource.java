@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for C_OrderSource
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_OrderSource")
 public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_OrderSource (Properties ctx, int C_OrderSource_ID, String trxName)
@@ -72,18 +73,19 @@ public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent
     }
 
 	/** Set Order Source.
-		@param C_OrderSource_ID Order Source	  */
+		@param C_OrderSource_ID Order Source
+	*/
 	public void setC_OrderSource_ID (int C_OrderSource_ID)
 	{
-		if (C_OrderSource_ID < 1) 
+		if (C_OrderSource_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_OrderSource_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_OrderSource_ID, Integer.valueOf(C_OrderSource_ID));
 	}
 
 	/** Get Order Source.
 		@return Order Source	  */
-	public int getC_OrderSource_ID () 
+	public int getC_OrderSource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderSource_ID);
 		if (ii == null)
@@ -92,7 +94,8 @@ public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent
 	}
 
 	/** Set C_OrderSource_UU.
-		@param C_OrderSource_UU C_OrderSource_UU	  */
+		@param C_OrderSource_UU C_OrderSource_UU
+	*/
 	public void setC_OrderSource_UU (String C_OrderSource_UU)
 	{
 		set_Value (COLUMNNAME_C_OrderSource_UU, C_OrderSource_UU);
@@ -100,15 +103,14 @@ public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent
 
 	/** Get C_OrderSource_UU.
 		@return C_OrderSource_UU	  */
-	public String getC_OrderSource_UU () 
+	public String getC_OrderSource_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_OrderSource_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -117,15 +119,14 @@ public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -134,15 +135,14 @@ public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -151,15 +151,14 @@ public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -168,7 +167,7 @@ public class X_C_OrderSource extends PO implements I_C_OrderSource, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

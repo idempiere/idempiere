@@ -49,7 +49,6 @@ public class WReport implements EventListener<Event> {
 	 *	Constructor
 	 *
 	 *  @param AD_Table_ID table
-	 *  @param invoker component to display popup (optional)
 	 *  @param query query
 	 */
 	public WReport (int AD_Table_ID, MQuery	query)
@@ -61,7 +60,6 @@ public class WReport implements EventListener<Event> {
 	 *	Constructor
 	 *
 	 *  @param AD_Table_ID table
-	 *  @param invoker component to display popup (optional)
 	 *  @param query query
 	 *  @param parent The invoking parent window
 	 *  @param WindowNo The invoking parent window number
@@ -76,7 +74,6 @@ public class WReport implements EventListener<Event> {
 	 *	Constructor
 	 *
 	 *  @param AD_Table_ID table
-	 *  @param invoker component to display popup (optional)
 	 *  @param query query
 	 *  @param parent The invoking parent window
 	 *  @param WindowNo The invoking parent window number

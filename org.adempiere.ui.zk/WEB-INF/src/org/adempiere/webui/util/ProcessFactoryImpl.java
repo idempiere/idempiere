@@ -13,14 +13,16 @@
  *****************************************************************************/
 package org.adempiere.webui.util;
 
+import org.adempiere.base.AnnotationBasedProcessFactory;
 import org.adempiere.base.IProcessFactory;
-import org.compiere.process.ProcessCall;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author hengsin
  *
  */
-public class ProcessFactoryImpl implements IProcessFactory {
+@Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=1"})
+public class ProcessFactoryImpl extends AnnotationBasedProcessFactory {
 
 	/**
 	 * default constructor 
@@ -28,18 +30,9 @@ public class ProcessFactoryImpl implements IProcessFactory {
 	public ProcessFactoryImpl() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.base.IProcessFactory#newProcessInstance(java.lang.String)
-	 */
 	@Override
-	public ProcessCall newProcessInstance(String className) {
-		ProcessCall process = null;
-		try {
-			Class<?> clazz = getClass().getClassLoader().loadClass(className);
-			process =  (ProcessCall) clazz.getDeclaredConstructor().newInstance();
-		} catch (Exception e) {
-		}
-		return process;
+	protected String[] getPackages() {
+		return new String[] {"org.adempiere.webui.process"};
 	}
 
 }

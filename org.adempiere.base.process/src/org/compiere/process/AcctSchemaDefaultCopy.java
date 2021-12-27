@@ -19,8 +19,22 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaDefault;
+import org.compiere.model.MColumn;
+import org.compiere.model.MProductCategoryAcct;
+import org.compiere.model.PO;
+import org.compiere.model.X_C_BP_Customer_Acct;
+import org.compiere.model.X_C_BP_Group_Acct;
+import org.compiere.model.X_C_BP_Vendor_Acct;
+import org.compiere.model.X_C_BankAccount_Acct;
+import org.compiere.model.X_C_CashBook_Acct;
+import org.compiere.model.X_C_Charge_Acct;
+import org.compiere.model.X_C_Project_Acct;
+import org.compiere.model.X_C_Tax_Acct;
+import org.compiere.model.X_M_Product_Acct;
+import org.compiere.model.X_M_Warehouse_Acct;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 
@@ -30,6 +44,7 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: AcctSchemaDefaultCopy.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class AcctSchemaDefaultCopy extends SvrProcess
 {
 	/**	Acct Schema					*/
@@ -128,6 +143,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append("WHERE pa.M_Product_Category_ID=p.M_Product_Category_ID")
 				.append(" AND pa.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE M_Product_Category_Acct SET M_Product_Category_Acct_UU=generate_uuid() WHERE M_Product_Category_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MProductCategoryAcct.Table_Name, PO.getUUIDColumnName(MProductCategoryAcct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @M_Product_Category_ID@");
 		createdTotal += created;
 		if (!p_CopyOverwriteAcct)	//	Insert new Products
@@ -153,6 +172,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 					.append("WHERE pa.M_Product_ID=p.M_Product_ID")
 					.append(" AND pa.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 			created = DB.executeUpdate(sql.toString(), get_TrxName());
+			if (DB.isGenerateUUIDSupported())
+				DB.executeUpdateEx("UPDATE M_Product_Acct SET M_Product_Acct_UU=generate_uuid() WHERE M_Product_Acct_UU IS NULL", get_TrxName());
+			else
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_M_Product_Acct.Table_Name, PO.getUUIDColumnName(X_M_Product_Acct.Table_Name)), get_TrxName());
 			addLog(0, null, new BigDecimal(created), "@Created@ @M_Product_ID@");
 			createdTotal += created;
 		}
@@ -202,43 +225,13 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append("WHERE a.C_BP_Group_ID=x.C_BP_Group_ID")
 				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE C_BP_Group_Acct SET C_BP_Group_Acct_UU=generate_uuid() WHERE C_BP_Group_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_BP_Group_Acct.Table_Name, PO.getUUIDColumnName(X_C_BP_Group_Acct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_BP_Group_ID@");
 		createdTotal += created;
 
-//IDEMPIERE-362 Hide things that don't work on iDempiere		
-		//	Update Business Partner - Employee
-		/*
-		if (p_CopyOverwriteAcct)
-		{
-			sql = new StringBuilder("UPDATE C_BP_Employee_Acct a ")
-				.append("SET E_Expense_Acct=").append(acct.getE_Expense_Acct())
-				.append(", E_Prepayment_Acct=").append(acct.getE_Prepayment_Acct())
-				.append(", Updated=getDate(), UpdatedBy=0 ")
-				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
-				.append(" AND EXISTS (SELECT * FROM C_BP_Employee_Acct x ")
-					.append("WHERE x.C_BPartner_ID=a.C_BPartner_ID)");
-			updated = DB.executeUpdate(sql.toString(), get_TrxName());
-			addLog(0, null, new BigDecimal(updated), "@Updated@ @C_BPartner_ID@ @IsEmployee@");
-			updatedTotal += updated;
-		}
-		//	Insert new Business Partner - Employee
-		sql = new StringBuilder("INSERT INTO C_BP_Employee_Acct ")
-			.append("(C_BPartner_ID, C_AcctSchema_ID,")
-			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
-			.append(" E_Expense_Acct, E_Prepayment_Acct) ")
-			.append("SELECT x.C_BPartner_ID, acct.C_AcctSchema_ID,")
-			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', getDate(), 0, getDate(), 0,")
-			.append(" acct.E_Expense_Acct, acct.E_Prepayment_Acct ")
-			.append("FROM C_BPartner x")
-			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
-			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
-			.append(" AND NOT EXISTS (SELECT * FROM C_BP_Employee_Acct a ")
-				.append("WHERE a.C_BPartner_ID=x.C_BPartner_ID")
-				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
-		created = DB.executeUpdate(sql.toString(), get_TrxName());
-		addLog(0, null, new BigDecimal(created), "@Created@ @C_BPartner_ID@ @IsEmployee@");
-		createdTotal += created;
-		*/
 		//
 		if (!p_CopyOverwriteAcct)
 		{
@@ -257,6 +250,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 					.append("WHERE ca.C_BPartner_ID=p.C_BPartner_ID")
 					.append(" AND ca.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 			created = DB.executeUpdate(sql.toString(), get_TrxName());
+			if (DB.isGenerateUUIDSupported())
+				DB.executeUpdateEx("UPDATE C_BP_Customer_Acct SET C_BP_Customer_Acct_UU=generate_uuid() WHERE C_BP_Customer_Acct_UU IS NULL", get_TrxName());
+			else
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_BP_Customer_Acct.Table_Name, PO.getUUIDColumnName(X_C_BP_Customer_Acct.Table_Name)), get_TrxName());
 			addLog(0, null, new BigDecimal(created), "@Created@ @C_BPartner_ID@ @IsCustomer@");
 			createdTotal += created;
 			//
@@ -274,6 +271,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append(" AND NOT EXISTS (SELECT * FROM C_BP_Vendor_Acct va ")
 					.append("WHERE va.C_BPartner_ID=p.C_BPartner_ID AND va.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 			created = DB.executeUpdate(sql.toString(), get_TrxName());
+			if (DB.isGenerateUUIDSupported())
+				DB.executeUpdateEx("UPDATE C_BP_Vendor_Acct SET C_BP_Vendor_Acct_UU=generate_uuid() WHERE C_BP_Vendor_Acct_UU IS NULL", get_TrxName());
+			else
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_BP_Vendor_Acct.Table_Name, PO.getUUIDColumnName(X_C_BP_Vendor_Acct.Table_Name)), get_TrxName());
 			addLog(0, null, new BigDecimal(created), "@Created@ @C_BPartner_ID@ @IsVendor@");
 			createdTotal += created;
 		}
@@ -306,6 +307,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append("WHERE a.M_Warehouse_ID=x.M_Warehouse_ID")
 				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE M_Warehouse_Acct SET M_Warehouse_Acct_UU=generate_uuid() WHERE M_Warehouse_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_M_Warehouse_Acct.Table_Name, PO.getUUIDColumnName(X_M_Warehouse_Acct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @M_Warehouse_ID@");
 		createdTotal += created;
 
@@ -339,6 +344,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append("WHERE a.C_Project_ID=x.C_Project_ID")
 				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE C_Project_Acct SET C_Project_Acct_UU=generate_uuid() WHERE C_Project_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_Project_Acct.Table_Name, PO.getUUIDColumnName(X_C_Project_Acct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_Project_ID@");
 		createdTotal += created;
 
@@ -373,6 +382,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append("WHERE a.C_Tax_ID=x.C_Tax_ID")
 				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE C_Tax_Acct SET C_Tax_Acct_UU=generate_uuid() WHERE C_Tax_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_Tax_Acct.Table_Name, PO.getUUIDColumnName(X_C_Tax_Acct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_Tax_ID@");
 		createdTotal += created;
 
@@ -412,42 +425,12 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append("WHERE a.C_BankAccount_ID=x.C_BankAccount_ID")
 				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE C_BankAccount_Acct SET C_BankAccount_Acct_UU=generate_uuid() WHERE C_BankAccount_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_BankAccount_Acct.Table_Name, PO.getUUIDColumnName(X_C_BankAccount_Acct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_BankAccount_ID@");
 		createdTotal += created;
-
-//IDEMPIERE-362 Hide things that don't work on iDempiere
-		//	Update Withholding
-		/*
-		if (p_CopyOverwriteAcct)
-		{
-			sql = new StringBuilder("UPDATE C_Withholding_Acct a ")
-				.append("SET Withholding_Acct=").append(acct.getWithholding_Acct())
-				.append(", Updated=getDate(), UpdatedBy=0 ")
-				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID) 
-				.append(" AND EXISTS (SELECT * FROM C_Withholding_Acct x ")
-					.append("WHERE x.C_Withholding_ID=a.C_Withholding_ID)");
-			updated = DB.executeUpdate(sql.toString(), get_TrxName());
-			addLog(0, null, new BigDecimal(updated), "@Updated@ @C_Withholding_ID@");
-			updatedTotal += updated;
-		}
-		//	Insert new Withholding
-		sql = new StringBuilder("INSERT INTO C_Withholding_Acct ")
-			.append("(C_Withholding_ID, C_AcctSchema_ID,")
-			.append(" AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,")
-			.append("	Withholding_Acct) ")
-			.append("SELECT x.C_Withholding_ID, acct.C_AcctSchema_ID,")
-			.append(" x.AD_Client_ID, x.AD_Org_ID, 'Y', getDate(), 0, getDate(), 0,")
-			.append(" acct.Withholding_Acct ")
-			.append("FROM C_Withholding x")
-			.append(" INNER JOIN C_AcctSchema_Default acct ON (x.AD_Client_ID=acct.AD_Client_ID) ")
-			.append("WHERE acct.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
-			.append(" AND NOT EXISTS (SELECT * FROM C_Withholding_Acct a ")
-				.append("WHERE a.C_Withholding_ID=x.C_Withholding_ID")
-				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
-		created = DB.executeUpdate(sql.toString(), get_TrxName());
-		addLog(0, null, new BigDecimal(created), "@Created@ @C_Withholding_ID@");
-		createdTotal += created;
-		*/
 		
 		//	Update Charge
 		if (p_CopyOverwriteAcct)
@@ -477,6 +460,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append("WHERE a.C_Charge_ID=x.C_Charge_ID")
 				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE C_Charge_Acct SET C_Charge_Acct_UU=generate_uuid() WHERE C_Charge_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_Charge_Acct.Table_Name, PO.getUUIDColumnName(X_C_Charge_Acct.Table_Name)), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_Charge_ID@");
 		createdTotal += created;
 
@@ -516,6 +503,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 				.append(" AND a.C_AcctSchema_ID=acct.C_AcctSchema_ID)");
 		created = DB.executeUpdate(sql.toString(), get_TrxName());
 		addLog(0, null, new BigDecimal(created), "@Created@ @C_Cashbook_ID@");
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE C_Cashbook_Acct SET C_Cashbook_Acct_UU=generate_uuid() WHERE C_Cashbook_Acct_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), X_C_CashBook_Acct.Table_Name, PO.getUUIDColumnName(X_C_CashBook_Acct.Table_Name)), get_TrxName());
 		createdTotal += created;
 		
 		StringBuilder msgreturn = new StringBuilder("@Created@=").append(createdTotal).append(", @Updated@=").append(updatedTotal);

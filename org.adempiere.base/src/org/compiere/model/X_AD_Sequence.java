@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Sequence
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Sequence")
 public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Sequence (Properties ctx, int AD_Sequence_ID, String trxName)
@@ -85,21 +86,20 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
     }
 
 	/** Set Sequence.
-		@param AD_Sequence_ID 
-		Document Sequence
-	  */
+		@param AD_Sequence_ID Document Sequence
+	*/
 	public void setAD_Sequence_ID (int AD_Sequence_ID)
 	{
-		if (AD_Sequence_ID < 1) 
+		if (AD_Sequence_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Sequence_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Sequence_ID, Integer.valueOf(AD_Sequence_ID));
 	}
 
 	/** Get Sequence.
 		@return Document Sequence
 	  */
-	public int getAD_Sequence_ID () 
+	public int getAD_Sequence_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Sequence_ID);
 		if (ii == null)
@@ -108,7 +108,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set AD_Sequence_UU.
-		@param AD_Sequence_UU AD_Sequence_UU	  */
+		@param AD_Sequence_UU AD_Sequence_UU
+	*/
 	public void setAD_Sequence_UU (String AD_Sequence_UU)
 	{
 		set_Value (COLUMNNAME_AD_Sequence_UU, AD_Sequence_UU);
@@ -116,15 +117,14 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 
 	/** Get AD_Sequence_UU.
 		@return AD_Sequence_UU	  */
-	public String getAD_Sequence_UU () 
+	public String getAD_Sequence_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Sequence_UU);
 	}
 
 	/** Set Current Next.
-		@param CurrentNext 
-		The next number to be used
-	  */
+		@param CurrentNext The next number to be used
+	*/
 	public void setCurrentNext (int CurrentNext)
 	{
 		set_Value (COLUMNNAME_CurrentNext, Integer.valueOf(CurrentNext));
@@ -133,7 +133,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Current Next.
 		@return The next number to be used
 	  */
-	public int getCurrentNext () 
+	public int getCurrentNext()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CurrentNext);
 		if (ii == null)
@@ -142,9 +142,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Current Next (System).
-		@param CurrentNextSys 
-		Next sequence for system use
-	  */
+		@param CurrentNextSys Next sequence for system use
+	*/
 	public void setCurrentNextSys (int CurrentNextSys)
 	{
 		set_Value (COLUMNNAME_CurrentNextSys, Integer.valueOf(CurrentNextSys));
@@ -153,7 +152,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Current Next (System).
 		@return Next sequence for system use
 	  */
-	public int getCurrentNextSys () 
+	public int getCurrentNextSys()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CurrentNextSys);
 		if (ii == null)
@@ -162,9 +161,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Date Column.
-		@param DateColumn 
-		Fully qualified date column
-	  */
+		@param DateColumn Fully qualified date column
+	*/
 	public void setDateColumn (String DateColumn)
 	{
 		set_Value (COLUMNNAME_DateColumn, DateColumn);
@@ -173,15 +171,14 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Date Column.
 		@return Fully qualified date column
 	  */
-	public String getDateColumn () 
+	public String getDateColumn()
 	{
 		return (String)get_Value(COLUMNNAME_DateColumn);
 	}
 
 	/** Set Decimal Pattern.
-		@param DecimalPattern 
-		Java Decimal Pattern
-	  */
+		@param DecimalPattern Java Decimal Pattern
+	*/
 	public void setDecimalPattern (String DecimalPattern)
 	{
 		set_Value (COLUMNNAME_DecimalPattern, DecimalPattern);
@@ -190,15 +187,14 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Decimal Pattern.
 		@return Java Decimal Pattern
 	  */
-	public String getDecimalPattern () 
+	public String getDecimalPattern()
 	{
 		return (String)get_Value(COLUMNNAME_DecimalPattern);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -207,15 +203,14 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Increment.
-		@param IncrementNo 
-		The number to increment the last document number by
-	  */
+		@param IncrementNo The number to increment the last document number by
+	*/
 	public void setIncrementNo (int IncrementNo)
 	{
 		set_Value (COLUMNNAME_IncrementNo, Integer.valueOf(IncrementNo));
@@ -224,7 +219,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Increment.
 		@return The number to increment the last document number by
 	  */
-	public int getIncrementNo () 
+	public int getIncrementNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IncrementNo);
 		if (ii == null)
@@ -233,9 +228,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Activate Audit.
-		@param IsAudited 
-		Activate Audit Trail of what numbers are generated
-	  */
+		@param IsAudited Activate Audit Trail of what numbers are generated
+	*/
 	public void setIsAudited (boolean IsAudited)
 	{
 		set_Value (COLUMNNAME_IsAudited, Boolean.valueOf(IsAudited));
@@ -244,7 +238,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Activate Audit.
 		@return Activate Audit Trail of what numbers are generated
 	  */
-	public boolean isAudited () 
+	public boolean isAudited()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAudited);
 		if (oo != null) 
@@ -257,9 +251,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Auto numbering.
-		@param IsAutoSequence 
-		Automatically assign the next number
-	  */
+		@param IsAutoSequence Automatically assign the next number
+	*/
 	public void setIsAutoSequence (boolean IsAutoSequence)
 	{
 		set_Value (COLUMNNAME_IsAutoSequence, Boolean.valueOf(IsAutoSequence));
@@ -268,7 +261,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Auto numbering.
 		@return Automatically assign the next number
 	  */
-	public boolean isAutoSequence () 
+	public boolean isAutoSequence()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoSequence);
 		if (oo != null) 
@@ -281,9 +274,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Organization level.
-		@param IsOrgLevelSequence 
-		This sequence can be defined for each organization
-	  */
+		@param IsOrgLevelSequence This sequence can be defined for each organization
+	*/
 	public void setIsOrgLevelSequence (boolean IsOrgLevelSequence)
 	{
 		set_Value (COLUMNNAME_IsOrgLevelSequence, Boolean.valueOf(IsOrgLevelSequence));
@@ -292,7 +284,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Organization level.
 		@return This sequence can be defined for each organization
 	  */
-	public boolean isOrgLevelSequence () 
+	public boolean isOrgLevelSequence()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOrgLevelSequence);
 		if (oo != null) 
@@ -305,9 +297,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Used for Record ID.
-		@param IsTableID 
-		The document number  will be used as the record key
-	  */
+		@param IsTableID The document number  will be used as the record key
+	*/
 	public void setIsTableID (boolean IsTableID)
 	{
 		set_Value (COLUMNNAME_IsTableID, Boolean.valueOf(IsTableID));
@@ -316,7 +307,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Used for Record ID.
 		@return The document number  will be used as the record key
 	  */
-	public boolean isTableID () 
+	public boolean isTableID()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTableID);
 		if (oo != null) 
@@ -329,9 +320,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -340,7 +330,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -354,9 +344,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
     }
 
 	/** Set Org Column.
-		@param OrgColumn 
-		Fully qualified Organization column (AD_Org_ID)
-	  */
+		@param OrgColumn Fully qualified Organization column (AD_Org_ID)
+	*/
 	public void setOrgColumn (String OrgColumn)
 	{
 		set_Value (COLUMNNAME_OrgColumn, OrgColumn);
@@ -365,15 +354,14 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Org Column.
 		@return Fully qualified Organization column (AD_Org_ID)
 	  */
-	public String getOrgColumn () 
+	public String getOrgColumn()
 	{
 		return (String)get_Value(COLUMNNAME_OrgColumn);
 	}
 
 	/** Set Prefix.
-		@param Prefix 
-		Prefix before the sequence number
-	  */
+		@param Prefix Prefix before the sequence number
+	*/
 	public void setPrefix (String Prefix)
 	{
 		set_Value (COLUMNNAME_Prefix, Prefix);
@@ -382,13 +370,14 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Prefix.
 		@return Prefix before the sequence number
 	  */
-	public String getPrefix () 
+	public String getPrefix()
 	{
 		return (String)get_Value(COLUMNNAME_Prefix);
 	}
 
 	/** Set Restart sequence every month.
-		@param StartNewMonth Restart sequence every month	  */
+		@param StartNewMonth Restart sequence every month
+	*/
 	public void setStartNewMonth (boolean StartNewMonth)
 	{
 		set_Value (COLUMNNAME_StartNewMonth, Boolean.valueOf(StartNewMonth));
@@ -396,7 +385,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 
 	/** Get Restart sequence every month.
 		@return Restart sequence every month	  */
-	public boolean isStartNewMonth () 
+	public boolean isStartNewMonth()
 	{
 		Object oo = get_Value(COLUMNNAME_StartNewMonth);
 		if (oo != null) 
@@ -409,9 +398,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Restart sequence every Year.
-		@param StartNewYear 
-		Restart the sequence with Start on every 1/1
-	  */
+		@param StartNewYear Restart the sequence with Start on every 1/1
+	*/
 	public void setStartNewYear (boolean StartNewYear)
 	{
 		set_Value (COLUMNNAME_StartNewYear, Boolean.valueOf(StartNewYear));
@@ -420,7 +408,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Restart sequence every Year.
 		@return Restart the sequence with Start on every 1/1
 	  */
-	public boolean isStartNewYear () 
+	public boolean isStartNewYear()
 	{
 		Object oo = get_Value(COLUMNNAME_StartNewYear);
 		if (oo != null) 
@@ -433,9 +421,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Start No.
-		@param StartNo 
-		Starting number/position
-	  */
+		@param StartNo Starting number/position
+	*/
 	public void setStartNo (int StartNo)
 	{
 		set_Value (COLUMNNAME_StartNo, Integer.valueOf(StartNo));
@@ -444,7 +431,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Start No.
 		@return Starting number/position
 	  */
-	public int getStartNo () 
+	public int getStartNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_StartNo);
 		if (ii == null)
@@ -453,9 +440,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	}
 
 	/** Set Suffix.
-		@param Suffix 
-		Suffix after the number
-	  */
+		@param Suffix Suffix after the number
+	*/
 	public void setSuffix (String Suffix)
 	{
 		set_Value (COLUMNNAME_Suffix, Suffix);
@@ -464,24 +450,23 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/** Get Suffix.
 		@return Suffix after the number
 	  */
-	public String getSuffix () 
+	public String getSuffix()
 	{
 		return (String)get_Value(COLUMNNAME_Suffix);
 	}
 
 	/** Set Value Format.
-		@param VFormat 
-		Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
 	public void setVFormat (String VFormat)
 	{
 		set_Value (COLUMNNAME_VFormat, VFormat);
 	}
 
 	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
 	  */
-	public String getVFormat () 
+	public String getVFormat()
 	{
 		return (String)get_Value(COLUMNNAME_VFormat);
 	}

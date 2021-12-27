@@ -54,7 +54,7 @@ import org.compiere.util.Env;
  *  		<li>BF [ 2213252 ] Matching Inv-Receipt generated unproperly value for src amt
  *	Teo Sarca
  *			<li>FR [ 2819081 ] FactLine.getDocLine should be public
- *				https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2819081&group_id=176962
+ *				https://sourceforge.net/p/adempiere/feature-requests/764/
  *  
  */
 public final class FactLine extends X_Fact_Acct
@@ -82,7 +82,6 @@ public final class FactLine extends X_Fact_Acct
 		setAmtAcctDr (Env.ZERO);
 		setAmtSourceCr (Env.ZERO);
 		setAmtSourceDr (Env.ZERO);
-	//	Log.trace(this,Log.l1_User, "FactLine " + AD_Table_ID + ":" + Record_ID);
 		setAD_Table_ID (AD_Table_ID);
 		setRecord_ID (Record_ID);
 		setLine_ID (Line_ID);
@@ -922,11 +921,6 @@ public final class FactLine extends X_Fact_Acct
 			if (m_acct != null && super.getC_SalesRegion_ID() == 0)
 				setC_SalesRegion_ID (m_acct.getC_SalesRegion_ID());
 		}
-		//
-	//	log.fine("C_SalesRegion_ID=" + super.getC_SalesRegion_ID() 
-	//		+ ", C_BPartner_Location_ID=" + m_docVO.C_BPartner_Location_ID
-	//		+ ", BP_C_SalesRegion_ID=" + m_docVO.BP_C_SalesRegion_ID 
-	//		+ ", SR=" + m_acctSchema.isAcctSchemaElement(MAcctSchemaElement.ELEMENTTYPE_SalesRegion));
 		return super.getC_SalesRegion_ID();
 	}	//	getC_SalesRegion_ID
 
@@ -1176,8 +1170,6 @@ public final class FactLine extends X_Fact_Acct
 				//  Accounted Amounts - reverse
 				BigDecimal dr = fact.getAmtAcctDr();
 				BigDecimal cr = fact.getAmtAcctCr();
-				// setAmtAcctDr (cr.multiply(multiplier));
-				// setAmtAcctCr (dr.multiply(multiplier));
 				setAmtAcct(getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
 				//  
 				//  Bayu Sistematika - Source Amounts

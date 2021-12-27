@@ -16,9 +16,6 @@ package org.adempiere.webui.apps;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -82,7 +79,6 @@ import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -154,7 +150,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 * @param WindowNo
 	 * @param AD_Process_ID
 	 * @param pi
-	 * @param innerWidth
 	 * @param autoStart
 	 * @param isDisposeOnComplete
 	 * @return
@@ -169,65 +164,35 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		log.config("");
 		//
+		StringBuilder buildMsg = new StringBuilder();
 		boolean trl = !Env.isBaseLanguage(m_ctx, "AD_Process");
-		String sql = "SELECT Name, Description, Help, IsReport, ShowHelp, AD_Process_UU "
-				+ "FROM AD_Process "
-				+ "WHERE AD_Process_ID=?";
-		if (trl)
-			sql = "SELECT t.Name, t.Description, t.Help, p.IsReport, p.ShowHelp, AD_Process_UU "
-				+ "FROM AD_Process p, AD_Process_Trl t "
-				+ "WHERE p.AD_Process_ID=t.AD_Process_ID"
-				+ " AND p.AD_Process_ID=? AND t.AD_Language=?";
+		MProcess process = MProcess.get(AD_Process_ID);
+		m_Name = trl ? process.get_Translation(MProcess.COLUMNNAME_Name) : process.getName();
+		m_Description = trl ? process.get_Translation(MProcess.COLUMNNAME_Description) : process.getDescription();
+		m_Help = trl ? process.get_Translation(MProcess.COLUMNNAME_Help) : process.getHelp();
+		m_ShowHelp = process.getShowHelp();
 
-		PreparedStatement pstmt = null; 
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Process_ID);
-			if (trl)
-				pstmt.setString(2, Env.getAD_Language(m_ctx));
-			rs = pstmt.executeQuery();
-			StringBuilder buildMsg = new StringBuilder();
-			if (rs.next())
-			{
-				m_Name = rs.getString(1);
-				m_Description = rs.getString(2);
-				m_Help = rs.getString(3);
-				m_ShowHelp = rs.getString(5);
-
-				// User Customization
-				MUserDefProc userDef = MUserDefProc.getBestMatch(ctx, AD_Process_ID);
-				if (userDef != null) {
-					if (userDef.getName() != null)
-						m_Name = userDef.getName();
-					if (userDef.getDescription() != null)
-						m_Description = userDef.getDescription();
-					if (userDef.getHelp() != null)
-						m_Help = userDef.getHelp();
-				}
-
-				buildMsg.append("<b>");
-				buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
-				buildMsg.append("</b>");
-
-				if (!Util.isEmpty(m_Help))
-					buildMsg.append("<p>").append(m_Help).append("</p>");
-				m_AD_Process_UU = rs.getString(6);
-			}
-			
-			initialMessage = buildMsg.toString();
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return false;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
+		// User Customization
+		MUserDefProc userDef = MUserDefProc.getBestMatch(ctx, AD_Process_ID);
+		if (userDef != null) {
+			if (userDef.getName() != null)
+				m_Name = userDef.getName();
+			if (userDef.getDescription() != null)
+				m_Description = userDef.getDescription();
+			if (userDef.getHelp() != null)
+				m_Help = userDef.getHelp();
 		}
 
+		buildMsg.append("<b>");
+		buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
+		buildMsg.append("</b>");
+
+		if (!Util.isEmpty(m_Help))
+			buildMsg.append("<p>").append(m_Help).append("</p>");
+		m_AD_Process_UU = process.getAD_Process_UU();
+	
+		initialMessage = buildMsg.toString();
+		
 		if (m_Name == null)
 			return false;
 		//
@@ -472,12 +437,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 
 	protected boolean isReport () {
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() == null;
 	}
 	
 	protected boolean isJasperReport () {
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() != null;
 	}
 	
@@ -548,7 +513,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		int AD_Column_ID = 0;
 		boolean m_isCanExport = false; 
 		
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		int table_ID = 0;
 		try 
 		{

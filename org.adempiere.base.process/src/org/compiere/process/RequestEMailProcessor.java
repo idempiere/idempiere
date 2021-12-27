@@ -56,6 +56,7 @@ import org.compiere.util.Trx;
  *  
  *  IMAPHost format: {imap|imaps}://[IMAPHostURL]:[Port] example: imaps://imap.gmail.com:993
  */
+@org.adempiere.base.annotation.Process
 public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHandle
 {
 	protected String	p_IMAPHost = null;
@@ -87,10 +88,6 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	protected static final int		ERROR = 0;
 	/**	Process Request				*/
 	protected static final int		REQUEST = 1;
-	/**	Process Workflow			*/
-	// private static final int		WORKFLOW = 2;
-	/**	Process Delivery Confirm	*/
-	// private static final int		DELIVERY = 9;
 	
 	protected Folder errorFolder;
 	protected Folder requestFolder;
@@ -204,7 +201,6 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		if (log.isLoggable(Level.INFO)) log.info("doIt - IMAPHost=" + p_IMAPHost +
 					   " IMAPPort=" + p_IMAPPort  +
 				       " IMAPUser=" + p_IMAPUser  +
-				       // " IMAPPwd=" + p_IMAPPwd +
 				       " RequestFolder=" + p_RequestFolder +
 				       " InboxFolder=" + p_InboxFolder +
 				       " ErrorFolder=" + p_ErrorFolder);
@@ -275,10 +271,9 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	
 	/**
 	 * 	Create request
-	 *	@param msg message
-	 * @return 
-	 *	@return Type of Message
-	 * @throws Exception 
+	 * @param emailContent
+	 * @param trxName
+	 * @throws Exception
 	 */
 	protected void createRequest(EmailContent emailContent, String trxName) throws Exception {
 		// Assign from variable

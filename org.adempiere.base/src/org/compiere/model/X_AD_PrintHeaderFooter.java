@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintHeaderFooter
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_PrintHeaderFooter")
 public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210728L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_PrintHeaderFooter (Properties ctx, int AD_PrintHeaderFooter_ID, String trxName)
@@ -40,6 +41,7 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
         {
 			setAD_PrintHeaderFooter_ID (0);
 			setName (null);
+			setSourceClassName (null);
         } */
     }
 
@@ -72,18 +74,19 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
     }
 
 	/** Set Print Header/Footer.
-		@param AD_PrintHeaderFooter_ID Print Header/Footer	  */
+		@param AD_PrintHeaderFooter_ID Print Header/Footer
+	*/
 	public void setAD_PrintHeaderFooter_ID (int AD_PrintHeaderFooter_ID)
 	{
-		if (AD_PrintHeaderFooter_ID < 1) 
+		if (AD_PrintHeaderFooter_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintHeaderFooter_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintHeaderFooter_ID, Integer.valueOf(AD_PrintHeaderFooter_ID));
 	}
 
 	/** Get Print Header/Footer.
 		@return Print Header/Footer	  */
-	public int getAD_PrintHeaderFooter_ID () 
+	public int getAD_PrintHeaderFooter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintHeaderFooter_ID);
 		if (ii == null)
@@ -92,7 +95,8 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
 	}
 
 	/** Set AD_PrintHeaderFooter_UU.
-		@param AD_PrintHeaderFooter_UU AD_PrintHeaderFooter_UU	  */
+		@param AD_PrintHeaderFooter_UU AD_PrintHeaderFooter_UU
+	*/
 	public void setAD_PrintHeaderFooter_UU (String AD_PrintHeaderFooter_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintHeaderFooter_UU, AD_PrintHeaderFooter_UU);
@@ -100,15 +104,14 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
 
 	/** Get AD_PrintHeaderFooter_UU.
 		@return AD_PrintHeaderFooter_UU	  */
-	public String getAD_PrintHeaderFooter_UU () 
+	public String getAD_PrintHeaderFooter_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintHeaderFooter_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -117,7 +120,7 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -131,9 +134,8 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
     }
 
 	/** Set Source Class.
-		@param SourceClassName 
-		Source Class Name
-	  */
+		@param SourceClassName Source Class Name
+	*/
 	public void setSourceClassName (String SourceClassName)
 	{
 		set_Value (COLUMNNAME_SourceClassName, SourceClassName);
@@ -142,7 +144,7 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
 	/** Get Source Class.
 		@return Source Class Name
 	  */
-	public String getSourceClassName () 
+	public String getSourceClassName()
 	{
 		return (String)get_Value(COLUMNNAME_SourceClassName);
 	}

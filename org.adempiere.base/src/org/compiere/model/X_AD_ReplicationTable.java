@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReplicationTable
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_ReplicationTable")
 public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_ReplicationTable (Properties ctx, int AD_ReplicationTable_ID, String trxName)
@@ -42,7 +43,7 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 			setAD_ReplicationTable_ID (0);
 			setAD_Table_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setReplicationType (null);
         } */
     }
@@ -76,26 +77,26 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
     }
 
 	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_Name)
-			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_ID)
+			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());
+	}
 
 	/** Set Replication Strategy.
-		@param AD_ReplicationStrategy_ID 
-		Data Replication Strategy
-	  */
+		@param AD_ReplicationStrategy_ID Data Replication Strategy
+	*/
 	public void setAD_ReplicationStrategy_ID (int AD_ReplicationStrategy_ID)
 	{
-		if (AD_ReplicationStrategy_ID < 1) 
+		if (AD_ReplicationStrategy_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationStrategy_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationStrategy_ID, Integer.valueOf(AD_ReplicationStrategy_ID));
 	}
 
 	/** Get Replication Strategy.
 		@return Data Replication Strategy
 	  */
-	public int getAD_ReplicationStrategy_ID () 
+	public int getAD_ReplicationStrategy_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationStrategy_ID);
 		if (ii == null)
@@ -112,21 +113,20 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
     }
 
 	/** Set Replication Table.
-		@param AD_ReplicationTable_ID 
-		Data Replication Strategy Table Info
-	  */
+		@param AD_ReplicationTable_ID Data Replication Strategy Table Info
+	*/
 	public void setAD_ReplicationTable_ID (int AD_ReplicationTable_ID)
 	{
-		if (AD_ReplicationTable_ID < 1) 
+		if (AD_ReplicationTable_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationTable_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationTable_ID, Integer.valueOf(AD_ReplicationTable_ID));
 	}
 
 	/** Get Replication Table.
 		@return Data Replication Strategy Table Info
 	  */
-	public int getAD_ReplicationTable_ID () 
+	public int getAD_ReplicationTable_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationTable_ID);
 		if (ii == null)
@@ -135,7 +135,8 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 	}
 
 	/** Set AD_ReplicationTable_UU.
-		@param AD_ReplicationTable_UU AD_ReplicationTable_UU	  */
+		@param AD_ReplicationTable_UU AD_ReplicationTable_UU
+	*/
 	public void setAD_ReplicationTable_UU (String AD_ReplicationTable_UU)
 	{
 		set_Value (COLUMNNAME_AD_ReplicationTable_UU, AD_ReplicationTable_UU);
@@ -143,32 +144,32 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 
 	/** Get AD_ReplicationTable_UU.
 		@return AD_ReplicationTable_UU	  */
-	public String getAD_ReplicationTable_UU () 
+	public String getAD_ReplicationTable_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ReplicationTable_UU);
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -177,9 +178,8 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -188,7 +188,7 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -196,9 +196,8 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -208,25 +207,24 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** ReplicationType AD_Reference_ID=126 */
 	public static final int REPLICATIONTYPE_AD_Reference_ID=126;
+	/** Broadcast = B */
+	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Local = L */
 	public static final String REPLICATIONTYPE_Local = "L";
 	/** Merge = M */
 	public static final String REPLICATIONTYPE_Merge = "M";
 	/** Reference = R */
 	public static final String REPLICATIONTYPE_Reference = "R";
-	/** Broadcast = B */
-	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Set Replication Type.
-		@param ReplicationType 
-		Type of Data Replication
-	  */
+		@param ReplicationType Type of Data Replication
+	*/
 	public void setReplicationType (String ReplicationType)
 	{
 
@@ -236,7 +234,7 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
 	/** Get Replication Type.
 		@return Type of Data Replication
 	  */
-	public String getReplicationType () 
+	public String getReplicationType()
 	{
 		return (String)get_Value(COLUMNNAME_ReplicationType);
 	}

@@ -596,6 +596,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		{
 			pnlHead.invalidate();
 		}
+		
+		homeTab.invalidate();	
 	}
 
 	protected void setSidePopupWidth(Popup popup) {
@@ -860,14 +862,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	//Implementation for Broadcast message
 	/**
-	 * @param eventManager
 	 */
 	public void bindEventManager() {
 		EventManager.getInstance().register(IEventTopics.BROADCAST_MESSAGE, this);
 	}
 
 	/**
-	 * @param eventManager
 	 */
 	public void unbindEventManager() {
 		EventManager.getInstance().unregister(this);
@@ -1051,7 +1051,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		if (isActionURL())  // IDEMPIERE-2334 vs IDEMPIERE-3000 - do not open windows when coming from an action URL
 			return;
 
-		StringBuilder sql = new StringBuilder("SELECT m.Action, COALESCE(m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_InfoWindow_ID) ")
+		StringBuilder sql = new StringBuilder("SELECT m.Action, COALESCE(m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_InfoWindow_ID), m.AD_Menu_ID ")
 		.append(" FROM AD_Tree_Favorite_Node tfn ")
 		.append(" INNER JOIN AD_Menu m ON (tfn.AD_Menu_ID = m.AD_Menu_ID) ")
 		.append(" WHERE tfn.AD_Tree_Favorite_ID = ")
@@ -1065,6 +1065,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 				String action = (String) row.get(0);
 				int recordID = ((BigDecimal) row.get(1)).intValue();
+				int menuID = ((BigDecimal) row.get(2)).intValue();
 
 				if (action.equals(MMenu.ACTION_Form)) {
 					Boolean access = MRole.getDefault().getFormAccess(recordID);
@@ -1079,7 +1080,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				else if (action.equals(MMenu.ACTION_Process) || action.equals(MMenu.ACTION_Report)) {
 					Boolean access = MRole.getDefault().getProcessAccess(recordID);
 					if (access != null && access)
-						SessionManager.getAppDesktop().openProcessDialog(recordID, DB.getSQLValueStringEx(null, "SELECT IsSOTrx FROM AD_Menu WHERE AD_Menu_ID = ?", recordID).equals("Y"));
+						SessionManager.getAppDesktop().openProcessDialog(recordID, DB.getSQLValueStringEx(null, "SELECT IsSOTrx FROM AD_Menu WHERE AD_Menu_ID = ?", menuID).equals("Y"));
 				}
 				else if (action.equals(MMenu.ACTION_Task)) {
 					Boolean access = MRole.getDefault().getTaskAccess(recordID);

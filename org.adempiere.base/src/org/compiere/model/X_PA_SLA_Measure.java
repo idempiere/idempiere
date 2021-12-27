@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Measure
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PA_SLA_Measure")
 public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_SLA_Measure (Properties ctx, int PA_SLA_Measure_ID, String trxName)
@@ -78,26 +79,26 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -106,9 +107,8 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	}
 
 	/** Set Transaction Date.
-		@param DateTrx 
-		Transaction Date
-	  */
+		@param DateTrx Transaction Date
+	*/
 	public void setDateTrx (Timestamp DateTrx)
 	{
 		set_Value (COLUMNNAME_DateTrx, DateTrx);
@@ -117,7 +117,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	/** Get Transaction Date.
 		@return Transaction Date
 	  */
-	public Timestamp getDateTrx () 
+	public Timestamp getDateTrx()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTrx);
 	}
@@ -131,9 +131,8 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -142,15 +141,14 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Measure Actual.
-		@param MeasureActual 
-		Actual value that has been measured.
-	  */
+		@param MeasureActual Actual value that has been measured.
+	*/
 	public void setMeasureActual (BigDecimal MeasureActual)
 	{
 		set_Value (COLUMNNAME_MeasureActual, MeasureActual);
@@ -159,7 +157,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	/** Get Measure Actual.
 		@return Actual value that has been measured.
 	  */
-	public BigDecimal getMeasureActual () 
+	public BigDecimal getMeasureActual()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MeasureActual);
 		if (bd == null)
@@ -168,26 +166,26 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	}
 
 	public org.compiere.model.I_PA_SLA_Goal getPA_SLA_Goal() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_SLA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Goal.Table_Name)
-			.getPO(getPA_SLA_Goal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_SLA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Goal.Table_ID)
+			.getPO(getPA_SLA_Goal_ID(), get_TrxName());
+	}
 
 	/** Set SLA Goal.
-		@param PA_SLA_Goal_ID 
-		Service Level Agreement Goal
-	  */
+		@param PA_SLA_Goal_ID Service Level Agreement Goal
+	*/
 	public void setPA_SLA_Goal_ID (int PA_SLA_Goal_ID)
 	{
-		if (PA_SLA_Goal_ID < 1) 
+		if (PA_SLA_Goal_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_SLA_Goal_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_SLA_Goal_ID, Integer.valueOf(PA_SLA_Goal_ID));
 	}
 
 	/** Get SLA Goal.
 		@return Service Level Agreement Goal
 	  */
-	public int getPA_SLA_Goal_ID () 
+	public int getPA_SLA_Goal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_SLA_Goal_ID);
 		if (ii == null)
@@ -196,21 +194,20 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	}
 
 	/** Set SLA Measure.
-		@param PA_SLA_Measure_ID 
-		Service Level Agreement Measure
-	  */
+		@param PA_SLA_Measure_ID Service Level Agreement Measure
+	*/
 	public void setPA_SLA_Measure_ID (int PA_SLA_Measure_ID)
 	{
-		if (PA_SLA_Measure_ID < 1) 
+		if (PA_SLA_Measure_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_SLA_Measure_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_SLA_Measure_ID, Integer.valueOf(PA_SLA_Measure_ID));
 	}
 
 	/** Get SLA Measure.
 		@return Service Level Agreement Measure
 	  */
-	public int getPA_SLA_Measure_ID () 
+	public int getPA_SLA_Measure_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_SLA_Measure_ID);
 		if (ii == null)
@@ -219,7 +216,8 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	}
 
 	/** Set PA_SLA_Measure_UU.
-		@param PA_SLA_Measure_UU PA_SLA_Measure_UU	  */
+		@param PA_SLA_Measure_UU PA_SLA_Measure_UU
+	*/
 	public void setPA_SLA_Measure_UU (String PA_SLA_Measure_UU)
 	{
 		set_Value (COLUMNNAME_PA_SLA_Measure_UU, PA_SLA_Measure_UU);
@@ -227,15 +225,14 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 
 	/** Get PA_SLA_Measure_UU.
 		@return PA_SLA_Measure_UU	  */
-	public String getPA_SLA_Measure_UU () 
+	public String getPA_SLA_Measure_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_SLA_Measure_UU);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -244,7 +241,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -257,7 +254,8 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -265,7 +263,7 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -278,21 +276,20 @@ public class X_PA_SLA_Measure extends PO implements I_PA_SLA_Measure, I_Persiste
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_Value (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)

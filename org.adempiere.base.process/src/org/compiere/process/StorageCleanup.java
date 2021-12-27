@@ -35,6 +35,7 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: StorageCleanup.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class StorageCleanup extends SvrProcess
 {
 	/** Movement Document Type	*/
@@ -89,11 +90,6 @@ public class StorageCleanup extends SvrProcess
 			+ " AND EXISTS (SELECT * FROM M_Product p"
 				+ " INNER JOIN M_AttributeSet mas ON (p.M_AttributeSet_ID=mas.M_AttributeSet_ID) "
 				+ "WHERE s.M_Product_ID=p.M_Product_ID AND mas.IsInstanceAttribute='Y')"
-			//	Stock in same location
-		//	+ " AND EXISTS (SELECT * FROM M_Storage sl "
-		//		+ "WHERE sl.QtyOnHand > 0"
-		//		+ " AND s.M_Product_ID=sl.M_Product_ID"
-		//		+ " AND s.M_Locator_ID=sl.M_Locator_ID)"
 			//	Stock in same Warehouse
 			+ " AND EXISTS (SELECT * FROM M_StorageOnHand sw"
 				+ " INNER JOIN M_Locator swl ON (sw.M_Locator_ID=swl.M_Locator_ID), M_Locator sl "
@@ -197,53 +193,6 @@ public class StorageCleanup extends SvrProcess
 	 */
 	private void eliminateReservation(MStorageOnHand target)
 	{
-		/*
-		//	Negative Ordered / Reserved Qty
-		if (target.getQtyReserved().signum() != 0 || target.getQtyOrdered().signum() != 0)
-		{
-			int M_Locator_ID = target.getM_Locator_ID();
-			MStorageOnHand storage0 = MStorageOnHand.get(getCtx(), M_Locator_ID, 
-				target.getM_Product_ID(), 0, get_TrxName());
-			if (storage0 == null)
-			{
-				MLocator defaultLoc = MLocator.getDefault(getCtx(), M_Locator_ID);
-				if (M_Locator_ID != defaultLoc.getM_Locator_ID())
-				{
-					M_Locator_ID = defaultLoc.getM_Locator_ID();
-					storage0 = MStorageOnHand.get(getCtx(), M_Locator_ID, 
-						target.getM_Product_ID(), 0, get_TrxName());
-				}
-			}
-			if (storage0 != null)
-			{
-				BigDecimal reserved = Env.ZERO;
-				BigDecimal ordered = Env.ZERO;
-				if (target.getQtyReserved().add(storage0.getQtyReserved()).signum() >= 0)
-					reserved = target.getQtyReserved();		//	negative
-				if (target.getQtyOrdered().add(storage0.getQtyOrdered()).signum() >= 0)
-					ordered = target.getQtyOrdered();		//	negative
-				//	Eliminate Reservation
-				if (reserved.signum() != 0 || ordered.signum() != 0)
-				{
-					if (MStorageOnHand.add(getCtx(), target.getM_Warehouse_ID(), target.getM_Locator_ID(), 
-						target.getM_Product_ID(), 
-						target.getM_AttributeSetInstance_ID(), target.getM_AttributeSetInstance_ID(),
-						Env.ZERO,  get_TrxName()))
-					{
-						if (MStorageOnHand.add(getCtx(), storage0.getM_Warehouse_ID(), storage0.getM_Locator_ID(), 
-							storage0.getM_Product_ID(), 
-							storage0.getM_AttributeSetInstance_ID(), storage0.getM_AttributeSetInstance_ID(),
-							Env.ZERO, get_TrxName()))
-							log.info("Reserved=" + reserved + ",Ordered=" + ordered);
-						else
-							log.warning("Failed Storage0 Update");
-					}
-					else
-						log.warning("Failed Target Update");
-				}
-			}
-		}
-		*/
 	}	//	eliminateReservation
 	
 	/**

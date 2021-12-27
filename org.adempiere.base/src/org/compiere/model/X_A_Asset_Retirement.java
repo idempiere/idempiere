@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Retirement
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="A_Asset_Retirement")
 public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_A_Asset_Retirement (Properties ctx, int A_Asset_Retirement_ID, String trxName)
@@ -76,26 +77,26 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
     }
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -104,21 +105,20 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 	}
 
 	/** Set Asset Retirement.
-		@param A_Asset_Retirement_ID 
-		Internally used asset is not longer used.
-	  */
+		@param A_Asset_Retirement_ID Internally used asset is not longer used.
+	*/
 	public void setA_Asset_Retirement_ID (int A_Asset_Retirement_ID)
 	{
-		if (A_Asset_Retirement_ID < 1) 
+		if (A_Asset_Retirement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Retirement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Retirement_ID, Integer.valueOf(A_Asset_Retirement_ID));
 	}
 
 	/** Get Asset Retirement.
 		@return Internally used asset is not longer used.
 	  */
-	public int getA_Asset_Retirement_ID () 
+	public int getA_Asset_Retirement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Retirement_ID);
 		if (ii == null)
@@ -135,7 +135,8 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
     }
 
 	/** Set A_Asset_Retirement_UU.
-		@param A_Asset_Retirement_UU A_Asset_Retirement_UU	  */
+		@param A_Asset_Retirement_UU A_Asset_Retirement_UU
+	*/
 	public void setA_Asset_Retirement_UU (String A_Asset_Retirement_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Retirement_UU, A_Asset_Retirement_UU);
@@ -143,15 +144,14 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 
 	/** Get A_Asset_Retirement_UU.
 		@return A_Asset_Retirement_UU	  */
-	public String getA_Asset_Retirement_UU () 
+	public String getA_Asset_Retirement_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Retirement_UU);
 	}
 
 	/** Set Market value Amount.
-		@param AssetMarketValueAmt 
-		Market value of the asset
-	  */
+		@param AssetMarketValueAmt Market value of the asset
+	*/
 	public void setAssetMarketValueAmt (BigDecimal AssetMarketValueAmt)
 	{
 		set_Value (COLUMNNAME_AssetMarketValueAmt, AssetMarketValueAmt);
@@ -160,7 +160,7 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 	/** Get Market value Amount.
 		@return Market value of the asset
 	  */
-	public BigDecimal getAssetMarketValueAmt () 
+	public BigDecimal getAssetMarketValueAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AssetMarketValueAmt);
 		if (bd == null)
@@ -169,9 +169,8 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 	}
 
 	/** Set Asset value.
-		@param AssetValueAmt 
-		Book Value of the asset
-	  */
+		@param AssetValueAmt Book Value of the asset
+	*/
 	public void setAssetValueAmt (BigDecimal AssetValueAmt)
 	{
 		set_Value (COLUMNNAME_AssetValueAmt, AssetValueAmt);
@@ -180,7 +179,7 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 	/** Get Asset value.
 		@return Book Value of the asset
 	  */
-	public BigDecimal getAssetValueAmt () 
+	public BigDecimal getAssetValueAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AssetValueAmt);
 		if (bd == null)
@@ -189,26 +188,26 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 	}
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_Value (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)

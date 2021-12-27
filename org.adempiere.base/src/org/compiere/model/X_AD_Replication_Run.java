@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication_Run
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Replication_Run")
 public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Replication_Run (Properties ctx, int AD_Replication_Run_ID, String trxName)
@@ -75,26 +76,26 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
     }
 
 	public org.compiere.model.I_AD_Replication getAD_Replication() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Replication)MTable.get(getCtx(), org.compiere.model.I_AD_Replication.Table_Name)
-			.getPO(getAD_Replication_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Replication)MTable.get(getCtx(), org.compiere.model.I_AD_Replication.Table_ID)
+			.getPO(getAD_Replication_ID(), get_TrxName());
+	}
 
 	/** Set Replication.
-		@param AD_Replication_ID 
-		Data Replication Target
-	  */
+		@param AD_Replication_ID Data Replication Target
+	*/
 	public void setAD_Replication_ID (int AD_Replication_ID)
 	{
-		if (AD_Replication_ID < 1) 
+		if (AD_Replication_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_ID, Integer.valueOf(AD_Replication_ID));
 	}
 
 	/** Get Replication.
 		@return Data Replication Target
 	  */
-	public int getAD_Replication_ID () 
+	public int getAD_Replication_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Replication_ID);
 		if (ii == null)
@@ -103,21 +104,20 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	}
 
 	/** Set Replication Run.
-		@param AD_Replication_Run_ID 
-		Data Replication Run
-	  */
+		@param AD_Replication_Run_ID Data Replication Run
+	*/
 	public void setAD_Replication_Run_ID (int AD_Replication_Run_ID)
 	{
-		if (AD_Replication_Run_ID < 1) 
+		if (AD_Replication_Run_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_Run_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_Run_ID, Integer.valueOf(AD_Replication_Run_ID));
 	}
 
 	/** Get Replication Run.
 		@return Data Replication Run
 	  */
-	public int getAD_Replication_Run_ID () 
+	public int getAD_Replication_Run_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Replication_Run_ID);
 		if (ii == null)
@@ -126,7 +126,8 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	}
 
 	/** Set AD_Replication_Run_UU.
-		@param AD_Replication_Run_UU AD_Replication_Run_UU	  */
+		@param AD_Replication_Run_UU AD_Replication_Run_UU
+	*/
 	public void setAD_Replication_Run_UU (String AD_Replication_Run_UU)
 	{
 		set_Value (COLUMNNAME_AD_Replication_Run_UU, AD_Replication_Run_UU);
@@ -134,15 +135,14 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 
 	/** Get AD_Replication_Run_UU.
 		@return AD_Replication_Run_UU	  */
-	public String getAD_Replication_Run_UU () 
+	public String getAD_Replication_Run_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Replication_Run_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -151,15 +151,14 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Replicated.
-		@param IsReplicated 
-		The data is successfully replicated
-	  */
+		@param IsReplicated The data is successfully replicated
+	*/
 	public void setIsReplicated (boolean IsReplicated)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsReplicated, Boolean.valueOf(IsReplicated));
@@ -168,7 +167,7 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	/** Get Replicated.
 		@return The data is successfully replicated
 	  */
-	public boolean isReplicated () 
+	public boolean isReplicated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReplicated);
 		if (oo != null) 
@@ -181,9 +180,8 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -192,7 +190,7 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

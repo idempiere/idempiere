@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UOM_Conversion
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_UOM_Conversion")
 public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_UOM_Conversion (Properties ctx, int C_UOM_Conversion_ID, String trxName)
@@ -77,21 +78,20 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
     }
 
 	/** Set UOM Conversion.
-		@param C_UOM_Conversion_ID 
-		Unit of Measure Conversion
-	  */
+		@param C_UOM_Conversion_ID Unit of Measure Conversion
+	*/
 	public void setC_UOM_Conversion_ID (int C_UOM_Conversion_ID)
 	{
-		if (C_UOM_Conversion_ID < 1) 
+		if (C_UOM_Conversion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_UOM_Conversion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_UOM_Conversion_ID, Integer.valueOf(C_UOM_Conversion_ID));
 	}
 
 	/** Get UOM Conversion.
 		@return Unit of Measure Conversion
 	  */
-	public int getC_UOM_Conversion_ID () 
+	public int getC_UOM_Conversion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_Conversion_ID);
 		if (ii == null)
@@ -108,7 +108,8 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
     }
 
 	/** Set C_UOM_Conversion_UU.
-		@param C_UOM_Conversion_UU C_UOM_Conversion_UU	  */
+		@param C_UOM_Conversion_UU C_UOM_Conversion_UU
+	*/
 	public void setC_UOM_Conversion_UU (String C_UOM_Conversion_UU)
 	{
 		set_Value (COLUMNNAME_C_UOM_Conversion_UU, C_UOM_Conversion_UU);
@@ -116,32 +117,32 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 
 	/** Get C_UOM_Conversion_UU.
 		@return C_UOM_Conversion_UU	  */
-	public String getC_UOM_Conversion_UU () 
+	public String getC_UOM_Conversion_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_UOM_Conversion_UU);
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -150,26 +151,26 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM_To() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_To_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_To_ID(), get_TrxName());
+	}
 
 	/** Set UoM To.
-		@param C_UOM_To_ID 
-		Target or destination Unit of Measure
-	  */
+		@param C_UOM_To_ID Target or destination Unit of Measure
+	*/
 	public void setC_UOM_To_ID (int C_UOM_To_ID)
 	{
-		if (C_UOM_To_ID < 1) 
+		if (C_UOM_To_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_To_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_To_ID, Integer.valueOf(C_UOM_To_ID));
 	}
 
 	/** Get UoM To.
 		@return Target or destination Unit of Measure
 	  */
-	public int getC_UOM_To_ID () 
+	public int getC_UOM_To_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_To_ID);
 		if (ii == null)
@@ -178,9 +179,8 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 	}
 
 	/** Set Divide Rate.
-		@param DivideRate 
-		To convert Source number to Target number, the Source is divided
-	  */
+		@param DivideRate To convert Source number to Target number, the Source is divided
+	*/
 	public void setDivideRate (BigDecimal DivideRate)
 	{
 		set_Value (COLUMNNAME_DivideRate, DivideRate);
@@ -189,7 +189,7 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 	/** Get Divide Rate.
 		@return To convert Source number to Target number, the Source is divided
 	  */
-	public BigDecimal getDivideRate () 
+	public BigDecimal getDivideRate()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DivideRate);
 		if (bd == null)
@@ -198,26 +198,26 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -226,9 +226,8 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 	}
 
 	/** Set Multiply Rate.
-		@param MultiplyRate 
-		Rate to multiple the source by to calculate the target.
-	  */
+		@param MultiplyRate Rate to multiple the source by to calculate the target.
+	*/
 	public void setMultiplyRate (BigDecimal MultiplyRate)
 	{
 		set_Value (COLUMNNAME_MultiplyRate, MultiplyRate);
@@ -237,7 +236,7 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 	/** Get Multiply Rate.
 		@return Rate to multiple the source by to calculate the target.
 	  */
-	public BigDecimal getMultiplyRate () 
+	public BigDecimal getMultiplyRate()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MultiplyRate);
 		if (bd == null)

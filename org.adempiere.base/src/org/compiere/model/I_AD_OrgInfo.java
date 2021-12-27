@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_OrgInfo
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_AD_OrgInfo 
 {
@@ -151,12 +151,14 @@ public interface I_AD_OrgInfo
     public static final String COLUMNNAME_DUNS = "DUNS";
 
 	/** Set D-U-N-S.
-	  * Dun & Bradstreet Number
+	  * Dun &amp;
+ Bradstreet Number
 	  */
 	public void setDUNS (String DUNS);
 
 	/** Get D-U-N-S.
-	  * Dun & Bradstreet Number
+	  * Dun &amp;
+ Bradstreet Number
 	  */
 	public String getDUNS();
 

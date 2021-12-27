@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ProcessData
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_ProcessData")
 public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_WF_ProcessData (Properties ctx, int AD_WF_ProcessData_ID, String trxName)
@@ -73,21 +74,20 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
     }
 
 	/** Set Workflow Process Data.
-		@param AD_WF_ProcessData_ID 
-		Workflow Process Context
-	  */
+		@param AD_WF_ProcessData_ID Workflow Process Context
+	*/
 	public void setAD_WF_ProcessData_ID (int AD_WF_ProcessData_ID)
 	{
-		if (AD_WF_ProcessData_ID < 1) 
+		if (AD_WF_ProcessData_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_ProcessData_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_ProcessData_ID, Integer.valueOf(AD_WF_ProcessData_ID));
 	}
 
 	/** Get Workflow Process Data.
 		@return Workflow Process Context
 	  */
-	public int getAD_WF_ProcessData_ID () 
+	public int getAD_WF_ProcessData_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_ProcessData_ID);
 		if (ii == null)
@@ -96,7 +96,8 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 	}
 
 	/** Set AD_WF_ProcessData_UU.
-		@param AD_WF_ProcessData_UU AD_WF_ProcessData_UU	  */
+		@param AD_WF_ProcessData_UU AD_WF_ProcessData_UU
+	*/
 	public void setAD_WF_ProcessData_UU (String AD_WF_ProcessData_UU)
 	{
 		set_Value (COLUMNNAME_AD_WF_ProcessData_UU, AD_WF_ProcessData_UU);
@@ -104,32 +105,32 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 
 	/** Get AD_WF_ProcessData_UU.
 		@return AD_WF_ProcessData_UU	  */
-	public String getAD_WF_ProcessData_UU () 
+	public String getAD_WF_ProcessData_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_ProcessData_UU);
 	}
 
 	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_Name)
-			.getPO(getAD_WF_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_ID)
+			.getPO(getAD_WF_Process_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Process.
-		@param AD_WF_Process_ID 
-		Actual Workflow Process Instance
-	  */
+		@param AD_WF_Process_ID Actual Workflow Process Instance
+	*/
 	public void setAD_WF_Process_ID (int AD_WF_Process_ID)
 	{
-		if (AD_WF_Process_ID < 1) 
+		if (AD_WF_Process_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Process_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Process_ID, Integer.valueOf(AD_WF_Process_ID));
 	}
 
 	/** Get Workflow Process.
 		@return Actual Workflow Process Instance
 	  */
-	public int getAD_WF_Process_ID () 
+	public int getAD_WF_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Process_ID);
 		if (ii == null)
@@ -146,9 +147,8 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
     }
 
 	/** Set Attribute Name.
-		@param AttributeName 
-		Name of the Attribute
-	  */
+		@param AttributeName Name of the Attribute
+	*/
 	public void setAttributeName (String AttributeName)
 	{
 		set_Value (COLUMNNAME_AttributeName, AttributeName);
@@ -157,15 +157,14 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 	/** Get Attribute Name.
 		@return Name of the Attribute
 	  */
-	public String getAttributeName () 
+	public String getAttributeName()
 	{
 		return (String)get_Value(COLUMNNAME_AttributeName);
 	}
 
 	/** Set Attribute Value.
-		@param AttributeValue 
-		Value of the Attribute
-	  */
+		@param AttributeValue Value of the Attribute
+	*/
 	public void setAttributeValue (String AttributeValue)
 	{
 		set_Value (COLUMNNAME_AttributeValue, AttributeValue);
@@ -174,7 +173,7 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 	/** Get Attribute Value.
 		@return Value of the Attribute
 	  */
-	public String getAttributeValue () 
+	public String getAttributeValue()
 	{
 		return (String)get_Value(COLUMNNAME_AttributeValue);
 	}

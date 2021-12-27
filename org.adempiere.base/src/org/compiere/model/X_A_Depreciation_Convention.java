@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for A_Depreciation_Convention
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="A_Depreciation_Convention")
 public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_Convention, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Convention (Properties ctx, int A_Depreciation_Convention_ID, String trxName)
@@ -72,18 +73,19 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
     }
 
 	/** Set Depreciation Convention.
-		@param A_Depreciation_Convention_ID Depreciation Convention	  */
+		@param A_Depreciation_Convention_ID Depreciation Convention
+	*/
 	public void setA_Depreciation_Convention_ID (int A_Depreciation_Convention_ID)
 	{
-		if (A_Depreciation_Convention_ID < 1) 
+		if (A_Depreciation_Convention_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Convention_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Convention_ID, Integer.valueOf(A_Depreciation_Convention_ID));
 	}
 
 	/** Get Depreciation Convention.
 		@return Depreciation Convention	  */
-	public int getA_Depreciation_Convention_ID () 
+	public int getA_Depreciation_Convention_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Convention_ID);
 		if (ii == null)
@@ -92,7 +94,8 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	}
 
 	/** Set A_Depreciation_Convention_UU.
-		@param A_Depreciation_Convention_UU A_Depreciation_Convention_UU	  */
+		@param A_Depreciation_Convention_UU A_Depreciation_Convention_UU
+	*/
 	public void setA_Depreciation_Convention_UU (String A_Depreciation_Convention_UU)
 	{
 		set_Value (COLUMNNAME_A_Depreciation_Convention_UU, A_Depreciation_Convention_UU);
@@ -100,13 +103,14 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 
 	/** Get A_Depreciation_Convention_UU.
 		@return A_Depreciation_Convention_UU	  */
-	public String getA_Depreciation_Convention_UU () 
+	public String getA_Depreciation_Convention_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Depreciation_Convention_UU);
 	}
 
 	/** Set ConventionType.
-		@param ConventionType ConventionType	  */
+		@param ConventionType ConventionType
+	*/
 	public void setConventionType (String ConventionType)
 	{
 		set_Value (COLUMNNAME_ConventionType, ConventionType);
@@ -114,15 +118,14 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 
 	/** Get ConventionType.
 		@return ConventionType	  */
-	public String getConventionType () 
+	public String getConventionType()
 	{
 		return (String)get_Value(COLUMNNAME_ConventionType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -131,15 +134,14 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -148,15 +150,14 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -165,7 +166,7 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -178,7 +179,8 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -186,7 +188,7 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -199,9 +201,8 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -210,7 +211,7 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

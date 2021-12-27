@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UserRemuneration
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_UserRemuneration")
 public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_UserRemuneration (Properties ctx, int C_UserRemuneration_ID, String trxName)
@@ -81,26 +82,26 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -117,26 +118,26 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
     }
 
 	public org.compiere.model.I_C_Remuneration getC_Remuneration() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Remuneration)MTable.get(getCtx(), org.compiere.model.I_C_Remuneration.Table_Name)
-			.getPO(getC_Remuneration_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Remuneration)MTable.get(getCtx(), org.compiere.model.I_C_Remuneration.Table_ID)
+			.getPO(getC_Remuneration_ID(), get_TrxName());
+	}
 
 	/** Set Remuneration.
-		@param C_Remuneration_ID 
-		Wage or Salary
-	  */
+		@param C_Remuneration_ID Wage or Salary
+	*/
 	public void setC_Remuneration_ID (int C_Remuneration_ID)
 	{
-		if (C_Remuneration_ID < 1) 
+		if (C_Remuneration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Remuneration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Remuneration_ID, Integer.valueOf(C_Remuneration_ID));
 	}
 
 	/** Get Remuneration.
 		@return Wage or Salary
 	  */
-	public int getC_Remuneration_ID () 
+	public int getC_Remuneration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Remuneration_ID);
 		if (ii == null)
@@ -145,21 +146,20 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	}
 
 	/** Set Employee Remuneration.
-		@param C_UserRemuneration_ID 
-		Employee Wage or Salary Overwrite
-	  */
+		@param C_UserRemuneration_ID Employee Wage or Salary Overwrite
+	*/
 	public void setC_UserRemuneration_ID (int C_UserRemuneration_ID)
 	{
-		if (C_UserRemuneration_ID < 1) 
+		if (C_UserRemuneration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_UserRemuneration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_UserRemuneration_ID, Integer.valueOf(C_UserRemuneration_ID));
 	}
 
 	/** Get Employee Remuneration.
 		@return Employee Wage or Salary Overwrite
 	  */
-	public int getC_UserRemuneration_ID () 
+	public int getC_UserRemuneration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UserRemuneration_ID);
 		if (ii == null)
@@ -168,7 +168,8 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	}
 
 	/** Set C_UserRemuneration_UU.
-		@param C_UserRemuneration_UU C_UserRemuneration_UU	  */
+		@param C_UserRemuneration_UU C_UserRemuneration_UU
+	*/
 	public void setC_UserRemuneration_UU (String C_UserRemuneration_UU)
 	{
 		set_Value (COLUMNNAME_C_UserRemuneration_UU, C_UserRemuneration_UU);
@@ -176,15 +177,14 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 
 	/** Get C_UserRemuneration_UU.
 		@return C_UserRemuneration_UU	  */
-	public String getC_UserRemuneration_UU () 
+	public String getC_UserRemuneration_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_UserRemuneration_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -193,15 +193,14 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Gross Amount.
-		@param GrossRAmt 
-		Gross Remuneration Amount
-	  */
+		@param GrossRAmt Gross Remuneration Amount
+	*/
 	public void setGrossRAmt (BigDecimal GrossRAmt)
 	{
 		set_Value (COLUMNNAME_GrossRAmt, GrossRAmt);
@@ -210,7 +209,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/** Get Gross Amount.
 		@return Gross Remuneration Amount
 	  */
-	public BigDecimal getGrossRAmt () 
+	public BigDecimal getGrossRAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_GrossRAmt);
 		if (bd == null)
@@ -219,9 +218,8 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	}
 
 	/** Set Gross Cost.
-		@param GrossRCost 
-		Gross Remuneration Costs
-	  */
+		@param GrossRCost Gross Remuneration Costs
+	*/
 	public void setGrossRCost (BigDecimal GrossRCost)
 	{
 		set_Value (COLUMNNAME_GrossRCost, GrossRCost);
@@ -230,7 +228,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/** Get Gross Cost.
 		@return Gross Remuneration Costs
 	  */
-	public BigDecimal getGrossRCost () 
+	public BigDecimal getGrossRCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_GrossRCost);
 		if (bd == null)
@@ -239,9 +237,8 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	}
 
 	/** Set Overtime Amount.
-		@param OvertimeAmt 
-		Hourly Overtime Rate
-	  */
+		@param OvertimeAmt Hourly Overtime Rate
+	*/
 	public void setOvertimeAmt (BigDecimal OvertimeAmt)
 	{
 		set_Value (COLUMNNAME_OvertimeAmt, OvertimeAmt);
@@ -250,7 +247,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/** Get Overtime Amount.
 		@return Hourly Overtime Rate
 	  */
-	public BigDecimal getOvertimeAmt () 
+	public BigDecimal getOvertimeAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OvertimeAmt);
 		if (bd == null)
@@ -259,9 +256,8 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	}
 
 	/** Set Overtime Cost.
-		@param OvertimeCost 
-		Hourly Overtime Cost
-	  */
+		@param OvertimeCost Hourly Overtime Cost
+	*/
 	public void setOvertimeCost (BigDecimal OvertimeCost)
 	{
 		set_Value (COLUMNNAME_OvertimeCost, OvertimeCost);
@@ -270,7 +266,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/** Get Overtime Cost.
 		@return Hourly Overtime Cost
 	  */
-	public BigDecimal getOvertimeCost () 
+	public BigDecimal getOvertimeCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OvertimeCost);
 		if (bd == null)
@@ -279,9 +275,8 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -290,15 +285,14 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -307,7 +301,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

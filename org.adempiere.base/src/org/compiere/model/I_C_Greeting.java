@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Greeting
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_C_Greeting 
 {
@@ -104,30 +104,42 @@ public interface I_C_Greeting
     public static final String COLUMNNAME_Greeting = "Greeting";
 
 	/** Set Greeting.
-	  * For letters, e.g. "Dear 
+	  * For letters, e.g. &quot;
+Dear 
 {
 0}
-" or "Dear Mr. 
+&quot;
+ or &quot;
+Dear Mr. 
 {
 0}
-" - At runtime, "
+&quot;
+ - At runtime, &quot;
+
 {
 0}
-" is replaced by the name
+&quot;
+ is replaced by the name
 	  */
 	public void setGreeting (String Greeting);
 
 	/** Get Greeting.
-	  * For letters, e.g. "Dear 
+	  * For letters, e.g. &quot;
+Dear 
 {
 0}
-" or "Dear Mr. 
+&quot;
+ or &quot;
+Dear Mr. 
 {
 0}
-" - At runtime, "
+&quot;
+ - At runtime, &quot;
+
 {
 0}
-" is replaced by the name
+&quot;
+ is replaced by the name
 	  */
 	public String getGreeting();
 

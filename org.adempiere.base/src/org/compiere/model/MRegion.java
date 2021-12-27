@@ -45,7 +45,7 @@ public class MRegion extends X_C_Region
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -752467671346696325L;
+	private static final long serialVersionUID = 6956706379305907673L;
 
 	/**
 	 * 	Load Regions (cached)
@@ -257,9 +257,28 @@ public class MRegion extends X_C_Region
 	 */
 	public String toString()
 	{
-		return getName();
+		return getTrlName();
 	}   //  toString
 
+	/**
+     *     Get Translated Name
+     *    @return name
+     */
+    public String getTrlName()
+    {
+        return getTrlName(Env.getAD_Language(Env.getCtx()));
+    }    //    getTrlName
+    
+    /**
+     *     Get Translated Name
+     *  @param language 
+     *    @return name
+     */
+    public String getTrlName(String language)
+    {
+        return get_Translation(COLUMNNAME_Name, language);
+    }    //    getTrlName
+    
 	/**
 	 *  Compare
 	 *  @param o1 object 1

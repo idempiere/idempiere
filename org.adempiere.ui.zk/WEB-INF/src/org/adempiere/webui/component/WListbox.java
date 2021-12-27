@@ -22,14 +22,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.model.MWlistboxCustomization;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
 import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
@@ -40,6 +43,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 
 /**
  * Replacement for the Swing client minigrid component
@@ -84,7 +89,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	
 	// F3P: support IDColumn for selection
 	private boolean allowIDColumnForReadWrite = false;
-
+	//support for saving column width
+	private String wListBoxName = null;
 	/**
 	 * Default constructor.
 	 *
@@ -300,8 +306,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      *
      * @param   viewColumnIndex     the index of the column in the view
      * @return  the index of the corresponding column in the model
-     *
-     * @see #convertColumnIndexToVi
      */
     public int convertColumnIndexToModel(int viewColumnIndex)
     {
@@ -373,7 +377,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             String from,
             String where,
             boolean multiSelection,
-            String tableName,boolean addAccessSQL)
+            String tableName,
+            boolean addAccessSQL)
     {
         int columnIndex = 0;
         StringBuilder sql = new StringBuilder ("SELECT ");
@@ -809,7 +814,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * deselect all current select, set all record have key in lsKey is selected
 	 * when non key column just return
 	 * @param lsKey
-	 * @return
 	 */
 	public void setSelectedByKeys (List<Integer> lsKey){		
 		// no key column because can't set selected, just return
@@ -867,6 +871,21 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		return;
 	}   //  setRowCount
 
+	/*
+	 * Set the name of the wListbox. This is use to save the width of columns
+	 * into ad_wlistbox_customization.
+	 */
+	public void setwListBoxName(String wListBoxName) {
+		this.wListBoxName = wListBoxName;
+	}
+	
+	/*
+	 * Get the name of the wListbox
+	 */
+	public String getwListBoxName() {
+		return wListBoxName;
+	}	
+	
 	/**
 	 *  Get Layout.
 	 *
@@ -940,7 +959,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
 	/**
 	 *  Set if Totals is Show
-	 *  @param boolean Show
+	 *  @param show
 	 */
 	public void setShowTotals(boolean show)
 	{
@@ -948,7 +967,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	}
 	/**
 	 *  get if Totals is Show
-	 *  @param boolean Show
 	 */
 	public boolean getShowTotals()
 	{
@@ -1085,6 +1103,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	{
 	    // create header (if needed)
 	    initialiseHeader();
+	    renderCustomHeaderWidth();
 	    invalidate();
 	}
 
@@ -1254,6 +1273,106 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	public void setAllowIDColumnForReadWrite(boolean allowIDColumnForReadWrite)
 	{
 		this.allowIDColumnForReadWrite = allowIDColumnForReadWrite;
+	}
+	
+	   /**
+     * Retrieve the width of the column
+     * 
+     * @param columnName the name of the column to find the width of.
+     * @param columnList list of the columns and their width
+     * @return the width of the column
+     */
+	private String getColumnWidth(String columnName, List<String>columnList) 
+	{
+		String width ="null";
+		String[] w;
+		
+		for (String column : columnList)
+		{
+			w = column.trim().split("=");
+			if (w[0].equals(columnName))
+			{
+				return w[1];
+			}
+		}
+		return width;
+	}
+	
+    /**
+     * Render the header of the WListbox with the columns width of the saved column width
+     * 
+     */
+	public void renderCustomHeaderWidth () 
+	{
+		if (wListBoxName != null && getListHead() != null) 
+		{
+			MWlistboxCustomization WListBoxCustomization =    MWlistboxCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), wListBoxName, null);
+			Boolean isHasCustomizeData =  WListBoxCustomization != null &&
+					  WListBoxCustomization.getAD_Wlistbox_Customization_ID() > 0 &&
+					  WListBoxCustomization.getCustom() != null &&
+					  WListBoxCustomization.getCustom().trim().length() > 0; 			
+			if (isHasCustomizeData) 
+			{
+				String[] custom = WListBoxCustomization.getCustom().trim().split(",");		
+				List<String>columnList = Arrays.asList(custom);
+				ColumnInfo[] Columns = this.getLayout();
+				Listhead listHead =  getListhead();
+				if (listHead != null && columnList.size() > 0) 
+				{
+					List<?> headers = listHead.getChildren();
+					int i = 0;
+					for(Object obj : headers)
+					{
+						Listheader header = (Listheader) obj;
+						String columnWidth = this.getColumnWidth(Columns[i].getColumnName(), columnList);
+						if (!("null".equals(columnWidth)))	
+							ZKUpdateUtil.setWidth(header, columnWidth);
+						i++; 
+					}
+				}
+			}
+		}
+	}
+
+	/**
+     * Save the width of all the columns in the WLsitbox  
+     */
+	public void saveColumnWidth() 
+	{
+		if (!Util.isEmpty(getwListBoxName()))
+		{
+			StringBuilder custom = new StringBuilder(); 
+			Listhead listHead = getListHead();
+			ColumnInfo[] layout = getLayout();
+			if (listHead != null && layout != null) 
+			{
+				List<?> headers = listHead.getChildren();
+				if (headers.size() != layout.length)
+					return;
+				
+				int i = 0;
+				for(Object obj : headers)
+				{
+					Listheader header = (Listheader) obj;
+					String width = header.getWidth();
+					String colName = layout[i].getColumnName();
+					if (colName != null && !colName.isEmpty())
+					{
+						custom.append (colName + "=");
+						if (width == null)
+						{
+							width = "null";
+						}
+						custom.append(width);
+						custom.append(",");					
+					}				
+					i++;
+				}
+				if (custom.length() > 0)
+					custom.deleteCharAt(custom.length() - 1);
+				MWlistboxCustomization.saveData(Env.getCtx(), getwListBoxName(), Env.getAD_User_ID(Env.getCtx()), custom.toString(), null);
+			}			
+		}						
 	}
 
 }

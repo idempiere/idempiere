@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Imp
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Package_Imp")
 public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp (Properties ctx, int AD_Package_Imp_ID, String trxName)
@@ -73,18 +74,19 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     }
 
 	/** Set Package Imp..
-		@param AD_Package_Imp_ID Package Imp.	  */
+		@param AD_Package_Imp_ID Package Imp.
+	*/
 	public void setAD_Package_Imp_ID (int AD_Package_Imp_ID)
 	{
-		if (AD_Package_Imp_ID < 1) 
+		if (AD_Package_Imp_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_ID, Integer.valueOf(AD_Package_Imp_ID));
 	}
 
 	/** Get Package Imp..
 		@return Package Imp.	  */
-	public int getAD_Package_Imp_ID () 
+	public int getAD_Package_Imp_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_ID);
 		if (ii == null)
@@ -101,23 +103,25 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     }
 
 	public org.compiere.model.I_AD_Package_Imp_Proc getAD_Package_Imp_Proc() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Package_Imp_Proc)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp_Proc.Table_Name)
-			.getPO(getAD_Package_Imp_Proc_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Package_Imp_Proc)MTable.get(getCtx(), org.compiere.model.I_AD_Package_Imp_Proc.Table_ID)
+			.getPO(getAD_Package_Imp_Proc_ID(), get_TrxName());
+	}
 
 	/** Set Package Imp. Proc..
-		@param AD_Package_Imp_Proc_ID Package Imp. Proc.	  */
+		@param AD_Package_Imp_Proc_ID Package Imp. Proc.
+	*/
 	public void setAD_Package_Imp_Proc_ID (int AD_Package_Imp_Proc_ID)
 	{
-		if (AD_Package_Imp_Proc_ID < 1) 
+		if (AD_Package_Imp_Proc_ID < 1)
 			set_Value (COLUMNNAME_AD_Package_Imp_Proc_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Package_Imp_Proc_ID, Integer.valueOf(AD_Package_Imp_Proc_ID));
 	}
 
 	/** Get Package Imp. Proc..
 		@return Package Imp. Proc.	  */
-	public int getAD_Package_Imp_Proc_ID () 
+	public int getAD_Package_Imp_Proc_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_Proc_ID);
 		if (ii == null)
@@ -126,7 +130,8 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	}
 
 	/** Set AD_Package_Imp_UU.
-		@param AD_Package_Imp_UU AD_Package_Imp_UU	  */
+		@param AD_Package_Imp_UU AD_Package_Imp_UU
+	*/
 	public void setAD_Package_Imp_UU (String AD_Package_Imp_UU)
 	{
 		set_Value (COLUMNNAME_AD_Package_Imp_UU, AD_Package_Imp_UU);
@@ -134,13 +139,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get AD_Package_Imp_UU.
 		@return AD_Package_Imp_UU	  */
-	public String getAD_Package_Imp_UU () 
+	public String getAD_Package_Imp_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_UU);
 	}
 
 	/** Set CreatedDate.
-		@param CreatedDate CreatedDate	  */
+		@param CreatedDate CreatedDate
+	*/
 	public void setCreatedDate (String CreatedDate)
 	{
 		set_Value (COLUMNNAME_CreatedDate, CreatedDate);
@@ -148,13 +154,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get CreatedDate.
 		@return CreatedDate	  */
-	public String getCreatedDate () 
+	public String getCreatedDate()
 	{
 		return (String)get_Value(COLUMNNAME_CreatedDate);
 	}
 
 	/** Set Creator.
-		@param Creator Creator	  */
+		@param Creator Creator
+	*/
 	public void setCreator (String Creator)
 	{
 		set_Value (COLUMNNAME_Creator, Creator);
@@ -162,13 +169,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get Creator.
 		@return Creator	  */
-	public String getCreator () 
+	public String getCreator()
 	{
 		return (String)get_Value(COLUMNNAME_Creator);
 	}
 
 	/** Set CreatorContact.
-		@param CreatorContact CreatorContact	  */
+		@param CreatorContact CreatorContact
+	*/
 	public void setCreatorContact (String CreatorContact)
 	{
 		set_Value (COLUMNNAME_CreatorContact, CreatorContact);
@@ -176,15 +184,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get CreatorContact.
 		@return CreatorContact	  */
-	public String getCreatorContact () 
+	public String getCreatorContact()
 	{
 		return (String)get_Value(COLUMNNAME_CreatorContact);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -193,15 +200,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_Value (COLUMNNAME_EMail, EMail);
@@ -210,15 +216,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -227,13 +232,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Package Status.
-		@param PK_Status Package Status	  */
+		@param PK_Status Package Status
+	*/
 	public void setPK_Status (String PK_Status)
 	{
 		set_Value (COLUMNNAME_PK_Status, PK_Status);
@@ -241,13 +247,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get Package Status.
 		@return Package Status	  */
-	public String getPK_Status () 
+	public String getPK_Status()
 	{
 		return (String)get_Value(COLUMNNAME_PK_Status);
 	}
 
 	/** Set Package Version.
-		@param PK_Version Package Version	  */
+		@param PK_Version Package Version
+	*/
 	public void setPK_Version (String PK_Version)
 	{
 		set_Value (COLUMNNAME_PK_Version, PK_Version);
@@ -255,15 +262,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get Package Version.
 		@return Package Version	  */
-	public String getPK_Version () 
+	public String getPK_Version()
 	{
 		return (String)get_Value(COLUMNNAME_PK_Version);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -272,7 +278,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -285,7 +291,8 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -293,7 +300,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -306,9 +313,8 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	}
 
 	/** Set Release No.
-		@param ReleaseNo 
-		Internal Release Number
-	  */
+		@param ReleaseNo Internal Release Number
+	*/
 	public void setReleaseNo (String ReleaseNo)
 	{
 		set_Value (COLUMNNAME_ReleaseNo, ReleaseNo);
@@ -317,13 +323,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/** Get Release No.
 		@return Internal Release Number
 	  */
-	public String getReleaseNo () 
+	public String getReleaseNo()
 	{
 		return (String)get_Value(COLUMNNAME_ReleaseNo);
 	}
 
 	/** Set Uninstall.
-		@param Uninstall Uninstall	  */
+		@param Uninstall Uninstall
+	*/
 	public void setUninstall (boolean Uninstall)
 	{
 		set_Value (COLUMNNAME_Uninstall, Boolean.valueOf(Uninstall));
@@ -331,7 +338,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get Uninstall.
 		@return Uninstall	  */
-	public boolean isUninstall () 
+	public boolean isUninstall()
 	{
 		Object oo = get_Value(COLUMNNAME_Uninstall);
 		if (oo != null) 
@@ -344,7 +351,8 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	}
 
 	/** Set UpdatedDate.
-		@param UpdatedDate UpdatedDate	  */
+		@param UpdatedDate UpdatedDate
+	*/
 	public void setUpdatedDate (String UpdatedDate)
 	{
 		set_Value (COLUMNNAME_UpdatedDate, UpdatedDate);
@@ -352,15 +360,14 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 
 	/** Get UpdatedDate.
 		@return UpdatedDate	  */
-	public String getUpdatedDate () 
+	public String getUpdatedDate()
 	{
 		return (String)get_Value(COLUMNNAME_UpdatedDate);
 	}
 
 	/** Set Version.
-		@param Version 
-		Version of the table definition
-	  */
+		@param Version Version of the table definition
+	*/
 	public void setVersion (String Version)
 	{
 		set_Value (COLUMNNAME_Version, Version);
@@ -369,7 +376,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	/** Get Version.
 		@return Version of the table definition
 	  */
-	public String getVersion () 
+	public String getVersion()
 	{
 		return (String)get_Value(COLUMNNAME_Version);
 	}

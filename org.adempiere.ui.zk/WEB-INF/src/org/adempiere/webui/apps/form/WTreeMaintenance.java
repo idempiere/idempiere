@@ -68,6 +68,7 @@ import org.zkoss.zul.Treeitem;
  *  @author Jorg Janke (modify: Sergio Oropeza sergioropeza@gmail.com, soropeza@dcsla.com	06/03/2014)
  *  @version $Id: VTreeMaintenance.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VTreeMaintenance")
 public class WTreeMaintenance extends TreeMaintenance implements IFormController, EventListener<Event>
 {
 	private CustomForm form = new CustomForm();	

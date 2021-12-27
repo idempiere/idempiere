@@ -129,9 +129,9 @@ import org.zkoss.zul.impl.XulElement;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Viewer.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  * globalqss: integrate phib contribution from 
- *   http://sourceforge.net/tracker/index.php?func=detail&aid=1566335&group_id=176962&atid=879334
+ *   https://sourceforge.net/p/adempiere/patches/4/
  * globalqss: integrate Teo Sarca bug fixing
- * Colin Rooney 2007/03/20 RFE#1670185 & BUG#1684142
+ * Colin Rooney 2007/03/20 RFE#1670185 and BUG#1684142
  *                         Extend security to Info queries
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
@@ -227,6 +227,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
 
 	private Center center;
+
+	private FindWindow find;
 	/**
 	 * 	Static Layout
 	 * 	@throws Exception
@@ -1311,7 +1313,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
-			from, to, subject, message, new FileDataSource(attachment));
+			from, to, subject, message, new FileDataSource(attachment),
+			m_WindowNo, m_reportEngine.getPrintInfo().getAD_Table_ID(),
+			m_reportEngine.getPrintInfo().getRecord_ID(), m_reportEngine.getPrintInfo());
+
 		AEnv.showWindow(dialog);
 	}	//	cmd_sendMail
 
@@ -1510,22 +1515,30 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			bFind.setVisible(false);
 		else
 		{
-			final FindWindow find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
-            if (!find.initialize())
-            	return;
+			if (find == null) 
+			{
+				find = new FindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID);
+	            if (!find.initialize()) 
+	            {
+	            	find = null;
+	            	return;
+	            }
             
-            find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					if (!find.isCancel())
-		            {
-		            	m_reportEngine.setQuery(find.getQuery());
-		            	postRenderReportEvent();
-		            }
-				}
-			});
-            find.setTitle(null);
-            LayoutUtils.openPopupWindow(toolBar, find, "after_start");
+	            find.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						if (!find.isCancel())
+			            {
+			            	m_reportEngine.setQuery(find.getQuery());
+			            	postRenderReportEvent();
+			            }
+					}
+				});
+	            setupFindwindow(find);	            
+			}
+			getParent().appendChild(find);			
+            LayoutUtils.openHighlightedWindow(toolBar, find, "after_start");
+            LayoutUtils.sameWidth(find, this);
 		}
 	}	//	cmd_find
 
@@ -1890,4 +1903,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		return m_reportEngine.getName();
 	}
 	
+	private void setupFindwindow(FindWindow findWindow) {
+		findWindow.setTitle(null);
+		findWindow.setBorder("none");	
+		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
+			ZKUpdateUtil.setHeight(findWindow, "100%");
+		else
+			ZKUpdateUtil.setHeight(findWindow, "60%");
+		findWindow.setSizable(false);
+		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
+	}
 }

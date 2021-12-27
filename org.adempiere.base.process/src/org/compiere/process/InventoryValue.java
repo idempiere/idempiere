@@ -34,6 +34,7 @@ import org.compiere.util.DB;
  *  @author 	Michael Judd (mjudd) Akuna Ltd - BF [ 2685127 ]
  *  
  */
+@org.adempiere.base.annotation.Process
 public class InventoryValue extends SvrProcess
 {
 	/** Price List Used         */
@@ -114,9 +115,6 @@ public class InventoryValue extends SvrProcess
 			.append("WHERE w.M_Warehouse_ID=").append(p_M_Warehouse_ID);
 		int noInsertStd = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Inserted Std=" + noInsertStd);
-		//IDEMPIERE-2500 - This may be invalid check. Removing still some one not admit reason
-		/*if (noInsertStd == 0)
-			return "No Standard Costs found";*/
 
 		//	Insert addl Costs
 		int noInsertCost = 0;

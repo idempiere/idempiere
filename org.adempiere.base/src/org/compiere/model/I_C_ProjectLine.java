@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_C_ProjectLine 
 {
@@ -254,12 +254,12 @@ public interface I_C_ProjectLine
     /** Column name InvoicedQty */
     public static final String COLUMNNAME_InvoicedQty = "InvoicedQty";
 
-	/** Set Quantity Invoiced .
+	/** Set Quantity Invoiced.
 	  * The quantity invoiced
 	  */
 	public void setInvoicedQty (BigDecimal InvoicedQty);
 
-	/** Get Quantity Invoiced .
+	/** Get Quantity Invoiced.
 	  * The quantity invoiced
 	  */
 	public BigDecimal getInvoicedQty();
@@ -365,12 +365,14 @@ public interface I_C_ProjectLine
     public static final String COLUMNNAME_PlannedMarginAmt = "PlannedMarginAmt";
 
 	/** Set Planned Margin.
-	  * Project's planned margin amount
+	  * Project&#039;
+s planned margin amount
 	  */
 	public void setPlannedMarginAmt (BigDecimal PlannedMarginAmt);
 
 	/** Get Planned Margin.
-	  * Project's planned margin amount
+	  * Project&#039;
+s planned margin amount
 	  */
 	public BigDecimal getPlannedMarginAmt();
 

@@ -23,14 +23,15 @@ import java.util.Properties;
 
 /** Generated Model for IMP_Processor
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="IMP_Processor")
 public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_IMP_Processor (Properties ctx, int IMP_Processor_ID, String trxName)
@@ -78,7 +79,8 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
     }
 
 	/** Set Account.
-		@param Account Account	  */
+		@param Account Account
+	*/
 	public void setAccount (String Account)
 	{
 		set_Value (COLUMNNAME_Account, Account);
@@ -86,15 +88,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** Get Account.
 		@return Account	  */
-	public String getAccount () 
+	public String getAccount()
 	{
 		return (String)get_Value(COLUMNNAME_Account);
 	}
 
 	/** Set Date last run.
-		@param DateLastRun 
-		Date the process was last run.
-	  */
+		@param DateLastRun Date the process was last run.
+	*/
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
@@ -103,15 +104,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Date last run.
 		@return Date the process was last run.
 	  */
-	public Timestamp getDateLastRun () 
+	public Timestamp getDateLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
 	/** Set Date next run.
-		@param DateNextRun 
-		Date the process will run next
-	  */
+		@param DateNextRun Date the process will run next
+	*/
 	public void setDateNextRun (Timestamp DateNextRun)
 	{
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
@@ -120,15 +120,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Date next run.
 		@return Date the process will run next
 	  */
-	public Timestamp getDateNextRun () 
+	public Timestamp getDateNextRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateNextRun);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -137,15 +136,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
+		@param Frequency Frequency of events
+	*/
 	public void setFrequency (int Frequency)
 	{
 		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
@@ -154,7 +152,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Frequency.
 		@return Frequency of events
 	  */
-	public int getFrequency () 
+	public int getFrequency()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
 		if (ii == null)
@@ -164,16 +162,15 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** FrequencyType AD_Reference_ID=221 */
 	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
 	/** Day = D */
 	public static final String FREQUENCYTYPE_Day = "D";
+	/** Hour = H */
+	public static final String FREQUENCYTYPE_Hour = "H";
+	/** Minute = M */
+	public static final String FREQUENCYTYPE_Minute = "M";
 	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
+		@param FrequencyType Frequency of event
+	*/
 	public void setFrequencyType (String FrequencyType)
 	{
 
@@ -183,15 +180,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Frequency Type.
 		@return Frequency of event
 	  */
-	public String getFrequencyType () 
+	public String getFrequencyType()
 	{
 		return (String)get_Value(COLUMNNAME_FrequencyType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -200,13 +196,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Host.
-		@param Host Host	  */
+		@param Host Host
+	*/
 	public void setHost (String Host)
 	{
 		set_Value (COLUMNNAME_Host, Host);
@@ -214,24 +211,25 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** Get Host.
 		@return Host	  */
-	public String getHost () 
+	public String getHost()
 	{
 		return (String)get_Value(COLUMNNAME_Host);
 	}
 
 	/** Set Import Processor.
-		@param IMP_Processor_ID Import Processor	  */
+		@param IMP_Processor_ID Import Processor
+	*/
 	public void setIMP_Processor_ID (int IMP_Processor_ID)
 	{
-		if (IMP_Processor_ID < 1) 
+		if (IMP_Processor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, Integer.valueOf(IMP_Processor_ID));
 	}
 
 	/** Get Import Processor.
 		@return Import Processor	  */
-	public int getIMP_Processor_ID () 
+	public int getIMP_Processor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_Processor_ID);
 		if (ii == null)
@@ -240,23 +238,25 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	}
 
 	public org.compiere.model.I_IMP_Processor_Type getIMP_Processor_Type() throws RuntimeException
-    {
-		return (org.compiere.model.I_IMP_Processor_Type)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor_Type.Table_Name)
-			.getPO(getIMP_Processor_Type_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_IMP_Processor_Type)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor_Type.Table_ID)
+			.getPO(getIMP_Processor_Type_ID(), get_TrxName());
+	}
 
 	/** Set Import Processor Type.
-		@param IMP_Processor_Type_ID Import Processor Type	  */
+		@param IMP_Processor_Type_ID Import Processor Type
+	*/
 	public void setIMP_Processor_Type_ID (int IMP_Processor_Type_ID)
 	{
-		if (IMP_Processor_Type_ID < 1) 
+		if (IMP_Processor_Type_ID < 1)
 			set_Value (COLUMNNAME_IMP_Processor_Type_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_IMP_Processor_Type_ID, Integer.valueOf(IMP_Processor_Type_ID));
 	}
 
 	/** Get Import Processor Type.
 		@return Import Processor Type	  */
-	public int getIMP_Processor_Type_ID () 
+	public int getIMP_Processor_Type_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_Processor_Type_ID);
 		if (ii == null)
@@ -265,7 +265,8 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	}
 
 	/** Set IMP_Processor_UU.
-		@param IMP_Processor_UU IMP_Processor_UU	  */
+		@param IMP_Processor_UU IMP_Processor_UU
+	*/
 	public void setIMP_Processor_UU (String IMP_Processor_UU)
 	{
 		set_Value (COLUMNNAME_IMP_Processor_UU, IMP_Processor_UU);
@@ -273,15 +274,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** Get IMP_Processor_UU.
 		@return IMP_Processor_UU	  */
-	public String getIMP_Processor_UU () 
+	public String getIMP_Processor_UU()
 	{
 		return (String)get_Value(COLUMNNAME_IMP_Processor_UU);
 	}
 
 	/** Set Days to keep Log.
-		@param KeepLogDays 
-		Number of days to keep the log entries
-	  */
+		@param KeepLogDays Number of days to keep the log entries
+	*/
 	public void setKeepLogDays (int KeepLogDays)
 	{
 		set_Value (COLUMNNAME_KeepLogDays, Integer.valueOf(KeepLogDays));
@@ -290,7 +290,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Days to keep Log.
 		@return Number of days to keep the log entries
 	  */
-	public int getKeepLogDays () 
+	public int getKeepLogDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_KeepLogDays);
 		if (ii == null)
@@ -299,9 +299,8 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -310,13 +309,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Password Info.
-		@param PasswordInfo Password Info	  */
+		@param PasswordInfo Password Info
+	*/
 	public void setPasswordInfo (String PasswordInfo)
 	{
 		set_Value (COLUMNNAME_PasswordInfo, PasswordInfo);
@@ -324,13 +324,14 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** Get Password Info.
 		@return Password Info	  */
-	public String getPasswordInfo () 
+	public String getPasswordInfo()
 	{
 		return (String)get_Value(COLUMNNAME_PasswordInfo);
 	}
 
 	/** Set Port.
-		@param Port Port	  */
+		@param Port Port
+	*/
 	public void setPort (int Port)
 	{
 		set_Value (COLUMNNAME_Port, Integer.valueOf(Port));
@@ -338,7 +339,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** Get Port.
 		@return Port	  */
-	public int getPort () 
+	public int getPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Port);
 		if (ii == null)
@@ -347,7 +348,8 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -355,7 +357,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -368,9 +370,8 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -379,7 +380,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

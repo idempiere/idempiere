@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_FieldGroup
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_FieldGroup")
 public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_FieldGroup (Properties ctx, int AD_FieldGroup_ID, String trxName)
@@ -40,7 +41,7 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
         {
 			setAD_FieldGroup_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
         } */
     }
@@ -74,21 +75,20 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
     }
 
 	/** Set Field Group.
-		@param AD_FieldGroup_ID 
-		Logical grouping of fields
-	  */
+		@param AD_FieldGroup_ID Logical grouping of fields
+	*/
 	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
 	{
-		if (AD_FieldGroup_ID < 1) 
+		if (AD_FieldGroup_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_FieldGroup_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
 	}
 
 	/** Get Field Group.
 		@return Logical grouping of fields
 	  */
-	public int getAD_FieldGroup_ID () 
+	public int getAD_FieldGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
 		if (ii == null)
@@ -97,7 +97,8 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	}
 
 	/** Set AD_FieldGroup_UU.
-		@param AD_FieldGroup_UU AD_FieldGroup_UU	  */
+		@param AD_FieldGroup_UU AD_FieldGroup_UU
+	*/
 	public void setAD_FieldGroup_UU (String AD_FieldGroup_UU)
 	{
 		set_Value (COLUMNNAME_AD_FieldGroup_UU, AD_FieldGroup_UU);
@@ -105,7 +106,7 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 
 	/** Get AD_FieldGroup_UU.
 		@return AD_FieldGroup_UU	  */
-	public String getAD_FieldGroup_UU () 
+	public String getAD_FieldGroup_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_FieldGroup_UU);
 	}
@@ -113,9 +114,8 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -125,21 +125,22 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** FieldGroupType AD_Reference_ID=53000 */
 	public static final int FIELDGROUPTYPE_AD_Reference_ID=53000;
-	/** Tab = T */
-	public static final String FIELDGROUPTYPE_Tab = "T";
-	/** Label = L */
-	public static final String FIELDGROUPTYPE_Label = "L";
 	/** Collapse = C */
 	public static final String FIELDGROUPTYPE_Collapse = "C";
+	/** Label = L */
+	public static final String FIELDGROUPTYPE_Label = "L";
+	/** Tab = T */
+	public static final String FIELDGROUPTYPE_Tab = "T";
 	/** Set Field Group Type.
-		@param FieldGroupType Field Group Type	  */
+		@param FieldGroupType Field Group Type
+	*/
 	public void setFieldGroupType (String FieldGroupType)
 	{
 
@@ -148,15 +149,14 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 
 	/** Get Field Group Type.
 		@return Field Group Type	  */
-	public String getFieldGroupType () 
+	public String getFieldGroupType()
 	{
 		return (String)get_Value(COLUMNNAME_FieldGroupType);
 	}
 
 	/** Set Collapsed By Default.
-		@param IsCollapsedByDefault 
-		Flag to set the initial state of collapsible field group.
-	  */
+		@param IsCollapsedByDefault Flag to set the initial state of collapsible field group.
+	*/
 	public void setIsCollapsedByDefault (boolean IsCollapsedByDefault)
 	{
 		set_Value (COLUMNNAME_IsCollapsedByDefault, Boolean.valueOf(IsCollapsedByDefault));
@@ -165,7 +165,7 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	/** Get Collapsed By Default.
 		@return Flag to set the initial state of collapsible field group.
 	  */
-	public boolean isCollapsedByDefault () 
+	public boolean isCollapsedByDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCollapsedByDefault);
 		if (oo != null) 
@@ -178,9 +178,8 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -189,7 +188,7 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

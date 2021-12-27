@@ -57,11 +57,15 @@ public class CLogFilter implements Filter
 	 */
 	public boolean isLoggable (LogRecord record)
 	{
+		String loggerName = record.getLoggerName();
+		if ("org.eclipse.jetty.annotations.AnnotationParser".equals(loggerName)
+			|| "org.eclipse.jetty.annotations.ClassInheritanceHandler".equals(loggerName))
+			return false;
+		
 		if (record.getLevel() == Level.SEVERE
 			|| record.getLevel() == Level.WARNING)
 			return true;
 		//
-		String loggerName = record.getLoggerName();
 		if (loggerName != null)
 		{
 		//	if (loggerName.toLowerCase().indexOf("focus") != -1)

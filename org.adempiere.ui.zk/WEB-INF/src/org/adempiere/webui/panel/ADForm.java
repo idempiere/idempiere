@@ -70,9 +70,6 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 
     /**
      * Constructor
-     *
-     * @param ctx		the context into which the form is being placed
-     * @param adFormId	the Adempiere form identifier
      */
     protected ADForm()
     {
@@ -186,7 +183,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     public static ADForm openForm (int adFormID, GridTab gridTab, ProcessInfo pi, String predefinedContextVariables, boolean isSOTrx)
     {
 		ADForm form;
-		MForm mform = new MForm(Env.getCtx(), adFormID, null);
+		MForm mform = MForm.get(adFormID);
     	String formName = mform.getClassname();
     	String name = mform.get_Translation(MForm.COLUMNNAME_Name);
 

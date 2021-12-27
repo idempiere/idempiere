@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Task
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Task")
 public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_ASP_Task (Properties ctx, int ASP_Task_ID, String trxName)
@@ -73,26 +74,26 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
-		@param AD_Task_ID 
-		Operation System Task
-	  */
+		@param AD_Task_ID Operation System Task
+	*/
 	public void setAD_Task_ID (int AD_Task_ID)
 	{
-		if (AD_Task_ID < 1) 
+		if (AD_Task_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Task_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
 	}
 
 	/** Get OS Task.
 		@return Operation System Task
 	  */
-	public int getAD_Task_ID () 
+	public int getAD_Task_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
 		if (ii == null)
@@ -101,23 +102,25 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_Name)
-			.getPO(getASP_Level_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)
+			.getPO(getASP_Level_ID(), get_TrxName());
+	}
 
 	/** Set ASP Level.
-		@param ASP_Level_ID ASP Level	  */
+		@param ASP_Level_ID ASP Level
+	*/
 	public void setASP_Level_ID (int ASP_Level_ID)
 	{
-		if (ASP_Level_ID < 1) 
+		if (ASP_Level_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, Integer.valueOf(ASP_Level_ID));
 	}
 
 	/** Get ASP Level.
 		@return ASP Level	  */
-	public int getASP_Level_ID () 
+	public int getASP_Level_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Level_ID);
 		if (ii == null)
@@ -134,7 +137,8 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -143,24 +147,25 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}
 
 	/** Set ASP Task.
-		@param ASP_Task_ID ASP Task	  */
+		@param ASP_Task_ID ASP Task
+	*/
 	public void setASP_Task_ID (int ASP_Task_ID)
 	{
-		if (ASP_Task_ID < 1) 
+		if (ASP_Task_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Task_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Task_ID, Integer.valueOf(ASP_Task_ID));
 	}
 
 	/** Get ASP Task.
 		@return ASP Task	  */
-	public int getASP_Task_ID () 
+	public int getASP_Task_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Task_ID);
 		if (ii == null)
@@ -169,7 +174,8 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 	}
 
 	/** Set ASP_Task_UU.
-		@param ASP_Task_UU ASP_Task_UU	  */
+		@param ASP_Task_UU ASP_Task_UU
+	*/
 	public void setASP_Task_UU (String ASP_Task_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Task_UU, ASP_Task_UU);
@@ -177,7 +183,7 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 
 	/** Get ASP_Task_UU.
 		@return ASP_Task_UU	  */
-	public String getASP_Task_UU () 
+	public String getASP_Task_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Task_UU);
 	}

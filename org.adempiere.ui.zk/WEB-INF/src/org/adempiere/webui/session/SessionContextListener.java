@@ -61,7 +61,6 @@ public class SessionContextListener implements ExecutionInit,
     /**
      * get servlet thread local context from session
      * @param exec
-     * @param createNew
      */
     public static void setupExecutionContextFromSession(Execution exec) {
     	Session session = exec.getDesktop().getSession();
@@ -250,6 +249,10 @@ public class SessionContextListener implements ExecutionInit,
     	}
 		int AD_Session_ID = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
 		if (AD_Session_ID > 0) {
+			
+			//sleep 1s to avoid timing issue with login and logout (both uses redirect call)
+			Thread.sleep(1000);
+			
 			String key = getSessionDesktopListKey(AD_Session_ID);
 			@SuppressWarnings("unchecked")
 			List<String> list = (List<String>) Env.getCtx().get(key);

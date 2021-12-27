@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
@@ -42,7 +43,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7313617271586412889L;
+	private static final long serialVersionUID = 1830844263371227816L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
@@ -324,6 +325,12 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 			
 			int docact = DB.executeUpdate(sqlDocAction.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("AD_Document_Action_Access=" + docact);
+
+			if (DB.isGenerateUUIDSupported())
+				DB.executeUpdateEx("UPDATE AD_Document_Action_Access SET AD_Document_Action_Access_UU=generate_uuid() WHERE AD_Document_Action_Access_UU IS NULL", get_TrxName());
+			else
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), MDocumentActionAccess.Table_Name, PO.getUUIDColumnName(MDocumentActionAccess.Table_Name)), get_TrxName());
+		
 		}
 		return success;
 	}	//	afterSave

@@ -37,7 +37,7 @@ import org.compiere.util.Msg;
  *  @version $Id: MPaymentTerm.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  *  @author Cristina Ghita, www.arhipac.ro
  * 			<li>BF [ 2889886 ] Net days in payment term
- * 				https://sourceforge.net/tracker/index.php?func=detail&aid=2889886&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/2194/
  */
 public class MPaymentTerm extends X_C_PaymentTerm
 {
@@ -124,7 +124,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	}	//	getSchedule
 
 	/**
-	 * 	Validate Payment Term & Schedule
+	 * 	Validate Payment Term and Schedule
 	 *	@return Validation Message @OK@ or error
 	 */
 	public String validate()

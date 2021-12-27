@@ -1,6 +1,13 @@
-<?xml version="1.0"?><!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd">
 
-<!-- =============================================================== --><!-- Create the deployment manager                                   --><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --><!-- The deplyment manager handles the lifecycle of deploying web    --><!-- applications. Apps are provided by instances of the             --><!-- AppProvider interface.                                          --><!-- =============================================================== -->
+<!-- =============================================================== -->
+<!-- Create the deployment manager                                   -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- The deplyment manager handles the lifecycle of deploying web    -->
+<!-- applications. Apps are provided by instances of the             -->
+<!-- AppProvider interface.                                          -->
+<!-- =============================================================== -->
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
 
   <Call name="addBean">
@@ -28,39 +35,7 @@
             </New>
           </Arg>
         </Call> -->
- 
- <!-- idempiere need to study before use this feature
- 
-        <Call id="webappprovider" name="addAppProvider">
-          <Arg>
-            <New class="org.eclipse.jetty.deploy.providers.WebAppProvider">
-              <Set name="monitoredDirName">
-                <Property>
-                  <Name>jetty.deploy.monitoredPath</Name>
-                  <Default>
-                    <Property name="jetty.base" default="." />/<Property name="jetty.deploy.monitoredDir" deprecated="jetty.deploy.monitoredDirName" default="webapps"/>
-                  </Default>
-                </Property>
-              </Set>
-              <Set name="defaultsDescriptor">
-                <Property>
-                  <Name>jetty.deploy.defaultsDescriptorPath</Name>
-                  <Default>
-                    <Property name="jetty.home" default="." />/etc/webdefault.xml
-                  </Default>
-                </Property>
-              </Set>
-              <Set name="scanInterval"><Property name="jetty.deploy.scanInterval" default="1"/></Set>
-              <Set name="extractWars"><Property name="jetty.deploy.extractWars" default="true"/></Set>
-              <Set name="configurationManager">
-                <New class="org.eclipse.jetty.deploy.PropertiesConfigurationManager">
-                  
-                </New>
-              </Set>
-            </New>
-          </Arg>
-        </Call>
--->      
+       
       </New>
     </Arg>
   </Call>

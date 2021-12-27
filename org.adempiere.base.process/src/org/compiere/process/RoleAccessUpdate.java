@@ -35,8 +35,9 @@ import org.compiere.util.Env;
  * 
  * @author Teo Sarca, teo.sarca@gmail.com
  * 		<li>BF [ 3018005 ] Role Access Update: updates all roles if I log in as System
- * 			https://sourceforge.net/tracker/?func=detail&aid=3018005&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2437/
  */
+@org.adempiere.base.annotation.Process
 public class RoleAccessUpdate extends SvrProcess
 {
 	/**	Static Logger	*/

@@ -44,10 +44,10 @@ import org.compiere.util.Util;
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li>FR [ 1948157  ]  Is necessary the reference for document reverse
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 	
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @author Armen Rizal, Goodwill Consulting
  * 			<li>BF [ 1745154 ] Cost in Reversing Material Related Docs
- *  @see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  @see https://sourceforge.net/p/adempiere/feature-requests/412/
  */
 public class MInventory extends X_M_Inventory implements DocAction
 {
@@ -187,7 +187,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		//
 		List<MInventoryLine> list = new Query(getCtx(), I_M_InventoryLine.Table_Name, "M_Inventory_ID=?", get_TrxName())
 										.setParameters(get_ID())
-										.setOrderBy(MInventoryLine.COLUMNNAME_Line)
+										.setOrderBy(MInventoryLine.COLUMNNAME_Line+","+MInventoryLine.COLUMNNAME_M_InventoryLine_ID)
 										.list();
 		m_lines = list.toArray(new MInventoryLine[list.size()]);
 		return m_lines;
@@ -380,7 +380,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			if (line.getM_AttributeSetInstance_ID() == 0)
 			{
 				MProduct product = MProduct.get(getCtx(), line.getM_Product_ID(), get_TrxName());
-				if (product != null && product.isASIMandatory(line.isSOTrx()))
+				if (product != null && product.isASIMandatoryFor(null, line.isSOTrx()))
 				{
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, line.isSOTrx())) {
 						MDocType dt = MDocType.get(getC_DocType_ID());
@@ -559,7 +559,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							if (log.isLoggable(Level.FINE)) log.fine("Diff=" + qtyDiff 
 									+ " - Instance OnHand=" + QtyMA + "->" + QtyNew);
 	
-							if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(), 
 									line.getM_Locator_ID(),
 									line.getM_Product_ID(), 
 									ma.getM_AttributeSetInstance_ID(), 
@@ -617,7 +617,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}
 						
 						//Fallback: Update Storage - see also VMatch.createMatchRecord
-						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(), 
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstance_ID(), 

@@ -50,7 +50,8 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		
 		String sql = "SELECT pl.M_ProductionLine_ID "
 			+ "FROM M_ProductionLine pl "
-			+ "WHERE pl.M_ProductionPlan_ID = ?";
+			+ "WHERE pl.M_ProductionPlan_ID = ? "
+			+ "ORDER BY pl.Line, pl.M_ProductionLine_ID ";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -124,8 +125,11 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		int asi = 0;
 
 		// products used in production
-		String sql = "SELECT M_ProductBom_ID, BOMQty" + " FROM M_Product_BOM"
-				+ " WHERE M_Product_ID=" + finishedProduct.getM_Product_ID() + " ORDER BY Line";
+		String sql = " SELECT bl.M_Product_ID, bl.QtyBOM" + " FROM PP_Product_BOMLine bl"
+				+ " JOIN PP_Product_BOM b ON b.PP_Product_BOM_ID = bl.PP_Product_BOM_ID "
+				+ " WHERE b.M_Product_ID=" + finishedProduct.getM_Product_ID() + " AND b.IsActive='Y' AND bl.IsActive='Y' "
+				+ " AND b.BOMType='A' AND b.BOMUse='A' " 
+				+ " ORDER BY bl.Line";
 		
 		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());) {			
 

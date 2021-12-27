@@ -28,6 +28,7 @@ import org.compiere.util.AdempiereUserError;
  *  @author Jorg Janke
  *  @version $Id: EntityTypeRegister.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class EntityTypeRegister extends SvrProcess
 {
 	/** Register Entity Type			*/
@@ -56,7 +57,6 @@ public class EntityTypeRegister extends SvrProcess
 		
 		throw new AdempiereSystemError("To register an Entity Type, contact Adempiere directly");
 		
-	//	return "Not Supported Yet";
 	}	//	doIt
 	
 }	//	EntityTypeRegister

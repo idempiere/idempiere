@@ -92,6 +92,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -580,7 +581,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	/**
 	 *	Set Status DB
-	 *  @param text text
 	 */
 	public void setStatusSelected ()
 	{
@@ -618,6 +618,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         String sql =contentPanel.prepareTable(layout, from,
                 where,p_multipleSelection,
                 getTableName(),false);
+	if (infoWindow != null)	
+        	contentPanel.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() );
         p_layout = contentPanel.getLayout();
 		m_sqlMain = sql;
 		m_sqlCount = "SELECT COUNT(*) FROM " + from + " WHERE " + where;
@@ -637,6 +639,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	protected void executeQuery()
 	{
+		saveWlistBoxColumnWidth(this.getFirstChild());
 		line = new ArrayList<Object>();
 		setCacheStart(-1);
 		cacheEnd = -1;
@@ -897,6 +900,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
             model.addTableModelListener(this);
             model.setMultiple(p_multipleSelection);
             contentPanel.setData(model, null);
+            contentPanel.renderCustomHeaderWidth();
         }
         autoHideEmptyColumns();
         restoreSelectedInPage();
@@ -1154,7 +1158,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      * example after testCount we get calculate 6page.
      * when user navigate to page 4. something change in system (a batch record change become don't match with search query) 
      * let we just get 5 page with current parameter.
-     * so when user navigate to page 6. user will face with index issue. (out of index or start index > end index)
+     * so when user navigate to page 6. user will face with index issue. (out of index or start index &gt; end index)
      * this function is fix for it.
      * @param fromIndex
      * @param toIndex
@@ -1446,9 +1450,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	/**
      *  Get the keys of selected row/s based on layout defined in prepareTable
-     *  @deprecated this function should deprecated and replace with {@link #getListKeyValueOfSelectedRow()} to support view at infoWindow
+     *  @deprecated
      *  @return IDs if selection present
-     *  @author ashley
+     *  author ashley
      */
     protected ArrayList<Integer> getSelectedRowKeys()
     {
@@ -1654,7 +1658,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * get keyView value at rowIndex and clumnIndex
 	 * also check in case value is null will rise a exception
 	 * @param rowIndex
-	 * @param columnIndex
 	 * @return
 	 */
 	protected Integer getColumnValue (int rowIndex){
@@ -1693,7 +1696,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * current 1000 line cache 
 	 * because in case query get more 1000 record we can't sync or maintain selected record (ever maintain for current page will make user confuse).
 	 * just clear selection
-	 * in case < 1000 record is ok
+	 * in case &lt; 1000 record is ok
 	 * TODO:rewrite
 	 */
 	protected void syncSelectedAfterRequery (){
@@ -1831,7 +1834,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  Enable OK, History, Zoom if row/s selected
      *  ---
      *  Changes: Changed the logic for accommodating multiple selection
-     *  @author ashley
+     *  author ashley
 	 */
 	protected void enableButtons (boolean enable)
 	{
@@ -1882,10 +1885,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		throws SQLException;
     /**
      * notify to search editor of a value change in the selection info
-     * @param event event
-    *
      */
-
 	protected void showHistory()					{}
 	/**
 	 *  Has History (false)
@@ -1925,7 +1925,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  Save Selection Details
 	 *	To be overwritten by concrete classes
 	 *  this function call when close info window.
-	 *  default infoWindow will set value of all column of current selected record to environment variable with {@link Env.TAB_INF}
+	 *  default infoWindow will set value of all column of current selected record to environment variable with {@link Env#TAB_INFO}
 	 *  class extends can do more by override it. 
 	 */
 	protected void saveSelectionDetail()          {}
@@ -1943,29 +1943,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (m_SO_Window_ID > 0)
 			return m_SO_Window_ID;
 		//
-		String sql = "SELECT AD_Window_ID, PO_Window_ID FROM AD_Table WHERE TableName=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table != null)
 		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, tableName);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				m_SO_Window_ID = rs.getInt(1);
-				m_PO_Window_ID = rs.getInt(2);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
+			m_SO_Window_ID = table.getAD_Window_ID();
+			m_PO_Window_ID = table.getPO_Window_ID();
 		}
 		//
 		if (!isSOTrx && m_PO_Window_ID > 0)
@@ -2222,7 +2204,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected void updateSubcontent (){ updateSubcontent(-1);};
 	
 	/**
-	 * Update relate info for a specific row, if targetRow < 0 update using selected row
+	 * Update relate info for a specific row, if targetRow &lt; 0 update using selected row
+	 * @param targetRow
 	 */
 	protected void updateSubcontent (int targetRow){};
 
@@ -2655,7 +2638,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	if (log.isLoggable(Level.CONFIG)) log.config("OK=" + ok);
         m_ok = ok;
-
         //  End Worker
         if (isLookup())
         {
@@ -2667,6 +2649,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        this.detach();
     }   //  dispose
 
+    private void saveWlistBoxColumnWidth(Component comp){
+
+        if(comp instanceof WListbox){
+        	((WListbox)comp).saveColumnWidth();
+        }
+
+        List<Component> list = comp.getChildren();
+        for(Component child:list){
+        	saveWlistBoxColumnWidth(child);
+        }
+     } 
+    
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		updateListSelected();
 		WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;
@@ -2766,8 +2760,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
 		try {
-			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
-		} catch (Exception e){}
+			if (SessionManager.getSessionApplication() != null &&
+				SessionManager.getSessionApplication().getKeylistener() != null)
+				SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			if (infoWindow != null && getFirstChild() != null)
+				saveWlistBoxColumnWidth(getFirstChild());
+		} catch (Exception e){
+			log.log(Level.WARNING, e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -2787,4 +2787,3 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		return pageSize;
 	}
 }	//	Info
-

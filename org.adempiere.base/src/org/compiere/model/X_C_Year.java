@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Year
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Year")
 public class X_C_Year extends PO implements I_C_Year, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Year (Properties ctx, int C_Year_ID, String trxName)
@@ -73,26 +74,26 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
     }
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
-		@param C_Calendar_ID 
-		Accounting Calendar Name
-	  */
+		@param C_Calendar_ID Accounting Calendar Name
+	*/
 	public void setC_Calendar_ID (int C_Calendar_ID)
 	{
-		if (C_Calendar_ID < 1) 
+		if (C_Calendar_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Calendar_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Calendar_ID, Integer.valueOf(C_Calendar_ID));
 	}
 
 	/** Get Calendar.
 		@return Accounting Calendar Name
 	  */
-	public int getC_Calendar_ID () 
+	public int getC_Calendar_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Calendar_ID);
 		if (ii == null)
@@ -101,21 +102,20 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 	}
 
 	/** Set Year.
-		@param C_Year_ID 
-		Calendar Year
-	  */
+		@param C_Year_ID Calendar Year
+	*/
 	public void setC_Year_ID (int C_Year_ID)
 	{
-		if (C_Year_ID < 1) 
+		if (C_Year_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Year_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Year_ID, Integer.valueOf(C_Year_ID));
 	}
 
 	/** Get Year.
 		@return Calendar Year
 	  */
-	public int getC_Year_ID () 
+	public int getC_Year_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Year_ID);
 		if (ii == null)
@@ -124,7 +124,8 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 	}
 
 	/** Set C_Year_UU.
-		@param C_Year_UU C_Year_UU	  */
+		@param C_Year_UU C_Year_UU
+	*/
 	public void setC_Year_UU (String C_Year_UU)
 	{
 		set_Value (COLUMNNAME_C_Year_UU, C_Year_UU);
@@ -132,15 +133,14 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 
 	/** Get C_Year_UU.
 		@return C_Year_UU	  */
-	public String getC_Year_UU () 
+	public String getC_Year_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Year_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -149,15 +149,14 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Year.
-		@param FiscalYear 
-		The Fiscal Year
-	  */
+		@param FiscalYear The Fiscal Year
+	*/
 	public void setFiscalYear (String FiscalYear)
 	{
 		set_Value (COLUMNNAME_FiscalYear, FiscalYear);
@@ -166,7 +165,7 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 	/** Get Year.
 		@return The Fiscal Year
 	  */
-	public String getFiscalYear () 
+	public String getFiscalYear()
 	{
 		return (String)get_Value(COLUMNNAME_FiscalYear);
 	}
@@ -180,7 +179,8 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -188,7 +188,7 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

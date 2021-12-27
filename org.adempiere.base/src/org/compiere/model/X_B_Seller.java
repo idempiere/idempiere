@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_Seller
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="B_Seller")
 public class X_B_Seller extends PO implements I_B_Seller, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_B_Seller (Properties ctx, int B_Seller_ID, String trxName)
@@ -75,26 +76,26 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -103,7 +104,8 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	}
 
 	/** Set B_Seller_UU.
-		@param B_Seller_UU B_Seller_UU	  */
+		@param B_Seller_UU B_Seller_UU
+	*/
 	public void setB_Seller_UU (String B_Seller_UU)
 	{
 		set_Value (COLUMNNAME_B_Seller_UU, B_Seller_UU);
@@ -111,15 +113,14 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 
 	/** Get B_Seller_UU.
 		@return B_Seller_UU	  */
-	public String getB_Seller_UU () 
+	public String getB_Seller_UU()
 	{
 		return (String)get_Value(COLUMNNAME_B_Seller_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -128,15 +129,14 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Internal.
-		@param IsInternal 
-		Internal Organization
-	  */
+		@param IsInternal Internal Organization
+	*/
 	public void setIsInternal (boolean IsInternal)
 	{
 		set_Value (COLUMNNAME_IsInternal, Boolean.valueOf(IsInternal));
@@ -145,7 +145,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	/** Get Internal.
 		@return Internal Organization
 	  */
-	public boolean isInternal () 
+	public boolean isInternal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInternal);
 		if (oo != null) 
@@ -158,9 +158,8 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -169,7 +168,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -183,9 +182,8 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
     }
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -194,7 +192,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

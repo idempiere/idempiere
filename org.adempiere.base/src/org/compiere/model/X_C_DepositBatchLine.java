@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatchLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_DepositBatchLine")
 public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)
@@ -80,23 +81,25 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
     }
 
 	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_Name)
-			.getPO(getC_DepositBatch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_ID)
+			.getPO(getC_DepositBatch_ID(), get_TrxName());
+	}
 
 	/** Set Deposit Batch.
-		@param C_DepositBatch_ID Deposit Batch	  */
+		@param C_DepositBatch_ID Deposit Batch
+	*/
 	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
 	{
-		if (C_DepositBatch_ID < 1) 
+		if (C_DepositBatch_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
 	}
 
 	/** Get Deposit Batch.
 		@return Deposit Batch	  */
-	public int getC_DepositBatch_ID () 
+	public int getC_DepositBatch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
 		if (ii == null)
@@ -113,18 +116,19 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
     }
 
 	/** Set Deposit Batch Line.
-		@param C_DepositBatchLine_ID Deposit Batch Line	  */
+		@param C_DepositBatchLine_ID Deposit Batch Line
+	*/
 	public void setC_DepositBatchLine_ID (int C_DepositBatchLine_ID)
 	{
-		if (C_DepositBatchLine_ID < 1) 
+		if (C_DepositBatchLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DepositBatchLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DepositBatchLine_ID, Integer.valueOf(C_DepositBatchLine_ID));
 	}
 
 	/** Get Deposit Batch Line.
 		@return Deposit Batch Line	  */
-	public int getC_DepositBatchLine_ID () 
+	public int getC_DepositBatchLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatchLine_ID);
 		if (ii == null)
@@ -133,7 +137,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	}
 
 	/** Set C_DepositBatchLine_UU.
-		@param C_DepositBatchLine_UU C_DepositBatchLine_UU	  */
+		@param C_DepositBatchLine_UU C_DepositBatchLine_UU
+	*/
 	public void setC_DepositBatchLine_UU (String C_DepositBatchLine_UU)
 	{
 		set_Value (COLUMNNAME_C_DepositBatchLine_UU, C_DepositBatchLine_UU);
@@ -141,32 +146,32 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 
 	/** Get C_DepositBatchLine_UU.
 		@return C_DepositBatchLine_UU	  */
-	public String getC_DepositBatchLine_UU () 
+	public String getC_DepositBatchLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DepositBatchLine_UU);
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -175,9 +180,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -186,7 +190,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -195,9 +199,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	}
 
 	/** Set Payment amount.
-		@param PayAmt 
-		Amount being paid
-	  */
+		@param PayAmt Amount being paid
+	*/
 	public void setPayAmt (BigDecimal PayAmt)
 	{
 		set_Value (COLUMNNAME_PayAmt, PayAmt);
@@ -206,7 +209,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/** Get Payment amount.
 		@return Amount being paid
 	  */
-	public BigDecimal getPayAmt () 
+	public BigDecimal getPayAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PayAmt);
 		if (bd == null)
@@ -215,9 +218,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -226,7 +228,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -239,7 +241,8 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -247,7 +250,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

@@ -39,6 +39,7 @@ import org.compiere.util.Msg;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ExpenseAPInvoice.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ExpenseAPInvoice extends SvrProcess
 {
 	private int			m_C_BPartner_ID = 0;
@@ -182,7 +183,6 @@ public class ExpenseAPInvoice extends SvrProcess
 					il.setC_Activity_ID(line.getC_Activity_ID());
 					il.setC_Campaign_ID(line.getC_Campaign_ID());
 					//
-				//	il.setPrice();	//	not really a list/limit price for reimbursements
 					il.setPrice(line.getPriceReimbursed());	//
 					
 					il.setTax();

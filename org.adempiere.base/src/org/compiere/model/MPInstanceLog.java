@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -120,8 +121,8 @@ public class MPInstanceLog
 
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
-			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID)"
-			+ " VALUES (?,?,?,?,?,?,?,?)";
+			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU)"
+			+ " VALUES (?,?,?,?,?,?,?,?,?)";
 
 	/**
 	 *	Save to Database
@@ -144,7 +145,7 @@ public class MPInstanceLog
 	private Object[] getInsertParams() {
 		MColumn colMsg = MColumn.get(Env.getCtx(), I_AD_PInstance_Log.Table_Name, I_AD_PInstance_Log.COLUMNNAME_P_Msg);
 		int maxMsgLength = colMsg.getFieldLength();
-		Object[] params = new Object[8];
+		Object[] params = new Object[9];
 		params[0] = m_AD_PInstance_ID;
 		params[1] = m_Log_ID;
 		if (m_P_Date != null)
@@ -163,6 +164,7 @@ public class MPInstanceLog
 			params[6] = m_AD_Table_ID;
 		if (m_Record_ID != 0)
 			params[7] = m_Record_ID;
+		params[8] = UUID.randomUUID().toString();
 		return params;
 	}
 

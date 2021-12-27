@@ -266,7 +266,7 @@ public class Extensions {
 	
 	/**
 	 *
-	 * @param AD_Window_ID 
+	 * @param AdWindowID 
 	 * @return IQuickEntryFactory instance or null if AdWindowID not found
 	 */
 	public static AbstractWQuickEntry getQuickEntry(Integer AdWindowID) {
@@ -299,8 +299,8 @@ public class Extensions {
 	/**
 	 *
 	 * @param WindowNo 
-	 * @param AD_Window_ID 
 	 * @param TabNo 
+	 * @param AdWindowID 
 	 * @return IQuickEntry instance or null if AdWindowID not found
 	 */
 	public static AbstractWQuickEntry getQuickEntry(int WindowNo, int TabNo, int AdWindowID) {

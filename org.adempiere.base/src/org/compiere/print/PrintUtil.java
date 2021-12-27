@@ -28,7 +28,6 @@ import static org.compiere.model.SystemIDs.PRINTFORMAT_PAYSELECTION_REMITTANCE__
 
 import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -47,8 +46,11 @@ import javax.print.attribute.standard.JobName;
 import javax.print.attribute.standard.JobPriority;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
 
+import org.adempiere.process.UUIDGenerator;
+import org.compiere.model.MColumn;
+import org.compiere.model.PO;
+import org.compiere.model.X_AD_PrintForm;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -143,7 +145,6 @@ public class PrintUtil
 				printerName = Ini.getProperty(Ini.P_PRINTER);
 			if (printerName != null && printerName.length() != 0)
 			{
-			//	System.out.println("CPrinter.getPrinterJob - searching " + printerName);
 				PrintService[] services = getAllPrintServices();
 				for (int i = 0; i < services.length; i++)
 				{
@@ -151,10 +152,8 @@ public class PrintUtil
 					if (printerName.equals(serviceName))
 					{
 						ps = services[i];
-					//	System.out.println("CPrinter.getPrinterJob - found " + printerName);
 						break;
 					}
-				//	System.out.println("CPrinter.getPrinterJob - not: " + serviceName);
 				}
 			}   //  find printer service
 
@@ -432,118 +431,8 @@ public class PrintUtil
 		}
 	}	//	dump
 
-	/*************************************************************************/
-
-	/**
-	 * 	Test Print Services
-	 */
-	private static void testPS()
-	{
-		PrintService ps = getDefaultPrintService();
-		ServiceUIFactory factory = ps.getServiceUIFactory();
-		System.out.println(factory);
-		if (factory != null)
-		{
-			System.out.println("Factory");
-			JPanel p0 = (JPanel) factory.getUI(ServiceUIFactory.ABOUT_UIROLE, ServiceUIFactory.JDIALOG_UI);
-			p0.setVisible(true);
-			JPanel p1 = (JPanel) factory.getUI(ServiceUIFactory.ADMIN_UIROLE, ServiceUIFactory.JDIALOG_UI);
-			p1.setVisible(true);
-			JPanel p2 = (JPanel) factory.getUI(ServiceUIFactory.MAIN_UIROLE, ServiceUIFactory.JDIALOG_UI);
-			p2.setVisible(true);
-
-		}
-		System.out.println("1----------");
-		PrinterJob pj = PrinterJob.getPrinterJob();
-		PrintRequestAttributeSet pratts = getDefaultPrintRequestAttributes();
-		//	Page Dialog
-		PageFormat pf = pj.pageDialog(pratts);
-		System.out.println("Pratts Size = " + pratts.size());
-		Attribute[] atts = pratts.toArray();
-		for (int i = 0; i < atts.length; i++)
-			System.out.println(atts[i].getName() + " = " + atts[i] + " - " + atts[i].getCategory());
-		System.out.println("PageFormat h=" + pf.getHeight() + ",w=" + pf.getWidth() + " - x=" + pf.getImageableX() + ",y=" + pf.getImageableY() + " - ih=" + pf.getImageableHeight() + ",iw=" + pf.getImageableWidth()
-			+ " - Orient=" + pf.getOrientation());
-		ps = pj.getPrintService();
-		System.out.println("PrintService = " + ps.getName());
-
-		//	Print Dialog
-		System.out.println("2----------");
-		pj.printDialog(pratts);
-		System.out.println("Pratts Size = " + pratts.size());
-		atts = pratts.toArray();
-		for (int i = 0; i < atts.length; i++)
-			System.out.println(atts[i].getName() + " = " + atts[i] + " - " + atts[i].getCategory());
-		pf = pj.defaultPage();
-		System.out.println("PageFormat h=" + pf.getHeight() + ",w=" + pf.getWidth() + " - x=" + pf.getImageableX() + ",y=" + pf.getImageableY() + " - ih=" + pf.getImageableHeight() + ",iw=" + pf.getImageableWidth()
-			+ " - Orient=" + pf.getOrientation());
-		ps = pj.getPrintService();
-		System.out.println("PrintService= " + ps.getName());
-
-		System.out.println("3----------");
-		try
-		{
-			pj.setPrintService(ps);
-		}
-		catch (PrinterException pe)
-		{
-			System.out.println(pe);
-		}
-		pf = pj.validatePage(pf);
-		System.out.println("PageFormat h=" + pf.getHeight() + ",w=" + pf.getWidth() + " - x=" + pf.getImageableX() + ",y=" + pf.getImageableY() + " - ih=" + pf.getImageableHeight() + ",iw=" + pf.getImageableWidth()
-			+ " - Orient=" + pf.getOrientation());
-		ps = pj.getPrintService();
-		System.out.println("PrintService= " + ps.getName());
-
-
-		System.out.println("4----------");
-		pj.printDialog();
-	}	//	testPS
-
-	/**
-	 * 	Test Stream Print Services
-	 */
-	/*private static void testSPS()
-	{
-	//	dump (DocFlavor.INPUT_STREAM.GIF, DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType());
-	//	dump (DocFlavor.SERVICE_FORMATTED.PAGEABLE, DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType());
-	//	dump (DocFlavor.INPUT_STREAM.GIF, DocFlavor.BYTE_ARRAY.PDF.getMimeType());
-	//	dump (DocFlavor.SERVICE_FORMATTED.PAGEABLE, DocFlavor.BYTE_ARRAY.GIF.getMediaSubtype());
-	//	dump (DocFlavor.SERVICE_FORMATTED.PAGEABLE, DocFlavor.BYTE_ARRAY.JPEG.getMediaSubtype());
-
-	//	dump (DocFlavor.SERVICE_FORMATTED.PAGEABLE);					//	lists devices able to output pageable
-	//	dump (DocFlavor.SERVICE_FORMATTED.PRINTABLE);
-	//	dump (DocFlavor.INPUT_STREAM.TEXT_PLAIN_HOST);
-	//	dump (DocFlavor.INPUT_STREAM.POSTSCRIPT);
-
-
-		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-		PrintService[] pss =
-			PrintServiceLookup.lookupPrintServices(DocFlavor.SERVICE_FORMATTED.PAGEABLE, pras);
-		for (int i = 0; i < pss.length; i++)
-		{
-			PrintService ps = pss[i];
-			String name = ps.getName();
-			if (name.indexOf("PDF") != -1 || name.indexOf("Acrobat") != -1)
-			{
-				System.out.println("----");
-				System.out.println(ps);
-				Class<?>[] cat = ps.getSupportedAttributeCategories();
-				for (int j = 0; j < cat.length; j++)
-				{
-					System.out.println("- " + cat[j]);
-				}
-			}
-		}
-
-	//	dump (null, DocFlavor.BYTE_ARRAY.PDF.getMimeType());			//	lists PDF output
-	//	dump (null, DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMediaType());	//	lists PS output
-
-	//	dump(null, null);
-	}	//	testSPS*/
-
 	/**************************************************************************
-	 * 	Create Print Form & Print Formats for a new Client.
+	 * 	Create Print Form and Print Formats for a new Client.
 	 *  - Order, Invoice, etc.
 	 *  Called from VSetup
 	 *  @param AD_Client_ID new Client
@@ -554,7 +443,7 @@ public class PrintUtil
 	}
 	
 	/**************************************************************************
-	 * 	Create Print Form & Print Formats for a new Client.
+	 * 	Create Print Form and Print Formats for a new Client.
 	 *  - Order, Invoice, etc.
 	 *  Called from VSetup
 	 *  @param AD_Client_ID new Client
@@ -587,7 +476,7 @@ public class PrintUtil
 		updatePrintFormatHeader(Remittance_PrintFormat_ID, RemittanceLine_PrintFormat_ID, trxName);
 
 	//	TODO: MPrintForm	
-	//	MPrintForm form = new MPrintForm(); 
+
 		int AD_PrintForm_ID = DB.getNextID (AD_Client_ID, "AD_PrintForm", null);
 		String sql = "INSERT INTO AD_PrintForm(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_PrintForm_ID,"
 			+ "Name,Order_PrintFormat_ID,Invoice_PrintFormat_ID,Remittance_PrintFormat_ID,Shipment_PrintFormat_ID)"
@@ -599,6 +488,12 @@ public class PrintUtil
 		int no = DB.executeUpdate(sql, trxName);
 		if (no != 1)
 			log.log(Level.SEVERE, "PrintForm NOT inserted");
+
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE AD_PrintForm SET AD_PrintForm_UU=generate_uuid() WHERE AD_PrintForm_UU IS NULL", trxName);
+		else
+			UUIDGenerator.updateUUID(MColumn.get(ctx, X_AD_PrintForm.Table_Name, PO.getUUIDColumnName(X_AD_PrintForm.Table_Name)), trxName);
+		
 		//
 		CLogMgt.enable(true);
 	}	//	createDocuments
@@ -619,25 +514,5 @@ public class PrintUtil
 		@SuppressWarnings("unused")
 		int no = DB.executeUpdate(sb.toString(), trxName);
 	}	//	updatePrintFormatHeader
-
-	/*************************************************************************/
-
-	/**
-	 *  Test
-	 *  @param args arg
-	 */
-	public static void main(String[] args)
-	{
-	//	org.compiere.Adempiere.startupClient();
-	//	setupPrintForm (11);
-	//	setupPrintForm (1000000);
-
-
-
-		testPS();	//	Print Services
-	//	testSPS();	//	Stream Print Services
-
-	//	dumpSPS(null, null);
-	}   //  main
 
 }   //  PrintUtil

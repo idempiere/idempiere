@@ -90,7 +90,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 8.2z Phong Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere 10 Development Build Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	
@@ -193,7 +193,7 @@ public final class Prop implements Serializable {
 			try {
 				fis = new URL(getProperty(TEMPLATE_PATH)+getProperty(TEMPLATE_NAME)+"/styles/template.css");
 				byte data[]=read(fis);
-				ret+=Base64.getEncoder().encode (data);
+				ret+=Base64.getEncoder().encodeToString (data);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -273,7 +273,7 @@ public final class Prop implements Serializable {
 			byte data[]=read(fis);
 			if(data==null||data.length<=0)
 				return null;
-			ret+=Base64.getEncoder().encode (data);
+			ret+=Base64.getEncoder().encodeToString (data);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

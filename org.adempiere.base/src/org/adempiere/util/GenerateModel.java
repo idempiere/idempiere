@@ -37,7 +37,7 @@ import org.compiere.util.DB;
  *  
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 3020640 ] GenerateModel is failing when we provide a list of tables
- *  			https://sourceforge.net/tracker/?func=detail&aid=3020640&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2447/
  */
 public class GenerateModel
 {
@@ -113,7 +113,7 @@ public class GenerateModel
 		
 		String tableLike = null;
 		tableLike = "'%'";	//	All tablesype
-		// tableLike = "'AD_OrgInfo', 'AD_Role', 'C_CashLine', 'C_Currency', 'C_Invoice', 'C_Order', 'C_Payment', 'M_InventoryLine', 'M_PriceList', 'M_Product', 'U_POSTerminal'";	//	Only specific tables
+
 		if (args.length > 3)
 			tableLike = args[3];
 		if (log.isLoggable(Level.INFO)) log.info("Table Like: " + tableLike);

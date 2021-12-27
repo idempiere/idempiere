@@ -38,6 +38,7 @@ import org.eevolution.model.MPPProductBOMLine;
  * @author Tony Snook (tspc)
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
+@org.adempiere.base.annotation.Process
 public class PP_Product_BOM_Check extends SvrProcess
 {
 
@@ -123,4 +124,4 @@ public class PP_Product_BOM_Check extends SvrProcess
 		throw new AdempiereUserError(msg);
 	}
 
-} //	M_Product_BOM_Check
+} //	PP_Product_BOM_Check

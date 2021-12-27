@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_RelationType
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_AD_RelationType 
 {
@@ -163,12 +163,16 @@ public interface I_AD_RelationType
     public static final String COLUMNNAME_IsDirected = "IsDirected";
 
 	/** Set Directed.
-	  * Tells whether one "sees" the other end of the relation from each end or just from the source
+	  * Tells whether one &quot;
+sees&quot;
+ the other end of the relation from each end or just from the source
 	  */
 	public void setIsDirected (boolean IsDirected);
 
 	/** Get Directed.
-	  * Tells whether one "sees" the other end of the relation from each end or just from the source
+	  * Tells whether one &quot;
+sees&quot;
+ the other end of the relation from each end or just from the source
 	  */
 	public boolean isDirected();
 
@@ -189,12 +193,14 @@ public interface I_AD_RelationType
     public static final String COLUMNNAME_Role_Source = "Role_Source";
 
 	/** Set Source Role.
-	  * If set, this role will be used as label for the zoom destination instead of the destinations's window name
+	  * If set, this role will be used as label for the zoom destination instead of the destinations&#039;
+s window name
 	  */
 	public void setRole_Source (String Role_Source);
 
 	/** Get Source Role.
-	  * If set, this role will be used as label for the zoom destination instead of the destinations's window name
+	  * If set, this role will be used as label for the zoom destination instead of the destinations&#039;
+s window name
 	  */
 	public String getRole_Source();
 
@@ -202,12 +208,14 @@ public interface I_AD_RelationType
     public static final String COLUMNNAME_Role_Target = "Role_Target";
 
 	/** Set Target Role.
-	  * If set, this role will be used as label for the zoom destination instead of the destinations's window name
+	  * If set, this role will be used as label for the zoom destination instead of the destinations&#039;
+s window name
 	  */
 	public void setRole_Target (String Role_Target);
 
 	/** Get Target Role.
-	  * If set, this role will be used as label for the zoom destination instead of the destinations's window name
+	  * If set, this role will be used as label for the zoom destination instead of the destinations&#039;
+s window name
 	  */
 	public String getRole_Target();
 

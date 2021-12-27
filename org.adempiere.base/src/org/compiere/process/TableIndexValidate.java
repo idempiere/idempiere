@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
+@org.adempiere.base.annotation.Process
 public class TableIndexValidate extends SvrProcess {
 
 	private int		p_AD_TableIndex_ID = 0; 

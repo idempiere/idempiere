@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankAccount_Processor
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_C_BankAccount_Processor 
 {
@@ -97,12 +97,14 @@ public interface I_C_BankAccount_Processor
     public static final String COLUMNNAME_AcceptDiners = "AcceptDiners";
 
 	/** Set Accept Diners.
-	  * Accept Diner's Club
+	  * Accept Diner&#039;
+s Club
 	  */
 	public void setAcceptDiners (boolean AcceptDiners);
 
 	/** Get Accept Diners.
-	  * Accept Diner's Club
+	  * Accept Diner&#039;
+s Club
 	  */
 	public boolean isAcceptDiners();
 

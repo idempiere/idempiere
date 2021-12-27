@@ -176,6 +176,8 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 	} //init
 
 	private void moveMigrationScriptComment() {
+		if (logMigrationScript == null)
+			return;
 		WEditor commentEditor = null;
 		for (WEditor editor : quickEditors) {
 			if (I_AD_UserPreference.COLUMNNAME_MigrationScriptComment.equals(editor.getColumnName())) {

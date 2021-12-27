@@ -164,7 +164,6 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	/**
 	 * @param cmpr
 	 * @param ascending
-	 * @see ListModelExt#sort(Comparator, boolean) 
 	 */
 	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		//use default zk comparator

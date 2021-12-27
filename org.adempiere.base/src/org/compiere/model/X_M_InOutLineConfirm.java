@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOutLineConfirm
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_InOutLineConfirm")
 public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_InOutLineConfirm (Properties ctx, int M_InOutLineConfirm_ID, String trxName)
@@ -78,26 +79,26 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
     }
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
-			.getPO(getC_InvoiceLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
+			.getPO(getC_InvoiceLine_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_Value (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -106,9 +107,8 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	/** Set Confirmation No.
-		@param ConfirmationNo 
-		Confirmation Number
-	  */
+		@param ConfirmationNo Confirmation Number
+	*/
 	public void setConfirmationNo (String ConfirmationNo)
 	{
 		set_Value (COLUMNNAME_ConfirmationNo, ConfirmationNo);
@@ -117,15 +117,14 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/** Get Confirmation No.
 		@return Confirmation Number
 	  */
-	public String getConfirmationNo () 
+	public String getConfirmationNo()
 	{
 		return (String)get_Value(COLUMNNAME_ConfirmationNo);
 	}
 
 	/** Set Confirmed Quantity.
-		@param ConfirmedQty 
-		Confirmation of a received quantity
-	  */
+		@param ConfirmedQty Confirmation of a received quantity
+	*/
 	public void setConfirmedQty (BigDecimal ConfirmedQty)
 	{
 		set_Value (COLUMNNAME_ConfirmedQty, ConfirmedQty);
@@ -134,7 +133,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/** Get Confirmed Quantity.
 		@return Confirmation of a received quantity
 	  */
-	public BigDecimal getConfirmedQty () 
+	public BigDecimal getConfirmedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ConfirmedQty);
 		if (bd == null)
@@ -143,9 +142,8 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -154,15 +152,14 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Difference.
-		@param DifferenceQty 
-		Difference Quantity
-	  */
+		@param DifferenceQty Difference Quantity
+	*/
 	public void setDifferenceQty (BigDecimal DifferenceQty)
 	{
 		set_Value (COLUMNNAME_DifferenceQty, DifferenceQty);
@@ -171,7 +168,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/** Get Difference.
 		@return Difference Quantity
 	  */
-	public BigDecimal getDifferenceQty () 
+	public BigDecimal getDifferenceQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DifferenceQty);
 		if (bd == null)
@@ -180,26 +177,26 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	public org.compiere.model.I_M_InOutConfirm getM_InOutConfirm() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutConfirm)MTable.get(getCtx(), org.compiere.model.I_M_InOutConfirm.Table_Name)
-			.getPO(getM_InOutConfirm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutConfirm)MTable.get(getCtx(), org.compiere.model.I_M_InOutConfirm.Table_ID)
+			.getPO(getM_InOutConfirm_ID(), get_TrxName());
+	}
 
 	/** Set Ship/Receipt Confirmation.
-		@param M_InOutConfirm_ID 
-		Material Shipment or Receipt Confirmation
-	  */
+		@param M_InOutConfirm_ID Material Shipment or Receipt Confirmation
+	*/
 	public void setM_InOutConfirm_ID (int M_InOutConfirm_ID)
 	{
-		if (M_InOutConfirm_ID < 1) 
+		if (M_InOutConfirm_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutConfirm_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutConfirm_ID, Integer.valueOf(M_InOutConfirm_ID));
 	}
 
 	/** Get Ship/Receipt Confirmation.
 		@return Material Shipment or Receipt Confirmation
 	  */
-	public int getM_InOutConfirm_ID () 
+	public int getM_InOutConfirm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutConfirm_ID);
 		if (ii == null)
@@ -208,21 +205,20 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	/** Set Ship/Receipt Confirmation Line.
-		@param M_InOutLineConfirm_ID 
-		Material Shipment or Receipt Confirmation Line
-	  */
+		@param M_InOutLineConfirm_ID Material Shipment or Receipt Confirmation Line
+	*/
 	public void setM_InOutLineConfirm_ID (int M_InOutLineConfirm_ID)
 	{
-		if (M_InOutLineConfirm_ID < 1) 
+		if (M_InOutLineConfirm_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutLineConfirm_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutLineConfirm_ID, Integer.valueOf(M_InOutLineConfirm_ID));
 	}
 
 	/** Get Ship/Receipt Confirmation Line.
 		@return Material Shipment or Receipt Confirmation Line
 	  */
-	public int getM_InOutLineConfirm_ID () 
+	public int getM_InOutLineConfirm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLineConfirm_ID);
 		if (ii == null)
@@ -231,7 +227,8 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	/** Set M_InOutLineConfirm_UU.
-		@param M_InOutLineConfirm_UU M_InOutLineConfirm_UU	  */
+		@param M_InOutLineConfirm_UU M_InOutLineConfirm_UU
+	*/
 	public void setM_InOutLineConfirm_UU (String M_InOutLineConfirm_UU)
 	{
 		set_Value (COLUMNNAME_M_InOutLineConfirm_UU, M_InOutLineConfirm_UU);
@@ -239,32 +236,32 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 
 	/** Get M_InOutLineConfirm_UU.
 		@return M_InOutLineConfirm_UU	  */
-	public String getM_InOutLineConfirm_UU () 
+	public String getM_InOutLineConfirm_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_InOutLineConfirm_UU);
 	}
 
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_Name)
-			.getPO(getM_InOutLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -281,26 +278,26 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
     }
 
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_Name)
-			.getPO(getM_InventoryLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
+			.getPO(getM_InventoryLine_ID(), get_TrxName());
+	}
 
 	/** Set Phys.Inventory Line.
-		@param M_InventoryLine_ID 
-		Unique line in an Inventory document
-	  */
+		@param M_InventoryLine_ID Unique line in an Inventory document
+	*/
 	public void setM_InventoryLine_ID (int M_InventoryLine_ID)
 	{
-		if (M_InventoryLine_ID < 1) 
+		if (M_InventoryLine_ID < 1)
 			set_Value (COLUMNNAME_M_InventoryLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InventoryLine_ID, Integer.valueOf(M_InventoryLine_ID));
 	}
 
 	/** Get Phys.Inventory Line.
 		@return Unique line in an Inventory document
 	  */
-	public int getM_InventoryLine_ID () 
+	public int getM_InventoryLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InventoryLine_ID);
 		if (ii == null)
@@ -309,9 +306,8 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -320,7 +316,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -333,9 +329,8 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	/** Set Scrapped Quantity.
-		@param ScrappedQty 
-		The Quantity scrapped due to QA issues
-	  */
+		@param ScrappedQty The Quantity scrapped due to QA issues
+	*/
 	public void setScrappedQty (BigDecimal ScrappedQty)
 	{
 		set_Value (COLUMNNAME_ScrappedQty, ScrappedQty);
@@ -344,7 +339,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/** Get Scrapped Quantity.
 		@return The Quantity scrapped due to QA issues
 	  */
-	public BigDecimal getScrappedQty () 
+	public BigDecimal getScrappedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ScrappedQty);
 		if (bd == null)
@@ -353,9 +348,8 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	}
 
 	/** Set Target Quantity.
-		@param TargetQty 
-		Target Movement Quantity
-	  */
+		@param TargetQty Target Movement Quantity
+	*/
 	public void setTargetQty (BigDecimal TargetQty)
 	{
 		set_ValueNoCheck (COLUMNNAME_TargetQty, TargetQty);
@@ -364,7 +358,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/** Get Target Quantity.
 		@return Target Movement Quantity
 	  */
-	public BigDecimal getTargetQty () 
+	public BigDecimal getTargetQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TargetQty);
 		if (bd == null)

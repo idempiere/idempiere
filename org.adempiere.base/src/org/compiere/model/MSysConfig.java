@@ -28,6 +28,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Util;
 
 /**
  *	System Configuration
@@ -43,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2454757193097243912L;
+	private static final long serialVersionUID = 4071371201535378277L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -105,6 +106,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
     public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
     public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
+	public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
     public static final String LASTRUN_RECORD_COUNT = "LASTRUN_RECORD_COUNT";
@@ -166,6 +168,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String USER_LOCKING_MAX_PASSWORD_AGE_DAY = "USER_LOCKING_MAX_PASSWORD_AGE_DAY";
     public static final String USER_LOCKING_PASSWORD_NOTIFY_DAY = "USER_LOCKING_PASSWORD_NOTIFY_DAY";
     public static final String USER_PASSWORD_HASH = "USER_PASSWORD_HASH";
+    public static final String VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT = "VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT";
     public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
     public static final String ZK_ADVANCE_FIND_FILTER_COLUMN_LIST = "ZK_ADVANCE_FIND_FILTER_COLUMN_LIST";
@@ -178,6 +181,10 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
     public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
     public static final String ZK_DESKTOP_CLASS = "ZK_DESKTOP_CLASS";
+    public static final String ZK_DESKTOP_SHOW_HOME_BUTTON = "ZK_DESKTOP_SHOW_HOME_BUTTON";
+    public static final String ZK_DESKTOP_SHOW_TAB_LIST_BUTTON = "ZK_DESKTOP_SHOW_TAB_LIST_BUTTON";
+    public static final String ZK_DESKTOP_TAB_AUTO_SHRINK_TO_FIT = "ZK_DESKTOP_TAB_AUTO_SHRINK_TO_FIT";
+    public static final String ZK_DESKTOP_TAB_MAX_TITLE_LENGTH = "ZK_DESKTOP_TAB_MAX_TITLE_LENGTH";
     public static final String ZK_FOOTER_SERVER_DATETIME_FORMAT = "ZK_FOOTER_SERVER_DATETIME_FORMAT";
     public static final String ZK_FOOTER_SERVER_MSG = "ZK_FOOTER_SERVER_MSG";
     public static final String ZK_GRID_AFTER_FIND = "ZK_GRID_AFTER_FIND";
@@ -358,7 +365,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get client configuration property of type string
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
+	 * @param AD_Client_ID Client ID
 	 * @return String
 	 */
 	public static String getValue(String Name, String defaultValue, int AD_Client_ID)
@@ -369,7 +376,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * Get system configuration property of type string
 	 * @param Name
-	 * @param Client ID
+	 * @param AD_Client_ID Client ID
 	 * @return String
 	 */
 	public static String getValue(String Name, int AD_Client_ID)
@@ -381,7 +388,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type int
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
+	 * @param AD_Client_ID Client ID
 	 * @return int
 	 */
 	public static int getIntValue(String Name, int defaultValue, int AD_Client_ID)
@@ -408,7 +415,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
+	 * @param AD_Client_ID Client ID
 	 * @return double
 	 * @deprecated use better getBigDecimalValue
 	 */
@@ -433,7 +440,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type BigDecimal
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
+	 * @param AD_Client_ID Client ID
 	 * @return BigDecimal
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID)
@@ -457,7 +464,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type boolean
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
+	 * @param AD_Client_ID Client ID
 	 * @return boolean
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue, int AD_Client_ID)
@@ -478,8 +485,8 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get client configuration property of type string
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
-	 * @param Organization ID
+	 * @param AD_Client_ID Client ID
+	 * @param AD_Org_ID Organization ID
 	 * @return String
 	 */
 	public static String getValue(String Name, String defaultValue, int AD_Client_ID, int AD_Org_ID)
@@ -536,8 +543,8 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * Get system configuration property of type string
 	 * @param Name
-	 * @param Client ID
-	 * @param Organization ID
+	 * @param AD_Client_ID Client ID
+	 * @param AD_Org_ID Organization ID
 	 * @return String
 	 */
 	public static String getValue(String Name, int AD_Client_ID, int AD_Org_ID)
@@ -549,8 +556,8 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type int
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
-	 * @param Organization ID
+	 * @param AD_Client_ID Client ID
+	 * @param AD_Org_ID Organization ID
 	 * @return int
 	 */
 	public static int getIntValue(String Name, int defaultValue, int AD_Client_ID, int AD_Org_ID)
@@ -577,8 +584,8 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type double
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
-	 * @param Organization ID
+	 * @param AD_Client_ID Client ID
+	 * @param AD_Org_ID Organization ID
 	 * @return double
 	 * @deprecated use better getBigDecimalValue
 	 */
@@ -603,8 +610,8 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type BigDecimal
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
-	 * @param Organization ID
+	 * @param AD_Client_ID Client ID
+	 * @param AD_Org_ID Organization ID
 	 * @return BigDecimal
 	 */
 	public static BigDecimal getBigDecimalValue(String Name, BigDecimal defaultValue, int AD_Client_ID, int AD_Org_ID)
@@ -628,8 +635,8 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type boolean
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
-	 * @param Organization ID
+	 * @param AD_Client_ID Client ID
+	 * @param AD_Org_ID Organization ID
 	 * @return boolean
 	 */
 	public static boolean getBooleanValue(String Name, boolean defaultValue, int AD_Client_ID, int AD_Org_ID)
@@ -671,7 +678,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type Timestamp
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
+	 * @param AD_Client_ID Client ID
 	 * @return Timestamp
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID)
@@ -683,8 +690,8 @@ public class MSysConfig extends X_AD_SysConfig
 	 * Get system configuration property of type Timestamp
 	 * @param Name
 	 * @param defaultValue
-	 * @param Client ID
-	 * @param Organization ID
+	 * @param AD_Client_ID Client ID
+	 * @param AD_Org_ID Organization ID
 	 * @return Timestamp
 	 */
 	public static Timestamp getTimestampValue(String Name, Timestamp defaultValue, int AD_Client_ID, int AD_Org_ID)
@@ -811,7 +818,7 @@ public class MSysConfig extends X_AD_SysConfig
 				// fix possible wrong config level
 				if (getAD_Org_ID() != 0)
 					setConfigurationLevel(CONFIGURATIONLEVEL_Organization);
-				else if (getAD_Client_ID() != 0 && getConfigurationLevel().equals(MSysConfig.CONFIGURATIONLEVEL_System))
+				else if (getAD_Client_ID() != 0 && (Util.isEmpty(getConfigurationLevel()) || getConfigurationLevel().equals(MSysConfig.CONFIGURATIONLEVEL_System)))
 					setConfigurationLevel(CONFIGURATIONLEVEL_Client);
 				
 			}

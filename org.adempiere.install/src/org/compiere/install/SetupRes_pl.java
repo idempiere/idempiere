@@ -21,7 +21,7 @@ import java.util.ListResourceBundle;
 /**
  *	Setup Resources
  *
- * 	@author 	Marek Mosiewicz <marek.mosiewicz@jotel.com.pl>
+ * 	@author 	Marek Mosiewicz &lt;marek.mosiewicz@jotel.com.pl&gt;
  * 	@version 	$Id: SetupRes_pl.java,v 1.2 2006/07/30 00:57:42 jjanke Exp $
  */
 public class SetupRes_pl extends ListResourceBundle

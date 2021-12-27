@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for M_PromotionGroupLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_PromotionGroupLine")
 public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_PromotionGroupLine (Properties ctx, int M_PromotionGroupLine_ID, String trxName)
@@ -72,26 +73,26 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
     }
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -100,23 +101,25 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 	}
 
 	public org.compiere.model.I_M_PromotionGroup getM_PromotionGroup() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PromotionGroup)MTable.get(getCtx(), org.compiere.model.I_M_PromotionGroup.Table_Name)
-			.getPO(getM_PromotionGroup_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PromotionGroup)MTable.get(getCtx(), org.compiere.model.I_M_PromotionGroup.Table_ID)
+			.getPO(getM_PromotionGroup_ID(), get_TrxName());
+	}
 
 	/** Set Promotion Group.
-		@param M_PromotionGroup_ID Promotion Group	  */
+		@param M_PromotionGroup_ID Promotion Group
+	*/
 	public void setM_PromotionGroup_ID (int M_PromotionGroup_ID)
 	{
-		if (M_PromotionGroup_ID < 1) 
+		if (M_PromotionGroup_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PromotionGroup_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PromotionGroup_ID, Integer.valueOf(M_PromotionGroup_ID));
 	}
 
 	/** Get Promotion Group.
 		@return Promotion Group	  */
-	public int getM_PromotionGroup_ID () 
+	public int getM_PromotionGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionGroup_ID);
 		if (ii == null)
@@ -125,18 +128,19 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 	}
 
 	/** Set Promotion Group Line.
-		@param M_PromotionGroupLine_ID Promotion Group Line	  */
+		@param M_PromotionGroupLine_ID Promotion Group Line
+	*/
 	public void setM_PromotionGroupLine_ID (int M_PromotionGroupLine_ID)
 	{
-		if (M_PromotionGroupLine_ID < 1) 
+		if (M_PromotionGroupLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PromotionGroupLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PromotionGroupLine_ID, Integer.valueOf(M_PromotionGroupLine_ID));
 	}
 
 	/** Get Promotion Group Line.
 		@return Promotion Group Line	  */
-	public int getM_PromotionGroupLine_ID () 
+	public int getM_PromotionGroupLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionGroupLine_ID);
 		if (ii == null)
@@ -145,7 +149,8 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 	}
 
 	/** Set M_PromotionGroupLine_UU.
-		@param M_PromotionGroupLine_UU M_PromotionGroupLine_UU	  */
+		@param M_PromotionGroupLine_UU M_PromotionGroupLine_UU
+	*/
 	public void setM_PromotionGroupLine_UU (String M_PromotionGroupLine_UU)
 	{
 		set_Value (COLUMNNAME_M_PromotionGroupLine_UU, M_PromotionGroupLine_UU);
@@ -153,7 +158,7 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 
 	/** Get M_PromotionGroupLine_UU.
 		@return M_PromotionGroupLine_UU	  */
-	public String getM_PromotionGroupLine_UU () 
+	public String getM_PromotionGroupLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_PromotionGroupLine_UU);
 	}

@@ -38,7 +38,8 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 	private int windowNo;
 
 	/**
-	 * @param comp
+	 * @param ctx
+	 * @param windowNo
 	 * @param gridField
 	 */
 	public WInfoPAttributeEditor(Properties ctx, int windowNo, GridField gridField) {
@@ -46,7 +47,10 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 		this.ctx = ctx;
 		this.windowNo = windowNo;
 		getComponent().addEventListener(Events.ON_CLICK, this);
-		getComponent().setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			getComponent().setIconSclass("z-icon-PAttribute");
+		else
+			getComponent().setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 		getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), "PAttribute"));
 		setReadWrite(false);
 	}

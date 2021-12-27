@@ -19,7 +19,14 @@ package org.compiere.process;
 import java.io.File;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
+import org.compiere.model.MMailText;
+import org.compiere.model.MSMTP;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.MSystem;
+import org.compiere.model.MTable;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Util;
@@ -30,6 +37,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: EMailTest.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class EMailTest extends SvrProcess
 {
 	/** Client Parameter			*/
@@ -51,28 +59,81 @@ public class EMailTest extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		MClient client = MClient.get (getCtx(), p_AD_Client_ID);
-		if (log.isLoggable(Level.INFO)) log.info(client.toString());
-		
-		//	 Test Client Mail
-		String clientTest = client.testEMail();
-		StringBuilder msglog = new StringBuilder().append(client.getName()).append(": ").append(clientTest);
-		addLog(0, null, null, msglog.toString());
-		
-		//	Test Client DocumentDir
-		if (!Ini.isClient())
-		{
-			String documentDir = client.getDocumentDir();
-			if (documentDir == null || documentDir.length() == 0)
-				documentDir = ".";
-			File file = new File (documentDir);
-			if (file.exists() && file.isDirectory())
-				addLog(0, null, null, "Found Directory: " + documentDir);
-			else
-				addLog(0, null, null, "Not Found Directory: " + documentDir);
+		if (getProcessInfo().getTable_ID() == MClient.Table_ID) {
+			MClient client = MClient.get (getCtx(), p_AD_Client_ID);
+			if (log.isLoggable(Level.INFO)) log.info(client.toString());
+			
+			//	 Test Client Mail
+			String clientTest = client.testEMail();
+			StringBuilder msglog = new StringBuilder().append(client.getName()).append(": ").append(clientTest);
+			addLog(0, null, null, msglog.toString());
+			
+			//	Test Client DocumentDir
+			if (!Ini.isClient())
+			{
+				String documentDir = client.getDocumentDir();
+				if (documentDir == null || documentDir.length() == 0)
+					documentDir = ".";
+				File file = new File (documentDir);
+				if (file.exists() && file.isDirectory())
+					addLog(0, null, null, "Found Directory: " + documentDir);
+				else
+					addLog(0, null, null, "Not Found Directory: " + documentDir);
+			}
+			return Util.isEmpty(clientTest) ? "OK" : ("@Error@ " + clientTest);
+		}
+		else if (getProcessInfo().getTable_ID() == MSMTP.Table_ID) {
+			
+			MClient client = MClient.get(getAD_Client_ID());
+			MSMTP smtp = new MSMTP(getCtx(), getRecord_ID(), get_TrxName());
+			
+			String systemName = MSystem.get(getCtx()).getName();
+			StringBuilder subject = new StringBuilder(systemName).append(" EMail Test");
+			StringBuilder msgce = new StringBuilder(systemName).append(" EMail Test");
+			
+			int mailtextID = MSysConfig.getIntValue(MSysConfig.EMAIL_TEST_MAILTEXT_ID, 0, getAD_Client_ID());
+			if (mailtextID > 0) {
+				MMailText mt = new MMailText(getCtx(), mailtextID, get_TrxName());
+				mt.setPO(client);
+				subject = new StringBuilder(mt.getMailHeader());
+				msgce = new StringBuilder(mt.getMailText(true));
+			}
+
+			EMail email = client.createEMail (smtp.getRequestUser(), subject.toString(), msgce.toString());
+			if (email == null){
+				StringBuilder msgreturn = new StringBuilder("Could not create EMail: ").append(getName());
+				return msgreturn.toString();
+			}	
+			try
+			{
+				String from = smtp.getUsedByEmailOrDomain();
+				if (! from.contains("@"))
+					from = "test@" + from;
+				email.setFrom(from);
+				String msg = email.send();
+				if (EMail.SENT_OK.equals (msg))
+				{
+					if (log.isLoggable(Level.INFO)) log.info("Sent Test EMail to " + client.getRequestEMail());
+					return "";
+				}
+				else
+				{
+					log.warning("Could NOT send Test EMail from "
+						+ smtp.getSMTPHost() + ": "
+						+ " (" + smtp.getRequestUser()
+						+ ") to " + client.getRequestEMail() + ": " + msg);
+					return "@Error@" + msg;
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new AdempiereException(ex);
+			}
+			
 		}
 		
-		return Util.isEmpty(clientTest) ? "OK" : ("@Error@ " + clientTest);
+		return "@Error@ this process is not intented to be executed from table " + MTable.get(getCtx(), getProcessInfo().getTable_ID()).getName();
+		
 	}	//	doIt
 	
 }	//	EMailTest

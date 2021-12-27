@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_InOutLineConfirm
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="I_InOutLineConfirm")
 public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName)
@@ -79,9 +80,8 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
     }
 
 	/** Set Confirmation No.
-		@param ConfirmationNo 
-		Confirmation Number
-	  */
+		@param ConfirmationNo Confirmation Number
+	*/
 	public void setConfirmationNo (String ConfirmationNo)
 	{
 		set_Value (COLUMNNAME_ConfirmationNo, ConfirmationNo);
@@ -90,15 +90,14 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Confirmation No.
 		@return Confirmation Number
 	  */
-	public String getConfirmationNo () 
+	public String getConfirmationNo()
 	{
 		return (String)get_Value(COLUMNNAME_ConfirmationNo);
 	}
 
 	/** Set Confirmed Quantity.
-		@param ConfirmedQty 
-		Confirmation of a received quantity
-	  */
+		@param ConfirmedQty Confirmation of a received quantity
+	*/
 	public void setConfirmedQty (BigDecimal ConfirmedQty)
 	{
 		set_Value (COLUMNNAME_ConfirmedQty, ConfirmedQty);
@@ -107,7 +106,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Confirmed Quantity.
 		@return Confirmation of a received quantity
 	  */
-	public BigDecimal getConfirmedQty () 
+	public BigDecimal getConfirmedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ConfirmedQty);
 		if (bd == null)
@@ -116,9 +115,8 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -127,15 +125,14 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Difference.
-		@param DifferenceQty 
-		Difference Quantity
-	  */
+		@param DifferenceQty Difference Quantity
+	*/
 	public void setDifferenceQty (BigDecimal DifferenceQty)
 	{
 		set_Value (COLUMNNAME_DifferenceQty, DifferenceQty);
@@ -144,7 +141,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Difference.
 		@return Difference Quantity
 	  */
-	public BigDecimal getDifferenceQty () 
+	public BigDecimal getDifferenceQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DifferenceQty);
 		if (bd == null)
@@ -153,9 +150,8 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -164,27 +160,26 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set Ship/Receipt Confirmation Import Line.
-		@param I_InOutLineConfirm_ID 
-		Material Shipment or Receipt Confirmation Import Line
-	  */
+		@param I_InOutLineConfirm_ID Material Shipment or Receipt Confirmation Import Line
+	*/
 	public void setI_InOutLineConfirm_ID (int I_InOutLineConfirm_ID)
 	{
-		if (I_InOutLineConfirm_ID < 1) 
+		if (I_InOutLineConfirm_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_InOutLineConfirm_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_InOutLineConfirm_ID, Integer.valueOf(I_InOutLineConfirm_ID));
 	}
 
 	/** Get Ship/Receipt Confirmation Import Line.
 		@return Material Shipment or Receipt Confirmation Import Line
 	  */
-	public int getI_InOutLineConfirm_ID () 
+	public int getI_InOutLineConfirm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_InOutLineConfirm_ID);
 		if (ii == null)
@@ -201,7 +196,8 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
     }
 
 	/** Set I_InOutLineConfirm_UU.
-		@param I_InOutLineConfirm_UU I_InOutLineConfirm_UU	  */
+		@param I_InOutLineConfirm_UU I_InOutLineConfirm_UU
+	*/
 	public void setI_InOutLineConfirm_UU (String I_InOutLineConfirm_UU)
 	{
 		set_Value (COLUMNNAME_I_InOutLineConfirm_UU, I_InOutLineConfirm_UU);
@@ -209,15 +205,14 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 
 	/** Get I_InOutLineConfirm_UU.
 		@return I_InOutLineConfirm_UU	  */
-	public String getI_InOutLineConfirm_UU () 
+	public String getI_InOutLineConfirm_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_InOutLineConfirm_UU);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -226,7 +221,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -239,26 +234,26 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	}
 
 	public org.compiere.model.I_M_InOutLineConfirm getM_InOutLineConfirm() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_InOutLineConfirm)MTable.get(getCtx(), org.compiere.model.I_M_InOutLineConfirm.Table_Name)
-			.getPO(getM_InOutLineConfirm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_InOutLineConfirm)MTable.get(getCtx(), org.compiere.model.I_M_InOutLineConfirm.Table_ID)
+			.getPO(getM_InOutLineConfirm_ID(), get_TrxName());
+	}
 
 	/** Set Ship/Receipt Confirmation Line.
-		@param M_InOutLineConfirm_ID 
-		Material Shipment or Receipt Confirmation Line
-	  */
+		@param M_InOutLineConfirm_ID Material Shipment or Receipt Confirmation Line
+	*/
 	public void setM_InOutLineConfirm_ID (int M_InOutLineConfirm_ID)
 	{
-		if (M_InOutLineConfirm_ID < 1) 
+		if (M_InOutLineConfirm_ID < 1)
 			set_Value (COLUMNNAME_M_InOutLineConfirm_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InOutLineConfirm_ID, Integer.valueOf(M_InOutLineConfirm_ID));
 	}
 
 	/** Get Ship/Receipt Confirmation Line.
 		@return Material Shipment or Receipt Confirmation Line
 	  */
-	public int getM_InOutLineConfirm_ID () 
+	public int getM_InOutLineConfirm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLineConfirm_ID);
 		if (ii == null)
@@ -267,9 +262,8 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -278,7 +272,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -291,7 +285,8 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -299,7 +294,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -312,9 +307,8 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	}
 
 	/** Set Scrapped Quantity.
-		@param ScrappedQty 
-		The Quantity scrapped due to QA issues
-	  */
+		@param ScrappedQty The Quantity scrapped due to QA issues
+	*/
 	public void setScrappedQty (BigDecimal ScrappedQty)
 	{
 		set_Value (COLUMNNAME_ScrappedQty, ScrappedQty);
@@ -323,7 +317,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/** Get Scrapped Quantity.
 		@return The Quantity scrapped due to QA issues
 	  */
-	public BigDecimal getScrappedQty () 
+	public BigDecimal getScrappedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ScrappedQty);
 		if (bd == null)

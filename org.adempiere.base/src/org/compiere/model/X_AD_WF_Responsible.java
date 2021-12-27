@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Responsible
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_Responsible")
 public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_WF_Responsible (Properties ctx, int AD_WF_Responsible_ID, String trxName)
@@ -41,7 +42,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 			setAD_Role_ID (0);
 			setAD_WF_Responsible_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setResponsibleType (null);
         } */
@@ -76,26 +77,26 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -104,26 +105,26 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -132,21 +133,20 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	}
 
 	/** Set Workflow Responsible.
-		@param AD_WF_Responsible_ID 
-		Responsible for Workflow Execution
-	  */
+		@param AD_WF_Responsible_ID Responsible for Workflow Execution
+	*/
 	public void setAD_WF_Responsible_ID (int AD_WF_Responsible_ID)
 	{
-		if (AD_WF_Responsible_ID < 1) 
+		if (AD_WF_Responsible_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Responsible_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Responsible_ID, Integer.valueOf(AD_WF_Responsible_ID));
 	}
 
 	/** Get Workflow Responsible.
 		@return Responsible for Workflow Execution
 	  */
-	public int getAD_WF_Responsible_ID () 
+	public int getAD_WF_Responsible_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Responsible_ID);
 		if (ii == null)
@@ -155,7 +155,8 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	}
 
 	/** Set AD_WF_Responsible_UU.
-		@param AD_WF_Responsible_UU AD_WF_Responsible_UU	  */
+		@param AD_WF_Responsible_UU AD_WF_Responsible_UU
+	*/
 	public void setAD_WF_Responsible_UU (String AD_WF_Responsible_UU)
 	{
 		set_Value (COLUMNNAME_AD_WF_Responsible_UU, AD_WF_Responsible_UU);
@@ -163,15 +164,14 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 
 	/** Get AD_WF_Responsible_UU.
 		@return AD_WF_Responsible_UU	  */
-	public String getAD_WF_Responsible_UU () 
+	public String getAD_WF_Responsible_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_Responsible_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -180,7 +180,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -188,9 +188,8 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -200,15 +199,14 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -217,7 +215,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -232,20 +230,19 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 
 	/** ResponsibleType AD_Reference_ID=304 */
 	public static final int RESPONSIBLETYPE_AD_Reference_ID=304;
-	/** Organization = O */
-	public static final String RESPONSIBLETYPE_Organization = "O";
 	/** Human = H */
 	public static final String RESPONSIBLETYPE_Human = "H";
+	/** Manual = M */
+	public static final String RESPONSIBLETYPE_Manual = "M";
+	/** Organization = O */
+	public static final String RESPONSIBLETYPE_Organization = "O";
 	/** Role = R */
 	public static final String RESPONSIBLETYPE_Role = "R";
 	/** System Resource = S */
 	public static final String RESPONSIBLETYPE_SystemResource = "S";
-	/** Manual = M */
-	public static final String RESPONSIBLETYPE_Manual = "M";
 	/** Set Responsible Type.
-		@param ResponsibleType 
-		Type of the Responsibility for a workflow
-	  */
+		@param ResponsibleType Type of the Responsibility for a workflow
+	*/
 	public void setResponsibleType (String ResponsibleType)
 	{
 
@@ -255,7 +252,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/** Get Responsible Type.
 		@return Type of the Responsibility for a workflow
 	  */
-	public String getResponsibleType () 
+	public String getResponsibleType()
 	{
 		return (String)get_Value(COLUMNNAME_ResponsibleType);
 	}

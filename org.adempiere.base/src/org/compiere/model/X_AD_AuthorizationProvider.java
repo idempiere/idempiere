@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AuthorizationProvider
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_AuthorizationProvider")
 public class X_AD_AuthorizationProvider extends PO implements I_AD_AuthorizationProvider, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210224L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationProvider (Properties ctx, int AD_AuthorizationProvider_ID, String trxName)
@@ -40,7 +41,9 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
         {
 			setAD_AuthorizationProvider_ID (0);
 			setAD_AuthorizationType (null);
+			setAuthorizationEndpoint (null);
 			setName (null);
+			setTokenEndpoint (null);
         } */
     }
 
@@ -73,18 +76,19 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
     }
 
 	/** Set Authorization Provider.
-		@param AD_AuthorizationProvider_ID Authorization Provider	  */
+		@param AD_AuthorizationProvider_ID Authorization Provider
+	*/
 	public void setAD_AuthorizationProvider_ID (int AD_AuthorizationProvider_ID)
 	{
-		if (AD_AuthorizationProvider_ID < 1) 
+		if (AD_AuthorizationProvider_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationProvider_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationProvider_ID, Integer.valueOf(AD_AuthorizationProvider_ID));
 	}
 
 	/** Get Authorization Provider.
 		@return Authorization Provider	  */
-	public int getAD_AuthorizationProvider_ID () 
+	public int getAD_AuthorizationProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationProvider_ID);
 		if (ii == null)
@@ -93,7 +97,8 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	}
 
 	/** Set AD_AuthorizationProvider_UU.
-		@param AD_AuthorizationProvider_UU AD_AuthorizationProvider_UU	  */
+		@param AD_AuthorizationProvider_UU AD_AuthorizationProvider_UU
+	*/
 	public void setAD_AuthorizationProvider_UU (String AD_AuthorizationProvider_UU)
 	{
 		set_Value (COLUMNNAME_AD_AuthorizationProvider_UU, AD_AuthorizationProvider_UU);
@@ -101,7 +106,7 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 
 	/** Get AD_AuthorizationProvider_UU.
 		@return AD_AuthorizationProvider_UU	  */
-	public String getAD_AuthorizationProvider_UU () 
+	public String getAD_AuthorizationProvider_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationProvider_UU);
 	}
@@ -113,7 +118,8 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	/** SAML (not implemented yet) = SAML */
 	public static final String AD_AUTHORIZATIONTYPE_SAMLNotImplementedYet = "SAML";
 	/** Set Authorization Type.
-		@param AD_AuthorizationType Authorization Type	  */
+		@param AD_AuthorizationType Authorization Type
+	*/
 	public void setAD_AuthorizationType (String AD_AuthorizationType)
 	{
 
@@ -122,13 +128,14 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 
 	/** Get Authorization Type.
 		@return Authorization Type	  */
-	public String getAD_AuthorizationType () 
+	public String getAD_AuthorizationType()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationType);
 	}
 
 	/** Set Authorization Endpoint.
-		@param AuthorizationEndpoint Authorization Endpoint	  */
+		@param AuthorizationEndpoint Authorization Endpoint
+	*/
 	public void setAuthorizationEndpoint (String AuthorizationEndpoint)
 	{
 		set_Value (COLUMNNAME_AuthorizationEndpoint, AuthorizationEndpoint);
@@ -136,15 +143,14 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 
 	/** Get Authorization Endpoint.
 		@return Authorization Endpoint	  */
-	public String getAuthorizationEndpoint () 
+	public String getAuthorizationEndpoint()
 	{
 		return (String)get_Value(COLUMNNAME_AuthorizationEndpoint);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -153,15 +159,14 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -170,15 +175,14 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -187,7 +191,7 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -201,7 +205,8 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
     }
 
 	/** Set Revoke Endpoint.
-		@param RevokeEndpoint Revoke Endpoint	  */
+		@param RevokeEndpoint Revoke Endpoint
+	*/
 	public void setRevokeEndpoint (String RevokeEndpoint)
 	{
 		set_Value (COLUMNNAME_RevokeEndpoint, RevokeEndpoint);
@@ -209,13 +214,14 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 
 	/** Get Revoke Endpoint.
 		@return Revoke Endpoint	  */
-	public String getRevokeEndpoint () 
+	public String getRevokeEndpoint()
 	{
 		return (String)get_Value(COLUMNNAME_RevokeEndpoint);
 	}
 
 	/** Set Token Endpoint.
-		@param TokenEndpoint Token Endpoint	  */
+		@param TokenEndpoint Token Endpoint
+	*/
 	public void setTokenEndpoint (String TokenEndpoint)
 	{
 		set_Value (COLUMNNAME_TokenEndpoint, TokenEndpoint);
@@ -223,7 +229,7 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 
 	/** Get Token Endpoint.
 		@return Token Endpoint	  */
-	public String getTokenEndpoint () 
+	public String getTokenEndpoint()
 	{
 		return (String)get_Value(COLUMNNAME_TokenEndpoint);
 	}

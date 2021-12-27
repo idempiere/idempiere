@@ -41,6 +41,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: AllocationAuto.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class AllocationAuto extends SvrProcess
 {
 	/**	BP Group					*/
@@ -317,7 +318,7 @@ public class AllocationAuto extends SvrProcess
 					MInvoice invoice = m_invoices[i];
 					if (invoice.isPaid())
 						continue;
-				//	log.fine("allocateIndividualPayments - " + invoice);
+
 					if (payment.getC_Invoice_ID() == invoice.getC_Invoice_ID())
 					{
 						if (payment.getC_Currency_ID() == invoice.getC_Currency_ID())
@@ -469,7 +470,7 @@ public class AllocationAuto extends SvrProcess
 			if (payment.isAllocated())
 				continue;
 			BigDecimal allocatedAmt = payment.getAllocatedAmt();
-		//	log.info("allocateBPartnerAll - " + payment + ", Allocated=" + allocatedAmt);
+
 			if (allocatedAmt != null && allocatedAmt.signum() != 0)
 				continue;
 			BigDecimal availableAmt = payment.getPayAmt()
@@ -481,7 +482,6 @@ public class AllocationAuto extends SvrProcess
 			//	Foreign currency
 			if (payment.getC_Currency_ID() != C_Currency_ID)
 				continue;
-		//	log.fine("allocateBPartnerAll - Available=" + availableAmt);
 			if (dateAcct == null || payment.getDateAcct().after(dateAcct))
 				dateAcct = payment.getDateAcct();
 			totalPayments = totalPayments.add(availableAmt); 
@@ -493,14 +493,12 @@ public class AllocationAuto extends SvrProcess
 			MInvoice invoice = m_invoices[i];
 			if (invoice.isPaid())
 				continue;
-		//	log.info("allocateBPartnerAll - " + invoice);
 			BigDecimal openAmt = invoice.getOpenAmt(true, null);
 			if (!invoice.isSOTrx())
 				openAmt = openAmt.negate();
 			//	Foreign currency
 			if (invoice.getC_Currency_ID() != C_Currency_ID)
 				continue;
-		//	log.fine("allocateBPartnerAll - Open=" + openAmt);
 			if (dateAcct == null || invoice.getDateAcct().after(dateAcct))
 				dateAcct = invoice.getDateAcct();
 			totalInvoices = totalInvoices.add(openAmt);
@@ -646,9 +644,6 @@ public class AllocationAuto extends SvrProcess
 			BigDecimal allocatedAmt = payment.getAllocatedAmt();
 			if (allocatedAmt == null)
 				allocatedAmt = Env.ZERO;
-			// comment following lines to allow partial allocation
-			// if (allocatedAmt != null && allocatedAmt.signum() != 0)
-			// 	continue;
 			BigDecimal availableAmt = payment.getPayAmt()
 				.add(payment.getDiscountAmt())
 				.add(payment.getWriteOffAmt())

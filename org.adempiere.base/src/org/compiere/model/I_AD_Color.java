@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Color
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_AD_Color 
 {
@@ -209,12 +209,12 @@ public interface I_AD_Color
     /** Column name ImageAlpha */
     public static final String COLUMNNAME_ImageAlpha = "ImageAlpha";
 
-	/** Set Image Alpha .
+	/** Set Image Alpha.
 	  * Image Texture Composite Alpha
 	  */
 	public void setImageAlpha (BigDecimal ImageAlpha);
 
-	/** Get Image Alpha .
+	/** Get Image Alpha.
 	  * Image Texture Composite Alpha
 	  */
 	public BigDecimal getImageAlpha();

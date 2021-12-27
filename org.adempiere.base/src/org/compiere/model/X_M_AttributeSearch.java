@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSearch
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_AttributeSearch")
 public class X_M_AttributeSearch extends PO implements I_M_AttributeSearch, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_AttributeSearch (Properties ctx, int M_AttributeSearch_ID, String trxName)
@@ -72,9 +73,8 @@ public class X_M_AttributeSearch extends PO implements I_M_AttributeSearch, I_Pe
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -83,27 +83,26 @@ public class X_M_AttributeSearch extends PO implements I_M_AttributeSearch, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Attribute Search.
-		@param M_AttributeSearch_ID 
-		Common Search Attribute 
-	  */
+		@param M_AttributeSearch_ID Common Search Attribute 
+	*/
 	public void setM_AttributeSearch_ID (int M_AttributeSearch_ID)
 	{
-		if (M_AttributeSearch_ID < 1) 
+		if (M_AttributeSearch_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSearch_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSearch_ID, Integer.valueOf(M_AttributeSearch_ID));
 	}
 
 	/** Get Attribute Search.
 		@return Common Search Attribute 
 	  */
-	public int getM_AttributeSearch_ID () 
+	public int getM_AttributeSearch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSearch_ID);
 		if (ii == null)
@@ -112,7 +111,8 @@ public class X_M_AttributeSearch extends PO implements I_M_AttributeSearch, I_Pe
 	}
 
 	/** Set M_AttributeSearch_UU.
-		@param M_AttributeSearch_UU M_AttributeSearch_UU	  */
+		@param M_AttributeSearch_UU M_AttributeSearch_UU
+	*/
 	public void setM_AttributeSearch_UU (String M_AttributeSearch_UU)
 	{
 		set_Value (COLUMNNAME_M_AttributeSearch_UU, M_AttributeSearch_UU);
@@ -120,15 +120,14 @@ public class X_M_AttributeSearch extends PO implements I_M_AttributeSearch, I_Pe
 
 	/** Get M_AttributeSearch_UU.
 		@return M_AttributeSearch_UU	  */
-	public String getM_AttributeSearch_UU () 
+	public String getM_AttributeSearch_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeSearch_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -137,7 +136,7 @@ public class X_M_AttributeSearch extends PO implements I_M_AttributeSearch, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

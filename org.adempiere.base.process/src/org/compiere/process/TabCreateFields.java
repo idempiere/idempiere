@@ -41,12 +41,13 @@ import org.compiere.util.Util;
  * 
  * @author Teo Sarca
  * 			<li>BF [ 2827782 ] TabCreateFields process not setting entity type well
- * 				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2827782&group_id=176962
+ * 				https://sourceforge.net/p/adempiere/bugs/1994/
  * 
  * @author Silvano Trinchero
  *      <li>BF [ 2891218] Wrong behavior in entity type settings for customization entity types
- *        https://sourceforge.net/tracker/?func=detail&aid=2891218&group_id=176962&atid=879332 
+ *        https://sourceforge.net/p/adempiere/bugs/2197/ 
  */
+@org.adempiere.base.annotation.Process
 public class TabCreateFields extends SvrProcess
 {
 	/**	Tab Number				*/

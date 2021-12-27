@@ -25,14 +25,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaySelectionLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_PaySelectionLine")
 public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName)
@@ -89,26 +90,26 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
     }
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -117,26 +118,26 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	public org.compiere.model.I_C_PaySelectionCheck getC_PaySelectionCheck() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaySelectionCheck)MTable.get(getCtx(), org.compiere.model.I_C_PaySelectionCheck.Table_Name)
-			.getPO(getC_PaySelectionCheck_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaySelectionCheck)MTable.get(getCtx(), org.compiere.model.I_C_PaySelectionCheck.Table_ID)
+			.getPO(getC_PaySelectionCheck_ID(), get_TrxName());
+	}
 
 	/** Set Pay Selection Check.
-		@param C_PaySelectionCheck_ID 
-		Payment Selection Check
-	  */
+		@param C_PaySelectionCheck_ID Payment Selection Check
+	*/
 	public void setC_PaySelectionCheck_ID (int C_PaySelectionCheck_ID)
 	{
-		if (C_PaySelectionCheck_ID < 1) 
+		if (C_PaySelectionCheck_ID < 1)
 			set_Value (COLUMNNAME_C_PaySelectionCheck_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_PaySelectionCheck_ID, Integer.valueOf(C_PaySelectionCheck_ID));
 	}
 
 	/** Get Pay Selection Check.
 		@return Payment Selection Check
 	  */
-	public int getC_PaySelectionCheck_ID () 
+	public int getC_PaySelectionCheck_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaySelectionCheck_ID);
 		if (ii == null)
@@ -145,26 +146,26 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaySelection)MTable.get(getCtx(), org.compiere.model.I_C_PaySelection.Table_Name)
-			.getPO(getC_PaySelection_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaySelection)MTable.get(getCtx(), org.compiere.model.I_C_PaySelection.Table_ID)
+			.getPO(getC_PaySelection_ID(), get_TrxName());
+	}
 
 	/** Set Payment Selection.
-		@param C_PaySelection_ID 
-		Payment Selection
-	  */
+		@param C_PaySelection_ID Payment Selection
+	*/
 	public void setC_PaySelection_ID (int C_PaySelection_ID)
 	{
-		if (C_PaySelection_ID < 1) 
+		if (C_PaySelection_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_PaySelection_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_PaySelection_ID, Integer.valueOf(C_PaySelection_ID));
 	}
 
 	/** Get Payment Selection.
 		@return Payment Selection
 	  */
-	public int getC_PaySelection_ID () 
+	public int getC_PaySelection_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaySelection_ID);
 		if (ii == null)
@@ -173,21 +174,20 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Payment Selection Line.
-		@param C_PaySelectionLine_ID 
-		Payment Selection Line
-	  */
+		@param C_PaySelectionLine_ID Payment Selection Line
+	*/
 	public void setC_PaySelectionLine_ID (int C_PaySelectionLine_ID)
 	{
-		if (C_PaySelectionLine_ID < 1) 
+		if (C_PaySelectionLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_PaySelectionLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_PaySelectionLine_ID, Integer.valueOf(C_PaySelectionLine_ID));
 	}
 
 	/** Get Payment Selection Line.
 		@return Payment Selection Line
 	  */
-	public int getC_PaySelectionLine_ID () 
+	public int getC_PaySelectionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaySelectionLine_ID);
 		if (ii == null)
@@ -204,7 +204,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
     }
 
 	/** Set C_PaySelectionLine_UU.
-		@param C_PaySelectionLine_UU C_PaySelectionLine_UU	  */
+		@param C_PaySelectionLine_UU C_PaySelectionLine_UU
+	*/
 	public void setC_PaySelectionLine_UU (String C_PaySelectionLine_UU)
 	{
 		set_Value (COLUMNNAME_C_PaySelectionLine_UU, C_PaySelectionLine_UU);
@@ -212,15 +213,14 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 
 	/** Get C_PaySelectionLine_UU.
 		@return C_PaySelectionLine_UU	  */
-	public String getC_PaySelectionLine_UU () 
+	public String getC_PaySelectionLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_PaySelectionLine_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -229,15 +229,14 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Difference.
-		@param DifferenceAmt 
-		Difference Amount
-	  */
+		@param DifferenceAmt Difference Amount
+	*/
 	public void setDifferenceAmt (BigDecimal DifferenceAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_DifferenceAmt, DifferenceAmt);
@@ -246,7 +245,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Difference.
 		@return Difference Amount
 	  */
-	public BigDecimal getDifferenceAmt () 
+	public BigDecimal getDifferenceAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DifferenceAmt);
 		if (bd == null)
@@ -255,9 +254,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Discount Amount.
-		@param DiscountAmt 
-		Calculated amount of discount
-	  */
+		@param DiscountAmt Calculated amount of discount
+	*/
 	public void setDiscountAmt (BigDecimal DiscountAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_DiscountAmt, DiscountAmt);
@@ -266,7 +264,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Discount Amount.
 		@return Calculated amount of discount
 	  */
-	public BigDecimal getDiscountAmt () 
+	public BigDecimal getDiscountAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DiscountAmt);
 		if (bd == null)
@@ -275,9 +273,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Manual.
-		@param IsManual 
-		This is a manual process
-	  */
+		@param IsManual This is a manual process
+	*/
 	public void setIsManual (boolean IsManual)
 	{
 		set_Value (COLUMNNAME_IsManual, Boolean.valueOf(IsManual));
@@ -286,7 +283,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Manual.
 		@return This is a manual process
 	  */
-	public boolean isManual () 
+	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
 		if (oo != null) 
@@ -299,9 +296,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -310,7 +306,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -323,9 +319,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -334,7 +329,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -343,9 +338,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Open Amount.
-		@param OpenAmt 
-		Open item amount
-	  */
+		@param OpenAmt Open item amount
+	*/
 	public void setOpenAmt (BigDecimal OpenAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_OpenAmt, OpenAmt);
@@ -354,7 +348,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Open Amount.
 		@return Open item amount
 	  */
-	public BigDecimal getOpenAmt () 
+	public BigDecimal getOpenAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OpenAmt);
 		if (bd == null)
@@ -363,9 +357,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Payment amount.
-		@param PayAmt 
-		Amount being paid
-	  */
+		@param PayAmt Amount being paid
+	*/
 	public void setPayAmt (BigDecimal PayAmt)
 	{
 		set_Value (COLUMNNAME_PayAmt, PayAmt);
@@ -374,7 +367,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Payment amount.
 		@return Amount being paid
 	  */
-	public BigDecimal getPayAmt () 
+	public BigDecimal getPayAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PayAmt);
 		if (bd == null)
@@ -386,22 +379,21 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
 	public static final String PAYMENTRULE_Cash = "B";
-	/** Credit Card = K */
-	public static final String PAYMENTRULE_CreditCard = "K";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULE_DirectDeposit = "T";
-	/** Check = S */
-	public static final String PAYMENTRULE_Check = "S";
-	/** On Credit = P */
-	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULE_CreditCard = "K";
 	/** Mixed POS Payment = M */
 	public static final String PAYMENTRULE_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULE_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULE_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULE_DirectDeposit = "T";
 	/** Set Payment Rule.
-		@param PaymentRule 
-		How you pay the invoice
-	  */
+		@param PaymentRule How you pay the invoice
+	*/
 	public void setPaymentRule (String PaymentRule)
 	{
 
@@ -411,15 +403,14 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Payment Rule.
 		@return How you pay the invoice
 	  */
-	public String getPaymentRule () 
+	public String getPaymentRule()
 	{
 		return (String)get_Value(COLUMNNAME_PaymentRule);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -428,7 +419,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -441,9 +432,8 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	}
 
 	/** Set Write-off Amount.
-		@param WriteOffAmt 
-		Amount to write-off
-	  */
+		@param WriteOffAmt Amount to write-off
+	*/
 	public void setWriteOffAmt (BigDecimal WriteOffAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_WriteOffAmt, WriteOffAmt);
@@ -452,7 +442,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/** Get Write-off Amount.
 		@return Amount to write-off
 	  */
-	public BigDecimal getWriteOffAmt () 
+	public BigDecimal getWriteOffAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_WriteOffAmt);
 		if (bd == null)

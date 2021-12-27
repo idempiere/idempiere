@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Country
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_C_Country 
 {
@@ -233,13 +233,17 @@ public interface I_C_Country
 
 	/** Set Phone Format.
 	  * Format of the phone;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public void setExpressionPhone (String ExpressionPhone);
 
 	/** Get Phone Format.
 	  * Format of the phone;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public String getExpressionPhone();
 
@@ -248,13 +252,17 @@ public interface I_C_Country
 
 	/** Set Postal Code Format.
 	  * Format of the postal code;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public void setExpressionPostal (String ExpressionPostal);
 
 	/** Get Postal Code Format.
 	  * Format of the postal code;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public String getExpressionPostal();
 
@@ -263,13 +271,17 @@ public interface I_C_Country
 
 	/** Set Additional Postal Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public void setExpressionPostal_Add (String ExpressionPostal_Add);
 
 	/** Get Additional Postal Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public String getExpressionPostal_Add();
 

@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="HR_ListType")
 public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_HR_ListType (Properties ctx, int HR_ListType_ID, String trxName)
@@ -73,9 +74,8 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,24 +84,25 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Payroll List Type.
-		@param HR_ListType_ID Payroll List Type	  */
+		@param HR_ListType_ID Payroll List Type
+	*/
 	public void setHR_ListType_ID (int HR_ListType_ID)
 	{
-		if (HR_ListType_ID < 1) 
+		if (HR_ListType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_ListType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_ListType_ID, Integer.valueOf(HR_ListType_ID));
 	}
 
 	/** Get Payroll List Type.
 		@return Payroll List Type	  */
-	public int getHR_ListType_ID () 
+	public int getHR_ListType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_ListType_ID);
 		if (ii == null)
@@ -110,7 +111,8 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 	}
 
 	/** Set HR_ListType_UU.
-		@param HR_ListType_UU HR_ListType_UU	  */
+		@param HR_ListType_UU HR_ListType_UU
+	*/
 	public void setHR_ListType_UU (String HR_ListType_UU)
 	{
 		set_Value (COLUMNNAME_HR_ListType_UU, HR_ListType_UU);
@@ -118,15 +120,14 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 
 	/** Get HR_ListType_UU.
 		@return HR_ListType_UU	  */
-	public String getHR_ListType_UU () 
+	public String getHR_ListType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_ListType_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -135,7 +136,7 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -149,9 +150,8 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -160,7 +160,7 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

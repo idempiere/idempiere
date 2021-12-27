@@ -79,16 +79,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		{
 			vo.Fields = new ArrayList<GridFieldVO>();	//	dummy
 		}
-		/*
-		else
-		{
-			createFields (vo);
-			if (vo.Fields == null || vo.Fields.size() == 0)
-			{
-				CLogger.get().log(Level.SEVERE, "No Fields");
-				return null;
-			}
-		}*/
+
 		return vo;
 	}	//	create
 
@@ -104,7 +95,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		boolean showTrl = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_TRANSLATION));
 		boolean showAcct = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ACCOUNTING));
 		boolean showAdvanced = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ADVANCED));
-	//	CLogger.get().warning("ShowTrl=" + showTrl + ", showAcct=" + showAcct);
+
 		try
 		{
 			vo.AD_Tab_ID = rs.getInt("AD_Tab_ID");
@@ -311,7 +302,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		return true;
 	}	//	loadTabDetails
 
-	private static final CCache<String, ArrayList<GridFieldVO>> s_gridFieldCache = new CCache<String, ArrayList<GridFieldVO>>(MField.Table_Name, "GridFieldVO Cache", 100, 60, false, 1000);
+	private static final CCache<String, ArrayList<GridFieldVO>> s_gridFieldCache = new CCache<String, ArrayList<GridFieldVO>>(MField.Table_Name, "GridFieldVO Cache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 1000);
 	
 	/**************************************************************************
 	 *  Create Tab Fields

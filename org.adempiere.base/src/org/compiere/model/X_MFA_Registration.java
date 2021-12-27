@@ -24,14 +24,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Registration
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="MFA_Registration")
 public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210607L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_MFA_Registration (Properties ctx, int MFA_Registration_ID, String trxName)
@@ -78,26 +79,26 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -106,9 +107,8 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	}
 
 	/** Set Expire On.
-		@param Expiration 
-		Expire On
-	  */
+		@param Expiration Expire On
+	*/
 	public void setExpiration (Timestamp Expiration)
 	{
 		set_Value (COLUMNNAME_Expiration, Expiration);
@@ -117,13 +117,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/** Get Expire On.
 		@return Expire On
 	  */
-	public Timestamp getExpiration () 
+	public Timestamp getExpiration()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_Expiration);
 	}
 
 	/** Set Failed Login Count.
-		@param FailedLoginCount Failed Login Count	  */
+		@param FailedLoginCount Failed Login Count
+	*/
 	public void setFailedLoginCount (int FailedLoginCount)
 	{
 		set_ValueNoCheck (COLUMNNAME_FailedLoginCount, Integer.valueOf(FailedLoginCount));
@@ -131,7 +132,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Failed Login Count.
 		@return Failed Login Count	  */
-	public int getFailedLoginCount () 
+	public int getFailedLoginCount()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_FailedLoginCount);
 		if (ii == null)
@@ -140,9 +141,8 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -151,13 +151,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Preferred.
-		@param IsUserMFAPreferred Preferred	  */
+		@param IsUserMFAPreferred Preferred
+	*/
 	public void setIsUserMFAPreferred (boolean IsUserMFAPreferred)
 	{
 		set_Value (COLUMNNAME_IsUserMFAPreferred, Boolean.valueOf(IsUserMFAPreferred));
@@ -165,7 +166,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Preferred.
 		@return Preferred	  */
-	public boolean isUserMFAPreferred () 
+	public boolean isUserMFAPreferred()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserMFAPreferred);
 		if (oo != null) 
@@ -178,9 +179,8 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	}
 
 	/** Set Valid.
-		@param IsValid 
-		Element is valid
-	  */
+		@param IsValid Element is valid
+	*/
 	public void setIsValid (boolean IsValid)
 	{
 		set_Value (COLUMNNAME_IsValid, Boolean.valueOf(IsValid));
@@ -189,7 +189,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/** Get Valid.
 		@return Element is valid
 	  */
-	public boolean isValid () 
+	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
 		if (oo != null) 
@@ -202,7 +202,8 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	}
 
 	/** Set Last Failure.
-		@param LastFailure Last Failure	  */
+		@param LastFailure Last Failure
+	*/
 	public void setLastFailure (Timestamp LastFailure)
 	{
 		set_Value (COLUMNNAME_LastFailure, LastFailure);
@@ -210,13 +211,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Last Failure.
 		@return Last Failure	  */
-	public Timestamp getLastFailure () 
+	public Timestamp getLastFailure()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LastFailure);
 	}
 
 	/** Set Last Success.
-		@param LastSuccess Last Success	  */
+		@param LastSuccess Last Success
+	*/
 	public void setLastSuccess (Timestamp LastSuccess)
 	{
 		set_Value (COLUMNNAME_LastSuccess, LastSuccess);
@@ -224,13 +226,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Last Success.
 		@return Last Success	  */
-	public Timestamp getLastSuccess () 
+	public Timestamp getLastSuccess()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LastSuccess);
 	}
 
 	/** Set Last MFA Secret.
-		@param MFALastSecret Last MFA Secret	  */
+		@param MFALastSecret Last MFA Secret
+	*/
 	public void setMFALastSecret (String MFALastSecret)
 	{
 		set_Value (COLUMNNAME_MFALastSecret, MFALastSecret);
@@ -238,32 +241,32 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Last MFA Secret.
 		@return Last MFA Secret	  */
-	public String getMFALastSecret () 
+	public String getMFALastSecret()
 	{
 		return (String)get_Value(COLUMNNAME_MFALastSecret);
 	}
 
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
-    {
-		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_Name)
-			.getPO(getMFA_Method_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_ID)
+			.getPO(getMFA_Method_ID(), get_TrxName());
+	}
 
 	/** Set MFA Method.
-		@param MFA_Method_ID 
-		Multi-factor Authentication Method
-	  */
+		@param MFA_Method_ID Multi-factor Authentication Method
+	*/
 	public void setMFA_Method_ID (int MFA_Method_ID)
 	{
-		if (MFA_Method_ID < 1) 
+		if (MFA_Method_ID < 1)
 			set_Value (COLUMNNAME_MFA_Method_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_MFA_Method_ID, Integer.valueOf(MFA_Method_ID));
 	}
 
 	/** Get MFA Method.
 		@return Multi-factor Authentication Method
 	  */
-	public int getMFA_Method_ID () 
+	public int getMFA_Method_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_Method_ID);
 		if (ii == null)
@@ -272,18 +275,19 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	}
 
 	/** Set MFA Registration.
-		@param MFA_Registration_ID MFA Registration	  */
+		@param MFA_Registration_ID MFA Registration
+	*/
 	public void setMFA_Registration_ID (int MFA_Registration_ID)
 	{
-		if (MFA_Registration_ID < 1) 
+		if (MFA_Registration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_MFA_Registration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_MFA_Registration_ID, Integer.valueOf(MFA_Registration_ID));
 	}
 
 	/** Get MFA Registration.
 		@return MFA Registration	  */
-	public int getMFA_Registration_ID () 
+	public int getMFA_Registration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_Registration_ID);
 		if (ii == null)
@@ -292,7 +296,8 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	}
 
 	/** Set MFA_Registration_UU.
-		@param MFA_Registration_UU MFA_Registration_UU	  */
+		@param MFA_Registration_UU MFA_Registration_UU
+	*/
 	public void setMFA_Registration_UU (String MFA_Registration_UU)
 	{
 		set_Value (COLUMNNAME_MFA_Registration_UU, MFA_Registration_UU);
@@ -300,15 +305,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get MFA_Registration_UU.
 		@return MFA_Registration_UU	  */
-	public String getMFA_Registration_UU () 
+	public String getMFA_Registration_UU()
 	{
 		return (String)get_Value(COLUMNNAME_MFA_Registration_UU);
 	}
 
 	/** Set MFA Secret.
-		@param MFASecret 
-		Multi-factor Authentication Secret
-	  */
+		@param MFASecret Multi-factor Authentication Secret
+	*/
 	public void setMFASecret (String MFASecret)
 	{
 		set_Value (COLUMNNAME_MFASecret, MFASecret);
@@ -317,13 +321,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/** Get MFA Secret.
 		@return Multi-factor Authentication Secret
 	  */
-	public String getMFASecret () 
+	public String getMFASecret()
 	{
 		return (String)get_Value(COLUMNNAME_MFASecret);
 	}
 
 	/** Set Unregistered at.
-		@param MFAUnregisteredAt Unregistered at	  */
+		@param MFAUnregisteredAt Unregistered at
+	*/
 	public void setMFAUnregisteredAt (Timestamp MFAUnregisteredAt)
 	{
 		set_Value (COLUMNNAME_MFAUnregisteredAt, MFAUnregisteredAt);
@@ -331,13 +336,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Unregistered at.
 		@return Unregistered at	  */
-	public Timestamp getMFAUnregisteredAt () 
+	public Timestamp getMFAUnregisteredAt()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_MFAUnregisteredAt);
 	}
 
 	/** Set Validated at.
-		@param MFAValidatedAt Validated at	  */
+		@param MFAValidatedAt Validated at
+	*/
 	public void setMFAValidatedAt (Timestamp MFAValidatedAt)
 	{
 		set_Value (COLUMNNAME_MFAValidatedAt, MFAValidatedAt);
@@ -345,15 +351,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Validated at.
 		@return Validated at	  */
-	public Timestamp getMFAValidatedAt () 
+	public Timestamp getMFAValidatedAt()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_MFAValidatedAt);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -362,7 +367,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -376,7 +381,8 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
     }
 
 	/** Set Parameter Value.
-		@param ParameterValue Parameter Value	  */
+		@param ParameterValue Parameter Value
+	*/
 	public void setParameterValue (String ParameterValue)
 	{
 		set_Value (COLUMNNAME_ParameterValue, ParameterValue);
@@ -384,7 +390,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 
 	/** Get Parameter Value.
 		@return Parameter Value	  */
-	public String getParameterValue () 
+	public String getParameterValue()
 	{
 		return (String)get_Value(COLUMNNAME_ParameterValue);
 	}

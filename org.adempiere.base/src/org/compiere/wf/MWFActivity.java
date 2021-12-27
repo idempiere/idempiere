@@ -211,11 +211,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	MWFActivity
 	
 	/**
-	 * 	Process-aware Parent Contructor
+	 * 	Process-aware Parent Constructor
 	 *	@param process process
 	 *	@param ctx context
 	 *	@param rs record to load
-	 *  @param trx transaction name
+	 *  @param trxName transaction name
 	 */
 	public MWFActivity (MWFProcess process, Properties ctx, ResultSet rs, String trxName)
 	{
@@ -224,9 +224,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}
 	
 	/**
-	 * 	Parent Contructor
+	 * 	Parent Constructor
 	 *	@param process process
-	 *	@param AD_WF_Node_ID start node
+	 *	@param next_ID start node
 	 *	@param lastPO PO from the previously executed node
 	 */
 	public MWFActivity(MWFProcess process, int next_ID, PO lastPO) {
@@ -658,7 +658,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	isInvoker
 
 	/**
-	 * 	Is Invoker (no user & no role)
+	 * 	Is Invoker (no user and no role)
 	 *	@return true if invoker
 	 */
 	public boolean isInvoker()
@@ -860,7 +860,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	/**************************************************************************
 	 * 	Execute Work.
 	 * 	Called from MWFProcess.startNext
-	 * 	Feedback to Process via setWFState -> checkActivities
+	 * 	Feedback to Process via setWFState -&gt; checkActivities
 	 */
 	public void run()
 	{

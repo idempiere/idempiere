@@ -35,6 +35,7 @@ import org.compiere.util.Env;
  *	author Eldir Tomassen
  *	@version $Id: ImportBankStatement.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ImportBankStatement extends SvrProcess
 {
 	/**	Client to be imported to		*/
@@ -459,12 +460,9 @@ public class ImportBankStatement extends SvrProcess
 				MBankStatementLine line = new MBankStatementLine(statement, lineNo);
 				
 				//	Copy statement line data
-				//line.setC_BPartner_ID(imp.getC_BPartner_ID());
-				//line.setC_Invoice_ID(imp.getC_Invoice_ID());
 				line.setReferenceNo(imp.getReferenceNo());
 				line.setDescription(imp.getLineDescription());
 				line.setStatementLineDate(imp.getStatementLineDate());
-				// line.setDateAcct(imp.getStatementLineDate()); // set on beforeSave
 				line.setValutaDate(imp.getValutaDate());
 				line.setIsReversal(imp.isReversal());
 				line.setC_Currency_ID(imp.getC_Currency_ID());

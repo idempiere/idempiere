@@ -16,6 +16,7 @@ import org.compiere.process.SvrProcess;
  * @author Anca Bradau www.arhipac.ro
  *
  */
+@org.adempiere.base.annotation.Process
 public class A_Depreciation_Exp_Modify extends SvrProcess
 {
 	private int p_A_Depreciation_Exp_ID = -1; 

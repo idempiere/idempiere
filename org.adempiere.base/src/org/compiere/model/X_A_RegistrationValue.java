@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_RegistrationValue
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="A_RegistrationValue")
 public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_A_RegistrationValue (Properties ctx, int A_RegistrationValue_ID, String trxName)
@@ -73,26 +74,26 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
     }
 
 	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_RegistrationAttribute)MTable.get(getCtx(), org.compiere.model.I_A_RegistrationAttribute.Table_Name)
-			.getPO(getA_RegistrationAttribute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_RegistrationAttribute)MTable.get(getCtx(), org.compiere.model.I_A_RegistrationAttribute.Table_ID)
+			.getPO(getA_RegistrationAttribute_ID(), get_TrxName());
+	}
 
 	/** Set Registration Attribute.
-		@param A_RegistrationAttribute_ID 
-		Asset Registration Attribute
-	  */
+		@param A_RegistrationAttribute_ID Asset Registration Attribute
+	*/
 	public void setA_RegistrationAttribute_ID (int A_RegistrationAttribute_ID)
 	{
-		if (A_RegistrationAttribute_ID < 1) 
+		if (A_RegistrationAttribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_RegistrationAttribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_RegistrationAttribute_ID, Integer.valueOf(A_RegistrationAttribute_ID));
 	}
 
 	/** Get Registration Attribute.
 		@return Asset Registration Attribute
 	  */
-	public int getA_RegistrationAttribute_ID () 
+	public int getA_RegistrationAttribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_RegistrationAttribute_ID);
 		if (ii == null)
@@ -109,26 +110,26 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
     }
 
 	public org.compiere.model.I_A_Registration getA_Registration() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Registration)MTable.get(getCtx(), org.compiere.model.I_A_Registration.Table_Name)
-			.getPO(getA_Registration_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Registration)MTable.get(getCtx(), org.compiere.model.I_A_Registration.Table_ID)
+			.getPO(getA_Registration_ID(), get_TrxName());
+	}
 
 	/** Set Registration.
-		@param A_Registration_ID 
-		User Asset Registration
-	  */
+		@param A_Registration_ID User Asset Registration
+	*/
 	public void setA_Registration_ID (int A_Registration_ID)
 	{
-		if (A_Registration_ID < 1) 
+		if (A_Registration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Registration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Registration_ID, Integer.valueOf(A_Registration_ID));
 	}
 
 	/** Get Registration.
 		@return User Asset Registration
 	  */
-	public int getA_Registration_ID () 
+	public int getA_Registration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Registration_ID);
 		if (ii == null)
@@ -137,7 +138,8 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 	}
 
 	/** Set A_RegistrationValue_UU.
-		@param A_RegistrationValue_UU A_RegistrationValue_UU	  */
+		@param A_RegistrationValue_UU A_RegistrationValue_UU
+	*/
 	public void setA_RegistrationValue_UU (String A_RegistrationValue_UU)
 	{
 		set_Value (COLUMNNAME_A_RegistrationValue_UU, A_RegistrationValue_UU);
@@ -145,15 +147,14 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 
 	/** Get A_RegistrationValue_UU.
 		@return A_RegistrationValue_UU	  */
-	public String getA_RegistrationValue_UU () 
+	public String getA_RegistrationValue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_RegistrationValue_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -162,15 +163,14 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -179,7 +179,7 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tab_Customization
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Tab_Customization")
 public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210619L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -71,18 +72,19 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
     }
 
 	/** Set Tab Customization.
-		@param AD_Tab_Customization_ID Tab Customization	  */
+		@param AD_Tab_Customization_ID Tab Customization
+	*/
 	public void setAD_Tab_Customization_ID (int AD_Tab_Customization_ID)
 	{
-		if (AD_Tab_Customization_ID < 1) 
+		if (AD_Tab_Customization_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tab_Customization_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tab_Customization_ID, Integer.valueOf(AD_Tab_Customization_ID));
 	}
 
 	/** Get Tab Customization.
 		@return Tab Customization	  */
-	public int getAD_Tab_Customization_ID () 
+	public int getAD_Tab_Customization_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_Customization_ID);
 		if (ii == null)
@@ -91,7 +93,8 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	}
 
 	/** Set AD_Tab_Customization_UU.
-		@param AD_Tab_Customization_UU AD_Tab_Customization_UU	  */
+		@param AD_Tab_Customization_UU AD_Tab_Customization_UU
+	*/
 	public void setAD_Tab_Customization_UU (String AD_Tab_Customization_UU)
 	{
 		set_Value (COLUMNNAME_AD_Tab_Customization_UU, AD_Tab_Customization_UU);
@@ -99,32 +102,32 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 
 	/** Get AD_Tab_Customization_UU.
 		@return AD_Tab_Customization_UU	  */
-	public String getAD_Tab_Customization_UU () 
+	public String getAD_Tab_Customization_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Tab_Customization_UU);
 	}
 
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_Name)
-			.getPO(getAD_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
 
 	/** Set Tab.
-		@param AD_Tab_ID 
-		Tab within a Window
-	  */
+		@param AD_Tab_ID Tab within a Window
+	*/
 	public void setAD_Tab_ID (int AD_Tab_ID)
 	{
-		if (AD_Tab_ID < 1) 
+		if (AD_Tab_ID < 1)
 			set_Value (COLUMNNAME_AD_Tab_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
 	}
 
 	/** Get Tab.
 		@return Tab within a Window
 	  */
-	public int getAD_Tab_ID () 
+	public int getAD_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
 		if (ii == null)
@@ -133,26 +136,26 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -161,7 +164,8 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	}
 
 	/** Set Custom.
-		@param Custom Custom	  */
+		@param Custom Custom
+	*/
 	public void setCustom (String Custom)
 	{
 		set_Value (COLUMNNAME_Custom, Custom);
@@ -169,19 +173,20 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 
 	/** Get Custom.
 		@return Custom	  */
-	public String getCustom () 
+	public String getCustom()
 	{
 		return (String)get_Value(COLUMNNAME_Custom);
 	}
 
 	/** IsAutoHideEmptyColumn AD_Reference_ID=319 */
 	public static final int ISAUTOHIDEEMPTYCOLUMN_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISAUTOHIDEEMPTYCOLUMN_Yes = "Y";
 	/** No = N */
 	public static final String ISAUTOHIDEEMPTYCOLUMN_No = "N";
+	/** Yes = Y */
+	public static final String ISAUTOHIDEEMPTYCOLUMN_Yes = "Y";
 	/** Set Auto Hide Empty Column.
-		@param IsAutoHideEmptyColumn Auto Hide Empty Column	  */
+		@param IsAutoHideEmptyColumn Auto Hide Empty Column
+	*/
 	public void setIsAutoHideEmptyColumn (String IsAutoHideEmptyColumn)
 	{
 
@@ -190,19 +195,20 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 
 	/** Get Auto Hide Empty Column.
 		@return Auto Hide Empty Column	  */
-	public String getIsAutoHideEmptyColumn () 
+	public String getIsAutoHideEmptyColumn()
 	{
 		return (String)get_Value(COLUMNNAME_IsAutoHideEmptyColumn);
 	}
 
 	/** IsDisplayedGrid AD_Reference_ID=319 */
 	public static final int ISDISPLAYEDGRID_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String ISDISPLAYEDGRID_Yes = "Y";
 	/** No = N */
 	public static final String ISDISPLAYEDGRID_No = "N";
+	/** Yes = Y */
+	public static final String ISDISPLAYEDGRID_Yes = "Y";
 	/** Set Show in Grid.
-		@param IsDisplayedGrid Show in Grid	  */
+		@param IsDisplayedGrid Show in Grid
+	*/
 	public void setIsDisplayedGrid (String IsDisplayedGrid)
 	{
 
@@ -211,15 +217,14 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 
 	/** Get Show in Grid.
 		@return Show in Grid	  */
-	public String getIsDisplayedGrid () 
+	public String getIsDisplayedGrid()
 	{
 		return (String)get_Value(COLUMNNAME_IsDisplayedGrid);
 	}
 
 	/** Set Quick Form.
-		@param IsQuickForm 
-		Display in Quick Form
-	  */
+		@param IsQuickForm Display in Quick Form
+	*/
 	public void setIsQuickForm (boolean IsQuickForm)
 	{
 		set_Value (COLUMNNAME_IsQuickForm, Boolean.valueOf(IsQuickForm));
@@ -228,7 +233,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/** Get Quick Form.
 		@return Display in Quick Form
 	  */
-	public boolean isQuickForm () 
+	public boolean isQuickForm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQuickForm);
 		if (oo != null) 

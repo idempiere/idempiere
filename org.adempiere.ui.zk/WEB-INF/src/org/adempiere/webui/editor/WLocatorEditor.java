@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.editor;
 
+import static org.compiere.model.SystemIDs.WINDOW_WAREHOUSE_LOCATOR;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.PreparedStatement;
@@ -45,7 +47,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MWarehouse;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -87,7 +89,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	 *	@param isReadOnly read only
 	 *	@param isUpdateable updateable
 	 *	@param mLocator locator (lookup) model
-	 * 	@param WindowNo window no
+	 * 	@param windowNo window no
 	 */
 	
 	public WLocatorEditor(	String columnName, boolean mandatory, boolean isReadOnly, 
@@ -467,11 +469,23 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	
 	private int getOnly_Warehouse_ID()
 	{
-		String only_Warehouse = null;
-		if (gridField != null && gridField.getVO().TabNo > 0)
-			only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_Warehouse_ID", false, true);
+		//IDEMPIERE-4882 : Load Locator To field value as per Warehouse TO field value
+		String only_Warehouse=null;
+		if (gridField!=null && X_M_MovementLine.COLUMNNAME_M_LocatorTo_ID.equals(gridField.getColumnName()))
+		{
+			if(gridField.getVO().TabNo>0) 
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_WarehouseTo_ID", false, true);
+			else
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_WarehouseTo_ID", true);
+		}
 		else
-			only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_Warehouse_ID", true);
+		{
+			if(gridField!=null && gridField.getVO().TabNo>0) 
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_Warehouse_ID", false, true);
+			else
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_Warehouse_ID", true);
+		}
+		
 		int only_Warehouse_ID = 0;
 	
 		try

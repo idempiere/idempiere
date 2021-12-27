@@ -98,6 +98,9 @@ public interface IEventTopics {
 	
 	public static final String REQUEST_SEND_EMAIL = "idempiere/requestSendEMail";
 
+	/** Called from dialog to send an email, to prefill dialog variables */
+	public static final String REPORT_SEND_EMAIL = "idempiere/reportSendEMail";
+
 	/** Called before starting a process, after prepared */
 	public static final String BEFORE_PROCESS = "idempiere/beforeProcess";
 	/** Called after a process finishes, before commit */

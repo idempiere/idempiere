@@ -23,14 +23,15 @@ import java.util.Properties;
 
 /** Generated Model for C_OrgAssignment
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_OrgAssignment")
 public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_OrgAssignment (Properties ctx, int C_OrgAssignment_ID, String trxName)
@@ -73,26 +74,26 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -101,21 +102,20 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 	}
 
 	/** Set Org Assignment.
-		@param C_OrgAssignment_ID 
-		Assignment to (transaction) Organization
-	  */
+		@param C_OrgAssignment_ID Assignment to (transaction) Organization
+	*/
 	public void setC_OrgAssignment_ID (int C_OrgAssignment_ID)
 	{
-		if (C_OrgAssignment_ID < 1) 
+		if (C_OrgAssignment_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_OrgAssignment_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_OrgAssignment_ID, Integer.valueOf(C_OrgAssignment_ID));
 	}
 
 	/** Get Org Assignment.
 		@return Assignment to (transaction) Organization
 	  */
-	public int getC_OrgAssignment_ID () 
+	public int getC_OrgAssignment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrgAssignment_ID);
 		if (ii == null)
@@ -124,7 +124,8 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 	}
 
 	/** Set C_OrgAssignment_UU.
-		@param C_OrgAssignment_UU C_OrgAssignment_UU	  */
+		@param C_OrgAssignment_UU C_OrgAssignment_UU
+	*/
 	public void setC_OrgAssignment_UU (String C_OrgAssignment_UU)
 	{
 		set_Value (COLUMNNAME_C_OrgAssignment_UU, C_OrgAssignment_UU);
@@ -132,15 +133,14 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 
 	/** Get C_OrgAssignment_UU.
 		@return C_OrgAssignment_UU	  */
-	public String getC_OrgAssignment_UU () 
+	public String getC_OrgAssignment_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_OrgAssignment_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -149,15 +149,14 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -166,15 +165,14 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -183,7 +181,7 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

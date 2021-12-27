@@ -24,11 +24,14 @@
  **********************************************************************/
 package org.compiere.util;
 
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.compiere.model.GridTab;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 
 /**
  * @author hengsin
@@ -40,6 +43,8 @@ public class DefaultEvaluatee implements Evaluatee {
 	private int m_WindowNo;
 	private int m_TabNo;
 
+	private static final ReferenceCache s_ReferenceCache = new ReferenceCache("DefaultEvaluatee_ReferenceCache", 100, 1, 2000);
+	
 	/**
 	 * 
 	 * @param gridTab
@@ -106,23 +111,82 @@ public class DefaultEvaluatee implements Evaluatee {
 				}
 				if (column != null) {
 					String foreignTable = column.getReferenceTableName();
-					refValue = DB.getSQLValueString(null,
-							"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-									+ foreignTable + "_ID = ?", id);
-					return refValue;
+					MTable table = MTable.get(Env.getCtx(), foreignTable);
+					if (table != null) {
+						return getColumnValue(table, foreignTable, foreignColumn, id, refValue);
+					}
 				} else {
 					// no MColumn found, try tableName from columnName
 					String foreignTable = variableName.substring(0, variableName.length()-3);
 					MTable table = MTable.get(ctx, foreignTable);
 					if (table != null) {
-						refValue = DB.getSQLValueString(null,
-								"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE " 
-										+ foreignTable + "_ID = ?", id);
-						return refValue;
+						return getColumnValue(table, foreignTable, foreignColumn, id, refValue);
 					}
 				}
 			}
 		}
 		return value;
+	}
+
+	private String getColumnValue(MTable table, String foreignTable, String foreignColumn, int id, String refValue) {
+		String key = foreignTable+"|"+id;
+		PO po = null;
+		if (s_ReferenceCache.containsKey(key))
+		{
+			po = s_ReferenceCache.get(key);
+			if (po != null && po.get_ID() == id)
+			{
+				Object value = po.get_Value(foreignColumn);
+				if (value == null)
+					refValue = "";
+				else if (value instanceof Boolean)
+					refValue = (Boolean)value ? "Y" : "N";
+				else
+					refValue = value.toString();
+			}
+			else
+				po = null;
+		}
+		if (po == null)
+		{
+			po = table.getPO(id, null);
+			if (po != null && po.get_ID() == id)
+			{
+				s_ReferenceCache.put(key, po);
+				Object value = po.get_Value(foreignColumn);
+				if (value == null)
+					refValue = "";
+				else if (value instanceof Boolean)
+					refValue = (Boolean)value ? "Y" : "N";
+				else
+					refValue = value.toString();
+			}						 						
+		}
+		return refValue;
+	}
+	
+	private static final class ReferenceCache extends CCache<String, PO> implements CacheChangeListener {
+
+		private static final long serialVersionUID = 6884795644185015913L;
+
+		private ReferenceCache(String name, int initialCapacity, int expireMinutes, int maxSize) {
+			super(null, name, initialCapacity, expireMinutes, false, maxSize);
+		}
+
+		@Override
+		public void reset(String tableName) {
+			String filter = tableName + "|";
+			List<String> keys = keySet().stream().filter(e -> e.startsWith(filter)).collect(Collectors.toList());
+			if (!keys.isEmpty()) {
+				for(String key : keys)
+					remove(key);
+			}
+		}
+
+		@Override
+		public void reset(String tableName, int recordId) {
+			String key = tableName + "|" + recordId;
+			remove(key);
+		}
 	}
 }

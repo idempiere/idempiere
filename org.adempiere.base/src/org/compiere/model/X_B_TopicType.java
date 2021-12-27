@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_TopicType
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="B_TopicType")
 public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_B_TopicType (Properties ctx, int B_TopicType_ID, String trxName)
@@ -76,7 +77,8 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
     }
 
 	/** Set Auction Type.
-		@param AuctionType Auction Type	  */
+		@param AuctionType Auction Type
+	*/
 	public void setAuctionType (String AuctionType)
 	{
 		set_Value (COLUMNNAME_AuctionType, AuctionType);
@@ -84,27 +86,26 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 
 	/** Get Auction Type.
 		@return Auction Type	  */
-	public String getAuctionType () 
+	public String getAuctionType()
 	{
 		return (String)get_Value(COLUMNNAME_AuctionType);
 	}
 
 	/** Set Topic Type.
-		@param B_TopicType_ID 
-		Auction Topic Type
-	  */
+		@param B_TopicType_ID Auction Topic Type
+	*/
 	public void setB_TopicType_ID (int B_TopicType_ID)
 	{
-		if (B_TopicType_ID < 1) 
+		if (B_TopicType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_TopicType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_TopicType_ID, Integer.valueOf(B_TopicType_ID));
 	}
 
 	/** Get Topic Type.
 		@return Auction Topic Type
 	  */
-	public int getB_TopicType_ID () 
+	public int getB_TopicType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_TopicType_ID);
 		if (ii == null)
@@ -113,7 +114,8 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	}
 
 	/** Set B_TopicType_UU.
-		@param B_TopicType_UU B_TopicType_UU	  */
+		@param B_TopicType_UU B_TopicType_UU
+	*/
 	public void setB_TopicType_UU (String B_TopicType_UU)
 	{
 		set_Value (COLUMNNAME_B_TopicType_UU, B_TopicType_UU);
@@ -121,15 +123,14 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 
 	/** Get B_TopicType_UU.
 		@return B_TopicType_UU	  */
-	public String getB_TopicType_UU () 
+	public String getB_TopicType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_B_TopicType_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -138,15 +139,14 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -155,32 +155,32 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
-			.getPO(getM_PriceList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
+			.getPO(getM_PriceList_ID(), get_TrxName());
+	}
 
 	/** Set Price List.
-		@param M_PriceList_ID 
-		Unique identifier of a Price List
-	  */
+		@param M_PriceList_ID Unique identifier of a Price List
+	*/
 	public void setM_PriceList_ID (int M_PriceList_ID)
 	{
-		if (M_PriceList_ID < 1) 
+		if (M_PriceList_ID < 1)
 			set_Value (COLUMNNAME_M_PriceList_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_PriceList_ID, Integer.valueOf(M_PriceList_ID));
 	}
 
 	/** Get Price List.
 		@return Unique identifier of a Price List
 	  */
-	public int getM_PriceList_ID () 
+	public int getM_PriceList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PriceList_ID);
 		if (ii == null)
@@ -189,26 +189,26 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -217,26 +217,26 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_ProductMember() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_ProductMember_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_ProductMember_ID(), get_TrxName());
+	}
 
 	/** Set Membership.
-		@param M_ProductMember_ID 
-		Product used to determine the price of the membership for the topic type
-	  */
+		@param M_ProductMember_ID Product used to determine the price of the membership for the topic type
+	*/
 	public void setM_ProductMember_ID (int M_ProductMember_ID)
 	{
-		if (M_ProductMember_ID < 1) 
+		if (M_ProductMember_ID < 1)
 			set_Value (COLUMNNAME_M_ProductMember_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductMember_ID, Integer.valueOf(M_ProductMember_ID));
 	}
 
 	/** Get Membership.
 		@return Product used to determine the price of the membership for the topic type
 	  */
-	public int getM_ProductMember_ID () 
+	public int getM_ProductMember_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductMember_ID);
 		if (ii == null)
@@ -245,9 +245,8 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -256,7 +255,7 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

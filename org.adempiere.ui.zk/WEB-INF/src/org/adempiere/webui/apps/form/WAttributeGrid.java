@@ -65,6 +65,7 @@ import org.zkoss.zul.Vbox;
  *  @author Jorg Janke
  *  @version $Id: VAttributeGrid.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VAttributeGrid")
 public class WAttributeGrid extends ADForm implements EventListener<Event>
 {
 	/**
@@ -74,8 +75,6 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 
 	/**
 	 * 	Init
-	 *	@param WindowNo
-	 *	@param frame
 	 */
 	protected void initForm()
     {

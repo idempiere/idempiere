@@ -769,9 +769,10 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 			retValue = new MWFProcess (this, pi, trxName != null ? trxName : localTrx.getTrxName());
 			retValue.saveEx();
 			pi.setSummary(Msg.getMsg(getCtx(), "Processing"));
-			retValue.startWork();			
+			retValue.startWork();
 			if (localTrx != null)
 				localTrx.commit(true);
+			retValue.checkCloseActivities(trxName != null ? trxName : localTrx.getTrxName());
 		}
 		catch (Exception e)
 		{
@@ -1014,7 +1015,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	
 	/**
 	 * Get AD_Workflow_ID for given M_Product_ID
-	 * @param M_Product_ID
+	 * @param product
 	 * @return AD_Workflow_ID
 	 */
 	public static int getWorkflowSearchKey(MProduct product)

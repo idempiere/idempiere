@@ -138,7 +138,8 @@ public class MShipperFacade
 	
 	/**
 	 * get Meter Number associated with Account Number, use by the Fedex interface
-	 * @param shipment
+	/**
+	 * @param AD_Org_ID
 	 * @return Shipper Meter Number
 	 */
 	public String getShipperMeter(int AD_Org_ID) 

@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -41,6 +42,7 @@ import org.compiere.model.X_AD_PrintFormat;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
+import org.compiere.print.MPrintPaper;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -101,10 +103,13 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 
 		MPrintFormat m_Printformat = new MPrintFormat(ctx.ctx, AD_PrintFormat_ID, null);
 		if (m_Printformat.getAD_PrintPaper_ID() > 0) {
-			try {
-				ctx.packOut.getHandler(I_AD_PrintPaper.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, m_Printformat.getAD_PrintPaper_ID());
-			} catch (Exception e) {
-				throw new SAXException(e);
+			MPrintPaper pp = MPrintPaper.get(m_Printformat.getAD_PrintPaper_ID());
+			if (pp.getAD_Client_ID() == m_Printformat.getAD_Client_ID()) {
+				try {
+					ctx.packOut.getHandler(I_AD_PrintPaper.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, m_Printformat.getAD_PrintPaper_ID());
+				} catch (Exception e) {
+					throw new SAXException(e);
+				}
 			}
 		}
 
@@ -156,7 +161,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createItem(ctx, document, rs.getInt("AD_PrintFormatItem_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new DBException(e);
 		} finally {
 			DB.close(rs, pstmt);

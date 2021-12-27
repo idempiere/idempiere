@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImpFormat
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_ImpFormat")
 public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat (Properties ctx, int AD_ImpFormat_ID, String trxName)
@@ -75,18 +76,19 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
     }
 
 	/** Set Import Format.
-		@param AD_ImpFormat_ID Import Format	  */
+		@param AD_ImpFormat_ID Import Format
+	*/
 	public void setAD_ImpFormat_ID (int AD_ImpFormat_ID)
 	{
-		if (AD_ImpFormat_ID < 1) 
+		if (AD_ImpFormat_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ImpFormat_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ImpFormat_ID, Integer.valueOf(AD_ImpFormat_ID));
 	}
 
 	/** Get Import Format.
 		@return Import Format	  */
-	public int getAD_ImpFormat_ID () 
+	public int getAD_ImpFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ImpFormat_ID);
 		if (ii == null)
@@ -95,7 +97,8 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	}
 
 	/** Set AD_ImpFormat_UU.
-		@param AD_ImpFormat_UU AD_ImpFormat_UU	  */
+		@param AD_ImpFormat_UU AD_ImpFormat_UU
+	*/
 	public void setAD_ImpFormat_UU (String AD_ImpFormat_UU)
 	{
 		set_Value (COLUMNNAME_AD_ImpFormat_UU, AD_ImpFormat_UU);
@@ -103,32 +106,32 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 
 	/** Get AD_ImpFormat_UU.
 		@return AD_ImpFormat_UU	  */
-	public String getAD_ImpFormat_UU () 
+	public String getAD_ImpFormat_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ImpFormat_UU);
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -137,9 +140,8 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -148,27 +150,26 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** FormatType AD_Reference_ID=209 */
 	public static final int FORMATTYPE_AD_Reference_ID=209;
-	/** Fixed Position = F */
-	public static final String FORMATTYPE_FixedPosition = "F";
 	/** Comma Separated = C */
 	public static final String FORMATTYPE_CommaSeparated = "C";
+	/** Fixed Position = F */
+	public static final String FORMATTYPE_FixedPosition = "F";
 	/** Tab Separated = T */
 	public static final String FORMATTYPE_TabSeparated = "T";
-	/** XML = X */
-	public static final String FORMATTYPE_XML = "X";
 	/** Custom Separator Char = U */
 	public static final String FORMATTYPE_CustomSeparatorChar = "U";
+	/** XML = X */
+	public static final String FORMATTYPE_XML = "X";
 	/** Set Format.
-		@param FormatType 
-		Format of the data
-	  */
+		@param FormatType Format of the data
+	*/
 	public void setFormatType (String FormatType)
 	{
 
@@ -178,15 +179,14 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	/** Get Format.
 		@return Format of the data
 	  */
-	public String getFormatType () 
+	public String getFormatType()
 	{
 		return (String)get_Value(COLUMNNAME_FormatType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -195,7 +195,7 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -209,7 +209,8 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -217,7 +218,7 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -230,7 +231,8 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	}
 
 	/** Set Separator Character.
-		@param SeparatorChar Separator Character	  */
+		@param SeparatorChar Separator Character
+	*/
 	public void setSeparatorChar (String SeparatorChar)
 	{
 		set_Value (COLUMNNAME_SeparatorChar, SeparatorChar);
@@ -238,7 +240,7 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 
 	/** Get Separator Character.
 		@return Separator Character	  */
-	public String getSeparatorChar () 
+	public String getSeparatorChar()
 	{
 		return (String)get_Value(COLUMNNAME_SeparatorChar);
 	}

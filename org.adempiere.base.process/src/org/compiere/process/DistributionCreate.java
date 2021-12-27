@@ -34,6 +34,7 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: DistributionCreate.java,v 1.3 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class DistributionCreate extends SvrProcess
 {
 	/**	Product					*/
@@ -50,9 +51,6 @@ public class DistributionCreate extends SvrProcess
 	private boolean			p_IsTest;
 	/**	Distribution List		*/
 	private int				p_M_DistributionList_ID;
-	
-//	DatePromised
-//	C_DocType_ID
 	
 	/**	Distribution List		*/
 	private MDistributionList m_dl;

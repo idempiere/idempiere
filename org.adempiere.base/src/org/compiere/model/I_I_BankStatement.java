@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_BankStatement
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_I_BankStatement 
 {
@@ -136,12 +136,12 @@ public interface I_I_BankStatement
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -680,12 +680,14 @@ public interface I_I_BankStatement
     public static final String COLUMNNAME_ReferenceNo = "ReferenceNo";
 
 	/** Set Reference No.
-	  * Your customer or vendor number at the Business Partner's site
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
 	  */
 	public void setReferenceNo (String ReferenceNo);
 
 	/** Get Reference No.
-	  * Your customer or vendor number at the Business Partner's site
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
 	  */
 	public String getReferenceNo();
 

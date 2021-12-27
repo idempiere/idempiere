@@ -23,14 +23,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Attribute_Value
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Attribute_Value")
 public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Attribute_Value (Properties ctx, int AD_Attribute_Value_ID, String trxName)
@@ -72,18 +73,19 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
     }
 
 	/** Set System Attribute.
-		@param AD_Attribute_ID System Attribute	  */
+		@param AD_Attribute_ID System Attribute
+	*/
 	public void setAD_Attribute_ID (int AD_Attribute_ID)
 	{
-		if (AD_Attribute_ID < 1) 
+		if (AD_Attribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Attribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Attribute_ID, Integer.valueOf(AD_Attribute_ID));
 	}
 
 	/** Get System Attribute.
 		@return System Attribute	  */
-	public int getAD_Attribute_ID () 
+	public int getAD_Attribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Attribute_ID);
 		if (ii == null)
@@ -92,7 +94,8 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 	}
 
 	/** Set AD_Attribute_Value_UU.
-		@param AD_Attribute_Value_UU AD_Attribute_Value_UU	  */
+		@param AD_Attribute_Value_UU AD_Attribute_Value_UU
+	*/
 	public void setAD_Attribute_Value_UU (String AD_Attribute_Value_UU)
 	{
 		set_Value (COLUMNNAME_AD_Attribute_Value_UU, AD_Attribute_Value_UU);
@@ -100,27 +103,26 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 
 	/** Get AD_Attribute_Value_UU.
 		@return AD_Attribute_Value_UU	  */
-	public String getAD_Attribute_Value_UU () 
+	public String getAD_Attribute_Value_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Attribute_Value_UU);
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -129,7 +131,8 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 	}
 
 	/** Set Date.
-		@param V_Date Date	  */
+		@param V_Date Date
+	*/
 	public void setV_Date (Timestamp V_Date)
 	{
 		set_Value (COLUMNNAME_V_Date, V_Date);
@@ -137,13 +140,14 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 
 	/** Get Date.
 		@return Date	  */
-	public Timestamp getV_Date () 
+	public Timestamp getV_Date()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_V_Date);
 	}
 
 	/** Set Number.
-		@param V_Number Number	  */
+		@param V_Number Number
+	*/
 	public void setV_Number (String V_Number)
 	{
 		set_Value (COLUMNNAME_V_Number, V_Number);
@@ -151,13 +155,14 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 
 	/** Get Number.
 		@return Number	  */
-	public String getV_Number () 
+	public String getV_Number()
 	{
 		return (String)get_Value(COLUMNNAME_V_Number);
 	}
 
 	/** Set String.
-		@param V_String String	  */
+		@param V_String String
+	*/
 	public void setV_String (String V_String)
 	{
 		set_Value (COLUMNNAME_V_String, V_String);
@@ -165,7 +170,7 @@ public class X_AD_Attribute_Value extends PO implements I_AD_Attribute_Value, I_
 
 	/** Get String.
 		@return String	  */
-	public String getV_String () 
+	public String getV_String()
 	{
 		return (String)get_Value(COLUMNNAME_V_String);
 	}

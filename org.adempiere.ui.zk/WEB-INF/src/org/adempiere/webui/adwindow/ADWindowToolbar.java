@@ -30,6 +30,7 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.FToolbar;
 import org.adempiere.webui.component.Tabpanel;
@@ -1213,6 +1214,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
     
     public void refreshUserQuery(int AD_Tab_ID, int AD_UserQuery_ID) {
+    	if (AEnv.getOrSetExecutionAttribute(getClass().getName()+".refreshUserQuery")) {
+    		return;
+    	}
+    	
     	fQueryName.getItems().clear();
         userQueries = MUserQuery.get(Env.getCtx(), AD_Tab_ID);
         fQueryName.appendItem("");

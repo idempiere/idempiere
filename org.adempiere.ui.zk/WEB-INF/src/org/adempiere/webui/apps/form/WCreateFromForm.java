@@ -49,6 +49,7 @@ import org.zkoss.zul.South;
  * @author Elaine
  *
  */
+@org.idempiere.ui.zk.annotation.Form
 public class WCreateFromForm extends ADForm implements EventListener<Event>, WTableModelListener, DialogEvents
 {
 	

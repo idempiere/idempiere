@@ -53,6 +53,7 @@ import org.eevolution.model.X_PP_Order;
  *  @author Jorg Janke
  *  @version $Id: FactAcctReset.java,v 1.5 2006/09/21 21:05:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class FactAcctReset extends SvrProcess
 {
 	/**	Client Parameter		*/
@@ -216,8 +217,6 @@ public class FactAcctReset extends SvrProcess
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_PaymentAllocation + "'";
 		else if (AD_Table_ID == MJournal.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLJournal + "'";
-	//	else if (AD_Table_ID == M.Table_ID)
-	//		docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLDocument + "'";
 		else if (AD_Table_ID == MMovement.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MaterialMovement + "'";
 		else if (AD_Table_ID == MRequisition.Table_ID)

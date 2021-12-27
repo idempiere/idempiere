@@ -36,7 +36,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Generic provider of zoom targets. Contains pieces of {@link org.compiere.apps.AZoomAcross}
+ * Generic provider of zoom targets. Contains pieces of {@link org.adempiere.webui.WZoomAcross}
  * methods <code>getZoomTargets</code> and <code>addTarget</code>
  * 
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194  ] Advanced Zoom and RelationTypes
@@ -171,7 +171,7 @@ public class GenericZoomProvider implements IZoomProvider {
 		int tabIDLoop = AD_Tab_ID;
 		int levelUp = 0;
 		while (true) {
-			MTab tab = new MTab(ctx, tabIDLoop, null);
+			MTab tab = MTab.get(tabIDLoop);
 			String whereCtx = tab.getWhereClause();
 			if (!Util.isEmpty(whereCtx, true)) {
 				if (whereCtx.indexOf("@") != -1)

@@ -22,14 +22,15 @@ import java.util.Properties;
 
 /** Generated Model for AD_Process_Access
  *  @author iDempiere (generated) 
- *  @version Release 8.2 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Process_Access")
 public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201220L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Process_Access (Properties ctx, int AD_Process_Access_ID, String trxName)
@@ -72,7 +73,8 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
     }
 
 	/** Set AD_Process_Access_UU.
-		@param AD_Process_Access_UU AD_Process_Access_UU	  */
+		@param AD_Process_Access_UU AD_Process_Access_UU
+	*/
 	public void setAD_Process_Access_UU (String AD_Process_Access_UU)
 	{
 		set_Value (COLUMNNAME_AD_Process_Access_UU, AD_Process_Access_UU);
@@ -80,32 +82,32 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
 
 	/** Get AD_Process_Access_UU.
 		@return AD_Process_Access_UU	  */
-	public String getAD_Process_Access_UU () 
+	public String getAD_Process_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Process_Access_UU);
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -114,26 +116,26 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -142,9 +144,8 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
 	}
 
 	/** Set Read Write.
-		@param IsReadWrite 
-		Field is read / write
-	  */
+		@param IsReadWrite Field is read / write
+	*/
 	public void setIsReadWrite (boolean IsReadWrite)
 	{
 		set_Value (COLUMNNAME_IsReadWrite, Boolean.valueOf(IsReadWrite));
@@ -153,7 +154,7 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
 	/** Get Read Write.
 		@return Field is read / write
 	  */
-	public boolean isReadWrite () 
+	public boolean isReadWrite()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadWrite);
 		if (oo != null) 

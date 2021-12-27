@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_TimeExpenseLine
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 9
  */
 public interface I_S_TimeExpenseLine 
 {
@@ -80,12 +80,12 @@ public interface I_S_TimeExpenseLine
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -377,12 +377,14 @@ public interface I_S_TimeExpenseLine
     public static final String COLUMNNAME_PriceInvoiced = "PriceInvoiced";
 
 	/** Set Price Invoiced.
-	  * The priced invoiced to the customer (in the currency of the customer's AR price list) - 0 for default price
+	  * The priced invoiced to the customer (in the currency of the customer&#039;
+s AR price list) - 0 for default price
 	  */
 	public void setPriceInvoiced (BigDecimal PriceInvoiced);
 
 	/** Get Price Invoiced.
-	  * The priced invoiced to the customer (in the currency of the customer's AR price list) - 0 for default price
+	  * The priced invoiced to the customer (in the currency of the customer&#039;
+s AR price list) - 0 for default price
 	  */
 	public BigDecimal getPriceInvoiced();
 
@@ -390,12 +392,14 @@ public interface I_S_TimeExpenseLine
     public static final String COLUMNNAME_PriceReimbursed = "PriceReimbursed";
 
 	/** Set Price Reimbursed.
-	  * The reimbursed price (in currency of the employee's AP price list)
+	  * The reimbursed price (in currency of the employee&#039;
+s AP price list)
 	  */
 	public void setPriceReimbursed (BigDecimal PriceReimbursed);
 
 	/** Get Price Reimbursed.
-	  * The reimbursed price (in currency of the employee's AP price list)
+	  * The reimbursed price (in currency of the employee&#039;
+s AP price list)
 	  */
 	public BigDecimal getPriceReimbursed();
 

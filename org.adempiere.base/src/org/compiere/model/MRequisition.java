@@ -40,7 +40,7 @@ import org.compiere.util.TimeUtil;
  *
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @version $Id: MRequisition.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  *  @author red1
  *  		<li>FR [ 2214883 ] Remove SQL code and Replace for Query  
@@ -104,7 +104,7 @@ public class MRequisition extends X_M_Requisition implements DocAction
  	 	final String whereClause = I_M_RequisitionLine.COLUMNNAME_M_Requisition_ID+"=?";
 	 	List <MRequisitionLine> list = new Query(getCtx(), I_M_RequisitionLine.Table_Name, whereClause, get_TrxName())
 			.setParameters(get_ID())
-			.setOrderBy(I_M_RequisitionLine.COLUMNNAME_Line)
+			.setOrderBy(I_M_RequisitionLine.COLUMNNAME_Line+","+I_M_RequisitionLine.COLUMNNAME_M_RequisitionLine_ID)
 			.list();
 	 	//  red1 - end -
 
