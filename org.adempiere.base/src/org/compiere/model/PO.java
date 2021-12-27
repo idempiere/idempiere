@@ -1404,7 +1404,7 @@ public abstract class PO
 			if (p_info.isVirtualColumn(i))
 			{
 				// initialize with NULL - values will be lazy-loaded by getters
-				columnSQL = "NULL AS " + p_info.getColumnName(i);
+				columnSQL = "NULL AS " + DB.getDatabase().quoteColumnName(p_info.getColumnName(i));
 			}
 			else
 			{
