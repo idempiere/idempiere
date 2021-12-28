@@ -53,7 +53,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8710213660955199146L;
+	private static final long serialVersionUID = 6847265056758898333L;
 
 	/**
 	 * 	Get MProduct from Cache (immutable)
