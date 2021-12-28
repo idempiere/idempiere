@@ -53,7 +53,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8710213660955199146L;
+	private static final long serialVersionUID = 6847265056758898333L;
 
 	/**
 	 * 	Get MProduct from Cache (immutable)
@@ -998,4 +998,17 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * @return true if instance of product is managed with serial no
+	 */
+	public boolean isSerial() {
+		if (getM_AttributeSet_ID() == 0)
+			return false;
+		
+		MAttributeSet as = MAttributeSet.get(getM_AttributeSet_ID());
+		if (as.isInstanceAttribute() && as.isSerNo())
+			return true;
+		else
+			return false;
+	}
 }	//	MProduct
