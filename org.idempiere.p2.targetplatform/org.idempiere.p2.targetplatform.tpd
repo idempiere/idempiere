@@ -99,11 +99,13 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.eclipse.core.resources
 	org.eclipse.core.variables
 	org.eclipse.jdt.core
-	org.eclipse.text
-	
+	org.eclipse.text	
+}
+
+location "https://download.eclipse.org/eclipse/updates/4.22" {
 	//<< for test
 	org.opentest4j
-	org.apiguardian
+	org.apiguardian	
 	org.junit
 	org.junit.jupiter.api
 	org.junit.jupiter.params
@@ -115,10 +117,11 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.junit.platform.launcher
 	org.junit.platform.runner
 	org.junit.platform.suite.api
+	org.junit.platform.suite.commons
+	org.junit.platform.suite.engine
 	org.eclipse.pde.junit.runtime
 	org.eclipse.jdt.junit.runtime
 	org.eclipse.jdt.junit5.runtime
-	//>>
 }
 
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository" {

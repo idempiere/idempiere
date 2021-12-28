@@ -273,6 +273,8 @@
         <setEntry value="org.junit.platform.launcher@default:default"/>
         <setEntry value="org.junit.platform.runner@default:default"/>
         <setEntry value="org.junit.platform.suite.api@default:default"/>
+        <setEntry value="org.junit.platform.suite.commons@default:default"/>
+        <setEntry value="org.junit.platform.suite.engine@default:default"/>
         <setEntry value="org.junit.vintage.engine@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.jvnet.mimepull@default:default"/>
