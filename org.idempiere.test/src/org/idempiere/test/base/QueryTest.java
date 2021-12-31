@@ -38,10 +38,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.model.POWrapper;
+import org.compiere.model.I_Test;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.MTest;
+import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Element;
@@ -340,7 +343,7 @@ public class QueryTest extends AbstractTestCase {
 	@Test
 	public void testVirtualColumnLoad() {
 		// create bogus record
-		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		PO testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
 		testPo.save();
 
 		BigDecimal expected = new BigDecimal(123.45d).setScale(2, RoundingMode.HALF_DOWN);
@@ -348,11 +351,13 @@ public class QueryTest extends AbstractTestCase {
 		// test with virtual column lazy loading
 		Query query = new Query(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_Test_ID + "=?", getTrxName());
 		testPo = query.setParameters(testPo.get_ID()).first();
-		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);
+		I_Test testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
 
 		// test without virtual column lazy loading
 		testPo = query.setNoVirtualColumn(false).setParameters(testPo.get_ID()).first();
-		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);		
+		testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
 	}
 
 }
