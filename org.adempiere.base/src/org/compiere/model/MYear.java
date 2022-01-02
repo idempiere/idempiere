@@ -28,7 +28,6 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.util.IProcessUI;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 
