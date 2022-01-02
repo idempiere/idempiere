@@ -456,7 +456,13 @@ public class POTest extends AbstractTestCase
 	public void testVirtualColumnLoad() {
 		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
 		testPo.save();
+
+		// asynchronous (default) virtual column loading
 		BigDecimal expected = new BigDecimal(123.45d).setScale(2, RoundingMode.HALF_DOWN);
+		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);
+
+		// synchronous (default) virtual column loading
+		testPo.load(getTrxName(), MTest.COLUMNNAME_TestVirtualQty);
 		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);
 	}
 

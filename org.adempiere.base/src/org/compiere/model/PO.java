@@ -149,19 +149,31 @@ public abstract class PO
 	 */
 	public PO (Properties ctx)
 	{
-		this (ctx, 0, null, null);
+		this (ctx, 0, null, null, (String[]) null);
 	}   //  PO
 
 	/**
 	 *  Create and Load existing Persistent Object
-	 *  @param ID  The unique ID of the object
+	 *  @param ID The unique ID of the object
 	 *  @param ctx context
 	 *  @param trxName transaction name
 	 */
 	public PO (Properties ctx, int ID, String trxName)
 	{
-		this (ctx, ID, trxName, null);
+		this (ctx, ID, trxName, null, (String[]) null);
 	}   //  PO
+
+	/**
+	 * Create and load existing Persistent Object
+	 * @param ctx Context
+	 * @param ID Unique ID of the object
+	 * @param trxName Transaction name
+	 * @param virtualColumns names of virtual columns to load along with the regular table columns
+	 */
+	public PO (Properties ctx, int ID, String trxName, String ... virtualColumns)
+	{
+		this (ctx, ID, trxName, null, virtualColumns);
+	}
 
 	/**
 	 *  Create and Load existing Persistent Object.
@@ -192,8 +204,9 @@ public abstract class PO
 	 *  @param ID the ID if 0, the record defaults are applied - ignored if re exists
 	 *  @param trxName transaction name
 	 *  @param rs optional - load from current result set position (no navigation, not closed)
+	 *  @param virtualColumns optional - names of virtual columns to load along with the regular table columns
 	 */
-	public PO (Properties ctx, int ID, String trxName, ResultSet rs)
+	public PO (Properties ctx, int ID, String trxName, ResultSet rs, String ... virtualColumns)
 	{
 		p_ctx = ctx != null ? ctx : Env.getCtx();
 		m_trxName = trxName;
@@ -1332,8 +1345,9 @@ public abstract class PO
 	 *  Load record with ID
 	 * 	@param ID ID
 	 * 	@param trxName transaction name
+	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 */
-	protected void load (int ID, String trxName)
+	protected void load (int ID, String trxName, String ... virtualColumns)
 	{
 		checkImmutable();
 		
@@ -1342,7 +1356,7 @@ public abstract class PO
 		{
 			setKeyInfo();
 			m_IDs = new Object[] {Integer.valueOf(ID)};
-			load(trxName);
+			load(trxName, virtualColumns);
 		}
 		else	//	new
 		{
@@ -1356,10 +1370,11 @@ public abstract class PO
 	/**
 	 * Load record with UUID
 	 * 
-	 * @param uuID    UUID
+	 * @param uuID universally unique identifier
 	 * @param trxName transaction name
+	 * @param virtualColumns names of virtual columns to load along with the regular table columns
 	 */
-	public void loadByUU(String uuID, String trxName)
+	public void loadByUU(String uuID, String trxName, String ... virtualColumns)
 	{
 		if (Util.isEmpty(uuID, true))
 		{
@@ -1373,27 +1388,28 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
 			
-		load(uuID,trxName);
+		load(uuID,trxName, virtualColumns);
 	} // loadByUU
 
 	/**
 	 *  (re)Load record with m_ID[*]
 	 *  @param trxName transaction
+	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 *  @return true if loaded
 	 */
-	public boolean load (String trxName) {
-		return load(null, trxName);
+	public boolean load (String trxName, String ... virtualColumns) {
+		return load(null, trxName, virtualColumns);
 	}
 	
 	/**
 	 *  (re)Load record with uuID
 	 *  @param uuID RecrodUU
 	 *  @param trxName transaction
+	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 *  @return true if loaded
 	 */
-	protected boolean load (String uuID,String trxName)
+	protected boolean load (String uuID, String trxName, String ... virtualColumns)
 	{
-		loadedVirtualColumns.clear();
 		m_trxName = trxName;
 		boolean success = true;
 		StringBuilder sql = new StringBuilder("SELECT ");
@@ -1402,11 +1418,24 @@ public abstract class PO
 		{
 			if (i != 0)
 				sql.append(",");
-			String columnSQL; 
+			String columnSQL;
 			if (p_info.isVirtualColumn(i))
 			{
-				// initialize with NULL - values will be lazy-loaded by getters
-				columnSQL = "NULL AS " + DB.getDatabase().quoteColumnName(p_info.getColumnName(i));
+				boolean lazyLoad = true;
+				for(String virtualColumn : virtualColumns)
+				{
+					if(p_info.getColumnName(i).equalsIgnoreCase(virtualColumn))
+					{
+						lazyLoad = false;
+						break;
+					}
+				}
+
+				if(lazyLoad)
+					// initialize with NULL - values will be lazy-loaded by getters
+					columnSQL = "NULL AS " + DB.getDatabase().quoteColumnName(p_info.getColumnName(i));
+				else
+					columnSQL = p_info.getColumnSQL(i);
 			}
 			else
 			{
@@ -1494,6 +1523,7 @@ public abstract class PO
 		boolean success = true;
 		int index = 0;
 		log.finest("(rs)");
+		loadedVirtualColumns.clear();
 		//  load column values
 		for (index = 0; index < size; index++)
 		{
