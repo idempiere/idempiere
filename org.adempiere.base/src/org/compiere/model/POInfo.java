@@ -800,23 +800,35 @@ public class POInfo implements Serializable
 		}
 		return null;
 	}   //  validate
-	
+
 	/**
-	 * Build select clause
-	 * @return stringbuilder
+	 * Build SQL SELECT statement.
+	 * @return {@link StringBuilder} instance with the SQL statement.
 	 */
 	public StringBuilder buildSelect()
 	{
 		return buildSelect(false, false);
 	}
-	
+
 	/**
-	 * Build select clause
-	 * @param fullyQualified
-	 * @param noVirtualColumn
-	 * @return stringbuilder
+	 * Build SQL SELECT statement.
+	 * @param fullyQualified prefix column names with the table name
+	 * @param noVirtualColumn Include (<code>false</code> value) all declared virtual columns at once 
+	 *        or use lazy loading (<code>true</code> value).
+	 * @return {@link StringBuilder} instance with the SQL statement.
 	 */
-	public StringBuilder buildSelect(boolean fullyQualified, boolean noVirtualColumn)
+	public StringBuilder buildSelect(boolean fullyQualified, boolean noVirtualColumn) {
+		return buildSelect(fullyQualified, noVirtualColumn ? new String[] {} : null);
+	}
+
+	/**
+	 * Build SQL SELECT statement.
+	 * @param fullyQualified prefix column names with the table name
+	 * @param virtualColumns names of virtual columns to include along with the regular table columns - 
+	 *        if no value (or <code>null</code>) is provided then all declared virtual columns will be included.
+	 * @return {@link StringBuilder} instance with the SQL statement.
+	 */
+	public StringBuilder buildSelect(boolean fullyQualified, String ... virtualColumns)
 	{
 		StringBuilder sql = new StringBuilder("SELECT ");
 		int size = getColumnCount();
@@ -824,9 +836,21 @@ public class POInfo implements Serializable
 		for (int i = 0; i < size; i++)
 		{
 			boolean virtual = isVirtualColumn(i);
-			if (virtual && noVirtualColumn)
-				continue;
-			
+			if (virtual && virtualColumns != null)
+			{
+				boolean found = false;
+				for(String virtualColumn : virtualColumns)
+				{
+					if(m_columns[i].ColumnName.equalsIgnoreCase(virtualColumn))
+					{
+						found = true;
+						break;
+					}
+				}
+				if(!found)
+					continue;
+			}
+
 			count++;
 			if (count > 1)
 				sql.append(",");

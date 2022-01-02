@@ -348,14 +348,25 @@ public class QueryTest extends AbstractTestCase {
 
 		BigDecimal expected = new BigDecimal(123.45d).setScale(2, RoundingMode.HALF_DOWN);
 
-		// test with virtual column lazy loading
+		// virtual column lazy loading
 		Query query = new Query(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_Test_ID + "=?", getTrxName());
 		testPo = query.setParameters(testPo.get_ID()).first();
 		I_Test testRecord = POWrapper.create(testPo, I_Test.class);
 		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
 
-		// test without virtual column lazy loading
+		// without virtual column lazy loading
 		testPo = query.setNoVirtualColumn(false).setParameters(testPo.get_ID()).first();
+		testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
+
+		// without virtual column lazy loading
+		testPo = query.setNoVirtualColumn(false).setParameters(testPo.get_ID()).first();
+		testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
+
+		// single virtual column without lazy loading
+		testPo = query.setVirtualColumns(I_Test.COLUMNNAME_TestVirtualQty)
+				.setParameters(testPo.get_ID()).first();
 		testRecord = POWrapper.create(testPo, I_Test.class);
 		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
 	}
