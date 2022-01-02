@@ -224,7 +224,7 @@ public abstract class PO
 		if (rs != null)
 			load(rs);
 		else
-			load(ID, trxName);
+			load(ID, trxName, virtualColumns);
 
 		checkCrossTenant(false);
 	}   //  PO
@@ -1422,12 +1422,15 @@ public abstract class PO
 			if (p_info.isVirtualColumn(i))
 			{
 				boolean lazyLoad = true;
-				for(String virtualColumn : virtualColumns)
+				if(virtualColumns!=null)
 				{
-					if(p_info.getColumnName(i).equalsIgnoreCase(virtualColumn))
+					for(String virtualColumn : virtualColumns)
 					{
-						lazyLoad = false;
-						break;
+						if(p_info.getColumnName(i).equalsIgnoreCase(virtualColumn))
+						{
+							lazyLoad = false;
+							break;
+						}
 					}
 				}
 

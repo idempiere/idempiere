@@ -461,8 +461,8 @@ public class POTest extends AbstractTestCase
 		BigDecimal expected = new BigDecimal(123.45d).setScale(2, RoundingMode.HALF_DOWN);
 		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);
 
-		// synchronous (default) virtual column loading
-		testPo.load(getTrxName(), MTest.COLUMNNAME_TestVirtualQty);
+		// synchronous virtual column loading
+		testPo = new MTest(Env.getCtx(), testPo.get_ID(), getTrxName(), MTest.COLUMNNAME_TestVirtualQty);
 		assertTrue(expected.compareTo(testPo.getTestVirtualQty()) == 0);
 	}
 

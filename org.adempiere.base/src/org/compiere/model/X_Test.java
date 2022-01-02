@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Test
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="Test")
 public class X_Test extends PO implements I_Test, I_Persistent 
 {
@@ -34,10 +34,10 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211225L;
+	private static final long serialVersionUID = 20220102L;
 
     /** Standard Constructor */
-    public X_Test (Properties ctx, int Test_ID, String trxName)
+    public X_Test (Properties ctx, int Test_ID, String trxName, String ... virtualColumns)
     {
       super (ctx, Test_ID, trxName);
       /** if (Test_ID == 0)
@@ -530,18 +530,17 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		return (String)get_Value(COLUMNNAME_Test_UU);
 	}
 
-	/** Set TestVirtualQty.
-		@param TestVirtualQty 
-		Used only for testing purposes
-	  */
+	/** Set Virtual Quantity.
+		@param TestVirtualQty Used only for testing purposes
+	*/
 	public void setTestVirtualQty (BigDecimal TestVirtualQty)
 	{
 		throw new IllegalArgumentException ("TestVirtualQty is virtual column");	}
 
-	/** Get TestVirtualQty.
+	/** Get Virtual Quantity.
 		@return Used only for testing purposes
 	  */
-	public BigDecimal getTestVirtualQty () 
+	public BigDecimal getTestVirtualQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TestVirtualQty);
 		if (bd == null)

@@ -188,7 +188,7 @@ public class ModelClassGenerator
 			//	Standard Constructor
 			 .append(NL)
 			 .append("    /** Standard Constructor */").append(NL)
-			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName)").append(NL)
+			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName, String ... virtualColumns)").append(NL)
 			 .append("    {").append(NL)
 			 .append("      super (ctx, ").append(keyColumn).append(", trxName);").append(NL)
 			 .append("      /** if (").append(keyColumn).append(" == 0)").append(NL)
