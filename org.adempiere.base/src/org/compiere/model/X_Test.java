@@ -37,9 +37,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	private static final long serialVersionUID = 20220102L;
 
     /** Standard Constructor */
-    public X_Test (Properties ctx, int Test_ID, String trxName, String ... virtualColumns)
+    public X_Test (Properties ctx, int Test_ID, String trxName)
     {
       super (ctx, Test_ID, trxName);
+      /** if (Test_ID == 0)
+        {
+			setName (null);
+			setTest_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Test (Properties ctx, int Test_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Test_ID, trxName, virtualColumns);
       /** if (Test_ID == 0)
         {
 			setName (null);
