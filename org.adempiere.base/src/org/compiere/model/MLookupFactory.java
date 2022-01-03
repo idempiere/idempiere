@@ -664,6 +664,11 @@ public class MLookupFactory
 			pstmt = null;
 		}
 
+		boolean showID = DisplayColumn.equals(TableName+"_ID");
+		if (showID) {
+			return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, BaseColumn);
+		}
+
 		// If it's self referencing then use other alias - teo_sarca [ 1739544 ]
 		if (TableName.equals(BaseTable)) {
 			TableNameAlias = TableName + "1";
