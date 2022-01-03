@@ -28,11 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeInstance;
 import org.compiere.model.MAttributeSet;
@@ -44,11 +46,15 @@ import org.compiere.model.MInOutLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MStorageReservation;
 import org.compiere.model.MUOM;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
@@ -203,5 +209,36 @@ public class MProductTest extends AbstractTestCase {
 			attributeSet.setUseGuaranteeDateForMPolicy(false);
 			attributeSet.saveEx();
 		}
+	}
+	
+	@Test
+	public void testRemoveStorageRecords() {
+		int count = 0;
+		
+		//make sure there's on hand and reservation records
+		MProduct product = new MProduct(Env.getCtx(), MULCH_PRODUCT_ID, getTrxName());
+		createPOAndMRForProduct(product.get_ID());		
+		Query query = new Query(Env.getCtx(), MStorageOnHand.Table_Name, "M_Product_ID=?", getTrxName());
+		count = query.setParameters(product.get_ID()).count();
+		assertTrue(count > 0, "No Storage On Hand Record");
+		query = new Query(Env.getCtx(), MStorageReservation.Table_Name, "M_Product_ID=?", getTrxName());
+		count = query.setParameters(product.get_ID()).count();
+		assertTrue(count > 0, "No Storage Reservation Record");
+		
+		//this should faiil due to on hand > 0
+		product.setIsActive(false);
+		assertThrows(AdempiereException.class, () -> product.saveEx());
+		
+		//clear on hand so that we can deactivate product
+		DB.executeUpdateEx("UPDATE M_StorageOnHand SET QtyOnHand=0 WHERE M_Product_ID=?", new Object[] {product.get_ID()}, getTrxName());
+		product.setIsActive(false);
+		product.saveEx();
+		
+		query = new Query(Env.getCtx(), MStorageOnHand.Table_Name, "M_Product_ID=?", getTrxName());
+		count = query.setParameters(product.get_ID()).count();
+		assertEquals(0, count, "Storage On Hand Record > 0");
+		query = new Query(Env.getCtx(), MStorageReservation.Table_Name, "M_Product_ID=?", getTrxName());
+		count = query.setParameters(product.get_ID()).count();
+		assertEquals(0, count, "Storage Reservation Record > 0");
 	}
 }
