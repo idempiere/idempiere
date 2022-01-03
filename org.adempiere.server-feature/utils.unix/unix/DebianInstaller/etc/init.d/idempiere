@@ -525,7 +525,7 @@ configure()
 	write_sysconfig
 	echo "To access the iDempiere Server Home Page, start the server with:"
 	echo "SYSTEMCTL_SKIP_REDIRECT=1 /etc/init.d/idempiere start"
-	echo "and then go to \"http://127.0.0.1:${ADEMPIERE_WEB_PORT}\""
+	echo "and then go to \"https://127.0.0.1:${ADEMPIERE_SSL_PORT}\""
 
 }
 
