@@ -376,7 +376,6 @@ public class ImportAccount extends SvrProcess
 			String updateSQL = "UPDATE AD_TreeNode SET Parent_ID=?, SeqNo=? "
 				+ "WHERE AD_Tree_ID=? AND Node_ID=?";
 			//begin e-evolution vpj-cd 15 nov 2005 PostgreSQL
-			//PreparedStatement updateStmt = DB.prepareStatement(updateSQL, get_TrxName());
 			PreparedStatement updateStmt = DB.prepareStatement(updateSQL, ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE, get_TrxName());
 			//end	
 			//

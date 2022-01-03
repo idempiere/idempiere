@@ -449,8 +449,6 @@ public class GridWindow implements Serializable
 		WebDoc doc = null;
 		doc = WebDoc.create (false, title.toString(), javaClient);
 		
-	//	body.addElement("&copy;&nbsp;Adempiere &nbsp; ");
-	//	body.addElement(new a("http://www.adempiere.org/help/", "Online Help"));
 		td center  = doc.addPopupCenter(false);
 		//	Window
 		if (getDescription().length() != 0)

@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for PA_DashboardPreference
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardPreference")
 public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPreference, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_DashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
@@ -88,21 +88,20 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -117,21 +116,20 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -140,9 +138,8 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set Column No.
-		@param ColumnNo 
-		Dashboard content column number
-	  */
+		@param ColumnNo Dashboard content column number
+	*/
 	public void setColumnNo (int ColumnNo)
 	{
 		set_Value (COLUMNNAME_ColumnNo, Integer.valueOf(ColumnNo));
@@ -151,7 +148,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	/** Get Column No.
 		@return Dashboard content column number
 	  */
-	public int getColumnNo () 
+	public int getColumnNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ColumnNo);
 		if (ii == null)
@@ -160,9 +157,8 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set Collapsed By Default.
-		@param IsCollapsedByDefault 
-		Flag to set the initial state of collapsible field group.
-	  */
+		@param IsCollapsedByDefault Flag to set the initial state of collapsible field group.
+	*/
 	public void setIsCollapsedByDefault (boolean IsCollapsedByDefault)
 	{
 		set_Value (COLUMNNAME_IsCollapsedByDefault, Boolean.valueOf(IsCollapsedByDefault));
@@ -171,7 +167,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	/** Get Collapsed By Default.
 		@return Flag to set the initial state of collapsible field group.
 	  */
-	public boolean isCollapsedByDefault () 
+	public boolean isCollapsedByDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCollapsedByDefault);
 		if (oo != null) 
@@ -184,9 +180,8 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set Show in Dashboard.
-		@param IsShowInDashboard 
-		Show the dashlet in the dashboard
-	  */
+		@param IsShowInDashboard Show the dashlet in the dashboard
+	*/
 	public void setIsShowInDashboard (boolean IsShowInDashboard)
 	{
 		set_Value (COLUMNNAME_IsShowInDashboard, Boolean.valueOf(IsShowInDashboard));
@@ -195,7 +190,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	/** Get Show in Dashboard.
 		@return Show the dashlet in the dashboard
 	  */
-	public boolean isShowInDashboard () 
+	public boolean isShowInDashboard()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowInDashboard);
 		if (oo != null) 
@@ -208,9 +203,8 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (BigDecimal Line)
 	{
 		set_Value (COLUMNNAME_Line, Line);
@@ -219,7 +213,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public BigDecimal getLine () 
+	public BigDecimal getLine()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Line);
 		if (bd == null)
@@ -234,18 +228,19 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set Dashboard Content.
-		@param PA_DashboardContent_ID Dashboard Content	  */
+		@param PA_DashboardContent_ID Dashboard Content
+	*/
 	public void setPA_DashboardContent_ID (int PA_DashboardContent_ID)
 	{
-		if (PA_DashboardContent_ID < 1) 
+		if (PA_DashboardContent_ID < 1)
 			set_Value (COLUMNNAME_PA_DashboardContent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PA_DashboardContent_ID, Integer.valueOf(PA_DashboardContent_ID));
 	}
 
 	/** Get Dashboard Content.
 		@return Dashboard Content	  */
-	public int getPA_DashboardContent_ID () 
+	public int getPA_DashboardContent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DashboardContent_ID);
 		if (ii == null)
@@ -254,18 +249,19 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set Dashboard Preference.
-		@param PA_DashboardPreference_ID Dashboard Preference	  */
+		@param PA_DashboardPreference_ID Dashboard Preference
+	*/
 	public void setPA_DashboardPreference_ID (int PA_DashboardPreference_ID)
 	{
-		if (PA_DashboardPreference_ID < 1) 
+		if (PA_DashboardPreference_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardPreference_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardPreference_ID, Integer.valueOf(PA_DashboardPreference_ID));
 	}
 
 	/** Get Dashboard Preference.
 		@return Dashboard Preference	  */
-	public int getPA_DashboardPreference_ID () 
+	public int getPA_DashboardPreference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DashboardPreference_ID);
 		if (ii == null)
@@ -274,7 +270,8 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	}
 
 	/** Set PA_DashboardPreference_UU.
-		@param PA_DashboardPreference_UU PA_DashboardPreference_UU	  */
+		@param PA_DashboardPreference_UU PA_DashboardPreference_UU
+	*/
 	public void setPA_DashboardPreference_UU (String PA_DashboardPreference_UU)
 	{
 		set_Value (COLUMNNAME_PA_DashboardPreference_UU, PA_DashboardPreference_UU);
@@ -282,7 +279,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 
 	/** Get PA_DashboardPreference_UU.
 		@return PA_DashboardPreference_UU	  */
-	public String getPA_DashboardPreference_UU () 
+	public String getPA_DashboardPreference_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_DashboardPreference_UU);
 	}

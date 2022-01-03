@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserBPAccess
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserBPAccess")
 public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_UserBPAccess (Properties ctx, int AD_UserBPAccess_ID, String trxName)
@@ -73,21 +73,20 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
     }
 
 	/** Set User BP Access.
-		@param AD_UserBPAccess_ID 
-		User/contact access to Business Partner information and resources
-	  */
+		@param AD_UserBPAccess_ID User/contact access to Business Partner information and resources
+	*/
 	public void setAD_UserBPAccess_ID (int AD_UserBPAccess_ID)
 	{
-		if (AD_UserBPAccess_ID < 1) 
+		if (AD_UserBPAccess_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserBPAccess_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserBPAccess_ID, Integer.valueOf(AD_UserBPAccess_ID));
 	}
 
 	/** Get User BP Access.
 		@return User/contact access to Business Partner information and resources
 	  */
-	public int getAD_UserBPAccess_ID () 
+	public int getAD_UserBPAccess_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserBPAccess_ID);
 		if (ii == null)
@@ -96,7 +95,8 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	}
 
 	/** Set AD_UserBPAccess_UU.
-		@param AD_UserBPAccess_UU AD_UserBPAccess_UU	  */
+		@param AD_UserBPAccess_UU AD_UserBPAccess_UU
+	*/
 	public void setAD_UserBPAccess_UU (String AD_UserBPAccess_UU)
 	{
 		set_Value (COLUMNNAME_AD_UserBPAccess_UU, AD_UserBPAccess_UU);
@@ -104,7 +104,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 
 	/** Get AD_UserBPAccess_UU.
 		@return AD_UserBPAccess_UU	  */
-	public String getAD_UserBPAccess_UU () 
+	public String getAD_UserBPAccess_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_UserBPAccess_UU);
 	}
@@ -116,21 +116,20 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -147,9 +146,8 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	/** Requests = R */
 	public static final String BPACCESSTYPE_Requests = "R";
 	/** Set Access Type.
-		@param BPAccessType 
-		Type of Access of the user/contact to Business Partner information and resources
-	  */
+		@param BPAccessType Type of Access of the user/contact to Business Partner information and resources
+	*/
 	public void setBPAccessType (String BPAccessType)
 	{
 
@@ -159,7 +157,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	/** Get Access Type.
 		@return Type of Access of the user/contact to Business Partner information and resources
 	  */
-	public String getBPAccessType () 
+	public String getBPAccessType()
 	{
 		return (String)get_Value(COLUMNNAME_BPAccessType);
 	}
@@ -231,9 +229,8 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	/** Sales Order = SOO */
 	public static final String DOCBASETYPE_SalesOrder = "SOO";
 	/** Set Document BaseType.
-		@param DocBaseType 
-		Logical type of document
-	  */
+		@param DocBaseType Logical type of document
+	*/
 	public void setDocBaseType (String DocBaseType)
 	{
 
@@ -243,7 +240,7 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	/** Get Document BaseType.
 		@return Logical type of document
 	  */
-	public String getDocBaseType () 
+	public String getDocBaseType()
 	{
 		return (String)get_Value(COLUMNNAME_DocBaseType);
 	}
@@ -255,21 +252,20 @@ public class X_AD_UserBPAccess extends PO implements I_AD_UserBPAccess, I_Persis
 	}
 
 	/** Set Request Type.
-		@param R_RequestType_ID 
-		Type of request (e.g. Inquiry, Complaint, ..)
-	  */
+		@param R_RequestType_ID Type of request (e.g. Inquiry, Complaint, ..)
+	*/
 	public void setR_RequestType_ID (int R_RequestType_ID)
 	{
-		if (R_RequestType_ID < 1) 
+		if (R_RequestType_ID < 1)
 			set_Value (COLUMNNAME_R_RequestType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_RequestType_ID, Integer.valueOf(R_RequestType_ID));
 	}
 
 	/** Get Request Type.
 		@return Type of request (e.g. Inquiry, Complaint, ..)
 	  */
-	public int getR_RequestType_ID () 
+	public int getR_RequestType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestType_ID);
 		if (ii == null)

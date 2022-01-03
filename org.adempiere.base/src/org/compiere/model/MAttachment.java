@@ -49,7 +49,7 @@ import org.compiere.util.Util;
  *  
   * @author Silvano Trinchero
  *      <li>BF [ 2992291] MAttachment.addEntry not closing streams if an exception occur
- *        http://sourceforge.net/tracker/?func=detail&aid=2992291&group_id=176962&atid=879332
+ *        https://sourceforge.net/p/adempiere/bugs/2392/
  *
  *  @version $Id: MAttachment.java,v 1.4 2006/07/30 00:58:37 jjanke Exp $
  */
@@ -644,7 +644,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * IDEMPIERE-530
 	 * Get the attachment ID based on table_id and record_id
-	 * @param AD_Table_ID
+	 * @param Table_ID
 	 * @param Record_ID
 	 * @return AD_Attachment_ID 
 	 */
@@ -711,7 +711,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * Set Storage Provider
 	 * Used temporarily for the process to migrate storage provider
-	 * @param Storage provider
+	 * @param p Storage provider
 	 */
 	public void setStorageProvider(MStorageProvider p) {
 		provider = p;

@@ -26,7 +26,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- *	Match Invoice (Receipt<>Invoice) Model.
+ *	Match Invoice (Receipt&lt;&gt;Invoice) Model.
  *	Accounting:
  *	- Not Invoiced Receipts (relief)
  *	- IPV
@@ -38,7 +38,7 @@ import org.compiere.util.DB;
  * 			<li>BF [ 1926113 ] MMatchInv.getNewerDateAcct() should work in trx
  * @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  * @author Bayu Cahya, Sistematika
  * 			<li>BF [ 2240484 ] Re MatchingPO, MMatchPO doesn't contains Invoice info
  * 

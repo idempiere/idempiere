@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorParameter
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="IMP_ProcessorParameter")
 public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParameter, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorParameter (Properties ctx, int IMP_ProcessorParameter_ID, String trxName)
@@ -74,9 +74,8 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,15 +84,14 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -102,7 +100,7 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
@@ -114,18 +112,19 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	}
 
 	/** Set Import Processor.
-		@param IMP_Processor_ID Import Processor	  */
+		@param IMP_Processor_ID Import Processor
+	*/
 	public void setIMP_Processor_ID (int IMP_Processor_ID)
 	{
-		if (IMP_Processor_ID < 1) 
+		if (IMP_Processor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, Integer.valueOf(IMP_Processor_ID));
 	}
 
 	/** Get Import Processor.
 		@return Import Processor	  */
-	public int getIMP_Processor_ID () 
+	public int getIMP_Processor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_Processor_ID);
 		if (ii == null)
@@ -134,18 +133,19 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	}
 
 	/** Set Import Processor Parameter.
-		@param IMP_ProcessorParameter_ID Import Processor Parameter	  */
+		@param IMP_ProcessorParameter_ID Import Processor Parameter
+	*/
 	public void setIMP_ProcessorParameter_ID (int IMP_ProcessorParameter_ID)
 	{
-		if (IMP_ProcessorParameter_ID < 1) 
+		if (IMP_ProcessorParameter_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_IMP_ProcessorParameter_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_IMP_ProcessorParameter_ID, Integer.valueOf(IMP_ProcessorParameter_ID));
 	}
 
 	/** Get Import Processor Parameter.
 		@return Import Processor Parameter	  */
-	public int getIMP_ProcessorParameter_ID () 
+	public int getIMP_ProcessorParameter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_ProcessorParameter_ID);
 		if (ii == null)
@@ -154,7 +154,8 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	}
 
 	/** Set IMP_ProcessorParameter_UU.
-		@param IMP_ProcessorParameter_UU IMP_ProcessorParameter_UU	  */
+		@param IMP_ProcessorParameter_UU IMP_ProcessorParameter_UU
+	*/
 	public void setIMP_ProcessorParameter_UU (String IMP_ProcessorParameter_UU)
 	{
 		set_Value (COLUMNNAME_IMP_ProcessorParameter_UU, IMP_ProcessorParameter_UU);
@@ -162,15 +163,14 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 
 	/** Get IMP_ProcessorParameter_UU.
 		@return IMP_ProcessorParameter_UU	  */
-	public String getIMP_ProcessorParameter_UU () 
+	public String getIMP_ProcessorParameter_UU()
 	{
 		return (String)get_Value(COLUMNNAME_IMP_ProcessorParameter_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -179,13 +179,14 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Parameter Value.
-		@param ParameterValue Parameter Value	  */
+		@param ParameterValue Parameter Value
+	*/
 	public void setParameterValue (String ParameterValue)
 	{
 		set_Value (COLUMNNAME_ParameterValue, ParameterValue);
@@ -193,15 +194,14 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 
 	/** Get Parameter Value.
 		@return Parameter Value	  */
-	public String getParameterValue () 
+	public String getParameterValue()
 	{
 		return (String)get_Value(COLUMNNAME_ParameterValue);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -210,7 +210,7 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

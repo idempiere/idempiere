@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_QualityTest
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_QualityTest")
 public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTest, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_Product_QualityTest (Properties ctx, int M_Product_QualityTest_ID, String trxName)
@@ -75,7 +75,8 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
     }
 
 	/** Set Expected Result.
-		@param ExpectedResult Expected Result	  */
+		@param ExpectedResult Expected Result
+	*/
 	public void setExpectedResult (String ExpectedResult)
 	{
 		set_Value (COLUMNNAME_ExpectedResult, ExpectedResult);
@@ -83,7 +84,7 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 
 	/** Get Expected Result.
 		@return Expected Result	  */
-	public String getExpectedResult () 
+	public String getExpectedResult()
 	{
 		return (String)get_Value(COLUMNNAME_ExpectedResult);
 	}
@@ -95,21 +96,20 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -118,18 +118,19 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	}
 
 	/** Set Product Quality Test.
-		@param M_Product_QualityTest_ID Product Quality Test	  */
+		@param M_Product_QualityTest_ID Product Quality Test
+	*/
 	public void setM_Product_QualityTest_ID (int M_Product_QualityTest_ID)
 	{
-		if (M_Product_QualityTest_ID < 1) 
+		if (M_Product_QualityTest_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_QualityTest_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_QualityTest_ID, Integer.valueOf(M_Product_QualityTest_ID));
 	}
 
 	/** Get Product Quality Test.
 		@return Product Quality Test	  */
-	public int getM_Product_QualityTest_ID () 
+	public int getM_Product_QualityTest_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_QualityTest_ID);
 		if (ii == null)
@@ -138,7 +139,8 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	}
 
 	/** Set M_Product_QualityTest_UU.
-		@param M_Product_QualityTest_UU M_Product_QualityTest_UU	  */
+		@param M_Product_QualityTest_UU M_Product_QualityTest_UU
+	*/
 	public void setM_Product_QualityTest_UU (String M_Product_QualityTest_UU)
 	{
 		set_Value (COLUMNNAME_M_Product_QualityTest_UU, M_Product_QualityTest_UU);
@@ -146,7 +148,7 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 
 	/** Get M_Product_QualityTest_UU.
 		@return M_Product_QualityTest_UU	  */
-	public String getM_Product_QualityTest_UU () 
+	public String getM_Product_QualityTest_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Product_QualityTest_UU);
 	}
@@ -158,18 +160,19 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	}
 
 	/** Set Quality Test.
-		@param M_QualityTest_ID Quality Test	  */
+		@param M_QualityTest_ID Quality Test
+	*/
 	public void setM_QualityTest_ID (int M_QualityTest_ID)
 	{
-		if (M_QualityTest_ID < 1) 
+		if (M_QualityTest_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, Integer.valueOf(M_QualityTest_ID));
 	}
 
 	/** Get Quality Test.
 		@return Quality Test	  */
-	public int getM_QualityTest_ID () 
+	public int getM_QualityTest_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_QualityTest_ID);
 		if (ii == null)

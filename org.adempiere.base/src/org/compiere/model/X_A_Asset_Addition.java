@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Addition
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Addition")
 public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_A_Asset_Addition (Properties ctx, int A_Asset_Addition_ID, String trxName)
@@ -101,18 +101,19 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
     }
 
 	/** Set Asset Addition.
-		@param A_Asset_Addition_ID Asset Addition	  */
+		@param A_Asset_Addition_ID Asset Addition
+	*/
 	public void setA_Asset_Addition_ID (int A_Asset_Addition_ID)
 	{
-		if (A_Asset_Addition_ID < 1) 
+		if (A_Asset_Addition_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Addition_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Addition_ID, Integer.valueOf(A_Asset_Addition_ID));
 	}
 
 	/** Get Asset Addition.
 		@return Asset Addition	  */
-	public int getA_Asset_Addition_ID () 
+	public int getA_Asset_Addition_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Addition_ID);
 		if (ii == null)
@@ -121,7 +122,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set A_Asset_Addition_UU.
-		@param A_Asset_Addition_UU A_Asset_Addition_UU	  */
+		@param A_Asset_Addition_UU A_Asset_Addition_UU
+	*/
 	public void setA_Asset_Addition_UU (String A_Asset_Addition_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Addition_UU, A_Asset_Addition_UU);
@@ -129,7 +131,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get A_Asset_Addition_UU.
 		@return A_Asset_Addition_UU	  */
-	public String getA_Asset_Addition_UU () 
+	public String getA_Asset_Addition_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Addition_UU);
 	}
@@ -141,21 +143,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -170,7 +171,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Expense = Exp */
 	public static final String A_CAPVSEXP_Expense = "Exp";
 	/** Set Capital/Expense.
-		@param A_CapvsExp Capital/Expense	  */
+		@param A_CapvsExp Capital/Expense
+	*/
 	public void setA_CapvsExp (String A_CapvsExp)
 	{
 
@@ -179,13 +181,14 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Capital/Expense.
 		@return Capital/Expense	  */
-	public String getA_CapvsExp () 
+	public String getA_CapvsExp()
 	{
 		return (String)get_Value(COLUMNNAME_A_CapvsExp);
 	}
 
 	/** Set Create Asset.
-		@param A_CreateAsset Create Asset	  */
+		@param A_CreateAsset Create Asset
+	*/
 	public void setA_CreateAsset (boolean A_CreateAsset)
 	{
 		set_Value (COLUMNNAME_A_CreateAsset, Boolean.valueOf(A_CreateAsset));
@@ -193,7 +196,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Create Asset.
 		@return Create Asset	  */
-	public boolean isA_CreateAsset () 
+	public boolean isA_CreateAsset()
 	{
 		Object oo = get_Value(COLUMNNAME_A_CreateAsset);
 		if (oo != null) 
@@ -206,14 +209,15 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Life periods (max).
-		@param A_Life_Period_Max Life periods (max)	  */
+		@param A_Life_Period_Max Life periods (max)
+	*/
 	public void setA_Life_Period_Max (int A_Life_Period_Max)
 	{
 		throw new IllegalArgumentException ("A_Life_Period_Max is virtual column");	}
 
 	/** Get Life periods (max).
 		@return Life periods (max)	  */
-	public int getA_Life_Period_Max () 
+	public int getA_Life_Period_Max()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Life_Period_Max);
 		if (ii == null)
@@ -222,14 +226,15 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Life periods (min).
-		@param A_Life_Period_Min Life periods (min)	  */
+		@param A_Life_Period_Min Life periods (min)
+	*/
 	public void setA_Life_Period_Min (int A_Life_Period_Min)
 	{
 		throw new IllegalArgumentException ("A_Life_Period_Min is virtual column");	}
 
 	/** Get Life periods (min).
 		@return Life periods (min)	  */
-	public int getA_Life_Period_Min () 
+	public int getA_Life_Period_Min()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Life_Period_Min);
 		if (ii == null)
@@ -238,7 +243,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Current Qty.
-		@param A_QTY_Current Current Qty	  */
+		@param A_QTY_Current Current Qty
+	*/
 	public void setA_QTY_Current (BigDecimal A_QTY_Current)
 	{
 		set_Value (COLUMNNAME_A_QTY_Current, A_QTY_Current);
@@ -246,7 +252,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Current Qty.
 		@return Current Qty	  */
-	public BigDecimal getA_QTY_Current () 
+	public BigDecimal getA_QTY_Current()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_QTY_Current);
 		if (bd == null)
@@ -255,7 +261,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Asset Salvage Value.
-		@param A_Salvage_Value Asset Salvage Value	  */
+		@param A_Salvage_Value Asset Salvage Value
+	*/
 	public void setA_Salvage_Value (BigDecimal A_Salvage_Value)
 	{
 		set_Value (COLUMNNAME_A_Salvage_Value, A_Salvage_Value);
@@ -263,7 +270,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Asset Salvage Value.
 		@return Asset Salvage Value	  */
-	public BigDecimal getA_Salvage_Value () 
+	public BigDecimal getA_Salvage_Value()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Salvage_Value);
 		if (bd == null)
@@ -284,7 +291,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Project = PRJ */
 	public static final String A_SOURCETYPE_Project = "PRJ";
 	/** Set Source Type.
-		@param A_SourceType Source Type	  */
+		@param A_SourceType Source Type
+	*/
 	public void setA_SourceType (String A_SourceType)
 	{
 
@@ -293,13 +301,14 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Source Type.
 		@return Source Type	  */
-	public String getA_SourceType () 
+	public String getA_SourceType()
 	{
 		return (String)get_Value(COLUMNNAME_A_SourceType);
 	}
 
 	/** Set Entered Amount.
-		@param AssetAmtEntered Entered Amount	  */
+		@param AssetAmtEntered Entered Amount
+	*/
 	public void setAssetAmtEntered (BigDecimal AssetAmtEntered)
 	{
 		set_Value (COLUMNNAME_AssetAmtEntered, AssetAmtEntered);
@@ -307,7 +316,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Entered Amount.
 		@return Entered Amount	  */
-	public BigDecimal getAssetAmtEntered () 
+	public BigDecimal getAssetAmtEntered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AssetAmtEntered);
 		if (bd == null)
@@ -316,7 +325,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Source Amount.
-		@param AssetSourceAmt Source Amount	  */
+		@param AssetSourceAmt Source Amount
+	*/
 	public void setAssetSourceAmt (BigDecimal AssetSourceAmt)
 	{
 		set_Value (COLUMNNAME_AssetSourceAmt, AssetSourceAmt);
@@ -324,7 +334,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Source Amount.
 		@return Source Amount	  */
-	public BigDecimal getAssetSourceAmt () 
+	public BigDecimal getAssetSourceAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AssetSourceAmt);
 		if (bd == null)
@@ -333,9 +343,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Asset value.
-		@param AssetValueAmt 
-		Book Value of the asset
-	  */
+		@param AssetValueAmt Book Value of the asset
+	*/
 	public void setAssetValueAmt (BigDecimal AssetValueAmt)
 	{
 		set_Value (COLUMNNAME_AssetValueAmt, AssetValueAmt);
@@ -344,7 +353,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Asset value.
 		@return Book Value of the asset
 	  */
-	public BigDecimal getAssetValueAmt () 
+	public BigDecimal getAssetValueAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AssetValueAmt);
 		if (bd == null)
@@ -359,21 +368,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Charge.
-		@param C_Charge_ID 
-		Additional document charges
-	  */
+		@param C_Charge_ID Additional document charges
+	*/
 	public void setC_Charge_ID (int C_Charge_ID)
 	{
-		if (C_Charge_ID < 1) 
+		if (C_Charge_ID < 1)
 			set_Value (COLUMNNAME_C_Charge_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
 	}
 
 	/** Get Charge.
 		@return Additional document charges
 	  */
-	public int getC_Charge_ID () 
+	public int getC_Charge_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
@@ -388,21 +396,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Currency Type.
-		@param C_ConversionType_ID 
-		Currency Conversion Rate Type
-	  */
+		@param C_ConversionType_ID Currency Conversion Rate Type
+	*/
 	public void setC_ConversionType_ID (int C_ConversionType_ID)
 	{
-		if (C_ConversionType_ID < 1) 
+		if (C_ConversionType_ID < 1)
 			set_Value (COLUMNNAME_C_ConversionType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ConversionType_ID, Integer.valueOf(C_ConversionType_ID));
 	}
 
 	/** Get Currency Type.
 		@return Currency Conversion Rate Type
 	  */
-	public int getC_ConversionType_ID () 
+	public int getC_ConversionType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ConversionType_ID);
 		if (ii == null)
@@ -417,21 +424,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -446,21 +452,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -475,21 +480,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -504,21 +508,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_Value (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -533,21 +536,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -556,9 +558,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Rate.
-		@param CurrencyRate 
-		Currency Conversion Rate
-	  */
+		@param CurrencyRate Currency Conversion Rate
+	*/
 	public void setCurrencyRate (BigDecimal CurrencyRate)
 	{
 		set_Value (COLUMNNAME_CurrencyRate, CurrencyRate);
@@ -567,7 +568,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Rate.
 		@return Currency Conversion Rate
 	  */
-	public BigDecimal getCurrencyRate () 
+	public BigDecimal getCurrencyRate()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrencyRate);
 		if (bd == null)
@@ -576,9 +577,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -587,15 +587,14 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Document Date.
-		@param DateDoc 
-		Date of the Document
-	  */
+		@param DateDoc Date of the Document
+	*/
 	public void setDateDoc (Timestamp DateDoc)
 	{
 		set_Value (COLUMNNAME_DateDoc, DateDoc);
@@ -604,15 +603,14 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Document Date.
 		@return Date of the Document
 	  */
-	public Timestamp getDateDoc () 
+	public Timestamp getDateDoc()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -621,14 +619,14 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** <None> = -- */
+	/** &lt;None&gt; = -- */
 	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
@@ -657,9 +655,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Unlock = XL */
 	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -669,7 +666,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
@@ -701,9 +698,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -713,7 +709,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
@@ -721,9 +717,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** DocumentNo AD_Reference_ID=53274 */
 	public static final int DOCUMENTNO_AD_Reference_ID=53274;
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 
@@ -733,7 +728,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -753,21 +748,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Journal Batch.
-		@param GL_JournalBatch_ID 
-		General Ledger Journal Batch
-	  */
+		@param GL_JournalBatch_ID General Ledger Journal Batch
+	*/
 	public void setGL_JournalBatch_ID (int GL_JournalBatch_ID)
 	{
-		if (GL_JournalBatch_ID < 1) 
+		if (GL_JournalBatch_ID < 1)
 			set_Value (COLUMNNAME_GL_JournalBatch_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_JournalBatch_ID, Integer.valueOf(GL_JournalBatch_ID));
 	}
 
 	/** Get Journal Batch.
 		@return General Ledger Journal Batch
 	  */
-	public int getGL_JournalBatch_ID () 
+	public int getGL_JournalBatch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalBatch_ID);
 		if (ii == null)
@@ -782,18 +776,19 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Imported Fixed Asset.
-		@param I_FixedAsset_ID Imported Fixed Asset	  */
+		@param I_FixedAsset_ID Imported Fixed Asset
+	*/
 	public void setI_FixedAsset_ID (int I_FixedAsset_ID)
 	{
-		if (I_FixedAsset_ID < 1) 
+		if (I_FixedAsset_ID < 1)
 			set_Value (COLUMNNAME_I_FixedAsset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_I_FixedAsset_ID, Integer.valueOf(I_FixedAsset_ID));
 	}
 
 	/** Get Imported Fixed Asset.
 		@return Imported Fixed Asset	  */
-	public int getI_FixedAsset_ID () 
+	public int getI_FixedAsset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_FixedAsset_ID);
 		if (ii == null)
@@ -802,9 +797,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -813,7 +807,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -826,9 +820,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -837,7 +830,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -852,21 +845,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -881,21 +873,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_Value (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -910,21 +901,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -939,21 +929,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Match Invoice.
-		@param M_MatchInv_ID 
-		Match Shipment/Receipt to Invoice
-	  */
+		@param M_MatchInv_ID Match Shipment/Receipt to Invoice
+	*/
 	public void setM_MatchInv_ID (int M_MatchInv_ID)
 	{
-		if (M_MatchInv_ID < 1) 
+		if (M_MatchInv_ID < 1)
 			set_Value (COLUMNNAME_M_MatchInv_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_MatchInv_ID, Integer.valueOf(M_MatchInv_ID));
 	}
 
 	/** Get Match Invoice.
 		@return Match Shipment/Receipt to Invoice
 	  */
-	public int getM_MatchInv_ID () 
+	public int getM_MatchInv_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MatchInv_ID);
 		if (ii == null)
@@ -968,21 +957,20 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -991,9 +979,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Posted.
-		@param Posted 
-		Posting status
-	  */
+		@param Posted Posting status
+	*/
 	public void setPosted (boolean Posted)
 	{
 		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
@@ -1002,7 +989,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Posted.
 		@return Posting status
 	  */
-	public boolean isPosted () 
+	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
 		if (oo != null) 
@@ -1027,9 +1014,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
-		@param PostingType 
-		The type of posted amount for the transaction
-	  */
+		@param PostingType The type of posted amount for the transaction
+	*/
 	public void setPostingType (String PostingType)
 	{
 
@@ -1039,15 +1025,14 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get PostingType.
 		@return The type of posted amount for the transaction
 	  */
-	public String getPostingType () 
+	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -1056,7 +1041,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -1069,9 +1054,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Processed On.
-		@param ProcessedOn 
-		The date+time (expressed in decimal format) when the document has been processed
-	  */
+		@param ProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
 	public void setProcessedOn (BigDecimal ProcessedOn)
 	{
 		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
@@ -1080,7 +1064,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/** Get Processed On.
 		@return The date+time (expressed in decimal format) when the document has been processed
 	  */
-	public BigDecimal getProcessedOn () 
+	public BigDecimal getProcessedOn()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
 		if (bd == null)
@@ -1089,7 +1073,8 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -1097,7 +1082,7 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

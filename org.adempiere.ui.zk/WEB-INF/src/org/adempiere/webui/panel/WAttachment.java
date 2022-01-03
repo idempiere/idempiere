@@ -151,14 +151,13 @@ public class WAttachment extends Window implements EventListener<Event>
 
 	/**
 	 *	Constructor.
-	 *	loads Attachment, if ID <> 0
+	 *	loads Attachment, if ID &lt;&gt; 0
 	 *  @param WindowNo window no
 	 *  @param AD_Attachment_ID attachment
 	 *  @param AD_Table_ID table
 	 *  @param Record_ID record key
 	 *  @param trxName transaction
 	 */
-
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName)
 	{
@@ -167,14 +166,14 @@ public class WAttachment extends Window implements EventListener<Event>
 	
 	/**
 	 *	Constructor.
-	 *	loads Attachment, if ID <> 0
+	 *	loads Attachment, if ID &lt;&gt; 0
 	 *  @param WindowNo window no
 	 *  @param AD_Attachment_ID attachment
 	 *  @param AD_Table_ID table
 	 *  @param Record_ID record key
 	 *  @param trxName transaction
+	 *  @param eventListener
 	 */
-
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName, EventListener<Event> eventListener)
 	{

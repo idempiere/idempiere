@@ -128,10 +128,10 @@ public class WGraph extends Div implements IdSpace {
 	 * 
 	 * @param goal
 	 * @param zoom
-	 * @param userSelection
+	 * @param chartSelection
 	 * @param hideTitle
-	 * @param showTable
-	 * @param showChart
+	 * @param renderTable
+	 * @param renderChart
 	 */
 	public WGraph(MGoal goal, int zoom, boolean chartSelection,
 			boolean hideTitle, boolean renderTable, boolean renderChart) {

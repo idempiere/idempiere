@@ -45,7 +45,7 @@ import org.compiere.util.TimeUtil;
  *
  *  @author Jorg Janke
  *	@author Armen Rizal, Goodwill Consulting
- *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/tracker/?func=detail&aid=2857076&group_id=176962&atid=879335
+ *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/p/adempiere/feature-requests/817/
  *
  *  @version $Id: FinReport.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */

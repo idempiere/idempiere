@@ -790,7 +790,8 @@ public class MOrderLine extends X_C_OrderLine
 		
 		//	R/O Check - Product/Warehouse Change
 		if (!newRecord 
-			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID"))) 
+			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || 
+			(!getParent().isProcessed() && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)))) 
 		{
 			if (!canChangeWarehouse())
 				return false;
@@ -828,7 +829,7 @@ public class MOrderLine extends X_C_OrderLine
 			int C_DocType_ID = getParent().getDocTypeID();
 			MDocType docType = MDocType.get(getCtx(), C_DocType_ID);
 			//
-			if (!docType.IsNoPriceListCheck() && !m_productPrice.isCalculated())
+			if (!docType.isNoPriceListCheck() && !m_productPrice.isCalculated())
 			{
 				throw new ProductNotOnPriceListException(m_productPrice, getLine());
 			}
@@ -972,7 +973,7 @@ public class MOrderLine extends X_C_OrderLine
 	 * @param oldTax true if the old C_Tax_ID should be used
 	 * @return true if success, false otherwise
 	 * 
-	 * @author teo_sarca [ 1583825 ]
+	 * author teo_sarca [ 1583825 ]
 	 */
 	public boolean updateOrderTax(boolean oldTax) {
 		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
@@ -992,7 +993,7 @@ public class MOrderLine extends X_C_OrderLine
 	}
 	
 	/**
-	 *	Update Tax & Header
+	 *	Update Tax and Header
 	 *	@return true if header updated
 	 */
 	public boolean updateHeaderTax()

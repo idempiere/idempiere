@@ -111,7 +111,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 
 	/**
 	 * 	Is Actual Min Greater than Total
-	 *	@return true if act min > total
+	 *	@return true if act min &gt; total
 	 */
 	public boolean isActualMinGtTotal()
 	{

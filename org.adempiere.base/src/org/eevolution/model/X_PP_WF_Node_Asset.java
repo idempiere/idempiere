@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for PP_WF_Node_Asset
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_WF_Node_Asset")
 public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Asset (Properties ctx, int PP_WF_Node_Asset_ID, String trxName)
@@ -81,21 +81,20 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -110,21 +109,20 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	}
 
 	/** Set Node.
-		@param AD_WF_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
 	{
-		if (AD_WF_Node_ID < 1) 
+		if (AD_WF_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
 	}
 
 	/** Get Node.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getAD_WF_Node_ID () 
+	public int getAD_WF_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
 		if (ii == null)
@@ -133,18 +131,19 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	}
 
 	/** Set Workflow Node Asset.
-		@param PP_WF_Node_Asset_ID Workflow Node Asset	  */
+		@param PP_WF_Node_Asset_ID Workflow Node Asset
+	*/
 	public void setPP_WF_Node_Asset_ID (int PP_WF_Node_Asset_ID)
 	{
-		if (PP_WF_Node_Asset_ID < 1) 
+		if (PP_WF_Node_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_WF_Node_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_WF_Node_Asset_ID, Integer.valueOf(PP_WF_Node_Asset_ID));
 	}
 
 	/** Get Workflow Node Asset.
 		@return Workflow Node Asset	  */
-	public int getPP_WF_Node_Asset_ID () 
+	public int getPP_WF_Node_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_WF_Node_Asset_ID);
 		if (ii == null)
@@ -153,7 +152,8 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	}
 
 	/** Set PP_WF_Node_Asset_UU.
-		@param PP_WF_Node_Asset_UU PP_WF_Node_Asset_UU	  */
+		@param PP_WF_Node_Asset_UU PP_WF_Node_Asset_UU
+	*/
 	public void setPP_WF_Node_Asset_UU (String PP_WF_Node_Asset_UU)
 	{
 		set_Value (COLUMNNAME_PP_WF_Node_Asset_UU, PP_WF_Node_Asset_UU);
@@ -161,15 +161,14 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 
 	/** Get PP_WF_Node_Asset_UU.
 		@return PP_WF_Node_Asset_UU	  */
-	public String getPP_WF_Node_Asset_UU () 
+	public String getPP_WF_Node_Asset_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_WF_Node_Asset_UU);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -178,7 +177,7 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

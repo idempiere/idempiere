@@ -63,7 +63,7 @@ import org.osgi.service.event.Event;
  * 			<li>BF [ 1878743 ] SvrProcess.getAD_User_ID
  *			<li>BF [ 1935093 ] SvrProcess.unlock() is setting invalid result
  *			<li>FR [ 2788006 ] SvrProcess: change access to some methods
- *				https://sourceforge.net/tracker/?func=detail&aid=2788006&group_id=176962&atid=879335
+ *				https://sourceforge.net/p/adempiere/feature-requests/709/
  */
 @org.adempiere.base.annotation.Process
 public abstract class SvrProcess implements ProcessCall
@@ -213,6 +213,7 @@ public abstract class SvrProcess implements ProcessCall
 							unlock();
 							
 							// outside transaction processing [ teo_sarca, 1646891 ]
+							m_trx = null;
 							postProcess(!m_pi.isError());
 							@SuppressWarnings("unused")
 							Event eventPP = sendProcessEvent(IEventTopics.POST_PROCESS);
@@ -317,7 +318,7 @@ public abstract class SvrProcess implements ProcessCall
 
 	/**
 	 *  Prepare - e.g., get Parameters.
-	 *  <code>
+	 *  <pre>{@code
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
@@ -333,7 +334,7 @@ public abstract class SvrProcess implements ProcessCall
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
-	 *  </code>
+	 *  }</pre>
 	 */
 	abstract protected void prepare();
 
@@ -610,7 +611,8 @@ public abstract class SvrProcess implements ProcessCall
 			if (m_pi != null)
 				m_pi.addLog(entryLog);
 			if (log.isLoggable(Level.INFO)) log.info(entryLog.getP_ID() + " - " + entryLog.getP_Date() + " - " + entryLog.getP_Number() + " - " + entryLog.getP_Msg() + " - " + entryLog.getAD_Table_ID() + " - " + entryLog.getRecord_ID());
-		}							
+		}
+		listEntryLog = null; // flushed - to avoid flushing it again in case is called
 	}
 
 	/**************************************************************************

@@ -26,6 +26,7 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.process.DocAction;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -40,7 +41,7 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7758585369030074980L;
+	private static final long serialVersionUID = 5965306487040965994L;
 
 	/**
 	 * 	Standard Costructor
@@ -296,6 +297,22 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 		if (m_conditions != null && m_conditions.length > 0)
 			Arrays.stream(m_conditions).forEach(e -> e.markImmutable());
 		return this;
+	}
+
+	/**************************************************************************
+	 * 	Before Save
+	 *	@param newRecord
+	 *	@return true if it can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		//	Get Line No
+		if (getSeqNo() == 0) {
+			String sql = "SELECT COALESCE(MAX(SeqNo),0)+10 FROM AD_WF_NodeNext WHERE AD_WF_Node_ID=?";
+			int ii = DB.getSQLValue (get_TrxName(), sql, getAD_WF_Node_ID());
+			setSeqNo(ii);
+		}
+		return true;
 	}
 
 }	//	MWFNodeNext

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_User_OrgAccess
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_User_OrgAccess")
 public class X_AD_User_OrgAccess extends PO implements I_AD_User_OrgAccess, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_User_OrgAccess extends PO implements I_AD_User_OrgAccess, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_User_OrgAccess (Properties ctx, int AD_User_OrgAccess_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_AD_User_OrgAccess extends PO implements I_AD_User_OrgAccess, I_Pe
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -102,7 +101,8 @@ public class X_AD_User_OrgAccess extends PO implements I_AD_User_OrgAccess, I_Pe
 	}
 
 	/** Set AD_User_OrgAccess_UU.
-		@param AD_User_OrgAccess_UU AD_User_OrgAccess_UU	  */
+		@param AD_User_OrgAccess_UU AD_User_OrgAccess_UU
+	*/
 	public void setAD_User_OrgAccess_UU (String AD_User_OrgAccess_UU)
 	{
 		set_Value (COLUMNNAME_AD_User_OrgAccess_UU, AD_User_OrgAccess_UU);
@@ -110,15 +110,14 @@ public class X_AD_User_OrgAccess extends PO implements I_AD_User_OrgAccess, I_Pe
 
 	/** Get AD_User_OrgAccess_UU.
 		@return AD_User_OrgAccess_UU	  */
-	public String getAD_User_OrgAccess_UU () 
+	public String getAD_User_OrgAccess_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_User_OrgAccess_UU);
 	}
 
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (boolean IsReadOnly)
 	{
 		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
@@ -127,7 +126,7 @@ public class X_AD_User_OrgAccess extends PO implements I_AD_User_OrgAccess, I_Pe
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
 		if (oo != null) 

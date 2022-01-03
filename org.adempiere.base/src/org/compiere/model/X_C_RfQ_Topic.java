@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_Topic
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQ_Topic")
 public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_RfQ_Topic (Properties ctx, int C_RfQ_Topic_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	}
 
 	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
+		@param AD_PrintFormat_ID Data Print Format
+	*/
 	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
 	{
-		if (AD_PrintFormat_ID < 1) 
+		if (AD_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
 	}
 
 	/** Get Print Format.
 		@return Data Print Format
 	  */
-	public int getAD_PrintFormat_ID () 
+	public int getAD_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
@@ -103,21 +102,20 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	}
 
 	/** Set RfQ Topic.
-		@param C_RfQ_Topic_ID 
-		Topic for Request for Quotations
-	  */
+		@param C_RfQ_Topic_ID Topic for Request for Quotations
+	*/
 	public void setC_RfQ_Topic_ID (int C_RfQ_Topic_ID)
 	{
-		if (C_RfQ_Topic_ID < 1) 
+		if (C_RfQ_Topic_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_Topic_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_Topic_ID, Integer.valueOf(C_RfQ_Topic_ID));
 	}
 
 	/** Get RfQ Topic.
 		@return Topic for Request for Quotations
 	  */
-	public int getC_RfQ_Topic_ID () 
+	public int getC_RfQ_Topic_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_Topic_ID);
 		if (ii == null)
@@ -126,7 +124,8 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	}
 
 	/** Set C_RfQ_Topic_UU.
-		@param C_RfQ_Topic_UU C_RfQ_Topic_UU	  */
+		@param C_RfQ_Topic_UU C_RfQ_Topic_UU
+	*/
 	public void setC_RfQ_Topic_UU (String C_RfQ_Topic_UU)
 	{
 		set_Value (COLUMNNAME_C_RfQ_Topic_UU, C_RfQ_Topic_UU);
@@ -134,15 +133,14 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 
 	/** Get C_RfQ_Topic_UU.
 		@return C_RfQ_Topic_UU	  */
-	public String getC_RfQ_Topic_UU () 
+	public String getC_RfQ_Topic_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQ_Topic_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -151,15 +149,14 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -168,7 +165,7 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -181,9 +178,8 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -192,7 +188,7 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

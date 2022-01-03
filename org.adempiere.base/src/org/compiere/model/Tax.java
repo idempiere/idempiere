@@ -73,7 +73,7 @@ public class Tax
 	
 	/**************************************************************************
 	 *	Get Tax ID - converts parameters to call Get Tax.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		M_Product_ID/C_Charge_ID	->	C_TaxCategory_ID
 	 *		billDate, shipDate			->	billDate, shipDate
 	 *		AD_Org_ID					->	billFromC_Location_ID
@@ -82,7 +82,7 @@ public class Tax
 	 *		shipC_BPartner_Location_ID 	->	shipToC_Location_ID
 	 *
 	 *  if IsSOTrx is false, bill and ship are reversed
-	 *  </pre>
+	 *  }</pre>
 	 * 	@param ctx	context
 	 * 	@param M_Product_ID product
 	 * 	@param C_Charge_ID product
@@ -137,7 +137,7 @@ public class Tax
 	
 	/**
 	 *	Get Tax ID - converts parameters to call Get Tax.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		C_Charge_ID					->	C_TaxCategory_ID
 	 *		billDate					->	billDate
 	 *		shipDate					->	shipDate (ignored)
@@ -147,7 +147,7 @@ public class Tax
 	 *		shipC_BPartner_Location_ID 	->	shipToC_Location_ID (ignored)
 	 *
 	 *  if IsSOTrx is false, bill and ship are reversed
-	 *  </pre>
+	 *  }</pre>
 	 * 	@param ctx	context
 	 * 	@param C_Charge_ID product
 	 * 	@param billDate invoice date
@@ -279,7 +279,7 @@ public class Tax
 
 	/**
 	 *	Get Tax ID - converts parameters to call Get Tax.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		M_Product_ID				->	C_TaxCategory_ID
 	 *		billDate					->	billDate
 	 *		shipDate					->	shipDate (ignored)
@@ -289,7 +289,7 @@ public class Tax
 	 *		shipC_BPartner_Location_ID 	->	shipToC_Location_ID (ignored)
 	 *
 	 *  if IsSOTrx is false, bill and ship are reversed
-	 *  </pre>
+	 *  }</pre>
 	 * 	@param ctx	context
 	 * 	@param M_Product_ID product
 	 * 	@param billDate invoice date

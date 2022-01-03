@@ -62,19 +62,19 @@ import org.idempiere.util.ParseSeq;
  *
  *  @author Jorg Janke
  *  @author Victor Perez , e-Evolution.SC FR [ 1757088 ], [1877902] Implement JSR 223 Scripting APIs to Callout
- *  		http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1877902&group_id=176962 to FR [1877902]
+ *  		https://sourceforge.net/p/adempiere/feature-requests/318/ to FR [1877902]
  *  @author Carlos Ruiz, qss FR [1877902]
  *  @author Juan David Arboleda (arboleda), GlobalQSS, [ 1795398 ] Process Parameter: add display and readonly logic
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 2874646 ] GridField issue when a lookup is key
- *  			https://sourceforge.net/tracker/?func=detail&aid=2874646&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2164/
  *  @author victor.perez@e-evolution.com,www.e-evolution.com
  *  		<li>BF [ 2910358 ] Error in context when a field is found in different tabs.
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910358&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2255/
  *     		<li>BF [ 2910368 ] Error in context when IsActive field is found in different
- *  			https://sourceforge.net/tracker/?func=detail&aid=2910368&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2256/
  *  		<li>BF [ 3007342 ] Included tab context conflict issue
- *  			https://sourceforge.net/tracker/?func=detail&aid=3007342&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2409/
  *  @version $Id: GridField.java,v 1.5 2006/07/30 00:51:02 jjanke Exp $
  */
 public class GridField 
@@ -117,7 +117,6 @@ public class GridField
 	 */
 	protected void dispose()
 	{
-	//	log.fine( "GridField.dispose = " + m_vo.ColumnName);
 		m_propertyChangeListeners = null;
 		if (m_lookup != null)
 			m_lookup.dispose();
@@ -252,8 +251,6 @@ public class GridField
 			retValue = true;
 		else if (m_vo.IsKey)
 			retValue = false;
-	//	else if (m_vo.ColumnName.equals("CreatedBy") || m_vo.ColumnName.equals("UpdatedBy"))
-	//		retValue = false;
 		else {
 			//http://jira.idempiere.com/browse/IDEMPIERE-694
 			if (LookupFactoryHelper.isLookup(m_vo))
@@ -560,7 +557,7 @@ public class GridField
 	
 	/**************************************************************************
 	 *	Create default value.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		(a) Key/Parent/IsActive/SystemAccess
 	 *      (b) SQL Default
 	 *		(c) Column Default		//	system integrity
@@ -570,7 +567,7 @@ public class GridField
 	 *
 	 *  Don't default from Context => use explicit defaultValue
 	 *  (would otherwise copy previous record)
-	 *  </pre>
+	 *  }</pre>
 	 *  this method code in mind GirdField lie at standard window, and default is receive when new record.
 	 *  maybe it will don't suitable for use at other place as info panel parameter,...
 	 *  @return default value or null
@@ -650,7 +647,7 @@ public class GridField
 	 * "5" mean from system preference
 	 * "6" mean preference for field lie down at panel as process parameter, info parameter,...
 	 * "7" mean data-type default
-	 * @param initValueType
+	 * @param defaultValueType
 	 * @return
 	 */
 	protected Object getDefaultValueByType (Character defaultValueType){
@@ -756,7 +753,6 @@ public class GridField
 		if (m_vo.DefaultValue != null && m_vo.DefaultValue.startsWith("@SQL="))
 		{
 			String sql = m_vo.DefaultValue.substring(5);			//	w/o tag
-			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables
 			//hengsin, capture unparseable error to avoid subsequent sql exception
 			sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, false);	//	replace variables
 			if (sql.equals(""))
@@ -952,12 +948,6 @@ public class GridField
 			if (log.isLoggable(Level.FINE)) log.fine("[YesNo=N] " + m_vo.ColumnName);
 			return "N";
 		}
-		//  lookups with one value
-	//	if (DisplayType.isLookup(m_vo.displayType) && m_lookup.getSize() == 1)
-	//	{
-	//		/** @todo default if only one lookup value */
-	//	}
-		//  IDs remain null
 		if (m_vo.ColumnName.endsWith("_ID"))
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("[ID=null] "  + m_vo.ColumnName);
@@ -1818,13 +1808,7 @@ public class GridField
 	 */
 	public boolean isLongField()
 	{
-	//	if (m_vo.displayType == DisplayType.String 
-	//		|| m_vo.displayType == DisplayType.Text 
-	//		|| m_vo.displayType == DisplayType.Memo
-	//		|| m_vo.displayType == DisplayType.TextLong
-	//		|| m_vo.displayType == DisplayType.Image)
 		return (m_vo.DisplayLength >= MAXDISPLAY_LENGTH/2);
-	//	return false;
 	}   //  isLongField
 	
 	/**
@@ -1844,7 +1828,6 @@ public class GridField
 	 */
 	public void setValue ()
 	{
-	//	log.fine(ColumnName + "=" + newValue);
 		if (m_valueNoFire)      //  set the old value
 			m_oldValue = m_value;
 		m_value = null;
@@ -1853,7 +1836,6 @@ public class GridField
 
 		//  Does not fire, if same value
 		m_propertyChangeListeners.firePropertyChange(PROPERTY, m_oldValue, m_value);
-	//	m_propertyChangeListeners.firePropertyChange(PROPERTY, s_oldValue, null);
 	}   //  setValue
 
 	/**
@@ -1864,7 +1846,6 @@ public class GridField
 	 */
 	public void setValueAndUpdateContext ()
 	{
-	//	log.fine(ColumnName + "=" + newValue);
 		if (m_valueNoFire)      //  set the old value
 			m_oldValue = m_value;
 		m_value = null;
@@ -1876,7 +1857,6 @@ public class GridField
 
 		//  Does not fire, if same value
 		m_propertyChangeListeners.firePropertyChange(PROPERTY, m_oldValue, m_value);
-	//	m_propertyChangeListeners.firePropertyChange(PROPERTY, s_oldValue, null);
 	}   //  setValue
 
 	/**
@@ -1889,7 +1869,6 @@ public class GridField
 	 */
 	public void setValue (Object newValue, boolean inserting)
 	{
-	//	log.fine(ColumnName + "=" + newValue);
 		if (m_valueNoFire)      //  set the old value
 			m_oldValue = m_value;
 		m_value = newValue;
@@ -2320,7 +2299,7 @@ public class GridField
 	
 	/**
 	 * Restore the backup value if any
-	 * @author teo_sarca [ 1699826 ]
+	 * author teo_sarca [ 1699826 ]
 	 */
 	public void restoreValue() {
 		if (m_isBackupValue) {
@@ -2341,7 +2320,7 @@ public class GridField
 	 * Feature Request [1707462]
 	 * Enable user to change VFormat on runtime
 	 * @param strNewFormat VFormat mask
-	 * @author fer_luck
+	 * author fer_luck
 	 */
 	public void setVFormat(String strNewFormat){
 		m_vo.VFormat = strNewFormat;
@@ -2368,7 +2347,6 @@ public class GridField
 
 	/**
 	 * Get the default state of collapse field group type
-	 * @param collapseDefaultState
 	 */
 	public boolean getIsCollapsedByDefault() {
 		return m_vo.IsCollapsedByDefault;

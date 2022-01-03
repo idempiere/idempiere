@@ -75,8 +75,6 @@ public class ChartBuilder {
 	}
 	
 	/**
-	 *
-	 * @param type
 	 * @return JFreeChart
 	 */
 	public JFreeChart createChart() {

@@ -109,7 +109,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param minWidth
-	 * @return true if desktopWidth >= minWidth
+	 * @return true if desktopWidth &gt;= minWidth
 	 */
 	public static boolean minWidth(int minWidth) {
 		return ClientInfo.get().desktopWidth > 0 && ClientInfo.get().desktopWidth >= minWidth;
@@ -118,7 +118,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param maxWidth
-	 * @return true if desktopWidth <= maxWidth
+	 * @return true if desktopWidth &lt;= maxWidth
 	 */
 	public static boolean maxWidth(int maxWidth) {
 		return ClientInfo.get().desktopWidth > 0 && ClientInfo.get().desktopWidth <= maxWidth;
@@ -127,7 +127,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param minHeight
-	 * @return true if desktopHeight >= minHeight
+	 * @return true if desktopHeight &gt;= minHeight
 	 */
 	public static boolean minHeight(int minHeight) {
 		return ClientInfo.get().desktopHeight > 0 && ClientInfo.get().desktopHeight >= minHeight;
@@ -136,7 +136,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param maxHeight
-	 * @return true if desktopHeight <= maxHeight
+	 * @return true if desktopHeight &lt;= maxHeight
 	 */
 	public static boolean maxHeight(int maxHeight) {
 		return ClientInfo.get().desktopHeight > 0 && ClientInfo.get().desktopHeight <= maxHeight;

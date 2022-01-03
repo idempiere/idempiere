@@ -49,7 +49,7 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MAttribute.class);
 
-	private static CCache<Integer, MAttribute>	s_cache				= new CCache<Integer, MAttribute>(Table_Name, 30, 60);
+	private static CCache<Integer, MAttribute>	s_cache				= new CCache<Integer, MAttribute>(Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);
 	
 	/**	Values						*/
 	private MAttributeValue[]		m_values = null;

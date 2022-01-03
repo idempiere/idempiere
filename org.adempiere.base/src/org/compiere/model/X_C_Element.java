@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Element
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Element")
 public class X_C_Element extends PO implements I_C_Element, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Element (Properties ctx, int C_Element_ID, String trxName)
@@ -84,21 +84,20 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	}
 
 	/** Set Tree.
-		@param AD_Tree_ID 
-		Identifies a Tree
-	  */
+		@param AD_Tree_ID Identifies a Tree
+	*/
 	public void setAD_Tree_ID (int AD_Tree_ID)
 	{
-		if (AD_Tree_ID < 1) 
+		if (AD_Tree_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_ID, Integer.valueOf(AD_Tree_ID));
 	}
 
 	/** Get Tree.
 		@return Identifies a Tree
 	  */
-	public int getAD_Tree_ID () 
+	public int getAD_Tree_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_ID);
 		if (ii == null)
@@ -107,21 +106,20 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	}
 
 	/** Set Element.
-		@param C_Element_ID 
-		Accounting Element
-	  */
+		@param C_Element_ID Accounting Element
+	*/
 	public void setC_Element_ID (int C_Element_ID)
 	{
-		if (C_Element_ID < 1) 
+		if (C_Element_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Element_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
 	}
 
 	/** Get Element.
 		@return Accounting Element
 	  */
-	public int getC_Element_ID () 
+	public int getC_Element_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
 		if (ii == null)
@@ -130,7 +128,8 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	}
 
 	/** Set C_Element_UU.
-		@param C_Element_UU C_Element_UU	  */
+		@param C_Element_UU C_Element_UU
+	*/
 	public void setC_Element_UU (String C_Element_UU)
 	{
 		set_Value (COLUMNNAME_C_Element_UU, C_Element_UU);
@@ -138,15 +137,14 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 
 	/** Get C_Element_UU.
 		@return C_Element_UU	  */
-	public String getC_Element_UU () 
+	public String getC_Element_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Element_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -155,7 +153,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -167,9 +165,8 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/** User defined = U */
 	public static final String ELEMENTTYPE_UserDefined = "U";
 	/** Set Type.
-		@param ElementType 
-		Element Type (account or user defined)
-	  */
+		@param ElementType Element Type (account or user defined)
+	*/
 	public void setElementType (String ElementType)
 	{
 
@@ -179,15 +176,14 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/** Get Type.
 		@return Element Type (account or user defined)
 	  */
-	public String getElementType () 
+	public String getElementType()
 	{
 		return (String)get_Value(COLUMNNAME_ElementType);
 	}
 
 	/** Set Balancing.
-		@param IsBalancing 
-		All transactions within an element value must balance (e.g. cost centers)
-	  */
+		@param IsBalancing All transactions within an element value must balance (e.g. cost centers)
+	*/
 	public void setIsBalancing (boolean IsBalancing)
 	{
 		set_Value (COLUMNNAME_IsBalancing, Boolean.valueOf(IsBalancing));
@@ -196,7 +192,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/** Get Balancing.
 		@return All transactions within an element value must balance (e.g. cost centers)
 	  */
-	public boolean isBalancing () 
+	public boolean isBalancing()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBalancing);
 		if (oo != null) 
@@ -209,9 +205,8 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	}
 
 	/** Set Natural Account.
-		@param IsNaturalAccount 
-		The primary natural account
-	  */
+		@param IsNaturalAccount The primary natural account
+	*/
 	public void setIsNaturalAccount (boolean IsNaturalAccount)
 	{
 		set_Value (COLUMNNAME_IsNaturalAccount, Boolean.valueOf(IsNaturalAccount));
@@ -220,7 +215,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/** Get Natural Account.
 		@return The primary natural account
 	  */
-	public boolean isNaturalAccount () 
+	public boolean isNaturalAccount()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNaturalAccount);
 		if (oo != null) 
@@ -233,9 +228,8 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -244,7 +238,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -258,18 +252,17 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
     }
 
 	/** Set Value Format.
-		@param VFormat 
-		Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
 	public void setVFormat (String VFormat)
 	{
 		set_Value (COLUMNNAME_VFormat, VFormat);
 	}
 
 	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
 	  */
-	public String getVFormat () 
+	public String getVFormat()
 	{
 		return (String)get_Value(COLUMNNAME_VFormat);
 	}

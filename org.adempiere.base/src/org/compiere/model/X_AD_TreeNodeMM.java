@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_TreeNodeMM
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_TreeNodeMM")
 public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeMM (Properties ctx, int AD_TreeNodeMM_ID, String trxName)
@@ -78,21 +78,20 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 	}
 
 	/** Set Tree.
-		@param AD_Tree_ID 
-		Identifies a Tree
-	  */
+		@param AD_Tree_ID Identifies a Tree
+	*/
 	public void setAD_Tree_ID (int AD_Tree_ID)
 	{
-		if (AD_Tree_ID < 1) 
+		if (AD_Tree_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_ID, Integer.valueOf(AD_Tree_ID));
 	}
 
 	/** Get Tree.
 		@return Identifies a Tree
 	  */
-	public int getAD_Tree_ID () 
+	public int getAD_Tree_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_ID);
 		if (ii == null)
@@ -101,7 +100,8 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 	}
 
 	/** Set AD_TreeNodeMM_UU.
-		@param AD_TreeNodeMM_UU AD_TreeNodeMM_UU	  */
+		@param AD_TreeNodeMM_UU AD_TreeNodeMM_UU
+	*/
 	public void setAD_TreeNodeMM_UU (String AD_TreeNodeMM_UU)
 	{
 		set_Value (COLUMNNAME_AD_TreeNodeMM_UU, AD_TreeNodeMM_UU);
@@ -109,24 +109,25 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 
 	/** Get AD_TreeNodeMM_UU.
 		@return AD_TreeNodeMM_UU	  */
-	public String getAD_TreeNodeMM_UU () 
+	public String getAD_TreeNodeMM_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_TreeNodeMM_UU);
 	}
 
 	/** Set Node.
-		@param Node_ID Node	  */
+		@param Node_ID Node
+	*/
 	public void setNode_ID (int Node_ID)
 	{
-		if (Node_ID < 0) 
+		if (Node_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Node_ID, Integer.valueOf(Node_ID));
 	}
 
 	/** Get Node.
 		@return Node	  */
-	public int getNode_ID () 
+	public int getNode_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Node_ID);
 		if (ii == null)
@@ -135,21 +136,20 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 	}
 
 	/** Set Parent.
-		@param Parent_ID 
-		Parent of Entity
-	  */
+		@param Parent_ID Parent of Entity
+	*/
 	public void setParent_ID (int Parent_ID)
 	{
-		if (Parent_ID < 1) 
+		if (Parent_ID < 1)
 			set_Value (COLUMNNAME_Parent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Parent_ID, Integer.valueOf(Parent_ID));
 	}
 
 	/** Get Parent.
 		@return Parent of Entity
 	  */
-	public int getParent_ID () 
+	public int getParent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Parent_ID);
 		if (ii == null)
@@ -158,9 +158,8 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -169,7 +168,7 @@ public class X_AD_TreeNodeMM extends PO implements I_AD_TreeNodeMM, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

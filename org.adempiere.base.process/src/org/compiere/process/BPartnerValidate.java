@@ -116,7 +116,6 @@ public class BPartnerValidate extends SvrProcess
 		bp.setActualLifeTimeValue();
 		bp.saveEx();
 		//
-	//	if (bp.getSO_CreditUsed().signum() != 0)
 		addLog(0, null, bp.getSO_CreditUsed(), Msg.getElement(getCtx(), "SO_CreditUsed"));
 		addLog(0, null, bp.getTotalOpenBalance(), Msg.getElement(getCtx(), "TotalOpenBalance"));
 		addLog(0, null, bp.getActualLifeTimeValue(), Msg.getElement(getCtx(), "ActualLifeTimeValue"));

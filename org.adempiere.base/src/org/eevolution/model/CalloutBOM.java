@@ -36,7 +36,7 @@ import org.compiere.util.Env;
  * @author Victor Perez www.e-evolution.com
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2820743 ] CalloutBOM - apply ABP
- * 				https://sourceforge.net/tracker/?func=detail&aid=2820743&group_id=176962&atid=934929  
+ * 				https://sourceforge.net/p/adempiere/libero/211/  
  */
 public class CalloutBOM extends CalloutEngine
 {

@@ -102,7 +102,7 @@ public class MContactInterest extends X_R_ContactInterest
 	}	//	MContactInterest
 
 	/**
-	 *  Create & Load existing Persistent Object.
+	 *  Create and Load existing Persistent Object.
 	 *  @param ctx context
 	 *  @param rs load from current result set position (no navigation, not closed)
 	 *	@param trxName transaction

@@ -35,11 +35,11 @@ public class CustomizeGridViewDialog extends Window {
 
 	/**
 	 *	Standard Constructor
-	 * 	@param WindowNo window no
+	 * 	@param windowNo window no
 	 *  @param AD_Tab_ID tab
 	 * 	@param AD_User_ID user
-	 * @param columnsWidth 
-	 * @param isQuickForm 
+	 *  @param columnsWidth 
+	 *  @param isQuickForm 
 	 */
 	public CustomizeGridViewDialog(int windowNo, int AD_Tab_ID, int AD_User_ID, Map<Integer, String> columnsWidth,
 			ArrayList<Integer> gridFieldIds, boolean isQuickForm) {

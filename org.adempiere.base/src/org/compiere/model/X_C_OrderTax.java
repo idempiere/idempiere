@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderTax
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderTax")
 public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_OrderTax (Properties ctx, int C_OrderTax_ID, String trxName)
@@ -84,21 +84,20 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -107,7 +106,8 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set C_OrderTax_UU.
-		@param C_OrderTax_UU C_OrderTax_UU	  */
+		@param C_OrderTax_UU C_OrderTax_UU
+	*/
 	public void setC_OrderTax_UU (String C_OrderTax_UU)
 	{
 		set_Value (COLUMNNAME_C_OrderTax_UU, C_OrderTax_UU);
@@ -115,7 +115,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 
 	/** Get C_OrderTax_UU.
 		@return C_OrderTax_UU	  */
-	public String getC_OrderTax_UU () 
+	public String getC_OrderTax_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_OrderTax_UU);
 	}
@@ -127,21 +127,20 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set Tax.
-		@param C_Tax_ID 
-		Tax identifier
-	  */
+		@param C_Tax_ID Tax identifier
+	*/
 	public void setC_Tax_ID (int C_Tax_ID)
 	{
-		if (C_Tax_ID < 1) 
+		if (C_Tax_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
 	}
 
 	/** Get Tax.
 		@return Tax identifier
 	  */
-	public int getC_Tax_ID () 
+	public int getC_Tax_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
 		if (ii == null)
@@ -156,18 +155,19 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set Tax Provider.
-		@param C_TaxProvider_ID Tax Provider	  */
+		@param C_TaxProvider_ID Tax Provider
+	*/
 	public void setC_TaxProvider_ID (int C_TaxProvider_ID)
 	{
-		if (C_TaxProvider_ID < 1) 
+		if (C_TaxProvider_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxProvider_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxProvider_ID, Integer.valueOf(C_TaxProvider_ID));
 	}
 
 	/** Get Tax Provider.
 		@return Tax Provider	  */
-	public int getC_TaxProvider_ID () 
+	public int getC_TaxProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxProvider_ID);
 		if (ii == null)
@@ -176,9 +176,8 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set Price includes Tax.
-		@param IsTaxIncluded 
-		Tax is included in the price 
-	  */
+		@param IsTaxIncluded Tax is included in the price 
+	*/
 	public void setIsTaxIncluded (boolean IsTaxIncluded)
 	{
 		set_Value (COLUMNNAME_IsTaxIncluded, Boolean.valueOf(IsTaxIncluded));
@@ -187,7 +186,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	/** Get Price includes Tax.
 		@return Tax is included in the price 
 	  */
-	public boolean isTaxIncluded () 
+	public boolean isTaxIncluded()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxIncluded);
 		if (oo != null) 
@@ -200,9 +199,8 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -211,7 +209,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -224,9 +222,8 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set Tax Amount.
-		@param TaxAmt 
-		Tax Amount for a document
-	  */
+		@param TaxAmt Tax Amount for a document
+	*/
 	public void setTaxAmt (BigDecimal TaxAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_TaxAmt, TaxAmt);
@@ -235,7 +232,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	/** Get Tax Amount.
 		@return Tax Amount for a document
 	  */
-	public BigDecimal getTaxAmt () 
+	public BigDecimal getTaxAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TaxAmt);
 		if (bd == null)
@@ -244,9 +241,8 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	}
 
 	/** Set Tax base Amount.
-		@param TaxBaseAmt 
-		Base for calculating the tax amount
-	  */
+		@param TaxBaseAmt Base for calculating the tax amount
+	*/
 	public void setTaxBaseAmt (BigDecimal TaxBaseAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_TaxBaseAmt, TaxBaseAmt);
@@ -255,7 +251,7 @@ public class X_C_OrderTax extends PO implements I_C_OrderTax, I_Persistent
 	/** Get Tax base Amount.
 		@return Base for calculating the tax amount
 	  */
-	public BigDecimal getTaxBaseAmt () 
+	public BigDecimal getTaxBaseAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TaxBaseAmt);
 		if (bd == null)

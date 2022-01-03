@@ -309,11 +309,11 @@ public class HTMLRenderer extends View implements Externalizable
 	 * Provides a mapping from the document model coordinate space
 	 * to the coordinate space of the view mapped to it.
 	 *
-	 * @param p0 the position to convert >= 0
+	 * @param p0 the position to convert &gt;= 0
 	 * @param b0 the bias toward the previous character or the
 	 *  next character represented by p0, in case the 
 	 *  position is a boundary of two views. 
-	 * @param p1 the position to convert >= 0
+	 * @param p1 the position to convert &gt;= 0
 	 * @param b1 the bias toward the previous character or the
 	 *  next character represented by p1, in case the 
 	 *  position is a boundary of two views. 

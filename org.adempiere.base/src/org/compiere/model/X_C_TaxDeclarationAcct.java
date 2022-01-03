@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationAcct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDeclarationAcct")
 public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationAcct (Properties ctx, int C_TaxDeclarationAcct_ID, String trxName)
@@ -83,9 +83,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Account.
-		@param Account_ID 
-		Account used
-	  */
+		@param Account_ID Account used
+	*/
 	public void setAccount_ID (int Account_ID)
 	{
 		throw new IllegalArgumentException ("Account_ID is virtual column");	}
@@ -93,7 +92,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Account.
 		@return Account used
 	  */
-	public int getAccount_ID () 
+	public int getAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Account_ID);
 		if (ii == null)
@@ -102,9 +101,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Accounted Credit.
-		@param AmtAcctCr 
-		Accounted Credit Amount
-	  */
+		@param AmtAcctCr Accounted Credit Amount
+	*/
 	public void setAmtAcctCr (BigDecimal AmtAcctCr)
 	{
 		throw new IllegalArgumentException ("AmtAcctCr is virtual column");	}
@@ -112,7 +110,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Accounted Credit.
 		@return Accounted Credit Amount
 	  */
-	public BigDecimal getAmtAcctCr () 
+	public BigDecimal getAmtAcctCr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctCr);
 		if (bd == null)
@@ -121,9 +119,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Accounted Debit.
-		@param AmtAcctDr 
-		Accounted Debit Amount
-	  */
+		@param AmtAcctDr Accounted Debit Amount
+	*/
 	public void setAmtAcctDr (BigDecimal AmtAcctDr)
 	{
 		throw new IllegalArgumentException ("AmtAcctDr is virtual column");	}
@@ -131,7 +128,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Accounted Debit.
 		@return Accounted Debit Amount
 	  */
-	public BigDecimal getAmtAcctDr () 
+	public BigDecimal getAmtAcctDr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctDr);
 		if (bd == null)
@@ -140,9 +137,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Source Credit.
-		@param AmtSourceCr 
-		Source Credit Amount
-	  */
+		@param AmtSourceCr Source Credit Amount
+	*/
 	public void setAmtSourceCr (BigDecimal AmtSourceCr)
 	{
 		throw new IllegalArgumentException ("AmtSourceCr is virtual column");	}
@@ -150,7 +146,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Source Credit.
 		@return Source Credit Amount
 	  */
-	public BigDecimal getAmtSourceCr () 
+	public BigDecimal getAmtSourceCr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtSourceCr);
 		if (bd == null)
@@ -159,9 +155,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Source Debit.
-		@param AmtSourceDr 
-		Source Debit Amount
-	  */
+		@param AmtSourceDr Source Debit Amount
+	*/
 	public void setAmtSourceDr (BigDecimal AmtSourceDr)
 	{
 		throw new IllegalArgumentException ("AmtSourceDr is virtual column");	}
@@ -169,7 +164,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Source Debit.
 		@return Source Debit Amount
 	  */
-	public BigDecimal getAmtSourceDr () 
+	public BigDecimal getAmtSourceDr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtSourceDr);
 		if (bd == null)
@@ -184,21 +179,20 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -212,18 +206,17 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
 		throw new IllegalArgumentException ("C_BPartner_ID is virtual column");	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -238,9 +231,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
 		throw new IllegalArgumentException ("C_Currency_ID is virtual column");	}
@@ -248,7 +240,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -257,21 +249,20 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Tax Declaration Accounting.
-		@param C_TaxDeclarationAcct_ID 
-		Tax Accounting Reconciliation 
-	  */
+		@param C_TaxDeclarationAcct_ID Tax Accounting Reconciliation 
+	*/
 	public void setC_TaxDeclarationAcct_ID (int C_TaxDeclarationAcct_ID)
 	{
-		if (C_TaxDeclarationAcct_ID < 1) 
+		if (C_TaxDeclarationAcct_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclarationAcct_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclarationAcct_ID, Integer.valueOf(C_TaxDeclarationAcct_ID));
 	}
 
 	/** Get Tax Declaration Accounting.
 		@return Tax Accounting Reconciliation 
 	  */
-	public int getC_TaxDeclarationAcct_ID () 
+	public int getC_TaxDeclarationAcct_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDeclarationAcct_ID);
 		if (ii == null)
@@ -280,7 +271,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set C_TaxDeclarationAcct_UU.
-		@param C_TaxDeclarationAcct_UU C_TaxDeclarationAcct_UU	  */
+		@param C_TaxDeclarationAcct_UU C_TaxDeclarationAcct_UU
+	*/
 	public void setC_TaxDeclarationAcct_UU (String C_TaxDeclarationAcct_UU)
 	{
 		set_Value (COLUMNNAME_C_TaxDeclarationAcct_UU, C_TaxDeclarationAcct_UU);
@@ -288,7 +280,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 
 	/** Get C_TaxDeclarationAcct_UU.
 		@return C_TaxDeclarationAcct_UU	  */
-	public String getC_TaxDeclarationAcct_UU () 
+	public String getC_TaxDeclarationAcct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxDeclarationAcct_UU);
 	}
@@ -300,21 +292,20 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Tax Declaration.
-		@param C_TaxDeclaration_ID 
-		Define the declaration to the tax authorities
-	  */
+		@param C_TaxDeclaration_ID Define the declaration to the tax authorities
+	*/
 	public void setC_TaxDeclaration_ID (int C_TaxDeclaration_ID)
 	{
-		if (C_TaxDeclaration_ID < 1) 
+		if (C_TaxDeclaration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, Integer.valueOf(C_TaxDeclaration_ID));
 	}
 
 	/** Get Tax Declaration.
 		@return Define the declaration to the tax authorities
 	  */
-	public int getC_TaxDeclaration_ID () 
+	public int getC_TaxDeclaration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDeclaration_ID);
 		if (ii == null)
@@ -329,9 +320,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Tax.
-		@param C_Tax_ID 
-		Tax identifier
-	  */
+		@param C_Tax_ID Tax identifier
+	*/
 	public void setC_Tax_ID (int C_Tax_ID)
 	{
 		throw new IllegalArgumentException ("C_Tax_ID is virtual column");	}
@@ -339,7 +329,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Tax.
 		@return Tax identifier
 	  */
-	public int getC_Tax_ID () 
+	public int getC_Tax_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
 		if (ii == null)
@@ -348,9 +338,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		throw new IllegalArgumentException ("DateAcct is virtual column");	}
@@ -358,15 +347,14 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -375,7 +363,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -387,18 +375,19 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Accounting Fact.
-		@param Fact_Acct_ID Accounting Fact	  */
+		@param Fact_Acct_ID Accounting Fact
+	*/
 	public void setFact_Acct_ID (int Fact_Acct_ID)
 	{
-		if (Fact_Acct_ID < 1) 
+		if (Fact_Acct_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Fact_Acct_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Fact_Acct_ID, Integer.valueOf(Fact_Acct_ID));
 	}
 
 	/** Get Accounting Fact.
 		@return Accounting Fact	  */
-	public int getFact_Acct_ID () 
+	public int getFact_Acct_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Fact_Acct_ID);
 		if (ii == null)
@@ -407,9 +396,8 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -418,7 +406,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)

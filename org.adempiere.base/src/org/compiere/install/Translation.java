@@ -82,7 +82,7 @@ public class Translation implements IApplication
 	 * Do not use this Constructor in normal calls. It is used e.g. by the
 	 * headless call for an only-translation batch script call.
 	 * 
-	 * @author tbayen - IDEMPIERE-1554
+	 * author tbayen - IDEMPIERE-1554
 	 */
 	public Translation(){
 		m_ctx=Env.getCtx();
@@ -127,7 +127,7 @@ public class Translation implements IApplication
 	 * 	Import Translation.
 	 * 	Uses TranslationHandler to update translation
 	 *	@param directory file directory
-	 * 	@param AD_Client_ID only certain client if id >= 0
+	 * 	@param AD_Client_ID only certain client if id &gt;= 0
 	 * 	@param AD_Language language
 	 * 	@param Trl_Table table
 	 * 	@return status message
@@ -152,7 +152,8 @@ public class Translation implements IApplication
 			SAXParser parser = factory.newSAXParser();
 			parser.parse(in, handler);
 			if (log.isLoggable(Level.INFO)) log.info("Updated=" + handler.getUpdateCount());
-			MLanguage lang = MLanguage.get(m_ctx, AD_Language);
+			MLanguage langCached = MLanguage.get(m_ctx, AD_Language);
+			MLanguage lang = new MLanguage(m_ctx, langCached.getAD_Language_ID(), null);
 			if (! lang.isLoginLocale()) {
 				lang.setIsLoginLocale(true);
 				lang.saveEx();
@@ -170,7 +171,7 @@ public class Translation implements IApplication
 	/**************************************************************************
 	 * 	Import Translation
 	 *	@param directory file directory
-	 * 	@param AD_Client_ID only certain client if id >= 0
+	 * 	@param AD_Client_ID only certain client if id &gt;= 0
 	 * 	@param AD_Language language
 	 * 	@param Trl_Table translation table _Trl
 	 * 	@return status message
@@ -402,7 +403,7 @@ public class Translation implements IApplication
 	 * Validate Language.
 	 *  - Check if AD_Language record exists
 	 *  - Check Trl table records
-	 * 	@param AD_Language language
+	 * 	@param p_AD_Language language
 	 * 	@return "" if validated - or error message
 	 */
 	public String validateLanguage(String p_AD_Language) {
@@ -414,7 +415,7 @@ public class Translation implements IApplication
 	 *  - Check if AD_Language record exists
 	 *  - Check Trl table records
 	 * 	@param AD_Language language
-	 *  @param get_TrxName transaction
+	 *  @param trxName transaction
 	 * 	@return "" if validated - or error message
 	 */
 	public String validateLanguage (String AD_Language, String trxName)

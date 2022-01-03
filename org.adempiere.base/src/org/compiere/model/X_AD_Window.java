@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Window
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Window")
 public class X_AD_Window extends PO implements I_AD_Window, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Window (Properties ctx, int AD_Window_ID, String trxName)
@@ -87,21 +87,20 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set System Color.
-		@param AD_Color_ID 
-		Color for backgrounds or indicators
-	  */
+		@param AD_Color_ID Color for backgrounds or indicators
+	*/
 	public void setAD_Color_ID (int AD_Color_ID)
 	{
-		if (AD_Color_ID < 1) 
+		if (AD_Color_ID < 1)
 			set_Value (COLUMNNAME_AD_Color_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Color_ID, Integer.valueOf(AD_Color_ID));
 	}
 
 	/** Get System Color.
 		@return Color for backgrounds or indicators
 	  */
-	public int getAD_Color_ID () 
+	public int getAD_Color_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Color_ID);
 		if (ii == null)
@@ -116,21 +115,20 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set Image.
-		@param AD_Image_ID 
-		Image or Icon
-	  */
+		@param AD_Image_ID Image or Icon
+	*/
 	public void setAD_Image_ID (int AD_Image_ID)
 	{
-		if (AD_Image_ID < 1) 
+		if (AD_Image_ID < 1)
 			set_Value (COLUMNNAME_AD_Image_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Image_ID, Integer.valueOf(AD_Image_ID));
 	}
 
 	/** Get Image.
 		@return Image or Icon
 	  */
-	public int getAD_Image_ID () 
+	public int getAD_Image_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Image_ID);
 		if (ii == null)
@@ -139,21 +137,20 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -162,7 +159,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set AD_Window_UU.
-		@param AD_Window_UU AD_Window_UU	  */
+		@param AD_Window_UU AD_Window_UU
+	*/
 	public void setAD_Window_UU (String AD_Window_UU)
 	{
 		set_Value (COLUMNNAME_AD_Window_UU, AD_Window_UU);
@@ -170,15 +168,14 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 
 	/** Get AD_Window_UU.
 		@return AD_Window_UU	  */
-	public String getAD_Window_UU () 
+	public String getAD_Window_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Window_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -187,7 +184,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -195,9 +192,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -207,15 +203,14 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -224,15 +219,14 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Beta Functionality.
-		@param IsBetaFunctionality 
-		This functionality is considered Beta
-	  */
+		@param IsBetaFunctionality This functionality is considered Beta
+	*/
 	public void setIsBetaFunctionality (boolean IsBetaFunctionality)
 	{
 		set_Value (COLUMNNAME_IsBetaFunctionality, Boolean.valueOf(IsBetaFunctionality));
@@ -241,7 +235,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Beta Functionality.
 		@return This functionality is considered Beta
 	  */
-	public boolean isBetaFunctionality () 
+	public boolean isBetaFunctionality()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBetaFunctionality);
 		if (oo != null) 
@@ -254,9 +248,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -265,7 +258,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -278,9 +271,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -289,7 +281,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -302,9 +294,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -313,7 +304,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -327,9 +318,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
     }
 
 	/** Set Predefined Context Variables.
-		@param PredefinedContextVariables 
-		Predefined context variables to inject when opening a menu entry or a window
-	  */
+		@param PredefinedContextVariables Predefined context variables to inject when opening a menu entry or a window
+	*/
 	public void setPredefinedContextVariables (String PredefinedContextVariables)
 	{
 		set_Value (COLUMNNAME_PredefinedContextVariables, PredefinedContextVariables);
@@ -338,13 +328,14 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Predefined Context Variables.
 		@return Predefined context variables to inject when opening a menu entry or a window
 	  */
-	public String getPredefinedContextVariables () 
+	public String getPredefinedContextVariables()
 	{
 		return (String)get_Value(COLUMNNAME_PredefinedContextVariables);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -352,7 +343,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -365,9 +356,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set Title Logic.
-		@param TitleLogic 
-		The result determines the title to be displayed for this window
-	  */
+		@param TitleLogic The result determines the title to be displayed for this window
+	*/
 	public void setTitleLogic (String TitleLogic)
 	{
 		set_Value (COLUMNNAME_TitleLogic, TitleLogic);
@@ -376,7 +366,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get Title Logic.
 		@return The result determines the title to be displayed for this window
 	  */
-	public String getTitleLogic () 
+	public String getTitleLogic()
 	{
 		return (String)get_Value(COLUMNNAME_TitleLogic);
 	}
@@ -392,9 +382,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Transaction = T */
 	public static final String WINDOWTYPE_Transaction = "T";
 	/** Set WindowType.
-		@param WindowType 
-		Type or classification of a Window
-	  */
+		@param WindowType Type or classification of a Window
+	*/
 	public void setWindowType (String WindowType)
 	{
 
@@ -404,13 +393,14 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/** Get WindowType.
 		@return Type or classification of a Window
 	  */
-	public String getWindowType () 
+	public String getWindowType()
 	{
 		return (String)get_Value(COLUMNNAME_WindowType);
 	}
 
 	/** Set Window Height.
-		@param WinHeight Window Height	  */
+		@param WinHeight Window Height
+	*/
 	public void setWinHeight (int WinHeight)
 	{
 		set_Value (COLUMNNAME_WinHeight, Integer.valueOf(WinHeight));
@@ -418,7 +408,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 
 	/** Get Window Height.
 		@return Window Height	  */
-	public int getWinHeight () 
+	public int getWinHeight()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WinHeight);
 		if (ii == null)
@@ -427,7 +417,8 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	}
 
 	/** Set Window Width.
-		@param WinWidth Window Width	  */
+		@param WinWidth Window Width
+	*/
 	public void setWinWidth (int WinWidth)
 	{
 		set_Value (COLUMNNAME_WinWidth, Integer.valueOf(WinWidth));
@@ -435,7 +426,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 
 	/** Get Window Width.
 		@return Window Width	  */
-	public int getWinWidth () 
+	public int getWinWidth()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WinWidth);
 		if (ii == null)

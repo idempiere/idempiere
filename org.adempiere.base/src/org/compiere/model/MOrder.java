@@ -65,13 +65,13 @@ import org.eevolution.model.MPPProductBOMLine;
  *
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @version $Id: MOrder.java,v 1.5 2006/10/06 00:42:24 jjanke Exp $
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2419978 ] Voiding PO, requisition don't set on NULL
  * 			<li>BF [ 2892578 ] Order should autoset only active price lists
- * 				https://sourceforge.net/tracker/?func=detail&aid=2892578&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/873/
  * @author Michael Judd, www.akunagroup.com
  *          <li>BF [ 2804888 ] Incorrect reservation of products with attributes
  */
@@ -442,7 +442,7 @@ public class MOrder extends X_C_Order implements DocAction
 
 
 	/**
-	 * 	Set Business Partner Defaults & Details.
+	 * 	Set Business Partner Defaults and Details.
 	 * 	SOTrx should be set.
 	 * 	@param bp business partner
 	 */
@@ -713,7 +713,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (orderBy != null && orderBy.length() > 0)
 			orderClause += orderBy;
 		else
-			orderClause += "Line";
+			orderClause += "Line,C_OrderLine_ID";
 		m_lines = getLines(null, orderClause);
 		return m_lines;
 	}	//	getLines
@@ -2003,6 +2003,8 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
+		updateOverReceipt();
+		
 		setProcessed(true);	
 		m_processMsg = info.toString();
 		//
@@ -2010,7 +2012,15 @@ public class MOrder extends X_C_Order implements DocAction
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
 	
-	
+	private void updateOverReceipt() {
+		for(MOrderLine line : m_lines) {
+			if (line.getM_Product_ID() <= 0) continue;
+			if (line.getQtyDelivered().signum() > 0 && line.getQtyOrdered().compareTo(line.getQtyDelivered()) >= 0) {
+				DB.executeUpdateEx("UPDATE M_InOutLine Set QtyOverReceipt=0 WHERE C_OrderLine_ID=? AND QtyOverReceipt>0", 
+						new Object[] {line.getC_OrderLine_ID()}, get_TrxName());
+			}
+		}
+	}
 	
 	protected String landedCostAllocation() {
 		MOrderLandedCost[] landedCosts = MOrderLandedCost.getOfOrder(getC_Order_ID(), get_TrxName());
@@ -2583,6 +2593,27 @@ public class MOrder extends X_C_Order implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;
+		
+		// Validate In Progress MInOUt
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT io.DocumentNo FROM M_InOut io ")
+				.append("JOIN M_InOutLine iol ON (io.M_InOut_ID=iol.M_InOut_ID) ")
+				.append("JOIN C_OrderLine ol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID) ")
+				.append("WHERE io.DocStatus='IP' AND ol.QtyOrdered != 0 AND (ol.M_Product_ID > 0 OR ol.C_Charge_ID > 0) ")
+				.append("AND ol.IsActive='Y' AND iol.IsActive='Y' ")
+				.append("AND ol.C_Order_ID=? ");
+		List<List<Object>> openShipments = DB.getSQLArrayObjectsEx(get_TrxName(), sql.toString(), getC_Order_ID());
+		if (openShipments != null && openShipments.size() > 0) 
+		{
+			m_processMsg = Msg.getMsg(p_ctx,"MInOutInProgress")+" (";
+			for(int i = 0; i< openShipments.size(); i++)
+			{
+				if (i > 0)
+					m_processMsg += ", ";
+				m_processMsg += openShipments.get(i).get(0).toString();
+			}
+			m_processMsg += ")";
+			return false;
+		}
 		
 		//	Close Not delivered Qty - SO/PO
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);

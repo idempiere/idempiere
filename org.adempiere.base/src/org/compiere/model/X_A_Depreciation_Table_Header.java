@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Table_Header
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Table_Header")
 public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciation_Table_Header, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Table_Header (Properties ctx, int A_Depreciation_Table_Header_ID, String trxName)
@@ -77,7 +77,8 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
     }
 
 	/** Set Depreciation Code.
-		@param A_Depreciation_Table_Code Depreciation Code	  */
+		@param A_Depreciation_Table_Code Depreciation Code
+	*/
 	public void setA_Depreciation_Table_Code (String A_Depreciation_Table_Code)
 	{
 		set_Value (COLUMNNAME_A_Depreciation_Table_Code, A_Depreciation_Table_Code);
@@ -85,24 +86,25 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 
 	/** Get Depreciation Code.
 		@return Depreciation Code	  */
-	public String getA_Depreciation_Table_Code () 
+	public String getA_Depreciation_Table_Code()
 	{
 		return (String)get_Value(COLUMNNAME_A_Depreciation_Table_Code);
 	}
 
 	/** Set A_Depreciation_Table_Header_ID.
-		@param A_Depreciation_Table_Header_ID A_Depreciation_Table_Header_ID	  */
+		@param A_Depreciation_Table_Header_ID A_Depreciation_Table_Header_ID
+	*/
 	public void setA_Depreciation_Table_Header_ID (int A_Depreciation_Table_Header_ID)
 	{
-		if (A_Depreciation_Table_Header_ID < 1) 
+		if (A_Depreciation_Table_Header_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Table_Header_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Table_Header_ID, Integer.valueOf(A_Depreciation_Table_Header_ID));
 	}
 
 	/** Get A_Depreciation_Table_Header_ID.
 		@return A_Depreciation_Table_Header_ID	  */
-	public int getA_Depreciation_Table_Header_ID () 
+	public int getA_Depreciation_Table_Header_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Table_Header_ID);
 		if (ii == null)
@@ -119,7 +121,8 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
     }
 
 	/** Set A_Depreciation_Table_Header_UU.
-		@param A_Depreciation_Table_Header_UU A_Depreciation_Table_Header_UU	  */
+		@param A_Depreciation_Table_Header_UU A_Depreciation_Table_Header_UU
+	*/
 	public void setA_Depreciation_Table_Header_UU (String A_Depreciation_Table_Header_UU)
 	{
 		set_Value (COLUMNNAME_A_Depreciation_Table_Header_UU, A_Depreciation_Table_Header_UU);
@@ -127,7 +130,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 
 	/** Get A_Depreciation_Table_Header_UU.
 		@return A_Depreciation_Table_Header_UU	  */
-	public String getA_Depreciation_Table_Header_UU () 
+	public String getA_Depreciation_Table_Header_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Depreciation_Table_Header_UU);
 	}
@@ -139,7 +142,8 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/** Rate = RT */
 	public static final String A_TABLE_RATE_TYPE_Rate = "RT";
 	/** Set Type.
-		@param A_Table_Rate_Type Type	  */
+		@param A_Table_Rate_Type Type
+	*/
 	public void setA_Table_Rate_Type (String A_Table_Rate_Type)
 	{
 
@@ -148,7 +152,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 
 	/** Get Type.
 		@return Type	  */
-	public String getA_Table_Rate_Type () 
+	public String getA_Table_Rate_Type()
 	{
 		return (String)get_Value(COLUMNNAME_A_Table_Rate_Type);
 	}
@@ -160,7 +164,8 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/** Yearly = YR */
 	public static final String A_TERM_Yearly = "YR";
 	/** Set Period/Yearly.
-		@param A_Term Period/Yearly	  */
+		@param A_Term Period/Yearly
+	*/
 	public void setA_Term (String A_Term)
 	{
 
@@ -169,15 +174,14 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 
 	/** Get Period/Yearly.
 		@return Period/Yearly	  */
-	public String getA_Term () 
+	public String getA_Term()
 	{
 		return (String)get_Value(COLUMNNAME_A_Term);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -186,15 +190,14 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -203,7 +206,7 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 

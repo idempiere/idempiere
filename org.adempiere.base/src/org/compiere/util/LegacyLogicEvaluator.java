@@ -37,7 +37,7 @@ public final class LegacyLogicEvaluator {
 
 	/**
 	 *	Evaluate Logic.
-	 *  <code>
+	 *  <pre>{@code
 	 *	format		:= <expression> [<logic> <expression>]
 	 *	expression	:= @<context>@<exLogic><value>
 	 *	logic		:= <|> | <&>
@@ -48,7 +48,7 @@ public final class LegacyLogicEvaluator {
 	 *	logic operators	:= AND or OR with the prevoius result from left to right
 	 *
 	 *	Example	'@AD_Table@=Test | @Language@=GERGER
-	 *  </code>
+	 *  }</pre>
 	 *  @param source class implementing get_ValueAsString(variable)
 	 *  @param logic logic string
 	 *  @return logic result

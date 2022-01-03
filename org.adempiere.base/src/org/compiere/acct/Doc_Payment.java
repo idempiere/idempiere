@@ -43,7 +43,7 @@ public class Doc_Payment extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schema
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */

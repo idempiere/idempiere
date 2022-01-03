@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatch
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatch")
 public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
@@ -92,21 +92,20 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	}
 
 	/** Set Bank Account.
-		@param C_BankAccount_ID 
-		Account at the Bank
-	  */
+		@param C_BankAccount_ID Account at the Bank
+	*/
 	public void setC_BankAccount_ID (int C_BankAccount_ID)
 	{
-		if (C_BankAccount_ID < 1) 
+		if (C_BankAccount_ID < 1)
 			set_Value (COLUMNNAME_C_BankAccount_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
 	}
 
 	/** Get Bank Account.
 		@return Account at the Bank
 	  */
-	public int getC_BankAccount_ID () 
+	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
 		if (ii == null)
@@ -115,18 +114,19 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	}
 
 	/** Set Deposit Batch.
-		@param C_DepositBatch_ID Deposit Batch	  */
+		@param C_DepositBatch_ID Deposit Batch
+	*/
 	public void setC_DepositBatch_ID (int C_DepositBatch_ID)
 	{
-		if (C_DepositBatch_ID < 1) 
+		if (C_DepositBatch_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DepositBatch_ID, Integer.valueOf(C_DepositBatch_ID));
 	}
 
 	/** Get Deposit Batch.
 		@return Deposit Batch	  */
-	public int getC_DepositBatch_ID () 
+	public int getC_DepositBatch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DepositBatch_ID);
 		if (ii == null)
@@ -135,7 +135,8 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	}
 
 	/** Set C_DepositBatch_UU.
-		@param C_DepositBatch_UU C_DepositBatch_UU	  */
+		@param C_DepositBatch_UU C_DepositBatch_UU
+	*/
 	public void setC_DepositBatch_UU (String C_DepositBatch_UU)
 	{
 		set_Value (COLUMNNAME_C_DepositBatch_UU, C_DepositBatch_UU);
@@ -143,7 +144,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 
 	/** Get C_DepositBatch_UU.
 		@return C_DepositBatch_UU	  */
-	public String getC_DepositBatch_UU () 
+	public String getC_DepositBatch_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DepositBatch_UU);
 	}
@@ -155,21 +156,20 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -178,9 +178,8 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	}
 
 	/** Set Create lines from.
-		@param CreateFrom 
-		Process which will generate a new document lines based on an existing document
-	  */
+		@param CreateFrom Process which will generate a new document lines based on an existing document
+	*/
 	public void setCreateFrom (String CreateFrom)
 	{
 		set_Value (COLUMNNAME_CreateFrom, CreateFrom);
@@ -189,13 +188,14 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/** Get Create lines from.
 		@return Process which will generate a new document lines based on an existing document
 	  */
-	public String getCreateFrom () 
+	public String getCreateFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
 	/** Set Deposit Date.
-		@param DateDeposit Deposit Date	  */
+		@param DateDeposit Deposit Date
+	*/
 	public void setDateDeposit (Timestamp DateDeposit)
 	{
 		set_Value (COLUMNNAME_DateDeposit, DateDeposit);
@@ -203,15 +203,14 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 
 	/** Get Deposit Date.
 		@return Deposit Date	  */
-	public Timestamp getDateDeposit () 
+	public Timestamp getDateDeposit()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDeposit);
 	}
 
 	/** Set Document Date.
-		@param DateDoc 
-		Date of the Document
-	  */
+		@param DateDoc Date of the Document
+	*/
 	public void setDateDoc (Timestamp DateDoc)
 	{
 		set_Value (COLUMNNAME_DateDoc, DateDoc);
@@ -220,13 +219,14 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/** Get Document Date.
 		@return Date of the Document
 	  */
-	public Timestamp getDateDoc () 
+	public Timestamp getDateDoc()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
 	}
 
 	/** Set Deposit Amount.
-		@param DepositAmt Deposit Amount	  */
+		@param DepositAmt Deposit Amount
+	*/
 	public void setDepositAmt (BigDecimal DepositAmt)
 	{
 		set_Value (COLUMNNAME_DepositAmt, DepositAmt);
@@ -234,7 +234,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 
 	/** Get Deposit Amount.
 		@return Deposit Amount	  */
-	public BigDecimal getDepositAmt () 
+	public BigDecimal getDepositAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DepositAmt);
 		if (bd == null)
@@ -243,9 +243,8 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -254,7 +253,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -286,9 +285,8 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -298,15 +296,14 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -315,7 +312,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -329,9 +326,8 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
     }
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -340,7 +336,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -353,7 +349,8 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -361,7 +358,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

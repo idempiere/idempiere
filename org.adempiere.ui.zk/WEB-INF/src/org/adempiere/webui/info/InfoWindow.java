@@ -69,7 +69,6 @@ import org.adempiere.webui.window.FDialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
-import org.compiere.model.AccessSqlParser;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -208,10 +207,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param WindowNo
 	 * @param tableName
 	 * @param keyColumn
+	 * @param queryValue
 	 * @param multipleSelection
 	 * @param whereClause
+	 * @param AD_InfoWindow_ID
 	 * @param lookup
-	 * @param gridfield
+	 * @param field
 	 */
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field) {
@@ -222,10 +223,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param WindowNo
 	 * @param tableName
 	 * @param keyColumn
+	 * @param queryValue
 	 * @param multipleSelection
 	 * @param whereClause
+	 * @param AD_InfoWindow_ID
 	 * @param lookup
-	 * @param gridfield
+	 * @param field
 	 * @param predefinedContextVariables
 	 */
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
@@ -330,7 +333,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * separate by layout type
 	 * init drop list and menu control
 	 * set status of haveProcess flag 
-	 * @return true when have process, false when no process
 	 */
 	protected void initInfoProcess() {
 		if (infoWindow == null){
@@ -606,8 +608,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			String tableName = null;
 				tableName = MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID());
 			
-			AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + infoWindow.getFromClause());
-			tableInfos = sqlParser.getTableInfo(0);
+			tableInfos = infoWindow.getTableInfos();
 			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0) {
 				p_tableName = tableInfos[0].getSynonym().trim();
 				if (p_whereClause != null && p_whereClause.trim().length() > 0) {
@@ -745,8 +746,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 			MInfoWindow embedInfo = new MInfoWindow(Env.getCtx(), infoRelatedID, null);
 
-			AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + embedInfo.getFromClause());
-			TableInfo[] tableInfos = sqlParser.getTableInfo(0);
+			TableInfo[] tableInfos = embedInfo.getTableInfos();
 			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0){
 				tableName = tableInfos[0].getSynonym().trim();
 			}
@@ -2043,13 +2043,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	/**
-	 * @author xolali IDEMPIERE-1045
+	 * author xolali IDEMPIERE-1045
 	 * getInfoColumnslayout(MInfoWindow info)
+	 * @param info
+	 * @return
 	 */
 	public ArrayList<ColumnInfo> getInfoColumnslayout(MInfoWindow info){
 
-		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + info.getFromClause());
-		TableInfo[] tableInfos = sqlParser.getTableInfo(0);
+		TableInfo[] tableInfos = info.getTableInfos();
 
 		MInfoColumn[] p_infoColumns = info.getInfoColumns(tableInfos);
 		InfoColumnVO[] infoColumns = InfoColumnVO.create(Env.getCtx(), p_infoColumns);
@@ -2122,8 +2123,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 
 	/**
-	 * @author xolali IDEMPIERE-1045
+	 * author xolali IDEMPIERE-1045
 	 * GridField getGridField(InfoColumnVO infoColumn)
+	 * @param infoColumn
+	 * @return
 	 */
 	protected GridField getGridField(InfoColumnVO infoColumn){
 		String columnName = infoColumn.getColumnName();
@@ -2213,7 +2216,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	/**	
 	 * Get id of window link with main table of this info window
-	 * @param tableName
 	 * @return
 	 */
 	protected int getADWindowID() {

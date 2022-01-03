@@ -36,7 +36,7 @@ public class TranslationHandler extends DefaultHandler
 {
 	/**
 	 * 	Translation Handler
-	 * 	@param AD_Client_ID only certain client if id >= 0
+	 * 	@param AD_Client_ID only certain client if id &gt;= 0
 	 */
 	public TranslationHandler (int AD_Client_ID)
 	{

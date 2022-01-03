@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageOnHand
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageOnHand")
 public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_StorageOnHand (Properties ctx, int M_StorageOnHand_ID, String trxName)
@@ -78,9 +78,8 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
     }
 
 	/** Set Date last inventory count.
-		@param DateLastInventory 
-		Date of Last Inventory Count
-	  */
+		@param DateLastInventory Date of Last Inventory Count
+	*/
 	public void setDateLastInventory (Timestamp DateLastInventory)
 	{
 		set_Value (COLUMNNAME_DateLastInventory, DateLastInventory);
@@ -89,15 +88,14 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/** Get Date last inventory count.
 		@return Date of Last Inventory Count
 	  */
-	public Timestamp getDateLastInventory () 
+	public Timestamp getDateLastInventory()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastInventory);
 	}
 
 	/** Set Date  Material Policy.
-		@param DateMaterialPolicy 
-		Time used for LIFO and FIFO Material Policy
-	  */
+		@param DateMaterialPolicy Time used for LIFO and FIFO Material Policy
+	*/
 	public void setDateMaterialPolicy (Timestamp DateMaterialPolicy)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateMaterialPolicy, DateMaterialPolicy);
@@ -106,7 +104,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/** Get Date  Material Policy.
 		@return Time used for LIFO and FIFO Material Policy
 	  */
-	public Timestamp getDateMaterialPolicy () 
+	public Timestamp getDateMaterialPolicy()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateMaterialPolicy);
 	}
@@ -118,21 +116,20 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -147,21 +144,20 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -176,21 +172,20 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -199,7 +194,8 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	}
 
 	/** Set M_StorageOnHand_UU.
-		@param M_StorageOnHand_UU M_StorageOnHand_UU	  */
+		@param M_StorageOnHand_UU M_StorageOnHand_UU
+	*/
 	public void setM_StorageOnHand_UU (String M_StorageOnHand_UU)
 	{
 		set_Value (COLUMNNAME_M_StorageOnHand_UU, M_StorageOnHand_UU);
@@ -207,15 +203,14 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 
 	/** Get M_StorageOnHand_UU.
 		@return M_StorageOnHand_UU	  */
-	public String getM_StorageOnHand_UU () 
+	public String getM_StorageOnHand_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_StorageOnHand_UU);
 	}
 
 	/** Set On Hand Quantity.
-		@param QtyOnHand 
-		On Hand Quantity
-	  */
+		@param QtyOnHand On Hand Quantity
+	*/
 	public void setQtyOnHand (BigDecimal QtyOnHand)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyOnHand, QtyOnHand);
@@ -224,7 +219,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/** Get On Hand Quantity.
 		@return On Hand Quantity
 	  */
-	public BigDecimal getQtyOnHand () 
+	public BigDecimal getQtyOnHand()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOnHand);
 		if (bd == null)

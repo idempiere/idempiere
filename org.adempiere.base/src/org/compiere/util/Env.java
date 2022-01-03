@@ -469,7 +469,7 @@ public final class Env
 	}	//	setContext
 	
 	/**
-	 *	Set Context for Window & Tab to Value
+	 *	Set Context for Window and Tab to Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param TabNo tab no
@@ -619,7 +619,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 * Get Value of Context for Window & Tab,
+	 * Get Value of Context for Window and Tab,
 	 * if not found global context if available.
 	 * If TabNo is TAB_INFO only tab's context will be checked.
 	 * @param ctx context
@@ -643,7 +643,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 * Get Value of Context for Window & Tab,
+	 * Get Value of Context for Window and Tab,
 	 * if not found global context if available.
 	 * If TabNo is TAB_INFO only tab's context will be checked.
 	 * @param ctx context
@@ -659,7 +659,7 @@ public final class Env
 	}
 
 	/**
-	 * Get Value of Context for Window & Tab,
+	 * Get Value of Context for Window and Tab,
 	 * if not found global context if available.
 	 * If TabNo is TAB_INFO only tab's context will be checked.
 	 * @param ctx context
@@ -1545,7 +1545,7 @@ public final class Env
 	 *	@param WindowNo	Number of Window
 	 *	@param tabNo	Number of Tab
 	 *	@param value Message to be parsed
-	 *  @param onlyTab if true, no defaults are used
+	 *  @param onlyTab if true, only value from tabNo are used
 	 * 	@param ignoreUnparsable if true, unsuccessful @return parsed String or "" if not successful and ignoreUnparsable
 	 *	@return parsed context
 	 */
@@ -1629,15 +1629,15 @@ public final class Env
 	 *
 	 *  @param ctx context
 	 *	@param	WindowNo	Number of Window
-	 *	@param	TabNo   	Number of Tab
+	 *	@param	tabNo   	Number of Tab
 	 *	@param	value		Message to be parsed
-	 *  @param  onlyWindow  if true, no defaults are used
+	 *  @param  onlyTab  	if true, no value from tabNo are used
 	 *  @return parsed String or "" if not successful
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
-		boolean onlyWindow)
+		boolean onlyTab)
 	{
-		return parseContext(ctx, WindowNo, tabNo, value, onlyWindow, false);
+		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, false);
 	}	//	parseContext
 
 	/**

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Info_Tax
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Info_Tax")
 public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Tax (Properties ctx, int A_Asset_Info_Tax_ID, String trxName)
@@ -73,21 +73,20 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
     }
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -96,18 +95,19 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	}
 
 	/** Set Asset Info Tax.
-		@param A_Asset_Info_Tax_ID Asset Info Tax	  */
+		@param A_Asset_Info_Tax_ID Asset Info Tax
+	*/
 	public void setA_Asset_Info_Tax_ID (int A_Asset_Info_Tax_ID)
 	{
-		if (A_Asset_Info_Tax_ID < 1) 
+		if (A_Asset_Info_Tax_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Info_Tax_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Info_Tax_ID, Integer.valueOf(A_Asset_Info_Tax_ID));
 	}
 
 	/** Get Asset Info Tax.
 		@return Asset Info Tax	  */
-	public int getA_Asset_Info_Tax_ID () 
+	public int getA_Asset_Info_Tax_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Info_Tax_ID);
 		if (ii == null)
@@ -124,7 +124,8 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
     }
 
 	/** Set A_Asset_Info_Tax_UU.
-		@param A_Asset_Info_Tax_UU A_Asset_Info_Tax_UU	  */
+		@param A_Asset_Info_Tax_UU A_Asset_Info_Tax_UU
+	*/
 	public void setA_Asset_Info_Tax_UU (String A_Asset_Info_Tax_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Info_Tax_UU, A_Asset_Info_Tax_UU);
@@ -132,7 +133,7 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 
 	/** Get A_Asset_Info_Tax_UU.
 		@return A_Asset_Info_Tax_UU	  */
-	public String getA_Asset_Info_Tax_UU () 
+	public String getA_Asset_Info_Tax_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Info_Tax_UU);
 	}
@@ -148,7 +149,8 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	/** Rented = RE */
 	public static final String A_FINANCE_METH_Rented = "RE";
 	/** Set Asset Finance Method.
-		@param A_Finance_Meth Asset Finance Method	  */
+		@param A_Finance_Meth Asset Finance Method
+	*/
 	public void setA_Finance_Meth (String A_Finance_Meth)
 	{
 
@@ -157,13 +159,14 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 
 	/** Get Asset Finance Method.
 		@return Asset Finance Method	  */
-	public String getA_Finance_Meth () 
+	public String getA_Finance_Meth()
 	{
 		return (String)get_Value(COLUMNNAME_A_Finance_Meth);
 	}
 
 	/** Set Asset Investment CR.
-		@param A_Investment_CR Asset Investment CR	  */
+		@param A_Investment_CR Asset Investment CR
+	*/
 	public void setA_Investment_CR (int A_Investment_CR)
 	{
 		set_Value (COLUMNNAME_A_Investment_CR, Integer.valueOf(A_Investment_CR));
@@ -171,7 +174,7 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 
 	/** Get Asset Investment CR.
 		@return Asset Investment CR	  */
-	public int getA_Investment_CR () 
+	public int getA_Investment_CR()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Investment_CR);
 		if (ii == null)
@@ -180,7 +183,8 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	}
 
 	/** Set Asset New Used.
-		@param A_New_Used Asset New Used	  */
+		@param A_New_Used Asset New Used
+	*/
 	public void setA_New_Used (boolean A_New_Used)
 	{
 		set_Value (COLUMNNAME_A_New_Used, Boolean.valueOf(A_New_Used));
@@ -188,7 +192,7 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 
 	/** Get Asset New Used.
 		@return Asset New Used	  */
-	public boolean isA_New_Used () 
+	public boolean isA_New_Used()
 	{
 		Object oo = get_Value(COLUMNNAME_A_New_Used);
 		if (oo != null) 
@@ -201,9 +205,8 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	}
 
 	/** Set Account State.
-		@param A_State 
-		State of the Credit Card or Account holder
-	  */
+		@param A_State State of the Credit Card or Account holder
+	*/
 	public void setA_State (String A_State)
 	{
 		set_Value (COLUMNNAME_A_State, A_State);
@@ -212,13 +215,14 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	/** Get Account State.
 		@return State of the Credit Card or Account holder
 	  */
-	public String getA_State () 
+	public String getA_State()
 	{
 		return (String)get_Value(COLUMNNAME_A_State);
 	}
 
 	/** Set Asset Tax Entity.
-		@param A_Tax_Entity Asset Tax Entity	  */
+		@param A_Tax_Entity Asset Tax Entity
+	*/
 	public void setA_Tax_Entity (String A_Tax_Entity)
 	{
 		set_Value (COLUMNNAME_A_Tax_Entity, A_Tax_Entity);
@@ -226,15 +230,14 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 
 	/** Get Asset Tax Entity.
 		@return Asset Tax Entity	  */
-	public String getA_Tax_Entity () 
+	public String getA_Tax_Entity()
 	{
 		return (String)get_Value(COLUMNNAME_A_Tax_Entity);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -243,7 +246,7 @@ public class X_A_Asset_Info_Tax extends PO implements I_A_Asset_Info_Tax, I_Pers
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

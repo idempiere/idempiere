@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MatchInv
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_MatchInv")
 public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_M_MatchInv (Properties ctx, int M_MatchInv_ID, String trxName)
@@ -89,21 +89,20 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -112,9 +111,8 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -123,15 +121,14 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Transaction Date.
-		@param DateTrx 
-		Transaction Date
-	  */
+		@param DateTrx Transaction Date
+	*/
 	public void setDateTrx (Timestamp DateTrx)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateTrx, DateTrx);
@@ -140,15 +137,14 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Transaction Date.
 		@return Transaction Date
 	  */
-	public Timestamp getDateTrx () 
+	public Timestamp getDateTrx()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTrx);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -157,15 +153,14 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -174,7 +169,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -194,21 +189,20 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -223,21 +217,20 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -246,21 +239,20 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Match Invoice.
-		@param M_MatchInv_ID 
-		Match Shipment/Receipt to Invoice
-	  */
+		@param M_MatchInv_ID Match Shipment/Receipt to Invoice
+	*/
 	public void setM_MatchInv_ID (int M_MatchInv_ID)
 	{
-		if (M_MatchInv_ID < 1) 
+		if (M_MatchInv_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_MatchInv_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_MatchInv_ID, Integer.valueOf(M_MatchInv_ID));
 	}
 
 	/** Get Match Invoice.
 		@return Match Shipment/Receipt to Invoice
 	  */
-	public int getM_MatchInv_ID () 
+	public int getM_MatchInv_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MatchInv_ID);
 		if (ii == null)
@@ -269,7 +261,8 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set M_MatchInv_UU.
-		@param M_MatchInv_UU M_MatchInv_UU	  */
+		@param M_MatchInv_UU M_MatchInv_UU
+	*/
 	public void setM_MatchInv_UU (String M_MatchInv_UU)
 	{
 		set_Value (COLUMNNAME_M_MatchInv_UU, M_MatchInv_UU);
@@ -277,7 +270,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 
 	/** Get M_MatchInv_UU.
 		@return M_MatchInv_UU	  */
-	public String getM_MatchInv_UU () 
+	public String getM_MatchInv_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_MatchInv_UU);
 	}
@@ -289,21 +282,20 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -312,9 +304,8 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Posted.
-		@param Posted 
-		Posting status
-	  */
+		@param Posted Posting status
+	*/
 	public void setPosted (boolean Posted)
 	{
 		set_ValueNoCheck (COLUMNNAME_Posted, Boolean.valueOf(Posted));
@@ -323,7 +314,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Posted.
 		@return Posting status
 	  */
-	public boolean isPosted () 
+	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
 		if (oo != null) 
@@ -336,9 +327,8 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -347,7 +337,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -360,9 +350,8 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Processed On.
-		@param ProcessedOn 
-		The date+time (expressed in decimal format) when the document has been processed
-	  */
+		@param ProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
 	public void setProcessedOn (BigDecimal ProcessedOn)
 	{
 		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
@@ -371,7 +360,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Processed On.
 		@return The date+time (expressed in decimal format) when the document has been processed
 	  */
-	public BigDecimal getProcessedOn () 
+	public BigDecimal getProcessedOn()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
 		if (bd == null)
@@ -380,7 +369,8 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -388,7 +378,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -401,9 +391,8 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_ValueNoCheck (COLUMNNAME_Qty, Qty);
@@ -412,7 +401,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -427,18 +416,19 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Referenced Match Invoice.
-		@param Ref_MatchInv_ID Referenced Match Invoice	  */
+		@param Ref_MatchInv_ID Referenced Match Invoice
+	*/
 	public void setRef_MatchInv_ID (int Ref_MatchInv_ID)
 	{
-		if (Ref_MatchInv_ID < 1) 
+		if (Ref_MatchInv_ID < 1)
 			set_Value (COLUMNNAME_Ref_MatchInv_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Ref_MatchInv_ID, Integer.valueOf(Ref_MatchInv_ID));
 	}
 
 	/** Get Referenced Match Invoice.
 		@return Referenced Match Invoice	  */
-	public int getRef_MatchInv_ID () 
+	public int getRef_MatchInv_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Ref_MatchInv_ID);
 		if (ii == null)
@@ -453,21 +443,20 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	}
 
 	/** Set Reversal ID.
-		@param Reversal_ID 
-		ID of document reversal
-	  */
+		@param Reversal_ID ID of document reversal
+	*/
 	public void setReversal_ID (int Reversal_ID)
 	{
-		if (Reversal_ID < 1) 
+		if (Reversal_ID < 1)
 			set_Value (COLUMNNAME_Reversal_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Reversal_ID, Integer.valueOf(Reversal_ID));
 	}
 
 	/** Get Reversal ID.
 		@return ID of document reversal
 	  */
-	public int getReversal_ID () 
+	public int getReversal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Reversal_ID);
 		if (ii == null)

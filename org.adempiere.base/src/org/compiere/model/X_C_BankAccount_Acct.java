@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_BankAccount_Acct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_BankAccount_Acct")
 public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Acct (Properties ctx, int C_BankAccount_Acct_ID, String trxName)
@@ -84,9 +84,8 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Bank Asset.
-		@param B_Asset_Acct 
-		Bank Asset Account
-	  */
+		@param B_Asset_Acct Bank Asset Account
+	*/
 	public void setB_Asset_Acct (int B_Asset_Acct)
 	{
 		set_Value (COLUMNNAME_B_Asset_Acct, Integer.valueOf(B_Asset_Acct));
@@ -95,7 +94,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/** Get Bank Asset.
 		@return Bank Asset Account
 	  */
-	public int getB_Asset_Acct () 
+	public int getB_Asset_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_Asset_Acct);
 		if (ii == null)
@@ -110,9 +109,8 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Bank Interest Expense.
-		@param B_InterestExp_Acct 
-		Bank Interest Expense Account
-	  */
+		@param B_InterestExp_Acct Bank Interest Expense Account
+	*/
 	public void setB_InterestExp_Acct (int B_InterestExp_Acct)
 	{
 		set_Value (COLUMNNAME_B_InterestExp_Acct, Integer.valueOf(B_InterestExp_Acct));
@@ -121,7 +119,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/** Get Bank Interest Expense.
 		@return Bank Interest Expense Account
 	  */
-	public int getB_InterestExp_Acct () 
+	public int getB_InterestExp_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestExp_Acct);
 		if (ii == null)
@@ -136,9 +134,8 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Bank Interest Revenue.
-		@param B_InterestRev_Acct 
-		Bank Interest Revenue Account
-	  */
+		@param B_InterestRev_Acct Bank Interest Revenue Account
+	*/
 	public void setB_InterestRev_Acct (int B_InterestRev_Acct)
 	{
 		set_Value (COLUMNNAME_B_InterestRev_Acct, Integer.valueOf(B_InterestRev_Acct));
@@ -147,7 +144,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/** Get Bank Interest Revenue.
 		@return Bank Interest Revenue Account
 	  */
-	public int getB_InterestRev_Acct () 
+	public int getB_InterestRev_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestRev_Acct);
 		if (ii == null)
@@ -162,9 +159,8 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Bank In Transit.
-		@param B_InTransit_Acct 
-		Bank In Transit Account
-	  */
+		@param B_InTransit_Acct Bank In Transit Account
+	*/
 	public void setB_InTransit_Acct (int B_InTransit_Acct)
 	{
 		set_Value (COLUMNNAME_B_InTransit_Acct, Integer.valueOf(B_InTransit_Acct));
@@ -173,7 +169,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/** Get Bank In Transit.
 		@return Bank In Transit Account
 	  */
-	public int getB_InTransit_Acct () 
+	public int getB_InTransit_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_InTransit_Acct);
 		if (ii == null)
@@ -188,9 +184,8 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Payment Selection.
-		@param B_PaymentSelect_Acct 
-		AP Payment Selection Clearing Account
-	  */
+		@param B_PaymentSelect_Acct AP Payment Selection Clearing Account
+	*/
 	public void setB_PaymentSelect_Acct (int B_PaymentSelect_Acct)
 	{
 		set_Value (COLUMNNAME_B_PaymentSelect_Acct, Integer.valueOf(B_PaymentSelect_Acct));
@@ -199,7 +194,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/** Get Payment Selection.
 		@return AP Payment Selection Clearing Account
 	  */
-	public int getB_PaymentSelect_Acct () 
+	public int getB_PaymentSelect_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_PaymentSelect_Acct);
 		if (ii == null)
@@ -214,9 +209,8 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Unallocated Cash.
-		@param B_UnallocatedCash_Acct 
-		Unallocated Cash Clearing Account
-	  */
+		@param B_UnallocatedCash_Acct Unallocated Cash Clearing Account
+	*/
 	public void setB_UnallocatedCash_Acct (int B_UnallocatedCash_Acct)
 	{
 		set_Value (COLUMNNAME_B_UnallocatedCash_Acct, Integer.valueOf(B_UnallocatedCash_Acct));
@@ -225,7 +219,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/** Get Unallocated Cash.
 		@return Unallocated Cash Clearing Account
 	  */
-	public int getB_UnallocatedCash_Acct () 
+	public int getB_UnallocatedCash_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_UnallocatedCash_Acct);
 		if (ii == null)
@@ -240,21 +234,20 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -263,7 +256,8 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set C_BankAccount_Acct_UU.
-		@param C_BankAccount_Acct_UU C_BankAccount_Acct_UU	  */
+		@param C_BankAccount_Acct_UU C_BankAccount_Acct_UU
+	*/
 	public void setC_BankAccount_Acct_UU (String C_BankAccount_Acct_UU)
 	{
 		set_Value (COLUMNNAME_C_BankAccount_Acct_UU, C_BankAccount_Acct_UU);
@@ -271,7 +265,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 
 	/** Get C_BankAccount_Acct_UU.
 		@return C_BankAccount_Acct_UU	  */
-	public String getC_BankAccount_Acct_UU () 
+	public String getC_BankAccount_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BankAccount_Acct_UU);
 	}
@@ -283,21 +277,20 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	}
 
 	/** Set Bank Account.
-		@param C_BankAccount_ID 
-		Account at the Bank
-	  */
+		@param C_BankAccount_ID Account at the Bank
+	*/
 	public void setC_BankAccount_ID (int C_BankAccount_ID)
 	{
-		if (C_BankAccount_ID < 1) 
+		if (C_BankAccount_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
 	}
 
 	/** Get Bank Account.
 		@return Account at the Bank
 	  */
-	public int getC_BankAccount_ID () 
+	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
 		if (ii == null)

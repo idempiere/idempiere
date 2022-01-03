@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_User")
 public class X_AD_User extends PO implements I_AD_User, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -102,21 +102,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
     }
 
 	/** Set Image.
-		@param AD_Image_ID 
-		Image or Icon
-	  */
+		@param AD_Image_ID Image or Icon
+	*/
 	public void setAD_Image_ID (int AD_Image_ID)
 	{
-		if (AD_Image_ID < 1) 
+		if (AD_Image_ID < 1)
 			set_Value (COLUMNNAME_AD_Image_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Image_ID, Integer.valueOf(AD_Image_ID));
 	}
 
 	/** Get Image.
 		@return Image or Icon
 	  */
-	public int getAD_Image_ID () 
+	public int getAD_Image_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Image_ID);
 		if (ii == null)
@@ -125,21 +124,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Trx Organization.
-		@param AD_OrgTrx_ID 
-		Performing or initiating organization
-	  */
+		@param AD_OrgTrx_ID Performing or initiating organization
+	*/
 	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
 	{
-		if (AD_OrgTrx_ID < 1) 
+		if (AD_OrgTrx_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
 	}
 
 	/** Get Trx Organization.
 		@return Performing or initiating organization
 	  */
-	public int getAD_OrgTrx_ID () 
+	public int getAD_OrgTrx_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
 		if (ii == null)
@@ -148,21 +146,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -171,7 +168,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set AD_User_UU.
-		@param AD_User_UU AD_User_UU	  */
+		@param AD_User_UU AD_User_UU
+	*/
 	public void setAD_User_UU (String AD_User_UU)
 	{
 		set_Value (COLUMNNAME_AD_User_UU, AD_User_UU);
@@ -179,13 +177,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get AD_User_UU.
 		@return AD_User_UU	  */
-	public String getAD_User_UU () 
+	public String getAD_User_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_User_UU);
 	}
 
 	/** Set Answer.
-		@param Answer Answer	  */
+		@param Answer Answer
+	*/
 	public void setAnswer (String Answer)
 	{
 		set_Value (COLUMNNAME_Answer, Answer);
@@ -193,15 +192,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Answer.
 		@return Answer	  */
-	public String getAnswer () 
+	public String getAnswer()
 	{
 		return (String)get_Value(COLUMNNAME_Answer);
 	}
 
 	/** Set Birthday.
-		@param Birthday 
-		Birthday or Anniversary day
-	  */
+		@param Birthday Birthday or Anniversary day
+	*/
 	public void setBirthday (Timestamp Birthday)
 	{
 		set_Value (COLUMNNAME_Birthday, Birthday);
@@ -210,7 +208,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Birthday.
 		@return Birthday or Anniversary day
 	  */
-	public Timestamp getBirthday () 
+	public Timestamp getBirthday()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_Birthday);
 	}
@@ -222,21 +220,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set BP Address.
-		@param BP_Location_ID 
-		Address of the Business Partner
-	  */
+		@param BP_Location_ID Address of the Business Partner
+	*/
 	public void setBP_Location_ID (int BP_Location_ID)
 	{
-		if (BP_Location_ID < 1) 
+		if (BP_Location_ID < 1)
 			set_Value (COLUMNNAME_BP_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_BP_Location_ID, Integer.valueOf(BP_Location_ID));
 	}
 
 	/** Get BP Address.
 		@return Address of the Business Partner
 	  */
-	public int getBP_Location_ID () 
+	public int getBP_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BP_Location_ID);
 		if (ii == null)
@@ -245,7 +242,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set BP Name.
-		@param BPName BP Name	  */
+		@param BPName BP Name
+	*/
 	public void setBPName (String BPName)
 	{
 		set_Value (COLUMNNAME_BPName, BPName);
@@ -253,7 +251,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get BP Name.
 		@return BP Name	  */
-	public String getBPName () 
+	public String getBPName()
 	{
 		return (String)get_Value(COLUMNNAME_BPName);
 	}
@@ -264,22 +262,21 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -294,21 +291,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Partner Location.
-		@param C_BPartner_Location_ID 
-		Identifies the (ship to) address for this Business Partner
-	  */
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
 	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
 	{
-		if (C_BPartner_Location_ID < 1) 
+		if (C_BPartner_Location_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
 	}
 
 	/** Get Partner Location.
 		@return Identifies the (ship to) address for this Business Partner
 	  */
-	public int getC_BPartner_Location_ID () 
+	public int getC_BPartner_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
 		if (ii == null)
@@ -323,21 +319,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -352,21 +347,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Greeting.
-		@param C_Greeting_ID 
-		Greeting to print on correspondence
-	  */
+		@param C_Greeting_ID Greeting to print on correspondence
+	*/
 	public void setC_Greeting_ID (int C_Greeting_ID)
 	{
-		if (C_Greeting_ID < 1) 
+		if (C_Greeting_ID < 1)
 			set_Value (COLUMNNAME_C_Greeting_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Greeting_ID, Integer.valueOf(C_Greeting_ID));
 	}
 
 	/** Get Greeting.
 		@return Greeting to print on correspondence
 	  */
-	public int getC_Greeting_ID () 
+	public int getC_Greeting_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Greeting_ID);
 		if (ii == null)
@@ -381,21 +375,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Position.
-		@param C_Job_ID 
-		Job Position
-	  */
+		@param C_Job_ID Job Position
+	*/
 	public void setC_Job_ID (int C_Job_ID)
 	{
-		if (C_Job_ID < 1) 
+		if (C_Job_ID < 1)
 			set_Value (COLUMNNAME_C_Job_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Job_ID, Integer.valueOf(C_Job_ID));
 	}
 
 	/** Get Position.
 		@return Job Position
 	  */
-	public int getC_Job_ID () 
+	public int getC_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Job_ID);
 		if (ii == null)
@@ -410,21 +403,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Address.
-		@param C_Location_ID 
-		Location or Address
-	  */
+		@param C_Location_ID Location or Address
+	*/
 	public void setC_Location_ID (int C_Location_ID)
 	{
-		if (C_Location_ID < 1) 
+		if (C_Location_ID < 1)
 			set_Value (COLUMNNAME_C_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
 	}
 
 	/** Get Address.
 		@return Location or Address
 	  */
-	public int getC_Location_ID () 
+	public int getC_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
@@ -433,9 +425,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Comments.
-		@param Comments 
-		Comments or additional information
-	  */
+		@param Comments Comments or additional information
+	*/
 	public void setComments (String Comments)
 	{
 		set_Value (COLUMNNAME_Comments, Comments);
@@ -444,13 +435,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Comments.
 		@return Comments or additional information
 	  */
-	public String getComments () 
+	public String getComments()
 	{
 		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Date Account Locked.
-		@param DateAccountLocked Date Account Locked	  */
+		@param DateAccountLocked Date Account Locked
+	*/
 	public void setDateAccountLocked (Timestamp DateAccountLocked)
 	{
 		set_Value (COLUMNNAME_DateAccountLocked, DateAccountLocked);
@@ -458,13 +450,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Date Account Locked.
 		@return Date Account Locked	  */
-	public Timestamp getDateAccountLocked () 
+	public Timestamp getDateAccountLocked()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAccountLocked);
 	}
 
 	/** Set Date Last Login.
-		@param DateLastLogin Date Last Login	  */
+		@param DateLastLogin Date Last Login
+	*/
 	public void setDateLastLogin (Timestamp DateLastLogin)
 	{
 		set_Value (COLUMNNAME_DateLastLogin, DateLastLogin);
@@ -472,13 +465,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Date Last Login.
 		@return Date Last Login	  */
-	public Timestamp getDateLastLogin () 
+	public Timestamp getDateLastLogin()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastLogin);
 	}
 
 	/** Set Date Password Changed.
-		@param DatePasswordChanged Date Password Changed	  */
+		@param DatePasswordChanged Date Password Changed
+	*/
 	public void setDatePasswordChanged (Timestamp DatePasswordChanged)
 	{
 		set_Value (COLUMNNAME_DatePasswordChanged, DatePasswordChanged);
@@ -486,15 +480,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Date Password Changed.
 		@return Date Password Changed	  */
-	public Timestamp getDatePasswordChanged () 
+	public Timestamp getDatePasswordChanged()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DatePasswordChanged);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -503,15 +496,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_Value (COLUMNNAME_EMail, EMail);
@@ -520,15 +512,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set EMail User ID.
-		@param EMailUser 
-		User Name (ID) in the Mail System
-	  */
+		@param EMailUser User Name (ID) in the Mail System
+	*/
 	public void setEMailUser (String EMailUser)
 	{
 		set_Value (COLUMNNAME_EMailUser, EMailUser);
@@ -537,15 +528,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get EMail User ID.
 		@return User Name (ID) in the Mail System
 	  */
-	public String getEMailUser () 
+	public String getEMailUser()
 	{
 		return (String)get_Value(COLUMNNAME_EMailUser);
 	}
 
 	/** Set EMail User Password.
-		@param EMailUserPW 
-		Password of your email user id
-	  */
+		@param EMailUserPW Password of your email user id
+	*/
 	public void setEMailUserPW (String EMailUserPW)
 	{
 		set_Value (COLUMNNAME_EMailUserPW, EMailUserPW);
@@ -554,15 +544,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get EMail User Password.
 		@return Password of your email user id
 	  */
-	public String getEMailUserPW () 
+	public String getEMailUserPW()
 	{
 		return (String)get_Value(COLUMNNAME_EMailUserPW);
 	}
 
 	/** Set Verification Info.
-		@param EMailVerify 
-		Verification information of EMail Address
-	  */
+		@param EMailVerify Verification information of EMail Address
+	*/
 	public void setEMailVerify (String EMailVerify)
 	{
 		set_ValueNoCheck (COLUMNNAME_EMailVerify, EMailVerify);
@@ -571,15 +560,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Verification Info.
 		@return Verification information of EMail Address
 	  */
-	public String getEMailVerify () 
+	public String getEMailVerify()
 	{
 		return (String)get_Value(COLUMNNAME_EMailVerify);
 	}
 
 	/** Set EMail Verify.
-		@param EMailVerifyDate 
-		Date Email was verified
-	  */
+		@param EMailVerifyDate Date Email was verified
+	*/
 	public void setEMailVerifyDate (Timestamp EMailVerifyDate)
 	{
 		set_ValueNoCheck (COLUMNNAME_EMailVerifyDate, EMailVerifyDate);
@@ -588,13 +576,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get EMail Verify.
 		@return Date Email was verified
 	  */
-	public Timestamp getEMailVerifyDate () 
+	public Timestamp getEMailVerifyDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EMailVerifyDate);
 	}
 
 	/** Set Failed Login Count.
-		@param FailedLoginCount Failed Login Count	  */
+		@param FailedLoginCount Failed Login Count
+	*/
 	public void setFailedLoginCount (int FailedLoginCount)
 	{
 		set_Value (COLUMNNAME_FailedLoginCount, Integer.valueOf(FailedLoginCount));
@@ -602,7 +591,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Failed Login Count.
 		@return Failed Login Count	  */
-	public int getFailedLoginCount () 
+	public int getFailedLoginCount()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_FailedLoginCount);
 		if (ii == null)
@@ -611,9 +600,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Fax.
-		@param Fax 
-		Facsimile number
-	  */
+		@param Fax Facsimile number
+	*/
 	public void setFax (String Fax)
 	{
 		set_Value (COLUMNNAME_Fax, Fax);
@@ -622,15 +610,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Fax.
 		@return Facsimile number
 	  */
-	public String getFax () 
+	public String getFax()
 	{
 		return (String)get_Value(COLUMNNAME_Fax);
 	}
 
 	/** Set Add Mail Text Automatically.
-		@param IsAddMailTextAutomatically 
-		The selected mail template will be automatically inserted when creating an email
-	  */
+		@param IsAddMailTextAutomatically The selected mail template will be automatically inserted when creating an email
+	*/
 	public void setIsAddMailTextAutomatically (boolean IsAddMailTextAutomatically)
 	{
 		set_Value (COLUMNNAME_IsAddMailTextAutomatically, Boolean.valueOf(IsAddMailTextAutomatically));
@@ -639,7 +626,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Add Mail Text Automatically.
 		@return The selected mail template will be automatically inserted when creating an email
 	  */
-	public boolean isAddMailTextAutomatically () 
+	public boolean isAddMailTextAutomatically()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAddMailTextAutomatically);
 		if (oo != null) 
@@ -652,9 +639,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Invoice Address.
-		@param IsBillTo 
-		Business Partner Invoice/Bill Address
-	  */
+		@param IsBillTo Business Partner Invoice/Bill Address
+	*/
 	public void setIsBillTo (boolean IsBillTo)
 	{
 		set_Value (COLUMNNAME_IsBillTo, Boolean.valueOf(IsBillTo));
@@ -663,7 +649,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Invoice Address.
 		@return Business Partner Invoice/Bill Address
 	  */
-	public boolean isBillTo () 
+	public boolean isBillTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBillTo);
 		if (oo != null) 
@@ -676,7 +662,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Expired.
-		@param IsExpired Expired	  */
+		@param IsExpired Expired
+	*/
 	public void setIsExpired (boolean IsExpired)
 	{
 		set_Value (COLUMNNAME_IsExpired, Boolean.valueOf(IsExpired));
@@ -684,7 +671,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Expired.
 		@return Expired	  */
-	public boolean isExpired () 
+	public boolean isExpired()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExpired);
 		if (oo != null) 
@@ -697,9 +684,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Full BP Access.
-		@param IsFullBPAccess 
-		The user/contact has full access to Business Partner information and resources
-	  */
+		@param IsFullBPAccess The user/contact has full access to Business Partner information and resources
+	*/
 	public void setIsFullBPAccess (boolean IsFullBPAccess)
 	{
 		set_Value (COLUMNNAME_IsFullBPAccess, Boolean.valueOf(IsFullBPAccess));
@@ -708,7 +694,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Full BP Access.
 		@return The user/contact has full access to Business Partner information and resources
 	  */
-	public boolean isFullBPAccess () 
+	public boolean isFullBPAccess()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFullBPAccess);
 		if (oo != null) 
@@ -721,9 +707,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Is In Payroll.
-		@param IsInPayroll 
-		Defined if any User Contact will be used for Calculate Payroll
-	  */
+		@param IsInPayroll Defined if any User Contact will be used for Calculate Payroll
+	*/
 	public void setIsInPayroll (boolean IsInPayroll)
 	{
 		set_Value (COLUMNNAME_IsInPayroll, Boolean.valueOf(IsInPayroll));
@@ -732,7 +717,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Is In Payroll.
 		@return Defined if any User Contact will be used for Calculate Payroll
 	  */
-	public boolean isInPayroll () 
+	public boolean isInPayroll()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInPayroll);
 		if (oo != null) 
@@ -745,7 +730,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Locked.
-		@param IsLocked Locked	  */
+		@param IsLocked Locked
+	*/
 	public void setIsLocked (boolean IsLocked)
 	{
 		set_Value (COLUMNNAME_IsLocked, Boolean.valueOf(IsLocked));
@@ -753,7 +739,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Locked.
 		@return Locked	  */
-	public boolean isLocked () 
+	public boolean isLocked()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLocked);
 		if (oo != null) 
@@ -772,9 +758,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Yes = Y */
 	public static final String ISMENUAUTOEXPAND_Yes = "Y";
 	/** Set Auto expand menu.
-		@param IsMenuAutoExpand 
-		If ticked, the menu is automatically expanded
-	  */
+		@param IsMenuAutoExpand If ticked, the menu is automatically expanded
+	*/
 	public void setIsMenuAutoExpand (String IsMenuAutoExpand)
 	{
 
@@ -784,13 +769,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Auto expand menu.
 		@return If ticked, the menu is automatically expanded
 	  */
-	public String getIsMenuAutoExpand () 
+	public String getIsMenuAutoExpand()
 	{
 		return (String)get_Value(COLUMNNAME_IsMenuAutoExpand);
 	}
 
 	/** Set No Expire.
-		@param IsNoExpire No Expire	  */
+		@param IsNoExpire No Expire
+	*/
 	public void setIsNoExpire (boolean IsNoExpire)
 	{
 		set_Value (COLUMNNAME_IsNoExpire, Boolean.valueOf(IsNoExpire));
@@ -798,7 +784,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get No Expire.
 		@return No Expire	  */
-	public boolean isNoExpire () 
+	public boolean isNoExpire()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoExpire);
 		if (oo != null) 
@@ -811,7 +797,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set No Password Reset.
-		@param IsNoPasswordReset No Password Reset	  */
+		@param IsNoPasswordReset No Password Reset
+	*/
 	public void setIsNoPasswordReset (boolean IsNoPasswordReset)
 	{
 		set_Value (COLUMNNAME_IsNoPasswordReset, Boolean.valueOf(IsNoPasswordReset));
@@ -819,7 +806,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get No Password Reset.
 		@return No Password Reset	  */
-	public boolean isNoPasswordReset () 
+	public boolean isNoPasswordReset()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoPasswordReset);
 		if (oo != null) 
@@ -832,9 +819,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Sales Lead.
-		@param IsSalesLead 
-		This contact is a sales lead
-	  */
+		@param IsSalesLead This contact is a sales lead
+	*/
 	public void setIsSalesLead (boolean IsSalesLead)
 	{
 		set_Value (COLUMNNAME_IsSalesLead, Boolean.valueOf(IsSalesLead));
@@ -843,7 +829,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Sales Lead.
 		@return This contact is a sales lead
 	  */
-	public boolean isSalesLead () 
+	public boolean isSalesLead()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSalesLead);
 		if (oo != null) 
@@ -856,9 +842,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Ship Address.
-		@param IsShipTo 
-		Business Partner Shipment Address
-	  */
+		@param IsShipTo Business Partner Shipment Address
+	*/
 	public void setIsShipTo (boolean IsShipTo)
 	{
 		set_Value (COLUMNNAME_IsShipTo, Boolean.valueOf(IsShipTo));
@@ -867,7 +852,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Ship Address.
 		@return Business Partner Shipment Address
 	  */
-	public boolean isShipTo () 
+	public boolean isShipTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShipTo);
 		if (oo != null) 
@@ -880,7 +865,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Support User.
-		@param IsSupportUser Support User	  */
+		@param IsSupportUser Support User
+	*/
 	public void setIsSupportUser (boolean IsSupportUser)
 	{
 		set_Value (COLUMNNAME_IsSupportUser, Boolean.valueOf(IsSupportUser));
@@ -888,7 +874,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Support User.
 		@return Support User	  */
-	public boolean isSupportUser () 
+	public boolean isSupportUser()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSupportUser);
 		if (oo != null) 
@@ -901,9 +887,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Vendor Lead.
-		@param IsVendorLead 
-		This contact is a vendor lead
-	  */
+		@param IsVendorLead This contact is a vendor lead
+	*/
 	public void setIsVendorLead (boolean IsVendorLead)
 	{
 		set_Value (COLUMNNAME_IsVendorLead, Boolean.valueOf(IsVendorLead));
@@ -912,7 +897,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Vendor Lead.
 		@return This contact is a vendor lead
 	  */
-	public boolean isVendorLead () 
+	public boolean isVendorLead()
 	{
 		Object oo = get_Value(COLUMNNAME_IsVendorLead);
 		if (oo != null) 
@@ -925,9 +910,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Last Contact.
-		@param LastContact 
-		Date this individual was last contacted
-	  */
+		@param LastContact Date this individual was last contacted
+	*/
 	public void setLastContact (Timestamp LastContact)
 	{
 		set_Value (COLUMNNAME_LastContact, LastContact);
@@ -936,15 +920,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Last Contact.
 		@return Date this individual was last contacted
 	  */
-	public Timestamp getLastContact () 
+	public Timestamp getLastContact()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LastContact);
 	}
 
 	/** Set Last Result.
-		@param LastResult 
-		Result of last contact
-	  */
+		@param LastResult Result of last contact
+	*/
 	public void setLastResult (String LastResult)
 	{
 		set_Value (COLUMNNAME_LastResult, LastResult);
@@ -953,15 +936,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Last Result.
 		@return Result of last contact
 	  */
-	public String getLastResult () 
+	public String getLastResult()
 	{
 		return (String)get_Value(COLUMNNAME_LastResult);
 	}
 
 	/** Set LDAP User Name.
-		@param LDAPUser 
-		User Name used for authorization via LDAP (directory) services
-	  */
+		@param LDAPUser User Name used for authorization via LDAP (directory) services
+	*/
 	public void setLDAPUser (String LDAPUser)
 	{
 		set_Value (COLUMNNAME_LDAPUser, LDAPUser);
@@ -970,7 +952,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get LDAP User Name.
 		@return User Name used for authorization via LDAP (directory) services
 	  */
-	public String getLDAPUser () 
+	public String getLDAPUser()
 	{
 		return (String)get_Value(COLUMNNAME_LDAPUser);
 	}
@@ -996,9 +978,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Web Site = WS */
 	public static final String LEADSOURCE_WebSite = "WS";
 	/** Set Lead Source.
-		@param LeadSource 
-		The source of this lead/opportunity
-	  */
+		@param LeadSource The source of this lead/opportunity
+	*/
 	public void setLeadSource (String LeadSource)
 	{
 
@@ -1008,15 +989,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Lead Source.
 		@return The source of this lead/opportunity
 	  */
-	public String getLeadSource () 
+	public String getLeadSource()
 	{
 		return (String)get_Value(COLUMNNAME_LeadSource);
 	}
 
 	/** Set Lead Source Description.
-		@param LeadSourceDescription 
-		Additional information on the source of this lead/opportunity
-	  */
+		@param LeadSourceDescription Additional information on the source of this lead/opportunity
+	*/
 	public void setLeadSourceDescription (String LeadSourceDescription)
 	{
 		set_Value (COLUMNNAME_LeadSourceDescription, LeadSourceDescription);
@@ -1025,7 +1005,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Lead Source Description.
 		@return Additional information on the source of this lead/opportunity
 	  */
-	public String getLeadSourceDescription () 
+	public String getLeadSourceDescription()
 	{
 		return (String)get_Value(COLUMNNAME_LeadSourceDescription);
 	}
@@ -1043,9 +1023,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Working = W */
 	public static final String LEADSTATUS_Working = "W";
 	/** Set Lead Status.
-		@param LeadStatus 
-		The status of this lead/opportunity in the sales cycle
-	  */
+		@param LeadStatus The status of this lead/opportunity in the sales cycle
+	*/
 	public void setLeadStatus (String LeadStatus)
 	{
 
@@ -1055,15 +1034,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Lead Status.
 		@return The status of this lead/opportunity in the sales cycle
 	  */
-	public String getLeadStatus () 
+	public String getLeadStatus()
 	{
 		return (String)get_Value(COLUMNNAME_LeadStatus);
 	}
 
 	/** Set Lead Status Description.
-		@param LeadStatusDescription 
-		Additional information on the status of this lead/opportunity
-	  */
+		@param LeadStatusDescription Additional information on the status of this lead/opportunity
+	*/
 	public void setLeadStatusDescription (String LeadStatusDescription)
 	{
 		set_Value (COLUMNNAME_LeadStatusDescription, LeadStatusDescription);
@@ -1072,15 +1050,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Lead Status Description.
 		@return Additional information on the status of this lead/opportunity
 	  */
-	public String getLeadStatusDescription () 
+	public String getLeadStatusDescription()
 	{
 		return (String)get_Value(COLUMNNAME_LeadStatusDescription);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -1089,7 +1066,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -1113,9 +1090,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** None = X */
 	public static final String NOTIFICATIONTYPE_None = "X";
 	/** Set Notification Type.
-		@param NotificationType 
-		Type of Notifications
-	  */
+		@param NotificationType Type of Notifications
+	*/
 	public void setNotificationType (String NotificationType)
 	{
 
@@ -1125,15 +1101,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Notification Type.
 		@return Type of Notifications
 	  */
-	public String getNotificationType () 
+	public String getNotificationType()
 	{
 		return (String)get_Value(COLUMNNAME_NotificationType);
 	}
 
 	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
+		@param Password Password of any length (case sensitive)
+	*/
 	public void setPassword (String Password)
 	{
 		set_Value (COLUMNNAME_Password, Password);
@@ -1142,15 +1117,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Password.
 		@return Password of any length (case sensitive)
 	  */
-	public String getPassword () 
+	public String getPassword()
 	{
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
 	/** Set Phone.
-		@param Phone 
-		Identifies a telephone number
-	  */
+		@param Phone Identifies a telephone number
+	*/
 	public void setPhone (String Phone)
 	{
 		set_Value (COLUMNNAME_Phone, Phone);
@@ -1159,15 +1133,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Phone.
 		@return Identifies a telephone number
 	  */
-	public String getPhone () 
+	public String getPhone()
 	{
 		return (String)get_Value(COLUMNNAME_Phone);
 	}
 
 	/** Set 2nd Phone.
-		@param Phone2 
-		Identifies an alternate telephone number.
-	  */
+		@param Phone2 Identifies an alternate telephone number.
+	*/
 	public void setPhone2 (String Phone2)
 	{
 		set_Value (COLUMNNAME_Phone2, Phone2);
@@ -1176,13 +1149,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get 2nd Phone.
 		@return Identifies an alternate telephone number.
 	  */
-	public String getPhone2 () 
+	public String getPhone2()
 	{
 		return (String)get_Value(COLUMNNAME_Phone2);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -1190,7 +1164,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -1209,18 +1183,19 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Default mail template.
-		@param R_DefaultMailText_ID Default mail template	  */
+		@param R_DefaultMailText_ID Default mail template
+	*/
 	public void setR_DefaultMailText_ID (int R_DefaultMailText_ID)
 	{
-		if (R_DefaultMailText_ID < 1) 
+		if (R_DefaultMailText_ID < 1)
 			set_Value (COLUMNNAME_R_DefaultMailText_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_DefaultMailText_ID, Integer.valueOf(R_DefaultMailText_ID));
 	}
 
 	/** Get Default mail template.
 		@return Default mail template	  */
-	public int getR_DefaultMailText_ID () 
+	public int getR_DefaultMailText_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_DefaultMailText_ID);
 		if (ii == null)
@@ -1235,21 +1210,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Sales Representative.
-		@param SalesRep_ID 
-		Sales Representative or Company Agent
-	  */
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
 	public void setSalesRep_ID (int SalesRep_ID)
 	{
-		if (SalesRep_ID < 1) 
+		if (SalesRep_ID < 1)
 			set_Value (COLUMNNAME_SalesRep_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
 	}
 
 	/** Get Sales Representative.
 		@return Sales Representative or Company Agent
 	  */
-	public int getSalesRep_ID () 
+	public int getSalesRep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)
@@ -1258,9 +1232,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Salt.
-		@param Salt 
-		Random data added to improve password hash effectiveness
-	  */
+		@param Salt Random data added to improve password hash effectiveness
+	*/
 	public void setSalt (String Salt)
 	{
 		set_ValueNoCheck (COLUMNNAME_Salt, Salt);
@@ -1269,13 +1242,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Salt.
 		@return Random data added to improve password hash effectiveness
 	  */
-	public String getSalt () 
+	public String getSalt()
 	{
 		return (String)get_Value(COLUMNNAME_Salt);
 	}
 
 	/** Set Security Question.
-		@param SecurityQuestion Security Question	  */
+		@param SecurityQuestion Security Question
+	*/
 	public void setSecurityQuestion (String SecurityQuestion)
 	{
 		set_Value (COLUMNNAME_SecurityQuestion, SecurityQuestion);
@@ -1283,7 +1257,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get Security Question.
 		@return Security Question	  */
-	public String getSecurityQuestion () 
+	public String getSecurityQuestion()
 	{
 		return (String)get_Value(COLUMNNAME_SecurityQuestion);
 	}
@@ -1295,21 +1269,20 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Supervisor.
-		@param Supervisor_ID 
-		Supervisor for this user/organization - used for escalation and approval
-	  */
+		@param Supervisor_ID Supervisor for this user/organization - used for escalation and approval
+	*/
 	public void setSupervisor_ID (int Supervisor_ID)
 	{
-		if (Supervisor_ID < 1) 
+		if (Supervisor_ID < 1)
 			set_Value (COLUMNNAME_Supervisor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Supervisor_ID, Integer.valueOf(Supervisor_ID));
 	}
 
 	/** Get Supervisor.
 		@return Supervisor for this user/organization - used for escalation and approval
 	  */
-	public int getSupervisor_ID () 
+	public int getSupervisor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Supervisor_ID);
 		if (ii == null)
@@ -1318,9 +1291,8 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	}
 
 	/** Set Title.
-		@param Title 
-		Name this entity is referred to as
-	  */
+		@param Title Name this entity is referred to as
+	*/
 	public void setTitle (String Title)
 	{
 		set_Value (COLUMNNAME_Title, Title);
@@ -1329,13 +1301,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Title.
 		@return Name this entity is referred to as
 	  */
-	public String getTitle () 
+	public String getTitle()
 	{
 		return (String)get_Value(COLUMNNAME_Title);
 	}
 
 	/** Set User PIN.
-		@param UserPIN User PIN	  */
+		@param UserPIN User PIN
+	*/
 	public void setUserPIN (String UserPIN)
 	{
 		set_Value (COLUMNNAME_UserPIN, UserPIN);
@@ -1343,15 +1316,14 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 
 	/** Get User PIN.
 		@return User PIN	  */
-	public String getUserPIN () 
+	public String getUserPIN()
 	{
 		return (String)get_Value(COLUMNNAME_UserPIN);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -1360,7 +1332,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

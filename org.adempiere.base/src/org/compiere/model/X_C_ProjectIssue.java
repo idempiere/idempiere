@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectIssue
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssue")
 public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_ProjectIssue (Properties ctx, int C_ProjectIssue_ID, String trxName)
@@ -98,21 +98,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -129,21 +128,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
     }
 
 	/** Set Project Issue.
-		@param C_ProjectIssue_ID 
-		Project Issues (Material, Labor)
-	  */
+		@param C_ProjectIssue_ID Project Issues (Material, Labor)
+	*/
 	public void setC_ProjectIssue_ID (int C_ProjectIssue_ID)
 	{
-		if (C_ProjectIssue_ID < 1) 
+		if (C_ProjectIssue_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_ProjectIssue_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_ProjectIssue_ID, Integer.valueOf(C_ProjectIssue_ID));
 	}
 
 	/** Get Project Issue.
 		@return Project Issues (Material, Labor)
 	  */
-	public int getC_ProjectIssue_ID () 
+	public int getC_ProjectIssue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectIssue_ID);
 		if (ii == null)
@@ -152,7 +150,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set C_ProjectIssue_UU.
-		@param C_ProjectIssue_UU C_ProjectIssue_UU	  */
+		@param C_ProjectIssue_UU C_ProjectIssue_UU
+	*/
 	public void setC_ProjectIssue_UU (String C_ProjectIssue_UU)
 	{
 		set_Value (COLUMNNAME_C_ProjectIssue_UU, C_ProjectIssue_UU);
@@ -160,15 +159,14 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 
 	/** Get C_ProjectIssue_UU.
 		@return C_ProjectIssue_UU	  */
-	public String getC_ProjectIssue_UU () 
+	public String getC_ProjectIssue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ProjectIssue_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -177,14 +175,14 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** <None> = -- */
+	/** &lt;None&gt; = -- */
 	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
@@ -213,9 +211,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Unlock = XL */
 	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -225,7 +222,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
@@ -257,9 +254,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -269,15 +265,14 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -286,7 +281,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -299,9 +294,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -310,7 +304,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -325,21 +319,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -354,21 +347,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_Value (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -383,21 +375,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -406,9 +397,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Movement Date.
-		@param MovementDate 
-		Date a product was moved in or out of inventory
-	  */
+		@param MovementDate Date a product was moved in or out of inventory
+	*/
 	public void setMovementDate (Timestamp MovementDate)
 	{
 		set_Value (COLUMNNAME_MovementDate, MovementDate);
@@ -417,15 +407,14 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Movement Date.
 		@return Date a product was moved in or out of inventory
 	  */
-	public Timestamp getMovementDate () 
+	public Timestamp getMovementDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
 	}
 
 	/** Set Movement Quantity.
-		@param MovementQty 
-		Quantity of a product moved.
-	  */
+		@param MovementQty Quantity of a product moved.
+	*/
 	public void setMovementQty (BigDecimal MovementQty)
 	{
 		set_Value (COLUMNNAME_MovementQty, MovementQty);
@@ -434,7 +423,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Movement Quantity.
 		@return Quantity of a product moved.
 	  */
-	public BigDecimal getMovementQty () 
+	public BigDecimal getMovementQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
 		if (bd == null)
@@ -449,21 +438,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -472,9 +460,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Posted.
-		@param Posted 
-		Posting status
-	  */
+		@param Posted Posting status
+	*/
 	public void setPosted (boolean Posted)
 	{
 		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
@@ -483,7 +470,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Posted.
 		@return Posting status
 	  */
-	public boolean isPosted () 
+	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
 		if (oo != null) 
@@ -496,9 +483,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -507,7 +493,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -520,9 +506,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Processed On.
-		@param ProcessedOn 
-		The date+time (expressed in decimal format) when the document has been processed
-	  */
+		@param ProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
 	public void setProcessedOn (BigDecimal ProcessedOn)
 	{
 		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
@@ -531,7 +516,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/** Get Processed On.
 		@return The date+time (expressed in decimal format) when the document has been processed
 	  */
-	public BigDecimal getProcessedOn () 
+	public BigDecimal getProcessedOn()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
 		if (bd == null)
@@ -540,7 +525,8 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -548,7 +534,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -567,21 +553,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Reversal ID.
-		@param Reversal_ID 
-		ID of document reversal
-	  */
+		@param Reversal_ID ID of document reversal
+	*/
 	public void setReversal_ID (int Reversal_ID)
 	{
-		if (Reversal_ID < 1) 
+		if (Reversal_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Reversal_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Reversal_ID, Integer.valueOf(Reversal_ID));
 	}
 
 	/** Get Reversal ID.
 		@return ID of document reversal
 	  */
-	public int getReversal_ID () 
+	public int getReversal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Reversal_ID);
 		if (ii == null)
@@ -596,21 +581,20 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	}
 
 	/** Set Expense Line.
-		@param S_TimeExpenseLine_ID 
-		Time and Expense Report Line
-	  */
+		@param S_TimeExpenseLine_ID Time and Expense Report Line
+	*/
 	public void setS_TimeExpenseLine_ID (int S_TimeExpenseLine_ID)
 	{
-		if (S_TimeExpenseLine_ID < 1) 
+		if (S_TimeExpenseLine_ID < 1)
 			set_Value (COLUMNNAME_S_TimeExpenseLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_S_TimeExpenseLine_ID, Integer.valueOf(S_TimeExpenseLine_ID));
 	}
 
 	/** Get Expense Line.
 		@return Time and Expense Report Line
 	  */
-	public int getS_TimeExpenseLine_ID () 
+	public int getS_TimeExpenseLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_TimeExpenseLine_ID);
 		if (ii == null)

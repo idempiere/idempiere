@@ -48,10 +48,10 @@ import org.idempiere.cache.POCopyCache;
  * @author Trifon N. Trifonov
  * @author Antonio Cañaveral, e-Evolution
  * 				<li>[ 2195090 ] Implementing ExportFormat cache
- * 				<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2195090&group_id=176962&atid=879335
+ * 				<li>https://sourceforge.net/p/adempiere/feature-requests/554/
  * @author victor.perez@e-evolution.com, e-Evolution
  * 				<li>[ 2195090 ] Stabilization of replication
- * 				<li>https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2936561&group_id=176962
+ * 				<li>https://sourceforge.net/p/adempiere/bugs/2294/
  *
  */
 public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {

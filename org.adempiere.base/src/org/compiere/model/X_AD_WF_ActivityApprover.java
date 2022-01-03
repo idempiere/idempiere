@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_WF_ActivityApprover
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_ActivityApprover")
 public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityApprover, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityApprover (Properties ctx, int AD_WF_ActivityApprover_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -102,18 +101,19 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 	}
 
 	/** Set Workflow Activity Approver.
-		@param AD_WF_ActivityApprover_ID Workflow Activity Approver	  */
+		@param AD_WF_ActivityApprover_ID Workflow Activity Approver
+	*/
 	public void setAD_WF_ActivityApprover_ID (int AD_WF_ActivityApprover_ID)
 	{
-		if (AD_WF_ActivityApprover_ID < 1) 
+		if (AD_WF_ActivityApprover_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_ActivityApprover_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_ActivityApprover_ID, Integer.valueOf(AD_WF_ActivityApprover_ID));
 	}
 
 	/** Get Workflow Activity Approver.
 		@return Workflow Activity Approver	  */
-	public int getAD_WF_ActivityApprover_ID () 
+	public int getAD_WF_ActivityApprover_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_ActivityApprover_ID);
 		if (ii == null)
@@ -122,7 +122,8 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 	}
 
 	/** Set AD_WF_ActivityApprover_UU.
-		@param AD_WF_ActivityApprover_UU AD_WF_ActivityApprover_UU	  */
+		@param AD_WF_ActivityApprover_UU AD_WF_ActivityApprover_UU
+	*/
 	public void setAD_WF_ActivityApprover_UU (String AD_WF_ActivityApprover_UU)
 	{
 		set_Value (COLUMNNAME_AD_WF_ActivityApprover_UU, AD_WF_ActivityApprover_UU);
@@ -130,7 +131,7 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 
 	/** Get AD_WF_ActivityApprover_UU.
 		@return AD_WF_ActivityApprover_UU	  */
-	public String getAD_WF_ActivityApprover_UU () 
+	public String getAD_WF_ActivityApprover_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_ActivityApprover_UU);
 	}
@@ -142,21 +143,20 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
 	}
 
 	/** Set Workflow Activity.
-		@param AD_WF_Activity_ID 
-		Workflow Activity
-	  */
+		@param AD_WF_Activity_ID Workflow Activity
+	*/
 	public void setAD_WF_Activity_ID (int AD_WF_Activity_ID)
 	{
-		if (AD_WF_Activity_ID < 1) 
+		if (AD_WF_Activity_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, Integer.valueOf(AD_WF_Activity_ID));
 	}
 
 	/** Get Workflow Activity.
 		@return Workflow Activity
 	  */
-	public int getAD_WF_Activity_ID () 
+	public int getAD_WF_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Activity_ID);
 		if (ii == null)

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueSystem
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueSystem")
 public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_IssueSystem (Properties ctx, int R_IssueSystem_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -103,9 +102,8 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	}
 
 	/** Set DB Address.
-		@param DBAddress 
-		JDBC URL of the database server
-	  */
+		@param DBAddress JDBC URL of the database server
+	*/
 	public void setDBAddress (String DBAddress)
 	{
 		set_ValueNoCheck (COLUMNNAME_DBAddress, DBAddress);
@@ -114,7 +112,7 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/** Get DB Address.
 		@return JDBC URL of the database server
 	  */
-	public String getDBAddress () 
+	public String getDBAddress()
 	{
 		return (String)get_Value(COLUMNNAME_DBAddress);
 	}
@@ -128,9 +126,8 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
     }
 
 	/** Set Profile.
-		@param ProfileInfo 
-		Information to help profiling the system for solving support issues
-	  */
+		@param ProfileInfo Information to help profiling the system for solving support issues
+	*/
 	public void setProfileInfo (String ProfileInfo)
 	{
 		set_ValueNoCheck (COLUMNNAME_ProfileInfo, ProfileInfo);
@@ -139,27 +136,26 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/** Get Profile.
 		@return Information to help profiling the system for solving support issues
 	  */
-	public String getProfileInfo () 
+	public String getProfileInfo()
 	{
 		return (String)get_Value(COLUMNNAME_ProfileInfo);
 	}
 
 	/** Set Issue System.
-		@param R_IssueSystem_ID 
-		System creating the issue
-	  */
+		@param R_IssueSystem_ID System creating the issue
+	*/
 	public void setR_IssueSystem_ID (int R_IssueSystem_ID)
 	{
-		if (R_IssueSystem_ID < 1) 
+		if (R_IssueSystem_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_IssueSystem_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_IssueSystem_ID, Integer.valueOf(R_IssueSystem_ID));
 	}
 
 	/** Get Issue System.
 		@return System creating the issue
 	  */
-	public int getR_IssueSystem_ID () 
+	public int getR_IssueSystem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueSystem_ID);
 		if (ii == null)
@@ -168,7 +164,8 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	}
 
 	/** Set R_IssueSystem_UU.
-		@param R_IssueSystem_UU R_IssueSystem_UU	  */
+		@param R_IssueSystem_UU R_IssueSystem_UU
+	*/
 	public void setR_IssueSystem_UU (String R_IssueSystem_UU)
 	{
 		set_Value (COLUMNNAME_R_IssueSystem_UU, R_IssueSystem_UU);
@@ -176,15 +173,14 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 
 	/** Get R_IssueSystem_UU.
 		@return R_IssueSystem_UU	  */
-	public String getR_IssueSystem_UU () 
+	public String getR_IssueSystem_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_IssueSystem_UU);
 	}
 
 	/** Set Statistics.
-		@param StatisticsInfo 
-		Information to help profiling the system for solving support issues
-	  */
+		@param StatisticsInfo Information to help profiling the system for solving support issues
+	*/
 	public void setStatisticsInfo (String StatisticsInfo)
 	{
 		set_ValueNoCheck (COLUMNNAME_StatisticsInfo, StatisticsInfo);
@@ -193,7 +189,7 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/** Get Statistics.
 		@return Information to help profiling the system for solving support issues
 	  */
-	public String getStatisticsInfo () 
+	public String getStatisticsInfo()
 	{
 		return (String)get_Value(COLUMNNAME_StatisticsInfo);
 	}
@@ -207,9 +203,8 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/** Production = P */
 	public static final String SYSTEMSTATUS_Production = "P";
 	/** Set System Status.
-		@param SystemStatus 
-		Status of the system - Support priority depends on system status
-	  */
+		@param SystemStatus Status of the system - Support priority depends on system status
+	*/
 	public void setSystemStatus (String SystemStatus)
 	{
 
@@ -219,7 +214,7 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/** Get System Status.
 		@return Status of the system - Support priority depends on system status
 	  */
-	public String getSystemStatus () 
+	public String getSystemStatus()
 	{
 		return (String)get_Value(COLUMNNAME_SystemStatus);
 	}

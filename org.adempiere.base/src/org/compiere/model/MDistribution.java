@@ -229,10 +229,9 @@ public class MDistribution extends X_GL_Distribution
 	/**
 	 * 	Get All Distributions
 	 *	@param ctx ignore
-	 *	@param Account_ID id
 	 *	@return array of distributions
-	 *  @deprecated
 	 */
+	@Deprecated
 	public static MDistribution[] getAll (Properties ctx)
 	{
 		return getAll();
@@ -240,7 +239,6 @@ public class MDistribution extends X_GL_Distribution
 	
 	/**
 	 * 	Get All Distributions
-	 *	@param Account_ID id
 	 *	@return array of distributions
 	 */
 	public static MDistribution[] getAll ()
@@ -348,7 +346,7 @@ public class MDistribution extends X_GL_Distribution
 		final String whereClause = I_GL_DistributionLine.COLUMNNAME_GL_Distribution_ID+"=?";
 		List<MDistributionLine> list = new Query(getCtx(),I_GL_DistributionLine.Table_Name,whereClause,get_TrxName())
 		.setParameters(getGL_Distribution_ID())
-		.setOrderBy("Line")
+		.setOrderBy("Line,GL_DistributionLine_ID")
 		.list();
 		//red1 Query  -end-
 		boolean hasNullRemainder = false;

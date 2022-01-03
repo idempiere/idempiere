@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for EXP_Format
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="EXP_Format")
 public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_EXP_Format (Properties ctx, int EXP_Format_ID, String trxName)
@@ -81,21 +81,20 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -104,9 +103,8 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -115,24 +113,25 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Export Format.
-		@param EXP_Format_ID Export Format	  */
+		@param EXP_Format_ID Export Format
+	*/
 	public void setEXP_Format_ID (int EXP_Format_ID)
 	{
-		if (EXP_Format_ID < 1) 
+		if (EXP_Format_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_EXP_Format_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_EXP_Format_ID, Integer.valueOf(EXP_Format_ID));
 	}
 
 	/** Get Export Format.
 		@return Export Format	  */
-	public int getEXP_Format_ID () 
+	public int getEXP_Format_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_EXP_Format_ID);
 		if (ii == null)
@@ -141,7 +140,8 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	}
 
 	/** Set EXP_Format_UU.
-		@param EXP_Format_UU EXP_Format_UU	  */
+		@param EXP_Format_UU EXP_Format_UU
+	*/
 	public void setEXP_Format_UU (String EXP_Format_UU)
 	{
 		set_Value (COLUMNNAME_EXP_Format_UU, EXP_Format_UU);
@@ -149,15 +149,14 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 
 	/** Get EXP_Format_UU.
 		@return EXP_Format_UU	  */
-	public String getEXP_Format_UU () 
+	public String getEXP_Format_UU()
 	{
 		return (String)get_Value(COLUMNNAME_EXP_Format_UU);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -166,15 +165,14 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -183,13 +181,14 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -197,7 +196,7 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -210,7 +209,8 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	}
 
 	/** Set Test Export Model.
-		@param TestExportModel Test Export Model	  */
+		@param TestExportModel Test Export Model
+	*/
 	public void setTestExportModel (String TestExportModel)
 	{
 		set_Value (COLUMNNAME_TestExportModel, TestExportModel);
@@ -218,13 +218,14 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 
 	/** Get Test Export Model.
 		@return Test Export Model	  */
-	public String getTestExportModel () 
+	public String getTestExportModel()
 	{
 		return (String)get_Value(COLUMNNAME_TestExportModel);
 	}
 
 	/** Set Test Import Model.
-		@param TestImportModel Test Import Model	  */
+		@param TestImportModel Test Import Model
+	*/
 	public void setTestImportModel (String TestImportModel)
 	{
 		set_Value (COLUMNNAME_TestImportModel, TestImportModel);
@@ -232,15 +233,14 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 
 	/** Get Test Import Model.
 		@return Test Import Model	  */
-	public String getTestImportModel () 
+	public String getTestImportModel()
 	{
 		return (String)get_Value(COLUMNNAME_TestImportModel);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -249,15 +249,14 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Version.
-		@param Version 
-		Version of the table definition
-	  */
+		@param Version Version of the table definition
+	*/
 	public void setVersion (String Version)
 	{
 		set_Value (COLUMNNAME_Version, Version);
@@ -266,15 +265,14 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/** Get Version.
 		@return Version of the table definition
 	  */
-	public String getVersion () 
+	public String getVersion()
 	{
 		return (String)get_Value(COLUMNNAME_Version);
 	}
 
 	/** Set Sql WHERE.
-		@param WhereClause 
-		Fully qualified SQL WHERE clause
-	  */
+		@param WhereClause Fully qualified SQL WHERE clause
+	*/
 	public void setWhereClause (String WhereClause)
 	{
 		set_Value (COLUMNNAME_WhereClause, WhereClause);
@@ -283,7 +281,7 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/** Get Sql WHERE.
 		@return Fully qualified SQL WHERE clause
 	  */
-	public String getWhereClause () 
+	public String getWhereClause()
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
 	}

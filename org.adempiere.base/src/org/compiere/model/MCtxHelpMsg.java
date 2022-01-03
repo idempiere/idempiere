@@ -100,7 +100,7 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	
 	/**
 	 * Get the context help message defined for the type, recordid, client, org (immutable)
-	 * @param ctxtype
+	 * @param ctxType
 	 * @param recordId
 	 * @return the context message record
 	 */
@@ -110,7 +110,8 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	
 	/**
 	 * Get the context help message defined for the type, recordid, client, org (immutable)
-	 * @param ctxtype
+	 * @param ctx
+	 * @param ctxType
 	 * @param recordId
 	 * @return an immutable instance of context message record (if any)
 	 */

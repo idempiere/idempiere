@@ -156,7 +156,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	}
 
 	// Convert.recoverQuotedStrings() error on strings with "<-->" - teo_sarca [ 1705768 ]
-	// http://sourceforge.net/tracker/index.php?func=detail&aid=1705768&group_id=176962&atid=879332
+	// https://sourceforge.net/p/adempiere/bugs/504/
 	@Test
 	public void test1705768() {
 		sql = "SELECT 'Partner <--> Organization', 's2\\$', 's3' FROM DUAL";
@@ -507,7 +507,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	/**
 	 * Test BF [3137355 ] PG query not valid when contains quotes and backslashes.
-	 * https://sourceforge.net/tracker/?func=detail&aid=3137355&group_id=176962&atid=879332
+	 * https://sourceforge.net/p/adempiere/bugs/2560/
 	 */
 	@Test
 	public void test3137355()

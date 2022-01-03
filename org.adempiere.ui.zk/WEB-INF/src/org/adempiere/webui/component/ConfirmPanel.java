@@ -85,7 +85,7 @@ public final class ConfirmPanel extends Div
     /**
      * Creates a button of the specified id
      *
-     * @param id button id
+     * @param name button id
      * @return  button
      *
      * <p>The string can be any of the following and the corresponding button will be created: </p>
@@ -380,7 +380,7 @@ public final class ConfirmPanel extends Div
 
     /**
      * sets the visibility of the specified button
-     * @param btnName   button name
+     * @param id   button name
      * @param visible   visibility
      * <p> The button name can be any of the following
      * <dl>
@@ -557,7 +557,7 @@ public final class ConfirmPanel extends Div
 
 	/**
 	 * alias for addComponentsLeft for ease of porting swing form
-	 * @param selectAllButton
+	 * @param button
 	 */
 	public void addButton(Button button) {
 		addComponentsLeft(button);

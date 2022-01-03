@@ -26,7 +26,6 @@ import javax.print.attribute.standard.MediaSize;
 import javax.print.attribute.standard.MediaSizeName;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintPaper;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -39,7 +38,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *
  *  Change log:
  *  <ul>
- *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2580531&group_id=176962
+ *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/p/adempiere/feature-requests/655/
  *  </ul>
  *  
  * 	@author 	Jorg Janke
@@ -47,7 +46,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 
  * @author Teo Sarca
  * 			<li>FR [ 2829019 ] Check PrintPaper on save
- * 			https://sourceforge.net/tracker/?func=detail&aid=2829019&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/782/
  */
 public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 {
@@ -324,25 +323,4 @@ public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 		}
 	}	//	CMediaSizeName	
 	
-	/**************************************************************************
-	 * 	Test
-	 * 	@param args args
-	 */
-	public static void main(String[] args)
-	{
-		org.compiere.Adempiere.startupEnvironment(true);
-
-	//	create ("Standard Landscape", true);
-	//	create ("Standard Portrait", false);
-
-		//	Read All Papers
-		int[] IDs = PO.getAllIDs ("AD_PrintPaper", null, null);
-		for (int i = 0; i < IDs.length; i++)
-		{
-			System.out.println("--");
-			MPrintPaper pp = new MPrintPaper(Env.getCtx(), IDs[i], null);
-			pp.dump();
-		}
-
-	}
 }	//	MPrintPaper

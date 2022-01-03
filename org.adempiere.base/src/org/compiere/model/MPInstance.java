@@ -46,7 +46,7 @@ import org.osgi.service.event.Event;
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 		<li>FR [ 2818478 ] Introduce MPInstance.createParameter helper method
- * 			https://sourceforge.net/tracker/?func=detail&aid=2818478&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/756/
  */
 public class MPInstance extends X_AD_PInstance
 {
@@ -153,7 +153,7 @@ public class MPInstance extends X_AD_PInstance
 	/**
 	 * Validate that a set of process instance parameters are equal or not
 	 * to the current instance parameter
-	 * @param param array of parameters to compare
+	 * @param params array of parameters to compare
 	 * @return true if the process instance parameters are the same as the  array ones
 	 */
 	public boolean equalParameters(MPInstancePara[] params) {		

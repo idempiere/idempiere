@@ -217,8 +217,6 @@ public class FactAcctReset extends SvrProcess
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_PaymentAllocation + "'";
 		else if (AD_Table_ID == MJournal.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLJournal + "'";
-	//	else if (AD_Table_ID == M.Table_ID)
-	//		docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLDocument + "'";
 		else if (AD_Table_ID == MMovement.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MaterialMovement + "'";
 		else if (AD_Table_ID == MRequisition.Table_ID)

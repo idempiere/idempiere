@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Subscription_Delivery
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Subscription_Delivery")
 public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_Delivery, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_Subscription_Delivery (Properties ctx, int C_Subscription_Delivery_ID, String trxName)
@@ -73,21 +73,20 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
     }
 
 	/** Set Subscription Delivery.
-		@param C_Subscription_Delivery_ID 
-		Optional Delivery Record for a Subscription
-	  */
+		@param C_Subscription_Delivery_ID Optional Delivery Record for a Subscription
+	*/
 	public void setC_Subscription_Delivery_ID (int C_Subscription_Delivery_ID)
 	{
-		if (C_Subscription_Delivery_ID < 1) 
+		if (C_Subscription_Delivery_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Subscription_Delivery_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Subscription_Delivery_ID, Integer.valueOf(C_Subscription_Delivery_ID));
 	}
 
 	/** Get Subscription Delivery.
 		@return Optional Delivery Record for a Subscription
 	  */
-	public int getC_Subscription_Delivery_ID () 
+	public int getC_Subscription_Delivery_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Subscription_Delivery_ID);
 		if (ii == null)
@@ -104,7 +103,8 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
     }
 
 	/** Set C_Subscription_Delivery_UU.
-		@param C_Subscription_Delivery_UU C_Subscription_Delivery_UU	  */
+		@param C_Subscription_Delivery_UU C_Subscription_Delivery_UU
+	*/
 	public void setC_Subscription_Delivery_UU (String C_Subscription_Delivery_UU)
 	{
 		set_Value (COLUMNNAME_C_Subscription_Delivery_UU, C_Subscription_Delivery_UU);
@@ -112,7 +112,7 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
 
 	/** Get C_Subscription_Delivery_UU.
 		@return C_Subscription_Delivery_UU	  */
-	public String getC_Subscription_Delivery_UU () 
+	public String getC_Subscription_Delivery_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Subscription_Delivery_UU);
 	}
@@ -124,21 +124,20 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
 	}
 
 	/** Set Subscription.
-		@param C_Subscription_ID 
-		Subscription of a Business Partner of a Product to renew
-	  */
+		@param C_Subscription_ID Subscription of a Business Partner of a Product to renew
+	*/
 	public void setC_Subscription_ID (int C_Subscription_ID)
 	{
-		if (C_Subscription_ID < 1) 
+		if (C_Subscription_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Subscription_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Subscription_ID, Integer.valueOf(C_Subscription_ID));
 	}
 
 	/** Get Subscription.
 		@return Subscription of a Business Partner of a Product to renew
 	  */
-	public int getC_Subscription_ID () 
+	public int getC_Subscription_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Subscription_ID);
 		if (ii == null)

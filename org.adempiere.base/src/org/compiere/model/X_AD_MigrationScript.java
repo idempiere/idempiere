@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_MigrationScript
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_MigrationScript")
 public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_MigrationScript (Properties ctx, int AD_MigrationScript_ID, String trxName)
@@ -78,21 +78,20 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
     }
 
 	/** Set Migration Script.
-		@param AD_MigrationScript_ID 
-		Table to check whether the migration script has been applied
-	  */
+		@param AD_MigrationScript_ID Table to check whether the migration script has been applied
+	*/
 	public void setAD_MigrationScript_ID (int AD_MigrationScript_ID)
 	{
-		if (AD_MigrationScript_ID < 1) 
+		if (AD_MigrationScript_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_MigrationScript_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_MigrationScript_ID, Integer.valueOf(AD_MigrationScript_ID));
 	}
 
 	/** Get Migration Script.
 		@return Table to check whether the migration script has been applied
 	  */
-	public int getAD_MigrationScript_ID () 
+	public int getAD_MigrationScript_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_MigrationScript_ID);
 		if (ii == null)
@@ -101,7 +100,8 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	}
 
 	/** Set AD_MigrationScript_UU.
-		@param AD_MigrationScript_UU AD_MigrationScript_UU	  */
+		@param AD_MigrationScript_UU AD_MigrationScript_UU
+	*/
 	public void setAD_MigrationScript_UU (String AD_MigrationScript_UU)
 	{
 		set_Value (COLUMNNAME_AD_MigrationScript_UU, AD_MigrationScript_UU);
@@ -109,15 +109,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 
 	/** Get AD_MigrationScript_UU.
 		@return AD_MigrationScript_UU	  */
-	public String getAD_MigrationScript_UU () 
+	public String getAD_MigrationScript_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_MigrationScript_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -126,13 +125,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Developer Name.
-		@param DeveloperName Developer Name	  */
+		@param DeveloperName Developer Name
+	*/
 	public void setDeveloperName (String DeveloperName)
 	{
 		set_Value (COLUMNNAME_DeveloperName, DeveloperName);
@@ -140,15 +140,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 
 	/** Get Developer Name.
 		@return Developer Name	  */
-	public String getDeveloperName () 
+	public String getDeveloperName()
 	{
 		return (String)get_Value(COLUMNNAME_DeveloperName);
 	}
 
 	/** Set File Name.
-		@param FileName 
-		Name of the local file or URL
-	  */
+		@param FileName Name of the local file or URL
+	*/
 	public void setFileName (String FileName)
 	{
 		set_Value (COLUMNNAME_FileName, FileName);
@@ -157,13 +156,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get File Name.
 		@return Name of the local file or URL
 	  */
-	public String getFileName () 
+	public String getFileName()
 	{
 		return (String)get_Value(COLUMNNAME_FileName);
 	}
 
 	/** Set Apply Script.
-		@param isApply Apply Script	  */
+		@param isApply Apply Script
+	*/
 	public void setisApply (boolean isApply)
 	{
 		set_Value (COLUMNNAME_isApply, Boolean.valueOf(isApply));
@@ -171,7 +171,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 
 	/** Get Apply Script.
 		@return Apply Script	  */
-	public boolean isApply () 
+	public boolean isApply()
 	{
 		Object oo = get_Value(COLUMNNAME_isApply);
 		if (oo != null) 
@@ -184,9 +184,8 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -195,7 +194,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -209,9 +208,8 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
     }
 
 	/** Set Project.
-		@param ProjectName 
-		Name of the Project
-	  */
+		@param ProjectName Name of the Project
+	*/
 	public void setProjectName (String ProjectName)
 	{
 		set_Value (COLUMNNAME_ProjectName, ProjectName);
@@ -220,15 +218,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get Project.
 		@return Name of the Project
 	  */
-	public String getProjectName () 
+	public String getProjectName()
 	{
 		return (String)get_Value(COLUMNNAME_ProjectName);
 	}
 
 	/** Set Reference.
-		@param Reference 
-		Reference for this record
-	  */
+		@param Reference Reference for this record
+	*/
 	public void setReference (String Reference)
 	{
 		set_Value (COLUMNNAME_Reference, Reference);
@@ -237,15 +234,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get Reference.
 		@return Reference for this record
 	  */
-	public String getReference () 
+	public String getReference()
 	{
 		return (String)get_Value(COLUMNNAME_Reference);
 	}
 
 	/** Set Release No.
-		@param ReleaseNo 
-		Internal Release Number
-	  */
+		@param ReleaseNo Internal Release Number
+	*/
 	public void setReleaseNo (String ReleaseNo)
 	{
 		set_Value (COLUMNNAME_ReleaseNo, ReleaseNo);
@@ -254,15 +250,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get Release No.
 		@return Internal Release Number
 	  */
-	public String getReleaseNo () 
+	public String getReleaseNo()
 	{
 		return (String)get_Value(COLUMNNAME_ReleaseNo);
 	}
 
 	/** Set Script.
-		@param Script 
-		Dynamic Java Language Script to calculate result
-	  */
+		@param Script Dynamic Java Language Script to calculate result
+	*/
 	public void setScript (byte[] Script)
 	{
 		set_ValueNoCheck (COLUMNNAME_Script, Script);
@@ -271,13 +266,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get Script.
 		@return Dynamic Java Language Script to calculate result
 	  */
-	public byte[] getScript () 
+	public byte[] getScript()
 	{
 		return (byte[])get_Value(COLUMNNAME_Script);
 	}
 
 	/** Set Roll the Script.
-		@param ScriptRoll Roll the Script	  */
+		@param ScriptRoll Roll the Script
+	*/
 	public void setScriptRoll (String ScriptRoll)
 	{
 		set_Value (COLUMNNAME_ScriptRoll, ScriptRoll);
@@ -285,7 +281,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 
 	/** Get Roll the Script.
 		@return Roll the Script	  */
-	public String getScriptRoll () 
+	public String getScriptRoll()
 	{
 		return (String)get_Value(COLUMNNAME_ScriptRoll);
 	}
@@ -299,9 +295,8 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** In Progress = IP */
 	public static final String STATUS_InProgress = "IP";
 	/** Set Status.
-		@param Status 
-		Status of the currently running check
-	  */
+		@param Status Status of the currently running check
+	*/
 	public void setStatus (String Status)
 	{
 
@@ -311,15 +306,14 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get Status.
 		@return Status of the currently running check
 	  */
-	public String getStatus () 
+	public String getStatus()
 	{
 		return (String)get_Value(COLUMNNAME_Status);
 	}
 
 	/** Set URL.
-		@param URL 
-		Full URL address - e.g. http://www.idempiere.org
-	  */
+		@param URL Full URL address - e.g. http://www.idempiere.org
+	*/
 	public void setURL (String URL)
 	{
 		set_Value (COLUMNNAME_URL, URL);
@@ -328,7 +322,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/** Get URL.
 		@return Full URL address - e.g. http://www.idempiere.org
 	  */
-	public String getURL () 
+	public String getURL()
 	{
 		return (String)get_Value(COLUMNNAME_URL);
 	}

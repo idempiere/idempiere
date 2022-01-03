@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition_Run
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecognition_Run")
 public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecognition_Run, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Run (Properties ctx, int C_RevenueRecognition_Run_ID, String trxName)
@@ -83,21 +83,20 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	}
 
 	/** Set Revenue Recognition Plan.
-		@param C_RevenueRecognition_Plan_ID 
-		Plan for recognizing or recording revenue
-	  */
+		@param C_RevenueRecognition_Plan_ID Plan for recognizing or recording revenue
+	*/
 	public void setC_RevenueRecognition_Plan_ID (int C_RevenueRecognition_Plan_ID)
 	{
-		if (C_RevenueRecognition_Plan_ID < 1) 
+		if (C_RevenueRecognition_Plan_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_Plan_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_Plan_ID, Integer.valueOf(C_RevenueRecognition_Plan_ID));
 	}
 
 	/** Get Revenue Recognition Plan.
 		@return Plan for recognizing or recording revenue
 	  */
-	public int getC_RevenueRecognition_Plan_ID () 
+	public int getC_RevenueRecognition_Plan_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_Plan_ID);
 		if (ii == null)
@@ -114,21 +113,20 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
     }
 
 	/** Set Revenue Recognition Run.
-		@param C_RevenueRecognition_Run_ID 
-		Revenue Recognition Run or Process
-	  */
+		@param C_RevenueRecognition_Run_ID Revenue Recognition Run or Process
+	*/
 	public void setC_RevenueRecognition_Run_ID (int C_RevenueRecognition_Run_ID)
 	{
-		if (C_RevenueRecognition_Run_ID < 1) 
+		if (C_RevenueRecognition_Run_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_Run_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_Run_ID, Integer.valueOf(C_RevenueRecognition_Run_ID));
 	}
 
 	/** Get Revenue Recognition Run.
 		@return Revenue Recognition Run or Process
 	  */
-	public int getC_RevenueRecognition_Run_ID () 
+	public int getC_RevenueRecognition_Run_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_Run_ID);
 		if (ii == null)
@@ -137,7 +135,8 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	}
 
 	/** Set C_RevenueRecognition_Run_UU.
-		@param C_RevenueRecognition_Run_UU C_RevenueRecognition_Run_UU	  */
+		@param C_RevenueRecognition_Run_UU C_RevenueRecognition_Run_UU
+	*/
 	public void setC_RevenueRecognition_Run_UU (String C_RevenueRecognition_Run_UU)
 	{
 		set_Value (COLUMNNAME_C_RevenueRecognition_Run_UU, C_RevenueRecognition_Run_UU);
@@ -145,7 +144,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 
 	/** Get C_RevenueRecognition_Run_UU.
 		@return C_RevenueRecognition_Run_UU	  */
-	public String getC_RevenueRecognition_Run_UU () 
+	public String getC_RevenueRecognition_Run_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RevenueRecognition_Run_UU);
 	}
@@ -157,18 +156,19 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	}
 
 	/** Set Revenue Recognition Service.
-		@param C_RevenueRecog_Service_ID Revenue Recognition Service	  */
+		@param C_RevenueRecog_Service_ID Revenue Recognition Service
+	*/
 	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID)
 	{
-		if (C_RevenueRecog_Service_ID < 1) 
+		if (C_RevenueRecog_Service_ID < 1)
 			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_RevenueRecog_Service_ID, Integer.valueOf(C_RevenueRecog_Service_ID));
 	}
 
 	/** Get Revenue Recognition Service.
 		@return Revenue Recognition Service	  */
-	public int getC_RevenueRecog_Service_ID () 
+	public int getC_RevenueRecog_Service_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecog_Service_ID);
 		if (ii == null)
@@ -177,7 +177,8 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	}
 
 	/** Set Recognition Date.
-		@param DateRecognized Recognition Date	  */
+		@param DateRecognized Recognition Date
+	*/
 	public void setDateRecognized (Timestamp DateRecognized)
 	{
 		set_Value (COLUMNNAME_DateRecognized, DateRecognized);
@@ -185,7 +186,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 
 	/** Get Recognition Date.
 		@return Recognition Date	  */
-	public Timestamp getDateRecognized () 
+	public Timestamp getDateRecognized()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateRecognized);
 	}
@@ -197,21 +198,20 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	}
 
 	/** Set Journal.
-		@param GL_Journal_ID 
-		General Ledger Journal
-	  */
+		@param GL_Journal_ID General Ledger Journal
+	*/
 	public void setGL_Journal_ID (int GL_Journal_ID)
 	{
-		if (GL_Journal_ID < 1) 
+		if (GL_Journal_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_Journal_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_Journal_ID, Integer.valueOf(GL_Journal_ID));
 	}
 
 	/** Get Journal.
 		@return General Ledger Journal
 	  */
-	public int getGL_Journal_ID () 
+	public int getGL_Journal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Journal_ID);
 		if (ii == null)
@@ -220,7 +220,8 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 	}
 
 	/** Set Recognized Amount.
-		@param RecognizedAmt Recognized Amount	  */
+		@param RecognizedAmt Recognized Amount
+	*/
 	public void setRecognizedAmt (BigDecimal RecognizedAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_RecognizedAmt, RecognizedAmt);
@@ -228,7 +229,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
 
 	/** Get Recognized Amount.
 		@return Recognized Amount	  */
-	public BigDecimal getRecognizedAmt () 
+	public BigDecimal getRecognizedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_RecognizedAmt);
 		if (bd == null)

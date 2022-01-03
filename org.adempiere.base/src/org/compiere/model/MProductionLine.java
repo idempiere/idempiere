@@ -53,7 +53,7 @@ public class MProductionLine extends X_M_ProductionLine {
 	
 	/**
 	 * Parent Constructor
-	 * @param plan
+	 * @param header
 	 */
 	public MProductionLine( MProduction header ) {
 		super( header.getCtx(), 0, header.get_TrxName() );

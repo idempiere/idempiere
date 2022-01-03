@@ -32,7 +32,7 @@ import org.compiere.util.CLogger;
  * 			<li>BF [ 1652623 ] AccessSqlParser.getTableInfo(String) - tablename parsing bug
  * 			<li>BF [ 1964496 ] AccessSqlParser is not parsing well JOIN CLAUSE
  * 			<li>BF [ 2840157 ] AccessSqlParser is not parsing well ON keyword
- * 				https://sourceforge.net/tracker/?func=detail&aid=2840157&group_id=176962&atid=879332
+ * 				https://sourceforge.net/p/adempiere/bugs/2042/
  */
 public class AccessSqlParser
 {
@@ -105,9 +105,7 @@ public class AccessSqlParser
 	{
 		if (m_sqlOriginal == null || m_sqlOriginal.length() == 0)
 			throw new IllegalArgumentException("No SQL");
-		//
-	//	if (CLogMgt.isLevelFinest())
-	//		log.fine(m_sqlOriginal);
+
 		getSelectStatements();
 		//	analyse each select	
 		for (int i = 0; i < m_sql.length; i++)
@@ -151,15 +149,6 @@ public class AccessSqlParser
 			}
 		}
 		m_sql = sqlOut;
-		/** List & check **
-		for (int i = 0; i < m_sql.length; i++)
-		{
-			if (m_sql[i].indexOf("SELECT ",2) != -1)
-				log.log(Level.SEVERE, "#" + i + " Has embedded SQL - " + m_sql[i]);
-			else
-				log.fine("#" + i + " - " + m_sql[i]);
-		}
-		/** **/
 	}	//	getSelectStatements
 
 	/**
@@ -262,7 +251,6 @@ public class AccessSqlParser
 				index = from.indexOf(ON);
 			}
 			
-//			log.fine("getTableInfo - " + from);
 			StringTokenizer tableST = new StringTokenizer (from, ",");
 			while (tableST.hasMoreTokens())
 			{
@@ -273,7 +261,6 @@ public class AccessSqlParser
 					tableInfo = new TableInfo(synST.nextToken(), synST.nextToken());
 				else
 					tableInfo = new TableInfo(tableString);
-//				log.fine("getTableInfo -- " + tableInfo);
 				list.add(tableInfo);
 			}
 			//

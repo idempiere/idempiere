@@ -39,8 +39,9 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 
 	/**
 	 * 	MPackageExpDetail
-	 *	@param ctx
-	 *	@param int
+	 * @param ctx
+	 * @param AD_Package_Exp_ID
+	 * @param trxName
 	 */
 	public MPackageExpDetail (Properties ctx, int AD_Package_Exp_ID, String trxName)
 	{

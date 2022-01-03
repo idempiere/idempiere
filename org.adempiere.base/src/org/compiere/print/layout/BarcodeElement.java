@@ -222,7 +222,7 @@ public class BarcodeElement extends PrintElement
 	
 	/**
 	 * 	Layout and Calculate Size
-	 * 	Set p_width & p_height
+	 * 	Set p_width and p_height
 	 * 	@return true if calculated
 	 */
 	protected boolean calculateSize ()
@@ -279,7 +279,7 @@ public class BarcodeElement extends PrintElement
 	}
 
 	/**
-	 * @author teo_sarca - [ 1673590 ] report table - barcode overflows over next fields
+	 * author teo_sarca - [ 1673590 ] report table - barcode overflows over next fields
 	 * @return can this element overflow over the next fields
 	 */
 	public boolean isAllowOverflow() { // 

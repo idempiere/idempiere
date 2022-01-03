@@ -972,7 +972,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * Restore window context.
 	 * 
-	 * @author teo_sarca [ 1699826 ]
+	 * author teo_sarca [ 1699826 ]
 	 * @see org.compiere.model.GridField#restoreValue()
 	 */
 	protected void restoreContext() {

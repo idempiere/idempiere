@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 public interface I_AD_Role 
 {
@@ -303,10 +303,10 @@ public interface I_AD_Role
     /** Column name IsAccessAdvanced */
     public static final String COLUMNNAME_IsAccessAdvanced = "IsAccessAdvanced";
 
-	/** Set Access Advanced 	  */
+	/** Set Access Advanced	  */
 	public void setIsAccessAdvanced (boolean IsAccessAdvanced);
 
-	/** Get Access Advanced 	  */
+	/** Get Access Advanced	  */
 	public boolean isAccessAdvanced();
 
     /** Column name IsAccessAllOrgs */

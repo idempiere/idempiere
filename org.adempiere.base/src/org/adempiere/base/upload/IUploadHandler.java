@@ -43,7 +43,7 @@ public interface IUploadHandler {
 	/**
 	 * 
 	 * @param media
-	 * @param userExternalAccount
+	 * @param account userExternalAccount
 	 * @return {@link UploadResponse}
 	 */
 	public UploadResponse uploadMedia(UploadMedia media, MAuthorizationAccount account);

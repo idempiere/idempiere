@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_TimeExpense
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="S_TimeExpense")
 public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_S_TimeExpense (Properties ctx, int S_TimeExpense_ID, String trxName)
@@ -87,9 +87,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
     }
 
 	/** Set Approval Amount.
-		@param ApprovalAmt 
-		Document Approval Amount
-	  */
+		@param ApprovalAmt Document Approval Amount
+	*/
 	public void setApprovalAmt (BigDecimal ApprovalAmt)
 	{
 		set_Value (COLUMNNAME_ApprovalAmt, ApprovalAmt);
@@ -98,7 +97,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Approval Amount.
 		@return Document Approval Amount
 	  */
-	public BigDecimal getApprovalAmt () 
+	public BigDecimal getApprovalAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ApprovalAmt);
 		if (bd == null)
@@ -112,22 +111,21 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -136,9 +134,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	}
 
 	/** Set Report Date.
-		@param DateReport 
-		Expense/Time Report Date
-	  */
+		@param DateReport Expense/Time Report Date
+	*/
 	public void setDateReport (Timestamp DateReport)
 	{
 		set_Value (COLUMNNAME_DateReport, DateReport);
@@ -147,15 +144,14 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Report Date.
 		@return Expense/Time Report Date
 	  */
-	public Timestamp getDateReport () 
+	public Timestamp getDateReport()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateReport);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -164,14 +160,14 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** <None> = -- */
+	/** &lt;None&gt; = -- */
 	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
@@ -200,9 +196,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Unlock = XL */
 	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -212,7 +207,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
@@ -244,9 +239,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -256,15 +250,14 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -273,7 +266,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -287,9 +280,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
     }
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -298,7 +290,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -317,21 +309,20 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	}
 
 	/** Set Price List.
-		@param M_PriceList_ID 
-		Unique identifier of a Price List
-	  */
+		@param M_PriceList_ID Unique identifier of a Price List
+	*/
 	public void setM_PriceList_ID (int M_PriceList_ID)
 	{
-		if (M_PriceList_ID < 1) 
+		if (M_PriceList_ID < 1)
 			set_Value (COLUMNNAME_M_PriceList_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_PriceList_ID, Integer.valueOf(M_PriceList_ID));
 	}
 
 	/** Get Price List.
 		@return Unique identifier of a Price List
 	  */
-	public int getM_PriceList_ID () 
+	public int getM_PriceList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PriceList_ID);
 		if (ii == null)
@@ -346,21 +337,20 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -369,9 +359,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -380,7 +369,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -393,7 +382,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -401,7 +391,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -414,21 +404,20 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	}
 
 	/** Set Expense Report.
-		@param S_TimeExpense_ID 
-		Time and Expense Report
-	  */
+		@param S_TimeExpense_ID Time and Expense Report
+	*/
 	public void setS_TimeExpense_ID (int S_TimeExpense_ID)
 	{
-		if (S_TimeExpense_ID < 1) 
+		if (S_TimeExpense_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_TimeExpense_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_TimeExpense_ID, Integer.valueOf(S_TimeExpense_ID));
 	}
 
 	/** Get Expense Report.
 		@return Time and Expense Report
 	  */
-	public int getS_TimeExpense_ID () 
+	public int getS_TimeExpense_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_TimeExpense_ID);
 		if (ii == null)
@@ -437,7 +426,8 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	}
 
 	/** Set S_TimeExpense_UU.
-		@param S_TimeExpense_UU S_TimeExpense_UU	  */
+		@param S_TimeExpense_UU S_TimeExpense_UU
+	*/
 	public void setS_TimeExpense_UU (String S_TimeExpense_UU)
 	{
 		set_Value (COLUMNNAME_S_TimeExpense_UU, S_TimeExpense_UU);
@@ -445,7 +435,7 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 
 	/** Get S_TimeExpense_UU.
 		@return S_TimeExpense_UU	  */
-	public String getS_TimeExpense_UU () 
+	public String getS_TimeExpense_UU()
 	{
 		return (String)get_Value(COLUMNNAME_S_TimeExpense_UU);
 	}

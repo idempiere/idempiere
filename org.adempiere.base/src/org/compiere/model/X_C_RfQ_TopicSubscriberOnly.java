@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_TopicSubscriberOnly
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQ_TopicSubscriberOnly")
 public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubscriberOnly, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_RfQ_TopicSubscriberOnly (Properties ctx, int C_RfQ_TopicSubscriberOnly_ID, String trxName)
@@ -79,21 +79,20 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	}
 
 	/** Set RfQ Subscriber.
-		@param C_RfQ_TopicSubscriber_ID 
-		Request for Quotation Topic Subscriber
-	  */
+		@param C_RfQ_TopicSubscriber_ID Request for Quotation Topic Subscriber
+	*/
 	public void setC_RfQ_TopicSubscriber_ID (int C_RfQ_TopicSubscriber_ID)
 	{
-		if (C_RfQ_TopicSubscriber_ID < 1) 
+		if (C_RfQ_TopicSubscriber_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, Integer.valueOf(C_RfQ_TopicSubscriber_ID));
 	}
 
 	/** Get RfQ Subscriber.
 		@return Request for Quotation Topic Subscriber
 	  */
-	public int getC_RfQ_TopicSubscriber_ID () 
+	public int getC_RfQ_TopicSubscriber_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_TopicSubscriber_ID);
 		if (ii == null)
@@ -102,21 +101,20 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	}
 
 	/** Set RfQ Topic Subscriber Restriction.
-		@param C_RfQ_TopicSubscriberOnly_ID 
-		Include Subscriber only for certain products or product categories
-	  */
+		@param C_RfQ_TopicSubscriberOnly_ID Include Subscriber only for certain products or product categories
+	*/
 	public void setC_RfQ_TopicSubscriberOnly_ID (int C_RfQ_TopicSubscriberOnly_ID)
 	{
-		if (C_RfQ_TopicSubscriberOnly_ID < 1) 
+		if (C_RfQ_TopicSubscriberOnly_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriberOnly_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriberOnly_ID, Integer.valueOf(C_RfQ_TopicSubscriberOnly_ID));
 	}
 
 	/** Get RfQ Topic Subscriber Restriction.
 		@return Include Subscriber only for certain products or product categories
 	  */
-	public int getC_RfQ_TopicSubscriberOnly_ID () 
+	public int getC_RfQ_TopicSubscriberOnly_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_TopicSubscriberOnly_ID);
 		if (ii == null)
@@ -125,7 +123,8 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	}
 
 	/** Set C_RfQ_TopicSubscriberOnly_UU.
-		@param C_RfQ_TopicSubscriberOnly_UU C_RfQ_TopicSubscriberOnly_UU	  */
+		@param C_RfQ_TopicSubscriberOnly_UU C_RfQ_TopicSubscriberOnly_UU
+	*/
 	public void setC_RfQ_TopicSubscriberOnly_UU (String C_RfQ_TopicSubscriberOnly_UU)
 	{
 		set_Value (COLUMNNAME_C_RfQ_TopicSubscriberOnly_UU, C_RfQ_TopicSubscriberOnly_UU);
@@ -133,15 +132,14 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 
 	/** Get C_RfQ_TopicSubscriberOnly_UU.
 		@return C_RfQ_TopicSubscriberOnly_UU	  */
-	public String getC_RfQ_TopicSubscriberOnly_UU () 
+	public String getC_RfQ_TopicSubscriberOnly_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQ_TopicSubscriberOnly_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -150,7 +148,7 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -162,21 +160,20 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -199,21 +196,20 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)

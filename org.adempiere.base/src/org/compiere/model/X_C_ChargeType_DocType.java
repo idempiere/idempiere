@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_ChargeType_DocType
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_ChargeType_DocType")
 public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)
@@ -76,7 +76,8 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
     }
 
 	/** Set C_ChargeType_DocType_UU.
-		@param C_ChargeType_DocType_UU C_ChargeType_DocType_UU	  */
+		@param C_ChargeType_DocType_UU C_ChargeType_DocType_UU
+	*/
 	public void setC_ChargeType_DocType_UU (String C_ChargeType_DocType_UU)
 	{
 		set_Value (COLUMNNAME_C_ChargeType_DocType_UU, C_ChargeType_DocType_UU);
@@ -84,7 +85,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 
 	/** Get C_ChargeType_DocType_UU.
 		@return C_ChargeType_DocType_UU	  */
-	public String getC_ChargeType_DocType_UU () 
+	public String getC_ChargeType_DocType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ChargeType_DocType_UU);
 	}
@@ -96,18 +97,19 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	}
 
 	/** Set Charge Type.
-		@param C_ChargeType_ID Charge Type	  */
+		@param C_ChargeType_ID Charge Type
+	*/
 	public void setC_ChargeType_ID (int C_ChargeType_ID)
 	{
-		if (C_ChargeType_ID < 1) 
+		if (C_ChargeType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_ChargeType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_ChargeType_ID, Integer.valueOf(C_ChargeType_ID));
 	}
 
 	/** Get Charge Type.
 		@return Charge Type	  */
-	public int getC_ChargeType_ID () 
+	public int getC_ChargeType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ChargeType_ID);
 		if (ii == null)
@@ -122,21 +124,20 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -145,7 +146,8 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	}
 
 	/** Set Allow Negative.
-		@param IsAllowNegative Allow Negative	  */
+		@param IsAllowNegative Allow Negative
+	*/
 	public void setIsAllowNegative (boolean IsAllowNegative)
 	{
 		set_Value (COLUMNNAME_IsAllowNegative, Boolean.valueOf(IsAllowNegative));
@@ -153,7 +155,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 
 	/** Get Allow Negative.
 		@return Allow Negative	  */
-	public boolean isAllowNegative () 
+	public boolean isAllowNegative()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowNegative);
 		if (oo != null) 
@@ -166,7 +168,8 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	}
 
 	/** Set Allow Positive.
-		@param IsAllowPositive Allow Positive	  */
+		@param IsAllowPositive Allow Positive
+	*/
 	public void setIsAllowPositive (boolean IsAllowPositive)
 	{
 		set_Value (COLUMNNAME_IsAllowPositive, Boolean.valueOf(IsAllowPositive));
@@ -174,7 +177,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 
 	/** Get Allow Positive.
 		@return Allow Positive	  */
-	public boolean isAllowPositive () 
+	public boolean isAllowPositive()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowPositive);
 		if (oo != null) 

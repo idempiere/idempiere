@@ -39,14 +39,14 @@ import org.compiere.util.Language;
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *		<li>BF [ 1734394 ] MLookupFactory.getLookup_TableDirEmbed is not translated
- *		<li>BF [ 1714261 ] MLookupFactory: TableDirEmbed -> TableEmbed not supported
+ *		<li>BF [ 1714261 ] MLookupFactory: TableDirEmbed -&gt; TableEmbed not supported
  *		<li>BF [ 1672820 ] Sorting should be language-sensitive
  *		<li>BF [ 1739530 ] getLookup_TableDirEmbed error when BaseColumn is sql query
  *		<li>BF [ 1739544 ] getLookup_TableEmbed error for self referencing references
  *		<li>BF [ 1817768 ] Isolate hardcoded table direct columns
  * @author Teo Sarca
  * 		<li>BF [ 2933367 ] Virtual Column Identifiers are not working
- * 			https://sourceforge.net/tracker/?func=detail&aid=2933367&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2291/
  * @author Carlos Ruiz, GlobalQSS
  *		<li>BF [ 2561593 ] Multi-tenant problem with webui
  */
@@ -55,9 +55,9 @@ public class MLookupFactory
 	/**	Logging								*/
 	private static CLogger		s_log = CLogger.getCLogger(MLookupFactory.class);
 	/** Table Reference Cache				*/
-	private static CCache<String,MLookupInfo> s_cacheRefTable = new CCache<String,MLookupInfo>(I_AD_Ref_Table.Table_Name, 30, 60);	//	1h
+	private static CCache<String,MLookupInfo> s_cacheRefTable = new CCache<String,MLookupInfo>(I_AD_Ref_Table.Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);	//	1h
 	/** List Reference Cache				*/
-	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, 60);	//	1h
+	private static CCache<String,MLookupInfo> s_cacheRefList = new CCache<String,MLookupInfo>(I_AD_Ref_List.Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);	//	1h
 
 
 	/**
@@ -491,6 +491,7 @@ public class MLookupFactory
 			}
 		}
 
+		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 		String lookupDisplayColumn = null;
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
@@ -499,7 +500,7 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
-				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '-' || ");
+				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
 			if (displayColumnSQL != null && displayColumnSQL.trim().length() > 0)
 				realSQL.append("NVL(").append(displayColumnSQL).append(",'-1')");
 			else {
@@ -527,7 +528,7 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
-				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '-' || ");
+				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
 			if (displayColumnSQL != null && displayColumnSQL.trim().length() > 0)
 				realSQL.append("NVL(").append(displayColumnSQL).append(",'-1')");
 			else {
@@ -673,8 +674,10 @@ public class MLookupFactory
 
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
 
-		if (isValueDisplayed)
-			embedSQL.append(TableNameAlias).append(".Value||'-'||");
+		if (isValueDisplayed) {
+			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+			embedSQL.append(TableNameAlias).append(".Value||'").append(separator).append("'||");
+		}
 
 		MColumn columnDisplay = new MColumn(Env.getCtx(), columnDisplay_ID, null);
 		if (columnDisplay.isVirtualUIColumn() || columnDisplay.isVirtualSearchColumn())

@@ -245,9 +245,12 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	/**
 	 * Get All Cost Elements for current AD_Client_ID
 	 * @param ctx context
-	 * @param trxName transaction
+	 * @param CostingMethod
 	 * @return array cost elements
 	 **/
+	/**
+	 * @return
+	 */
 	public static List<MCostElement> getByCostingMethod (Properties ctx, String CostingMethod)
 	{		
 		final String whereClause = "AD_Client_ID = ? AND CostingMethod=?";

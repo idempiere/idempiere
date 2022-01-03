@@ -211,7 +211,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 
 	/**
 	 *	Dynamic Init.
-	 *	- Create GridController & Panel
+	 *	- Create GridController and Panel
 	 *	- AD_Column_ID from C_Order
 	 */
 	public void dynInit()
@@ -312,8 +312,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	}   //  tableChanged
 
 	/**
-	 *	Save Selection & return selecion Query or ""
-	 *  @return where clause like C_Order_ID IN (...)
+	 *	Save Selection
 	 */
 	public void saveSelection()
 	{
@@ -460,7 +459,6 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	/**************************************************************************
 	 *  Lock User Interface.
 	 *  Called from the Worker before processing
-	 *  @param pi process info
 	 */
 	public void lockUI ()
 	{
@@ -472,7 +470,6 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	/**
 	 *  Unlock User Interface.
 	 *  Called from the Worker when processing is done
-	 *  @param pi result of execute ASync call
 	 */
 	public void unlockUI ()
 	{		

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionRun
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionRun")
 public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName)
@@ -86,21 +86,20 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	}
 
 	/** Set Commission.
-		@param C_Commission_ID 
-		Commission
-	  */
+		@param C_Commission_ID Commission
+	*/
 	public void setC_Commission_ID (int C_Commission_ID)
 	{
-		if (C_Commission_ID < 1) 
+		if (C_Commission_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, Integer.valueOf(C_Commission_ID));
 	}
 
 	/** Get Commission.
 		@return Commission
 	  */
-	public int getC_Commission_ID () 
+	public int getC_Commission_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Commission_ID);
 		if (ii == null)
@@ -109,21 +108,20 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	}
 
 	/** Set Commission Run.
-		@param C_CommissionRun_ID 
-		Commission Run or Process
-	  */
+		@param C_CommissionRun_ID Commission Run or Process
+	*/
 	public void setC_CommissionRun_ID (int C_CommissionRun_ID)
 	{
-		if (C_CommissionRun_ID < 1) 
+		if (C_CommissionRun_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CommissionRun_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CommissionRun_ID, Integer.valueOf(C_CommissionRun_ID));
 	}
 
 	/** Get Commission Run.
 		@return Commission Run or Process
 	  */
-	public int getC_CommissionRun_ID () 
+	public int getC_CommissionRun_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CommissionRun_ID);
 		if (ii == null)
@@ -132,7 +130,8 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	}
 
 	/** Set C_CommissionRun_UU.
-		@param C_CommissionRun_UU C_CommissionRun_UU	  */
+		@param C_CommissionRun_UU C_CommissionRun_UU
+	*/
 	public void setC_CommissionRun_UU (String C_CommissionRun_UU)
 	{
 		set_Value (COLUMNNAME_C_CommissionRun_UU, C_CommissionRun_UU);
@@ -140,15 +139,14 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 
 	/** Get C_CommissionRun_UU.
 		@return C_CommissionRun_UU	  */
-	public String getC_CommissionRun_UU () 
+	public String getC_CommissionRun_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CommissionRun_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -157,15 +155,14 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -174,7 +171,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -188,9 +185,8 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
     }
 
 	/** Set Grand Total.
-		@param GrandTotal 
-		Total amount of document
-	  */
+		@param GrandTotal Total amount of document
+	*/
 	public void setGrandTotal (BigDecimal GrandTotal)
 	{
 		set_ValueNoCheck (COLUMNNAME_GrandTotal, GrandTotal);
@@ -199,7 +195,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/** Get Grand Total.
 		@return Total amount of document
 	  */
-	public BigDecimal getGrandTotal () 
+	public BigDecimal getGrandTotal()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_GrandTotal);
 		if (bd == null)
@@ -208,9 +204,8 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -219,7 +214,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -232,7 +227,8 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -240,7 +236,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -253,9 +249,8 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -264,7 +259,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

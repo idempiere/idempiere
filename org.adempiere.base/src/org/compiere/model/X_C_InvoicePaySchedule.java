@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoicePaySchedule
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoicePaySchedule")
 public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_C_InvoicePaySchedule (Properties ctx, int C_InvoicePaySchedule_ID, String trxName)
@@ -88,21 +88,20 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -111,21 +110,20 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Invoice Payment Schedule.
-		@param C_InvoicePaySchedule_ID 
-		Invoice Payment Schedule
-	  */
+		@param C_InvoicePaySchedule_ID Invoice Payment Schedule
+	*/
 	public void setC_InvoicePaySchedule_ID (int C_InvoicePaySchedule_ID)
 	{
-		if (C_InvoicePaySchedule_ID < 1) 
+		if (C_InvoicePaySchedule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoicePaySchedule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoicePaySchedule_ID, Integer.valueOf(C_InvoicePaySchedule_ID));
 	}
 
 	/** Get Invoice Payment Schedule.
 		@return Invoice Payment Schedule
 	  */
-	public int getC_InvoicePaySchedule_ID () 
+	public int getC_InvoicePaySchedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoicePaySchedule_ID);
 		if (ii == null)
@@ -134,7 +132,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set C_InvoicePaySchedule_UU.
-		@param C_InvoicePaySchedule_UU C_InvoicePaySchedule_UU	  */
+		@param C_InvoicePaySchedule_UU C_InvoicePaySchedule_UU
+	*/
 	public void setC_InvoicePaySchedule_UU (String C_InvoicePaySchedule_UU)
 	{
 		set_Value (COLUMNNAME_C_InvoicePaySchedule_UU, C_InvoicePaySchedule_UU);
@@ -142,7 +141,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 
 	/** Get C_InvoicePaySchedule_UU.
 		@return C_InvoicePaySchedule_UU	  */
-	public String getC_InvoicePaySchedule_UU () 
+	public String getC_InvoicePaySchedule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_InvoicePaySchedule_UU);
 	}
@@ -154,21 +153,20 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Payment Schedule.
-		@param C_PaySchedule_ID 
-		Payment Schedule Template
-	  */
+		@param C_PaySchedule_ID Payment Schedule Template
+	*/
 	public void setC_PaySchedule_ID (int C_PaySchedule_ID)
 	{
-		if (C_PaySchedule_ID < 1) 
+		if (C_PaySchedule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_PaySchedule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_PaySchedule_ID, Integer.valueOf(C_PaySchedule_ID));
 	}
 
 	/** Get Payment Schedule.
 		@return Payment Schedule Template
 	  */
-	public int getC_PaySchedule_ID () 
+	public int getC_PaySchedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaySchedule_ID);
 		if (ii == null)
@@ -177,9 +175,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Discount Amount.
-		@param DiscountAmt 
-		Calculated amount of discount
-	  */
+		@param DiscountAmt Calculated amount of discount
+	*/
 	public void setDiscountAmt (BigDecimal DiscountAmt)
 	{
 		set_Value (COLUMNNAME_DiscountAmt, DiscountAmt);
@@ -188,7 +185,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/** Get Discount Amount.
 		@return Calculated amount of discount
 	  */
-	public BigDecimal getDiscountAmt () 
+	public BigDecimal getDiscountAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DiscountAmt);
 		if (bd == null)
@@ -197,9 +194,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Discount Date.
-		@param DiscountDate 
-		Last Date for payments with discount
-	  */
+		@param DiscountDate Last Date for payments with discount
+	*/
 	public void setDiscountDate (Timestamp DiscountDate)
 	{
 		set_Value (COLUMNNAME_DiscountDate, DiscountDate);
@@ -208,7 +204,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/** Get Discount Date.
 		@return Last Date for payments with discount
 	  */
-	public Timestamp getDiscountDate () 
+	public Timestamp getDiscountDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DiscountDate);
 	}
@@ -222,9 +218,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
     }
 
 	/** Set Amount due.
-		@param DueAmt 
-		Amount of the payment due
-	  */
+		@param DueAmt Amount of the payment due
+	*/
 	public void setDueAmt (BigDecimal DueAmt)
 	{
 		set_Value (COLUMNNAME_DueAmt, DueAmt);
@@ -233,7 +228,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/** Get Amount due.
 		@return Amount of the payment due
 	  */
-	public BigDecimal getDueAmt () 
+	public BigDecimal getDueAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DueAmt);
 		if (bd == null)
@@ -242,9 +237,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Due Date.
-		@param DueDate 
-		Date when the payment is due
-	  */
+		@param DueDate Date when the payment is due
+	*/
 	public void setDueDate (Timestamp DueDate)
 	{
 		set_Value (COLUMNNAME_DueDate, DueDate);
@@ -253,15 +247,14 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/** Get Due Date.
 		@return Date when the payment is due
 	  */
-	public Timestamp getDueDate () 
+	public Timestamp getDueDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DueDate);
 	}
 
 	/** Set Valid.
-		@param IsValid 
-		Element is valid
-	  */
+		@param IsValid Element is valid
+	*/
 	public void setIsValid (boolean IsValid)
 	{
 		set_Value (COLUMNNAME_IsValid, Boolean.valueOf(IsValid));
@@ -270,7 +263,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/** Get Valid.
 		@return Element is valid
 	  */
-	public boolean isValid () 
+	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
 		if (oo != null) 
@@ -283,9 +276,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -294,7 +286,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -307,7 +299,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -315,7 +308,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

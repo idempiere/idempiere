@@ -348,10 +348,8 @@ public class PackRollProcess extends SvrProcess {
 
 	/**
 	 * Open input file for processing
-	 *
-	 * @param String
-	 *            file with path
-	 *
+	 * @param filePath file with path
+	 * @return
 	 */
 	public FileInputStream OpenInputfile(String filePath) {
 
@@ -369,10 +367,8 @@ public class PackRollProcess extends SvrProcess {
 
 	/**
 	 * Open output file for processing
-	 *
-	 * @param String
-	 *            file with path
-	 *
+	 * @param filePath file with path
+	 * @return
 	 */
 	public OutputStream OpenOutputfile(String filePath) {
 
@@ -390,10 +386,9 @@ public class PackRollProcess extends SvrProcess {
 
 	/**
 	 * Copyfile
-	 *
-	 * @param String
-	 *            file with path
-	 *
+	 * @param sourceFile
+	 * @param targetFile
+	 * @return
 	 */
 	public int copyFile(String sourceFile, String targetFile) {
 

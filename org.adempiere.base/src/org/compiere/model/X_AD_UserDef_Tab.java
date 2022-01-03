@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Tab")
 public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
@@ -81,21 +81,20 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -110,21 +109,20 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	/** Set Tab.
-		@param AD_Tab_ID 
-		Tab within a Window
-	  */
+		@param AD_Tab_ID Tab within a Window
+	*/
 	public void setAD_Tab_ID (int AD_Tab_ID)
 	{
-		if (AD_Tab_ID < 1) 
+		if (AD_Tab_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tab_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
 	}
 
 	/** Get Tab.
 		@return Tab within a Window
 	  */
-	public int getAD_Tab_ID () 
+	public int getAD_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
 		if (ii == null)
@@ -141,18 +139,19 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
     }
 
 	/** Set User defined Tab.
-		@param AD_UserDef_Tab_ID User defined Tab	  */
+		@param AD_UserDef_Tab_ID User defined Tab
+	*/
 	public void setAD_UserDef_Tab_ID (int AD_UserDef_Tab_ID)
 	{
-		if (AD_UserDef_Tab_ID < 1) 
+		if (AD_UserDef_Tab_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Tab_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Tab_ID, Integer.valueOf(AD_UserDef_Tab_ID));
 	}
 
 	/** Get User defined Tab.
 		@return User defined Tab	  */
-	public int getAD_UserDef_Tab_ID () 
+	public int getAD_UserDef_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Tab_ID);
 		if (ii == null)
@@ -161,7 +160,8 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	/** Set AD_UserDef_Tab_UU.
-		@param AD_UserDef_Tab_UU AD_UserDef_Tab_UU	  */
+		@param AD_UserDef_Tab_UU AD_UserDef_Tab_UU
+	*/
 	public void setAD_UserDef_Tab_UU (String AD_UserDef_Tab_UU)
 	{
 		set_Value (COLUMNNAME_AD_UserDef_Tab_UU, AD_UserDef_Tab_UU);
@@ -169,7 +169,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 
 	/** Get AD_UserDef_Tab_UU.
 		@return AD_UserDef_Tab_UU	  */
-	public String getAD_UserDef_Tab_UU () 
+	public String getAD_UserDef_Tab_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Tab_UU);
 	}
@@ -181,18 +181,19 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	/** Set User defined Window.
-		@param AD_UserDef_Win_ID User defined Window	  */
+		@param AD_UserDef_Win_ID User defined Window
+	*/
 	public void setAD_UserDef_Win_ID (int AD_UserDef_Win_ID)
 	{
-		if (AD_UserDef_Win_ID < 1) 
+		if (AD_UserDef_Win_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Win_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Win_ID, Integer.valueOf(AD_UserDef_Win_ID));
 	}
 
 	/** Get User defined Window.
 		@return User defined Window	  */
-	public int getAD_UserDef_Win_ID () 
+	public int getAD_UserDef_Win_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Win_ID);
 		if (ii == null)
@@ -201,9 +202,8 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -212,15 +212,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
+		@param DisplayLogic If the Field is displayed, the result determines if the field is actually displayed
+	*/
 	public void setDisplayLogic (String DisplayLogic)
 	{
 		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
@@ -229,15 +228,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Display Logic.
 		@return If the Field is displayed, the result determines if the field is actually displayed
 	  */
-	public String getDisplayLogic () 
+	public String getDisplayLogic()
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -246,7 +244,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
@@ -258,7 +256,8 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Yes = Y */
 	public static final String ISALLOWADVANCEDLOOKUP_Yes = "Y";
 	/** Set Allow Advanced Lookup.
-		@param IsAllowAdvancedLookup Allow Advanced Lookup	  */
+		@param IsAllowAdvancedLookup Allow Advanced Lookup
+	*/
 	public void setIsAllowAdvancedLookup (String IsAllowAdvancedLookup)
 	{
 
@@ -267,7 +266,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 
 	/** Get Allow Advanced Lookup.
 		@return Allow Advanced Lookup	  */
-	public String getIsAllowAdvancedLookup () 
+	public String getIsAllowAdvancedLookup()
 	{
 		return (String)get_Value(COLUMNNAME_IsAllowAdvancedLookup);
 	}
@@ -279,9 +278,8 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Yes = Y */
 	public static final String ISLOOKUPONLYSELECTION_Yes = "Y";
 	/** Set Lookup Only Selection Columns.
-		@param IsLookupOnlySelection 
-		When defined to true Lookup panel will display only selection columns. Default to false.
-	  */
+		@param IsLookupOnlySelection When defined to true Lookup panel will display only selection columns. Default to false.
+	*/
 	public void setIsLookupOnlySelection (String IsLookupOnlySelection)
 	{
 
@@ -291,15 +289,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Lookup Only Selection Columns.
 		@return When defined to true Lookup panel will display only selection columns. Default to false.
 	  */
-	public String getIsLookupOnlySelection () 
+	public String getIsLookupOnlySelection()
 	{
 		return (String)get_Value(COLUMNNAME_IsLookupOnlySelection);
 	}
 
 	/** Set Multi Row Only.
-		@param IsMultiRowOnly 
-		This applies to Multi-Row view only
-	  */
+		@param IsMultiRowOnly This applies to Multi-Row view only
+	*/
 	public void setIsMultiRowOnly (boolean IsMultiRowOnly)
 	{
 		set_Value (COLUMNNAME_IsMultiRowOnly, Boolean.valueOf(IsMultiRowOnly));
@@ -308,7 +305,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Multi Row Only.
 		@return This applies to Multi-Row view only
 	  */
-	public boolean isMultiRowOnly () 
+	public boolean isMultiRowOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMultiRowOnly);
 		if (oo != null) 
@@ -327,9 +324,8 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Yes = Y */
 	public static final String ISREADONLY_Yes = "Y";
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (String IsReadOnly)
 	{
 
@@ -339,7 +335,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public String getIsReadOnly () 
+	public String getIsReadOnly()
 	{
 		return (String)get_Value(COLUMNNAME_IsReadOnly);
 	}
@@ -351,9 +347,8 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Yes = Y */
 	public static final String ISSINGLEROW_Yes = "Y";
 	/** Set Single Row Layout.
-		@param IsSingleRow 
-		Default for toggle between Single- and Multi-Row (Grid) Layout
-	  */
+		@param IsSingleRow Default for toggle between Single- and Multi-Row (Grid) Layout
+	*/
 	public void setIsSingleRow (String IsSingleRow)
 	{
 
@@ -363,15 +358,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Single Row Layout.
 		@return Default for toggle between Single- and Multi-Row (Grid) Layout
 	  */
-	public String getIsSingleRow () 
+	public String getIsSingleRow()
 	{
 		return (String)get_Value(COLUMNNAME_IsSingleRow);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -380,15 +374,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Sql ORDER BY.
-		@param OrderByClause 
-		Fully qualified ORDER BY clause
-	  */
+		@param OrderByClause Fully qualified ORDER BY clause
+	*/
 	public void setOrderByClause (String OrderByClause)
 	{
 		set_Value (COLUMNNAME_OrderByClause, OrderByClause);
@@ -397,15 +390,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Sql ORDER BY.
 		@return Fully qualified ORDER BY clause
 	  */
-	public String getOrderByClause () 
+	public String getOrderByClause()
 	{
 		return (String)get_Value(COLUMNNAME_OrderByClause);
 	}
 
 	/** Set Read Only Logic.
-		@param ReadOnlyLogic 
-		Logic to determine if field is read only (applies only when field is read-write)
-	  */
+		@param ReadOnlyLogic Logic to determine if field is read only (applies only when field is read-write)
+	*/
 	public void setReadOnlyLogic (String ReadOnlyLogic)
 	{
 		set_Value (COLUMNNAME_ReadOnlyLogic, ReadOnlyLogic);
@@ -414,15 +406,14 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Read Only Logic.
 		@return Logic to determine if field is read only (applies only when field is read-write)
 	  */
-	public String getReadOnlyLogic () 
+	public String getReadOnlyLogic()
 	{
 		return (String)get_Value(COLUMNNAME_ReadOnlyLogic);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -431,7 +422,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -440,9 +431,8 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	}
 
 	/** Set Sql WHERE.
-		@param WhereClause 
-		Fully qualified SQL WHERE clause
-	  */
+		@param WhereClause Fully qualified SQL WHERE clause
+	*/
 	public void setWhereClause (String WhereClause)
 	{
 		set_Value (COLUMNNAME_WhereClause, WhereClause);
@@ -451,7 +441,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/** Get Sql WHERE.
 		@return Fully qualified SQL WHERE clause
 	  */
-	public String getWhereClause () 
+	public String getWhereClause()
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
 	}

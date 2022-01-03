@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution
  * <li>RF [2826384] The Order and Included Columns should be to fill mandatory
- * <li>http://sourceforge.net/tracker/?func=detail&atid=879335&aid=2826384&group_id=176962
+ * <li>https://sourceforge.net/p/adempiere/feature-requests/775/
  *  @version $Id: MTab.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  */
 public class MTab extends X_AD_Tab implements ImmutablePOSupport
@@ -232,8 +232,8 @@ public class MTab extends X_AD_Tab implements ImmutablePOSupport
 	// begin e-evolution vpj-cd
 	/**
 	 * 	get Tab ID
-	 *	@param String AD_Window_ID
-	 *	@param String TabName
+	 *	@param AD_Window_ID String
+	 *	@param TabName String
 	 *	@return int retValue
 	 */
 	public static int getTab_ID(int AD_Window_ID , String TabName) {

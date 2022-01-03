@@ -862,14 +862,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	//Implementation for Broadcast message
 	/**
-	 * @param eventManager
 	 */
 	public void bindEventManager() {
 		EventManager.getInstance().register(IEventTopics.BROADCAST_MESSAGE, this);
 	}
 
 	/**
-	 * @param eventManager
 	 */
 	public void unbindEventManager() {
 		EventManager.getInstance().unregister(this);

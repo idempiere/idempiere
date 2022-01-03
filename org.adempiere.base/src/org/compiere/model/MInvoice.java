@@ -40,6 +40,7 @@ import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.process.IDocsPostProcess;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
@@ -60,13 +61,13 @@ import org.eevolution.model.MPPProductBOMLine;
  *  @author Jorg Janke
  *  @version $Id: MInvoice.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
- *  		@see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  		@see https://sourceforge.net/p/adempiere/feature-requests/412/
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  Modifications: Added RMA functionality (Ashley Ramdass)
  *  Modifications: Generate DocNo^ instead of using a new number whan an invoice is reversed (Diego Ruiz-globalqss)
  */
-public class MInvoice extends X_C_Invoice implements DocAction
+public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 {
 	/**
 	 * 
@@ -92,7 +93,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 * 	Create new Invoice by copying
 	 * 	@param from invoice
 	 * 	@param dateDoc date of the document date
-	 *  @param acctDate original account date 
+	 *  @param dateAcct original account date 
 	 * 	@param C_DocTypeTarget_ID target doc type
 	 * 	@param isSOTrx sales order
 	 * 	@param counter create counter links
@@ -113,13 +114,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 * 	Create new Invoice by copying
 	 * 	@param from invoice
 	 * 	@param dateDoc date of the document date
-	 *  @param acctDate original account date 
+	 *  @param dateAcct original account date 
 	 * 	@param C_DocTypeTarget_ID target doc type
 	 * 	@param isSOTrx sales order
 	 * 	@param counter create counter links
 	 * 	@param trxName trx
 	 * 	@param setOrder set Order links
-	 *  @param Document Number for reversed invoices
+	 *  @param documentNo Document Number for reversed invoices
 	 *	@return Invoice
 	 */
 	public static MInvoice copyFrom (MInvoice from, Timestamp dateDoc, Timestamp dateAcct,
@@ -463,7 +464,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}	//	setClientOrg
 
 	/**
-	 * 	Set Business Partner Defaults & Details
+	 * 	Set Business Partner Defaults and Details
 	 * 	@param bp business partner
 	 */
 	public void setBPartner (MBPartner bp)
@@ -2236,7 +2237,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		docsPostProcess.add(doc);
 	}
 
-	public ArrayList<PO> getDocsPostProcess() {
+	@Override
+	public List<PO> getDocsPostProcess() {
 		return docsPostProcess;
 	}
 

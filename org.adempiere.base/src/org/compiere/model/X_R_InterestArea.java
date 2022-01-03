@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_InterestArea
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_InterestArea")
 public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_R_InterestArea (Properties ctx, int R_InterestArea_ID, String trxName)
@@ -76,9 +76,8 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -87,15 +86,14 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -104,7 +102,7 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -117,9 +115,8 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -128,7 +125,7 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -142,21 +139,20 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
     }
 
 	/** Set Interest Area.
-		@param R_InterestArea_ID 
-		Interest Area or Topic
-	  */
+		@param R_InterestArea_ID Interest Area or Topic
+	*/
 	public void setR_InterestArea_ID (int R_InterestArea_ID)
 	{
-		if (R_InterestArea_ID < 1) 
+		if (R_InterestArea_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_InterestArea_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_InterestArea_ID, Integer.valueOf(R_InterestArea_ID));
 	}
 
 	/** Get Interest Area.
 		@return Interest Area or Topic
 	  */
-	public int getR_InterestArea_ID () 
+	public int getR_InterestArea_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_InterestArea_ID);
 		if (ii == null)
@@ -165,7 +161,8 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	}
 
 	/** Set R_InterestArea_UU.
-		@param R_InterestArea_UU R_InterestArea_UU	  */
+		@param R_InterestArea_UU R_InterestArea_UU
+	*/
 	public void setR_InterestArea_UU (String R_InterestArea_UU)
 	{
 		set_Value (COLUMNNAME_R_InterestArea_UU, R_InterestArea_UU);
@@ -173,15 +170,14 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 
 	/** Get R_InterestArea_UU.
 		@return R_InterestArea_UU	  */
-	public String getR_InterestArea_UU () 
+	public String getR_InterestArea_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_InterestArea_UU);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -190,7 +186,7 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

@@ -64,11 +64,11 @@ public final class Adempiere
 	/** Timestamp                   */
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
-	static public String	MAIN_VERSION	= "Development 9.0";
+	static public String	MAIN_VERSION	= "Release 10";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2021-09-01";
+	static public String	DATE_VERSION	= "2021-12-24";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2020-12-20";
+	static public String	DB_VERSION		= "2021-12-24";
 
 	/** Product Name            */
 	static public final String	NAME 			= "iDempiere\u00AE";
@@ -584,24 +584,26 @@ public final class Adempiere
 		}
 	}
 
-	private static void createThreadPool() {
-		int max = Runtime.getRuntime().availableProcessors() * 20;
-		int defaultMax = max;
-		Properties properties = Ini.getProperties();
-		String maxSize = properties.getProperty("MaxThreadPoolSize");
-		if (maxSize != null) {
-			try {
-				max = Integer.parseInt(maxSize);
-			} catch (Exception e) {}
+	private static synchronized void createThreadPool() {
+		if (threadPoolExecutor == null) {
+			int max = Runtime.getRuntime().availableProcessors() * 20;
+			int defaultMax = max;
+			Properties properties = Ini.getProperties();
+			String maxSize = properties.getProperty("MaxThreadPoolSize");
+			if (maxSize != null) {
+				try {
+					max = Integer.parseInt(maxSize);
+				} catch (Exception e) {}
+			}
+			if (max <= 0) {
+				max = defaultMax;
+			}
+			
+			// start thread pool
+			threadPoolExecutor = new ScheduledThreadPoolExecutor(max);		
+			
+			Trx.startTrxMonitor();
 		}
-		if (max <= 0) {
-			max = defaultMax;
-		}
-		
-		// start thread pool
-		threadPoolExecutor = new ScheduledThreadPoolExecutor(max);		
-		
-		Trx.startTrxMonitor();
 	}
 
 	/**
@@ -690,11 +692,18 @@ public final class Adempiere
 	public static synchronized void stop() {
 		if (threadPoolExecutor != null) {
 			threadPoolExecutor.shutdown();
+			threadPoolExecutor = null;
 		}
 		log = null;
 	}
 	
-	public static ScheduledThreadPoolExecutor getThreadPoolExecutor() {
+	/**
+	 * 
+	 * @return {@link ScheduledThreadPoolExecutor}
+	 */
+	public static synchronized ScheduledThreadPoolExecutor getThreadPoolExecutor() {
+		if (threadPoolExecutor == null)
+			createThreadPool();
 		return threadPoolExecutor;
 	}
 	

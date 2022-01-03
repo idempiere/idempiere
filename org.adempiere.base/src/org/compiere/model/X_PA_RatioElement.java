@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_RatioElement
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_RatioElement")
 public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_PA_RatioElement (Properties ctx, int PA_RatioElement_ID, String trxName)
@@ -86,21 +86,20 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set Account.
-		@param Account_ID 
-		Account used
-	  */
+		@param Account_ID Account used
+	*/
 	public void setAccount_ID (int Account_ID)
 	{
-		if (Account_ID < 1) 
+		if (Account_ID < 1)
 			set_Value (COLUMNNAME_Account_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Account_ID, Integer.valueOf(Account_ID));
 	}
 
 	/** Get Account.
 		@return Account used
 	  */
-	public int getAccount_ID () 
+	public int getAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Account_ID);
 		if (ii == null)
@@ -109,9 +108,8 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set Constant Value.
-		@param ConstantValue 
-		Constant value
-	  */
+		@param ConstantValue Constant value
+	*/
 	public void setConstantValue (BigDecimal ConstantValue)
 	{
 		set_Value (COLUMNNAME_ConstantValue, ConstantValue);
@@ -120,7 +118,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Get Constant Value.
 		@return Constant value
 	  */
-	public BigDecimal getConstantValue () 
+	public BigDecimal getConstantValue()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ConstantValue);
 		if (bd == null)
@@ -129,9 +127,8 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -140,15 +137,14 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -157,7 +153,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -169,21 +165,20 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set Measure Calculation.
-		@param PA_MeasureCalc_ID 
-		Calculation method for measuring performance
-	  */
+		@param PA_MeasureCalc_ID Calculation method for measuring performance
+	*/
 	public void setPA_MeasureCalc_ID (int PA_MeasureCalc_ID)
 	{
-		if (PA_MeasureCalc_ID < 1) 
+		if (PA_MeasureCalc_ID < 1)
 			set_Value (COLUMNNAME_PA_MeasureCalc_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PA_MeasureCalc_ID, Integer.valueOf(PA_MeasureCalc_ID));
 	}
 
 	/** Get Measure Calculation.
 		@return Calculation method for measuring performance
 	  */
-	public int getPA_MeasureCalc_ID () 
+	public int getPA_MeasureCalc_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_MeasureCalc_ID);
 		if (ii == null)
@@ -192,21 +187,20 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set Ratio Element.
-		@param PA_RatioElement_ID 
-		Performance Ratio Element
-	  */
+		@param PA_RatioElement_ID Performance Ratio Element
+	*/
 	public void setPA_RatioElement_ID (int PA_RatioElement_ID)
 	{
-		if (PA_RatioElement_ID < 1) 
+		if (PA_RatioElement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_RatioElement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_RatioElement_ID, Integer.valueOf(PA_RatioElement_ID));
 	}
 
 	/** Get Ratio Element.
 		@return Performance Ratio Element
 	  */
-	public int getPA_RatioElement_ID () 
+	public int getPA_RatioElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_RatioElement_ID);
 		if (ii == null)
@@ -215,7 +209,8 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set PA_RatioElement_UU.
-		@param PA_RatioElement_UU PA_RatioElement_UU	  */
+		@param PA_RatioElement_UU PA_RatioElement_UU
+	*/
 	public void setPA_RatioElement_UU (String PA_RatioElement_UU)
 	{
 		set_Value (COLUMNNAME_PA_RatioElement_UU, PA_RatioElement_UU);
@@ -223,7 +218,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 
 	/** Get PA_RatioElement_UU.
 		@return PA_RatioElement_UU	  */
-	public String getPA_RatioElement_UU () 
+	public String getPA_RatioElement_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_RatioElement_UU);
 	}
@@ -235,21 +230,20 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set Ratio.
-		@param PA_Ratio_ID 
-		Performance Ratio
-	  */
+		@param PA_Ratio_ID Performance Ratio
+	*/
 	public void setPA_Ratio_ID (int PA_Ratio_ID)
 	{
-		if (PA_Ratio_ID < 1) 
+		if (PA_Ratio_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_Ratio_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_Ratio_ID, Integer.valueOf(PA_Ratio_ID));
 	}
 
 	/** Get Ratio.
 		@return Performance Ratio
 	  */
-	public int getPA_Ratio_ID () 
+	public int getPA_Ratio_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Ratio_ID);
 		if (ii == null)
@@ -264,21 +258,20 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	}
 
 	/** Set Ratio Used.
-		@param PA_RatioUsed_ID 
-		Performance Ratio Used
-	  */
+		@param PA_RatioUsed_ID Performance Ratio Used
+	*/
 	public void setPA_RatioUsed_ID (int PA_RatioUsed_ID)
 	{
-		if (PA_RatioUsed_ID < 1) 
+		if (PA_RatioUsed_ID < 1)
 			set_Value (COLUMNNAME_PA_RatioUsed_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PA_RatioUsed_ID, Integer.valueOf(PA_RatioUsed_ID));
 	}
 
 	/** Get Ratio Used.
 		@return Performance Ratio Used
 	  */
-	public int getPA_RatioUsed_ID () 
+	public int getPA_RatioUsed_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_RatioUsed_ID);
 		if (ii == null)
@@ -299,9 +292,8 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
-		@param PostingType 
-		The type of posted amount for the transaction
-	  */
+		@param PostingType The type of posted amount for the transaction
+	*/
 	public void setPostingType (String PostingType)
 	{
 
@@ -311,7 +303,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Get PostingType.
 		@return The type of posted amount for the transaction
 	  */
-	public String getPostingType () 
+	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
 	}
@@ -327,9 +319,8 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Calculation = X */
 	public static final String RATIOELEMENTTYPE_Calculation = "X";
 	/** Set Element Type.
-		@param RatioElementType 
-		Ratio Element Type
-	  */
+		@param RatioElementType Ratio Element Type
+	*/
 	public void setRatioElementType (String RatioElementType)
 	{
 
@@ -339,7 +330,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Get Element Type.
 		@return Ratio Element Type
 	  */
-	public String getRatioElementType () 
+	public String getRatioElementType()
 	{
 		return (String)get_Value(COLUMNNAME_RatioElementType);
 	}
@@ -355,9 +346,8 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Plus = P */
 	public static final String RATIOOPERAND_Plus = "P";
 	/** Set Operand.
-		@param RatioOperand 
-		Ratio Operand
-	  */
+		@param RatioOperand Ratio Operand
+	*/
 	public void setRatioOperand (String RatioOperand)
 	{
 
@@ -367,15 +357,14 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Get Operand.
 		@return Ratio Operand
 	  */
-	public String getRatioOperand () 
+	public String getRatioOperand()
 	{
 		return (String)get_Value(COLUMNNAME_RatioOperand);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -384,7 +373,7 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

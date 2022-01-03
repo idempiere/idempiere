@@ -922,8 +922,8 @@ public final class DisplayType
 
 	/**
 	 *	Helper method to get a currency format in a language (multi-currency and multi-language system)
-	 *  @param language locale code
-	 *  @param currency code
+	 *  @param langcode language locale code
+	 *  @param currencyCode currency code
 	 *  @return number format
 	 */
 	public static NumberFormat getCurrencyFormat(String langcode, String currencyCode)

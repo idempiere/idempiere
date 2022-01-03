@@ -49,7 +49,6 @@ public class MPostIt extends X_AD_PostIt
 	 *	@param ctx context
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
-	 *	@param Description description
 	 *	@param trxName transaction
 	 */
 	public MPostIt (Properties ctx, int AD_Table_ID, int Record_ID, String trxName)

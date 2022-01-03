@@ -34,7 +34,7 @@ import org.compiere.util.Env;
  *
  *  @author Jorg Janke
  *  @version $Id: CalloutInOut.java,v 1.7 2006/07/30 00:51:05 jjanke Exp $
- *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867464 ] http://sourceforge.net/tracker/index.php?func=detail&aid=1867464&group_id=176962&atid=879332
+ *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867464 ] https://sourceforge.net/p/adempiere/bugs/923/
  */
 public class CalloutInOut extends CalloutEngine
 {
@@ -191,11 +191,11 @@ public class CalloutInOut extends CalloutEngine
 			if (rs.next())
 			{
 				//	Set Movement Type
-				String DocBaseType = rs.getString("DocBaseType");
 				// BF [2708789] Read IsSOTrx from C_DocType
 				String trxFlag = rs.getString("IsSOTrx");
 				Object isSOTrxValue = mTab.getValue("IsSOTrx");
 				String isSOTrxValueStr = null;
+				boolean IsSOTrx = "Y".equals(trxFlag);
 				if (isSOTrxValue != null)
 				{
 					if (isSOTrxValue instanceof Boolean)
@@ -206,28 +206,9 @@ public class CalloutInOut extends CalloutEngine
 				
 				if (!(trxFlag.equals(isSOTrxValueStr)))
 					mTab.setValue("IsSOTrx", trxFlag);
-				if (DocBaseType.equals("MMS"))					//	Material Shipments
-				/**solve 1648131 bug vpj-cd e-evolution */
-				{
-						boolean IsSOTrx = "Y".equals(trxFlag);
-						if (IsSOTrx)
-							mTab.setValue("MovementType", "C-");	// Customer Shipments
-						else
-							mTab.setValue("MovementType", "V-");	// Vendor Return
-
-				}
-				/**END vpj-cd e-evolution */
-				else if (DocBaseType.equals("MMR"))				//	Material Receipts
-			    /**solve 1648131 bug vpj-cd e-evolution  */
-				{
-						boolean IsSOTrx = "Y".equals(trxFlag);
-						if (IsSOTrx)
-							mTab.setValue("MovementType", "C+"); // Customer Return
-						else
-							mTab.setValue("MovementType", "V+"); // Vendor Receipts
-				}				
-				/**END vpj-cd e-evolution */
-
+				
+				mTab.setValue("MovementType", MInOut.getMovementType(ctx, C_DocType_ID, IsSOTrx, null));
+				
 				//	DocumentNo
 				if (rs.getString("IsDocNoControlled").equals("Y"))
 				{

@@ -42,7 +42,7 @@ import org.w3c.dom.Document;
  * 
   * @author victor.perez@e-evolution.com 
  * FB  [1963487 ] Is necessary new process to export and import with an Export
- * @see  http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1963487&group_id=176962
+ * @see  https://sourceforge.net/p/adempiere/feature-requests/423/
  * @version $Id:$
  */
 @org.adempiere.base.annotation.Process

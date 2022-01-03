@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Proc")
 public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc (Properties ctx, int AD_UserDef_Proc_ID, String trxName)
@@ -75,9 +75,8 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
 	/** Set Language.
-		@param AD_Language 
-		Language for this entity
-	  */
+		@param AD_Language Language for this entity
+	*/
 	public void setAD_Language (String AD_Language)
 	{
 
@@ -87,7 +86,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/** Get Language.
 		@return Language for this entity
 	  */
-	public String getAD_Language () 
+	public String getAD_Language()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
@@ -99,21 +98,20 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -128,21 +126,20 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -151,21 +148,20 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	}
 
 	/** Set User defined Process.
-		@param AD_UserDef_Proc_ID 
-		Primary Key : User defined Process
-	  */
+		@param AD_UserDef_Proc_ID Primary Key : User defined Process
+	*/
 	public void setAD_UserDef_Proc_ID (int AD_UserDef_Proc_ID)
 	{
-		if (AD_UserDef_Proc_ID < 1) 
+		if (AD_UserDef_Proc_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Proc_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserDef_Proc_ID, Integer.valueOf(AD_UserDef_Proc_ID));
 	}
 
 	/** Get User defined Process.
 		@return Primary Key : User defined Process
 	  */
-	public int getAD_UserDef_Proc_ID () 
+	public int getAD_UserDef_Proc_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserDef_Proc_ID);
 		if (ii == null)
@@ -174,7 +170,8 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	}
 
 	/** Set AD_UserDef_Proc_UU.
-		@param AD_UserDef_Proc_UU AD_UserDef_Proc_UU	  */
+		@param AD_UserDef_Proc_UU AD_UserDef_Proc_UU
+	*/
 	public void setAD_UserDef_Proc_UU (String AD_UserDef_Proc_UU)
 	{
 		set_Value (COLUMNNAME_AD_UserDef_Proc_UU, AD_UserDef_Proc_UU);
@@ -182,7 +179,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 
 	/** Get AD_UserDef_Proc_UU.
 		@return AD_UserDef_Proc_UU	  */
-	public String getAD_UserDef_Proc_UU () 
+	public String getAD_UserDef_Proc_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Proc_UU);
 	}
@@ -194,21 +191,20 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -217,9 +213,8 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -228,15 +223,14 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -245,15 +239,14 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set User updatable.
-		@param IsUserUpdateable 
-		The field can be updated by the user
-	  */
+		@param IsUserUpdateable The field can be updated by the user
+	*/
 	public void setIsUserUpdateable (boolean IsUserUpdateable)
 	{
 		set_Value (COLUMNNAME_IsUserUpdateable, Boolean.valueOf(IsUserUpdateable));
@@ -262,7 +255,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/** Get User updatable.
 		@return The field can be updated by the user
 	  */
-	public boolean isUserUpdateable () 
+	public boolean isUserUpdateable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserUpdateable);
 		if (oo != null) 
@@ -275,9 +268,8 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -286,7 +278,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

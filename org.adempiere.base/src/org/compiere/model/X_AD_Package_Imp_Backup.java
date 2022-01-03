@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Imp_Backup
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Imp_Backup")
 public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Backup, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20211224L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Backup (Properties ctx, int AD_Package_Imp_Backup_ID, String trxName)
@@ -80,21 +80,20 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -103,18 +102,19 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	}
 
 	/** Set Imp. Package Backup.
-		@param AD_Package_Imp_Backup_ID Imp. Package Backup	  */
+		@param AD_Package_Imp_Backup_ID Imp. Package Backup
+	*/
 	public void setAD_Package_Imp_Backup_ID (int AD_Package_Imp_Backup_ID)
 	{
-		if (AD_Package_Imp_Backup_ID < 1) 
+		if (AD_Package_Imp_Backup_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Backup_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Backup_ID, Integer.valueOf(AD_Package_Imp_Backup_ID));
 	}
 
 	/** Get Imp. Package Backup.
 		@return Imp. Package Backup	  */
-	public int getAD_Package_Imp_Backup_ID () 
+	public int getAD_Package_Imp_Backup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_Backup_ID);
 		if (ii == null)
@@ -131,7 +131,8 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
     }
 
 	/** Set AD_Package_Imp_Backup_UU.
-		@param AD_Package_Imp_Backup_UU AD_Package_Imp_Backup_UU	  */
+		@param AD_Package_Imp_Backup_UU AD_Package_Imp_Backup_UU
+	*/
 	public void setAD_Package_Imp_Backup_UU (String AD_Package_Imp_Backup_UU)
 	{
 		set_Value (COLUMNNAME_AD_Package_Imp_Backup_UU, AD_Package_Imp_Backup_UU);
@@ -139,13 +140,14 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 
 	/** Get AD_Package_Imp_Backup_UU.
 		@return AD_Package_Imp_Backup_UU	  */
-	public String getAD_Package_Imp_Backup_UU () 
+	public String getAD_Package_Imp_Backup_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Backup_UU);
 	}
 
 	/** Set Package Imp. Bck. Directory.
-		@param AD_Package_Imp_Bck_Dir Package Imp. Bck. Directory	  */
+		@param AD_Package_Imp_Bck_Dir Package Imp. Bck. Directory
+	*/
 	public void setAD_Package_Imp_Bck_Dir (String AD_Package_Imp_Bck_Dir)
 	{
 		set_Value (COLUMNNAME_AD_Package_Imp_Bck_Dir, AD_Package_Imp_Bck_Dir);
@@ -153,24 +155,25 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 
 	/** Get Package Imp. Bck. Directory.
 		@return Package Imp. Bck. Directory	  */
-	public String getAD_Package_Imp_Bck_Dir () 
+	public String getAD_Package_Imp_Bck_Dir()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Bck_Dir);
 	}
 
 	/** Set Imp. Package Detail.
-		@param AD_Package_Imp_Detail_ID Imp. Package Detail	  */
+		@param AD_Package_Imp_Detail_ID Imp. Package Detail
+	*/
 	public void setAD_Package_Imp_Detail_ID (int AD_Package_Imp_Detail_ID)
 	{
-		if (AD_Package_Imp_Detail_ID < 1) 
+		if (AD_Package_Imp_Detail_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Detail_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Detail_ID, Integer.valueOf(AD_Package_Imp_Detail_ID));
 	}
 
 	/** Get Imp. Package Detail.
 		@return Imp. Package Detail	  */
-	public int getAD_Package_Imp_Detail_ID () 
+	public int getAD_Package_Imp_Detail_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_Detail_ID);
 		if (ii == null)
@@ -179,18 +182,19 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	}
 
 	/** Set Package Imp..
-		@param AD_Package_Imp_ID Package Imp.	  */
+		@param AD_Package_Imp_ID Package Imp.
+	*/
 	public void setAD_Package_Imp_ID (int AD_Package_Imp_ID)
 	{
-		if (AD_Package_Imp_ID < 1) 
+		if (AD_Package_Imp_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_ID, Integer.valueOf(AD_Package_Imp_ID));
 	}
 
 	/** Get Package Imp..
 		@return Package Imp.	  */
-	public int getAD_Package_Imp_ID () 
+	public int getAD_Package_Imp_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_ID);
 		if (ii == null)
@@ -199,7 +203,8 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	}
 
 	/** Set Package Imp. Org. Dir..
-		@param AD_Package_Imp_Org_Dir Package Imp. Org. Dir.	  */
+		@param AD_Package_Imp_Org_Dir Package Imp. Org. Dir.
+	*/
 	public void setAD_Package_Imp_Org_Dir (String AD_Package_Imp_Org_Dir)
 	{
 		set_Value (COLUMNNAME_AD_Package_Imp_Org_Dir, AD_Package_Imp_Org_Dir);
@@ -207,7 +212,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 
 	/** Get Package Imp. Org. Dir..
 		@return Package Imp. Org. Dir.	  */
-	public String getAD_Package_Imp_Org_Dir () 
+	public String getAD_Package_Imp_Org_Dir()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Org_Dir);
 	}
@@ -219,21 +224,20 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -242,21 +246,20 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -265,7 +268,8 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	}
 
 	/** Set ColValue.
-		@param ColValue ColValue	  */
+		@param ColValue ColValue
+	*/
 	public void setColValue (String ColValue)
 	{
 		set_Value (COLUMNNAME_ColValue, ColValue);
@@ -273,13 +277,14 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 
 	/** Get ColValue.
 		@return ColValue	  */
-	public String getColValue () 
+	public String getColValue()
 	{
 		return (String)get_Value(COLUMNNAME_ColValue);
 	}
 
 	/** Set Uninstall.
-		@param Uninstall Uninstall	  */
+		@param Uninstall Uninstall
+	*/
 	public void setUninstall (boolean Uninstall)
 	{
 		set_Value (COLUMNNAME_Uninstall, Boolean.valueOf(Uninstall));
@@ -287,7 +292,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 
 	/** Get Uninstall.
 		@return Uninstall	  */
-	public boolean isUninstall () 
+	public boolean isUninstall()
 	{
 		Object oo = get_Value(COLUMNNAME_Uninstall);
 		if (oo != null) 

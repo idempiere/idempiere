@@ -285,9 +285,9 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 
 	/**
 	 *  Convert Key
-	 *  # -> _
+	 *  # -&gt; _
 	 *  @param key
-	 * @param m_windowNo 
+	 *  @param m_windowNo 
 	 *  @return converted key
 	 */
 	public static String convertKey (String key, int m_windowNo)
