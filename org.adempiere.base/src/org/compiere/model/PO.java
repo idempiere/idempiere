@@ -1416,13 +1416,11 @@ public abstract class PO
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++)
 		{
-			if (i != 0)
-				sql.append(",");
-			String columnSQL;
+			String columnSQL = p_info.getColumnSQL(i);
 			if (p_info.isVirtualColumn(i))
 			{
 				boolean lazyLoad = true;
-				if(virtualColumns!=null)
+				if(virtualColumns != null)
 				{
 					for(String virtualColumn : virtualColumns)
 					{
@@ -1435,16 +1433,15 @@ public abstract class PO
 				}
 
 				if(lazyLoad)
-					// initialize with NULL - values will be lazy-loaded by getters
-					columnSQL = "NULL AS " + DB.getDatabase().quoteColumnName(p_info.getColumnName(i));
-				else
-					columnSQL = p_info.getColumnSQL(i);
+					continue;
+
 			}
 			else
 			{
-				columnSQL = p_info.getColumnSQL(i);
 				columnSQL = DB.getDatabase().quoteColumnName(columnSQL);
 			}
+			if (i != 0)
+				sql.append(",");
 			sql.append(columnSQL);
 		}
 		sql.append(" FROM ").append(p_info.getTableName())
@@ -1585,8 +1582,9 @@ public abstract class PO
 			//	NULL
 			if (rs.wasNull() && m_oldValues[index] != null)
 				m_oldValues[index] = null;
-			// flag virtual column as loaded if it already has data on the ResultSet
-			if(m_oldValues[index]!=null && p_info.isVirtualColumn(index))
+
+			// flag virtual column as loaded
+			if(p_info.isVirtualColumn(index))
 				loadedVirtualColumns.add(index);
 			//
 			if (CLogMgt.isLevelAll())
