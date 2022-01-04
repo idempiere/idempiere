@@ -118,17 +118,14 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		//textMsgContent = new Label();
 		htmlDiv.appendChild(textMsgContent);
 		center.setAutoscroll(true);
+		Env.setContext(Env.getCtx(), MBroadcastMessage.CLIENTINFO_BROADCAST_COMPONENT_ID, pnlHead.getUuid());
 		textMsgContent.setContent(mbMessages.get(0).get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
+		pnlHead.addEventListener(ZoomEvent.EVENT_NAME, this);
 		htmlDiv.setFocus(true);
 		htmlDiv.setStyle("display: table-cell; vertical-align: middle; text-align: center;");
 		Div divAlign = new Div();
 		divAlign.setStyle("color:white; position: absolute; width: 370px; height: 120px; display: table;");
 
-		Env.setContext(Env.getCtx(), MBroadcastMessage.CLIENTINFO_BROADCAST_COMPONENT_ID, pnlHead.getUuid());
-		textMsgContent.setContent(mbMessages.get(0).get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
-		pnlHead.addEventListener(ZoomEvent.EVENT_NAME, this);
-		htmlDiv.setFocus(true);
-		
 		htmlDiv.setParent(divAlign);
 		center.appendChild(divAlign);
 		center.setBorder("rounded");
