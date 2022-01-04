@@ -842,20 +842,4 @@ public class MSysConfig extends X_AD_SysConfig
 			+"]";
 	}
 
-	/** Returns list of clientID with a System Configurator equals to value */
-	public static ArrayList<Integer> getAll(String name, String value) {
-
-		ArrayList<Integer> list = new ArrayList<Integer>();
-
-		for (MClient client : MClient.getAll(Env.getCtx())) {
-
-			String clientValue = getValue(name, client.getAD_Client_ID());
-
-			if (!Util.isEmpty(clientValue) && clientValue.equals(value))
-				list.add(client.getAD_Client_ID());
-		}
-
-		return list;
-	}
-
 }	//	MSysConfig;

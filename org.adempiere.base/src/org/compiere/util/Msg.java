@@ -152,23 +152,21 @@ public final class Msg
 				pstmt = DB.prepareStatement("SELECT m.Value, t.MsgText, t.MsgTip "
 					+ "FROM AD_Message_Trl t, AD_Message m "
 					+ "WHERE m.AD_Message_ID=t.AD_Message_ID"
-					+ " AND t.AD_Client_ID = 0" // load only translated messages at System level
+					+ " AND t.AD_Client_ID = 0" // load only translated messages at System level (using Value as key)
 					+ " AND t.AD_Language=?", null);
 				pstmt.setString(1, AD_Language);
 			}
 
 			addMessagesInCache(pstmt, rs, msg);
 
-			for (int clientID : MSysConfig.getAll(MSysConfig.MESSAGES_AT_TENANT_LEVEL, "Y")) {
-
-				pstmt = DB.prepareStatement("SELECT t.AD_Client_ID || '|' || m.Value, t.MsgText, t.MsgTip"
-						+ " FROM AD_Message_Trl t, AD_Message m"
-						+ " WHERE m.AD_Message_ID=t.AD_Message_ID"
-						+ " AND t.AD_Client_ID = " + clientID
-						+ " AND t.AD_Language=?", null);
-				pstmt.setString(1, AD_Language);
-				addMessagesInCache(pstmt, rs, msg);
-			}
+			// load translated messages at tenant level (using AD_Client_ID|Value as key)
+			pstmt = DB.prepareStatement("SELECT t.AD_Client_ID || '|' || m.Value, t.MsgText, t.MsgTip"
+					+ " FROM AD_Message_Trl t, AD_Message m"
+					+ " WHERE m.AD_Message_ID=t.AD_Message_ID"
+					+ " AND t.AD_Client_ID != 0"
+					+ " AND t.AD_Language=?", null);
+			pstmt.setString(1, AD_Language);
+			addMessagesInCache(pstmt, rs, msg);
 		}
 		catch (SQLException e)
 		{
