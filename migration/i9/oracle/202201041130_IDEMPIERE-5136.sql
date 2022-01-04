@@ -205,5 +205,9 @@ UPDATE AD_Window SET Name='Client level messages',Updated=TO_DATE('2022-01-04 16
 UPDATE AD_Menu SET Name='Client level messages', Description=NULL, IsActive='Y',Updated=TO_DATE('2022-01-04 16:14:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=200198
 ;
 
+-- Jan 4, 2022, 4:38:38 PM CET
+UPDATE AD_Field SET IsMandatory='Y',Updated=TO_DATE('2022-01-04 16:38:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=206825
+;
+
 SELECT register_migration_script('202201041130_IDEMPIERE-5136.sql') FROM dual
 ;
