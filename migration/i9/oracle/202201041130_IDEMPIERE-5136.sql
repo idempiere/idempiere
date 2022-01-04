@@ -189,5 +189,21 @@ UPDATE AD_Menu SET AD_Window_ID=200120,Updated=TO_DATE('2022-01-04 11:20:28','YY
 UPDATE AD_Field SET AD_Reference_ID=18, AD_Reference_Value_ID=327,Updated=TO_DATE('2022-01-04 11:24:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Field_ID=206825
 ;
 
+-- Jan 4, 2022, 4:14:20 PM CET
+UPDATE AD_Column SET IsParent='Y', IsUpdateable='N',Updated=TO_DATE('2022-01-04 16:14:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Column_ID=1192
+;
+
+-- Jan 4, 2022, 4:14:40 PM CET
+UPDATE AD_Tab SET Name='Client level messages', IsSingleRow='Y',Updated=TO_DATE('2022-01-04 16:14:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Tab_ID=200302
+;
+
+-- Jan 4, 2022, 4:14:45 PM CET
+UPDATE AD_Window SET Name='Client level messages',Updated=TO_DATE('2022-01-04 16:14:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Window_ID=200120
+;
+
+-- Jan 4, 2022, 4:14:45 PM CET
+UPDATE AD_Menu SET Name='Client level messages', Description=NULL, IsActive='Y',Updated=TO_DATE('2022-01-04 16:14:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Menu_ID=200198
+;
+
 SELECT register_migration_script('202201041130_IDEMPIERE-5136.sql') FROM dual
 ;
