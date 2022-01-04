@@ -58,6 +58,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 
@@ -240,5 +242,21 @@ public class MProductTest extends AbstractTestCase {
 		query = new Query(Env.getCtx(), MStorageReservation.Table_Name, "M_Product_ID=?", getTrxName());
 		count = query.setParameters(product.get_ID()).count();
 		assertEquals(0, count, "Storage Reservation Record > 0");
+	}
+	
+	@Test
+	public void testDeactivateProductBOMValidation() {
+		Query query = new Query(Env.getCtx(), MPPProductBOM.Table_Name, MPPProductBOM.COLUMNNAME_PP_Product_BOM_ID+"<1000000", getTrxName());
+		MPPProductBOM bom = query.setClient_ID().setOnlyActiveRecords(true).first();
+		MPPProductBOMLine[] lines = bom.getLines();
+		final MProduct product = new MProduct(Env.getCtx(), lines[0].getM_Product_ID(), getTrxName());
+		product.setIsActive(false);
+		assertThrows(AdempiereException.class, () -> product.saveEx(), "No exception throw for deactivation of product in active BOM");
+		
+		MProduct parent = new MProduct(Env.getCtx(), bom.getM_Product_ID(), getTrxName());
+		parent.setIsActive(false);
+		parent.saveEx();
+		bom.load(getTrxName());
+		assertFalse(bom.isActive(), "BOM not auto deactivated after deactivation of parent product");
 	}
 }
