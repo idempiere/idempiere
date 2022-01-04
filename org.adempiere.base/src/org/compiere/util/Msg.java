@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_Message;
+import org.compiere.model.MSysConfig;
 
 /**
  *	Reads all Messages and stores them in a HashMap
@@ -143,6 +144,7 @@ public final class Msg
 		ResultSet rs = null;
 		try
 		{
+			
 			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Language"))
 				pstmt = DB.prepareStatement("SELECT Value, MsgText, MsgTip FROM AD_Message",  null);
 			else
@@ -150,22 +152,22 @@ public final class Msg
 				pstmt = DB.prepareStatement("SELECT m.Value, t.MsgText, t.MsgTip "
 					+ "FROM AD_Message_Trl t, AD_Message m "
 					+ "WHERE m.AD_Message_ID=t.AD_Message_ID"
+					+ " AND t.AD_Client_ID = 0" // load only translated messages at System level
 					+ " AND t.AD_Language=?", null);
 				pstmt.setString(1, AD_Language);
 			}
-			rs = pstmt.executeQuery();
 
-			//	get values
-			while (rs.next())
-			{
-				String AD_Message = rs.getString(1);
-				StringBuilder MsgText = new StringBuilder();
-				MsgText.append(rs.getString(2));
-				String MsgTip = rs.getString(3);
-				//
-				if (MsgTip != null)			//	messageTip on next line, if exists
-					MsgText.append(" ").append(SEPARATOR).append(MsgTip);
-				msg.put(AD_Message, MsgText.toString());
+			addMessagesInCache(pstmt, rs, msg);
+
+			for (int clientID : MSysConfig.getAll(MSysConfig.MESSAGES_AT_TENANT_LEVEL, "Y")) {
+
+				pstmt = DB.prepareStatement("SELECT t.AD_Client_ID || '|' || m.Value, t.MsgText, t.MsgTip"
+						+ " FROM AD_Message_Trl t, AD_Message m"
+						+ " WHERE m.AD_Message_ID=t.AD_Message_ID"
+						+ " AND t.AD_Client_ID = " + clientID
+						+ " AND t.AD_Language=?", null);
+				pstmt.setString(1, AD_Language);
+				addMessagesInCache(pstmt, rs, msg);
 			}
 		}
 		catch (SQLException e)
@@ -188,6 +190,23 @@ public final class Msg
 		return msg;
 	}	//	initMsg
 
+	private void addMessagesInCache(PreparedStatement pstmt, ResultSet rs, CCache<String,String> msg) throws SQLException {
+		rs = pstmt.executeQuery();
+
+		//	get values
+		while (rs.next())
+		{
+			String AD_Message = rs.getString(1);
+			StringBuilder MsgText = new StringBuilder();
+			MsgText.append(rs.getString(2));
+			String MsgTip = rs.getString(3);
+			//
+			if (MsgTip != null)			//	messageTip on next line, if exists
+				MsgText.append(" ").append(SEPARATOR).append(MsgTip);
+			msg.put(AD_Message, MsgText.toString());
+		}
+	}
+	
 	/**
 	 *  Reset Message cache
 	 */
@@ -261,6 +280,13 @@ public final class Msg
 		CCache<String, String> langMap = getMsgMap(AD_Language);
 		if (langMap == null)
 			return null;
+
+		if (MSysConfig.getBooleanValue(MSysConfig.MESSAGES_AT_TENANT_LEVEL, false, Env.getAD_Client_ID(Env.getCtx()))) {
+			String msg = (String) langMap.get(Env.getAD_Client_ID(Env.getCtx()) + "|" + text);
+			if (!Util.isEmpty(msg))
+				return msg;
+		}
+
 		return (String)langMap.get(text);
 	}   //  lookup
 

@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -28,6 +29,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -44,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4071371201535378277L;
+	private static final long serialVersionUID = 7257949078651339908L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -126,6 +128,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
     public static final String MAX_TEXT_LENGTH_ON_GRID_VIEW = "MAX_TEXT_LENGTH_ON_GRID_VIEW";
     public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
+    public static final String MESSAGES_AT_TENANT_LEVEL = "MESSAGES_AT_TENANT_LEVEL";
     public static final String MFA_NTP_TIMEOUT_IN_MILLISECONDS = "MFA_NTP_TIMEOUT_IN_MILLISECONDS";
 	public static final String MFA_REGISTERED_DEVICE_EXPIRATION_DAYS = "MFA_REGISTERED_DEVICE_EXPIRATION_DAYS";
     public static final String MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_INITIAL_WAIT_FOR_CLUSTER_IN_SECONDS";
@@ -837,6 +840,22 @@ public class MSysConfig extends X_AD_SysConfig
 			+", Client|Org="+getAD_Client_ID()+"|"+getAD_Org_ID()
 			+", EntityType="+getEntityType()
 			+"]";
+	}
+
+	/** Returns list of clientID with a System Configurator equals to value */
+	public static ArrayList<Integer> getAll(String name, String value) {
+
+		ArrayList<Integer> list = new ArrayList<Integer>();
+
+		for (MClient client : MClient.getAll(Env.getCtx())) {
+
+			String clientValue = getValue(name, client.getAD_Client_ID());
+
+			if (!Util.isEmpty(clientValue) && clientValue.equals(value))
+				list.add(client.getAD_Client_ID());
+		}
+
+		return list;
 	}
 
 }	//	MSysConfig;
