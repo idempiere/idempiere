@@ -28,6 +28,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -653,6 +655,17 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			}
 						
 			removeStorageRecords();
+			
+			// check bom
+			if (is_ValueChanged("IsActive") && !isActive())
+			{
+				errMsg = verifyBOM();
+				if (! Util.isEmpty(errMsg))
+				{
+					log.saveError("Error", errMsg); 
+					return false;
+				}				
+			}
 		}	//	storage
 	
 		// it checks if UOM has been changed , if so disallow the change if the condition is true.
@@ -753,6 +766,31 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		}
 	}
 
+	private String verifyBOM() {
+		Query query = new Query(getCtx(), MPPProductBOMLine.Table_Name, MPPProductBOMLine.COLUMNNAME_M_Product_ID+"=?", get_TrxName());
+		List<MPPProductBOMLine> list = query.setOnlyActiveRecords(true)
+											.setClient_ID()
+											.setParameters(getM_Product_ID())
+											.list();
+		for(MPPProductBOMLine line : list) {
+			MPPProductBOM bom = line.getParent();
+			if (bom.isActive()) {
+				StringBuilder errMsg = new StringBuilder();
+				errMsg.append(Msg.getMsg(Env.getCtx(), "DeActivateProductInActiveBOM"));
+				String bomName = bom.getName();
+				errMsg.append(" (BOM: ")
+					.append(bomName);
+				String parentValue = MProduct.get(bom.getM_Product_ID()).getValue();
+				if (!parentValue.equals(bomName))
+					errMsg.append(", ").append(parentValue);
+				errMsg.append(")");
+				return errMsg.toString();
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * 	HasInventoryOrCost 
 	 *	@return true if it has Inventory or Cost
@@ -822,6 +860,25 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		if (newRecord || is_ValueChanged("M_Product_Category_ID"))
 			MCost.create(this);
 
+
+		if (!newRecord && success && is_ValueChanged(COLUMNNAME_IsActive))
+		{
+			if (!isActive() && isBOM())
+			{
+				StringBuilder where = new StringBuilder();
+				where.append("AD_Client_ID=? ")
+				   .append("AND M_Product_ID=? ")
+				   .append("AND IsActive='Y'");
+				Query query  = new Query(Env.getCtx(), MPPProductBOM.Table_Name, where.toString(), get_TrxName());
+				List<MPPProductBOM> boms = query.setParameters(getAD_Client_ID(), getM_Product_ID()).list();
+				for(MPPProductBOM bom : boms) 
+				{
+					bom.setIsActive(false);
+					bom.saveEx();
+				}
+			}
+		}
+		
 		return success;
 	}	//	afterSave
 
