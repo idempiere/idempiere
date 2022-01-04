@@ -651,6 +651,8 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 				log.saveError("Error", Msg.parseTranslation(getCtx(), errMsg)); 
 				return false;
 			}
+						
+			removeStorageRecords();
 		}	//	storage
 	
 		// it checks if UOM has been changed , if so disallow the change if the condition is true.
@@ -722,6 +724,33 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		if (qtyReserved.signum() != 0)
 			errMsg.append(" - @QtyReserved@").append(qtyReserved);
 		return errMsg.toString();
+	}
+
+	private void removeStorageRecords() {
+		int cnt = 0;
+		//safe to remove if not using lot or serial
+		if (isLot() || isSerial()) {
+			//for lot/serial, make sure everything is zero
+			cnt = DB.executeUpdateEx("UPDATE M_StorageOnHand SET QtyOnHand=0 WHERE M_Product_ID=? AND QtyOnHand != 0", new Object[] {getM_Product_ID()}, get_TrxName());
+			if (log.isLoggable(Level.INFO)) {
+				log.log(Level.INFO, toString()+" #M_StorageOnHand Updated=" + cnt);
+			}
+		} else {
+			cnt = DB.executeUpdateEx("DELETE FROM M_StorageOnHand WHERE M_Product_ID=?", new Object[] {getM_Product_ID()}, get_TrxName());
+			if (log.isLoggable(Level.INFO)) {
+				log.log(Level.INFO, toString()+" #M_StorageOnHand Deleted=" + cnt);
+			}
+		}		
+		
+		//clear all reservation data
+		cnt = DB.executeUpdateEx("DELETE FROM M_StorageReservation WHERE M_Product_ID=?", new Object[] {getM_Product_ID()}, get_TrxName());
+		if (log.isLoggable(Level.INFO)) {
+			log.log(Level.INFO, toString()+" #M_StorageReservation Deleted=" + cnt);
+		}
+		cnt = DB.executeUpdateEx("DELETE FROM M_StorageReservationLog WHERE M_Product_ID=?", new Object[] {getM_Product_ID()}, get_TrxName());
+		if (log.isLoggable(Level.INFO)) {
+			log.log(Level.INFO, toString()+" #M_StorageReservationLog Deleted=" + cnt);
+		}
 	}
 
 	/**
@@ -1007,6 +1036,21 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		
 		MAttributeSet as = MAttributeSet.get(getM_AttributeSet_ID());
 		if (as.isInstanceAttribute() && as.isSerNo())
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * 
+	 * @return true if instance of product is managed with lot
+	 */
+	public boolean isLot() {
+		if (getM_AttributeSet_ID() == 0)
+			return false;
+		
+		MAttributeSet as = MAttributeSet.get(getM_AttributeSet_ID());		
+		if (as.isInstanceAttribute() && as.isLot())
 			return true;
 		else
 			return false;
