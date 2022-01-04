@@ -152,7 +152,8 @@ public class Translation implements IApplication
 			SAXParser parser = factory.newSAXParser();
 			parser.parse(in, handler);
 			if (log.isLoggable(Level.INFO)) log.info("Updated=" + handler.getUpdateCount());
-			MLanguage lang = MLanguage.get(m_ctx, AD_Language);
+			MLanguage langCached = MLanguage.get(m_ctx, AD_Language);
+			MLanguage lang = new MLanguage(m_ctx, langCached.getAD_Language_ID(), null);
 			if (! lang.isLoginLocale()) {
 				lang.setIsLoginLocale(true);
 				lang.saveEx();
