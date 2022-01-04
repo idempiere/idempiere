@@ -1,2 +1,0 @@
-SELECT * FROM User_Errors;
--- SELECT DBMS_JAVA.LONGNAME(Name), Text FROM User_Errors ORDER BY 1
