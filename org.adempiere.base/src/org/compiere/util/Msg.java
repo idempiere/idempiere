@@ -146,24 +146,27 @@ public final class Msg
 		{
 			
 			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Language"))
-				pstmt = DB.prepareStatement("SELECT Value, MsgText, MsgTip FROM AD_Message",  null);
+				pstmt = DB.prepareStatement("SELECT Value, MsgText, MsgTip FROM AD_Message WHERE IsActive ='Y'",  null);
 			else
 			{
 				pstmt = DB.prepareStatement("SELECT m.Value, t.MsgText, t.MsgTip "
 					+ "FROM AD_Message_Trl t, AD_Message m "
 					+ "WHERE m.AD_Message_ID=t.AD_Message_ID"
 					+ " AND t.AD_Client_ID = 0" // load only translated messages at System level (using Value as key)
+					+ " AND m.IsActive ='Y'"
 					+ " AND t.AD_Language=?", null);
 				pstmt.setString(1, AD_Language);
 			}
 
 			addMessagesInCache(pstmt, rs, msg);
+			pstmt.close();
 
 			// load translated messages at tenant level (using AD_Client_ID|Value as key)
 			pstmt = DB.prepareStatement("SELECT t.AD_Client_ID || '|' || m.Value, t.MsgText, t.MsgTip"
 					+ " FROM AD_Message_Trl t, AD_Message m"
 					+ " WHERE m.AD_Message_ID=t.AD_Message_ID"
 					+ " AND t.AD_Client_ID != 0"
+					+ " AND m.IsActive ='Y'"
 					+ " AND t.AD_Language=?", null);
 			pstmt.setString(1, AD_Language);
 			addMessagesInCache(pstmt, rs, msg);
