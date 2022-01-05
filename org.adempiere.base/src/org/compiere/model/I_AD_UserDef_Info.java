@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Info
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_UserDef_Info 
 {
@@ -105,6 +105,21 @@ public interface I_AD_UserDef_Info
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
     /** Column name AD_UserDef_Info_ID */
     public static final String COLUMNNAME_AD_UserDef_Info_ID = "AD_UserDef_Info_ID";
 
@@ -123,20 +138,20 @@ public interface I_AD_UserDef_Info
 	/** Get AD_UserDef_Info_UU	  */
 	public String getAD_UserDef_Info_UU();
 
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+    /** Column name AD_Window_ID */
+    public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
 
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
+	/** Set Window.
+	  * Data entry or display window
 	  */
-	public void setAD_User_ID (int AD_User_ID);
+	public void setAD_Window_ID (int AD_Window_ID);
 
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
+	/** Get Window.
+	  * Data entry or display window
 	  */
-	public int getAD_User_ID();
+	public int getAD_Window_ID();
 
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -231,6 +246,21 @@ public interface I_AD_UserDef_Info
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name PO_Window_ID */
+    public static final String COLUMNNAME_PO_Window_ID = "PO_Window_ID";
+
+	/** Set PO Window.
+	  * Purchase Order Window
+	  */
+	public void setPO_Window_ID (int PO_Window_ID);
+
+	/** Get PO Window.
+	  * Purchase Order Window
+	  */
+	public int getPO_Window_ID();
+
+	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException;
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

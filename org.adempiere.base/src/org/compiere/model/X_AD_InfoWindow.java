@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoWindow
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoWindow")
 public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220103L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -175,6 +175,34 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
+
+	/** Set Window.
+		@param AD_Window_ID Data entry or display window
+	*/
+	public void setAD_Window_ID (int AD_Window_ID)
+	{
+		if (AD_Window_ID < 1)
+			set_Value (COLUMNNAME_AD_Window_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
+	}
+
+	/** Get Window.
+		@return Data entry or display window
+	  */
+	public int getAD_Window_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -466,6 +494,34 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public int getPagingSize()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PagingSize);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getPO_Window_ID(), get_TrxName());
+	}
+
+	/** Set PO Window.
+		@param PO_Window_ID Purchase Order Window
+	*/
+	public void setPO_Window_ID (int PO_Window_ID)
+	{
+		if (PO_Window_ID < 1)
+			set_Value (COLUMNNAME_PO_Window_ID, null);
+		else
+			set_Value (COLUMNNAME_PO_Window_ID, Integer.valueOf(PO_Window_ID));
+	}
+
+	/** Get PO Window.
+		@return Purchase Order Window
+	  */
+	public int getPO_Window_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PO_Window_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
