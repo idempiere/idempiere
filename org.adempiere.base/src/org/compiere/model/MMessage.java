@@ -24,8 +24,8 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Message Model
@@ -38,7 +38,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7983736322524189608L;
+	private static final long serialVersionUID = 3305457539918386807L;
 
 	/**
 	 * 	Get Message (cached) (immutable)
@@ -207,4 +207,24 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 		return this;
 	}
 
+	/*
+	 * 	Before Save
+	 *	@param newRecord
+	 *	@return true if save
+	 */
+	protected boolean beforeSave(boolean newRecord) {
+
+		// To avoid conflicts with tenant level messages, the value cannot start with numeric and |
+		if (getValue().contains("|")) {
+
+			String prefix = getValue().substring(0, getValue().indexOf("|"));
+
+			if (prefix.matches("[0-9]+")) {
+				log.saveError("Error", "A message cannot have a value starting with numeric and |");
+				return false;
+			}
+		}
+
+		return true;
+	}
 }	//	MMessage
