@@ -238,7 +238,7 @@ public abstract class PO
 	 */
 	public PO (Properties ctx, PO source, int AD_Client_ID, int AD_Org_ID)
 	{
-		this (ctx, 0, null, null);	//	create new
+		this (ctx, 0, null, (String[]) null);	//	create new
 		//
 		if (source != null)
 			copyValues (source, this);
