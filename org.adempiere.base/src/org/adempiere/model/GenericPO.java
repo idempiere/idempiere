@@ -53,7 +53,7 @@ public class GenericPO extends PO implements DocAction {
 	 * @param ID
 	 */
 	public GenericPO(String tableName, Properties ctx, int ID) {
-		super(new PropertiesWrapper(ctx, tableName), ID, null, null);
+		super(new PropertiesWrapper(ctx, tableName), ID, null, (String[]) null);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class GenericPO extends PO implements DocAction {
 	 * @param trxName
 	 */
 	public GenericPO(String tableName, Properties ctx, int ID, String trxName) {
-		super(new PropertiesWrapper(ctx, tableName), ID, trxName, null);
+		super(new PropertiesWrapper(ctx, tableName), ID, trxName, (String[]) null);
 	}
 
 	/**
