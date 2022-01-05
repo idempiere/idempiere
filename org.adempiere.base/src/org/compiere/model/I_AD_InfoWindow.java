@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoWindow
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_InfoWindow 
 {
@@ -109,6 +109,21 @@ public interface I_AD_InfoWindow
 	public int getAD_Table_ID();
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name AD_Window_ID */
+    public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
+
+	/** Set Window.
+	  * Data entry or display window
+	  */
+	public void setAD_Window_ID (int AD_Window_ID);
+
+	/** Get Window.
+	  * Data entry or display window
+	  */
+	public int getAD_Window_ID();
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -331,6 +346,21 @@ public interface I_AD_InfoWindow
 
 	/** Get Paging Size	  */
 	public int getPagingSize();
+
+    /** Column name PO_Window_ID */
+    public static final String COLUMNNAME_PO_Window_ID = "PO_Window_ID";
+
+	/** Set PO Window.
+	  * Purchase Order Window
+	  */
+	public void setPO_Window_ID (int PO_Window_ID);
+
+	/** Get PO Window.
+	  * Purchase Order Window
+	  */
+	public int getPO_Window_ID();
+
+	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException;
 
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";

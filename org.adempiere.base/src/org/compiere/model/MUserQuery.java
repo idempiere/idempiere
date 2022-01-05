@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -52,6 +54,14 @@ public class MUserQuery extends X_AD_UserQuery
 		list.addAll(getAllUsersQueries(ctx, AD_Tab_ID));
 		list.addAll(getClientQueries(ctx, AD_Tab_ID));
 		list.addAll(getRoleQueries(ctx, AD_Tab_ID));
+
+		Collections.sort(list, new Comparator<MUserQuery>() {
+			@Override
+			public int compare(MUserQuery uq1, MUserQuery uq2) {
+				return uq1.getName().compareTo(uq2.getName());
+			}
+		});
+
 		MUserQuery[] retValue = new MUserQuery[list.size()];
 		list.toArray(retValue);
 		return retValue;
