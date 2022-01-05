@@ -207,6 +207,11 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 		return this;
 	}
 
+	/*
+	 * 	Before Save
+	 *	@param newRecord
+	 *	@return true if save
+	 */
 	protected boolean beforeSave(boolean newRecord) {
 
 		// To avoid conflicts with tenant level messages, the value cannot start with numeric and |

@@ -144,7 +144,6 @@ public final class Msg
 		ResultSet rs = null;
 		try
 		{
-			
 			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Language"))
 				pstmt = DB.prepareStatement("SELECT Value, MsgText, MsgTip FROM AD_Message WHERE IsActive ='Y'",  null);
 			else
@@ -157,9 +156,9 @@ public final class Msg
 					+ " AND t.AD_Language=?", null);
 				pstmt.setString(1, AD_Language);
 			}
-
-			addMessagesInCache(pstmt, rs, msg);
-			pstmt.close();
+			rs = pstmt.executeQuery();
+			addMessagesInCache(rs, msg);
+			DB.close(rs, pstmt);
 
 			// load translated messages at tenant level (using AD_Client_ID|Value as key)
 			pstmt = DB.prepareStatement("SELECT t.AD_Client_ID || '|' || m.Value, t.MsgText, t.MsgTip"
@@ -169,7 +168,8 @@ public final class Msg
 					+ " AND m.IsActive ='Y'"
 					+ " AND t.AD_Language=?", null);
 			pstmt.setString(1, AD_Language);
-			addMessagesInCache(pstmt, rs, msg);
+			rs = pstmt.executeQuery();
+			addMessagesInCache(rs, msg);
 		}
 		catch (SQLException e)
 		{
@@ -191,9 +191,12 @@ public final class Msg
 		return msg;
 	}	//	initMsg
 
-	private void addMessagesInCache(PreparedStatement pstmt, ResultSet rs, CCache<String,String> msg) throws SQLException {
-		rs = pstmt.executeQuery();
-
+	/**
+	 * @param rs
+	 * @param msg
+	 * @throws SQLException
+	 */
+	private void addMessagesInCache(ResultSet rs, CCache<String,String> msg) throws SQLException {
 		//	get values
 		while (rs.next())
 		{

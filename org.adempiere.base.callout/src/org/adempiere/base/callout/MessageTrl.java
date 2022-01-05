@@ -20,7 +20,7 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - Nicolas Micoud (TGI)                         								   *
+ * - Nicolas Micoud (TGI)                                              *
  **********************************************************************/
 package org.adempiere.base.callout;
 
