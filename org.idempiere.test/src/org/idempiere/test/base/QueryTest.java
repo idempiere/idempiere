@@ -30,15 +30,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.model.POWrapper;
+import org.compiere.model.I_Test;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
+import org.compiere.model.MTest;
+import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Element;
@@ -333,4 +339,34 @@ public class QueryTest extends AbstractTestCase {
 			assertEquals(expected, ids[i], "Element "+i+" not equals");
 		}
 	}
+
+	@Test
+	public void testVirtualColumnLoad() {
+		// create bogus record
+		PO testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		testPo.save();
+
+		BigDecimal expected = new BigDecimal(123.45d).setScale(2, RoundingMode.HALF_DOWN);
+
+		// virtual column lazy loading
+		Query query = new Query(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_Test_ID + "=?", getTrxName());
+		testPo = query.setParameters(testPo.get_ID()).first();
+		I_Test testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(null == testPo.get_ValueOld(MTest.COLUMNNAME_TestVirtualQty));
+		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
+
+		// without virtual column lazy loading
+		testPo = query.setNoVirtualColumn(false).setParameters(testPo.get_ID()).first();
+		assertTrue(null != testPo.get_ValueOld(MTest.COLUMNNAME_TestVirtualQty));
+		testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
+
+		// single virtual column without lazy loading
+		testPo = query.setVirtualColumns(I_Test.COLUMNNAME_TestVirtualQty)
+				.setParameters(testPo.get_ID()).first();
+		assertTrue(null != testPo.get_ValueOld(MTest.COLUMNNAME_TestVirtualQty));
+		testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(expected.compareTo(testRecord.getTestVirtualQty()) == 0);
+	}
+
 }

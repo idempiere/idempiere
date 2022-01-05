@@ -198,6 +198,19 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 			//	Constructor End
 
+			//	Standard Constructor + Virtual Columns
+			 .append(NL)
+			 .append("    /** Standard Constructor */").append(NL)
+			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName, String ... virtualColumns)").append(NL)
+			 .append("    {").append(NL)
+			 .append("      super (ctx, ").append(keyColumn).append(", trxName, virtualColumns);").append(NL)
+			 .append("      /** if (").append(keyColumn).append(" == 0)").append(NL)
+			 .append("        {").append(NL)
+			 .append(mandatory)
+			 .append("        } */").append(NL)
+			 .append("    }").append(NL)
+			//	Constructor End
+
 			//	Load Constructor
 			 .append(NL)
 			 .append("    /** Load Constructor */").append(NL)
@@ -267,7 +280,7 @@ public class ModelClassGenerator
 			+ "FROM AD_Column c "
 			+ "WHERE c.AD_Table_ID=?"
 			+ " AND c.ColumnName NOT IN ('AD_Client_ID', 'AD_Org_ID', 'IsActive', 'Created', 'CreatedBy', 'Updated', 'UpdatedBy')"
-			+ " AND c.IsActive='Y'"
+			+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') "
 			+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 			+ " ORDER BY c.ColumnName";
 		boolean isKeyNamePairCreated = false; // true if the method "getKeyNamePair" is already generated

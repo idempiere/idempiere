@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionLine")
 public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20211226L;
 
     /** Standard Constructor */
     public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName)
@@ -383,39 +383,6 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Set Product Type.
-		@param ProductType Type of product
-	*/
-	public void setProductType (String ProductType)
-	{
-		throw new IllegalArgumentException ("ProductType is virtual column");	}
-
-	/** Get Product Type.
-		@return Type of product
-	  */
-	public String getProductType()
-	{
-		return (String)get_Value(COLUMNNAME_ProductType);
-	}
-
-	/** Set Available Quantity.
-		@param QtyAvailable Available Quantity (On Hand - Reserved)
-	*/
-	public void setQtyAvailable (BigDecimal QtyAvailable)
-	{
-		throw new IllegalArgumentException ("QtyAvailable is virtual column");	}
-
-	/** Get Available Quantity.
-		@return Available Quantity (On Hand - Reserved)
-	  */
-	public BigDecimal getQtyAvailable()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyAvailable);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
 	}
 
 	/** Set Quantity Used.
