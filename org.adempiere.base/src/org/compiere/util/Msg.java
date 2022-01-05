@@ -152,7 +152,7 @@ public final class Msg
 					+ "FROM AD_Message_Trl t, AD_Message m "
 					+ "WHERE m.AD_Message_ID=t.AD_Message_ID"
 					+ " AND t.AD_Client_ID = 0" // load only translated messages at System level (using Value as key)
-					+ " AND m.IsActive ='Y'"
+					+ " AND m.IsActive ='Y' AND t.IsActive ='Y'"
 					+ " AND t.AD_Language=?", null);
 				pstmt.setString(1, AD_Language);
 			}
@@ -165,7 +165,7 @@ public final class Msg
 					+ " FROM AD_Message_Trl t, AD_Message m"
 					+ " WHERE m.AD_Message_ID=t.AD_Message_ID"
 					+ " AND t.AD_Client_ID != 0"
-					+ " AND m.IsActive ='Y'"
+					+ " AND m.IsActive ='Y' AND t.IsActive ='Y'"
 					+ " AND t.AD_Language=?", null);
 			pstmt.setString(1, AD_Language);
 			rs = pstmt.executeQuery();
