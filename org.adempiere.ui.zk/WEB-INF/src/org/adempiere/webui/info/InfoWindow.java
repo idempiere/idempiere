@@ -2225,7 +2225,24 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (!isLookup() && Util.isEmpty(isSOTrx)) {
 			isSOTrx = "Y";
 		}
-		
+
+		if (infoWindow != null) {
+
+			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+
+			if (userDef != null) {
+				if (isSOTrx.equals("N") && userDef.getPO_Window_ID() > 0)
+					return userDef.getPO_Window_ID();
+				if (userDef.getAD_Window_ID() > 0)
+					return userDef.getAD_Window_ID();
+			}
+
+			if (isSOTrx.equals("N") && infoWindow.getPO_Window_ID() > 0)
+				return infoWindow.getPO_Window_ID();
+			if (infoWindow.getAD_Window_ID() > 0)
+				return infoWindow.getAD_Window_ID();
+		}
+
 		return super.getAD_Window_ID(MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID()), isSOTrx.equalsIgnoreCase("Y"));
 	}
 	
