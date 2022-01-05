@@ -21,6 +21,9 @@ Copyright (C) 2007 Ashley G Ramdass.
 "?>
 <zk>
 	<script><![CDATA[
+		if (window.location.protocol == 'https:')
+		{
+			
 		zk.load("jawwa.atmosphere");
 		zk.load("org.idempiere.websocket");
 		zk.load("adempiere.local.storage");	
@@ -247,9 +250,15 @@ Copyright (C) 2007 Ashley G Ramdass.
 					return result;
 		        }
 		    });
-		});						
+		});	
+		
+		} //window.location.protocol check
+		else
+		{
+			alert("This request has been blocked, the content must be served over HTTPS");
+		}					
 	]]>
 	</script>
-    <include src="${themePreference}"/>
-	<window use="org.adempiere.webui.AdempiereWebUI"/>
+    <include src="${themePreference}" if="${execution.getScheme() == 'https'}"/>
+	<window use="org.adempiere.webui.AdempiereWebUI" if="${execution.getScheme() == 'https'}"/>
 </zk>
