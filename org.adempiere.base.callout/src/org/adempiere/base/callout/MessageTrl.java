@@ -31,6 +31,7 @@ import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MMessage;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
@@ -43,7 +44,7 @@ public class MessageTrl implements IColumnCallout {
 	@Override
 	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
 
-		if (value != null) {
+		if (Env.getAD_Client_ID(ctx) > 0 && value != null) { // only use to fill fields from System to tenant
 
 			int messageID = 0;
 			String lang = "";
