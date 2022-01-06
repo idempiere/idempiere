@@ -137,14 +137,7 @@ public class StorageCleanup extends SvrProcess
 		if (log.isLoggable(Level.INFO)) log.info(target.toString());
 		BigDecimal qty = target.getQtyOnHand().negate();
 
-		//	Create Movement
-		MMovement mh = new MMovement (getCtx(), 0, get_TrxName());
-		mh.setAD_Org_ID(target.getAD_Org_ID());
-		mh.setC_DocType_ID(p_C_DocType_ID);
-		mh.setDescription(getName());
-		if (!mh.save())
-			return 0;
-
+		MMovement mh = null;
 		MAttributeSetInstance targetASI = null;
 		if (target.getM_AttributeSetInstance_ID() > 0)
 		{
@@ -171,6 +164,15 @@ public class StorageCleanup extends SvrProcess
 				}
 			}
 			
+			if (mh == null)
+			{
+				// Create Movement
+				mh = new MMovement (getCtx(), 0, get_TrxName());
+				mh.setAD_Org_ID(target.getAD_Org_ID());
+				mh.setC_DocType_ID(p_C_DocType_ID);
+				mh.setDescription(getName());
+				mh.saveEx();
+			}
 			//	Movement Line
 			MMovementLine ml = new MMovementLine(mh);
 			ml.setM_Product_ID(target.getM_Product_ID());
@@ -187,8 +189,7 @@ public class StorageCleanup extends SvrProcess
 			//
 			lines++;
 			ml.setLine(lines*10);
-			if (!ml.save())
-				return 0;
+			ml.saveEx();
 			
 			qty = qty.subtract(qtyMove);
 			if (qty.signum() <= 0)
@@ -196,16 +197,18 @@ public class StorageCleanup extends SvrProcess
 		}	//	for all movements
 		
 		//	Process
-		if (!mh.processIt(MMovement.ACTION_Complete)) {
-			log.warning("Movement Process Failed: " + mh + " - " + mh.getProcessMsg());
-			throw new IllegalStateException("Movement Process Failed: " + mh + " - " + mh.getProcessMsg());
-			
+		if (mh != null) {
+			if (!mh.processIt(MMovement.ACTION_Complete)) {
+				log.warning("Movement Process Failed: " + mh + " - " + mh.getProcessMsg());
+				throw new IllegalStateException("Movement Process Failed: " + mh + " - " + mh.getProcessMsg());
+				
+			}
+			mh.saveEx();
+			StringBuilder msglog= new StringBuilder("@M_Movement_ID@ ").append(mh.getDocumentNo()).append(" (") 
+					.append(MRefList.get(getCtx(), MMovement.DOCSTATUS_AD_Reference_ID, 
+							mh.getDocStatus(), get_TrxName())).append(")");
+			addLog(0, null, new BigDecimal(lines), msglog.toString());
 		}
-		mh.saveEx();
-		StringBuilder msglog= new StringBuilder("@M_Movement_ID@ ").append(mh.getDocumentNo()).append(" (") 
-				.append(MRefList.get(getCtx(), MMovement.DOCSTATUS_AD_Reference_ID, 
-						mh.getDocStatus(), get_TrxName())).append(")");
-		addLog(0, null, new BigDecimal(lines), msglog.toString());
 
 		eliminateReservation(target);
 		return lines;
