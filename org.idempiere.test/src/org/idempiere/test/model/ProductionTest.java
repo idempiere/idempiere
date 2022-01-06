@@ -383,7 +383,10 @@ public class ProductionTest extends AbstractTestCase {
 		try {
 			int rollUpProcessId = 53230;
 			int mulchId = 137;
-			MProduct mulch = MProduct.get(mulchId);
+			MProduct mulch = new MProduct(Env.getCtx(), mulchId, getTrxName());
+			mulch.setM_Product_Category_ID(category.get_ID());
+			mulch.saveEx();
+			
 			BigDecimal componentCost = MCost.getCurrentCost(mulch, 0, getTrxName());
 									
 			MProduct mulchX = new MProduct(Env.getCtx(), 0, getTrxName());
