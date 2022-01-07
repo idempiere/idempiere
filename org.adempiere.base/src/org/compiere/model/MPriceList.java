@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -358,4 +359,24 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 		return this;
 	}
 
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) 
+	{
+		success = super.afterSave(newRecord, success);
+		
+		if (success && !newRecord && is_ValueChanged(COLUMNNAME_IsActive) && !isActive())
+		{
+				List<MPriceListVersion> versions = new Query(getCtx(), I_M_PriceList_Version.Table_Name, "M_PriceList_ID=?", get_TrxName())
+						.setParameters(getM_PriceList_ID())
+						.setOnlyActiveRecords(true)
+						.list();
+				for(MPriceListVersion version : versions)
+				{
+					version.setIsActive(false);
+					version.saveEx();
+				}
+		}
+		
+		return success;
+	}
 }	//	MPriceList
