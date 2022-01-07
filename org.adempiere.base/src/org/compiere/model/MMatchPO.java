@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.acct.Doc;
@@ -932,6 +933,10 @@ public class MMatchPO extends X_M_MatchPO
 			priceActual = MConversionRate.convert(getCtx(), priceActual, invoiceCurrency_ID, orderCurrency_ID,
 										invoice.getDateInvoiced(), invoice.getC_ConversionType_ID(),
 										getAD_Client_ID(), getAD_Org_ID());
+			
+			if (priceActual == null)
+				throw new AdempiereException(MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
+						invoiceCurrency_ID, orderCurrency_ID, invoice.getC_ConversionType_ID(), invoice.getDateInvoiced(), get_TrxName()));
 		}
 		return priceActual;
 	}
