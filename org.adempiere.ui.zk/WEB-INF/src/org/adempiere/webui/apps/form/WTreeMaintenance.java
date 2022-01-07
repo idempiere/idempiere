@@ -117,6 +117,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		//
 		centerTree = new Tree();
 		centerTree.addEventListener(Events.ON_SELECT, this);
+		centerTree.addEventListener(Events.ON_DOUBLE_CLICK, this);
 	}	//	preInit
 	
 	/**
@@ -223,7 +224,17 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		ZKUpdateUtil.setVflex(centerList, true);
 		centerList.setSizedByContent(false);
 		centerList.addEventListener(Events.ON_SELECT, this);
+		centerList.addDoubleClickListener(centerListListener);
 	}	//	jbInit
+	
+	EventListener<Event> centerListListener = new EventListener<Event>() {
+		public void onEvent(Event event) throws Exception {
+			if (Events.ON_DOUBLE_CLICK.equals(event.getName())) {
+				add();
+				bAdd.setDisabled(true);
+			}
+		}
+	};
 
 	/**
 	 * 	Dispose
@@ -247,30 +258,41 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 			action_treeAddAll();
 		else if (e.getTarget() == bAdd)
 		{
-			SimpleListModel model = (SimpleListModel) centerList.getModel();
-			int i = centerList.getSelectedIndex();
-			if (i >= 0) {
-				action_treeAdd((ListItem)model.getElementAt(i));
-			}
+			add();
 		}
-			
 		else if (e.getTarget() == bDelete)
 		{
-			SimpleListModel model = (SimpleListModel) centerList.getModel();
-			int i = centerList.getSelectedIndex();
-			if (i >= 0) {
-				action_treeDelete((ListItem)model.getElementAt(i));
-			}
+			remove();
 		}			
 		else if (e.getTarget() == bDeleteAll)
 			action_treeDeleteAll();
 		else if (e.getTarget() == centerList)
 			onListSelection(e);
-		else if (e.getTarget() == centerTree)
-			onTreeSelection(e);
+		else if (e.getTarget() == centerTree) {
+			if (e.getName().equals(Events.ON_DOUBLE_CLICK))
+				remove();
+			else
+				onTreeSelection(e);	
+		}
 		else if (e.getTarget() == searchBox.getButton() || e.getTarget() == searchBox.getTextbox())
 			searchElement();
 	}	//	actionPerformed
+
+	void add() {
+		SimpleListModel model = (SimpleListModel) centerList.getModel();
+		int i = centerList.getSelectedIndex();
+		if (i >= 0) {
+			action_treeAdd((ListItem)model.getElementAt(i));
+		}
+	}
+
+	void remove() {
+		SimpleListModel model = (SimpleListModel) centerList.getModel();
+		int i = centerList.getSelectedIndex();
+		if (i >= 0) {
+			action_treeDelete((ListItem)model.getElementAt(i));
+		}
+	}
 
 	private void searchElement() {
 		String filter = searchBox.getText() == null ? "" : searchBox.getText();
