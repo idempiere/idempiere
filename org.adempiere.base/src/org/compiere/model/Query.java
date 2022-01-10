@@ -333,12 +333,12 @@ public class Query
 		if(DB.getDatabase().isPagingSupported())
 			setPageSize(1);	// Limit to One record
 		
-		String sql = buildSQL(null, true);
-		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
+			String sql = buildSQL(null, true);
+			
 			pstmt = DB.prepareStatement (sql, trxName);
 			rs = createResultSet(pstmt);
 			if (rs.next ())
@@ -374,12 +374,12 @@ public class Query
 		if(DB.getDatabase().isPagingSupported())
 			setPageSize(2);	// Limit to 2 Records
 		
-		String sql = buildSQL(null, true);
-		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
+			String sql = buildSQL(null, true);
+			
 			pstmt = DB.prepareStatement (sql, trxName);
 			rs = createResultSet(pstmt);
 			if (rs.next())
@@ -443,14 +443,14 @@ public class Query
 		int oldPageSize = this.pageSize;
 		if(DB.getDatabase().isPagingSupported())
 			setPageSize(assumeOnlyOneResult ? 2 : 1);
-		
-		String sql = buildSQL(selectClause, true);
 
 		int id = -1;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
+			String sql = buildSQL(selectClause, true);
+			
 			pstmt = DB.prepareStatement(sql, trxName);
 			rs = createResultSet(pstmt);
 			if (rs.next())
