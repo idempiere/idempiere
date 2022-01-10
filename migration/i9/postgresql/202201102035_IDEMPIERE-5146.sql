@@ -111,6 +111,14 @@ UPDATE AD_Column SET FieldLength=255,Updated=TO_TIMESTAMP('2022-01-10 20:34:45',
 INSERT INTO t_alter_column values('c_bankstatementline','ReferenceNo','VARCHAR(255)',null,'NULL')
 ;
 
+-- Jan 10, 2022, 10:58:34 PM CET
+INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,AD_ToolBarButton_UU,"action",AD_Tab_ID,AD_Process_ID,SeqNo,EntityType) VALUES (0,0,TO_TIMESTAMP('2022-01-10 22:58:33','YYYY-MM-DD HH24:MI:SS'),100,'CreatePayment','Y',200116,'CreatePayment',TO_TIMESTAMP('2022-01-10 22:58:33','YYYY-MM-DD HH24:MI:SS'),100,'N','106df1bc-ac3b-44a6-92ba-ead2d2171155','W',328,257,10,'D')
+;
+
+-- Jan 10, 2022, 11:10:31 PM CET
+UPDATE AD_ToolBarButton SET DisplayLogic='@Processed@=N',Updated=TO_TIMESTAMP('2022-01-10 23:10:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200116
+;
+
 SELECT register_migration_script('202201102035_IDEMPIERE-5146.sql') FROM dual
 ;
 
