@@ -233,7 +233,6 @@ public class QueryTest extends AbstractTestCase {
 
 	@Test
 	public void testPaging() {
-		System.setProperty("org.idempiere.db.debug", "true");
 		DB.executeUpdateEx("DELETE FROM Test WHERE Name LIKE 'QueryTest%'", getTrxName());
 		for (int i=101; i<=130; i++) {
 			PO testPo = new MTest(Env.getCtx(), "QueryTest", i);
