@@ -1209,18 +1209,24 @@ public class DB_Oracle implements AdempiereDatabase
 		return true;
 	}
 
+	/**
+	 * Implemented using the fetch first and offset feature. use 1 base index for start and end parameter
+	 * @param sql
+	 * @param start
+	 * @param end
+	 */
 	public String addPagingSQL(String sql, int start, int end) {
-		StringBuilder newSql = new StringBuilder("select * from (")
-				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
-				.append(sql)
-				.append(") tb) where oracle_native_rownum_ >= ")
-				.append(start);
-		if (end > 0) {
-			newSql.append(" AND oracle_native_rownum_ <= ")
-				.append(end);
+		StringBuilder newSql = new StringBuilder(sql);
+		if (start > 1) {
+			newSql.append(" OFFSET ")
+				.append((start - 1))
+				.append( " ROWS");
 		}
-		newSql.append(" order by oracle_native_rownum_");
-
+		if (end > 0) {
+			newSql.append(" FETCH FIRST ")
+				.append(( end - start + 1 ))
+				.append(" ROWS ONLY");
+		}
 		return newSql.toString();
 	}
 

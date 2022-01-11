@@ -230,7 +230,41 @@ public class QueryTest extends AbstractTestCase {
 			.firstIdOnly();
 		});
 	}
-	
+
+	@Test
+	public void testPaging() {
+		DB.executeUpdateEx("DELETE FROM Test WHERE Name LIKE 'QueryTest%'", getTrxName());
+		for (int i=101; i<=130; i++) {
+			PO testPo = new MTest(Env.getCtx(), "QueryTest", i);
+			testPo.save();
+		}
+		Query query = new Query(Env.getCtx(), MTest.Table_Name, "Name LIKE 'QueryTest%'", getTrxName())
+				.setClient_ID()
+				.setOrderBy(MTest.COLUMNNAME_T_Integer);
+		List<MTest> list;
+		list = query.list();
+		assertEquals(list.size(), 30, "Query list without paging brought more records than expected");
+		MTest test = query.first();
+		assertEquals(test.getT_Integer(), 101, "Query first get wrong record");
+		query.setPageSize(10);
+		list = query.list();
+		assertEquals(list.size(), 10, "Query list with paging no skip brought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 101, "Query list with paging no skip get wrong first record");
+		query.setRecordstoSkip(10);
+		list = query.list();
+		assertEquals(list.size(), 10, "Query list with paging and skip brought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 111, "Query list with paging and skip get wrong first record");
+		query.setRecordstoSkip(25);
+		list = query.list();
+		assertEquals(list.size(), 5, "Query list last page with paging and skipbrought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 126, "Query list last page with paging and skip get wrong first record");
+		query.setPageSize(0);
+		query.setRecordstoSkip(10);
+		list = query.list();
+		assertEquals(list.size(), 20, "Query list with skip without paging brought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 111, "Query list with skip without paging get wrong first record");
+	}
+
 	@Test
 	public void testSetClient_ID() throws Exception
 	{
