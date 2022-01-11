@@ -333,11 +333,13 @@ public class Query
 		if(DB.getDatabase().isPagingSupported())
 			setPageSize(1);	// Limit to One record
 		
+		String sql = null;
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			String sql = buildSQL(null, true);
+			sql = buildSQL(null, true);
 			
 			pstmt = DB.prepareStatement (sql, trxName);
 			rs = createResultSet(pstmt);
@@ -374,11 +376,13 @@ public class Query
 		if(DB.getDatabase().isPagingSupported())
 			setPageSize(2);	// Limit to 2 Records
 		
+		String sql = null;
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			String sql = buildSQL(null, true);
+			sql = buildSQL(null, true);
 			
 			pstmt = DB.prepareStatement (sql, trxName);
 			rs = createResultSet(pstmt);
@@ -444,12 +448,14 @@ public class Query
 		if(DB.getDatabase().isPagingSupported())
 			setPageSize(assumeOnlyOneResult ? 2 : 1);
 
+		String sql = null;
+		
 		int id = -1;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			String sql = buildSQL(selectClause, true);
+			sql = buildSQL(selectClause, true);
 			
 			pstmt = DB.prepareStatement(sql, trxName);
 			rs = createResultSet(pstmt);
