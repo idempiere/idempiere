@@ -279,10 +279,6 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	}	//	actionPerformed
 
 	void add() {
-
-		if (cbAllNodes.isChecked())
-			return;
-
 		SimpleListModel model = (SimpleListModel) centerList.getModel();
 		int i = centerList.getSelectedIndex();
 		if (i >= 0) {
@@ -450,9 +446,9 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 				stn = new DefaultTreeNode<Object>(new MTreeNode(item.id, 0, item.name, item.description, 0, item.isSummary,
 						item.imageIndicator, false, null), new ArrayList<TreeNode<Object>>());
 				model.addNode(stn);
+				//	May cause Error if in tree
 				addNode(item);
 			}
-			//	May cause Error if in tree
 			
 		}
 	}	//	action_treeAdd
