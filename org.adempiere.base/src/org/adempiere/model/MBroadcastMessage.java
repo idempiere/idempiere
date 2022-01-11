@@ -199,6 +199,7 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
 		url.append(po.get_KeyColumns()[0]);
 		url.append("', '").append(po.get_ID()).append("','").append(windowUUID).append("')\">");
 		url.append(text);
+		url.append("</a>");
 
 		return url.toString();
 	}
