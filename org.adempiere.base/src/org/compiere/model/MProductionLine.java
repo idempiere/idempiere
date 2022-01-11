@@ -95,11 +95,11 @@ public class MProductionLine extends X_M_ProductionLine {
 		StringBuilder errorString = new StringBuilder();
 		
 		MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
-		I_M_AttributeSet attributeset = prod.getM_AttributeSet();
+		I_M_AttributeSet attributeset = prod.getM_AttributeSet_ID() > 0 ? MAttributeSet.get(prod.getM_AttributeSet_ID()) : null;
 		boolean isAutoGenerateLot = false;
 		if (attributeset != null)
 			isAutoGenerateLot = attributeset.isAutoGenerateLot();		
-		String asiString = asi.getDescription();
+		String asiString = asi.get_ID() > 0 ? asi.getDescription() : "";
 		if ( asiString == null )
 			asiString = "";
 		
@@ -165,16 +165,15 @@ public class MProductionLine extends X_M_ProductionLine {
 					if (lineQty.compareTo(qtyToMove ) > 0)
 							lineQty = qtyToMove;
 	
-					MAttributeSetInstance slASI = new MAttributeSetInstance(getCtx(),
-							storages[sl].getM_AttributeSetInstance_ID(),get_TrxName());
-					String slASIString = slASI.getDescription();
+					MAttributeSetInstance slASI = storages[sl].getM_AttributeSetInstance_ID() > 0 ? new MAttributeSetInstance(getCtx(),
+							storages[sl].getM_AttributeSetInstance_ID(),get_TrxName()) : null;
+					String slASIString = slASI != null ? slASI.getDescription() : "";
 					if (slASIString == null)
 						slASIString = "";
 					
 					if (log.isLoggable(Level.FINEST))log.log(Level.FINEST,"slASI-Description =" + slASIString);
 						
-					if ( slASIString.compareTo(asiString) == 0
-							|| asi.getM_AttributeSet_ID() == 0  )  
+					if (asi.getM_AttributeSet_ID() == 0 || slASIString.equals(asiString))  
 					//storage matches specified ASI or is a costing asi (inc. 0)
 				    // This process will move negative stock on hand quantities
 					{
@@ -227,7 +226,7 @@ public class MProductionLine extends X_M_ProductionLine {
 				{
 					setM_AttributeSetInstance_ID(storage.getM_AttributeSetInstance_ID());
 					asi = new MAttributeSetInstance(getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName());
-					asiString = asi.getDescription();
+					asiString = asi.get_ID() > 0 ? asi.getDescription() : "";
 				} 
 				else
 				{	
@@ -273,16 +272,15 @@ public class MProductionLine extends X_M_ProductionLine {
 						asi.get_ID(), date, get_TrxName(), true);
 				
 				BigDecimal lineQty = qtyToMove;
-				MAttributeSetInstance slASI = new MAttributeSetInstance(getCtx(),
-						storage.getM_AttributeSetInstance_ID(),get_TrxName());
-				String slASIString = slASI.getDescription();
+				MAttributeSetInstance slASI = storage.getM_AttributeSetInstance_ID() > 0 
+						? new MAttributeSetInstance(getCtx(), storage.getM_AttributeSetInstance_ID(),get_TrxName()) : null;
+				String slASIString = slASI != null ? slASI.getDescription() : "";
 				if (slASIString == null)
 					slASIString = "";
 				
 				if (log.isLoggable(Level.FINEST))log.log(Level.FINEST,"slASI-Description =" + slASIString);
 					
-				if ( slASIString.compareTo(asiString) == 0
-						|| asi.getM_AttributeSet_ID() == 0  )  
+				if (asi.getM_AttributeSet_ID() == 0 || slASIString.compareTo(asiString) == 0)  
 				//storage matches specified ASI or is a costing asi (inc. 0)
 			    // This process will move negative stock on hand quantities
 				{
