@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
@@ -85,6 +86,10 @@ public class ProductionTest extends AbstractTestCase {
 	private static final int DOCTYPE_PO = 126;
 	private static final int DOCTYPE_RECEIPT = 122;
 	private static final int USER_GARDENADMIN = 101;
+	private static final int FERTILIZER_LOT_ATTRIBUTESET_ID = 101;
+	private static final int UOM_EACH_ID = 100;
+	private static final int TAX_CATEGORY_STANDARD_ID = 107;
+	private static final int HQ_LOCATOR_ID = 101;
 	
 	@Test
 	public void testAverageCostingProduction() {
@@ -544,6 +549,373 @@ public class ProductionTest extends AbstractTestCase {
 			rollback();
 			DB.executeUpdateEx("delete from m_cost where m_product_id=?", new Object[] {mulchX.get_ID()}, null);
 			mulchX.deleteEx(true);
+		}
+	}
+	
+	@Test
+	public void testMultipleASI() {
+		//use standard costing only to avoid negative qty exception
+		DB.executeUpdateEx("UPDATE M_CostElement SET IsActive = 'N' WHERE AD_Client_ID=? AND CostingMethod IS NOT NULL AND CostingMethod != ?", 
+				new Object[] {getAD_Client_ID(), MCostElement.COSTINGMETHOD_StandardCosting}, getTrxName());
+				
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, null);
+		category.setName("Standard Costing");
+		category.saveEx();
+		
+		String whereClause = "M_Product_Category_ID=?";
+		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, null)
+									.setParameters(category.get_ID())
+									.list();
+		for (MProductCategoryAcct categoryAcct : categoryAccts) {
+			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.saveEx();
+		}
+		
+		//storageonhand api doesn't use trx to retrieve product 
+		MProduct component = new MProduct(Env.getCtx(), 0, null);
+		component.setName("testMultipleASI_Child");
+		component.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+		component.setIsStocked(true);
+		component.setProductType(MProduct.PRODUCTTYPE_Item);
+		component.setC_UOM_ID(UOM_EACH_ID);
+		component.setM_Product_Category_ID(category.get_ID());
+		component.setC_TaxCategory_ID(TAX_CATEGORY_STANDARD_ID);
+		component.saveEx();
+		
+		try {
+			Timestamp today = TimeUtil.getDay(null);
+			MProduct parent = new MProduct(Env.getCtx(), 0, getTrxName());
+			parent.setName("testMultipleASI_Parent");
+			parent.setIsBOM(true);
+			parent.setIsStocked(true);
+			parent.setC_UOM_ID(component.getC_UOM_ID());
+			parent.setM_Product_Category_ID(component.getM_Product_Category_ID());
+			parent.setProductType(component.getProductType());
+			parent.setC_TaxCategory_ID(component.getC_TaxCategory_ID());
+			parent.saveEx();
+			BigDecimal endProductOnHand1 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
+			assertEquals(0, endProductOnHand1.intValue(), "On hand of new product is not zero");
+			
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(parent.get_ID());		
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(parent.getName());
+			bom.saveEx();
+			
+			MPPProductBOMLine line = new MPPProductBOMLine(bom);
+			line.setM_Product_ID(component.get_ID());
+			line.setQtyBOM(new BigDecimal("2"));
+			line.saveEx();
+
+			parent.load(getTrxName());
+			parent.setIsVerified(true);
+			parent.saveEx();
+			
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi1.setLot("Lot1");
+			asi1.saveEx();		
+			MStorageOnHand.add(Env.getCtx(), HQ_LOCATOR_ID, component.get_ID(), asi1.get_ID(), new BigDecimal("1"), today, getTrxName());
+			
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi2.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi2.setLot("Lot2");
+			asi2.saveEx();		
+			MStorageOnHand.add(Env.getCtx(), HQ_LOCATOR_ID, component.get_ID(), asi2.get_ID(), new BigDecimal("1"), today, getTrxName());
+			
+			MProduction production = new MProduction(Env.getCtx(), 0, getTrxName());
+			production.setM_Product_ID(parent.get_ID());
+			production.setM_Locator_ID(HQ_LOCATOR_ID);
+			production.setIsUseProductionPlan(false);
+			production.setMovementDate(getLoginDate());
+			production.setDocAction(DocAction.ACTION_Complete);
+			production.setDocStatus(DocAction.STATUS_Drafted);
+			production.setIsComplete(false);
+			production.setProductionQty(new BigDecimal("1"));
+			production.setPP_Product_BOM_ID(bom.getPP_Product_BOM_ID());
+			production.saveEx();
+	
+			int productionCreate = 53226;
+			MProcess process = MProcess.get(Env.getCtx(), productionCreate);
+			ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setRecord_ID(production.get_ID());
+			pi.setTransactionName(getTrxName());
+			ServerProcessCtl.process(pi, getTrx(), false);
+			assertFalse(pi.isError(), pi.getSummary());
+	
+			production.load(getTrxName());
+			assertEquals("Y", production.getIsCreated(), "MProduction.IsCreated != Y");
+			assertTrue(production.getLines().length > 0, "No Production Lines");
+			assertEquals(2, production.getLines().length, "Unexpected number of production lines");
+	
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(production, DocAction.ACTION_Complete);
+			production.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, production.getDocStatus(), "Production Status="+production.getDocStatus());
+			
+			BigDecimal endProductOnHand2 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
+			
+			assertEquals(1, endProductOnHand2.intValue(), "On hand of end product doesn't increase as expected");
+		} finally {
+			getTrx().rollback();
+			component.deleteEx(true);
+			category.deleteEx(true);
+		}
+	}
+	
+	@Test
+	public void testMultipleDateMPolicy() {
+		//use standard costing only to avoid negative qty exception
+		DB.executeUpdateEx("UPDATE M_CostElement SET IsActive = 'N' WHERE AD_Client_ID=? AND CostingMethod IS NOT NULL AND CostingMethod != ?", 
+				new Object[] {getAD_Client_ID(), MCostElement.COSTINGMETHOD_StandardCosting}, getTrxName());
+		
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, null);
+		category.setName("Standard Costing");
+		category.saveEx();
+		
+		String whereClause = "M_Product_Category_ID=?";
+		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, null)
+									.setParameters(category.get_ID())
+									.list();
+		for (MProductCategoryAcct categoryAcct : categoryAccts) {
+			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.saveEx();
+		}
+		
+		//storageonhand api doesn't use trx to retrieve product 
+		MProduct component = new MProduct(Env.getCtx(), 0, null);
+		component.setName("testMultipleDateMPolicy_Child");
+		component.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+		component.setIsStocked(true);
+		component.setProductType(MProduct.PRODUCTTYPE_Item);
+		component.setC_UOM_ID(UOM_EACH_ID);
+		component.setM_Product_Category_ID(category.get_ID());
+		component.setC_TaxCategory_ID(TAX_CATEGORY_STANDARD_ID);
+		component.saveEx();
+		
+		try {
+			Timestamp today = TimeUtil.getDay(null);
+			MProduct parent = new MProduct(Env.getCtx(), 0, getTrxName());
+			parent.setName("testMultipleDateMPolicy_Parent");
+			parent.setIsBOM(true);
+			parent.setIsStocked(true);
+			parent.setC_UOM_ID(component.getC_UOM_ID());
+			parent.setM_Product_Category_ID(component.getM_Product_Category_ID());
+			parent.setProductType(component.getProductType());
+			parent.setC_TaxCategory_ID(component.getC_TaxCategory_ID());
+			parent.saveEx();
+			BigDecimal endProductOnHand1 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
+			assertEquals(0, endProductOnHand1.intValue(), "On hand of new product is not zero");
+			
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(parent.get_ID());		
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(parent.getName());
+			bom.saveEx();
+			
+			MPPProductBOMLine line = new MPPProductBOMLine(bom);
+			line.setM_Product_ID(component.get_ID());
+			line.setQtyBOM(new BigDecimal("2"));
+			line.saveEx();
+
+			parent.load(getTrxName());
+			parent.setIsVerified(true);
+			parent.saveEx();
+			
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi1.setLot("Lot1");
+			asi1.saveEx();		
+			MStorageOnHand.add(Env.getCtx(), HQ_LOCATOR_ID, component.get_ID(), asi1.get_ID(), new BigDecimal("1"), TimeUtil.addDays(today, -1), getTrxName());			
+			MStorageOnHand.add(Env.getCtx(), HQ_LOCATOR_ID, component.get_ID(), asi1.get_ID(), new BigDecimal("1"), today, getTrxName());
+			
+			MProduction production = new MProduction(Env.getCtx(), 0, getTrxName());
+			production.setM_Product_ID(parent.get_ID());
+			production.setM_Locator_ID(HQ_LOCATOR_ID);
+			production.setIsUseProductionPlan(false);
+			production.setMovementDate(getLoginDate());
+			production.setDocAction(DocAction.ACTION_Complete);
+			production.setDocStatus(DocAction.STATUS_Drafted);
+			production.setIsComplete(false);
+			production.setProductionQty(new BigDecimal("1"));
+			production.setPP_Product_BOM_ID(bom.getPP_Product_BOM_ID());
+			production.saveEx();
+	
+			int productionCreate = 53226;
+			MProcess process = MProcess.get(Env.getCtx(), productionCreate);
+			ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setRecord_ID(production.get_ID());
+			pi.setTransactionName(getTrxName());
+			ServerProcessCtl.process(pi, getTrx(), false);
+			assertFalse(pi.isError(), pi.getSummary());
+	
+			production.load(getTrxName());
+			assertEquals("Y", production.getIsCreated(), "MProduction.IsCreated != Y");
+			assertTrue(production.getLines().length > 0, "No Production Lines");
+			assertEquals(2, production.getLines().length, "Unexpected number of production lines");
+	
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(production, DocAction.ACTION_Complete);
+			production.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, production.getDocStatus(), "Production Status="+production.getDocStatus());
+			
+			BigDecimal endProductOnHand2 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
+			
+			assertEquals(1, endProductOnHand2.intValue(), "On hand of end product doesn't increase as expected");
+		} finally {
+			getTrx().rollback();
+			component.deleteEx(true);
+			category.deleteEx(true);
+		}
+	}
+	
+	@Test
+	public void testMultipleInProgressProduction() {
+		//use standard costing only to avoid negative qty exception
+		DB.executeUpdateEx("UPDATE M_CostElement SET IsActive = 'N' WHERE AD_Client_ID=? AND CostingMethod IS NOT NULL AND CostingMethod != ?", 
+				new Object[] {getAD_Client_ID(), MCostElement.COSTINGMETHOD_StandardCosting}, getTrxName());
+		
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, null);
+		category.setName("Standard Costing");
+		category.saveEx();
+		
+		String whereClause = "M_Product_Category_ID=?";
+		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, null)
+									.setParameters(category.get_ID())
+									.list();
+		for (MProductCategoryAcct categoryAcct : categoryAccts) {
+			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.saveEx();
+		}
+		
+		//storageonhand api doesn't use trx to retrieve product 
+		MProduct component = new MProduct(Env.getCtx(), 0, null);
+		component.setName("testMultipleDateMPolicy_Child");
+		component.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+		component.setIsStocked(true);
+		component.setProductType(MProduct.PRODUCTTYPE_Item);
+		component.setC_UOM_ID(UOM_EACH_ID);
+		component.setM_Product_Category_ID(category.get_ID());
+		component.setC_TaxCategory_ID(TAX_CATEGORY_STANDARD_ID);
+		component.saveEx();
+		
+		try {
+			Timestamp today = TimeUtil.getDay(null);
+			MProduct parent = new MProduct(Env.getCtx(), 0, getTrxName());
+			parent.setName("testMultipleDateMPolicy_Parent");
+			parent.setIsBOM(true);
+			parent.setIsStocked(true);
+			parent.setC_UOM_ID(component.getC_UOM_ID());
+			parent.setM_Product_Category_ID(component.getM_Product_Category_ID());
+			parent.setProductType(component.getProductType());
+			parent.setC_TaxCategory_ID(component.getC_TaxCategory_ID());
+			parent.saveEx();
+			BigDecimal endProductOnHand1 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
+			assertEquals(0, endProductOnHand1.intValue(), "On hand of new product is not zero");
+			
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(parent.get_ID());		
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(parent.getName());
+			bom.saveEx();
+			
+			MPPProductBOMLine line = new MPPProductBOMLine(bom);
+			line.setM_Product_ID(component.get_ID());
+			line.setQtyBOM(new BigDecimal("2"));
+			line.saveEx();
+
+			parent.load(getTrxName());
+			parent.setIsVerified(true);
+			parent.saveEx();
+			
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi1.setLot("Lot1");
+			asi1.saveEx();		
+			MStorageOnHand.add(Env.getCtx(), HQ_LOCATOR_ID, component.get_ID(), asi1.get_ID(), new BigDecimal("2"), today, getTrxName());	
+			
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi2.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi2.setLot("Lot2");
+			asi2.saveEx();		
+			MStorageOnHand.add(Env.getCtx(), HQ_LOCATOR_ID, component.get_ID(), asi2.get_ID(), new BigDecimal("2"), today, getTrxName());
+			
+			MProduction production1 = new MProduction(Env.getCtx(), 0, getTrxName());
+			production1.setM_Product_ID(parent.get_ID());
+			production1.setM_Locator_ID(HQ_LOCATOR_ID);
+			production1.setIsUseProductionPlan(false);
+			production1.setMovementDate(getLoginDate());
+			production1.setDocAction(DocAction.ACTION_Complete);
+			production1.setDocStatus(DocAction.STATUS_Drafted);
+			production1.setIsComplete(false);
+			production1.setProductionQty(new BigDecimal("1"));
+			production1.setPP_Product_BOM_ID(bom.getPP_Product_BOM_ID());
+			production1.saveEx();
+	
+			int productionCreate = 53226;
+			MProcess process = MProcess.get(Env.getCtx(), productionCreate);
+			ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setRecord_ID(production1.get_ID());
+			pi.setTransactionName(getTrxName());
+			ServerProcessCtl.process(pi, getTrx(), false);
+			assertFalse(pi.isError(), pi.getSummary());
+	
+			production1.load(getTrxName());
+			assertEquals("Y", production1.getIsCreated(), "MProduction.IsCreated != Y");
+			assertTrue(production1.getLines().length > 0, "No Production Lines");
+			assertEquals(2, production1.getLines().length, "Unexpected number of production lines");
+	
+			MProduction production2 = new MProduction(Env.getCtx(), 0, getTrxName());
+			production2.setM_Product_ID(parent.get_ID());
+			production2.setM_Locator_ID(HQ_LOCATOR_ID);
+			production2.setIsUseProductionPlan(false);
+			production2.setMovementDate(getLoginDate());
+			production2.setDocAction(DocAction.ACTION_Complete);
+			production2.setDocStatus(DocAction.STATUS_Drafted);
+			production2.setIsComplete(false);
+			production2.setProductionQty(new BigDecimal("1"));
+			production2.setPP_Product_BOM_ID(bom.getPP_Product_BOM_ID());
+			production2.saveEx();
+	
+			pi = new ProcessInfo(process.getName(), process.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setRecord_ID(production2.get_ID());
+			pi.setTransactionName(getTrxName());
+			ServerProcessCtl.process(pi, getTrx(), false);
+			assertFalse(pi.isError(), pi.getSummary());
+	
+			production2.load(getTrxName());
+			assertEquals("Y", production2.getIsCreated(), "MProduction.IsCreated != Y");
+			assertTrue(production2.getLines().length > 0, "No Production Lines");
+			assertEquals(2, production2.getLines().length, "Unexpected number of production lines");
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(production1, DocAction.ACTION_Complete);
+			production1.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, production1.getDocStatus(), "Production Status="+production1.getDocStatus());			
+			BigDecimal endProductOnHand2 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());			
+			assertEquals(1, endProductOnHand2.intValue(), "On hand of end product doesn't increase as expected");
+			
+			info = MWorkflow.runDocumentActionWorkflow(production2, DocAction.ACTION_Complete);
+			production2.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, production2.getDocStatus(), "Production Status="+production2.getDocStatus());			
+			endProductOnHand2 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());			
+			assertEquals(2, endProductOnHand2.intValue(), "On hand of end product doesn't increase as expected");
+		} finally {
+			getTrx().rollback();
+			component.deleteEx(true);
+			category.deleteEx(true);
 		}
 	}
 }
