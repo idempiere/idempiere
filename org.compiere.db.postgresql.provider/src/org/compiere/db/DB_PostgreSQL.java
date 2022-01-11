@@ -1043,21 +1043,23 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	/**
-	 * Implemented using the limit and offset feature. use 1 base index for start and end parameter
+	 * Implemented using the fetch first and offset feature. use 1 base index for start and end parameter
 	 * @param sql
 	 * @param start
 	 * @param end
 	 */
 	public String addPagingSQL(String sql, int start, int end) {
 		StringBuilder newSql = new StringBuilder(sql);
-		if (end > 0) {
-			newSql.append(" ")
-				.append(markNativeKeyword("LIMIT "))
-				.append(( end - start + 1 ));
+		if (start > 1) {
+			newSql.append(" OFFSET ")
+				.append((start - 1))
+				.append( " ROWS");
 		}
-		newSql.append(" ")
-			.append(markNativeKeyword("OFFSET "))
-			.append((start - 1));
+		if (end > 0) {
+			newSql.append(" FETCH FIRST ")
+				.append(( end - start + 1 ))
+				.append(" ROWS ONLY");
+		}
 		return newSql.toString();
 	}
 
