@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_BroadcastMessage 
 {
@@ -307,6 +307,19 @@ public interface I_AD_BroadcastMessage
 	  * Test broadcast message
 	  */
 	public String getTestMessage();
+
+    /** Column name Title */
+    public static final String COLUMNNAME_Title = "Title";
+
+	/** Set Title.
+	  * Name this entity is referred to as
+	  */
+	public void setTitle (String Title);
+
+	/** Get Title.
+	  * Name this entity is referred to as
+	  */
+	public String getTitle();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

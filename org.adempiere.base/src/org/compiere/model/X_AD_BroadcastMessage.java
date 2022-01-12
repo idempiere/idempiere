@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_BroadcastMessage")
 public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220112L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
     {
       super (ctx, AD_BroadcastMessage_ID, trxName);
+      /** if (AD_BroadcastMessage_ID == 0)
+        {
+			setAD_BroadcastMessage_ID (0);
+			setBroadcastFrequency (null);
+			setBroadcastMessage (null);
+			setBroadcastType (null);
+			setTarget (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_BroadcastMessage_ID, trxName, virtualColumns);
       /** if (AD_BroadcastMessage_ID == 0)
         {
 			setAD_BroadcastMessage_ID (0);
@@ -438,5 +452,21 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	public String getTestMessage()
 	{
 		return (String)get_Value(COLUMNNAME_TestMessage);
+	}
+
+	/** Set Title.
+		@param Title Name this entity is referred to as
+	*/
+	public void setTitle (String Title)
+	{
+		set_Value (COLUMNNAME_Title, Title);
+	}
+
+	/** Get Title.
+		@return Name this entity is referred to as
+	  */
+	public String getTitle()
+	{
+		return (String)get_Value(COLUMNNAME_Title);
 	}
 }

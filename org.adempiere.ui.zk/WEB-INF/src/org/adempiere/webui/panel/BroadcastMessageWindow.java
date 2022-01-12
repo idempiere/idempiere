@@ -34,6 +34,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.broadcast.IBroadcastMsgPopup;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -95,7 +96,6 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 	}
 	
 	private void init() {
-		setTitle(Msg.getMsg(Env.getCtx(),"Message"));
 		Borderlayout layout = new Borderlayout();
 		this.appendChild(layout);
 		addEventListener("onFocus", this);
@@ -119,6 +119,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		htmlDiv.appendChild(textMsgContent);
 		center.setAutoscroll(true);
 		Env.setContext(Env.getCtx(), MBroadcastMessage.CLIENTINFO_BROADCAST_COMPONENT_ID, pnlHead.getUuid());
+		setTitle(mbMessages.get(0));
 		textMsgContent.setContent(mbMessages.get(0).get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
 		pnlHead.addEventListener(ZoomEvent.EVENT_NAME, this);
 		htmlDiv.setFocus(true);
@@ -308,6 +309,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		}
 		
 		textMsgNo.setValue((currMsg+1)+"/"+noOfMsgs);
+		setTitle(mbMessage);
 		textMsgContent.setContent(mbMessage.get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
 		
 		if (!isTest && mbMessage.isLogAcknowledge()) {
@@ -386,5 +388,11 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 				mbMessages.remove(mBroadcastMessage);
 			}
 		}
+	}
+
+	/** Set the title for the panel using what is defined on the message or fallback to "Message" */
+	void setTitle(MBroadcastMessage bm) {
+		String title = bm.get_Translation(MBroadcastMessage.COLUMNNAME_Title);
+		setTitle(Util.isEmpty(title) ? Msg.getMsg(Env.getCtx(), "Message") : title);
 	}
 }
