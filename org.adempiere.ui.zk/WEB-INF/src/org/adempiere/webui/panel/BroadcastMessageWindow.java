@@ -125,7 +125,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		htmlDiv.setFocus(true);
 		htmlDiv.setStyle("display: table-cell; vertical-align: middle; text-align: center;");
 		Div divAlign = new Div();
-		divAlign.setStyle("color:white; position: absolute; width: 370px; height: 120px; display: table;");
+		divAlign.setStyle("color:white; position: absolute; height: 120px; display: table;");
 
 		htmlDiv.setParent(divAlign);
 		center.appendChild(divAlign);
