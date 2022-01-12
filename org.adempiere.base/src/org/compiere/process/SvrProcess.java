@@ -795,6 +795,8 @@ public abstract class SvrProcess implements ProcessCall
                     Object tmp = parameter.getParameter();
                     if(tmp instanceof String && tmp != null)
                         field.set(this, "Y".equals(tmp));
+                    else
+                    	field.set(this, tmp);
                 } else {
                 	continue;
                 }
