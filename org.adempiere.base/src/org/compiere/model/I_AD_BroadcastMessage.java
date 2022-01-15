@@ -308,6 +308,19 @@ public interface I_AD_BroadcastMessage
 	  */
 	public String getTestMessage();
 
+    /** Column name Title */
+    public static final String COLUMNNAME_Title = "Title";
+
+	/** Set Title.
+	  * Name this entity is referred to as
+	  */
+	public void setTitle (String Title);
+
+	/** Get Title.
+	  * Name this entity is referred to as
+	  */
+	public String getTitle();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
