@@ -178,8 +178,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 						sb.append(Msg.parseTranslation(Env.getCtx(), log.getP_Msg()));	
 					//		
 							
-					if (log.getAD_Table_ID() > 0		
-							&& log.getRecord_ID() > 0) {
+					if (log.getAD_Table_ID() > 0) {
 						DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());	
 							
 						pnlMessage.appendChild(recordLink);	

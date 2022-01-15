@@ -207,8 +207,7 @@ public class StatusBar extends Panel implements EventListener<Event>
 			div = new Div();
 			for (int i = 0; i < m_logs.length; i++) {
 				if (m_logs[i].getP_Msg() != null) {
-					if (m_logs[i].getAD_Table_ID() > 0
-							&& m_logs[i].getRecord_ID() > 0) {
+					if (m_logs[i].getAD_Table_ID() > 0) {
 						DocumentLink recordLink = new DocumentLink(m_logs[i].getP_Msg(), m_logs[i].getAD_Table_ID(), m_logs[i].getRecord_ID());												
 						if (!div.getChildren().isEmpty())
 							div.appendChild(new Separator("horizontal"));
