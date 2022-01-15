@@ -31,7 +31,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220114L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
@@ -438,5 +438,21 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	public String getTestMessage()
 	{
 		return (String)get_Value(COLUMNNAME_TestMessage);
+	}
+
+	/** Set Title.
+		@param Title Name this entity is referred to as
+	*/
+	public void setTitle (String Title)
+	{
+		set_Value (COLUMNNAME_Title, Title);
+	}
+
+	/** Get Title.
+		@return Name this entity is referred to as
+	  */
+	public String getTitle()
+	{
+		return (String)get_Value(COLUMNNAME_Title);
 	}
 }
