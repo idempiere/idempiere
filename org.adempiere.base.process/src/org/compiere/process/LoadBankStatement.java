@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.I_I_BankStatement;
 import org.compiere.model.MBankStatementLoader;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -113,7 +112,7 @@ public class LoadBankStatement extends SvrProcess
 		else
 		{
 			if (log.isLoggable(Level.INFO)) log.info("Imported=" + m_controller.getLoadCount());
-			addLog (0, null, new BigDecimal (m_controller.getLoadCount()), Msg.getMsg(m_ctx, "Inserted"), I_I_BankStatement.Table_ID, 0);
+			addLog (0, null, new BigDecimal (m_controller.getLoadCount()), Msg.getMsg(m_ctx, "Inserted"));
 			message = "@OK@";
 		}
 

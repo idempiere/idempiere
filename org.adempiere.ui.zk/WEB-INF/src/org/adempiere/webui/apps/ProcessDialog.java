@@ -449,7 +449,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			if (msgPresents) {
 				Td td = new Td();
 				if (log.getP_Msg() != null) {
-					if (log.getAD_Table_ID() > 0) {
+					if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0) {
 						DocumentLink recordLink = new DocumentLink(log.getP_Msg(), log.getAD_Table_ID(), log.getRecord_ID());																								
 						td.appendChild(recordLink);
 					} else {

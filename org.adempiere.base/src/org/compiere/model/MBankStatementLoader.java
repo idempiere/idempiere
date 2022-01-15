@@ -56,7 +56,7 @@ import org.compiere.util.Util;
  */
  public class MBankStatementLoader extends X_C_BankStatementLoader
  {
-	/**
+ 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8482717913976119270L;

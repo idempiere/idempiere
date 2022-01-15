@@ -159,15 +159,10 @@ public final class AEnv
 		if (AD_Window_ID == 0)
 			return;
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
-		MQuery query;
-		if (Record_ID > 0) {
-			query = MQuery.getEqualQuery(table.getKeyColumns()[0], Record_ID);
-			query.setZoomTableName(table.getTableName());
-			query.setZoomColumnName(table.getKeyColumns()[0]);
-			query.setZoomValue(Record_ID);
-		} else {
-			query = new MQuery(table.getTableName());
-		}
+		MQuery query = MQuery.getEqualQuery(table.getKeyColumns()[0], Record_ID);
+		query.setZoomTableName(table.getTableName());
+		query.setZoomColumnName(table.getKeyColumns()[0]);
+		query.setZoomValue(Record_ID);
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
