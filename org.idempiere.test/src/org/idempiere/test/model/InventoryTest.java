@@ -26,15 +26,30 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.compiere.model.MAcctSchema;
+import org.compiere.model.MBPartner;
+import org.compiere.model.MClient;
+import org.compiere.model.MCost;
+import org.compiere.model.MInOut;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
+import org.compiere.model.MOrder;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.process.DocAction;
+import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -53,6 +68,12 @@ public class InventoryTest extends AbstractTestCase {
 	private static final int WAREHOUSE_HQ = 103;
 	private static final int LOCATOR_HQ = 101;
 	private static final int DOCTYPE_PHYSICAL_INV = 144;
+	private static final int DOCTYPE_COST_ADJUSTMENT = 200004;
+	private static final int DOCTYPE_PO = 126;
+	private static final int DOCTYPE_RECEIPT = 122;
+	private static final int BP_PATIO = 121;
+	private static final int USER_GARDENADMIN = 101;
+	private static final int MULCH_PRODUCT_ID = 137;
 
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4596
@@ -93,4 +114,75 @@ public class InventoryTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus());
 	}
 
+	@Test
+	public void testCostAdjustmentLineBeforeSave() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		MProduct product = new MProduct(Env.getCtx(), MULCH_PRODUCT_ID, getTrxName());
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		if (cost == null || cost.getCurrentCostPrice().signum() == 0) {
+			createPOAndMRForProduct(MULCH_PRODUCT_ID);
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		}
+		assertNotNull(cost);
+		
+		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
+		inventory.setC_DocType_ID(DOCTYPE_COST_ADJUSTMENT);
+		inventory.setCostingMethod(as.getCostingMethod());
+		inventory.saveEx();
+		
+		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
+		line.setM_Inventory_ID(inventory.get_ID());
+		line.setM_Product_ID(MULCH_PRODUCT_ID);
+		line.setNewCostPrice(cost.getCurrentCostPrice().add(new BigDecimal("0.5")));
+		line.saveEx();
+		
+		assertNotEquals(0, line.getLine(), "Unexpected Line No");
+		assertEquals(cost.getCurrentCostPrice(), line.getCurrentCostPrice());
+	}
+	
+	private void createPOAndMRForProduct(int productId) {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_PATIO));
+		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), productId));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());		
+		
+		MInOut receipt1 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		receipt1.setDocStatus(DocAction.STATUS_Drafted);
+		receipt1.setDocAction(DocAction.ACTION_Complete);
+		receipt1.saveEx();
+
+		MInOutLine receiptLine1 = new MInOutLine(receipt1);
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
+		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
+		assertFalse(info.isError());
+		receipt1.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus());
+		if (!receipt1.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt1.getAD_Client_ID(), receipt1.get_Table_ID(), receipt1.get_ID(), false, getTrxName());
+			assertNull(error, error);
+		}
+	}
 }

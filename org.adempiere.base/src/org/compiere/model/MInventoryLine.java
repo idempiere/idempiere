@@ -373,6 +373,9 @@ public class MInventoryLine extends X_M_InventoryLine
 					log.saveError("NoCostingRecord", "");
 					return false;
 				}
+			} else {
+				if (is_new() || is_ValueChanged(COLUMNNAME_M_Product_ID) || is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID))
+					setCurrentCostPrice(cost.getCurrentCostPrice());
 			}
 			setM_Locator_ID(0);
 		} else {
