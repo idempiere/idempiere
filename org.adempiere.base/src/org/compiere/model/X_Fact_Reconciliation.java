@@ -34,12 +34,23 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_Fact_Reconciliation (Properties ctx, int Fact_Reconciliation_ID, String trxName)
     {
       super (ctx, Fact_Reconciliation_ID, trxName);
+      /** if (Fact_Reconciliation_ID == 0)
+        {
+			setFact_Acct_ID (0);
+			setFact_Reconciliation_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Fact_Reconciliation (Properties ctx, int Fact_Reconciliation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Fact_Reconciliation_ID, trxName, virtualColumns);
       /** if (Fact_Reconciliation_ID == 0)
         {
 			setFact_Acct_ID (0);

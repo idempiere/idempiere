@@ -30,12 +30,24 @@ public class X_AD_CtxHelpMsg extends PO implements I_AD_CtxHelpMsg, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpMsg (Properties ctx, int AD_CtxHelpMsg_ID, String trxName)
     {
       super (ctx, AD_CtxHelpMsg_ID, trxName);
+      /** if (AD_CtxHelpMsg_ID == 0)
+        {
+			setAD_CtxHelp_ID (0);
+			setAD_CtxHelpMsg_ID (0);
+			setMsgText (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_CtxHelpMsg (Properties ctx, int AD_CtxHelpMsg_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_CtxHelpMsg_ID, trxName, virtualColumns);
       /** if (AD_CtxHelpMsg_ID == 0)
         {
 			setAD_CtxHelp_ID (0);

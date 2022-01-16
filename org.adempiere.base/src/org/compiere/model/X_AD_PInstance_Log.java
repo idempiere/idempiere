@@ -33,12 +33,23 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Log (Properties ctx, int AD_PInstance_Log_ID, String trxName)
     {
       super (ctx, AD_PInstance_Log_ID, trxName);
+      /** if (AD_PInstance_Log_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+			setLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PInstance_Log (Properties ctx, int AD_PInstance_Log_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PInstance_Log_ID, trxName, virtualColumns);
       /** if (AD_PInstance_Log_ID == 0)
         {
 			setAD_PInstance_ID (0);

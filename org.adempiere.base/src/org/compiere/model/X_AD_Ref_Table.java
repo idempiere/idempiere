@@ -31,12 +31,28 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Ref_Table (Properties ctx, int AD_Ref_Table_ID, String trxName)
     {
       super (ctx, AD_Ref_Table_ID, trxName);
+      /** if (AD_Ref_Table_ID == 0)
+        {
+			setAD_Display (0);
+			setAD_Key (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsValueDisplayed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Ref_Table (Properties ctx, int AD_Ref_Table_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Ref_Table_ID, trxName, virtualColumns);
       /** if (AD_Ref_Table_ID == 0)
         {
 			setAD_Display (0);

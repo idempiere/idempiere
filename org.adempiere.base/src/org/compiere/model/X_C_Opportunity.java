@@ -34,12 +34,30 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Opportunity (Properties ctx, int C_Opportunity_ID, String trxName)
     {
       super (ctx, C_Opportunity_ID, trxName);
+      /** if (C_Opportunity_ID == 0)
+        {
+			setC_BPartner_ID (0);
+// @C_BPartner_ID@
+			setC_Currency_ID (0);
+			setC_Opportunity_ID (0);
+			setC_SalesStage_ID (0);
+			setDocumentNo (null);
+			setExpectedCloseDate (new Timestamp( System.currentTimeMillis() ));
+			setOpportunityAmt (Env.ZERO);
+			setProbability (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Opportunity (Properties ctx, int C_Opportunity_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Opportunity_ID, trxName, virtualColumns);
       /** if (C_Opportunity_ID == 0)
         {
 			setC_BPartner_ID (0);

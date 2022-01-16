@@ -31,12 +31,25 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
     {
       super (ctx, AD_UserDef_Tab_ID, trxName);
+      /** if (AD_UserDef_Tab_ID == 0)
+        {
+			setAD_Tab_ID (0);
+			setAD_UserDef_Tab_ID (0);
+			setAD_UserDef_Win_ID (0);
+			setIsMultiRowOnly (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Tab_ID, trxName, virtualColumns);
       /** if (AD_UserDef_Tab_ID == 0)
         {
 			setAD_Tab_ID (0);

@@ -31,12 +31,24 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_FundingMode (Properties ctx, int A_FundingMode_ID, String trxName)
     {
       super (ctx, A_FundingMode_ID, trxName);
+      /** if (A_FundingMode_ID == 0)
+        {
+			setA_FundingMode_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_FundingMode (Properties ctx, int A_FundingMode_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_FundingMode_ID, trxName, virtualColumns);
       /** if (A_FundingMode_ID == 0)
         {
 			setA_FundingMode_ID (0);

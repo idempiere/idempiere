@@ -31,12 +31,27 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Element (Properties ctx, int AD_Element_ID, String trxName)
     {
       super (ctx, AD_Element_ID, trxName);
+      /** if (AD_Element_ID == 0)
+        {
+			setAD_Element_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setPrintName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Element (Properties ctx, int AD_Element_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Element_ID, trxName, virtualColumns);
       /** if (AD_Element_ID == 0)
         {
 			setAD_Element_ID (0);

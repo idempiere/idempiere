@@ -33,12 +33,31 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CommissionLine (Properties ctx, int C_CommissionLine_ID, String trxName)
     {
       super (ctx, C_CommissionLine_ID, trxName);
+      /** if (C_CommissionLine_ID == 0)
+        {
+			setAmtMultiplier (Env.ZERO);
+			setAmtSubtract (Env.ZERO);
+			setC_Commission_ID (0);
+			setC_CommissionLine_ID (0);
+			setCommissionOrders (false);
+			setIsPositiveOnly (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CommissionLine WHERE C_Commission_ID=@C_Commission_ID@
+			setQtyMultiplier (Env.ZERO);
+			setQtySubtract (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CommissionLine (Properties ctx, int C_CommissionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CommissionLine_ID, trxName, virtualColumns);
       /** if (C_CommissionLine_ID == 0)
         {
 			setAmtMultiplier (Env.ZERO);

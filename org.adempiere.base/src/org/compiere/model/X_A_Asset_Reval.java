@@ -34,12 +34,39 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName)
     {
       super (ctx, A_Asset_Reval_ID, trxName);
+      /** if (A_Asset_Reval_ID == 0)
+        {
+			setA_Asset_Cost_Change (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Reval_ID (0);
+			setA_Change_Acumulated_Depr (Env.ZERO);
+// 0
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setPostingType (null);
+// A
+			setProcessed (false);
+// N
+			setProcessing (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Reval_ID, trxName, virtualColumns);
       /** if (A_Asset_Reval_ID == 0)
         {
 			setA_Asset_Cost_Change (Env.ZERO);

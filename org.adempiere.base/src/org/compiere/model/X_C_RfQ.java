@@ -34,12 +34,39 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQ (Properties ctx, int C_RfQ_ID, String trxName)
     {
       super (ctx, C_RfQ_ID, trxName);
+      /** if (C_RfQ_ID == 0)
+        {
+			setC_Currency_ID (0);
+// @$C_Currency_ID @
+			setC_RfQ_ID (0);
+			setC_RfQ_Topic_ID (0);
+			setDateResponse (new Timestamp( System.currentTimeMillis() ));
+			setDocumentNo (null);
+			setIsInvitedVendorsOnly (false);
+			setIsQuoteAllQty (false);
+			setIsQuoteTotalAmt (false);
+			setIsRfQResponseAccepted (true);
+// Y
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setProcessed (false);
+			setQuoteType (null);
+// S
+			setSalesRep_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQ (Properties ctx, int C_RfQ_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQ_ID, trxName, virtualColumns);
       /** if (C_RfQ_ID == 0)
         {
 			setC_Currency_ID (0);

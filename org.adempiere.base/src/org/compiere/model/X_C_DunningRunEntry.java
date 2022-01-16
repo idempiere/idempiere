@@ -33,12 +33,32 @@ public class X_C_DunningRunEntry extends PO implements I_C_DunningRunEntry, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_DunningRunEntry (Properties ctx, int C_DunningRunEntry_ID, String trxName)
     {
       super (ctx, C_DunningRunEntry_ID, trxName);
+      /** if (C_DunningRunEntry_ID == 0)
+        {
+			setAmt (Env.ZERO);
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_Currency_ID (0);
+			setC_DunningLevel_ID (0);
+// @C_DunningLevel_ID@
+			setC_DunningRunEntry_ID (0);
+			setC_DunningRun_ID (0);
+			setProcessed (false);
+			setQty (Env.ZERO);
+			setSalesRep_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DunningRunEntry (Properties ctx, int C_DunningRunEntry_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DunningRunEntry_ID, trxName, virtualColumns);
       /** if (C_DunningRunEntry_ID == 0)
         {
 			setAmt (Env.ZERO);

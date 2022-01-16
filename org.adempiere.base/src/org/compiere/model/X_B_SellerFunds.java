@@ -33,12 +33,25 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_B_SellerFunds (Properties ctx, int B_SellerFunds_ID, String trxName)
     {
       super (ctx, B_SellerFunds_ID, trxName);
+      /** if (B_SellerFunds_ID == 0)
+        {
+			setAD_User_ID (0);
+			setB_SellerFunds_ID (0);
+			setCommittedAmt (Env.ZERO);
+			setNonCommittedAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_SellerFunds (Properties ctx, int B_SellerFunds_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_SellerFunds_ID, trxName, virtualColumns);
       /** if (B_SellerFunds_ID == 0)
         {
 			setAD_User_ID (0);

@@ -34,12 +34,50 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Transfer (Properties ctx, int A_Asset_Transfer_ID, String trxName)
     {
       super (ctx, A_Asset_Transfer_ID, trxName);
+      /** if (A_Asset_Transfer_ID == 0)
+        {
+			setA_Accumdepreciation_New_Acct (0);
+			setA_Asset_ID (0);
+			setA_Asset_New_Acct (0);
+			setA_Asset_Transfer_ID (0);
+			setA_CapvsExp (null);
+// 'Cap'
+			setA_Depreciation_New_Acct (0);
+			setA_Disposal_Loss_New_Acct (0);
+			setA_Disposal_Revenue_New_Acct (0);
+			setA_Period_End (0);
+			setA_Period_Start (0);
+			setA_Split_Percent (Env.ZERO);
+// 1
+			setA_Transfer_Balance (true);
+// Y
+			setA_Transfer_Balance_IS (false);
+			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setPostingType (null);
+// A
+			setProcessed (false);
+// N
+			setProcessing (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Transfer (Properties ctx, int A_Asset_Transfer_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Transfer_ID, trxName, virtualColumns);
       /** if (A_Asset_Transfer_ID == 0)
         {
 			setA_Accumdepreciation_New_Acct (0);

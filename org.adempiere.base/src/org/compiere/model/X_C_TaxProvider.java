@@ -30,12 +30,26 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxProvider (Properties ctx, int C_TaxProvider_ID, String trxName)
     {
       super (ctx, C_TaxProvider_ID, trxName);
+      /** if (C_TaxProvider_ID == 0)
+        {
+			setC_TaxProviderCfg_ID (0);
+			setC_TaxProvider_ID (0);
+			setName (null);
+			setSeqNo (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxProvider (Properties ctx, int C_TaxProvider_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxProvider_ID, trxName, virtualColumns);
       /** if (C_TaxProvider_ID == 0)
         {
 			setC_TaxProviderCfg_ID (0);

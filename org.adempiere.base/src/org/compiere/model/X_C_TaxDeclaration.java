@@ -32,12 +32,27 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxDeclaration (Properties ctx, int C_TaxDeclaration_ID, String trxName)
     {
       super (ctx, C_TaxDeclaration_ID, trxName);
+      /** if (C_TaxDeclaration_ID == 0)
+        {
+			setC_TaxDeclaration_ID (0);
+			setDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setDateTo (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDeclaration (Properties ctx, int C_TaxDeclaration_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDeclaration_ID, trxName, virtualColumns);
       /** if (C_TaxDeclaration_ID == 0)
         {
 			setC_TaxDeclaration_ID (0);

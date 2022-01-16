@@ -34,12 +34,54 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
     {
       super (ctx, M_DiscountSchemaLine_ID, trxName);
+      /** if (M_DiscountSchemaLine_ID == 0)
+        {
+			setC_ConversionType_ID (0);
+			setConversionDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setIsIgnoreIsCurrentVendor (false);
+// N
+			setLimit_AddAmt (Env.ZERO);
+			setLimit_Base (null);
+// X
+			setLimit_Discount (Env.ZERO);
+			setLimit_MaxAmt (Env.ZERO);
+			setLimit_MinAmt (Env.ZERO);
+			setLimit_Rounding (null);
+// C
+			setList_AddAmt (Env.ZERO);
+			setList_Base (null);
+// L
+			setList_Discount (Env.ZERO);
+			setList_MaxAmt (Env.ZERO);
+			setList_MinAmt (Env.ZERO);
+			setList_Rounding (null);
+// C
+			setM_DiscountSchema_ID (0);
+			setM_DiscountSchemaLine_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_DiscountSchemaLine WHERE M_DiscountSchema_ID=@M_DiscountSchema_ID@
+			setStd_AddAmt (Env.ZERO);
+			setStd_Base (null);
+// S
+			setStd_Discount (Env.ZERO);
+			setStd_MaxAmt (Env.ZERO);
+			setStd_MinAmt (Env.ZERO);
+			setStd_Rounding (null);
+// C
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DiscountSchemaLine_ID, trxName, virtualColumns);
       /** if (M_DiscountSchemaLine_ID == 0)
         {
 			setC_ConversionType_ID (0);

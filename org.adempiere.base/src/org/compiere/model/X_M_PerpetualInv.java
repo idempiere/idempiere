@@ -32,12 +32,31 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PerpetualInv (Properties ctx, int M_PerpetualInv_ID, String trxName)
     {
       super (ctx, M_PerpetualInv_ID, trxName);
+      /** if (M_PerpetualInv_ID == 0)
+        {
+			setCountHighMovement (false);
+			setDateNextRun (new Timestamp( System.currentTimeMillis() ));
+			setM_PerpetualInv_ID (0);
+			setName (null);
+			setNoInventoryCount (0);
+// 1
+			setNoProductCount (0);
+// 1
+			setNumberOfRuns (0);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PerpetualInv (Properties ctx, int M_PerpetualInv_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PerpetualInv_ID, trxName, virtualColumns);
       /** if (M_PerpetualInv_ID == 0)
         {
 			setCountHighMovement (false);

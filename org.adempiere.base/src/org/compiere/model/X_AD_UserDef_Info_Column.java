@@ -30,12 +30,25 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
     {
       super (ctx, AD_UserDef_Info_Column_ID, trxName);
+      /** if (AD_UserDef_Info_Column_ID == 0)
+        {
+			setAD_InfoColumn_ID (0);
+			setAD_UserDef_Info_Column_ID (0);
+			setAD_UserDef_Info_ID (0);
+// @AD_UserDef_Info_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Info_Column_ID, trxName, virtualColumns);
       /** if (AD_UserDef_Info_Column_ID == 0)
         {
 			setAD_InfoColumn_ID (0);

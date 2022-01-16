@@ -31,12 +31,23 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Location (Properties ctx, int C_Location_ID, String trxName)
     {
       super (ctx, C_Location_ID, trxName);
+      /** if (C_Location_ID == 0)
+        {
+			setC_Country_ID (0);
+			setC_Location_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Location (Properties ctx, int C_Location_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Location_ID, trxName, virtualColumns);
       /** if (C_Location_ID == 0)
         {
 			setC_Country_ID (0);

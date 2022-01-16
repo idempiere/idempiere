@@ -31,12 +31,26 @@ public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_Category (Properties ctx, int GL_Category_ID, String trxName)
     {
       super (ctx, GL_Category_ID, trxName);
+      /** if (GL_Category_ID == 0)
+        {
+			setCategoryType (null);
+// M
+			setGL_Category_ID (0);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Category (Properties ctx, int GL_Category_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Category_ID, trxName, virtualColumns);
       /** if (GL_Category_ID == 0)
         {
 			setCategoryType (null);

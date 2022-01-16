@@ -30,12 +30,23 @@ public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow_Access (Properties ctx, int AD_InfoWindow_Access_ID, String trxName)
     {
       super (ctx, AD_InfoWindow_Access_ID, trxName);
+      /** if (AD_InfoWindow_Access_ID == 0)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_Role_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoWindow_Access (Properties ctx, int AD_InfoWindow_Access_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoWindow_Access_ID, trxName, virtualColumns);
       /** if (AD_InfoWindow_Access_ID == 0)
         {
 			setAD_InfoWindow_ID (0);

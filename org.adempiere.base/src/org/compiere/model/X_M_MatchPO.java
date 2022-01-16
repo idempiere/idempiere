@@ -34,12 +34,31 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_MatchPO (Properties ctx, int M_MatchPO_ID, String trxName)
     {
       super (ctx, M_MatchPO_ID, trxName);
+      /** if (M_MatchPO_ID == 0)
+        {
+			setC_OrderLine_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setM_InOutLine_ID (0);
+			setM_MatchPO_ID (0);
+			setM_Product_ID (0);
+			setPosted (false);
+			setProcessed (false);
+			setProcessing (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MatchPO (Properties ctx, int M_MatchPO_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MatchPO_ID, trxName, virtualColumns);
       /** if (M_MatchPO_ID == 0)
         {
 			setC_OrderLine_ID (0);

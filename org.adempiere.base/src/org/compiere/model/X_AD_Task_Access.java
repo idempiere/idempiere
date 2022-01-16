@@ -30,12 +30,24 @@ public class X_AD_Task_Access extends PO implements I_AD_Task_Access, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Task_Access (Properties ctx, int AD_Task_Access_ID, String trxName)
     {
       super (ctx, AD_Task_Access_ID, trxName);
+      /** if (AD_Task_Access_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setAD_Task_ID (0);
+			setIsReadWrite (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Task_Access (Properties ctx, int AD_Task_Access_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Task_Access_ID, trxName, virtualColumns);
       /** if (AD_Task_Access_ID == 0)
         {
 			setAD_Role_ID (0);

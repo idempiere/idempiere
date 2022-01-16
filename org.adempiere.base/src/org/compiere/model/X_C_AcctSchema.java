@@ -31,12 +31,47 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)
     {
       super (ctx, C_AcctSchema_ID, trxName);
+      /** if (C_AcctSchema_ID == 0)
+        {
+			setAutoPeriodControl (false);
+			setC_AcctSchema_ID (0);
+			setC_Currency_ID (0);
+			setCommitmentType (null);
+// N
+			setCostingLevel (null);
+// C
+			setCostingMethod (null);
+// S
+			setGAAP (null);
+			setHasAlias (false);
+			setHasCombination (false);
+			setIsAccrual (true);
+// Y
+			setIsAdjustCOGS (false);
+			setIsDiscountCorrectsTax (false);
+			setIsExplicitCostAdjustment (false);
+// N
+			setIsPostServices (false);
+// N
+			setIsTradeDiscountPosted (false);
+			setM_CostType_ID (0);
+			setName (null);
+			setSeparator (null);
+// -
+			setTaxCorrectionType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctSchema_ID, trxName, virtualColumns);
       /** if (C_AcctSchema_ID == 0)
         {
 			setAutoPeriodControl (false);

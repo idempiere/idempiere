@@ -31,12 +31,26 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName)
     {
       super (ctx, C_PeriodControl_ID, trxName);
+      /** if (C_PeriodControl_ID == 0)
+        {
+			setC_PeriodControl_ID (0);
+			setC_Period_ID (0);
+			setDocBaseType (null);
+			setPeriodAction (null);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PeriodControl_ID, trxName, virtualColumns);
       /** if (C_PeriodControl_ID == 0)
         {
 			setC_PeriodControl_ID (0);

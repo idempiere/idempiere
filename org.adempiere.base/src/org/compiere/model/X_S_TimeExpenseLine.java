@@ -34,12 +34,30 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_TimeExpenseLine (Properties ctx, int S_TimeExpenseLine_ID, String trxName)
     {
       super (ctx, S_TimeExpenseLine_ID, trxName);
+      /** if (S_TimeExpenseLine_ID == 0)
+        {
+			setDateExpense (new Timestamp( System.currentTimeMillis() ));
+// @DateExpense@;@DateReport@
+			setIsInvoiced (false);
+			setIsTimeReport (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM S_TimeExpenseLine WHERE S_TimeExpense_ID=@S_TimeExpense_ID@
+			setProcessed (false);
+			setS_TimeExpense_ID (0);
+			setS_TimeExpenseLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_TimeExpenseLine (Properties ctx, int S_TimeExpenseLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_TimeExpenseLine_ID, trxName, virtualColumns);
       /** if (S_TimeExpenseLine_ID == 0)
         {
 			setDateExpense (new Timestamp( System.currentTimeMillis() ));

@@ -31,12 +31,24 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_ReportLineSet (Properties ctx, int PA_ReportLineSet_ID, String trxName)
     {
       super (ctx, PA_ReportLineSet_ID, trxName);
+      /** if (PA_ReportLineSet_ID == 0)
+        {
+			setName (null);
+			setPA_ReportLineSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportLineSet (Properties ctx, int PA_ReportLineSet_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportLineSet_ID, trxName, virtualColumns);
       /** if (PA_ReportLineSet_ID == 0)
         {
 			setName (null);

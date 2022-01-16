@@ -31,12 +31,24 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityResult (Properties ctx, int AD_WF_ActivityResult_ID, String trxName)
     {
       super (ctx, AD_WF_ActivityResult_ID, trxName);
+      /** if (AD_WF_ActivityResult_ID == 0)
+        {
+			setAD_WF_Activity_ID (0);
+			setAD_WF_ActivityResult_ID (0);
+			setAttributeName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_ActivityResult (Properties ctx, int AD_WF_ActivityResult_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_ActivityResult_ID, trxName, virtualColumns);
       /** if (AD_WF_ActivityResult_ID == 0)
         {
 			setAD_WF_Activity_ID (0);

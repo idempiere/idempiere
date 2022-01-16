@@ -31,12 +31,24 @@ public class X_C_TaxCategory extends PO implements I_C_TaxCategory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxCategory (Properties ctx, int C_TaxCategory_ID, String trxName)
     {
       super (ctx, C_TaxCategory_ID, trxName);
+      /** if (C_TaxCategory_ID == 0)
+        {
+			setC_TaxCategory_ID (0);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxCategory (Properties ctx, int C_TaxCategory_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxCategory_ID, trxName, virtualColumns);
       /** if (C_TaxCategory_ID == 0)
         {
 			setC_TaxCategory_ID (0);

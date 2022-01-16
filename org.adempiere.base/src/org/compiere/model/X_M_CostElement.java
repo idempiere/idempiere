@@ -31,12 +31,25 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_CostElement (Properties ctx, int M_CostElement_ID, String trxName)
     {
       super (ctx, M_CostElement_ID, trxName);
+      /** if (M_CostElement_ID == 0)
+        {
+			setCostElementType (null);
+			setIsCalculated (false);
+			setM_CostElement_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostElement (Properties ctx, int M_CostElement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostElement_ID, trxName, virtualColumns);
       /** if (M_CostElement_ID == 0)
         {
 			setCostElementType (null);

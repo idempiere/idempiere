@@ -31,12 +31,23 @@ public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_QualityTest (Properties ctx, int M_QualityTest_ID, String trxName)
     {
       super (ctx, M_QualityTest_ID, trxName);
+      /** if (M_QualityTest_ID == 0)
+        {
+			setM_QualityTest_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_QualityTest (Properties ctx, int M_QualityTest_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_QualityTest_ID, trxName, virtualColumns);
       /** if (M_QualityTest_ID == 0)
         {
 			setM_QualityTest_ID (0);

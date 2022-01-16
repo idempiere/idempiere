@@ -31,12 +31,31 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Element (Properties ctx, int C_AcctSchema_Element_ID, String trxName)
     {
       super (ctx, C_AcctSchema_Element_ID, trxName);
+      /** if (C_AcctSchema_Element_ID == 0)
+        {
+			setC_AcctSchema_Element_ID (0);
+			setC_AcctSchema_ID (0);
+			setC_Element_ID (0);
+			setElementType (null);
+			setIsBalanced (false);
+			setIsMandatory (false);
+			setName (null);
+			setOrg_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=@C_AcctSchema_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctSchema_Element (Properties ctx, int C_AcctSchema_Element_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctSchema_Element_ID, trxName, virtualColumns);
       /** if (C_AcctSchema_Element_ID == 0)
         {
 			setC_AcctSchema_Element_ID (0);

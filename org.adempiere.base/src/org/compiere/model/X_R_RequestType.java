@@ -31,12 +31,38 @@ public class X_R_RequestType extends PO implements I_R_RequestType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestType (Properties ctx, int R_RequestType_ID, String trxName)
     {
       super (ctx, R_RequestType_ID, trxName);
+      /** if (R_RequestType_ID == 0)
+        {
+			setConfidentialType (null);
+// C
+			setDueDateTolerance (0);
+// 7
+			setIsAutoChangeRequest (false);
+			setIsConfidentialInfo (false);
+// N
+			setIsDefault (false);
+// N
+			setIsEMailWhenDue (false);
+			setIsEMailWhenOverdue (false);
+			setIsIndexed (false);
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setR_RequestType_ID (0);
+			setR_StatusCategory_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestType (Properties ctx, int R_RequestType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestType_ID, trxName, virtualColumns);
       /** if (R_RequestType_ID == 0)
         {
 			setConfidentialType (null);

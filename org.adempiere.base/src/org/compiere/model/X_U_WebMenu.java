@@ -32,12 +32,27 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName)
     {
       super (ctx, U_WebMenu_ID, trxName);
+      /** if (U_WebMenu_ID == 0)
+        {
+			setHasSubMenu (false);
+// 'N'
+			setMenuLink (null);
+			setModule (null);
+			setName (null);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_WebMenu_ID, trxName, virtualColumns);
       /** if (U_WebMenu_ID == 0)
         {
 			setHasSubMenu (false);

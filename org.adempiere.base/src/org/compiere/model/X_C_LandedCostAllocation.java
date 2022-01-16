@@ -33,12 +33,28 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName)
     {
       super (ctx, C_LandedCostAllocation_ID, trxName);
+      /** if (C_LandedCostAllocation_ID == 0)
+        {
+			setAmt (Env.ZERO);
+			setBase (Env.ZERO);
+			setC_InvoiceLine_ID (0);
+			setC_LandedCostAllocation_ID (0);
+			setM_CostElement_ID (0);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_LandedCostAllocation_ID, trxName, virtualColumns);
       /** if (C_LandedCostAllocation_ID == 0)
         {
 			setAmt (Env.ZERO);

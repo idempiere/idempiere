@@ -30,12 +30,25 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorParameter (Properties ctx, int IMP_ProcessorParameter_ID, String trxName)
     {
       super (ctx, IMP_ProcessorParameter_ID, trxName);
+      /** if (IMP_ProcessorParameter_ID == 0)
+        {
+			setIMP_Processor_ID (0);
+			setIMP_ProcessorParameter_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_IMP_ProcessorParameter (Properties ctx, int IMP_ProcessorParameter_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, IMP_ProcessorParameter_ID, trxName, virtualColumns);
       /** if (IMP_ProcessorParameter_ID == 0)
         {
 			setIMP_Processor_ID (0);

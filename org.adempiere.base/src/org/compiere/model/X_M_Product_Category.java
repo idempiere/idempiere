@@ -33,12 +33,30 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Product_Category (Properties ctx, int M_Product_Category_ID, String trxName)
     {
       super (ctx, M_Product_Category_ID, trxName);
+      /** if (M_Product_Category_ID == 0)
+        {
+			setIsDefault (false);
+			setIsSelfService (true);
+// Y
+			setMMPolicy (null);
+// F
+			setM_Product_Category_ID (0);
+			setName (null);
+			setPlannedMargin (Env.ZERO);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Product_Category (Properties ctx, int M_Product_Category_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Product_Category_ID, trxName, virtualColumns);
       /** if (M_Product_Category_ID == 0)
         {
 			setIsDefault (false);

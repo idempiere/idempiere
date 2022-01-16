@@ -30,12 +30,27 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)
     {
       super (ctx, C_ChargeType_DocType_ID, trxName);
+      /** if (C_ChargeType_DocType_ID == 0)
+        {
+			setC_ChargeType_ID (0);
+			setC_DocType_ID (0);
+			setIsAllowNegative (true);
+// Y
+			setIsAllowPositive (true);
+// Y
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ChargeType_DocType_ID, trxName, virtualColumns);
       /** if (C_ChargeType_DocType_ID == 0)
         {
 			setC_ChargeType_ID (0);

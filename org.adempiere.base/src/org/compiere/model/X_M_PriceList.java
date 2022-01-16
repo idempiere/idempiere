@@ -31,12 +31,30 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PriceList (Properties ctx, int M_PriceList_ID, String trxName)
     {
       super (ctx, M_PriceList_ID, trxName);
+      /** if (M_PriceList_ID == 0)
+        {
+			setC_Currency_ID (0);
+			setEnforcePriceLimit (false);
+			setIsDefault (false);
+			setIsSOPriceList (false);
+			setIsTaxIncluded (false);
+			setM_PriceList_ID (0);
+			setName (null);
+			setPricePrecision (0);
+// 2
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PriceList (Properties ctx, int M_PriceList_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PriceList_ID, trxName, virtualColumns);
       /** if (M_PriceList_ID == 0)
         {
 			setC_Currency_ID (0);

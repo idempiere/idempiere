@@ -31,12 +31,24 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_FreightCategory (Properties ctx, int M_FreightCategory_ID, String trxName)
     {
       super (ctx, M_FreightCategory_ID, trxName);
+      /** if (M_FreightCategory_ID == 0)
+        {
+			setM_FreightCategory_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_FreightCategory (Properties ctx, int M_FreightCategory_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_FreightCategory_ID, trxName, virtualColumns);
       /** if (M_FreightCategory_ID == 0)
         {
 			setM_FreightCategory_ID (0);

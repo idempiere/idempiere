@@ -31,12 +31,23 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_UserMail (Properties ctx, int AD_UserMail_ID, String trxName)
     {
       super (ctx, AD_UserMail_ID, trxName);
+      /** if (AD_UserMail_ID == 0)
+        {
+			setAD_User_ID (0);
+			setAD_UserMail_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserMail (Properties ctx, int AD_UserMail_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserMail_ID, trxName, virtualColumns);
       /** if (AD_UserMail_ID == 0)
         {
 			setAD_User_ID (0);

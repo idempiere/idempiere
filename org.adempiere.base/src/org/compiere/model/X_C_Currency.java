@@ -34,12 +34,34 @@ public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Currency (Properties ctx, int C_Currency_ID, String trxName)
     {
       super (ctx, C_Currency_ID, trxName);
+      /** if (C_Currency_ID == 0)
+        {
+			setC_Currency_ID (0);
+			setCostingPrecision (0);
+// 4
+			setDescription (null);
+			setIsEMUMember (false);
+// N
+			setIsEuro (false);
+// N
+			setISO_Code (null);
+			setRoundOffFactor (Env.ZERO);
+// 1
+			setStdPrecision (0);
+// 2
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Currency (Properties ctx, int C_Currency_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Currency_ID, trxName, virtualColumns);
       /** if (C_Currency_ID == 0)
         {
 			setC_Currency_ID (0);

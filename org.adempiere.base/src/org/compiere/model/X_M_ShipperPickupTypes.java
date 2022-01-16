@@ -30,12 +30,27 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)
     {
       super (ctx, M_ShipperPickupTypes_ID, trxName);
+      /** if (M_ShipperPickupTypes_ID == 0)
+        {
+			setIsDefault (false);
+// N
+			setM_Shipper_ID (0);
+			setM_ShipperPickupTypesCfg_ID (0);
+			setM_ShipperPickupTypes_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShipperPickupTypes_ID, trxName, virtualColumns);
       /** if (M_ShipperPickupTypes_ID == 0)
         {
 			setIsDefault (false);

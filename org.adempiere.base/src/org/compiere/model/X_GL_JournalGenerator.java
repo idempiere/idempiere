@@ -31,12 +31,23 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_JournalGenerator (Properties ctx, int GL_JournalGenerator_ID, String trxName)
     {
       super (ctx, GL_JournalGenerator_ID, trxName);
+      /** if (GL_JournalGenerator_ID == 0)
+        {
+			setGL_JournalGenerator_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_JournalGenerator (Properties ctx, int GL_JournalGenerator_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_JournalGenerator_ID, trxName, virtualColumns);
       /** if (GL_JournalGenerator_ID == 0)
         {
 			setGL_JournalGenerator_ID (0);

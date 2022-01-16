@@ -30,12 +30,24 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName)
     {
       super (ctx, R_RequestTypeUpdates_ID, trxName);
+      /** if (R_RequestTypeUpdates_ID == 0)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_RequestType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestTypeUpdates_ID, trxName, virtualColumns);
       /** if (R_RequestTypeUpdates_ID == 0)
         {
 			setAD_User_ID (0);

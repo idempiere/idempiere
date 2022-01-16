@@ -30,12 +30,35 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)
     {
       super (ctx, AD_CtxHelpSuggestion_ID, trxName);
+      /** if (AD_CtxHelpSuggestion_ID == 0)
+        {
+			setAD_CtxHelp_ID (0);
+			setAD_CtxHelpMsg_ID (0);
+			setAD_CtxHelpSuggestion_ID (0);
+			setAD_CtxHelpSuggestion_UU (null);
+			setAD_Language (null);
+			setAD_UserClient_ID (0);
+			setAD_User_ID (0);
+			setIsApproved (false);
+// N
+			setIsSaveAsTenantCustomization (false);
+// N
+			setMsgText (null);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_CtxHelpSuggestion_ID, trxName, virtualColumns);
       /** if (AD_CtxHelpSuggestion_ID == 0)
         {
 			setAD_CtxHelp_ID (0);

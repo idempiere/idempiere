@@ -31,12 +31,23 @@ public class X_AD_AlertRecipient extends PO implements I_AD_AlertRecipient, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AlertRecipient (Properties ctx, int AD_AlertRecipient_ID, String trxName)
     {
       super (ctx, AD_AlertRecipient_ID, trxName);
+      /** if (AD_AlertRecipient_ID == 0)
+        {
+			setAD_Alert_ID (0);
+			setAD_AlertRecipient_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AlertRecipient (Properties ctx, int AD_AlertRecipient_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AlertRecipient_ID, trxName, virtualColumns);
       /** if (AD_AlertRecipient_ID == 0)
         {
 			setAD_Alert_ID (0);

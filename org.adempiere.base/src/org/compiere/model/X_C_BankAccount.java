@@ -33,12 +33,31 @@ public class X_C_BankAccount extends PO implements I_C_BankAccount, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankAccount (Properties ctx, int C_BankAccount_ID, String trxName)
     {
       super (ctx, C_BankAccount_ID, trxName);
+      /** if (C_BankAccount_ID == 0)
+        {
+			setAccountNo (null);
+			setBankAccountType (null);
+			setC_BankAccount_ID (0);
+			setC_Bank_ID (0);
+			setC_Currency_ID (0);
+			setCreditLimit (Env.ZERO);
+			setCurrentBalance (Env.ZERO);
+			setIsDefault (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankAccount (Properties ctx, int C_BankAccount_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankAccount_ID, trxName, virtualColumns);
       /** if (C_BankAccount_ID == 0)
         {
 			setAccountNo (null);

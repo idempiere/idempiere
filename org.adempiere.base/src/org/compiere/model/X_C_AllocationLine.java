@@ -34,12 +34,26 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AllocationLine (Properties ctx, int C_AllocationLine_ID, String trxName)
     {
       super (ctx, C_AllocationLine_ID, trxName);
+      /** if (C_AllocationLine_ID == 0)
+        {
+			setAmount (Env.ZERO);
+			setC_AllocationHdr_ID (0);
+			setC_AllocationLine_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setWriteOffAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AllocationLine (Properties ctx, int C_AllocationLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AllocationLine_ID, trxName, virtualColumns);
       /** if (C_AllocationLine_ID == 0)
         {
 			setAmount (Env.ZERO);

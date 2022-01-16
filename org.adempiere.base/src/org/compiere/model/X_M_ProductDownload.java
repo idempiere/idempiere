@@ -31,12 +31,25 @@ public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductDownload (Properties ctx, int M_ProductDownload_ID, String trxName)
     {
       super (ctx, M_ProductDownload_ID, trxName);
+      /** if (M_ProductDownload_ID == 0)
+        {
+			setDownloadURL (null);
+			setM_ProductDownload_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductDownload (Properties ctx, int M_ProductDownload_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductDownload_ID, trxName, virtualColumns);
       /** if (M_ProductDownload_ID == 0)
         {
 			setDownloadURL (null);

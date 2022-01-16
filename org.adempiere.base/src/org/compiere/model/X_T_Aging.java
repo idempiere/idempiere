@@ -33,12 +33,51 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_Aging (Properties ctx, int T_Aging_ID, String trxName)
     {
       super (ctx, T_Aging_ID, trxName);
+      /** if (T_Aging_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+			setC_BPartner_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Currency_ID (0);
+			setDue0 (Env.ZERO);
+			setDue0_30 (Env.ZERO);
+			setDue0_7 (Env.ZERO);
+			setDue1_7 (Env.ZERO);
+			setDue31_60 (Env.ZERO);
+			setDue31_Plus (Env.ZERO);
+			setDue61_90 (Env.ZERO);
+			setDue61_Plus (Env.ZERO);
+			setDue8_30 (Env.ZERO);
+			setDue91_Plus (Env.ZERO);
+			setDueAmt (Env.ZERO);
+			setDueDate (new Timestamp( System.currentTimeMillis() ));
+			setInvoicedAmt (Env.ZERO);
+			setIsListInvoices (false);
+			setIsSOTrx (false);
+			setOpenAmt (Env.ZERO);
+			setPastDue1_30 (Env.ZERO);
+			setPastDue1_7 (Env.ZERO);
+			setPastDue31_60 (Env.ZERO);
+			setPastDue31_Plus (Env.ZERO);
+			setPastDue61_90 (Env.ZERO);
+			setPastDue61_Plus (Env.ZERO);
+			setPastDue8_30 (Env.ZERO);
+			setPastDue91_Plus (Env.ZERO);
+			setPastDueAmt (Env.ZERO);
+			setStatementDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_Aging (Properties ctx, int T_Aging_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_Aging_ID, trxName, virtualColumns);
       /** if (T_Aging_ID == 0)
         {
 			setAD_PInstance_ID (0);

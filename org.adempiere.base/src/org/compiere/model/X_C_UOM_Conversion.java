@@ -33,12 +33,26 @@ public class X_C_UOM_Conversion extends PO implements I_C_UOM_Conversion, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_UOM_Conversion (Properties ctx, int C_UOM_Conversion_ID, String trxName)
     {
       super (ctx, C_UOM_Conversion_ID, trxName);
+      /** if (C_UOM_Conversion_ID == 0)
+        {
+			setC_UOM_Conversion_ID (0);
+			setC_UOM_ID (0);
+			setC_UOM_To_ID (0);
+			setDivideRate (Env.ZERO);
+			setMultiplyRate (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_UOM_Conversion (Properties ctx, int C_UOM_Conversion_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_UOM_Conversion_ID, trxName, virtualColumns);
       /** if (C_UOM_Conversion_ID == 0)
         {
 			setC_UOM_Conversion_ID (0);

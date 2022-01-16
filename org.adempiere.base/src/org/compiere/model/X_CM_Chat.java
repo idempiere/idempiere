@@ -31,12 +31,26 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_CM_Chat (Properties ctx, int CM_Chat_ID, String trxName)
     {
       super (ctx, CM_Chat_ID, trxName);
+      /** if (CM_Chat_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setCM_Chat_ID (0);
+			setConfidentialType (null);
+			setDescription (null);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_Chat (Properties ctx, int CM_Chat_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_Chat_ID, trxName, virtualColumns);
       /** if (CM_Chat_ID == 0)
         {
 			setAD_Table_ID (0);

@@ -31,12 +31,43 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
     {
       super (ctx, AD_Tab_ID, trxName);
+      /** if (AD_Tab_ID == 0)
+        {
+			setAD_Tab_ID (0);
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setHasTree (false);
+			setIsAdvancedTab (false);
+// N
+			setIsInsertRecord (true);
+// Y
+			setIsReadOnly (false);
+			setIsSingleRow (true);
+// Y
+			setIsSortTab (false);
+// N
+			setIsTranslationTab (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Tab WHERE AD_Window_ID=@AD_Window_ID@
+			setTabLevel (0);
+			setTreeDisplayedOn (null);
+// B
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Tab_ID, trxName, virtualColumns);
       /** if (AD_Tab_ID == 0)
         {
 			setAD_Tab_ID (0);

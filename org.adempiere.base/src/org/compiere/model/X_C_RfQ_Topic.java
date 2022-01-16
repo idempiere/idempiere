@@ -31,12 +31,24 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQ_Topic (Properties ctx, int C_RfQ_Topic_ID, String trxName)
     {
       super (ctx, C_RfQ_Topic_ID, trxName);
+      /** if (C_RfQ_Topic_ID == 0)
+        {
+			setC_RfQ_Topic_ID (0);
+			setIsSelfService (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQ_Topic (Properties ctx, int C_RfQ_Topic_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQ_Topic_ID, trxName, virtualColumns);
       /** if (C_RfQ_Topic_ID == 0)
         {
 			setC_RfQ_Topic_ID (0);

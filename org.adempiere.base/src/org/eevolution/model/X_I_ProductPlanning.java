@@ -34,12 +34,26 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_ProductPlanning (Properties ctx, int I_ProductPlanning_ID, String trxName)
     {
       super (ctx, I_ProductPlanning_ID, trxName);
+      /** if (I_ProductPlanning_ID == 0)
+        {
+			setI_IsImported (false);
+			setI_ProductPlanning_ID (0);
+			setIsCreatePlan (false);
+			setIsPhantom (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_ProductPlanning (Properties ctx, int I_ProductPlanning_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_ProductPlanning_ID, trxName, virtualColumns);
       /** if (I_ProductPlanning_ID == 0)
         {
 			setI_IsImported (false);

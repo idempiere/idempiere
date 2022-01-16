@@ -34,12 +34,27 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)
     {
       super (ctx, PA_Achievement_ID, trxName);
+      /** if (PA_Achievement_ID == 0)
+        {
+			setIsAchieved (false);
+			setManualActual (Env.ZERO);
+			setName (null);
+			setPA_Achievement_ID (0);
+			setPA_Measure_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Achievement_ID, trxName, virtualColumns);
       /** if (PA_Achievement_ID == 0)
         {
 			setIsAchieved (false);

@@ -34,12 +34,27 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Freight (Properties ctx, int M_Freight_ID, String trxName)
     {
       super (ctx, M_Freight_ID, trxName);
+      /** if (M_Freight_ID == 0)
+        {
+			setC_Currency_ID (0);
+			setFreightAmt (Env.ZERO);
+			setM_FreightCategory_ID (0);
+			setM_Freight_ID (0);
+			setM_Shipper_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Freight (Properties ctx, int M_Freight_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Freight_ID, trxName, virtualColumns);
       /** if (M_Freight_ID == 0)
         {
 			setC_Currency_ID (0);

@@ -30,12 +30,26 @@ public class X_M_ShippingProcessor extends PO implements I_M_ShippingProcessor, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName)
     {
       super (ctx, M_ShippingProcessor_ID, trxName);
+      /** if (M_ShippingProcessor_ID == 0)
+        {
+			setConnectionPassword (null);
+			setM_ShippingProcessorCfg_ID (0);
+			setM_ShippingProcessor_ID (0);
+			setName (null);
+			setUserID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShippingProcessor (Properties ctx, int M_ShippingProcessor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShippingProcessor_ID, trxName, virtualColumns);
       /** if (M_ShippingProcessor_ID == 0)
         {
 			setConnectionPassword (null);

@@ -34,12 +34,63 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName)
     {
       super (ctx, C_Invoice_ID, trxName);
+      /** if (C_Invoice_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_DocType_ID (0);
+// 0
+			setC_DocTypeTarget_ID (0);
+			setC_Invoice_ID (0);
+			setC_PaymentTerm_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateInvoiced (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setIsApproved (false);
+// @IsApproved@
+			setIsDiscountPrinted (false);
+			setIsInDispute (false);
+// N
+			setIsOverrideCurrencyRate (false);
+// N
+			setIsPaid (false);
+			setIsPayScheduleValid (false);
+			setIsPrinted (false);
+			setIsSelfService (false);
+			setIsSOTrx (false);
+// @IsSOTrx@
+			setIsTaxIncluded (false);
+			setIsTransferred (false);
+			setM_PriceList_ID (0);
+			setPaymentRule (null);
+// P
+			setPosted (false);
+// N
+			setProcessed (false);
+			setSendEMail (false);
+			setTotalLines (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Invoice_ID, trxName, virtualColumns);
       /** if (C_Invoice_ID == 0)
         {
 			setC_BPartner_ID (0);

@@ -31,12 +31,27 @@ public class X_AD_ChangeLog extends PO implements I_AD_ChangeLog, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ChangeLog (Properties ctx, int AD_ChangeLog_ID, String trxName)
     {
       super (ctx, AD_ChangeLog_ID, trxName);
+      /** if (AD_ChangeLog_ID == 0)
+        {
+			setAD_ChangeLog_ID (0);
+			setAD_Column_ID (0);
+			setAD_Session_ID (0);
+			setAD_Table_ID (0);
+			setIsCustomization (false);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ChangeLog (Properties ctx, int AD_ChangeLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ChangeLog_ID, trxName, virtualColumns);
       /** if (AD_ChangeLog_ID == 0)
         {
 			setAD_ChangeLog_ID (0);
