@@ -103,7 +103,11 @@ public class MInOutLine extends X_M_InOutLine
 	 */
 	public MInOutLine (Properties ctx, int M_InOutLine_ID, String trxName)
 	{
-		super (ctx, M_InOutLine_ID, trxName);
+		this (ctx, M_InOutLine_ID, trxName, (String[]) null);
+	}	//	MInOutLine
+
+	public MInOutLine(Properties ctx, int M_InOutLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_InOutLine_ID, trxName, virtualColumns);
 		if (M_InOutLine_ID == 0)
 		{
 			setM_AttributeSetInstance_ID(0);
@@ -114,7 +118,7 @@ public class MInOutLine extends X_M_InOutLine
 			setIsInvoiced (false);
 			setIsDescription (false);
 		}
-	}	//	MInOutLine
+	}
 
 	/**
 	 *  Load Constructor

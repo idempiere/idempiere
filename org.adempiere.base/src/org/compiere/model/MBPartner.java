@@ -357,6 +357,11 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		this.m_group = copy.m_group != null ? new MBPGroup(ctx, copy.m_group, trxName) : null;
 	}
 
+	public MBPartner(Properties ctx, int C_BPartner_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BPartner_ID, trxName, virtualColumns);
+	}
+
+
 	/** Users							*/
 	protected MUser[]				m_contacts = null;
 	/** Addressed						*/

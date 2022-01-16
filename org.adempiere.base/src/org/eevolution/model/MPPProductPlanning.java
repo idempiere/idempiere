@@ -72,6 +72,10 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 		super(ctx, rs,trxname);
 	}
 
+	public MPPProductPlanning(Properties ctx, int PP_Product_Planning_ID, String trxName, String... virtualColumns) {
+		super(ctx, PP_Product_Planning_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * Get Data Product Planning to Organization
 	 * @param ctx Context

@@ -124,7 +124,11 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public MOrderLine (Properties ctx, int C_OrderLine_ID, String trxName)
 	{
-		super (ctx, C_OrderLine_ID, trxName);
+		this (ctx, C_OrderLine_ID, trxName, (String[]) null);
+	}	//	MOrderLine
+
+	public MOrderLine(Properties ctx, int C_OrderLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_OrderLine_ID, trxName, virtualColumns);
 		if (C_OrderLine_ID == 0)
 		{
 			setFreightAmt (Env.ZERO);
@@ -147,8 +151,8 @@ public class MOrderLine extends X_C_OrderLine
 			setProcessed (false);
 			setLine (0);
 		}
-	}	//	MOrderLine
-	
+	}
+
 	/**
 	 *  Parent Constructor.
 	 		ol.setM_Product_ID(wbl.getM_Product_ID());

@@ -170,6 +170,10 @@ public class MAttributeInstance extends X_M_AttributeInstance
 		setValueKeyNamePair(value);
 	} // MAttributeInstance
 
+	public MAttributeInstance(Properties ctx, int M_AttributeInstance_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_AttributeInstance_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Set ValueNumber
 	 *	@param ValueNumber number

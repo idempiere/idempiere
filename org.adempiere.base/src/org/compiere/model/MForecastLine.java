@@ -56,7 +56,11 @@ public class MForecastLine extends  X_M_ForecastLine
 	{
 		super(ctx, rs, trxName);
 	}	//	MForecastLine
-	
+
+	public MForecastLine(Properties ctx, int M_ForecastLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_ForecastLine_ID, trxName, virtualColumns);
+	}
+
 	/**************************************************************************
 	 * 	Before Save
 	 *	@param newRecord

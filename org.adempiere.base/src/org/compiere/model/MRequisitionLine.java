@@ -123,7 +123,11 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	 */
 	public MRequisitionLine (Properties ctx, int M_RequisitionLine_ID, String trxName)
 	{
-		super (ctx, M_RequisitionLine_ID, trxName);
+		this (ctx, M_RequisitionLine_ID, trxName, (String[]) null);
+	}	//	MRequisitionLine
+
+	public MRequisitionLine(Properties ctx, int M_RequisitionLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_RequisitionLine_ID, trxName, virtualColumns);
 		if (M_RequisitionLine_ID == 0)
 		{
 			setLine (0);	// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM M_RequisitionLine WHERE M_Requisition_ID=@M_Requisition_ID@
@@ -131,8 +135,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 			setPriceActual (Env.ZERO);
 			setQty (Env.ONE);	// 1
 		}
-		
-	}	//	MRequisitionLine
+	}
 
 	/**
 	 * 	Load Constructor

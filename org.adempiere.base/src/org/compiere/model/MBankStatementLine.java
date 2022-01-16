@@ -99,6 +99,9 @@ import org.compiere.util.Msg;
 		setLine(lineNo);
 	}	//	MBankStatementLine
 
+	public MBankStatementLine(Properties ctx, int C_BankStatementLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BankStatementLine_ID, trxName, virtualColumns);
+	}
 
 	/**
 	 * 	Set Statement Line Date and all other dates (Valuta, Acct)

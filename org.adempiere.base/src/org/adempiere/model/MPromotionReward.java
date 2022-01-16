@@ -36,4 +36,8 @@ public class MPromotionReward extends X_M_PromotionReward {
 		super(ctx, rs, trxName);
 	}
 
+	public MPromotionReward(Properties ctx, int M_PromotionReward_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_PromotionReward_ID, trxName, virtualColumns);
+	}
+
 }
