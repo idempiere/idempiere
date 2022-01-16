@@ -33,12 +33,23 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_Payment (Properties ctx, int I_Payment_ID, String trxName)
     {
       super (ctx, I_Payment_ID, trxName);
+      /** if (I_Payment_ID == 0)
+        {
+			setI_IsImported (false);
+			setI_Payment_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_Payment (Properties ctx, int I_Payment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_Payment_ID, trxName, virtualColumns);
       /** if (I_Payment_ID == 0)
         {
 			setI_IsImported (false);

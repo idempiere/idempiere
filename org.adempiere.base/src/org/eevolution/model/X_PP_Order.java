@@ -35,12 +35,63 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order (Properties ctx, int PP_Order_ID, String trxName)
     {
       super (ctx, PP_Order_ID, trxName);
+      /** if (PP_Order_ID == 0)
+        {
+			setAD_Workflow_ID (0);
+			setC_DocTypeTarget_ID (0);
+// 0
+			setC_UOM_ID (0);
+// @UOMConversion@=Y | @Processed@='Y'
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+			setDateStartSchedule (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// --
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setIsPrinted (false);
+// N
+			setIsSelected (false);
+// N
+			setIsSOTrx (false);
+// N
+			setLine (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_ID (0);
+			setPP_Product_BOM_ID (0);
+			setPriorityRule (null);
+			setProcessed (false);
+// N
+			setQtyDelivered (Env.ZERO);
+// 0
+			setQtyOrdered (Env.ZERO);
+// 1
+			setQtyReject (Env.ZERO);
+// 0
+			setQtyScrap (Env.ZERO);
+// 0
+			setS_Resource_ID (0);
+			setYield (Env.ZERO);
+// 100
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order (Properties ctx, int PP_Order_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_ID, trxName, virtualColumns);
       /** if (PP_Order_ID == 0)
         {
 			setAD_Workflow_ID (0);

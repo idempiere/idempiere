@@ -32,12 +32,44 @@ public class X_S_ResourceType extends PO implements I_S_ResourceType, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_ResourceType (Properties ctx, int S_ResourceType_ID, String trxName)
     {
       super (ctx, S_ResourceType_ID, trxName);
+      /** if (S_ResourceType_ID == 0)
+        {
+			setAllowUoMFractions (false);
+// N
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsDateSlot (false);
+			setIsSingleAssignment (false);
+			setIsTimeSlot (false);
+			setM_Product_Category_ID (0);
+			setName (null);
+			setOnFriday (true);
+// Y
+			setOnMonday (true);
+// Y
+			setOnSaturday (false);
+			setOnSunday (false);
+			setOnThursday (true);
+// Y
+			setOnTuesday (true);
+// Y
+			setOnWednesday (true);
+// Y
+			setS_ResourceType_ID (0);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ResourceType (Properties ctx, int S_ResourceType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ResourceType_ID, trxName, virtualColumns);
       /** if (S_ResourceType_ID == 0)
         {
 			setAllowUoMFractions (false);

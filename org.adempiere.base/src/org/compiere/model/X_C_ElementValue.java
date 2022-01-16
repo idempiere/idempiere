@@ -32,12 +32,42 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ElementValue (Properties ctx, int C_ElementValue_ID, String trxName)
     {
       super (ctx, C_ElementValue_ID, trxName);
+      /** if (C_ElementValue_ID == 0)
+        {
+			setAccountSign (null);
+// N
+			setAccountType (null);
+// E
+			setC_Element_ID (0);
+			setC_ElementValue_ID (0);
+			setIsDetailBPartner (false);
+// N
+			setIsDetailProduct (false);
+// N
+			setIsSummary (false);
+			setName (null);
+			setPostActual (true);
+// Y
+			setPostBudget (true);
+// Y
+			setPostEncumbrance (true);
+// Y
+			setPostStatistical (true);
+// Y
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ElementValue (Properties ctx, int C_ElementValue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ElementValue_ID, trxName, virtualColumns);
       /** if (C_ElementValue_ID == 0)
         {
 			setAccountSign (null);

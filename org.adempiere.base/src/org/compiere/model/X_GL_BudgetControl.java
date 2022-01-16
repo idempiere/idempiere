@@ -31,12 +31,29 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_BudgetControl (Properties ctx, int GL_BudgetControl_ID, String trxName)
     {
       super (ctx, GL_BudgetControl_ID, trxName);
+      /** if (GL_BudgetControl_ID == 0)
+        {
+			setBudgetControlScope (null);
+			setC_AcctSchema_ID (0);
+			setCommitmentType (null);
+// C
+			setGL_BudgetControl_ID (0);
+			setGL_Budget_ID (0);
+			setIsBeforeApproval (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_BudgetControl (Properties ctx, int GL_BudgetControl_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_BudgetControl_ID, trxName, virtualColumns);
       /** if (GL_BudgetControl_ID == 0)
         {
 			setBudgetControlScope (null);

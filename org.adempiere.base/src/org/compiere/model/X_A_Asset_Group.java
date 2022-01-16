@@ -31,12 +31,32 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName)
     {
       super (ctx, A_Asset_Group_ID, trxName);
+      /** if (A_Asset_Group_ID == 0)
+        {
+			setA_Asset_Group_ID (0);
+			setIsCreateAsActive (true);
+// Y
+			setIsDefault (false);
+// 'N'
+			setIsDepreciated (false);
+			setIsOneAssetPerUOM (false);
+			setIsOwned (false);
+			setIsTrackIssues (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Group_ID, trxName, virtualColumns);
       /** if (A_Asset_Group_ID == 0)
         {
 			setA_Asset_Group_ID (0);

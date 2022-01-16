@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoWindow
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoWindow")
 public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent 
 {
@@ -31,12 +31,39 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220103L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
     {
       super (ctx, AD_InfoWindow_ID, trxName);
+      /** if (AD_InfoWindow_ID == 0)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFromClause (null);
+			setIsDefault (false);
+// N
+			setIsDistinct (false);
+// N
+			setIsShowInDashboard (true);
+// Y
+			setIsValid (false);
+// N
+			setMaxQueryRecords (0);
+// 0
+			setName (null);
+			setPagingSize (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoWindow_ID, trxName, virtualColumns);
       /** if (AD_InfoWindow_ID == 0)
         {
 			setAD_InfoWindow_ID (0);

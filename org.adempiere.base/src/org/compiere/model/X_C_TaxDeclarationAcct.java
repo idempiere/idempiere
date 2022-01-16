@@ -33,12 +33,25 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationAcct (Properties ctx, int C_TaxDeclarationAcct_ID, String trxName)
     {
       super (ctx, C_TaxDeclarationAcct_ID, trxName);
+      /** if (C_TaxDeclarationAcct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_TaxDeclarationAcct_ID (0);
+			setC_TaxDeclaration_ID (0);
+			setFact_Acct_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDeclarationAcct (Properties ctx, int C_TaxDeclarationAcct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDeclarationAcct_ID, trxName, virtualColumns);
       /** if (C_TaxDeclarationAcct_ID == 0)
         {
 			setC_AcctSchema_ID (0);

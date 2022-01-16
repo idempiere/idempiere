@@ -35,12 +35,44 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
     {
       super (ctx, PP_Order_Node_ID, trxName);
+      /** if (PP_Order_Node_ID == 0)
+        {
+			setAction (null);
+// Z
+			setAD_WF_Node_ID (0);
+			setAD_Workflow_ID (0);
+			setCost (Env.ZERO);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setIsCentrallyMaintained (false);
+			setJoinElement (null);
+// X
+			setLimit (0);
+			setName (null);
+			setPP_Order_ID (0);
+			setPP_Order_Node_ID (0);
+			setPP_Order_Workflow_ID (0);
+			setPriority (0);
+			setSplitElement (null);
+// X
+			setValue (null);
+			setWaitingTime (0);
+			setWorkingTime (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Node_ID, trxName, virtualColumns);
       /** if (PP_Order_Node_ID == 0)
         {
 			setAction (null);

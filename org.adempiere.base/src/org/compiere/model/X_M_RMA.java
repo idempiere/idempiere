@@ -33,12 +33,36 @@ public class X_M_RMA extends PO implements I_M_RMA, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_RMA (Properties ctx, int M_RMA_ID, String trxName)
     {
       super (ctx, M_RMA_ID, trxName);
+      /** if (M_RMA_ID == 0)
+        {
+			setC_DocType_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setInOut_ID (0);
+			setIsApproved (false);
+			setIsSOTrx (false);
+// @IsSOTrx@
+			setM_RMA_ID (0);
+			setM_RMAType_ID (0);
+			setName (null);
+			setProcessed (false);
+			setSalesRep_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_RMA (Properties ctx, int M_RMA_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_RMA_ID, trxName, virtualColumns);
       /** if (M_RMA_ID == 0)
         {
 			setC_DocType_ID (0);

@@ -31,12 +31,25 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AddressValidationCfg (Properties ctx, int C_AddressValidationCfg_ID, String trxName)
     {
       super (ctx, C_AddressValidationCfg_ID, trxName);
+      /** if (C_AddressValidationCfg_ID == 0)
+        {
+			setC_AddressValidationCfg_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AddressValidationCfg (Properties ctx, int C_AddressValidationCfg_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AddressValidationCfg_ID, trxName, virtualColumns);
       /** if (C_AddressValidationCfg_ID == 0)
         {
 			setC_AddressValidationCfg_ID (0);

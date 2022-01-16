@@ -31,12 +31,36 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BPartner_Location (Properties ctx, int C_BPartner_Location_ID, String trxName)
     {
       super (ctx, C_BPartner_Location_ID, trxName);
+      /** if (C_BPartner_Location_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_Location_ID (0);
+			setIsBillTo (true);
+// Y
+			setIsPayFrom (true);
+// Y
+			setIsPreserveCustomName (false);
+// N
+			setIsRemitTo (true);
+// Y
+			setIsShipTo (true);
+// Y
+			setName (null);
+// .
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BPartner_Location (Properties ctx, int C_BPartner_Location_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BPartner_Location_ID, trxName, virtualColumns);
       /** if (C_BPartner_Location_ID == 0)
         {
 			setC_BPartner_ID (0);

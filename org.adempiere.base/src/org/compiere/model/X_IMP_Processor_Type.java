@@ -30,12 +30,25 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_IMP_Processor_Type (Properties ctx, int IMP_Processor_Type_ID, String trxName)
     {
       super (ctx, IMP_Processor_Type_ID, trxName);
+      /** if (IMP_Processor_Type_ID == 0)
+        {
+			setIMP_Processor_Type_ID (0);
+			setJavaClass (null);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_IMP_Processor_Type (Properties ctx, int IMP_Processor_Type_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, IMP_Processor_Type_ID, trxName, virtualColumns);
       /** if (IMP_Processor_Type_ID == 0)
         {
 			setIMP_Processor_Type_ID (0);

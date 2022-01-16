@@ -33,12 +33,25 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLineQty (Properties ctx, int C_RfQResponseLineQty_ID, String trxName)
     {
       super (ctx, C_RfQResponseLineQty_ID, trxName);
+      /** if (C_RfQResponseLineQty_ID == 0)
+        {
+			setC_RfQLineQty_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setC_RfQResponseLineQty_ID (0);
+			setPrice (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQResponseLineQty (Properties ctx, int C_RfQResponseLineQty_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQResponseLineQty_ID, trxName, virtualColumns);
       /** if (C_RfQResponseLineQty_ID == 0)
         {
 			setC_RfQLineQty_ID (0);

@@ -34,12 +34,57 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_Journal (Properties ctx, int GL_Journal_ID, String trxName)
     {
       super (ctx, GL_Journal_ID, trxName);
+      /** if (GL_Journal_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+// @$C_AcctSchema_ID@
+			setC_ConversionType_ID (0);
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_DocType_ID (0);
+// @C_DocType_ID@
+			setC_Period_ID (0);
+// @C_Period_ID@
+			setCurrencyRate (Env.ZERO);
+// 1
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @DateDoc@
+			setDescription (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setGL_Category_ID (0);
+// @GL_Category_ID@
+			setGL_Journal_ID (0);
+			setIsApproved (true);
+// Y
+			setIsPrinted (false);
+// N
+			setPosted (false);
+// N
+			setPostingType (null);
+// @PostingType@
+			setTotalCr (Env.ZERO);
+// 0
+			setTotalDr (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Journal (Properties ctx, int GL_Journal_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Journal_ID, trxName, virtualColumns);
       /** if (GL_Journal_ID == 0)
         {
 			setC_AcctSchema_ID (0);

@@ -31,12 +31,34 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
     {
       super (ctx, AD_ToolBarButton_ID, trxName);
+      /** if (AD_ToolBarButton_ID == 0)
+        {
+			setAction (null);
+// W
+			setAD_ToolBarButton_ID (0);
+			setComponentName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAddSeparator (false);
+// N
+			setIsAdvancedButton (false);
+// N
+			setIsCustomization (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ToolBarButton_ID, trxName, virtualColumns);
       /** if (AD_ToolBarButton_ID == 0)
         {
 			setAction (null);

@@ -32,12 +32,24 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankStatementLoader (Properties ctx, int C_BankStatementLoader_ID, String trxName)
     {
       super (ctx, C_BankStatementLoader_ID, trxName);
+      /** if (C_BankStatementLoader_ID == 0)
+        {
+			setC_BankAccount_ID (0);
+			setC_BankStatementLoader_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankStatementLoader (Properties ctx, int C_BankStatementLoader_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankStatementLoader_ID, trxName, virtualColumns);
       /** if (C_BankStatementLoader_ID == 0)
         {
 			setC_BankAccount_ID (0);

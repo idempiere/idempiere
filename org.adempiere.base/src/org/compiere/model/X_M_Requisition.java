@@ -34,12 +34,40 @@ public class X_M_Requisition extends PO implements I_M_Requisition, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Requisition (Properties ctx, int M_Requisition_ID, String trxName)
     {
       super (ctx, M_Requisition_ID, trxName);
+      /** if (M_Requisition_ID == 0)
+        {
+			setAD_User_ID (0);
+			setC_DocType_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateRequired (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setM_PriceList_ID (0);
+			setM_Requisition_ID (0);
+			setM_Warehouse_ID (0);
+			setPosted (false);
+			setPriorityRule (null);
+// 5
+			setProcessed (false);
+			setTotalLines (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Requisition (Properties ctx, int M_Requisition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Requisition_ID, trxName, virtualColumns);
       /** if (M_Requisition_ID == 0)
         {
 			setAD_User_ID (0);

@@ -33,12 +33,42 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
     {
       super (ctx, AD_Field_ID, trxName);
+      /** if (AD_Field_ID == 0)
+        {
+			setAD_Column_ID (0);
+			setAD_Field_ID (0);
+			setAD_Tab_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsCentrallyMaintained (true);
+// Y
+			setIsDefaultFocus (false);
+// N
+			setIsDisplayed (true);
+// Y
+			setIsEncrypted (false);
+			setIsFieldOnly (false);
+			setIsHeading (false);
+			setIsQuickEntry (false);
+// N
+			setIsQuickForm (false);
+// N
+			setIsReadOnly (false);
+			setIsSameLine (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Field_ID, trxName, virtualColumns);
       /** if (AD_Field_ID == 0)
         {
 			setAD_Column_ID (0);

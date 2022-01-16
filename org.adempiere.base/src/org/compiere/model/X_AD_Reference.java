@@ -31,12 +31,26 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName)
     {
       super (ctx, AD_Reference_ID, trxName);
+      /** if (AD_Reference_ID == 0)
+        {
+			setAD_Reference_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setValidationType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Reference_ID, trxName, virtualColumns);
       /** if (AD_Reference_ID == 0)
         {
 			setAD_Reference_ID (0);

@@ -32,12 +32,29 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PromotionReward (Properties ctx, int M_PromotionReward_ID, String trxName)
     {
       super (ctx, M_PromotionReward_ID, trxName);
+      /** if (M_PromotionReward_ID == 0)
+        {
+			setC_Charge_ID (0);
+			setIsForAllDistribution (false);
+// N
+			setM_Promotion_ID (0);
+			setM_PromotionReward_ID (0);
+			setRewardType (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM M_PromotionReward WHERE M_Promotion_ID=@M_Promotion_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionReward (Properties ctx, int M_PromotionReward_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionReward_ID, trxName, virtualColumns);
       /** if (M_PromotionReward_ID == 0)
         {
 			setC_Charge_ID (0);

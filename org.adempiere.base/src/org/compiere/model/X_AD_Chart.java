@@ -30,12 +30,32 @@ public class X_AD_Chart extends PO implements I_AD_Chart, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Chart (Properties ctx, int AD_Chart_ID, String trxName)
     {
       super (ctx, AD_Chart_ID, trxName);
+      /** if (AD_Chart_ID == 0)
+        {
+			setAD_Chart_ID (0);
+			setChartOrientation (null);
+// V
+			setChartType (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayLegend (true);
+// 'Y'
+			setIsTimeSeries (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Chart (Properties ctx, int AD_Chart_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Chart_ID, trxName, virtualColumns);
       /** if (AD_Chart_ID == 0)
         {
 			setAD_Chart_ID (0);

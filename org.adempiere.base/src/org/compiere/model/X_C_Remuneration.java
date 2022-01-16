@@ -33,12 +33,29 @@ public class X_C_Remuneration extends PO implements I_C_Remuneration, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Remuneration (Properties ctx, int C_Remuneration_ID, String trxName)
     {
       super (ctx, C_Remuneration_ID, trxName);
+      /** if (C_Remuneration_ID == 0)
+        {
+			setC_Remuneration_ID (0);
+			setGrossRAmt (Env.ZERO);
+			setGrossRCost (Env.ZERO);
+			setName (null);
+			setOvertimeAmt (Env.ZERO);
+			setOvertimeCost (Env.ZERO);
+			setRemunerationType (null);
+			setStandardHours (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Remuneration (Properties ctx, int C_Remuneration_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Remuneration_ID, trxName, virtualColumns);
       /** if (C_Remuneration_ID == 0)
         {
 			setC_Remuneration_ID (0);

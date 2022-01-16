@@ -33,12 +33,29 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_MovementLineConfirm (Properties ctx, int M_MovementLineConfirm_ID, String trxName)
     {
       super (ctx, M_MovementLineConfirm_ID, trxName);
+      /** if (M_MovementLineConfirm_ID == 0)
+        {
+			setConfirmedQty (Env.ZERO);
+			setDifferenceQty (Env.ZERO);
+			setM_MovementConfirm_ID (0);
+			setM_MovementLineConfirm_ID (0);
+			setM_MovementLine_ID (0);
+			setProcessed (false);
+			setScrappedQty (Env.ZERO);
+			setTargetQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MovementLineConfirm (Properties ctx, int M_MovementLineConfirm_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MovementLineConfirm_ID, trxName, virtualColumns);
       /** if (M_MovementLineConfirm_ID == 0)
         {
 			setConfirmedQty (Env.ZERO);

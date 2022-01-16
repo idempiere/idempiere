@@ -34,12 +34,30 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_MatchInv (Properties ctx, int M_MatchInv_ID, String trxName)
     {
       super (ctx, M_MatchInv_ID, trxName);
+      /** if (M_MatchInv_ID == 0)
+        {
+			setC_InvoiceLine_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setM_MatchInv_ID (0);
+			setM_Product_ID (0);
+			setPosted (false);
+			setProcessed (false);
+			setProcessing (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MatchInv (Properties ctx, int M_MatchInv_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MatchInv_ID, trxName, virtualColumns);
       /** if (M_MatchInv_ID == 0)
         {
 			setC_InvoiceLine_ID (0);

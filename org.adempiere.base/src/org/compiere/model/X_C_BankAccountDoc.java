@@ -31,12 +31,26 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankAccountDoc (Properties ctx, int C_BankAccountDoc_ID, String trxName)
     {
       super (ctx, C_BankAccountDoc_ID, trxName);
+      /** if (C_BankAccountDoc_ID == 0)
+        {
+			setC_BankAccountDoc_ID (0);
+			setC_BankAccount_ID (0);
+			setCurrentNext (0);
+			setName (null);
+			setPaymentRule (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankAccountDoc (Properties ctx, int C_BankAccountDoc_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankAccountDoc_ID, trxName, virtualColumns);
       /** if (C_BankAccountDoc_ID == 0)
         {
 			setC_BankAccountDoc_ID (0);

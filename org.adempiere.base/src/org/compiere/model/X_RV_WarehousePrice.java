@@ -32,12 +32,28 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_RV_WarehousePrice (Properties ctx, int RV_WarehousePrice_ID, String trxName)
     {
       super (ctx, RV_WarehousePrice_ID, trxName);
+      /** if (RV_WarehousePrice_ID == 0)
+        {
+			setC_UOM_ID (0);
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setName (null);
+			setValue (null);
+			setWarehouseName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_RV_WarehousePrice (Properties ctx, int RV_WarehousePrice_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, RV_WarehousePrice_ID, trxName, virtualColumns);
       /** if (RV_WarehousePrice_ID == 0)
         {
 			setC_UOM_ID (0);

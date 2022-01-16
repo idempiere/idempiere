@@ -31,12 +31,27 @@ public class X_M_ChangeRequest extends PO implements I_M_ChangeRequest, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ChangeRequest (Properties ctx, int M_ChangeRequest_ID, String trxName)
     {
       super (ctx, M_ChangeRequest_ID, trxName);
+      /** if (M_ChangeRequest_ID == 0)
+        {
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setM_ChangeRequest_ID (0);
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ChangeRequest (Properties ctx, int M_ChangeRequest_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ChangeRequest_ID, trxName, virtualColumns);
       /** if (M_ChangeRequest_ID == 0)
         {
 			setDocumentNo (null);

@@ -32,12 +32,27 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessor (Properties ctx, int AD_WorkflowProcessor_ID, String trxName)
     {
       super (ctx, AD_WorkflowProcessor_ID, trxName);
+      /** if (AD_WorkflowProcessor_ID == 0)
+        {
+			setAD_Schedule_ID (0);
+			setAD_WorkflowProcessor_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WorkflowProcessor (Properties ctx, int AD_WorkflowProcessor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WorkflowProcessor_ID, trxName, virtualColumns);
       /** if (AD_WorkflowProcessor_ID == 0)
         {
 			setAD_Schedule_ID (0);

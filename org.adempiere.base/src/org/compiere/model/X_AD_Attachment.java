@@ -31,12 +31,25 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Attachment (Properties ctx, int AD_Attachment_ID, String trxName)
     {
       super (ctx, AD_Attachment_ID, trxName);
+      /** if (AD_Attachment_ID == 0)
+        {
+			setAD_Attachment_ID (0);
+			setAD_Table_ID (0);
+			setRecord_ID (0);
+			setTitle (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Attachment (Properties ctx, int AD_Attachment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Attachment_ID, trxName, virtualColumns);
       /** if (AD_Attachment_ID == 0)
         {
 			setAD_Attachment_ID (0);

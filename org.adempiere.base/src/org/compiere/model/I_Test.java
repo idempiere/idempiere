@@ -351,12 +351,12 @@ public interface I_Test
     /** Column name TestVirtualQty */
     public static final String COLUMNNAME_TestVirtualQty = "TestVirtualQty";
 
-	/** Set TestVirtualQty.
+	/** Set Virtual Quantity.
 	  * Used only for testing purposes
 	  */
 	public void setTestVirtualQty (BigDecimal TestVirtualQty);
 
-	/** Get TestVirtualQty.
+	/** Get Virtual Quantity.
 	  * Used only for testing purposes
 	  */
 	public BigDecimal getTestVirtualQty();

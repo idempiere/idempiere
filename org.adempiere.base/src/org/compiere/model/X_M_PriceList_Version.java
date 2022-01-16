@@ -32,12 +32,28 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PriceList_Version (Properties ctx, int M_PriceList_Version_ID, String trxName)
     {
       super (ctx, M_PriceList_Version_ID, trxName);
+      /** if (M_PriceList_Version_ID == 0)
+        {
+			setM_DiscountSchema_ID (0);
+			setM_PriceList_ID (0);
+			setM_PriceList_Version_ID (0);
+			setName (null);
+// @#Date@
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PriceList_Version (Properties ctx, int M_PriceList_Version_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PriceList_Version_ID, trxName, virtualColumns);
       /** if (M_PriceList_Version_ID == 0)
         {
 			setM_DiscountSchema_ID (0);

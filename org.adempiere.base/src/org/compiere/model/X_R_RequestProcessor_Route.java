@@ -31,12 +31,25 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor_Route (Properties ctx, int R_RequestProcessor_Route_ID, String trxName)
     {
       super (ctx, R_RequestProcessor_Route_ID, trxName);
+      /** if (R_RequestProcessor_Route_ID == 0)
+        {
+			setAD_User_ID (0);
+			setR_RequestProcessor_ID (0);
+			setR_RequestProcessor_Route_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestProcessor_Route (Properties ctx, int R_RequestProcessor_Route_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestProcessor_Route_ID, trxName, virtualColumns);
       /** if (R_RequestProcessor_Route_ID == 0)
         {
 			setAD_User_ID (0);

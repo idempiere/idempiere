@@ -31,12 +31,27 @@ public class X_AD_SMTP extends PO implements I_AD_SMTP, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_SMTP (Properties ctx, int AD_SMTP_ID, String trxName)
     {
       super (ctx, AD_SMTP_ID, trxName);
+      /** if (AD_SMTP_ID == 0)
+        {
+			setAD_SMTP_ID (0);
+			setIsSecureSMTP (false);
+// N
+			setIsSmtpAuthorization (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SMTP (Properties ctx, int AD_SMTP_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SMTP_ID, trxName, virtualColumns);
       /** if (AD_SMTP_ID == 0)
         {
 			setAD_SMTP_ID (0);

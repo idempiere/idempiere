@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Test
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="Test")
 public class X_Test extends PO implements I_Test, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220102L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)

@@ -31,12 +31,24 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Backup (Properties ctx, int AD_Package_Imp_Backup_ID, String trxName)
     {
       super (ctx, AD_Package_Imp_Backup_ID, trxName);
+      /** if (AD_Package_Imp_Backup_ID == 0)
+        {
+			setAD_Package_Imp_Backup_ID (0);
+			setAD_Package_Imp_Detail_ID (0);
+			setAD_Package_Imp_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Imp_Backup (Properties ctx, int AD_Package_Imp_Backup_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Imp_Backup_ID, trxName, virtualColumns);
       /** if (AD_Package_Imp_Backup_ID == 0)
         {
 			setAD_Package_Imp_Backup_ID (0);

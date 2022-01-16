@@ -31,12 +31,24 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_Block (Properties ctx, int AD_WF_Block_ID, String trxName)
     {
       super (ctx, AD_WF_Block_ID, trxName);
+      /** if (AD_WF_Block_ID == 0)
+        {
+			setAD_WF_Block_ID (0);
+			setAD_Workflow_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_Block (Properties ctx, int AD_WF_Block_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_Block_ID, trxName, virtualColumns);
       /** if (AD_WF_Block_ID == 0)
         {
 			setAD_WF_Block_ID (0);

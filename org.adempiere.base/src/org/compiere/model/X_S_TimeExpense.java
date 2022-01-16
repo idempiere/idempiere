@@ -34,12 +34,34 @@ public class X_S_TimeExpense extends PO implements I_S_TimeExpense, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_TimeExpense (Properties ctx, int S_TimeExpense_ID, String trxName)
     {
       super (ctx, S_TimeExpense_ID, trxName);
+      /** if (S_TimeExpense_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setDateReport (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setM_PriceList_ID (0);
+			setM_Warehouse_ID (0);
+			setProcessed (false);
+			setS_TimeExpense_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_TimeExpense (Properties ctx, int S_TimeExpense_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_TimeExpense_ID, trxName, virtualColumns);
       /** if (S_TimeExpense_ID == 0)
         {
 			setC_BPartner_ID (0);

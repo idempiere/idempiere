@@ -34,12 +34,82 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
     {
       super (ctx, C_Order_ID, trxName);
+      /** if (C_Order_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_DocType_ID (0);
+// 0
+			setC_DocTypeTarget_ID (0);
+			setC_Order_ID (0);
+			setC_PaymentTerm_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDeliveryRule (null);
+// F
+			setDeliveryViaRule (null);
+// P
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setFreightAmt (Env.ZERO);
+			setFreightCostRule (null);
+// I
+			setGrandTotal (Env.ZERO);
+			setInvoiceRule (null);
+// I
+			setIsApproved (false);
+// @IsApproved@
+			setIsCreditApproved (false);
+			setIsDelivered (false);
+			setIsDiscountPrinted (false);
+			setIsDropShip (false);
+// N
+			setIsInvoiced (false);
+			setIsPayScheduleValid (false);
+// N
+			setIsPrinted (false);
+			setIsPriviledgedRate (false);
+// N
+			setIsSelected (false);
+			setIsSelfService (false);
+			setIsSOTrx (false);
+// @IsSOTrx@
+			setIsTaxIncluded (false);
+			setIsTransferred (false);
+			setM_PriceList_ID (0);
+			setM_Warehouse_ID (0);
+			setPaymentRule (null);
+// B
+			setPosted (false);
+// N
+			setPriorityRule (null);
+// 5
+			setProcessed (false);
+			setSalesRep_ID (0);
+			setSendEMail (false);
+			setTotalLines (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Order (Properties ctx, int C_Order_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Order_ID, trxName, virtualColumns);
       /** if (C_Order_ID == 0)
         {
 			setC_BPartner_ID (0);

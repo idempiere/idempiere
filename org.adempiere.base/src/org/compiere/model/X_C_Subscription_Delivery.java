@@ -31,12 +31,23 @@ public class X_C_Subscription_Delivery extends PO implements I_C_Subscription_De
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Subscription_Delivery (Properties ctx, int C_Subscription_Delivery_ID, String trxName)
     {
       super (ctx, C_Subscription_Delivery_ID, trxName);
+      /** if (C_Subscription_Delivery_ID == 0)
+        {
+			setC_Subscription_Delivery_ID (0);
+			setC_Subscription_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Subscription_Delivery (Properties ctx, int C_Subscription_Delivery_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Subscription_Delivery_ID, trxName, virtualColumns);
       /** if (C_Subscription_Delivery_ID == 0)
         {
 			setC_Subscription_Delivery_ID (0);

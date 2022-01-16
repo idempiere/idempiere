@@ -30,12 +30,23 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_Reconciliation (Properties ctx, int T_Reconciliation_ID, String trxName)
     {
       super (ctx, T_Reconciliation_ID, trxName);
+      /** if (T_Reconciliation_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+			setFact_Acct_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_Reconciliation (Properties ctx, int T_Reconciliation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_Reconciliation_ID, trxName, virtualColumns);
       /** if (T_Reconciliation_ID == 0)
         {
 			setAD_PInstance_ID (0);

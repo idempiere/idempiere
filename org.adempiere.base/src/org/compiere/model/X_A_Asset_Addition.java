@@ -34,12 +34,48 @@ public class X_A_Asset_Addition extends PO implements I_A_Asset_Addition, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Addition (Properties ctx, int A_Asset_Addition_ID, String trxName)
     {
       super (ctx, A_Asset_Addition_ID, trxName);
+      /** if (A_Asset_Addition_ID == 0)
+        {
+			setA_Asset_Addition_ID (0);
+			setA_Asset_ID (0);
+			setA_CapvsExp (null);
+// 'Cap'
+			setA_CreateAsset (false);
+// 'N'
+			setA_QTY_Current (Env.ZERO);
+// 0
+			setA_SourceType (null);
+// 'INV'
+			setAssetAmtEntered (Env.ZERO);
+// 0
+			setAssetValueAmt (Env.ZERO);
+			setC_ConversionType_ID (0);
+			setC_Currency_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocStatus (null);
+// 'DR'
+			setIsApproved (false);
+// @#IsCanApproveOwnDoc@
+			setPosted (false);
+// N
+			setPostingType (null);
+// A
+			setProcessed (false);
+// 'N'
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Addition (Properties ctx, int A_Asset_Addition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Addition_ID, trxName, virtualColumns);
       /** if (A_Asset_Addition_ID == 0)
         {
 			setA_Asset_Addition_ID (0);

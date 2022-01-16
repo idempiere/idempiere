@@ -33,12 +33,27 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ShipperLabelsCfg (Properties ctx, int M_ShipperLabelsCfg_ID, String trxName)
     {
       super (ctx, M_ShipperLabelsCfg_ID, trxName);
+      /** if (M_ShipperLabelsCfg_ID == 0)
+        {
+			setIsDefault (false);
+// N
+			setM_ShipperCfg_ID (0);
+			setM_ShipperLabelsCfg_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShipperLabelsCfg (Properties ctx, int M_ShipperLabelsCfg_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShipperLabelsCfg_ID, trxName, virtualColumns);
       /** if (M_ShipperLabelsCfg_ID == 0)
         {
 			setIsDefault (false);

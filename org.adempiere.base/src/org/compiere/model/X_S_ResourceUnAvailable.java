@@ -32,12 +32,24 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_ResourceUnAvailable (Properties ctx, int S_ResourceUnAvailable_ID, String trxName)
     {
       super (ctx, S_ResourceUnAvailable_ID, trxName);
+      /** if (S_ResourceUnAvailable_ID == 0)
+        {
+			setDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setS_Resource_ID (0);
+			setS_ResourceUnAvailable_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ResourceUnAvailable (Properties ctx, int S_ResourceUnAvailable_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ResourceUnAvailable_ID, trxName, virtualColumns);
       /** if (S_ResourceUnAvailable_ID == 0)
         {
 			setDateFrom (new Timestamp( System.currentTimeMillis() ));

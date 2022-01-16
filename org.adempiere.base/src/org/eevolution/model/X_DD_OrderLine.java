@@ -35,12 +35,36 @@ public class X_DD_OrderLine extends PO implements I_DD_OrderLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_DD_OrderLine (Properties ctx, int DD_OrderLine_ID, String trxName)
     {
       super (ctx, DD_OrderLine_ID, trxName);
+      /** if (DD_OrderLine_ID == 0)
+        {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
+			setDD_Order_ID (0);
+			setDD_OrderLine_ID (0);
+			setIsDescription (false);
+// N
+			setIsInvoiced (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM DD_OrderLine WHERE DD_Order_ID=@DD_Order_ID@
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setM_LocatorTo_ID (0);
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+			setQtyOrdered (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_DD_OrderLine (Properties ctx, int DD_OrderLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, DD_OrderLine_ID, trxName, virtualColumns);
       /** if (DD_OrderLine_ID == 0)
         {
 			setC_UOM_ID (0);

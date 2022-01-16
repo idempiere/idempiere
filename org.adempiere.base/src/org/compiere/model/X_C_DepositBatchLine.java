@@ -33,12 +33,29 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)
     {
       super (ctx, C_DepositBatchLine_ID, trxName);
+      /** if (C_DepositBatchLine_ID == 0)
+        {
+			setC_DepositBatch_ID (0);
+			setC_DepositBatchLine_ID (0);
+			setC_Payment_ID (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_DepositBatchLine WHERE C_DepositBatch_ID=@C_DepositBatch_ID@
+			setPayAmt (Env.ZERO);
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DepositBatchLine_ID, trxName, virtualColumns);
       /** if (C_DepositBatchLine_ID == 0)
         {
 			setC_DepositBatch_ID (0);

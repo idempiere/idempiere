@@ -33,12 +33,77 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
     {
       super (ctx, AD_Role_ID, trxName);
+      /** if (AD_Role_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setAllow_Info_Account (true);
+// Y
+			setAllow_Info_Asset (true);
+// Y
+			setAllow_Info_BPartner (true);
+// Y
+			setAllow_Info_InOut (true);
+// Y
+			setAllow_Info_Invoice (true);
+// Y
+			setAllow_Info_Order (true);
+// Y
+			setAllow_Info_Payment (true);
+// Y
+			setAllow_Info_Product (true);
+// Y
+			setAllow_Info_Resource (true);
+// Y
+			setAllow_Info_Schedule (true);
+// Y
+			setConfirmQueryRecords (0);
+// 0
+			setIsAccessAllOrgs (false);
+// N
+			setIsCanApproveOwnDoc (false);
+			setIsCanExport (true);
+// Y
+			setIsCanReport (true);
+// Y
+			setIsChangeLog (false);
+// N
+			setIsDiscountAllowedOnTotal (false);
+			setIsDiscountUptoLimitPrice (false);
+			setIsManual (true);
+// Y
+			setIsMasterRole (false);
+// N
+			setIsMenuAutoExpand (false);
+// N
+			setIsPersonalAccess (false);
+// N
+			setIsPersonalLock (false);
+// N
+			setIsShowAcct (false);
+// N
+			setIsUseUserOrgAccess (false);
+// N
+			setMaxQueryRecords (0);
+// 0
+			setName (null);
+			setOverwritePriceLimit (false);
+// N
+			setPreferenceType (null);
+// O
+			setUserLevel (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Role_ID, trxName, virtualColumns);
       /** if (AD_Role_ID == 0)
         {
 			setAD_Role_ID (0);

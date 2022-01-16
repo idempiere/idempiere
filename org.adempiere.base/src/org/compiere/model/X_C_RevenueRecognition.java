@@ -31,12 +31,25 @@ public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition (Properties ctx, int C_RevenueRecognition_ID, String trxName)
     {
       super (ctx, C_RevenueRecognition_ID, trxName);
+      /** if (C_RevenueRecognition_ID == 0)
+        {
+			setC_RevenueRecognition_ID (0);
+			setIsTimeBased (false);
+			setName (null);
+			setRecognitionFrequency (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RevenueRecognition (Properties ctx, int C_RevenueRecognition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RevenueRecognition_ID, trxName, virtualColumns);
       /** if (C_RevenueRecognition_ID == 0)
         {
 			setC_RevenueRecognition_ID (0);

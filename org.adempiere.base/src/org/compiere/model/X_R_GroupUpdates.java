@@ -30,12 +30,24 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName)
     {
       super (ctx, R_GroupUpdates_ID, trxName);
+      /** if (R_GroupUpdates_ID == 0)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Group_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_GroupUpdates_ID, trxName, virtualColumns);
       /** if (R_GroupUpdates_ID == 0)
         {
 			setAD_User_ID (0);

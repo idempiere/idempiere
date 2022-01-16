@@ -34,12 +34,31 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaySelection (Properties ctx, int C_PaySelection_ID, String trxName)
     {
       super (ctx, C_PaySelection_ID, trxName);
+      /** if (C_PaySelection_ID == 0)
+        {
+			setC_BankAccount_ID (0);
+			setC_PaySelection_ID (0);
+			setIsApproved (false);
+			setName (null);
+// @#Date@
+			setPayDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setProcessed (false);
+			setProcessing (false);
+			setTotalAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaySelection (Properties ctx, int C_PaySelection_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaySelection_ID, trxName, virtualColumns);
       /** if (C_PaySelection_ID == 0)
         {
 			setC_BankAccount_ID (0);

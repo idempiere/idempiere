@@ -31,12 +31,23 @@ public class X_R_Resolution extends PO implements I_R_Resolution, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_Resolution (Properties ctx, int R_Resolution_ID, String trxName)
     {
       super (ctx, R_Resolution_ID, trxName);
+      /** if (R_Resolution_ID == 0)
+        {
+			setName (null);
+			setR_Resolution_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_Resolution (Properties ctx, int R_Resolution_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_Resolution_ID, trxName, virtualColumns);
       /** if (R_Resolution_ID == 0)
         {
 			setName (null);

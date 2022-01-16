@@ -32,12 +32,26 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_PayrollConcept (Properties ctx, int HR_PayrollConcept_ID, String trxName)
     {
       super (ctx, HR_PayrollConcept_ID, trxName);
+      /** if (HR_PayrollConcept_ID == 0)
+        {
+			setHR_Concept_ID (0);
+			setHR_PayrollConcept_ID (0);
+			setHR_Payroll_ID (0);
+			setIsPrinted (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_PayrollConcept (Properties ctx, int HR_PayrollConcept_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_PayrollConcept_ID, trxName, virtualColumns);
       /** if (HR_PayrollConcept_ID == 0)
         {
 			setHR_Concept_ID (0);

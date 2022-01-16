@@ -31,12 +31,26 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220114L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
     {
       super (ctx, AD_BroadcastMessage_ID, trxName);
+      /** if (AD_BroadcastMessage_ID == 0)
+        {
+			setAD_BroadcastMessage_ID (0);
+			setBroadcastFrequency (null);
+			setBroadcastMessage (null);
+			setBroadcastType (null);
+			setTarget (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_BroadcastMessage_ID, trxName, virtualColumns);
       /** if (AD_BroadcastMessage_ID == 0)
         {
 			setAD_BroadcastMessage_ID (0);

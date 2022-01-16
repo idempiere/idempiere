@@ -32,12 +32,26 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaymentBatch (Properties ctx, int C_PaymentBatch_ID, String trxName)
     {
       super (ctx, C_PaymentBatch_ID, trxName);
+      /** if (C_PaymentBatch_ID == 0)
+        {
+			setC_PaymentBatch_ID (0);
+			setC_PaymentProcessor_ID (0);
+			setName (null);
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentBatch (Properties ctx, int C_PaymentBatch_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentBatch_ID, trxName, virtualColumns);
       /** if (C_PaymentBatch_ID == 0)
         {
 			setC_PaymentBatch_ID (0);

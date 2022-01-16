@@ -33,12 +33,28 @@ public class X_PP_Order_BOM extends PO implements I_PP_Order_BOM, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_BOM (Properties ctx, int PP_Order_BOM_ID, String trxName)
     {
       super (ctx, PP_Order_BOM_ID, trxName);
+      /** if (PP_Order_BOM_ID == 0)
+        {
+			setC_UOM_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+			setPP_Order_BOM_ID (0);
+			setPP_Order_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_BOM (Properties ctx, int PP_Order_BOM_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_BOM_ID, trxName, virtualColumns);
       /** if (PP_Order_BOM_ID == 0)
         {
 			setC_UOM_ID (0);

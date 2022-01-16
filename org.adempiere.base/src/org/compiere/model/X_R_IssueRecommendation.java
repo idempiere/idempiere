@@ -31,12 +31,23 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_IssueRecommendation (Properties ctx, int R_IssueRecommendation_ID, String trxName)
     {
       super (ctx, R_IssueRecommendation_ID, trxName);
+      /** if (R_IssueRecommendation_ID == 0)
+        {
+			setName (null);
+			setR_IssueRecommendation_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_IssueRecommendation (Properties ctx, int R_IssueRecommendation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_IssueRecommendation_ID, trxName, virtualColumns);
       /** if (R_IssueRecommendation_ID == 0)
         {
 			setName (null);

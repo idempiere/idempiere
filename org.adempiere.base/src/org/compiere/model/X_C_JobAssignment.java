@@ -32,12 +32,25 @@ public class X_C_JobAssignment extends PO implements I_C_JobAssignment, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_JobAssignment (Properties ctx, int C_JobAssignment_ID, String trxName)
     {
       super (ctx, C_JobAssignment_ID, trxName);
+      /** if (C_JobAssignment_ID == 0)
+        {
+			setAD_User_ID (0);
+			setC_JobAssignment_ID (0);
+			setC_Job_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_JobAssignment (Properties ctx, int C_JobAssignment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_JobAssignment_ID, trxName, virtualColumns);
       /** if (C_JobAssignment_ID == 0)
         {
 			setAD_User_ID (0);

@@ -31,12 +31,27 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName)
     {
       super (ctx, AD_ImportTemplate_ID, trxName);
+      /** if (AD_ImportTemplate_ID == 0)
+        {
+			setAD_ImportTemplate_ID (0);
+			setAD_Tab_ID (0);
+			setAD_Window_ID (0);
+			setCharacterSet (null);
+			setCSVHeader (null);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ImportTemplate_ID, trxName, virtualColumns);
       /** if (AD_ImportTemplate_ID == 0)
         {
 			setAD_ImportTemplate_ID (0);

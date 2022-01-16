@@ -32,12 +32,33 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval_Entry (Properties ctx, int A_Asset_Reval_Entry_ID, String trxName)
     {
       super (ctx, A_Asset_Reval_Entry_ID, trxName);
+      /** if (A_Asset_Reval_Entry_ID == 0)
+        {
+			setA_Asset_Reval_Entry_ID (0);
+			setA_Effective_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Reval_Cal_Method (null);
+			setA_Reval_Effective_Date (null);
+			setA_Reval_Multiplier (null);
+			setA_Rev_Code (null);
+			setC_Currency_ID (0);
+			setDescription (null);
+			setDocumentNo (null);
+			setPostingType (null);
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Reval_Entry (Properties ctx, int A_Asset_Reval_Entry_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Reval_Entry_ID, trxName, virtualColumns);
       /** if (A_Asset_Reval_Entry_ID == 0)
         {
 			setA_Asset_Reval_Entry_ID (0);

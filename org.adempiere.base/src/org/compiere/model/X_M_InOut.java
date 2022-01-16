@@ -34,12 +34,55 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName)
     {
       super (ctx, M_InOut_ID, trxName);
+      /** if (M_InOut_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_DocType_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDeliveryRule (null);
+// A
+			setDeliveryViaRule (null);
+// P
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setFreightCostRule (null);
+// I
+			setIsAlternateReturnAddress (false);
+// N
+			setIsApproved (false);
+			setIsInDispute (false);
+			setIsInTransit (false);
+			setIsPrinted (false);
+			setIsSOTrx (false);
+// @IsSOTrx@
+			setM_InOut_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setMovementType (null);
+			setM_Warehouse_ID (0);
+			setPosted (false);
+			setPriorityRule (null);
+// 5
+			setProcessed (false);
+			setSendEMail (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_InOut_ID, trxName, virtualColumns);
       /** if (M_InOut_ID == 0)
         {
 			setC_BPartner_ID (0);

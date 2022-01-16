@@ -33,12 +33,31 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductionPlan (Properties ctx, int M_ProductionPlan_ID, String trxName)
     {
       super (ctx, M_ProductionPlan_ID, trxName);
+      /** if (M_ProductionPlan_ID == 0)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionPlan WHERE M_Production_ID=@M_Production_ID@
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setM_Product_ID (0);
+			setM_Production_ID (0);
+			setM_ProductionPlan_ID (0);
+			setProcessed (false);
+			setProductionQty (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductionPlan (Properties ctx, int M_ProductionPlan_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductionPlan_ID, trxName, virtualColumns);
       /** if (M_ProductionPlan_ID == 0)
         {
 			setLine (0);

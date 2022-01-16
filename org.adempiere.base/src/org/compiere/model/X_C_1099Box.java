@@ -31,12 +31,25 @@ public class X_C_1099Box extends PO implements I_C_1099Box, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_1099Box (Properties ctx, int C_1099Box_ID, String trxName)
     {
       super (ctx, C_1099Box_ID, trxName);
+      /** if (C_1099Box_ID == 0)
+        {
+			setBucket (0);
+			setC_1099Box_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_1099Box (Properties ctx, int C_1099Box_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_1099Box_ID, trxName, virtualColumns);
       /** if (C_1099Box_ID == 0)
         {
 			setBucket (0);

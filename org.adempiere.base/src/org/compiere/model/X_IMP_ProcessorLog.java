@@ -30,12 +30,25 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)
     {
       super (ctx, IMP_ProcessorLog_ID, trxName);
+      /** if (IMP_ProcessorLog_ID == 0)
+        {
+			setIMP_Processor_ID (0);
+			setIMP_ProcessorLog_ID (0);
+			setIsError (true);
+// 'Y'
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, IMP_ProcessorLog_ID, trxName, virtualColumns);
       /** if (IMP_ProcessorLog_ID == 0)
         {
 			setIMP_Processor_ID (0);
