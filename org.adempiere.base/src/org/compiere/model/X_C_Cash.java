@@ -34,12 +34,39 @@ public class X_C_Cash extends PO implements I_C_Cash, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Cash (Properties ctx, int C_Cash_ID, String trxName)
     {
       super (ctx, C_Cash_ID, trxName);
+      /** if (C_Cash_ID == 0)
+        {
+			setBeginningBalance (Env.ZERO);
+			setC_CashBook_ID (0);
+			setC_Cash_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setEndingBalance (Env.ZERO);
+			setIsApproved (false);
+			setName (null);
+// @#Date@
+			setPosted (false);
+// N
+			setProcessed (false);
+			setStatementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Cash (Properties ctx, int C_Cash_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Cash_ID, trxName, virtualColumns);
       /** if (C_Cash_ID == 0)
         {
 			setBeginningBalance (Env.ZERO);

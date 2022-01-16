@@ -34,12 +34,58 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Payment (Properties ctx, int C_Payment_ID, String trxName)
     {
       super (ctx, C_Payment_ID, trxName);
+      /** if (C_Payment_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_Currency_ID (0);
+			setC_DocType_ID (0);
+			setC_Payment_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsAllocated (false);
+			setIsApproved (false);
+// N
+			setIsDelayedCapture (false);
+			setIsOnline (false);
+			setIsOverrideCurrencyRate (false);
+// N
+			setIsOverUnderPayment (true);
+// Y
+			setIsPrepayment (false);
+			setIsReceipt (false);
+			setIsReconciled (false);
+			setIsSelfService (false);
+			setIsVoided (false);
+// N
+			setPayAmt (Env.ZERO);
+// 0
+			setPosted (false);
+// N
+			setProcessed (false);
+			setTenderType (null);
+// K
+			setTrxType (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Payment (Properties ctx, int C_Payment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Payment_ID, trxName, virtualColumns);
       /** if (C_Payment_ID == 0)
         {
 			setC_BPartner_ID (0);

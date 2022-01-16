@@ -31,12 +31,26 @@ public class X_AD_ReportView extends PO implements I_AD_ReportView, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ReportView (Properties ctx, int AD_ReportView_ID, String trxName)
     {
       super (ctx, AD_ReportView_ID, trxName);
+      /** if (AD_ReportView_ID == 0)
+        {
+			setAD_ReportView_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReportView (Properties ctx, int AD_ReportView_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReportView_ID, trxName, virtualColumns);
       /** if (AD_ReportView_ID == 0)
         {
 			setAD_ReportView_ID (0);

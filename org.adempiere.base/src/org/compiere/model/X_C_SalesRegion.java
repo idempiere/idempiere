@@ -31,12 +31,26 @@ public class X_C_SalesRegion extends PO implements I_C_SalesRegion, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_SalesRegion (Properties ctx, int C_SalesRegion_ID, String trxName)
     {
       super (ctx, C_SalesRegion_ID, trxName);
+      /** if (C_SalesRegion_ID == 0)
+        {
+			setC_SalesRegion_ID (0);
+			setIsDefault (false);
+			setIsSummary (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_SalesRegion (Properties ctx, int C_SalesRegion_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_SalesRegion_ID, trxName, virtualColumns);
       /** if (C_SalesRegion_ID == 0)
         {
 			setC_SalesRegion_ID (0);

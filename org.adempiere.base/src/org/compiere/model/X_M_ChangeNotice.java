@@ -31,12 +31,26 @@ public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ChangeNotice (Properties ctx, int M_ChangeNotice_ID, String trxName)
     {
       super (ctx, M_ChangeNotice_ID, trxName);
+      /** if (M_ChangeNotice_ID == 0)
+        {
+			setIsApproved (false);
+// N
+			setM_ChangeNotice_ID (0);
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ChangeNotice (Properties ctx, int M_ChangeNotice_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ChangeNotice_ID, trxName, virtualColumns);
       /** if (M_ChangeNotice_ID == 0)
         {
 			setIsApproved (false);

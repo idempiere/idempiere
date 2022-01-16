@@ -31,12 +31,33 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
     {
       super (ctx, M_AttributeSet_ID, trxName);
+      /** if (M_AttributeSet_ID == 0)
+        {
+			setIsGuaranteeDate (false);
+			setIsGuaranteeDateMandatory (false);
+			setIsInstanceAttribute (false);
+			setIsLot (false);
+			setIsLotMandatory (false);
+			setIsSerNo (false);
+			setIsSerNoMandatory (false);
+			setMandatoryType (null);
+			setM_AttributeSet_ID (0);
+			setM_AttributeSet_Type (null);
+// MMS
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeSet_ID, trxName, virtualColumns);
       /** if (M_AttributeSet_ID == 0)
         {
 			setIsGuaranteeDate (false);

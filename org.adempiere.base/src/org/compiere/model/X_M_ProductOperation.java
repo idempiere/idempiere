@@ -33,12 +33,24 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductOperation (Properties ctx, int M_ProductOperation_ID, String trxName)
     {
       super (ctx, M_ProductOperation_ID, trxName);
+      /** if (M_ProductOperation_ID == 0)
+        {
+			setM_Product_ID (0);
+			setM_ProductOperation_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductOperation (Properties ctx, int M_ProductOperation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductOperation_ID, trxName, virtualColumns);
       /** if (M_ProductOperation_ID == 0)
         {
 			setM_Product_ID (0);

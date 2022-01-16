@@ -31,12 +31,30 @@ public class X_C_Country extends PO implements I_C_Country, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Country (Properties ctx, int C_Country_ID, String trxName)
     {
       super (ctx, C_Country_ID, trxName);
+      /** if (C_Country_ID == 0)
+        {
+			setC_Country_ID (0);
+			setCountryCode (null);
+			setDisplaySequence (null);
+// @C@, @R@ @P@
+			setHasPostal_Add (false);
+			setHasRegion (false);
+			setIsAddressLinesLocalReverse (false);
+			setIsAddressLinesReverse (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Country (Properties ctx, int C_Country_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Country_ID, trxName, virtualColumns);
       /** if (C_Country_ID == 0)
         {
 			setC_Country_ID (0);

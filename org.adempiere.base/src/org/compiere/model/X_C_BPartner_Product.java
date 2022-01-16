@@ -32,12 +32,27 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BPartner_Product (Properties ctx, int C_BPartner_Product_ID, String trxName)
     {
       super (ctx, C_BPartner_Product_ID, trxName);
+      /** if (C_BPartner_Product_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setIsManufacturer (false);
+// N
+			setM_Product_ID (0);
+			setShelfLifeMinDays (0);
+			setShelfLifeMinPct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BPartner_Product (Properties ctx, int C_BPartner_Product_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BPartner_Product_ID, trxName, virtualColumns);
       /** if (C_BPartner_Product_ID == 0)
         {
 			setC_BPartner_ID (0);

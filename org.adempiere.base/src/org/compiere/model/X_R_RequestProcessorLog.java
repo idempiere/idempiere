@@ -30,12 +30,24 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)
     {
       super (ctx, R_RequestProcessorLog_ID, trxName);
+      /** if (R_RequestProcessorLog_ID == 0)
+        {
+			setIsError (false);
+			setR_RequestProcessor_ID (0);
+			setR_RequestProcessorLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestProcessorLog_ID, trxName, virtualColumns);
       /** if (R_RequestProcessorLog_ID == 0)
         {
 			setIsError (false);

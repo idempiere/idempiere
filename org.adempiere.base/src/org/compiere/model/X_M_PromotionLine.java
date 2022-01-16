@@ -32,12 +32,25 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PromotionLine (Properties ctx, int M_PromotionLine_ID, String trxName)
     {
       super (ctx, M_PromotionLine_ID, trxName);
+      /** if (M_PromotionLine_ID == 0)
+        {
+			setIsMandatoryPL (true);
+// Y
+			setM_Promotion_ID (0);
+			setM_PromotionLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionLine (Properties ctx, int M_PromotionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionLine_ID, trxName, virtualColumns);
       /** if (M_PromotionLine_ID == 0)
         {
 			setIsMandatoryPL (true);

@@ -31,12 +31,25 @@ public class X_C_ValidCombination extends PO implements I_C_ValidCombination, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ValidCombination (Properties ctx, int C_ValidCombination_ID, String trxName)
     {
       super (ctx, C_ValidCombination_ID, trxName);
+      /** if (C_ValidCombination_ID == 0)
+        {
+			setAccount_ID (0);
+			setC_AcctSchema_ID (0);
+			setC_ValidCombination_ID (0);
+			setIsFullyQualified (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ValidCombination (Properties ctx, int C_ValidCombination_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ValidCombination_ID, trxName, virtualColumns);
       /** if (C_ValidCombination_ID == 0)
         {
 			setAccount_ID (0);

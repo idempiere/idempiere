@@ -30,12 +30,25 @@ public class X_AD_TreeNodeU1 extends PO implements I_AD_TreeNodeU1, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeU1 (Properties ctx, int AD_TreeNodeU1_ID, String trxName)
     {
       super (ctx, AD_TreeNodeU1_ID, trxName);
+      /** if (AD_TreeNodeU1_ID == 0)
+        {
+			setAD_Tree_ID (0);
+			setNode_ID (0);
+			setParent_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TreeNodeU1 (Properties ctx, int AD_TreeNodeU1_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_TreeNodeU1_ID, trxName, virtualColumns);
       /** if (AD_TreeNodeU1_ID == 0)
         {
 			setAD_Tree_ID (0);

@@ -31,12 +31,30 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
     {
       super (ctx, AD_ChartDatasource_ID, trxName);
+      /** if (AD_ChartDatasource_ID == 0)
+        {
+			setAD_ChartDatasource_ID (0);
+			setAD_Chart_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFromClause (null);
+			setName (null);
+			setValueColumn (null);
+			setWhereClause (null);
+// WHERE ...
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ChartDatasource_ID, trxName, virtualColumns);
       /** if (AD_ChartDatasource_ID == 0)
         {
 			setAD_ChartDatasource_ID (0);

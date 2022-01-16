@@ -32,12 +32,25 @@ public class X_C_JobRemuneration extends PO implements I_C_JobRemuneration, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_JobRemuneration (Properties ctx, int C_JobRemuneration_ID, String trxName)
     {
       super (ctx, C_JobRemuneration_ID, trxName);
+      /** if (C_JobRemuneration_ID == 0)
+        {
+			setC_Job_ID (0);
+			setC_JobRemuneration_ID (0);
+			setC_Remuneration_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_JobRemuneration (Properties ctx, int C_JobRemuneration_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_JobRemuneration_ID, trxName, virtualColumns);
       /** if (C_JobRemuneration_ID == 0)
         {
 			setC_Job_ID (0);

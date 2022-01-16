@@ -31,12 +31,26 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
     {
       super (ctx, C_RfQResponseLine_ID, trxName);
+      /** if (C_RfQResponseLine_ID == 0)
+        {
+			setC_RfQLine_ID (0);
+			setC_RfQResponse_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setIsSelectedWinner (false);
+			setIsSelfService (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQResponseLine_ID, trxName, virtualColumns);
       /** if (C_RfQResponseLine_ID == 0)
         {
 			setC_RfQLine_ID (0);

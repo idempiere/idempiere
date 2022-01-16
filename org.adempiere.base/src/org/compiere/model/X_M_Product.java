@@ -34,12 +34,61 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
     {
       super (ctx, M_Product_ID, trxName);
+      /** if (M_Product_ID == 0)
+        {
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsAutoProduce (false);
+// N
+			setIsBOM (false);
+// N
+			setIsDropShip (false);
+			setIsExcludeAutoDelivery (false);
+// N
+			setIsInvoicePrintDetails (false);
+			setIsKanban (false);
+// N
+			setIsManufactured (false);
+// N
+			setIsOwnBox (false);
+// N
+			setIsPhantom (false);
+// N
+			setIsPickListPrintDetails (false);
+			setIsPurchased (true);
+// Y
+			setIsSelfService (true);
+// Y
+			setIsSold (true);
+// Y
+			setIsStocked (true);
+// Y
+			setIsSummary (false);
+			setIsVerified (false);
+// N
+			setIsWebStoreFeatured (false);
+			setLowLevel (0);
+// 0
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_Category_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+			setProductType (null);
+// I
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Product (Properties ctx, int M_Product_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Product_ID, trxName, virtualColumns);
       /** if (M_Product_ID == 0)
         {
 			setC_TaxCategory_ID (0);

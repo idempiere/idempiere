@@ -31,12 +31,25 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName)
     {
       super (ctx, M_AttributeUse_ID, trxName);
+      /** if (M_AttributeUse_ID == 0)
+        {
+			setM_Attribute_ID (0);
+			setM_AttributeSet_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_AttributeUse WHERE M_AttributeSet_ID=@M_AttributeSet_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeUse_ID, trxName, virtualColumns);
       /** if (M_AttributeUse_ID == 0)
         {
 			setM_Attribute_ID (0);

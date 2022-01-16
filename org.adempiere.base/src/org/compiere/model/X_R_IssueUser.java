@@ -31,12 +31,23 @@ public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_IssueUser (Properties ctx, int R_IssueUser_ID, String trxName)
     {
       super (ctx, R_IssueUser_ID, trxName);
+      /** if (R_IssueUser_ID == 0)
+        {
+			setR_IssueUser_ID (0);
+			setUserName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_IssueUser (Properties ctx, int R_IssueUser_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_IssueUser_ID, trxName, virtualColumns);
       /** if (R_IssueUser_ID == 0)
         {
 			setR_IssueUser_ID (0);

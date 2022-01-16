@@ -32,12 +32,24 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_NonBusinessDay (Properties ctx, int C_NonBusinessDay_ID, String trxName)
     {
       super (ctx, C_NonBusinessDay_ID, trxName);
+      /** if (C_NonBusinessDay_ID == 0)
+        {
+			setC_Calendar_ID (0);
+			setC_NonBusinessDay_ID (0);
+			setDate1 (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_NonBusinessDay (Properties ctx, int C_NonBusinessDay_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_NonBusinessDay_ID, trxName, virtualColumns);
       /** if (C_NonBusinessDay_ID == 0)
         {
 			setC_Calendar_ID (0);

@@ -31,12 +31,26 @@ public class X_AD_ModelValidator extends PO implements I_AD_ModelValidator, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ModelValidator (Properties ctx, int AD_ModelValidator_ID, String trxName)
     {
       super (ctx, AD_ModelValidator_ID, trxName);
+      /** if (AD_ModelValidator_ID == 0)
+        {
+			setAD_ModelValidator_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setModelValidationClass (null);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ModelValidator (Properties ctx, int AD_ModelValidator_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ModelValidator_ID, trxName, virtualColumns);
       /** if (AD_ModelValidator_ID == 0)
         {
 			setAD_ModelValidator_ID (0);

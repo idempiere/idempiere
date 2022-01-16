@@ -33,12 +33,25 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Concept (Properties ctx, int HR_Concept_ID, String trxName)
     {
       super (ctx, HR_Concept_ID, trxName);
+      /** if (HR_Concept_ID == 0)
+        {
+			setColumnType (null);
+			setHR_Concept_ID (0);
+			setName (null);
+			setType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Concept (Properties ctx, int HR_Concept_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Concept_ID, trxName, virtualColumns);
       /** if (HR_Concept_ID == 0)
         {
 			setColumnType (null);

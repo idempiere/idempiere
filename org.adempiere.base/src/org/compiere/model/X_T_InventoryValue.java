@@ -33,12 +33,25 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_InventoryValue (Properties ctx, int T_InventoryValue_ID, String trxName)
     {
       super (ctx, T_InventoryValue_ID, trxName);
+      /** if (T_InventoryValue_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_InventoryValue (Properties ctx, int T_InventoryValue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_InventoryValue_ID, trxName, virtualColumns);
       /** if (T_InventoryValue_ID == 0)
         {
 			setAD_PInstance_ID (0);

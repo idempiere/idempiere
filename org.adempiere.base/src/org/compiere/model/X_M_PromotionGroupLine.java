@@ -30,12 +30,24 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PromotionGroupLine (Properties ctx, int M_PromotionGroupLine_ID, String trxName)
     {
       super (ctx, M_PromotionGroupLine_ID, trxName);
+      /** if (M_PromotionGroupLine_ID == 0)
+        {
+			setM_Product_ID (0);
+			setM_PromotionGroup_ID (0);
+			setM_PromotionGroupLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionGroupLine (Properties ctx, int M_PromotionGroupLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionGroupLine_ID, trxName, virtualColumns);
       /** if (M_PromotionGroupLine_ID == 0)
         {
 			setM_Product_ID (0);

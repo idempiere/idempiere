@@ -31,12 +31,25 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_LabelPrinterFunction (Properties ctx, int AD_LabelPrinterFunction_ID, String trxName)
     {
       super (ctx, AD_LabelPrinterFunction_ID, trxName);
+      /** if (AD_LabelPrinterFunction_ID == 0)
+        {
+			setAD_LabelPrinterFunction_ID (0);
+			setAD_LabelPrinter_ID (0);
+			setIsXYPosition (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelPrinterFunction (Properties ctx, int AD_LabelPrinterFunction_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LabelPrinterFunction_ID, trxName, virtualColumns);
       /** if (AD_LabelPrinterFunction_ID == 0)
         {
 			setAD_LabelPrinterFunction_ID (0);

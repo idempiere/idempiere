@@ -33,12 +33,26 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_Cost (Properties ctx, int PP_Order_Cost_ID, String trxName)
     {
       super (ctx, PP_Order_Cost_ID, trxName);
+      /** if (PP_Order_Cost_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setM_CostType_ID (0);
+			setM_Product_ID (0);
+			setPP_Order_Cost_ID (0);
+			setPP_Order_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Cost (Properties ctx, int PP_Order_Cost_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Cost_ID, trxName, virtualColumns);
       /** if (PP_Order_Cost_ID == 0)
         {
 			setC_AcctSchema_ID (0);

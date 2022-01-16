@@ -31,12 +31,27 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_U_POSTerminal (Properties ctx, int U_POSTerminal_ID, String trxName)
     {
       super (ctx, U_POSTerminal_ID, trxName);
+      /** if (U_POSTerminal_ID == 0)
+        {
+			setAutoLock (false);
+// N
+			setCashBookTransferType (null);
+			setC_CashBook_ID (0);
+			setC_CashBPartner_ID (0);
+			setU_POSTerminal_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_POSTerminal (Properties ctx, int U_POSTerminal_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_POSTerminal_ID, trxName, virtualColumns);
       /** if (U_POSTerminal_ID == 0)
         {
 			setAutoLock (false);

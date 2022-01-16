@@ -33,12 +33,28 @@ public class X_C_Task extends PO implements I_C_Task, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Task (Properties ctx, int C_Task_ID, String trxName)
     {
       super (ctx, C_Task_ID, trxName);
+      /** if (C_Task_ID == 0)
+        {
+			setC_Phase_ID (0);
+			setC_Task_ID (0);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_Task WHERE C_Phase_ID=@C_Phase_ID@
+			setStandardQty (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Task (Properties ctx, int C_Task_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Task_ID, trxName, virtualColumns);
       /** if (C_Task_ID == 0)
         {
 			setC_Phase_ID (0);

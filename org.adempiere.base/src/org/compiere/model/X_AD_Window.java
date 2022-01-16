@@ -31,12 +31,31 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Window (Properties ctx, int AD_Window_ID, String trxName)
     {
       super (ctx, AD_Window_ID, trxName);
+      /** if (AD_Window_ID == 0)
+        {
+			setAD_Window_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+			setIsDefault (false);
+			setIsSOTrx (true);
+// Y
+			setName (null);
+			setWindowType (null);
+// M
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Window (Properties ctx, int AD_Window_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Window_ID, trxName, virtualColumns);
       /** if (AD_Window_ID == 0)
         {
 			setAD_Window_ID (0);

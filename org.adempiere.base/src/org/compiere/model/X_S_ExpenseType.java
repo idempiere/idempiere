@@ -31,12 +31,28 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_ExpenseType (Properties ctx, int S_ExpenseType_ID, String trxName)
     {
       super (ctx, S_ExpenseType_ID, trxName);
+      /** if (S_ExpenseType_ID == 0)
+        {
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsInvoiced (false);
+			setM_Product_Category_ID (0);
+			setName (null);
+			setS_ExpenseType_ID (0);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ExpenseType (Properties ctx, int S_ExpenseType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ExpenseType_ID, trxName, virtualColumns);
       /** if (S_ExpenseType_ID == 0)
         {
 			setC_TaxCategory_ID (0);

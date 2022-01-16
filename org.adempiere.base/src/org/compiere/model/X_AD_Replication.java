@@ -34,12 +34,31 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Replication (Properties ctx, int AD_Replication_ID, String trxName)
     {
       super (ctx, AD_Replication_ID, trxName);
+      /** if (AD_Replication_ID == 0)
+        {
+			setAD_Replication_ID (0);
+			setAD_ReplicationStrategy_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+// 80
+			setIsRMIoverHTTP (true);
+// Y
+			setName (null);
+			setRemote_Client_ID (0);
+			setRemote_Org_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Replication (Properties ctx, int AD_Replication_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Replication_ID, trxName, virtualColumns);
       /** if (AD_Replication_ID == 0)
         {
 			setAD_Replication_ID (0);

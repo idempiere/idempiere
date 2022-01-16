@@ -31,12 +31,24 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_MFA_RegisteredDevice (Properties ctx, int MFA_RegisteredDevice_ID, String trxName)
     {
       super (ctx, MFA_RegisteredDevice_ID, trxName);
+      /** if (MFA_RegisteredDevice_ID == 0)
+        {
+			setAD_User_ID (0);
+			setMFADeviceIdentifier (null);
+			setMFA_RegisteredDevice_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_MFA_RegisteredDevice (Properties ctx, int MFA_RegisteredDevice_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, MFA_RegisteredDevice_ID, trxName, virtualColumns);
       /** if (MFA_RegisteredDevice_ID == 0)
         {
 			setAD_User_ID (0);

@@ -31,12 +31,31 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_Hierarchy (Properties ctx, int PA_Hierarchy_ID, String trxName)
     {
       super (ctx, PA_Hierarchy_ID, trxName);
+      /** if (PA_Hierarchy_ID == 0)
+        {
+			setAD_Tree_Account_ID (0);
+			setAD_Tree_Activity_ID (0);
+			setAD_Tree_BPartner_ID (0);
+			setAD_Tree_Campaign_ID (0);
+			setAD_Tree_Org_ID (0);
+			setAD_Tree_Product_ID (0);
+			setAD_Tree_Project_ID (0);
+			setAD_Tree_SalesRegion_ID (0);
+			setName (null);
+			setPA_Hierarchy_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Hierarchy (Properties ctx, int PA_Hierarchy_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Hierarchy_ID, trxName, virtualColumns);
       /** if (PA_Hierarchy_ID == 0)
         {
 			setAD_Tree_Account_ID (0);

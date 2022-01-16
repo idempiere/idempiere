@@ -32,12 +32,27 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Year (Properties ctx, int HR_Year_ID, String trxName)
     {
       super (ctx, HR_Year_ID, trxName);
+      /** if (HR_Year_ID == 0)
+        {
+			setC_Year_ID (0);
+			setHR_Payroll_ID (0);
+			setHR_Year_ID (0);
+			setNetDays (0);
+			setQty (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Year (Properties ctx, int HR_Year_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Year_ID, trxName, virtualColumns);
       /** if (HR_Year_ID == 0)
         {
 			setC_Year_ID (0);

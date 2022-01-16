@@ -35,12 +35,27 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Product_BOMLine (Properties ctx, int PP_Product_BOMLine_ID, String trxName)
     {
       super (ctx, PP_Product_BOMLine_ID, trxName);
+      /** if (PP_Product_BOMLine_ID == 0)
+        {
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Product_BOMLine WHERE PP_Product_BOM_ID=@PP_Product_BOM_ID@
+			setM_Product_ID (0);
+// -1
+			setPP_Product_BOM_ID (0);
+			setPP_Product_BOMLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Product_BOMLine (Properties ctx, int PP_Product_BOMLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Product_BOMLine_ID, trxName, virtualColumns);
       /** if (PP_Product_BOMLine_ID == 0)
         {
 			setLine (0);

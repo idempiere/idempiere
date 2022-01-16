@@ -34,12 +34,27 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName)
     {
       super (ctx, C_CommissionRun_ID, trxName);
+      /** if (C_CommissionRun_ID == 0)
+        {
+			setC_Commission_ID (0);
+			setC_CommissionRun_ID (0);
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setProcessed (false);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CommissionRun_ID, trxName, virtualColumns);
       /** if (C_CommissionRun_ID == 0)
         {
 			setC_Commission_ID (0);

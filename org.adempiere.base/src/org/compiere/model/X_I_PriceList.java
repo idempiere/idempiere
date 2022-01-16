@@ -33,12 +33,24 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_PriceList (Properties ctx, int I_PriceList_ID, String trxName)
     {
       super (ctx, I_PriceList_ID, trxName);
+      /** if (I_PriceList_ID == 0)
+        {
+			setI_IsImported (false);
+// N
+			setI_PriceList_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_PriceList (Properties ctx, int I_PriceList_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_PriceList_ID, trxName, virtualColumns);
       /** if (I_PriceList_ID == 0)
         {
 			setI_IsImported (false);

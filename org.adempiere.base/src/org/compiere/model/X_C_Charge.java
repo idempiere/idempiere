@@ -33,12 +33,29 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName)
     {
       super (ctx, C_Charge_ID, trxName);
+      /** if (C_Charge_ID == 0)
+        {
+			setC_Charge_ID (0);
+			setChargeAmt (Env.ZERO);
+			setC_TaxCategory_ID (0);
+			setIsSameCurrency (false);
+			setIsSameTax (false);
+			setIsTaxIncluded (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Charge_ID, trxName, virtualColumns);
       /** if (C_Charge_ID == 0)
         {
 			setC_Charge_ID (0);

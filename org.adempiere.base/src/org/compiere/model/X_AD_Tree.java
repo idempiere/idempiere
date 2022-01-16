@@ -31,12 +31,33 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)
     {
       super (ctx, AD_Tree_ID, trxName);
+      /** if (AD_Tree_ID == 0)
+        {
+			setAD_Tree_ID (0);
+			setIsAllNodes (false);
+			setIsDefault (false);
+// N
+			setIsLoadAllNodesImmediately (true);
+// Y
+			setIsTreeDrivenByValue (false);
+// N
+			setIsValueDisplayed (false);
+// N
+			setName (null);
+			setTreeType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Tree_ID, trxName, virtualColumns);
       /** if (AD_Tree_ID == 0)
         {
 			setAD_Tree_ID (0);

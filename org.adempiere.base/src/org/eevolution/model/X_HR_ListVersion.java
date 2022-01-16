@@ -33,12 +33,26 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName)
     {
       super (ctx, HR_ListVersion_ID, trxName);
+      /** if (HR_ListVersion_ID == 0)
+        {
+			setHR_List_ID (0);
+			setHR_ListVersion_ID (0);
+			setName (null);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+			setValidTo (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_ListVersion_ID, trxName, virtualColumns);
       /** if (HR_ListVersion_ID == 0)
         {
 			setHR_List_ID (0);

@@ -30,12 +30,25 @@ public class X_AD_TreeNodeCMT extends PO implements I_AD_TreeNodeCMT, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeCMT (Properties ctx, int AD_TreeNodeCMT_ID, String trxName)
     {
       super (ctx, AD_TreeNodeCMT_ID, trxName);
+      /** if (AD_TreeNodeCMT_ID == 0)
+        {
+			setAD_Tree_ID (0);
+			setNode_ID (0);
+			setParent_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TreeNodeCMT (Properties ctx, int AD_TreeNodeCMT_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_TreeNodeCMT_ID, trxName, virtualColumns);
       /** if (AD_TreeNodeCMT_ID == 0)
         {
 			setAD_Tree_ID (0);

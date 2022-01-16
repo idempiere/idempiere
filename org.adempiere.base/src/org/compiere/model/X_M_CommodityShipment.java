@@ -30,12 +30,24 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)
     {
       super (ctx, M_CommodityShipment_ID, trxName);
+      /** if (M_CommodityShipment_ID == 0)
+        {
+			setCountryOfManufacture_ID (0);
+			setHarmonizedCode (null);
+			setM_CommodityShipment_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CommodityShipment_ID, trxName, virtualColumns);
       /** if (M_CommodityShipment_ID == 0)
         {
 			setCountryOfManufacture_ID (0);

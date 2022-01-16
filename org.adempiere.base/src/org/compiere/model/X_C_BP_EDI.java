@@ -31,12 +31,36 @@ public class X_C_BP_EDI extends PO implements I_C_BP_EDI, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BP_EDI (Properties ctx, int C_BP_EDI_ID, String trxName)
     {
       super (ctx, C_BP_EDI_ID, trxName);
+      /** if (C_BP_EDI_ID == 0)
+        {
+			setAD_Sequence_ID (0);
+			setC_BPartner_ID (0);
+			setC_BP_EDI_ID (0);
+			setCustomerNo (null);
+			setEDIType (null);
+			setEMail_Error_To (null);
+			setEMail_Info_To (null);
+			setIsAudited (false);
+			setIsInfoSent (false);
+			setM_Warehouse_ID (0);
+			setName (null);
+			setReceiveInquiryReply (false);
+			setReceiveOrderReply (false);
+			setSendInquiry (false);
+			setSendOrder (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_EDI (Properties ctx, int C_BP_EDI_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_EDI_ID, trxName, virtualColumns);
       /** if (C_BP_EDI_ID == 0)
         {
 			setAD_Sequence_ID (0);

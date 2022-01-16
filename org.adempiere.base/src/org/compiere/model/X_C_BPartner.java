@@ -34,12 +34,40 @@ public class X_C_BPartner extends PO implements I_C_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BPartner (Properties ctx, int C_BPartner_ID, String trxName)
     {
       super (ctx, C_BPartner_ID, trxName);
+      /** if (C_BPartner_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BP_Group_ID (0);
+			setIs1099Vendor (false);
+// N
+			setIsCustomer (false);
+			setIsEmployee (false);
+			setIsOneTime (false);
+			setIsPOTaxExempt (false);
+// N
+			setIsProspect (false);
+// N
+			setIsSalesRep (false);
+			setIsSummary (false);
+			setIsVendor (false);
+			setName (null);
+			setSendEMail (false);
+			setSO_CreditLimit (Env.ZERO);
+			setSO_CreditUsed (Env.ZERO);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BPartner (Properties ctx, int C_BPartner_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BPartner_ID, trxName, virtualColumns);
       /** if (C_BPartner_ID == 0)
         {
 			setC_BPartner_ID (0);

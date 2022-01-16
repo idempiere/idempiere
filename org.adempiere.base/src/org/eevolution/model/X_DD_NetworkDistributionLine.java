@@ -34,12 +34,27 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistributionLine (Properties ctx, int DD_NetworkDistributionLine_ID, String trxName)
     {
       super (ctx, DD_NetworkDistributionLine_ID, trxName);
+      /** if (DD_NetworkDistributionLine_ID == 0)
+        {
+			setDD_NetworkDistribution_ID (0);
+			setDD_NetworkDistributionLine_ID (0);
+			setM_Shipper_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setM_WarehouseSource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_DD_NetworkDistributionLine (Properties ctx, int DD_NetworkDistributionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, DD_NetworkDistributionLine_ID, trxName, virtualColumns);
       /** if (DD_NetworkDistributionLine_ID == 0)
         {
 			setDD_NetworkDistribution_ID (0);

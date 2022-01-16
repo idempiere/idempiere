@@ -34,12 +34,32 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ProjectPhase (Properties ctx, int C_ProjectPhase_ID, String trxName)
     {
       super (ctx, C_ProjectPhase_ID, trxName);
+      /** if (C_ProjectPhase_ID == 0)
+        {
+			setCommittedAmt (Env.ZERO);
+			setC_Project_ID (0);
+			setC_ProjectPhase_ID (0);
+			setIsCommitCeiling (false);
+			setIsComplete (false);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setProjInvoiceRule (null);
+// @ProjInvoiceRule@
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_ProjectPhase WHERE C_Project_ID=@C_Project_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectPhase (Properties ctx, int C_ProjectPhase_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectPhase_ID, trxName, virtualColumns);
       /** if (C_ProjectPhase_ID == 0)
         {
 			setCommittedAmt (Env.ZERO);

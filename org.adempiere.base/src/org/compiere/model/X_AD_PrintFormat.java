@@ -31,12 +31,38 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
     {
       super (ctx, AD_PrintFormat_ID, trxName);
+      /** if (AD_PrintFormat_ID == 0)
+        {
+			setAD_PrintColor_ID (0);
+			setAD_PrintFont_ID (0);
+			setAD_PrintFormat_ID (0);
+// 0
+			setAD_PrintPaper_ID (0);
+			setAD_Table_ID (0);
+			setFooterMargin (0);
+			setHeaderMargin (0);
+			setIsBreakPagePerRecord (false);
+// N
+			setIsDefault (false);
+			setIsForm (false);
+			setIsStandardHeaderFooter (true);
+// Y
+			setIsTableBased (true);
+// Y
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintFormat_ID, trxName, virtualColumns);
       /** if (AD_PrintFormat_ID == 0)
         {
 			setAD_PrintColor_ID (0);

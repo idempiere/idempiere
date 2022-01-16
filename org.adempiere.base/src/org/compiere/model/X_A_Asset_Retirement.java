@@ -33,12 +33,25 @@ public class X_A_Asset_Retirement extends PO implements I_A_Asset_Retirement, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Retirement (Properties ctx, int A_Asset_Retirement_ID, String trxName)
     {
       super (ctx, A_Asset_Retirement_ID, trxName);
+      /** if (A_Asset_Retirement_ID == 0)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Retirement_ID (0);
+			setAssetMarketValueAmt (Env.ZERO);
+			setAssetValueAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Retirement (Properties ctx, int A_Asset_Retirement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Retirement_ID, trxName, virtualColumns);
       /** if (A_Asset_Retirement_ID == 0)
         {
 			setA_Asset_ID (0);

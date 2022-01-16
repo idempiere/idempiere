@@ -31,12 +31,32 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName)
     {
       super (ctx, PA_Report_ID, trxName);
+      /** if (PA_Report_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Calendar_ID (0);
+			setExcludeAdjustmentPeriods (null);
+// 1
+			setListSources (false);
+			setListTrx (false);
+			setName (null);
+			setPA_ReportColumnSet_ID (0);
+			setPA_Report_ID (0);
+			setPA_ReportLineSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Report_ID, trxName, virtualColumns);
       /** if (PA_Report_ID == 0)
         {
 			setC_AcctSchema_ID (0);

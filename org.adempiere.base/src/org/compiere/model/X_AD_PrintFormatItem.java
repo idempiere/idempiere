@@ -31,12 +31,78 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
     {
       super (ctx, AD_PrintFormatItem_ID, trxName);
+      /** if (AD_PrintFormatItem_ID == 0)
+        {
+			setAD_PrintFormatChild_ID (0);
+			setAD_PrintFormat_ID (0);
+			setAD_PrintFormatItem_ID (0);
+			setFieldAlignmentType (null);
+// D
+			setImageIsAttached (false);
+			setIsAveraged (false);
+			setIsCentrallyMaintained (false);
+			setIsCounted (false);
+			setIsDesc (false);
+// N
+			setIsDeviationCalc (false);
+			setIsFilledRectangle (false);
+// N
+			setIsFixedWidth (false);
+			setIsGroupBy (false);
+			setIsHeightOneLine (true);
+// Y
+			setIsImageField (false);
+			setIsMaxCalc (false);
+			setIsMinCalc (false);
+			setIsNextLine (true);
+// Y
+			setIsNextPage (false);
+			setIsOrderBy (false);
+			setIsPageBreak (false);
+			setIsPrintBarcodeText (true);
+// Y
+			setIsPrinted (true);
+// Y
+			setIsPrintInstanceAttributes (false);
+// N
+			setIsRelativePosition (true);
+// Y
+			setIsRunningTotal (false);
+			setIsSetNLPosition (false);
+			setIsSummarized (false);
+			setIsSuppressNull (false);
+			setIsSuppressRepeats (false);
+// N
+			setIsVarianceCalc (false);
+			setLineAlignmentType (null);
+// X
+			setMaxHeight (0);
+			setMaxWidth (0);
+			setName (null);
+			setPrintAreaType (null);
+// C
+			setPrintFormatType (null);
+// F
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_PrintFormatItem WHERE AD_PrintFormat_ID=@AD_PrintFormat_ID@
+			setSortNo (0);
+			setXPosition (0);
+			setXSpace (0);
+			setYPosition (0);
+			setYSpace (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintFormatItem_ID, trxName, virtualColumns);
       /** if (AD_PrintFormatItem_ID == 0)
         {
 			setAD_PrintFormatChild_ID (0);

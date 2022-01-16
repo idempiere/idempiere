@@ -32,12 +32,23 @@ public class X_AD_Session extends PO implements I_AD_Session, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Session (Properties ctx, int AD_Session_ID, String trxName)
     {
       super (ctx, AD_Session_ID, trxName);
+      /** if (AD_Session_ID == 0)
+        {
+			setAD_Session_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Session (Properties ctx, int AD_Session_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Session_ID, trxName, virtualColumns);
       /** if (AD_Session_ID == 0)
         {
 			setAD_Session_ID (0);

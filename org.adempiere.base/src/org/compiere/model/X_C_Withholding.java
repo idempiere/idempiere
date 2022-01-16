@@ -33,12 +33,29 @@ public class X_C_Withholding extends PO implements I_C_Withholding, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Withholding (Properties ctx, int C_Withholding_ID, String trxName)
     {
       super (ctx, C_Withholding_ID, trxName);
+      /** if (C_Withholding_ID == 0)
+        {
+			setBeneficiary (0);
+			setC_PaymentTerm_ID (0);
+			setC_Withholding_ID (0);
+			setIsPaidTo3Party (false);
+			setIsPercentWithholding (false);
+			setIsTaxProrated (false);
+			setIsTaxWithholding (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Withholding (Properties ctx, int C_Withholding_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Withholding_ID, trxName, virtualColumns);
       /** if (C_Withholding_ID == 0)
         {
 			setBeneficiary (0);

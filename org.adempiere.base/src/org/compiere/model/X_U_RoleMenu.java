@@ -30,12 +30,24 @@ public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_U_RoleMenu (Properties ctx, int U_RoleMenu_ID, String trxName)
     {
       super (ctx, U_RoleMenu_ID, trxName);
+      /** if (U_RoleMenu_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setU_RoleMenu_ID (0);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_RoleMenu (Properties ctx, int U_RoleMenu_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_RoleMenu_ID, trxName, virtualColumns);
       /** if (U_RoleMenu_ID == 0)
         {
 			setAD_Role_ID (0);

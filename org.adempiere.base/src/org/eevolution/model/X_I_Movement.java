@@ -34,12 +34,27 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName)
     {
       super (ctx, I_Movement_ID, trxName);
+      /** if (I_Movement_ID == 0)
+        {
+			setI_IsImported (false);
+// N
+			setI_Movement_ID (0);
+			setProcessed (false);
+// N
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_Movement_ID, trxName, virtualColumns);
       /** if (I_Movement_ID == 0)
         {
 			setI_IsImported (false);
