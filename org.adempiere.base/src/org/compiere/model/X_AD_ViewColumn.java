@@ -30,12 +30,26 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName)
     {
       super (ctx, AD_ViewColumn_ID, trxName);
+      /** if (AD_ViewColumn_ID == 0)
+        {
+			setAD_ViewColumn_ID (0);
+			setAD_ViewComponent_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ViewColumn_ID, trxName, virtualColumns);
       /** if (AD_ViewColumn_ID == 0)
         {
 			setAD_ViewColumn_ID (0);

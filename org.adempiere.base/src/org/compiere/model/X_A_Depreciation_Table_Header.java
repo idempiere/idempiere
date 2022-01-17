@@ -31,12 +31,27 @@ public class X_A_Depreciation_Table_Header extends PO implements I_A_Depreciatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Table_Header (Properties ctx, int A_Depreciation_Table_Header_ID, String trxName)
     {
       super (ctx, A_Depreciation_Table_Header_ID, trxName);
+      /** if (A_Depreciation_Table_Header_ID == 0)
+        {
+			setA_Depreciation_Table_Code (null);
+			setA_Depreciation_Table_Header_ID (0);
+			setA_Table_Rate_Type (null);
+			setA_Term (null);
+			setDescription (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Table_Header (Properties ctx, int A_Depreciation_Table_Header_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Table_Header_ID, trxName, virtualColumns);
       /** if (A_Depreciation_Table_Header_ID == 0)
         {
 			setA_Depreciation_Table_Code (null);

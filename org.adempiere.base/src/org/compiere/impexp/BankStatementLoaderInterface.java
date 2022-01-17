@@ -88,7 +88,7 @@ public interface BankStatementLoaderInterface
 	public String getLastErrorDescription();
 	
 	/**
-	 * The last time this loader aquired bank statement data.
+	 * The last time this loader acquired bank statement data.
 	 * For OFX this is the <DTEND> value. This is generally only available\
 	 * after loadLines() has been called. If a specific loader class 
 	 * does not provided this information it is allowed to return null

@@ -32,12 +32,26 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_ReportCube (Properties ctx, int PA_ReportCube_ID, String trxName)
     {
       super (ctx, PA_ReportCube_ID, trxName);
+      /** if (PA_ReportCube_ID == 0)
+        {
+			setC_Calendar_ID (0);
+			setName (null);
+			setPA_ReportCube_ID (0);
+			setProcessing (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportCube (Properties ctx, int PA_ReportCube_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportCube_ID, trxName, virtualColumns);
       /** if (PA_ReportCube_ID == 0)
         {
 			setC_Calendar_ID (0);

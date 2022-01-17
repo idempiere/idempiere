@@ -33,12 +33,26 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_DistributionListLine (Properties ctx, int M_DistributionListLine_ID, String trxName)
     {
       super (ctx, M_DistributionListLine_ID, trxName);
+      /** if (M_DistributionListLine_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setM_DistributionList_ID (0);
+			setM_DistributionListLine_ID (0);
+			setMinQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DistributionListLine (Properties ctx, int M_DistributionListLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DistributionListLine_ID, trxName, virtualColumns);
       /** if (M_DistributionListLine_ID == 0)
         {
 			setC_BPartner_ID (0);

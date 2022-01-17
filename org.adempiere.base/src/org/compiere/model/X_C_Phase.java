@@ -33,12 +33,28 @@ public class X_C_Phase extends PO implements I_C_Phase, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Phase (Properties ctx, int C_Phase_ID, String trxName)
     {
       super (ctx, C_Phase_ID, trxName);
+      /** if (C_Phase_ID == 0)
+        {
+			setC_Phase_ID (0);
+			setC_ProjectType_ID (0);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_Phase WHERE C_ProjectType_ID=@C_ProjectType_ID@
+			setStandardQty (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Phase (Properties ctx, int C_Phase_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Phase_ID, trxName, virtualColumns);
       /** if (C_Phase_ID == 0)
         {
 			setC_Phase_ID (0);

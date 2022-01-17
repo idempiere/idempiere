@@ -34,12 +34,41 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankStatementLine (Properties ctx, int C_BankStatementLine_ID, String trxName)
     {
       super (ctx, C_BankStatementLine_ID, trxName);
+      /** if (C_BankStatementLine_ID == 0)
+        {
+			setC_BankStatement_ID (0);
+			setC_BankStatementLine_ID (0);
+			setC_Currency_ID (0);
+// @SQL=SELECT C_Currency_ID FROM C_BankAccount WHERE C_BankAccount_ID=@C_BankAccount_ID@
+			setChargeAmt (Env.ZERO);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@
+			setInterestAmt (Env.ZERO);
+			setIsManual (true);
+// Y
+			setIsReversal (false);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 FROM C_BankStatementLine WHERE C_BankStatement_ID=@C_BankStatement_ID@
+			setProcessed (false);
+			setStatementLineDate (new Timestamp( System.currentTimeMillis() ));
+// @StatementLineDate@
+			setStmtAmt (Env.ZERO);
+			setTrxAmt (Env.ZERO);
+			setValutaDate (new Timestamp( System.currentTimeMillis() ));
+// @StatementDate@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankStatementLine (Properties ctx, int C_BankStatementLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankStatementLine_ID, trxName, virtualColumns);
       /** if (C_BankStatementLine_ID == 0)
         {
 			setC_BankStatement_ID (0);

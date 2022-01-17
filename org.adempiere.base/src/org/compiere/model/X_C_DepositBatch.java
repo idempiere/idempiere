@@ -34,12 +34,33 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
     {
       super (ctx, C_DepositBatch_ID, trxName);
+      /** if (C_DepositBatch_ID == 0)
+        {
+			setC_BankAccount_ID (0);
+			setC_DepositBatch_ID (0);
+			setC_DocType_ID (0);
+			setDateDeposit (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDepositAmt (Env.ZERO);
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DepositBatch_ID, trxName, virtualColumns);
       /** if (C_DepositBatch_ID == 0)
         {
 			setC_BankAccount_ID (0);

@@ -31,12 +31,25 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_SLA_Criteria (Properties ctx, int PA_SLA_Criteria_ID, String trxName)
     {
       super (ctx, PA_SLA_Criteria_ID, trxName);
+      /** if (PA_SLA_Criteria_ID == 0)
+        {
+			setIsManual (true);
+// Y
+			setName (null);
+			setPA_SLA_Criteria_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_SLA_Criteria (Properties ctx, int PA_SLA_Criteria_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_SLA_Criteria_ID, trxName, virtualColumns);
       /** if (PA_SLA_Criteria_ID == 0)
         {
 			setIsManual (true);

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionLine
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionLine")
 public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent 
 {
@@ -33,12 +33,30 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211226L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName)
     {
       super (ctx, M_ProductionLine_ID, trxName);
+      /** if (M_ProductionLine_ID == 0)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionLine WHERE M_Production_ID=@M_Production_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setMovementQty (Env.ZERO);
+			setM_Product_ID (0);
+			setM_ProductionLine_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductionLine_ID, trxName, virtualColumns);
       /** if (M_ProductionLine_ID == 0)
         {
 			setLine (0);

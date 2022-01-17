@@ -34,12 +34,29 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_OrderPaySchedule (Properties ctx, int C_OrderPaySchedule_ID, String trxName)
     {
       super (ctx, C_OrderPaySchedule_ID, trxName);
+      /** if (C_OrderPaySchedule_ID == 0)
+        {
+			setC_Order_ID (0);
+			setC_OrderPaySchedule_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setDiscountDate (new Timestamp( System.currentTimeMillis() ));
+			setDueAmt (Env.ZERO);
+			setDueDate (new Timestamp( System.currentTimeMillis() ));
+			setIsValid (false);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderPaySchedule (Properties ctx, int C_OrderPaySchedule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderPaySchedule_ID, trxName, virtualColumns);
       /** if (C_OrderPaySchedule_ID == 0)
         {
 			setC_Order_ID (0);

@@ -31,12 +31,24 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName)
     {
       super (ctx, CM_ChatType_ID, trxName);
+      /** if (CM_ChatType_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setCM_ChatType_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatType_ID, trxName, virtualColumns);
       /** if (CM_ChatType_ID == 0)
         {
 			setAD_Table_ID (0);

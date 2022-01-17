@@ -35,12 +35,40 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_Workflow (Properties ctx, int PP_Order_Workflow_ID, String trxName)
     {
       super (ctx, PP_Order_Workflow_ID, trxName);
+      /** if (PP_Order_Workflow_ID == 0)
+        {
+			setAccessLevel (null);
+			setAD_Workflow_ID (0);
+			setAuthor (null);
+			setCost (Env.ZERO);
+			setDuration (0);
+// 0
+			setDurationUnit (null);
+// h
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setLimit (0);
+			setName (null);
+			setPP_Order_ID (0);
+			setPP_Order_Workflow_ID (0);
+			setPriority (0);
+			setPublishStatus (null);
+// U
+			setVersion (0);
+			setWaitingTime (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Workflow (Properties ctx, int PP_Order_Workflow_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Workflow_ID, trxName, virtualColumns);
       /** if (PP_Order_Workflow_ID == 0)
         {
 			setAccessLevel (null);

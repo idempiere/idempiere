@@ -31,12 +31,25 @@ public class X_AD_ReportView_Col extends PO implements I_AD_ReportView_Col, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Col (Properties ctx, int AD_ReportView_Col_ID, String trxName)
     {
       super (ctx, AD_ReportView_Col_ID, trxName);
+      /** if (AD_ReportView_Col_ID == 0)
+        {
+			setAD_ReportView_Col_ID (0);
+			setAD_ReportView_ID (0);
+			setFunctionColumn (null);
+			setIsGroupFunction (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReportView_Col (Properties ctx, int AD_ReportView_Col_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReportView_Col_ID, trxName, virtualColumns);
       /** if (AD_ReportView_Col_ID == 0)
         {
 			setAD_ReportView_Col_ID (0);

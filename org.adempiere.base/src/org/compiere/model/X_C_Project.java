@@ -34,12 +34,41 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Project (Properties ctx, int C_Project_ID, String trxName)
     {
       super (ctx, C_Project_ID, trxName);
+      /** if (C_Project_ID == 0)
+        {
+			setC_Currency_ID (0);
+			setCommittedAmt (Env.ZERO);
+			setCommittedQty (Env.ZERO);
+			setC_Project_ID (0);
+			setInvoicedAmt (Env.ZERO);
+			setInvoicedQty (Env.ZERO);
+			setIsCommitCeiling (false);
+			setIsCommitment (false);
+			setIsSummary (false);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setPlannedMarginAmt (Env.ZERO);
+			setPlannedQty (Env.ZERO);
+			setProcessed (false);
+			setProjectBalanceAmt (Env.ZERO);
+			setProjectLineLevel (null);
+// P
+			setProjInvoiceRule (null);
+// -
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Project (Properties ctx, int C_Project_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Project_ID, trxName, virtualColumns);
       /** if (C_Project_ID == 0)
         {
 			setC_Currency_ID (0);

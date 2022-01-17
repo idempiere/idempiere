@@ -33,12 +33,36 @@ public class X_AD_PrintPaper extends PO implements I_AD_PrintPaper, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintPaper (Properties ctx, int AD_PrintPaper_ID, String trxName)
     {
       super (ctx, AD_PrintPaper_ID, trxName);
+      /** if (AD_PrintPaper_ID == 0)
+        {
+			setAD_PrintPaper_ID (0);
+			setCode (null);
+// iso-a4
+			setIsDefault (false);
+			setIsLandscape (true);
+// Y
+			setMarginBottom (0);
+// 36
+			setMarginLeft (0);
+// 36
+			setMarginRight (0);
+// 36
+			setMarginTop (0);
+// 36
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintPaper (Properties ctx, int AD_PrintPaper_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintPaper_ID, trxName, virtualColumns);
       /** if (AD_PrintPaper_ID == 0)
         {
 			setAD_PrintPaper_ID (0);

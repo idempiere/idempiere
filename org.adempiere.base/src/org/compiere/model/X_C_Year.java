@@ -31,12 +31,24 @@ public class X_C_Year extends PO implements I_C_Year, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Year (Properties ctx, int C_Year_ID, String trxName)
     {
       super (ctx, C_Year_ID, trxName);
+      /** if (C_Year_ID == 0)
+        {
+			setC_Calendar_ID (0);
+			setC_Year_ID (0);
+			setFiscalYear (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Year (Properties ctx, int C_Year_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Year_ID, trxName, virtualColumns);
       /** if (C_Year_ID == 0)
         {
 			setC_Calendar_ID (0);

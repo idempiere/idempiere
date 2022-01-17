@@ -33,12 +33,28 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaymentAllocate (Properties ctx, int C_PaymentAllocate_ID, String trxName)
     {
       super (ctx, C_PaymentAllocate_ID, trxName);
+      /** if (C_PaymentAllocate_ID == 0)
+        {
+			setAmount (Env.ZERO);
+			setC_Invoice_ID (0);
+			setC_PaymentAllocate_ID (0);
+			setC_Payment_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setOverUnderAmt (Env.ZERO);
+			setWriteOffAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentAllocate (Properties ctx, int C_PaymentAllocate_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentAllocate_ID, trxName, virtualColumns);
       /** if (C_PaymentAllocate_ID == 0)
         {
 			setAmount (Env.ZERO);

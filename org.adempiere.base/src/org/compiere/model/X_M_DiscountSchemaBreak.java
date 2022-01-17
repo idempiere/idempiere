@@ -33,12 +33,29 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaBreak (Properties ctx, int M_DiscountSchemaBreak_ID, String trxName)
     {
       super (ctx, M_DiscountSchemaBreak_ID, trxName);
+      /** if (M_DiscountSchemaBreak_ID == 0)
+        {
+			setBreakDiscount (Env.ZERO);
+			setBreakValue (Env.ZERO);
+			setIsBPartnerFlatDiscount (false);
+// N
+			setM_DiscountSchemaBreak_ID (0);
+			setM_DiscountSchema_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_DiscountSchemaBreak WHERE M_DiscountSchema_ID=@M_DiscountSchema_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DiscountSchemaBreak (Properties ctx, int M_DiscountSchemaBreak_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DiscountSchemaBreak_ID, trxName, virtualColumns);
       /** if (M_DiscountSchemaBreak_ID == 0)
         {
 			setBreakDiscount (Env.ZERO);

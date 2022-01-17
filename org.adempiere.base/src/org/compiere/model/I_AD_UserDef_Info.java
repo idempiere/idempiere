@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Info
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 9
  */
 public interface I_AD_UserDef_Info 
 {
@@ -105,21 +105,6 @@ public interface I_AD_UserDef_Info
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
-
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public void setAD_User_ID (int AD_User_ID);
-
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID();
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
-
     /** Column name AD_UserDef_Info_ID */
     public static final String COLUMNNAME_AD_UserDef_Info_ID = "AD_UserDef_Info_ID";
 
@@ -137,6 +122,21 @@ public interface I_AD_UserDef_Info
 
 	/** Get AD_UserDef_Info_UU	  */
 	public String getAD_UserDef_Info_UU();
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";

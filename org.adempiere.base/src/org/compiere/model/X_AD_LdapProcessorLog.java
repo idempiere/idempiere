@@ -30,12 +30,24 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_LdapProcessorLog (Properties ctx, int AD_LdapProcessorLog_ID, String trxName)
     {
       super (ctx, AD_LdapProcessorLog_ID, trxName);
+      /** if (AD_LdapProcessorLog_ID == 0)
+        {
+			setAD_LdapProcessor_ID (0);
+			setAD_LdapProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LdapProcessorLog (Properties ctx, int AD_LdapProcessorLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LdapProcessorLog_ID, trxName, virtualColumns);
       /** if (AD_LdapProcessorLog_ID == 0)
         {
 			setAD_LdapProcessor_ID (0);

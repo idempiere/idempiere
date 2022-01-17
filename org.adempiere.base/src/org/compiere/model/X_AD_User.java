@@ -32,12 +32,51 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
     {
       super (ctx, AD_User_ID, trxName);
+      /** if (AD_User_ID == 0)
+        {
+			setAD_User_ID (0);
+			setFailedLoginCount (0);
+// 0
+			setIsAddMailTextAutomatically (false);
+// N
+			setIsBillTo (false);
+// N
+			setIsExpired (false);
+// N
+			setIsFullBPAccess (true);
+// Y
+			setIsInPayroll (false);
+// N
+			setIsLocked (false);
+// 'N'
+			setIsNoExpire (false);
+// N
+			setIsNoPasswordReset (false);
+// 'N'
+			setIsSalesLead (false);
+// N
+			setIsShipTo (false);
+// N
+			setIsSupportUser (false);
+// N
+			setIsVendorLead (false);
+// N
+			setName (null);
+			setNotificationType (null);
+// X
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_User (Properties ctx, int AD_User_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_User_ID, trxName, virtualColumns);
       /** if (AD_User_ID == 0)
         {
 			setAD_User_ID (0);

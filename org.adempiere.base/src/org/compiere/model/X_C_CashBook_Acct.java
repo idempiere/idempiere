@@ -30,12 +30,23 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CashBook_Acct (Properties ctx, int C_CashBook_Acct_ID, String trxName)
     {
       super (ctx, C_CashBook_Acct_ID, trxName);
+      /** if (C_CashBook_Acct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_CashBook_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashBook_Acct (Properties ctx, int C_CashBook_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashBook_Acct_ID, trxName, virtualColumns);
       /** if (C_CashBook_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);

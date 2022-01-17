@@ -32,12 +32,27 @@ public class X_M_RMATax extends PO implements I_M_RMATax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_RMATax (Properties ctx, int M_RMATax_ID, String trxName)
     {
       super (ctx, M_RMATax_ID, trxName);
+      /** if (M_RMATax_ID == 0)
+        {
+			setC_Tax_ID (0);
+			setIsTaxIncluded (false);
+			setM_RMA_ID (0);
+			setProcessed (false);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_RMATax (Properties ctx, int M_RMATax_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_RMATax_ID, trxName, virtualColumns);
       /** if (M_RMATax_ID == 0)
         {
 			setC_Tax_ID (0);

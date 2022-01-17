@@ -33,12 +33,26 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_POSKey (Properties ctx, int C_POSKey_ID, String trxName)
     {
       super (ctx, C_POSKey_ID, trxName);
+      /** if (C_POSKey_ID == 0)
+        {
+			setC_POSKey_ID (0);
+			setC_POSKeyLayout_ID (0);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_POSKey WHERE C_POSKeyLayout_ID=@C_POSKeyLayout_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_POSKey (Properties ctx, int C_POSKey_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_POSKey_ID, trxName, virtualColumns);
       /** if (C_POSKey_ID == 0)
         {
 			setC_POSKey_ID (0);

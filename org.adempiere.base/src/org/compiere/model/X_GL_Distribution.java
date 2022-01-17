@@ -34,12 +34,57 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_Distribution (Properties ctx, int GL_Distribution_ID, String trxName)
     {
       super (ctx, GL_Distribution_ID, trxName);
+      /** if (GL_Distribution_ID == 0)
+        {
+			setAnyAcct (true);
+// Y
+			setAnyActivity (true);
+// Y
+			setAnyBPartner (true);
+// Y
+			setAnyCampaign (true);
+// Y
+			setAnyLocFrom (true);
+// Y
+			setAnyLocTo (true);
+// Y
+			setAnyOrg (true);
+// Y
+			setAnyOrgTrx (true);
+// Y
+			setAnyProduct (true);
+// Y
+			setAnyProject (true);
+// Y
+			setAnySalesRegion (true);
+// Y
+			setAnyUser1 (true);
+// Y
+			setAnyUser2 (true);
+// Y
+			setC_AcctSchema_ID (0);
+			setGL_Distribution_ID (0);
+			setIsCreateReversal (true);
+// Y
+			setIsValid (false);
+// N
+			setName (null);
+			setPercentTotal (Env.ZERO);
+			setSeqNo (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Distribution (Properties ctx, int GL_Distribution_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Distribution_ID, trxName, virtualColumns);
       /** if (GL_Distribution_ID == 0)
         {
 			setAnyAcct (true);

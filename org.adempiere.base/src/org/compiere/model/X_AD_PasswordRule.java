@@ -31,12 +31,31 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)
     {
       super (ctx, AD_PasswordRule_ID, trxName);
+      /** if (AD_PasswordRule_ID == 0)
+        {
+			setAD_PasswordRule_ID (0);
+			setIsDictMatchBackwards (false);
+// N
+			setIsUserNameRule (false);
+// N
+			setIsUsingDictionary (false);
+// N
+			setIsWhitespace (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PasswordRule_ID, trxName, virtualColumns);
       /** if (AD_PasswordRule_ID == 0)
         {
 			setAD_PasswordRule_ID (0);

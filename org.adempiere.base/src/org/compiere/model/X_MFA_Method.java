@@ -31,12 +31,24 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName)
     {
       super (ctx, MFA_Method_ID, trxName);
+      /** if (MFA_Method_ID == 0)
+        {
+			setMethod (null);
+			setMFA_Method_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, MFA_Method_ID, trxName, virtualColumns);
       /** if (MFA_Method_ID == 0)
         {
 			setMethod (null);

@@ -31,12 +31,27 @@ public class X_B_Offer extends PO implements I_B_Offer, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_B_Offer (Properties ctx, int B_Offer_ID, String trxName)
     {
       super (ctx, B_Offer_ID, trxName);
+      /** if (B_Offer_ID == 0)
+        {
+			setAD_User_ID (0);
+			setB_Offer_ID (0);
+			setB_SellerFunds_ID (0);
+			setB_Topic_ID (0);
+			setIsWillingToCommit (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_Offer (Properties ctx, int B_Offer_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_Offer_ID, trxName, virtualColumns);
       /** if (B_Offer_ID == 0)
         {
 			setAD_User_ID (0);

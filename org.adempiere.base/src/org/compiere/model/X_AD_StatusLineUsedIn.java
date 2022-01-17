@@ -30,12 +30,27 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
     {
       super (ctx, AD_StatusLineUsedIn_ID, trxName);
+      /** if (AD_StatusLineUsedIn_ID == 0)
+        {
+			setAD_StatusLine_ID (0);
+			setAD_StatusLineUsedIn_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsStatusLine (true);
+// Y
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_StatusLineUsedIn_ID, trxName, virtualColumns);
       /** if (AD_StatusLineUsedIn_ID == 0)
         {
 			setAD_StatusLine_ID (0);

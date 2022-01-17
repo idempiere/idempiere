@@ -34,12 +34,54 @@ public class X_C_OrderLine extends PO implements I_C_OrderLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_OrderLine (Properties ctx, int C_OrderLine_ID, String trxName)
     {
       super (ctx, C_OrderLine_ID, trxName);
+      /** if (C_OrderLine_ID == 0)
+        {
+			setC_BPartner_Location_ID (0);
+// @C_BPartner_Location_ID@
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_Order_ID (0);
+			setC_OrderLine_ID (0);
+			setC_Tax_ID (0);
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @DateOrdered@
+			setFreightAmt (Env.ZERO);
+			setIsDescription (false);
+// N
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_OrderLine WHERE C_Order_ID=@C_Order_ID@
+			setLineNetAmt (Env.ZERO);
+			setM_AttributeSetInstance_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setPriceActual (Env.ZERO);
+			setPriceEntered (Env.ZERO);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setProcessed (false);
+			setQtyDelivered (Env.ZERO);
+			setQtyEntered (Env.ZERO);
+// 1
+			setQtyInvoiced (Env.ZERO);
+			setQtyLostSales (Env.ZERO);
+			setQtyOrdered (Env.ZERO);
+// 1
+			setQtyReserved (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderLine (Properties ctx, int C_OrderLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderLine_ID, trxName, virtualColumns);
       /** if (C_OrderLine_ID == 0)
         {
 			setC_BPartner_Location_ID (0);

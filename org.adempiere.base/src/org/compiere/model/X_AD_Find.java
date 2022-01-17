@@ -33,12 +33,29 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
     {
       super (ctx, AD_Find_ID, trxName);
+      /** if (AD_Find_ID == 0)
+        {
+			setAD_Column_ID (0);
+			setAD_Find_ID (0);
+			setAndOr (null);
+// A
+			setFind_ID (Env.ZERO);
+			setOperation (null);
+// ==
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Find_ID, trxName, virtualColumns);
       /** if (AD_Find_ID == 0)
         {
 			setAD_Column_ID (0);

@@ -33,12 +33,26 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_RMALine (Properties ctx, int M_RMALine_ID, String trxName)
     {
       super (ctx, M_RMALine_ID, trxName);
+      /** if (M_RMALine_ID == 0)
+        {
+			setC_Tax_ID (0);
+			setM_RMA_ID (0);
+			setM_RMALine_ID (0);
+			setProcessed (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_RMALine (Properties ctx, int M_RMALine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_RMALine_ID, trxName, virtualColumns);
       /** if (M_RMALine_ID == 0)
         {
 			setC_Tax_ID (0);

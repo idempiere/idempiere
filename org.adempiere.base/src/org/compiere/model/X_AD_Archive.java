@@ -31,12 +31,25 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Archive (Properties ctx, int AD_Archive_ID, String trxName)
     {
       super (ctx, AD_Archive_ID, trxName);
+      /** if (AD_Archive_ID == 0)
+        {
+			setAD_Archive_ID (0);
+			setBinaryData (null);
+			setIsReport (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Archive (Properties ctx, int AD_Archive_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Archive_ID, trxName, virtualColumns);
       /** if (AD_Archive_ID == 0)
         {
 			setAD_Archive_ID (0);

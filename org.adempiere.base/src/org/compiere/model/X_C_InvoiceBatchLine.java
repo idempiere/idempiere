@@ -34,12 +34,48 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_InvoiceBatchLine (Properties ctx, int C_InvoiceBatchLine_ID, String trxName)
     {
       super (ctx, C_InvoiceBatchLine_ID, trxName);
+      /** if (C_InvoiceBatchLine_ID == 0)
+        {
+			setC_BPartner_ID (0);
+// @C_BPartner_ID@
+			setC_BPartner_Location_ID (0);
+// @C_BPartner_Location_ID@
+			setC_Charge_ID (0);
+			setC_DocType_ID (0);
+// @C_DocType_ID@
+			setC_InvoiceBatch_ID (0);
+			setC_InvoiceBatchLine_ID (0);
+			setC_Tax_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@;@DateDoc@
+			setDateInvoiced (new Timestamp( System.currentTimeMillis() ));
+// @DateInvoiced@;@DateDoc@
+			setDocumentNo (null);
+// @DocumentNo@
+			setIsTaxIncluded (false);
+// @IsTaxIncluded@
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_InvoiceBatchLine WHERE C_InvoiceBatch_ID=@C_InvoiceBatch_ID@
+			setLineNetAmt (Env.ZERO);
+			setLineTotalAmt (Env.ZERO);
+			setPriceEntered (Env.ZERO);
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+// 1
+			setTaxAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_InvoiceBatchLine (Properties ctx, int C_InvoiceBatchLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_InvoiceBatchLine_ID, trxName, virtualColumns);
       /** if (C_InvoiceBatchLine_ID == 0)
         {
 			setC_BPartner_ID (0);

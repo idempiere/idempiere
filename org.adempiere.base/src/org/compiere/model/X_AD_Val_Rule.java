@@ -31,12 +31,26 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName)
     {
       super (ctx, AD_Val_Rule_ID, trxName);
+      /** if (AD_Val_Rule_ID == 0)
+        {
+			setAD_Val_Rule_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Val_Rule_ID, trxName, virtualColumns);
       /** if (AD_Val_Rule_ID == 0)
         {
 			setAD_Val_Rule_ID (0);

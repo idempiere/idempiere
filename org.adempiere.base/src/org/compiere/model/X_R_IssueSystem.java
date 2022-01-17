@@ -31,12 +31,24 @@ public class X_R_IssueSystem extends PO implements I_R_IssueSystem, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_IssueSystem (Properties ctx, int R_IssueSystem_ID, String trxName)
     {
       super (ctx, R_IssueSystem_ID, trxName);
+      /** if (R_IssueSystem_ID == 0)
+        {
+			setDBAddress (null);
+			setR_IssueSystem_ID (0);
+			setSystemStatus (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_IssueSystem (Properties ctx, int R_IssueSystem_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_IssueSystem_ID, trxName, virtualColumns);
       /** if (R_IssueSystem_ID == 0)
         {
 			setDBAddress (null);

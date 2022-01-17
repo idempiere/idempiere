@@ -30,12 +30,24 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_CM_ChatTypeUpdate (Properties ctx, int CM_ChatTypeUpdate_ID, String trxName)
     {
       super (ctx, CM_ChatTypeUpdate_ID, trxName);
+      /** if (CM_ChatTypeUpdate_ID == 0)
+        {
+			setAD_User_ID (0);
+			setCM_ChatType_ID (0);
+			setIsSelfService (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatTypeUpdate (Properties ctx, int CM_ChatTypeUpdate_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatTypeUpdate_ID, trxName, virtualColumns);
       /** if (CM_ChatTypeUpdate_ID == 0)
         {
 			setAD_User_ID (0);

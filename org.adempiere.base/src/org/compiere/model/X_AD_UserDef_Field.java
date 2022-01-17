@@ -31,12 +31,28 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
     {
       super (ctx, AD_UserDef_Field_ID, trxName);
+      /** if (AD_UserDef_Field_ID == 0)
+        {
+			setAD_Field_ID (0);
+			setAD_UserDef_Field_ID (0);
+			setAD_UserDef_Tab_ID (0);
+			setSeqNo (0);
+// 0
+			setSeqNoGrid (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Field_ID, trxName, virtualColumns);
       /** if (AD_UserDef_Field_ID == 0)
         {
 			setAD_Field_ID (0);

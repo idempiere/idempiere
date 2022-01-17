@@ -30,12 +30,23 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WizardProcess (Properties ctx, int AD_WizardProcess_ID, String trxName)
     {
       super (ctx, AD_WizardProcess_ID, trxName);
+      /** if (AD_WizardProcess_ID == 0)
+        {
+			setAD_WF_Node_ID (0);
+			setAD_WizardProcess_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WizardProcess (Properties ctx, int AD_WizardProcess_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WizardProcess_ID, trxName, virtualColumns);
       /** if (AD_WizardProcess_ID == 0)
         {
 			setAD_WF_Node_ID (0);

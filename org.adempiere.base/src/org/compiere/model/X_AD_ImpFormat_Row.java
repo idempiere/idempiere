@@ -31,12 +31,31 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat_Row (Properties ctx, int AD_ImpFormat_Row_ID, String trxName)
     {
       super (ctx, AD_ImpFormat_Row_ID, trxName);
+      /** if (AD_ImpFormat_Row_ID == 0)
+        {
+			setAD_Column_ID (0);
+			setAD_ImpFormat_ID (0);
+			setAD_ImpFormat_Row_ID (0);
+			setDataType (null);
+			setDecimalPoint (null);
+// .
+			setDivideBy100 (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_ImpFormat_Row WHERE AD_ImpFormat_ID=@AD_ImpFormat_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ImpFormat_Row (Properties ctx, int AD_ImpFormat_Row_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ImpFormat_Row_ID, trxName, virtualColumns);
       /** if (AD_ImpFormat_Row_ID == 0)
         {
 			setAD_Column_ID (0);

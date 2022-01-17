@@ -31,12 +31,28 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Element (Properties ctx, int C_Element_ID, String trxName)
     {
       super (ctx, C_Element_ID, trxName);
+      /** if (C_Element_ID == 0)
+        {
+			setAD_Tree_ID (0);
+			setC_Element_ID (0);
+			setElementType (null);
+// A
+			setIsBalancing (false);
+			setIsNaturalAccount (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Element (Properties ctx, int C_Element_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Element_ID, trxName, virtualColumns);
       /** if (C_Element_ID == 0)
         {
 			setAD_Tree_ID (0);

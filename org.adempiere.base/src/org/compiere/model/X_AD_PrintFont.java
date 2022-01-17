@@ -31,12 +31,25 @@ public class X_AD_PrintFont extends PO implements I_AD_PrintFont, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintFont (Properties ctx, int AD_PrintFont_ID, String trxName)
     {
       super (ctx, AD_PrintFont_ID, trxName);
+      /** if (AD_PrintFont_ID == 0)
+        {
+			setAD_PrintFont_ID (0);
+			setCode (null);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintFont (Properties ctx, int AD_PrintFont_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintFont_ID, trxName, virtualColumns);
       /** if (AD_PrintFont_ID == 0)
         {
 			setAD_PrintFont_ID (0);

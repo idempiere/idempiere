@@ -34,12 +34,40 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankStatement (Properties ctx, int C_BankStatement_ID, String trxName)
     {
       super (ctx, C_BankStatement_ID, trxName);
+      /** if (C_BankStatement_ID == 0)
+        {
+			setC_BankAccount_ID (0);
+			setC_BankStatement_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setEndingBalance (Env.ZERO);
+			setIsApproved (false);
+// N
+			setIsManual (true);
+// Y
+			setName (null);
+// @#Date@
+			setPosted (false);
+// N
+			setProcessed (false);
+			setStatementDate (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankStatement (Properties ctx, int C_BankStatement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankStatement_ID, trxName, virtualColumns);
       /** if (C_BankStatement_ID == 0)
         {
 			setC_BankAccount_ID (0);

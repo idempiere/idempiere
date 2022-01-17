@@ -31,12 +31,30 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintLabelLine (Properties ctx, int AD_PrintLabelLine_ID, String trxName)
     {
       super (ctx, AD_PrintLabelLine_ID, trxName);
+      /** if (AD_PrintLabelLine_ID == 0)
+        {
+			setAD_LabelPrinterFunction_ID (0);
+			setAD_PrintLabel_ID (0);
+			setAD_PrintLabelLine_ID (0);
+			setLabelFormatType (null);
+// F
+			setName (null);
+			setSeqNo (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintLabelLine (Properties ctx, int AD_PrintLabelLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintLabelLine_ID, trxName, virtualColumns);
       /** if (AD_PrintLabelLine_ID == 0)
         {
 			setAD_LabelPrinterFunction_ID (0);

@@ -32,12 +32,26 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQLine (Properties ctx, int C_RfQLine_ID, String trxName)
     {
       super (ctx, C_RfQLine_ID, trxName);
+      /** if (C_RfQLine_ID == 0)
+        {
+			setC_RfQ_ID (0);
+			setC_RfQLine_ID (0);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_RfQLine WHERE C_RfQ_ID=@C_RfQ_ID@
+			setM_AttributeSetInstance_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQLine (Properties ctx, int C_RfQLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQLine_ID, trxName, virtualColumns);
       /** if (C_RfQLine_ID == 0)
         {
 			setC_RfQ_ID (0);

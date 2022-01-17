@@ -33,12 +33,39 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_DistributionLine (Properties ctx, int GL_DistributionLine_ID, String trxName)
     {
       super (ctx, GL_DistributionLine_ID, trxName);
+      /** if (GL_DistributionLine_ID == 0)
+        {
+			setGL_Distribution_ID (0);
+			setGL_DistributionLine_ID (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_DistributionLine WHERE GL_Distribution_ID=@GL_Distribution_ID@
+			setOverwriteAcct (false);
+			setOverwriteActivity (false);
+			setOverwriteBPartner (false);
+			setOverwriteCampaign (false);
+			setOverwriteLocFrom (false);
+			setOverwriteLocTo (false);
+			setOverwriteOrg (false);
+			setOverwriteOrgTrx (false);
+			setOverwriteProduct (false);
+			setOverwriteProject (false);
+			setOverwriteSalesRegion (false);
+			setOverwriteUser1 (false);
+			setOverwriteUser2 (false);
+			setPercent (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_DistributionLine (Properties ctx, int GL_DistributionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_DistributionLine_ID, trxName, virtualColumns);
       /** if (GL_DistributionLine_ID == 0)
         {
 			setGL_Distribution_ID (0);

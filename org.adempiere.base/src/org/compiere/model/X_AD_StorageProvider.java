@@ -31,12 +31,25 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_StorageProvider (Properties ctx, int AD_StorageProvider_ID, String trxName)
     {
       super (ctx, AD_StorageProvider_ID, trxName);
+      /** if (AD_StorageProvider_ID == 0)
+        {
+			setAD_StorageProvider_ID (0);
+			setIsDefault (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_StorageProvider (Properties ctx, int AD_StorageProvider_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_StorageProvider_ID, trxName, virtualColumns);
       /** if (AD_StorageProvider_ID == 0)
         {
 			setAD_StorageProvider_ID (0);

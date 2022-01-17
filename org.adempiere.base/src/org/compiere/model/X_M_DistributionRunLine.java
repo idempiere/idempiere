@@ -33,12 +33,30 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_DistributionRunLine (Properties ctx, int M_DistributionRunLine_ID, String trxName)
     {
       super (ctx, M_DistributionRunLine_ID, trxName);
+      /** if (M_DistributionRunLine_ID == 0)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_DistributionRunLine WHERE M_DistributionRun_ID=@M_DistributionRun_ID@
+			setM_DistributionList_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_DistributionRunLine_ID (0);
+			setMinQty (Env.ZERO);
+// 0
+			setM_Product_ID (0);
+			setTotalQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DistributionRunLine (Properties ctx, int M_DistributionRunLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DistributionRunLine_ID, trxName, virtualColumns);
       /** if (M_DistributionRunLine_ID == 0)
         {
 			setLine (0);

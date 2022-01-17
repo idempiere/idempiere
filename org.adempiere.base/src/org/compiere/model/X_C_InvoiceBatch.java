@@ -34,12 +34,34 @@ public class X_C_InvoiceBatch extends PO implements I_C_InvoiceBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_InvoiceBatch (Properties ctx, int C_InvoiceBatch_ID, String trxName)
     {
       super (ctx, C_InvoiceBatch_ID, trxName);
+      /** if (C_InvoiceBatch_ID == 0)
+        {
+			setC_Currency_ID (0);
+// @$C_Currency_ID@
+			setC_InvoiceBatch_ID (0);
+			setControlAmt (Env.ZERO);
+// 0
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocumentAmt (Env.ZERO);
+			setDocumentNo (null);
+			setIsSOTrx (false);
+// N
+			setProcessed (false);
+			setSalesRep_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_InvoiceBatch (Properties ctx, int C_InvoiceBatch_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_InvoiceBatch_ID, trxName, virtualColumns);
       /** if (C_InvoiceBatch_ID == 0)
         {
 			setC_Currency_ID (0);

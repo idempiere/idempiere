@@ -34,12 +34,41 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Workflow (Properties ctx, int AD_Workflow_ID, String trxName)
     {
       super (ctx, AD_Workflow_ID, trxName);
+      /** if (AD_Workflow_ID == 0)
+        {
+			setAccessLevel (null);
+			setAD_Workflow_ID (0);
+			setAuthor (null);
+			setCost (Env.ZERO);
+			setDuration (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+// N
+			setIsDefault (false);
+			setIsValid (false);
+			setName (null);
+			setPublishStatus (null);
+// U
+			setValue (null);
+			setVersion (0);
+			setWaitingTime (0);
+			setWorkflowType (null);
+// G
+			setWorkingTime (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Workflow (Properties ctx, int AD_Workflow_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Workflow_ID, trxName, virtualColumns);
       /** if (AD_Workflow_ID == 0)
         {
 			setAccessLevel (null);

@@ -31,12 +31,29 @@ public class X_PA_ColorSchema extends PO implements I_PA_ColorSchema, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_ColorSchema (Properties ctx, int PA_ColorSchema_ID, String trxName)
     {
       super (ctx, PA_ColorSchema_ID, trxName);
+      /** if (PA_ColorSchema_ID == 0)
+        {
+			setAD_PrintColor1_ID (0);
+			setAD_PrintColor2_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setMark1Percent (0);
+			setMark2Percent (0);
+			setName (null);
+			setPA_ColorSchema_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ColorSchema (Properties ctx, int PA_ColorSchema_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ColorSchema_ID, trxName, virtualColumns);
       /** if (PA_ColorSchema_ID == 0)
         {
 			setAD_PrintColor1_ID (0);

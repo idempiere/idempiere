@@ -30,12 +30,26 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BP_Customer_Acct (Properties ctx, int C_BP_Customer_Acct_ID, String trxName)
     {
       super (ctx, C_BP_Customer_Acct_ID, trxName);
+      /** if (C_BP_Customer_Acct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_BPartner_ID (0);
+			setC_Prepayment_Acct (0);
+			setC_Receivable_Acct (0);
+			setC_Receivable_Services_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_Customer_Acct (Properties ctx, int C_BP_Customer_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_Customer_Acct_ID, trxName, virtualColumns);
       /** if (C_BP_Customer_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);

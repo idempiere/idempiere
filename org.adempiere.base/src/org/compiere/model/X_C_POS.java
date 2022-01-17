@@ -31,12 +31,28 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_POS (Properties ctx, int C_POS_ID, String trxName)
     {
       super (ctx, C_POS_ID, trxName);
+      /** if (C_POS_ID == 0)
+        {
+			setC_POS_ID (0);
+			setIsModifyPrice (false);
+// N
+			setM_PriceList_ID (0);
+			setM_Warehouse_ID (0);
+			setName (null);
+			setSalesRep_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_POS (Properties ctx, int C_POS_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_POS_ID, trxName, virtualColumns);
       /** if (C_POS_ID == 0)
         {
 			setC_POS_ID (0);

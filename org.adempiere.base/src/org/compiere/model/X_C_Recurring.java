@@ -32,12 +32,29 @@ public class X_C_Recurring extends PO implements I_C_Recurring, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Recurring (Properties ctx, int C_Recurring_ID, String trxName)
     {
       super (ctx, C_Recurring_ID, trxName);
+      /** if (C_Recurring_ID == 0)
+        {
+			setC_Recurring_ID (0);
+			setDateNextRun (new Timestamp( System.currentTimeMillis() ));
+			setFrequencyType (null);
+// M
+			setName (null);
+			setRecurringType (null);
+			setRunsMax (0);
+			setRunsRemaining (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Recurring (Properties ctx, int C_Recurring_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Recurring_ID, trxName, virtualColumns);
       /** if (C_Recurring_ID == 0)
         {
 			setC_Recurring_ID (0);

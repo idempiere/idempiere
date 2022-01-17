@@ -33,12 +33,38 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName)
     {
       super (ctx, C_PaymentProcessor_ID, trxName);
+      /** if (C_PaymentProcessor_ID == 0)
+        {
+			setAcceptAMEX (false);
+			setAcceptATM (false);
+			setAcceptCheck (false);
+			setAcceptCorporate (false);
+			setAcceptDiners (false);
+			setAcceptDirectDebit (false);
+			setAcceptDirectDeposit (false);
+			setAcceptDiscover (false);
+			setAcceptMC (false);
+			setAcceptVisa (false);
+			setCommission (Env.ZERO);
+			setCostPerTrx (Env.ZERO);
+			setC_PaymentProcessor_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+			setName (null);
+			setRequireVV (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentProcessor_ID, trxName, virtualColumns);
       /** if (C_PaymentProcessor_ID == 0)
         {
 			setAcceptAMEX (false);

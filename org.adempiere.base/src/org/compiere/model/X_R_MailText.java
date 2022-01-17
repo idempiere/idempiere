@@ -31,12 +31,25 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_MailText (Properties ctx, int R_MailText_ID, String trxName)
     {
       super (ctx, R_MailText_ID, trxName);
+      /** if (R_MailText_ID == 0)
+        {
+			setIsHtml (false);
+			setMailText (null);
+			setName (null);
+			setR_MailText_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_MailText (Properties ctx, int R_MailText_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_MailText_ID, trxName, virtualColumns);
       /** if (R_MailText_ID == 0)
         {
 			setIsHtml (false);

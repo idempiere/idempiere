@@ -30,12 +30,30 @@ public class X_AD_Tree_Favorite_Node extends PO implements I_AD_Tree_Favorite_No
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Tree_Favorite_Node (Properties ctx, int AD_Tree_Favorite_Node_ID, String trxName)
     {
       super (ctx, AD_Tree_Favorite_Node_ID, trxName);
+      /** if (AD_Tree_Favorite_Node_ID == 0)
+        {
+			setAD_Tree_Favorite_ID (0);
+			setAD_Tree_Favorite_Node_ID (0);
+			setIsCollapsible (true);
+// Y
+			setIsFavourite (false);
+// N
+			setIsSummary (false);
+// N
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Tree_Favorite_Node (Properties ctx, int AD_Tree_Favorite_Node_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Tree_Favorite_Node_ID, trxName, virtualColumns);
       /** if (AD_Tree_Favorite_Node_ID == 0)
         {
 			setAD_Tree_Favorite_ID (0);

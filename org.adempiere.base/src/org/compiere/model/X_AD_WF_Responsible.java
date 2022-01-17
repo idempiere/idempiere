@@ -31,12 +31,27 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_Responsible (Properties ctx, int AD_WF_Responsible_ID, String trxName)
     {
       super (ctx, AD_WF_Responsible_ID, trxName);
+      /** if (AD_WF_Responsible_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setAD_WF_Responsible_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setResponsibleType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_Responsible (Properties ctx, int AD_WF_Responsible_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_Responsible_ID, trxName, virtualColumns);
       /** if (AD_WF_Responsible_ID == 0)
         {
 			setAD_Role_ID (0);

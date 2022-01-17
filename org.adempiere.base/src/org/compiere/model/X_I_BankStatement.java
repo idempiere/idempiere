@@ -33,12 +33,23 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_BankStatement (Properties ctx, int I_BankStatement_ID, String trxName)
     {
       super (ctx, I_BankStatement_ID, trxName);
+      /** if (I_BankStatement_ID == 0)
+        {
+			setI_BankStatement_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_BankStatement (Properties ctx, int I_BankStatement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_BankStatement_ID, trxName, virtualColumns);
       /** if (I_BankStatement_ID == 0)
         {
 			setI_BankStatement_ID (0);

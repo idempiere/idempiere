@@ -33,12 +33,39 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName)
     {
       super (ctx, RV_BPartner_ID, trxName);
+      /** if (RV_BPartner_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Country_ID (0);
+			setContactName (null);
+			setCountryName (null);
+			setIsCustomer (false);
+			setIsEmployee (false);
+			setIsOneTime (false);
+			setIsProspect (false);
+			setIsSalesRep (false);
+			setIsSummary (false);
+			setIsVendor (false);
+			setLDAPUser (false);
+			setName (null);
+			setNotificationType (null);
+			setSendEMail (false);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, RV_BPartner_ID, trxName, virtualColumns);
       /** if (RV_BPartner_ID == 0)
         {
 			setC_BPartner_ID (0);
