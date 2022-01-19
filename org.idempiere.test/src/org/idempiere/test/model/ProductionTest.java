@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -164,8 +165,10 @@ public class ProductionTest extends AbstractTestCase {
 		BigDecimal componentOnHand2 = MStorageOnHand.getQtyOnHand(mulchId, getM_Warehouse_ID(), 0, getTrxName());
 		BigDecimal endProductOnHand2 = MStorageOnHand.getQtyOnHand(mulchX.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
 		
-		assertTrue(componentOnHand2.compareTo(componentOnHand1) < 0, "On hand of component doesn't reduce as expected");
-		assertTrue(endProductOnHand2.compareTo(endProductOnHand1) > 0, "On hand of end product doesn't increase as expected");
+		BigDecimal componentChange = componentOnHand2.subtract(componentOnHand1).setScale(0);
+		BigDecimal endProductChange = endProductOnHand2.subtract(endProductOnHand1).setScale(0);
+		assertEquals(new BigDecimal("-1"), componentChange, "On hand of component doesn't reduce as expected");
+		assertEquals(new BigDecimal("1"), endProductChange, "On hand of end product doesn't increase as expected");
 		
 		if (!production.isPosted()) {
 			String msg = DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MProduction.Table_ID, production.get_ID(), false, getTrxName());
@@ -173,9 +176,13 @@ public class ProductionTest extends AbstractTestCase {
 		}
 		
 		BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName());
-		assertTrue(endProductCost.equals(componentCost), "Cost not roll up correctly");
+		MAcctSchema as = MClient.get(getAD_Client_ID()).getAcctSchema();
+		componentCost = componentCost.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+		endProductCost = endProductCost.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+		assertEquals(componentCost, endProductCost, "Cost not roll up correctly");
 	}
 
+	// creates an order and material receipt for qty 25 at special price of 2.60 each
 	private void createPOAndMRForProduct(int mulchId) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), BP_PATIO));
@@ -192,7 +199,8 @@ public class ProductionTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		line1.setProduct(MProduct.get(Env.getCtx(), mulchId));
-		line1.setQty(new BigDecimal("1"));
+		line1.setQty(new BigDecimal("25"));
+		line1.setPrice(new BigDecimal("2.60"));
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
@@ -207,8 +215,8 @@ public class ProductionTest extends AbstractTestCase {
 		receipt1.saveEx();
 
 		MInOutLine receiptLine1 = new MInOutLine(receipt1);
-		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
-		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.setOrderLine(line1, 0, new BigDecimal("25"));
+		receiptLine1.setQty(new BigDecimal("25"));
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
@@ -235,14 +243,17 @@ public class ProductionTest extends AbstractTestCase {
 			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
 			categoryAcct.saveEx();
 		}
+		// ProductCost api doesn't use trx to retrieve product
+		int mulchId = 137;
+		MProduct mulch = new MProduct(Env.getCtx(), mulchId, null);
+		int categorySaveId = mulch.getM_Product_Category_ID();
+		mulch.setM_Product_Category_ID(category.get_ID());
+		mulch.saveEx();
 		
 		try {
-			int mulchId = 137;
 			int hqLocator = 101;
-			
 			createPOAndMRForProduct(mulchId);
-			
-			MProduct mulch = MProduct.get(mulchId);			
+
 			BigDecimal componentOnHand1 = MStorageOnHand.getQtyOnHand(mulchId, getM_Warehouse_ID(), 0, getTrxName());
 			BigDecimal componentCost = MCost.getCurrentCost(mulch, 0, getTrxName());
 									
@@ -267,7 +278,8 @@ public class ProductionTest extends AbstractTestCase {
 			inventory.setDocAction(DocAction.ACTION_Complete);
 			inventory.saveEx();
 			
-			BigDecimal endProductCost = new BigDecimal("2.50"); 
+			MAcctSchema as = MClient.get(getAD_Client_ID()).getAcctSchema();
+			BigDecimal endProductCost = new BigDecimal("2.50").setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			MInventoryLine il = new MInventoryLine(Env.getCtx(), 0, getTrxName());
 			il.setM_Inventory_ID(inventory.get_ID());
 			il.setM_Locator_ID(hqLocator);
@@ -285,8 +297,8 @@ public class ProductionTest extends AbstractTestCase {
 				String msg = DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MInventory.Table_ID, inventory.get_ID(), false, getTrxName());
 				assertNull(msg, msg);
 			}
-			BigDecimal adjusted = MCost.getCurrentCost(mulchX, 0, getTrxName());
-			assertTrue(adjusted.equals(endProductCost), "Cost not adjusted: " + adjusted.toPlainString());
+			BigDecimal adjusted = MCost.getCurrentCost(mulchX, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+			assertEquals(endProductCost, adjusted, "Cost not adjusted: " + adjusted.toPlainString());
 			
 			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
 			bom.setM_Product_ID(mulchX.get_ID());		
@@ -337,24 +349,26 @@ public class ProductionTest extends AbstractTestCase {
 			
 			BigDecimal componentOnHand2 = MStorageOnHand.getQtyOnHand(mulchId, getM_Warehouse_ID(), 0, getTrxName());
 			BigDecimal endProductOnHand2 = MStorageOnHand.getQtyOnHand(mulchX.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
+			BigDecimal componentChange = componentOnHand2.subtract(componentOnHand1).setScale(0);
+			BigDecimal endProductChange = endProductOnHand2.subtract(endProductOnHand1).setScale(0);
 			
-			assertTrue(componentOnHand2.compareTo(componentOnHand1) < 0, "On hand of component doesn't reduce as expected");
-			assertTrue(endProductOnHand2.compareTo(endProductOnHand1) > 0, "On hand of end product doesn't increase as expected");
+			assertEquals(componentChange, new BigDecimal("-1"), "On hand of component doesn't reduce as expected");
+			assertEquals(endProductChange, new BigDecimal("1"), "On hand of end product doesn't increase as expected");
 			
 			if (!production.isPosted()) {
 				String msg = DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MProduction.Table_ID, production.get_ID(), false, getTrxName());
 				assertNull(msg, msg);
 			}
 			
-			BigDecimal endProductCost1 = MCost.getCurrentCost(mulchX, 0, getTrxName());
-			assertTrue(endProductCost1.equals(endProductCost), "Standard Cost Changed");
+			BigDecimal endProductCost1 = MCost.getCurrentCost(mulchX, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+			assertEquals(endProductCost, endProductCost1, "Standard Cost Changed");
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mulchX.getM_Product_ID(), 0, getTrxName());
-			MAccount acctVariance = pc.getAccount(ProductCost.ACCTTYPE_P_RateVariance, MClient.get(getAD_Client_ID()).getAcctSchema());
+			MAccount acctVariance = pc.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as);
 			
 			whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MProduction.Table_ID 
 					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + production.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + MClient.get(getAD_Client_ID()).getAcctSchema().getC_AcctSchema_ID()
+					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
 				    + " AND " + MFactAcct.COLUMNNAME_Account_ID + "=" + acctVariance.getAccount_ID();
 			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
 			BigDecimal variance = BigDecimal.ZERO;
@@ -362,10 +376,13 @@ public class ProductionTest extends AbstractTestCase {
 				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 				variance = fa.getAmtAcctDr().subtract(fa.getAmtAcctCr());
 				break;
-			}		
-			assertEquals(variance.doubleValue(), componentCost.subtract(endProductCost).doubleValue(), "Variance not posted correctly.");
+			}
+			BigDecimal varianceExpected = componentCost.subtract(endProductCost).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
+			assertEquals(varianceExpected, variance, "Variance not posted correctly.");
 		} finally {
 			getTrx().rollback();
+			mulch.setM_Product_Category_ID(categorySaveId);
+			mulch.saveEx();
 			category.deleteEx(true);
 		}
 	}
@@ -392,7 +409,8 @@ public class ProductionTest extends AbstractTestCase {
 			mulch.setM_Product_Category_ID(category.get_ID());
 			mulch.saveEx();
 			
-			BigDecimal componentCost = MCost.getCurrentCost(mulch, 0, getTrxName());
+			MAcctSchema as = MClient.get(getAD_Client_ID()).getAcctSchema();
+			BigDecimal componentCost = MCost.getCurrentCost(mulch, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 									
 			MProduct mulchX = new MProduct(Env.getCtx(), 0, getTrxName());
 			mulchX.setName("Mulch X");
@@ -439,8 +457,8 @@ public class ProductionTest extends AbstractTestCase {
 			ServerProcessCtl.process(info, getTrx(), false);
 			assertFalse(info.isError(), info.getSummary());
 			
-			BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName());
-			assertEquals(componentCost.doubleValue(), endProductCost.doubleValue(), "BOM Cost not roll up.");
+			BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);;
+			assertEquals(componentCost, endProductCost, "BOM Cost not roll up.");
 		} finally {
 			getTrx().rollback();
 			category.deleteEx(true);
@@ -466,6 +484,8 @@ public class ProductionTest extends AbstractTestCase {
 		mulchX.saveEx();
 		
 		try {
+			createPOAndMRForProduct(mulchId);  // create some stock to avoid negative qty average cost exception
+			
 			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
 			bom.setM_Product_ID(mulchX.get_ID());		
 			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
