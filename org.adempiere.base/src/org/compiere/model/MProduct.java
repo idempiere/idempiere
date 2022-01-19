@@ -223,7 +223,11 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 */
 	public MProduct (Properties ctx, int M_Product_ID, String trxName)
 	{
-		super (ctx, M_Product_ID, trxName);
+		this (ctx, M_Product_ID, trxName, (String[]) null);
+	}	//	MProduct
+
+	public MProduct(Properties ctx, int M_Product_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_Product_ID, trxName, virtualColumns);
 		if (M_Product_ID == 0)
 		{
 			setProductType (PRODUCTTYPE_Item);	// I
@@ -241,7 +245,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			setProcessing (false);	// N
 			setLowLevel(0);
 		}
-	}	//	MProduct
+	}
 
 	/**
 	 * 	Load constructor

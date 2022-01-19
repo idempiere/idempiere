@@ -69,7 +69,11 @@ public class MInventoryLine extends X_M_InventoryLine
 	 */
 	public MInventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
 	{
-		super (ctx, M_InventoryLine_ID, trxName);
+		this (ctx, M_InventoryLine_ID, trxName, (String[]) null);
+	}	//	MInventoryLine
+
+	public MInventoryLine(Properties ctx, int M_InventoryLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_InventoryLine_ID, trxName, virtualColumns);
 		if (M_InventoryLine_ID == 0)
 		{
 			setLine(0);
@@ -79,7 +83,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			setQtyCount (Env.ZERO);
 			setProcessed(false);
 		}
-	}	//	MInventoryLine
+	}
 
 	/**
 	 * 	Load Constructor

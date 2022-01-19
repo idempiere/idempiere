@@ -126,4 +126,9 @@ public class MConversionType extends X_C_ConversionType
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+
+	public MConversionType(Properties ctx, int C_ConversionType_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_ConversionType_ID, trxName, virtualColumns);
+	}
+
 }	//	MConversionType

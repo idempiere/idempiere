@@ -156,6 +156,10 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		this.m_unique = copy.m_unique;
 	}
 
+	public MBPartnerLocation(Properties ctx, int C_BPartner_Location_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BPartner_Location_ID, trxName, virtualColumns);
+	}
+
 	/** Cached Location */
 	private MLocation m_location = null;
 	/** Unique Name */

@@ -209,6 +209,10 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		super(ctx, rs, trxName);
 	}	//	MDDOrder
 
+	public MDDOrder(Properties ctx, int DD_Order_ID, String trxName, String... virtualColumns) {
+		super(ctx, DD_Order_ID, trxName, virtualColumns);
+	}
+
 	/**	Order Lines					*/
 	private MDDOrderLine[] 	m_lines = null;
 	

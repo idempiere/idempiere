@@ -86,6 +86,10 @@ public class MCashLine extends X_C_CashLine
 		m_parent = cash;
 	}	//	MCashLine
 
+	public MCashLine(Properties ctx, int C_CashLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CashLine_ID, trxName, virtualColumns);
+	}
+
 	/** Parent					*/
 	protected MCash		m_parent = null;
 	/** Bank Account			*/

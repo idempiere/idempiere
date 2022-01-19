@@ -139,7 +139,11 @@ public class MBank extends X_C_Bank implements ImmutablePOSupport
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
-	
+
+	public MBank(Properties ctx, int C_Bank_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Bank_ID, trxName, virtualColumns);
+	}
+
 	@Override
 	public MBank markImmutable() {
 		if (is_Immutable())
