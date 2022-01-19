@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_UserDef_Tab 
 {
@@ -197,6 +197,19 @@ public interface I_AD_UserDef_Tab
 
 	/** Get Allow Advanced Lookup	  */
 	public String getIsAllowAdvancedLookup();
+
+    /** Column name IsHighVolume */
+    public static final String COLUMNNAME_IsHighVolume = "IsHighVolume";
+
+	/** Set High Volume.
+	  * Use Search instead of Pick list
+	  */
+	public void setIsHighVolume (String IsHighVolume);
+
+	/** Get High Volume.
+	  * Use Search instead of Pick list
+	  */
+	public String getIsHighVolume();
 
     /** Column name IsLookupOnlySelection */
     public static final String COLUMNNAME_IsLookupOnlySelection = "IsLookupOnlySelection";
