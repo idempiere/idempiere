@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Tab")
 public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220119L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
@@ -282,6 +282,29 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	public String getIsAllowAdvancedLookup()
 	{
 		return (String)get_Value(COLUMNNAME_IsAllowAdvancedLookup);
+	}
+
+	/** IsHighVolume AD_Reference_ID=319 */
+	public static final int ISHIGHVOLUME_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISHIGHVOLUME_No = "N";
+	/** Yes = Y */
+	public static final String ISHIGHVOLUME_Yes = "Y";
+	/** Set High Volume.
+		@param IsHighVolume Use Search instead of Pick list
+	*/
+	public void setIsHighVolume (String IsHighVolume)
+	{
+
+		set_Value (COLUMNNAME_IsHighVolume, IsHighVolume);
+	}
+
+	/** Get High Volume.
+		@return Use Search instead of Pick list
+	  */
+	public String getIsHighVolume()
+	{
+		return (String)get_Value(COLUMNNAME_IsHighVolume);
 	}
 
 	/** IsLookupOnlySelection AD_Reference_ID=319 */
