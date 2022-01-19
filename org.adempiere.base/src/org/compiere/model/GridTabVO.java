@@ -30,6 +30,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
+import org.compiere.util.Util;
 
 /**
  *  Model Tab Value Object
@@ -216,6 +217,8 @@ public class GridTabVO implements Evaluatee, Serializable
 				vo.IsDeleteable = true;
 			if (rs.getString("IsHighVolume").equals("Y"))
 				vo.IsHighVolume = true;
+			if (userDef != null && !Util.isEmpty(userDef.getIsHighVolume()))
+				vo.IsHighVolume = "Y".equals(userDef.getIsHighVolume());
 
 			// Lookup Only Selection Fields
 			if (rs.getString("IsLookupOnlySelection").equals("Y"))
