@@ -68,6 +68,10 @@ public class MCommission extends X_C_Commission
 		super(ctx, rs, trxName);
 	}	//	MCommission
 
+	public MCommission(Properties ctx, int C_Commission_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Commission_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Get Lines
 	 *	@return array of lines

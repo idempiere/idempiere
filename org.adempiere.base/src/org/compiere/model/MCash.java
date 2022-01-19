@@ -200,7 +200,11 @@ public class MCash extends X_C_Cash implements DocAction
 		}
 		m_book = cb;
 	}	//	MCash
-	
+
+	public MCash(Properties ctx, int C_Cash_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Cash_ID, trxName, virtualColumns);
+	}
+
 	/**	Lines					*/
 	protected MCashLine[]		m_lines = null;
 	/** CashBook				*/

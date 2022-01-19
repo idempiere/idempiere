@@ -55,6 +55,9 @@ public class MDunning extends X_C_Dunning
 		super(ctx, rs, trxName);
 	}	//	MDunning
 
+	public MDunning(Properties ctx, int C_Dunning_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Dunning_ID, trxName, virtualColumns);
+	}
 
 	/**
      * 	String Representation

@@ -167,7 +167,11 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public MOrder(Properties ctx, int C_Order_ID, String trxName)
 	{
-		super (ctx, C_Order_ID, trxName);
+		this (ctx, C_Order_ID, trxName, (String[]) null);
+	}	//	MOrder
+
+	public MOrder(Properties ctx, int C_Order_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Order_ID, trxName, virtualColumns);
 		//  New
 		if (C_Order_ID == 0)
 		{
@@ -209,7 +213,7 @@ public class MOrder extends X_C_Order implements DocAction
 			setTotalLines (Env.ZERO);
 			setGrandTotal (Env.ZERO);
 		}
-	}	//	MOrder
+	}
 
 	/**************************************************************************
 	 *  Project Constructor

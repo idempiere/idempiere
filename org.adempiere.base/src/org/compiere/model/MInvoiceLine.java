@@ -118,7 +118,11 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 */
 	public MInvoiceLine (Properties ctx, int C_InvoiceLine_ID, String trxName)
 	{
-		super (ctx, C_InvoiceLine_ID, trxName);
+		this (ctx, C_InvoiceLine_ID, trxName, (String[]) null);
+	}	//	MInvoiceLine
+
+	public MInvoiceLine(Properties ctx, int C_InvoiceLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_InvoiceLine_ID, trxName, virtualColumns);
 		if (C_InvoiceLine_ID == 0)
 		{
 			setIsDescription(false);
@@ -134,7 +138,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			setQtyEntered(Env.ZERO);
 			setQtyInvoiced(Env.ZERO);
 		}
-	}	//	MInvoiceLine
+	}
 
 	/**
 	 * 	Parent Constructor

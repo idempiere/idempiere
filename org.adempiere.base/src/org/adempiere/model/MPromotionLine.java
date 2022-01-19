@@ -30,4 +30,8 @@ public class MPromotionLine extends X_M_PromotionLine {
 		super(ctx, rs, trxName);
 	}
 
+	public MPromotionLine(Properties ctx, int M_PromotionLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_PromotionLine_ID, trxName, virtualColumns);
+	}
+
 }

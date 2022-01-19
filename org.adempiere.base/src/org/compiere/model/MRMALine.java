@@ -51,15 +51,19 @@ public class MRMALine extends X_M_RMALine
 	 */
 	public MRMALine (Properties ctx, int M_RMALine_ID, String trxName)
 	{
-		super (ctx, M_RMALine_ID, trxName);
+		this (ctx, M_RMALine_ID, trxName, (String[]) null);
+	}	//	MRMALine
+
+	public MRMALine(Properties ctx, int M_RMALine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_RMALine_ID, trxName, virtualColumns);
 		if (M_RMALine_ID == 0)
 		{
 			setQty(Env.ONE);
 			this.setQtyDelivered(Env.ZERO);
 		}
-        
-        init();
-	}	//	MRMALine
+
+		init();
+	}
 
 	/**
 	 * 	Load Constructor

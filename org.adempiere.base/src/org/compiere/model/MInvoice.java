@@ -275,7 +275,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	 */
 	public MInvoice (Properties ctx, int C_Invoice_ID, String trxName)
 	{
-		super (ctx, C_Invoice_ID, trxName);
+		this (ctx, C_Invoice_ID, trxName, (String[]) null);
+	}	//	MInvoice
+
+	public MInvoice(Properties ctx, int C_Invoice_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Invoice_ID, trxName, virtualColumns);
 		if (C_Invoice_ID == 0)
 		{
 			setDocStatus (DOCSTATUS_Drafted);		//	Draft
@@ -305,7 +309,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			super.setProcessed (false);
 			setProcessing(false);
 		}
-	}	//	MInvoice
+	}
 
 	/**
 	 *  Load Constructor

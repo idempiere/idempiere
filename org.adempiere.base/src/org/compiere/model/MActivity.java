@@ -133,7 +133,11 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
-	
+
+	public MActivity(Properties ctx, int C_Activity_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Activity_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	After Save.
 	 * 	Insert

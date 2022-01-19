@@ -36,4 +36,8 @@ public class MPromotionGroupLine extends X_M_PromotionGroupLine {
 		super(ctx, rs, trxName);
 	}
 
+	public MPromotionGroupLine(Properties ctx, int M_PromotionGroupLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_PromotionGroupLine_ID, trxName, virtualColumns);
+	}
+
 }
