@@ -89,6 +89,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -105,7 +106,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7374210834757533221L;
+	private static final long serialVersionUID = 484056046177205235L;
 
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -120,6 +121,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 
 	private ProcessParameterPanel parameterPanel = null;
 	private Checkbox runAsJobField = null;
+	private Label notificationTypeLabel = null;
 	private WTableDirEditor notificationTypeField = null;
 
 	private BusyDialog progressWindow;	
@@ -339,7 +341,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			
 			Div div = new Div();
 	        div.setStyle("text-align: right;");
-	        div.appendChild(new Label(Msg.getElement(m_ctx, MPInstance.COLUMNNAME_NotificationType)));
+	        notificationTypeLabel = new Label(Msg.getElement(m_ctx, MPInstance.COLUMNNAME_NotificationType));
+	        div.appendChild(notificationTypeLabel);
 	        row.appendChild(div);	        
 			
 	        MLookupInfo info = MLookupFactory.getLookup_List(Env.getLanguage(m_ctx), MPInstance.NOTIFICATIONTYPE_AD_Reference_ID);
@@ -356,7 +359,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			String notificationType = user.getNotificationType();
 			if (!MPInstance.NOTIFICATIONTYPE_None.equals(notificationType))
 				notificationTypeField.setValue(notificationType);
-			
+			else
+				notificationTypeField.setValue(MPInstance.NOTIFICATIONTYPE_Notice);
+
 			row.appendChild(notificationTypeField.getComponent());
 			runAsJobField.setChecked(MSysConfig.getBooleanValue(MSysConfig.BACKGROUND_JOB_BY_DEFAULT, false));
 			
@@ -672,6 +677,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			else
 				chooseSaveParameter(saveName, lastRun);
 		}else if (event.getTarget().equals(bOK)){
+			if (runAsJobField.isChecked() && getNotificationType() == null)
+				throw new WrongValueException(notificationTypeField.getComponent(), Msg.getMsg(m_ctx, "FillMandatory") + notificationTypeLabel.getValue());
 			saveReportOption();
 		}
 	}
@@ -892,6 +899,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			instance.setIsRunAsJob(true);
 			instance.setIsProcessing(true);
 			instance.setNotificationType(getNotificationType());
+			if (instance.getNotificationType() == null)
+				instance.setNotificationType(MPInstance.NOTIFICATIONTYPE_Notice);
 			instance.setReportType(m_pi.getReportType());
 			instance.setIsSummary(m_pi.isSummary());
 			instance.setAD_Language_ID(m_pi.getLanguageID());
@@ -1171,6 +1180,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			
 			MPInstance instance = new MPInstance(m_ctx, m_pi.getAD_PInstance_ID(), null);
 			String notificationType = instance.getNotificationType();
+			if (notificationType == null)
+				notificationType = MPInstance.NOTIFICATIONTYPE_Notice;
 			boolean sendEmail = notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMail) || notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMailPlusNotice);
 			boolean createNotice = notificationType.equals(MPInstance.NOTIFICATIONTYPE_Notice) || notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMailPlusNotice);
 			
