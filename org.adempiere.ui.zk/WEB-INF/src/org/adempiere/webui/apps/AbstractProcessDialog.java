@@ -359,8 +359,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			String notificationType = user.getNotificationType();
 			if (!MPInstance.NOTIFICATIONTYPE_None.equals(notificationType))
 				notificationTypeField.setValue(notificationType);
-			else
-				notificationTypeField.setValue(MPInstance.NOTIFICATIONTYPE_Notice);
 
 			row.appendChild(notificationTypeField.getComponent());
 			runAsJobField.setChecked(MSysConfig.getBooleanValue(MSysConfig.BACKGROUND_JOB_BY_DEFAULT, false));
