@@ -43,11 +43,6 @@
 									<artifactId>avalon-framework-api</artifactId>
 									<version>4.3.1</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>io.github.classgraph</groupId>
-								    <artifactId>classgraph</artifactId>
-								    <version>4.8.116</version>
-								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>

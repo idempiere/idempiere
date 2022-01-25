@@ -126,6 +126,7 @@
         <setEntry value="groovy-sql@default:false"/>
         <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="io.github.classgraph.classgraph@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.jws-api@default:default"/>
         <setEntry value="jakarta.persistence-api@default:default"/>

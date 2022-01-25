@@ -105,7 +105,6 @@
         <setEntry value="com.google.zxing.core@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
-        <setEntry value="org.apache.commons.digester@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.itext@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.istack.commons-runtime@default:default"/>
@@ -126,6 +125,7 @@
         <setEntry value="groovy-sql@default:false"/>
         <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="io.github.classgraph.classgraph@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.jws-api@default:default"/>
         <setEntry value="jakarta.persistence-api@default:default"/>
@@ -156,6 +156,7 @@
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-net@default:default"/>
         <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.digester@default:default"/>
         <setEntry value="org.apache.commons.discovery@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.lang@default:default"/>
@@ -330,7 +331,6 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
         <setEntry value="slf4j.api*1.7.30@default:default"/>
-        <setEntry value="slf4j.api*2.0.0.alpha1@default:default"/>
         <setEntry value="slf4j.jcl@default:false"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
@@ -352,7 +352,6 @@
         <setEntry value="wrapped.org.springframework.spring-context@default:default"/>
         <setEntry value="wrapped.org.springframework.spring-core@default:default"/>
         <setEntry value="wrapped.org.springframework.spring-expression@default:default"/>
-        <setEntry value="wrapped.org.springframework.spring-jcl@default:default"/>
         <setEntry value="wrapped.org.springframework.spring-web@default:default"/>
         <setEntry value="wrapped.wsdl4j.wsdl4j@default:default"/>
         <setEntry value="xstream@default:default"/>
