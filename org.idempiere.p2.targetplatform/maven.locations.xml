@@ -1348,4 +1348,11 @@ Import-Package:        *;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
 	</location>
+	<!-- classgraph -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+      <version>4.8.138</version>
+      <type>jar</type>
+	</location>
 </locations>

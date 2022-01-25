@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-210901" sequenceNumber="1640585624">
+<target name="idempiere-220124" sequenceNumber="1643026597">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="zcommon" version="9.6.0.1"/>
-      <unit id="zel" version="9.6.0.1"/>
-      <unit id="zhtml" version="9.6.0.1"/>
-      <unit id="zjavassist" version="9.6.0.1"/>
-      <unit id="zk" version="9.6.0.1"/>
-      <unit id="zkbind" version="9.6.0.1"/>
-      <unit id="zkplus" version="9.6.0.1"/>
-      <unit id="zkwebfragment" version="9.6.0.1"/>
-      <unit id="zul" version="9.6.0.1"/>
-      <unit id="zweb" version="9.6.0.1"/>
-      <unit id="zweb-dsp" version="9.6.0.1"/>
-      <repository location="https://idempiere.github.io/binary.file/p2.zk/9.6.0.1"/>
+      <unit id="zcommon" version="9.6.1"/>
+      <unit id="zel" version="9.6.1"/>
+      <unit id="zhtml" version="9.6.1"/>
+      <unit id="zjavassist" version="9.6.1"/>
+      <unit id="zk" version="9.6.1"/>
+      <unit id="zkbind" version="9.6.1"/>
+      <unit id="zkplus" version="9.6.1"/>
+      <unit id="zkwebfragment" version="9.6.1"/>
+      <unit id="zul" version="9.6.1"/>
+      <unit id="zweb" version="9.6.1"/>
+      <unit id="zweb-dsp" version="9.6.1"/>
+      <repository location="https://idempiere.github.io/binary.file/p2.zk/9.6.1"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
@@ -1484,6 +1484,13 @@ Bundle-Version:        ${version}
 Import-Package:        *;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 ]]></instructions>
+	</location>
+	<!-- classgraph -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+      <version>4.8.138</version>
+      <type>jar</type>
 	</location>
   </locations>
 </target>

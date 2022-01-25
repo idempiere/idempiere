@@ -16,7 +16,7 @@
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
-		<zk.version>9.6.0.1</zk.version>
+		<zk.version>9.6.1</zk.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
@@ -537,11 +537,16 @@
 		            <url>https://maven.atlassian.com/3rdparty</url>
 	            </repository>
 
+				<repository>
+					<id>idempiere-zkoss</id>
+					<url>https://idempiere.github.io/binary.file/maven.zk/</url>
+				</repository>
+				
 	            <repository>
 		            <id>zkoss</id>
 		            <url>https://mavensync.zkoss.org/maven2</url>
 	            </repository>
-
+	            
 	            <repository>
 		            <id>jenkins</id>
 		            <url>https://repo.jenkins-ci.org/releases</url>
