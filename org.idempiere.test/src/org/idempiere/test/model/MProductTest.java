@@ -227,7 +227,7 @@ public class MProductTest extends AbstractTestCase {
 		count = query.setParameters(product.get_ID()).count();
 		assertTrue(count > 0, "No Storage Reservation Record");
 		
-		//this should faiil due to on hand > 0
+		//this should fail due to on hand > 0
 		product.setIsActive(false);
 		assertThrows(AdempiereException.class, () -> product.saveEx());
 		
@@ -250,10 +250,14 @@ public class MProductTest extends AbstractTestCase {
 		MPPProductBOM bom = query.setClient_ID().setOnlyActiveRecords(true).first();
 		MPPProductBOMLine[] lines = bom.getLines();
 		final MProduct product = new MProduct(Env.getCtx(), lines[0].getM_Product_ID(), getTrxName());
+		//clear on hand so that exception is not due to QtyOnHand
+		DB.executeUpdateEx("UPDATE M_StorageOnHand SET QtyOnHand=0 WHERE M_Product_ID=?", new Object[] {product.get_ID()}, getTrxName());
 		product.setIsActive(false);
 		assertThrows(AdempiereException.class, () -> product.saveEx(), "No exception throw for deactivation of product in active BOM");
 		
 		MProduct parent = new MProduct(Env.getCtx(), bom.getM_Product_ID(), getTrxName());
+		//clear on hand so that we can deactivate product
+		DB.executeUpdateEx("UPDATE M_StorageOnHand SET QtyOnHand=0 WHERE M_Product_ID=?", new Object[] {parent.get_ID()}, getTrxName());
 		parent.setIsActive(false);
 		parent.saveEx();
 		bom.load(getTrxName());
