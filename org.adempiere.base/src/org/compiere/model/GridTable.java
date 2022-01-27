@@ -3015,7 +3015,9 @@ public class GridTable extends AbstractTableModel
 			// String whereClause = m_whereClause;
 			if (m_whereClause != null && m_whereClause.trim().length() > 0)
 			{
-				m_whereClause = "((" + m_whereClause + ") OR (" + retainedWhere + ")) ";
+				StringBuilder orRetainedWhere = new StringBuilder(") OR (").append(retainedWhere).append(")) ");
+				if (! m_whereClause.contains(orRetainedWhere.toString()))
+					m_whereClause = "((" + m_whereClause + orRetainedWhere.toString();
 			}
 			open(m_maxRows);
 			// m_whereClause = whereClause;
