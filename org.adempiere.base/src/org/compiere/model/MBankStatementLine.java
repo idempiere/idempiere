@@ -288,7 +288,7 @@ import org.compiere.util.Msg;
 			MPeriod headerPeriod = MPeriod.get(getCtx(), getParent().getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
 			MPeriod linePeriod = MPeriod.get(getCtx(), getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
 
-			return headerPeriod != null && linePeriod != null && headerPeriod == linePeriod;	
+			return headerPeriod != null && linePeriod != null && headerPeriod.getC_Period_ID() == linePeriod.getC_Period_ID();	
 		}
 		return true;
 	}
