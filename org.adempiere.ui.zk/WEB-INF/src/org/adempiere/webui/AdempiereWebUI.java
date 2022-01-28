@@ -192,10 +192,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//clear context, invalidate session
 		Env.getCtx().clear();		
 		Adempiere.getThreadPoolExecutor().schedule(() -> {
-			((SessionCtrl)session).invalidateNow();
-			desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
-		    try {
-				desktopCache.removeDesktop(desktop);
+			try {
+				((SessionCtrl)session).invalidateNow();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}	
+		    try {		   
+		    	if (desktopCache.getDesktopIfAny(desktop.getId()) != null) {
+		    		desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
+		    		desktopCache.removeDesktop(desktop);
+		    	}
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
