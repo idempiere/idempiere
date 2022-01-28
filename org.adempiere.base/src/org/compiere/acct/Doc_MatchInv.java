@@ -296,12 +296,8 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				if (m_invoiceLine.getC_UOM_ID() != 0)
-				{
-					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
-					cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
-				} else
-					cr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
 		
@@ -763,12 +759,8 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				if (m_invoiceLine.getC_UOM_ID() != 0)
-				{
-					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
-					cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
-				} else
-					cr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
 		
@@ -986,12 +978,8 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				if (m_invoiceLine.getC_UOM_ID() != 0)
-				{
-					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
-					dr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
-				} else
-					dr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				dr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
 		if (m_matchInv.getReversal_ID() == 0) 
@@ -1080,12 +1068,8 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				if (m_invoiceLine.getC_UOM_ID() != 0)
-				{
-					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
-					cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
-				} else
-					cr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
 		
