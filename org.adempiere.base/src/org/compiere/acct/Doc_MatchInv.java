@@ -44,6 +44,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrderLandedCostAllocation;
+import org.compiere.model.MUOM;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
 import org.compiere.model.X_M_Cost;
@@ -295,7 +296,12 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				cr.setQty(getQty().multiply(multiplier).negate());
+				if (m_invoiceLine.getC_UOM_ID() != 0)
+				{
+					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+					cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+				} else
+					cr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
 			}
 		}
 		
@@ -339,20 +345,17 @@ public class Doc_MatchInv extends Doc
 				return null;
 		}
 		
-		if (m_matchInv.getReversal_ID() == 0) 
+		cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+		cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+		cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+		cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+		cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+		cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+		cr.setUser1_ID(m_invoiceLine.getUser1_ID());
+		cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+		if (m_matchInv.getReversal_ID() > 0)
 		{
-			cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-			cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-			cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-			cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-			cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-			cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-			cr.setUser1_ID(m_invoiceLine.getUser1_ID());
-			cr.setUser2_ID(m_invoiceLine.getUser2_ID());
-		}
-		else
-		{
-			updateFactLine(cr);
+			cr.setQty(getQty().negate());
 		}
 
 		//AZ Goodwill
@@ -467,6 +470,7 @@ public class Doc_MatchInv extends Doc
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 					as.getC_Currency_ID(), ipv.negate());
 			updateFactLine(line);
+			line.setQty(getQty().negate());
 			
 			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
 			updateFactLine(line);
@@ -475,6 +479,7 @@ public class Doc_MatchInv extends Doc
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 					as.getC_Currency_ID(), ipv.negate());
 			updateFactLine(line);
+			line.setQty(getQty().negate());
 			
 			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
 			updateFactLine(line);
@@ -758,7 +763,12 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				cr.setQty(getQty().multiply(multiplier).negate());
+				if (m_invoiceLine.getC_UOM_ID() != 0)
+				{
+					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+					cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+				} else
+					cr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
 			}
 		}
 		
@@ -976,7 +986,12 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				dr.setQty(getQty().multiply(multiplier).negate());
+				if (m_invoiceLine.getC_UOM_ID() != 0)
+				{
+					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+					dr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+				} else
+					dr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
 			}
 		}
 		if (m_matchInv.getReversal_ID() == 0) 
@@ -1065,7 +1080,12 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				cr.setQty(getQty().multiply(multiplier).negate());
+				if (m_invoiceLine.getC_UOM_ID() != 0)
+				{
+					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+					cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+				} else
+					cr.setQty(getQty().multiply(multiplier).negate().stripTrailingZeros());
 			}
 		}
 		
