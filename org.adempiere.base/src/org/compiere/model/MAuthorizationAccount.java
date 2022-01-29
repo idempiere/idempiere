@@ -119,7 +119,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 					+ "AND EMail=? "
 					+ "AND AD_AuthorizationCredential_ID=? "
 					+ "AND IsAuthorized='Y' "
-					+ "AND RefreshToken IS NOT NULL"
+					+ "AND RefreshToken IS NOT NULL "
 					+ "AND AD_Client_ID=?";
 			MColumn column = MColumn.get(getCtx(), Table_Name, COLUMNNAME_AccessToken);
 			for (int clientId : clientIds) {
