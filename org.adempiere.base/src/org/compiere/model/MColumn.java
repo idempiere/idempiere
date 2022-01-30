@@ -361,7 +361,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			if (getFieldLength() != 0)
 				setFieldLength(0);
 		}
-		else if (getFieldLength() == 0) 
+		else if (getFieldLength() == 0 && displayType != DisplayType.Text) 
 		{
 			if (DisplayType.isID(displayType))
 				setFieldLength(10);
