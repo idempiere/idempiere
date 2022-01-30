@@ -108,7 +108,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 				+ "AND AD_AuthorizationCredential_ID=? "
 				+ "AND IsAuthorized='Y' "
 				+ "AND RefreshToken IS NOT NULL";
-		int[] clientIds = DB.getIDsEx(get_TrxName(), clientSql, get_KeyColumns(),
+		int[] clientIds = DB.getIDsEx(get_TrxName(), clientSql,
 				getAD_AuthorizationAccount_ID(),
 				getEMail(),
 				getAD_AuthorizationCredential_ID());
