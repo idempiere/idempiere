@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.compiere.model.MAcctSchema;
@@ -348,6 +349,7 @@ public class InventoryTest extends AbstractTestCase {
 			
 			onhands = MStorageOnHand.getOfProduct(Env.getCtx(), product.get_ID(), getTrxName());
 			assertEquals(2, onhands.length, "Unexpected number of on hand records");
+			Arrays.sort(onhands, new MStorageOnHand(Env.getCtx(), 0, null));
 			assertEquals(onhands[0].getM_AttributeSetInstance_ID(), asi.get_ID(), "Unexpected M_AttributeSetInstance_ID for first on hand record");
 			assertEquals(onhands[1].getM_AttributeSetInstance_ID(), asi1.get_ID(), "Unexpected M_AttributeSetInstance_ID for second on hand record");
 			
@@ -372,6 +374,7 @@ public class InventoryTest extends AbstractTestCase {
 			
 			onhands = MStorageOnHand.getOfProduct(Env.getCtx(), product.get_ID(), getTrxName());
 			assertEquals(2, onhands.length, "Unexpected number of on hand records");
+			Arrays.sort(onhands, new MStorageOnHand(Env.getCtx(), 0, null));
 			assertEquals(onhands[0].getM_AttributeSetInstance_ID(), asi.get_ID(), "Unexpected M_AttributeSetInstance_ID for first on hand record");
 			assertEquals(onhands[1].getM_AttributeSetInstance_ID(), asi1.get_ID(), "Unexpected M_AttributeSetInstance_ID for second on hand record");
 			assertEquals(1, onhands[0].getQtyOnHand().intValue());
