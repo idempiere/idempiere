@@ -314,7 +314,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			if (!line.isActive())
 				continue;
 
-			if (!line.checkDateIfUsedForPosting()) {
+			if (!line.isDateConsistentIfUsedForPosting()) {
 				m_processMsg = Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {line.getLine()});
 				return DocAction.STATUS_Invalid;
 			}

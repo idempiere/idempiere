@@ -166,7 +166,7 @@ import org.compiere.util.Msg;
 
 		// Make sure date is on the same period as header if used for posting
 		if (newRecord || is_ValueChanged(COLUMNNAME_DateAcct)) {
-			if (!checkDateIfUsedForPosting()) {
+			if (!isDateConsistentIfUsedForPosting()) {
 				log.saveError("SaveError", Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {getLine()}));
 				return false;				
 			}
@@ -281,9 +281,9 @@ import org.compiere.util.Msg;
 
 
 	/**
-	 * Test if the line's date is on the same period as header's, only if BANK_STATEMENT_POST_WITH_DATE_FROM_LINE SysConfig is set to Y 
+	 * If the posting is based on the date of the line (ie SysConfig BANK_STATEMENT_POST_WITH_DATE_FROM_LINE = Y), make sure line and header dates are on the same period
 	 */
-	public boolean checkDateIfUsedForPosting() {
+	public boolean isDateConsistentIfUsedForPosting() {
 		if (MBankStatement.isPostWithDateFromLine(getAD_Client_ID())) {
 			MPeriod headerPeriod = MPeriod.get(getCtx(), getParent().getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
 			MPeriod linePeriod = MPeriod.get(getCtx(), getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
