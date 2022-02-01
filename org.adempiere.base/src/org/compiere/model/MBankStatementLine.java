@@ -44,7 +44,7 @@ import org.compiere.util.Msg;
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3809130336412385420L;
+	private static final long serialVersionUID = -4479911757321927051L;
 
 	/**
 	 * 	Standard Constructor
@@ -163,6 +163,15 @@ import org.compiere.util.Msg;
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_BankStatement_ID"));
 			return false;
 		}
+
+		// Make sure date is on the same period as header if used for posting
+		if (newRecord || is_ValueChanged(COLUMNNAME_DateAcct)) {
+			if (!isDateConsistentIfUsedForPosting()) {
+				log.saveError("SaveError", Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {getLine()}));
+				return false;				
+			}
+		}
+
 		//	Calculate Charge = Statement - trx - Interest  
 		BigDecimal amt = getStmtAmt();
 		amt = amt.subtract(getTrxAmt());
@@ -269,5 +278,19 @@ import org.compiere.util.Msg;
 		}
 		return true;
 	}	//	updateHeader
+
+
+	/**
+	 * If the posting is based on the date of the line (ie SysConfig BANK_STATEMENT_POST_WITH_DATE_FROM_LINE = Y), make sure line and header dates are on the same period
+	 */
+	public boolean isDateConsistentIfUsedForPosting() {
+		if (MBankStatement.isPostWithDateFromLine(getAD_Client_ID())) {
+			MPeriod headerPeriod = MPeriod.get(getCtx(), getParent().getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
+			MPeriod linePeriod = MPeriod.get(getCtx(), getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
+
+			return headerPeriod != null && linePeriod != null && headerPeriod.getC_Period_ID() == linePeriod.getC_Period_ID();	
+		}
+		return true;
+	}
 	
  }	//	MBankStatementLine
