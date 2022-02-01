@@ -11,7 +11,7 @@ INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Jan 27, 2022, 3:33:53 PM CET
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,AD_Process_ID,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214665,0,'Reverse Prepare Payment',426,'ReversePreparePayment',1,'N','N','N','N','N',0,'N',28,0,0,'Y',TO_DATE('2022-01-27 15:33:53','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2022-01-27 15:33:53','YYYY-MM-DD HH24:MI:SS'),0,203554,'Y',200136,'N','D','N','Y','N','Y','122d6120-4348-42c7-92c3-081965c2bab4','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,AD_Process_ID,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214665,0,'Reverse Prepare Payment',426,'ReversePreparePayment',1,'N','N','N','N','N',0,'N',28,0,0,'Y',TO_DATE('2022-01-27 15:33:53','YYYY-MM-DD HH24:MI:SS'),0,TO_DATE('2022-01-27 15:33:53','YYYY-MM-DD HH24:MI:SS'),0,203554,'Y',200136,'N','D','N','Y','N','Y','122d6120-4348-42c7-92c3-081965c2bab4','Y',0,'Y','N','N','N')
 ;
 
 -- Jan 27, 2022, 3:33:55 PM CET
