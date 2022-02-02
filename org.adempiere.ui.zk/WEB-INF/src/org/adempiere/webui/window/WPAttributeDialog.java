@@ -888,7 +888,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		if (C_DocType_ID > 0) {
 			MDocType doctype = new MDocType (Env.getCtx(), C_DocType_ID, null);
 			String docbase = doctype.getDocBaseType();
-			if (docbase.equals(MDocType.DOCBASETYPE_MaterialReceipt))
+			if (docbase.equals(MDocType.DOCBASETYPE_MaterialReceipt) || MDocType.DOCSUBTYPEINV_CostAdjustment.equals(doctype.getDocSubTypeInv()))
 				M_Warehouse_ID = 0;
 		}
 		
