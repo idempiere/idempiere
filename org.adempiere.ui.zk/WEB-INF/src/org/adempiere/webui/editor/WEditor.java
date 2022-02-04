@@ -189,7 +189,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 * @param comp
 	 * @param gridField
 	 * @param rowIndex
-	 * @param tableEditor
+	 * @param tableEditor editor for Grid
 	 * @param editorConfiguration
 	 */
     public WEditor(Component comp, GridField gridField, int rowIndex, boolean tableEditor, IEditorConfiguration editorConfiguration)
