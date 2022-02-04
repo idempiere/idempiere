@@ -775,7 +775,7 @@ public final class DisplayType
 		if (displayType == DisplayType.Binary)
 			return getDatabase().getBlobDataType();
 		if (displayType == DisplayType.TextLong
-			|| (displayType == DisplayType.Text && fieldLength >= 4000))
+			|| (displayType == DisplayType.Text && (fieldLength == 0 || fieldLength >= 4000)))
 			return getDatabase().getClobDataType();
 		if (displayType == DisplayType.YesNo)
 			return getDatabase().getCharacterDataType()+"(1)";
