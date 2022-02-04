@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
+import org.compiere.model.MClient;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
 import org.compiere.util.CLogMgt;
@@ -121,7 +122,7 @@ public class RoleAccessUpdate extends SvrProcess
 	 */
 	private void updateRole (MRole role)
 	{
-		StringBuilder msglog = new StringBuilder(role.getName()).append(": ") 
+		StringBuilder msglog = new StringBuilder(getAD_Client_ID() > 0 ? "" : MClient.get(role.getAD_Client_ID()).getName() + " - ").append(role.getName()).append(": ") 
 				.append(role.updateAccessRecords(p_IsReset));
 		addLog(0, null, null, msglog.toString());
 	}	//	updateRole
