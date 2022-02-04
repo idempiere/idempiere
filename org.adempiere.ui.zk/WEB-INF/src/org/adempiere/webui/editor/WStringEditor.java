@@ -146,9 +146,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 	        if (!tableEditor)
 	        	getComponent().setCols(displayLength);
-	        if (tableEditor)
-	        	getComponent().setMultiline(false);
-	        else if (gridField.getDisplayType() == DisplayType.Text)
+	        if (gridField.getDisplayType() == DisplayType.Text)
 	        {
 	            getComponent().setMultiline(true);
 	        }
