@@ -82,7 +82,8 @@ public class DefaultEditorFactory implements IEditorFactory {
         /** String (clear/password) */
         if (displayType == DisplayType.String
             || displayType == DisplayType.PrinterName || displayType == DisplayType.Color
-            || (tableEditor && (displayType == DisplayType.Text || displayType == DisplayType.TextLong)))
+            || displayType == DisplayType.Text || displayType == DisplayType.TextLong
+            || displayType == DisplayType.Memo)
         {
             if (gridField.isEncryptedField())
             {
@@ -109,8 +110,8 @@ public class DefaultEditorFactory implements IEditorFactory {
         {
         	editor = new WFileDirectoryEditor(gridField, tableEditor, editorConfiguration);
         }
-        /** Number */
-        else if (DisplayType.isNumeric(displayType))
+        /** Number or ID */
+        else if (DisplayType.isNumeric(displayType) || displayType == DisplayType.ID)
         {
             editor = new WNumberEditor(gridField, tableEditor, editorConfiguration);
         }
@@ -121,15 +122,6 @@ public class DefaultEditorFactory implements IEditorFactory {
             editor = new WYesNoEditor(gridField, tableEditor, editorConfiguration);
             if (tableEditor)
             	((WYesNoEditor)editor).getComponent().setLabel("");
-        }
-
-        /** Text */
-        else if (displayType == DisplayType.Text || displayType == DisplayType.Memo || displayType == DisplayType.TextLong || displayType == DisplayType.ID)
-        {
-        	if (gridField.isHtml())
-        		editor = new WHtmlEditor(gridField, tableEditor, editorConfiguration);
-        	else
-        		editor = new WStringEditor(gridField, tableEditor, editorConfiguration);
         }
 
         /** Date */
