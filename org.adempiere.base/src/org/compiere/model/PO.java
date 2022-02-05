@@ -1341,7 +1341,7 @@ public abstract class PO
 	}	//	copy
 	
 	/**
-	 * downcast any standard iDempiere model class object into one of a derived custom class
+	 * creates a shallow copy of any standard iDempiere model class object as an instance of a derived custom class.
 	 * @param <T> - can be any standard iDempiere model class 
 	 * @param <U> - customized extension of class T 
 	 * @param base - base class object
@@ -1351,11 +1351,11 @@ public abstract class PO
 	 * 
 	 * Mderived (MBase base) {
 	 *     this(base.getCtx(), 0, base.get_TrxName());
-     *     downcast(base, this);	
+     *     shallowCopy(base, this);	
 	 * }
 	 *  
 	 */
-	public static <T extends PO, U extends T> U downcast(T base, U derived){
+	public static <T extends PO, U extends T> U shallowCopy(T base, U derived){
 		PO poBase = (PO)base;
 		PO poDerived = (PO)derived;
 
