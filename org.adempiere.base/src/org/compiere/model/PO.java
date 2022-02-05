@@ -1339,7 +1339,48 @@ public abstract class PO
 			}
 		}	//	same class
 	}	//	copy
+	
+	/**
+	 * downcast any standard iDempiere model class object into one of a derived custom class
+	 * @param <T> - can be any standard iDempiere model class 
+	 * @param <U> - customized extension of class T 
+	 * @param base - base class object
+	 * @param derived - child class object
+	 *  
+	 * Usage in downcast constructor: 
+	 * 
+	 * Mderived (MBase base) {
+	 *     this(base.getCtx(), 0, base.get_TrxName());
+     *     downcast(base, this);	
+	 * }
+	 *  
+	 */
+	public static <T extends PO, U extends T> U downcast(T base, U derived){
+		PO poBase = (PO)base;
+		PO poDerived = (PO)derived;
 
+		poDerived.p_ctx = poBase.p_ctx;
+		poDerived.p_info = poBase.p_info;
+		poDerived.m_oldValues = poBase.m_oldValues;
+		poDerived.m_newValues = poBase.m_newValues;
+		poDerived.m_setErrors = poBase.m_setErrors;
+		poDerived.m_setErrorsFilled = poBase.m_setErrorsFilled;
+		poDerived.m_IDs = poBase.m_IDs;
+		poDerived.m_KeyColumns = poBase.m_KeyColumns;
+		poDerived.m_createNew = poBase.m_createNew;
+		poDerived.m_attachment = poBase.m_attachment;
+		poDerived.m_idOld = poBase.m_idOld;
+		poDerived.m_custom = poBase.m_custom;
+		poDerived.m_attributes = poBase.m_attributes;
+		poDerived.s_acctColumns = poBase.s_acctColumns;
+		poDerived.m_isReplication = poBase.m_isReplication;
+		poDerived.m_isImmutable = poBase.m_isImmutable;
+		poDerived.m_trxName = poBase.m_trxName;
+		poDerived.m_lobInfo = poBase.m_lobInfo;
+		poDerived.m_doc = poBase.m_doc;
+		
+		return derived;
+	}
 
 	/**************************************************************************
 	 *  Load record with ID
