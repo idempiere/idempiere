@@ -407,7 +407,8 @@ public class MMatchInv extends X_M_MatchInv
 	 */
 	public boolean isReversal() {
 		if (getReversal_ID() > 0) {
-			if (getM_InOutLine().getMovementQty().signum() != getQty().signum())
+			MMatchInv reversal = new MMatchInv (getCtx(), getReversal_ID(), get_TrxName());
+			if (reversal.getM_MatchInv_ID() < getM_MatchInv_ID())
 				return true;
 		}
 		return false;
