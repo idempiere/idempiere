@@ -1349,16 +1349,22 @@ public abstract class PO
 	 *  
 	 * Usage in downcast constructor: 
 	 * 
-	 * Mderived (MBase base) {
+	 * MDerived (MBase base) {
 	 *     this(base.getCtx(), 0, base.get_TrxName());
      *     shallowCopy(base, this);	
 	 * }
 	 *  
+	 * The function throws an AdempiereException when MDerived is not a true child class of MBase. 
 	 */
-	public static <T extends PO, U extends T> U shallowCopy(T base, U derived){
-		PO poBase = (PO)base;
-		PO poDerived = (PO)derived;
+	public static <T extends PO, U extends T> U shallowCopy(T base, U derived)  throws AdempiereException {
+		Class<? extends PO> b = base.getClass();
+		Class<? extends PO> d = derived.getClass();
+        if( !(b.isAssignableFrom(d) && !d.isAssignableFrom(b)))
+            throw new AdempiereException("Error! Class" + d.toString() + " is not a true child class of " + b.toString());
 
+	    PO poBase = (PO)base;
+		PO poDerived = (PO)derived;
+		
 		poDerived.p_ctx = poBase.p_ctx;
 		poDerived.p_info = poBase.p_info;
 		poDerived.m_oldValues = poBase.m_oldValues;
