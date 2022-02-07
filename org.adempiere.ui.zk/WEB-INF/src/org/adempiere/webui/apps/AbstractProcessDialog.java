@@ -49,6 +49,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
@@ -250,6 +251,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected Combobox fSavedName=new Combobox();
 	private Button bSave=ButtonFactory.createNamedButton("Save");
 	private Button bDelete=ButtonFactory.createNamedButton("Delete");
+	private Button bShare = new Button("");
 	private List<MPInstance> savedParams;
 	private Label lSaved;
 	
@@ -472,8 +474,18 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		bDelete.addActionListener(this);
 		savePrameterLayout.appendChild(bDelete);
 
+		bShare.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShareProcessParameters_XX"));
+        if (ThemeManager.isUseFontIconForImage())
+        	bShare.setIconSclass("z-icon-Share");
+        else
+        	bShare.setImage(ThemeManager.getThemeResource("images/Setup24.png"));
+        bShare.addActionListener(this);
+        savePrameterLayout.appendChild(bShare);
+        bShare.setEnabled(false);
+
 		LayoutUtils.addSclass("btn-small", bSave);
 		LayoutUtils.addSclass("btn-small", bDelete);
+		LayoutUtils.addSclass("btn-small", bShare);
 		
 		querySaved();
 	}
@@ -486,7 +498,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		for (MPInstance instance : savedParams)
 		{
 			String queries = instance.get_ValueAsString("Name");
-			fSavedName.appendItem(queries);
+			fSavedName.appendItem(queries, instance.getAD_PInstance_ID());
 		}
 
 		fSavedName.setValue("");
@@ -660,7 +672,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			onComplete();
 		else if (event.getName().equals(ON_STATUS_UPDATE))
 			onStatusUpdate(event);
-		else if (event.getTarget().equals(bSave) || event.getTarget().equals(bDelete) || event.getTarget().equals(fSavedName)){
+		else if (event.getTarget().equals(bSave) || event.getTarget().equals(bDelete) || event.getTarget().equals(bShare) || event.getTarget().equals(fSavedName)){
 			String saveName = null;
 			boolean lastRun = false;
 			if (fSavedName.getRawText() != null) {
@@ -672,6 +684,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				updateSaveParameter(saveName);
 			else if (bDelete.equals(event.getTarget()))
 				deleteSaveParameter(saveName);
+			else if (event.getTarget().equals(bShare))
+				shareSaveParameter(saveName);
 			else
 				chooseSaveParameter(saveName, lastRun);
 		}else if (event.getTarget().equals(bOK)){
@@ -725,6 +739,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 			querySaved();
 			fSavedName.setSelectedItem(getComboItem(saveName));
+			bShare.setEnabled(true);
 	}
 	
 	protected void saveReportOptionToInstance (MPInstance instance){
@@ -774,13 +789,21 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			String selected = fSavedName.getSelectedItem().getLabel();
 			for (int i = 0; i < savedParams.size(); i++) {
 				if (savedParams.get(i).getName().equals(selected)) {
-					savedParams.get(i).deleteEx(true);
+					if (saveParameterDeleteable(savedParams.get(i)))
+						savedParams.get(i).deleteEx(true);
+					else
+						FDialog.error(m_WindowNo, this, "DeleteError", "It is a shared record ; you must open it in the dedicated window to delete it");
+					break;
 				}
 			}
 		}
 		querySaved();
 	}
 
+	private boolean saveParameterDeleteable(MPInstance sp) {
+		return sp.getAD_User_ID() > 0 && sp.getAD_User_ID() == Env.getAD_User_ID(getCtx());
+	}
+	
 	protected void chooseSaveParameter(String saveName, boolean lastRun) {
 		if (savedParams != null && saveName != null) {
 			for (int i = 0; i < savedParams.size(); i++) {
@@ -793,9 +816,25 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		bSave.setEnabled(enabled && !lastRun);
 		bDelete.setEnabled(enabled && fSavedName.getSelectedIndex() > -1
 				&& !lastRun);
-	
+		bShare.setEnabled(enabled);
 	}
-	
+
+	protected void shareSaveParameter(String saveName) {
+		Object o = fSavedName.getSelectedItem(); // TODO create a central method to be used by deleteSaveParameter and shareSaveParameter
+		if (savedParams != null && o != null) {
+			String selected = fSavedName.getSelectedItem().getLabel();
+			for (int i = 0; i < savedParams.size(); i++) {
+				if (savedParams.get(i).getName().equals(selected) && savedParams.get(i).getAD_Client_ID() == Env.getAD_Client_ID(getCtx())) {
+					MPInstance sp = savedParams.get(i);
+					sp.setAD_Org_ID(0);
+					sp.setAD_Role_ID(-1);
+					sp.setAD_User_ID(-1);
+					sp.saveEx();
+				}
+			}
+		}
+	}
+
 	private void loadSavedParams(MPInstance instance) {
 		getParameterPanel().loadParameters(instance);
 		setReportTypeAndPrintFormat(instance);
