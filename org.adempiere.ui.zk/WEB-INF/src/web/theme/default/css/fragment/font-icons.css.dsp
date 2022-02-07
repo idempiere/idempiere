@@ -16,6 +16,9 @@
 .z-icon-Calculator:before {
 	content: "\f1ec";
 }
+.z-icon-Calendar:before {
+	content: "\f073";
+}
 .z-icon-Cancel:before {
 	content: "\f00d";
 }
@@ -26,8 +29,14 @@
 .z-icon-Chat:before {
 	content: "\f0e6";
 }
+.z-icon-Collapsing:before {
+	content: "\f102";
+}
 .z-icon-Copy:before {	
 	content: "\f0c5";
+}
+.z-icon-CSVImport:before {
+	content: "\f0f6";
 }
 .z-icon-Customize:before {
 	content: "\f0db";
@@ -57,6 +66,9 @@
 .z-icon-Expand:before {
 	content: "\f0d7";
 }
+.z-icon-Expanding:before {
+	content: "\f103";
+}
 .z-icon-Export:before {	
 	content: "\f0ed";
 }
@@ -77,6 +89,9 @@
 }
 .z-icon-Form:before {
 	content: "\f00b";
+}
+.z-icon-GetMail:before {
+	content: "\f0e0";
 }
 .z-icon-Help:before {
 	content: "\f059";
@@ -214,6 +229,9 @@
 .z-icon-Process:before {
 	content: "\f013";
 }
+.z-icon-ProcessMenu:before {
+	content: "\f085";
+}
 .z-icon-Product:before {	
 	content: "\f07a";
 }
@@ -222,6 +240,9 @@
 	font-size: 32px;
 	color: green;
 	font-family: FontAwesome;
+}
+.z-icon-QuickForm:before {
+	content: "\f0ae";
 }
 .z-icon-Refresh:before {
 	content: "\f021";
@@ -247,17 +268,38 @@
 .z-icon-SendMail:before {
 	content: "\f003";
 }
+.z-icon-SequenceChange:before {
+	content: "\f14d";
+}
+.z-icon-Share:before {
+	content: "\f0ac";
+}
+.z-icon-ShowMore:before {
+	content: "\f142";
+}
 .z-icon-Single:before {	
 	content: "\f044";
 }
 .z-icon-Task:before {
 	content: "\f0ae";
 }
+.z-icon-ThreeLineMenu:before {
+	content: "\f0c9";
+}
+.z-icon-Translate:before {
+	content: "\f1ab";
+}
 .z-icon-Trash:before {
 	content: "\f014";
 }
+.z-icon-TreeFavNodeAdd:before {
+	content: "\f07b";
+}
 .z-icon-UnprocessedDoc:before {	
 	content: "\f044";
+}
+.z-icon-UnSort:before {
+	content: "\f074";
 }
 .z-icon-VPreference:before {
 	content: "\f039";
@@ -276,37 +318,4 @@
 }
 .z-icon-ZoomAcross:before {	
 	content: "\f00e";
-}
-.z-icon-CSVImport:before {
-	content: "\f0f6";
-}
-.z-icon-ShowMore:before {
-	content: "\f142";
-}
-.z-icon-Share:before {
-	content: "\f0ac";
-}
-.z-icon-QuickForm:before {
-	content: "\f0ae";
-}
-.z-icon-UnSort:before {
-	content: "\f074";
-}
-.z-icon-GetMail:before {
-	content: "\f0e0";
-}
-.z-icon-Calendar:before {
-	content: "\f073";
-}
-.z-icon-TreeFavNodeAdd:before {
-	content: "\f07b";
-}
-.z-icon-Expanding:before {
-	content: "\f103";
-}
-.z-icon-SequenceChange:before {
-	content: "\f14d";
-}
-.z-icon-Translate:before {
-	content: "\f1ab";
 }
