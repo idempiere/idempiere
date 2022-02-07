@@ -117,7 +117,7 @@ public class DashboardController implements EventListener<Event> {
 	private boolean isShowInDashboard;
 	private int noOfCols;
 	
-	private final static int DEFAULT_DASHBOARD_WIDTH = 95;
+	private final static int DEFAULT_DASHBOARD_WIDTH = 99;
 	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
