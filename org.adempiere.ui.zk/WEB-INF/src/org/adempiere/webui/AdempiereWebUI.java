@@ -151,7 +151,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		this.getPage().setTitle(ThemeManager.getBrowserTitle());
         
         Executions.getCurrent().getDesktop().enableServerPush(true);
-        DesktopWatchDog.addDesktop(Executions.getCurrent().getDesktop());
         
         SessionManager.setSessionApplication(this);
         final Session session = Executions.getCurrent().getDesktop().getSession();
