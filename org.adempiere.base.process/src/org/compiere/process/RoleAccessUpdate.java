@@ -93,7 +93,7 @@ public class RoleAccessUpdate extends SvrProcess
 		{
 			List<Object> params = new ArrayList<Object>();
 			StringBuilder whereClause = new StringBuilder("1=1");
-			if (p_AD_Client_ID > 0)
+			if (p_AD_Client_ID >= 0)
 			{
 				whereClause.append(" AND AD_Client_ID=? ");
 				params.add(p_AD_Client_ID);
