@@ -81,6 +81,10 @@ public class RoleAccessUpdate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
+		// force current client when is not System
+		if (getAD_Client_ID() > 0)
+			p_AD_Client_ID = getAD_Client_ID();
+
 		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID=" + p_AD_Client_ID + ", AD_Role_ID=" + p_AD_Role_ID);
 		//
 		if (p_AD_Role_ID > 0)
