@@ -72,6 +72,12 @@
 .z-icon-Export:before {	
 	content: "\f0ed";
 }
+.z-icon-FastBack:before {
+	content: "\f049";
+}
+.z-icon-FastForward:before {
+	content: "\f050";
+}
 .z-icon-FieldSuggestion:before {
 	content: "\f0e5";
 }
@@ -132,6 +138,9 @@
 .z-icon-InfoInvoice:before {	
 	content: "\f14b";
 }
+.z-icon-InfoLocator:before {
+	content: "\f1b2";
+}
 .z-icon-InfoOrder:before {	
 	content: "\f0c9";
 }
@@ -146,6 +155,9 @@
 }
 .z-icon-InfoSchedule:before {	
 	content: "\f017";
+}
+.z-icon-InfoShipment:before {
+	content: "\f0d1";
 }
 .z-icon-LastRecord:before {
 	content: "\f051";
@@ -265,6 +277,9 @@
 .z-icon-Search:before {
 	content: "\f002";
 }
+.z-icon-SelectAll:before {
+	content: "\f248";
+}
 .z-icon-SendMail:before {
 	content: "\f003";
 }
@@ -279,6 +294,12 @@
 }
 .z-icon-Single:before {	
 	content: "\f044";
+}
+.z-icon-StepBack:before {
+	content: "\f04a";
+}
+.z-icon-StepForward:before {
+	content: "\f04e";
 }
 .z-icon-Task:before {
 	content: "\f0ae";
