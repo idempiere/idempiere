@@ -46,12 +46,9 @@ public class RoleAccessUpdate extends SvrProcess
 	
 	/**	Update Role				*/
 	private int	p_AD_Role_ID = -1;
-	/**	Update Roles of Client	*/
-	private int	p_AD_Client_ID = -1;
 	/** Reset Existing Access */
 	private boolean p_IsReset = true;
-	
-	
+
 	/**
 	 * 	Prepare
 	 */
@@ -65,8 +62,6 @@ public class RoleAccessUpdate extends SvrProcess
 				;
 			else if (name.equals("AD_Role_ID"))
 				p_AD_Role_ID = para[i].getParameterAsInt();
-			else if (name.equals("AD_Client_ID"))
-				p_AD_Client_ID = para[i].getParameterAsInt();
 			else if (name.equals("ResetAccess"))
 				p_IsReset = "Y".equals(para[i].getParameter());
 			else
@@ -81,11 +76,7 @@ public class RoleAccessUpdate extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
-		// force current client when is not System
-		if (getAD_Client_ID() > 0)
-			p_AD_Client_ID = getAD_Client_ID();
-
-		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID=" + p_AD_Client_ID + ", AD_Role_ID=" + p_AD_Role_ID);
+		if (log.isLoggable(Level.INFO)) log.info("AD_Role_ID=" + p_AD_Role_ID);
 		//
 		if (p_AD_Role_ID > 0)
 			updateRole (new MRole (getCtx(), p_AD_Role_ID, get_TrxName()));
@@ -93,21 +84,16 @@ public class RoleAccessUpdate extends SvrProcess
 		{
 			List<Object> params = new ArrayList<Object>();
 			StringBuilder whereClause = new StringBuilder("1=1");
-			if (p_AD_Client_ID >= 0)
-			{
-				whereClause.append(" AND AD_Client_ID=? ");
-				params.add(p_AD_Client_ID);
-			}
 			if (p_AD_Role_ID == 0) // System Role
 			{
 				whereClause.append(" AND AD_Role_ID=?");
 				params.add(p_AD_Role_ID);
 			}
-			//sql += "ORDER BY AD_Client_ID, Name";
-			
+
 			List<MRole> roles = new Query(getCtx(), MRole.Table_Name, whereClause.toString(), get_TrxName())
 			.setOnlyActiveRecords(true)
 			.setParameters(params)
+			.setClient_ID(getAD_Client_ID() > 0) // to avoid Cross tenant PO reading if running from a client > 0 with no role
 			.setOrderBy("AD_Client_ID, Name")
 			.list();
 			

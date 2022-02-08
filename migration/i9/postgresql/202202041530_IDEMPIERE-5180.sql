@@ -7,20 +7,20 @@ INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Description,Type,Code,AD_Client_ID,
 UPDATE AD_Process_Para SET AD_Val_Rule_ID=200153,Updated=TO_TIMESTAMP('2022-02-05 10:01:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=539
 ;
 
--- Feb 7, 2022, 6:40:23 AM CET
-UPDATE AD_Process_Para SET DisplayLogic='@#AD_Client_ID@ = 0',Updated=TO_TIMESTAMP('2022-02-07 06:40:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=538
-;
-
--- Feb 7, 2022, 6:53:13 AM CET
-UPDATE AD_Process_Para SET IsMandatory='N',Updated=TO_TIMESTAMP('2022-02-07 06:53:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=538
-;
-
 -- Feb 8, 2022, 8:25:06 AM CET
 UPDATE AD_Process SET Help='Update the access rights of a role or all roles of a client to windows, forms, processes and workflows. Note that a role is only updated if it is not marked as manual.',Updated=TO_TIMESTAMP('2022-02-08 08:25:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=295
 ;
 
--- Feb 8, 2022, 8:26:04 AM CET
-UPDATE AD_Process_Para SET IsCentrallyMaintained='N', Placeholder='Leave the field empty to run it for all clients',Updated=TO_TIMESTAMP('2022-02-08 08:26:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=538
+-- Feb 8, 2022, 1:24:16 PM CET
+DELETE FROM AD_Process_Para_Trl WHERE AD_Process_Para_ID=538
+;
+
+-- Feb 8, 2022, 1:24:16 PM CET
+DELETE FROM AD_Process_Para WHERE AD_Process_Para_ID=538
+;
+
+-- Feb 8, 2022, 1:25:37 PM CET
+UPDATE AD_Process SET Help='Update the access rights of a role or all roles of a client to windows, forms, processes and workflows. Note that a role is only updated if it is not marked as manual. Note that if is executed from System client and role is not set, all tenant will be udpated',Updated=TO_TIMESTAMP('2022-02-08 13:25:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=295
 ;
 
 SELECT register_migration_script('202202041530_IDEMPIERE-5180.sql') FROM dual
