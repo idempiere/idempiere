@@ -82,6 +82,7 @@ public class Login
 	 *	@param isClient client session
 	 *	@return Context
 	 */
+	@Deprecated
 	public static Properties initTest (boolean isClient)
 	{
 	//	logger.entering("Env", "initTest");
@@ -91,7 +92,7 @@ public class Login
 		Properties ctx = Env.getCtx();
 		Login login = new Login(ctx);
 		KeyNamePair[] roles = login.getRoles(CConnection.get(),
-			"System", "System", true);
+			"SuperUser", "System", true);
 		//  load role
 		if (roles != null && roles.length > 0)
 		{
@@ -373,9 +374,9 @@ public class Login
 				if (!rs.next())		//	no record found
 					if (force)
 					{
-						Env.setContext(m_ctx, Env.AD_USER_NAME, "System");
-						Env.setContext(m_ctx, Env.AD_USER_ID, "0");
-						Env.setContext(m_ctx, "#AD_User_Description", "System Forced Login");
+						Env.setContext(m_ctx, Env.AD_USER_NAME, "SuperUser");
+						Env.setContext(m_ctx, Env.AD_USER_ID, "100");
+						Env.setContext(m_ctx, "#AD_User_Description", "SuperUser Forced Login");
 						Env.setContext(m_ctx, Env.USER_LEVEL, "S  ");  	//	Format 'SCO'
 						Env.setContext(m_ctx, "#User_Client", "0");		//	Format c1, c2, ...
 						Env.setContext(m_ctx, "#User_Org", "0"); 		//	Format o1, o2, ...
