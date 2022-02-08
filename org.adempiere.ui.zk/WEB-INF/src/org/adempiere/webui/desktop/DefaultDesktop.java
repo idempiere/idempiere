@@ -396,14 +396,20 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        	
 	        };
 	        toolbar.appendChild(showHeader);
-	        showHeader.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
+	        if (ThemeManager.isUseFontIconForImage())
+	        	showHeader.setIconSclass("z-icon-ThreeLineMenu");
+			else
+				showHeader.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
 	        showHeader.addEventListener(Events.ON_CLICK, this);
 	        showHeader.setSclass("window-container-toolbar-btn");
 	        showHeader.setVisible(false);
 	        
 	        max = new ToolBarButton();
 	        toolbar.appendChild(max);
-	        max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+	        if (ThemeManager.isUseFontIconForImage())
+	        	max.setIconSclass("z-icon-Collapsing");
+			else
+				max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
 	        max.addEventListener(Events.ON_CLICK, this);
 	        max.setSclass("window-container-toolbar-btn");
 		}
@@ -428,7 +434,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         
         if (mobile) {
 	        westBtn = new ToolBarButton();
-	        westBtn.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
+	        if (ThemeManager.isUseFontIconForImage())
+	        	westBtn.setIconSclass("z-icon-ThreeLineMenu");
+			else
+				westBtn.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
 	        westBtn.addEventListener(Events.ON_CLICK, this);
 	        westBtn.setSclass("window-container-toolbar-btn");
 	        westBtn.setStyle("cursor: pointer; padding: 0px; margin: 0px;");
@@ -721,7 +730,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	protected void restoreHeader() {
 		layout.getNorth().setVisible(true);
-		max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+		if (ThemeManager.isUseFontIconForImage())
+        	max.setIconSclass("z-icon-Collapsing");
+		else
+			max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
 		showHeader.setVisible(false);
 		pnlHead.detach();
 		headerContainer.appendChild(pnlHead);
@@ -731,7 +743,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	protected void collapseHeader() {
 		layout.getNorth().setVisible(false);
-		max.setImage(ThemeManager.getThemeResource(IMAGES_DOWNARROW_PNG));
+		if (ThemeManager.isUseFontIconForImage())
+        	max.setIconSclass("z-icon-Expanding");
+		else
+			max.setImage(ThemeManager.getThemeResource(IMAGES_DOWNARROW_PNG));
 		showHeader.setVisible(true);
 		pnlHead.detach();
 		if (headerPopup == null) 
