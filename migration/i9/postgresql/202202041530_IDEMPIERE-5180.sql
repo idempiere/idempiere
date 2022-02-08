@@ -15,5 +15,13 @@ UPDATE AD_Process_Para SET DisplayLogic='@#AD_Client_ID@ = 0',Updated=TO_TIMESTA
 UPDATE AD_Process_Para SET IsMandatory='N',Updated=TO_TIMESTAMP('2022-02-07 06:53:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=538
 ;
 
+-- Feb 8, 2022, 8:25:06 AM CET
+UPDATE AD_Process SET Help='Update the access rights of a role or all roles of a client to windows, forms, processes and workflows. Note that a role is only updated if it is not marked as manual.',Updated=TO_TIMESTAMP('2022-02-08 08:25:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_ID=295
+;
+
+-- Feb 8, 2022, 8:26:04 AM CET
+UPDATE AD_Process_Para SET IsCentrallyMaintained='N', Placeholder='Leave the field empty to run it for all clients',Updated=TO_TIMESTAMP('2022-02-08 08:26:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=0 WHERE AD_Process_Para_ID=538
+;
+
 SELECT register_migration_script('202202041530_IDEMPIERE-5180.sql') FROM dual
 ;

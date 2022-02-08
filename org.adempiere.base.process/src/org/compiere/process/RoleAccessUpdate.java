@@ -126,7 +126,7 @@ public class RoleAccessUpdate extends SvrProcess
 	 */
 	private void updateRole (MRole role)
 	{
-		StringBuilder msglog = new StringBuilder(getAD_Client_ID() > 0 ? "" : MClient.get(role.getAD_Client_ID()).getName() + " - ").append(role.getName()).append(": ") 
+		StringBuilder msglog = new StringBuilder(MClient.get(role.getAD_Client_ID()).getName()).append(" - ").append(role.getName()).append(": ") 
 				.append(role.updateAccessRecords(p_IsReset));
 		addLog(0, null, null, msglog.toString());
 	}	//	updateRole
