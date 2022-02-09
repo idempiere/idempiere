@@ -50,6 +50,7 @@ import org.compiere.model.MUserPreference;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 
 
 /**
@@ -414,7 +415,7 @@ public class Login
 					}
 					if (valid) { 
 						int AD_Role_ID = rs.getInt(2);
-						if (AD_Role_ID == 0)
+						if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
 							Env.setContext(m_ctx, "#SysAdmin", "Y");
 						String Name = rs.getString(3);
 						KeyNamePair p = new KeyNamePair(AD_Role_ID, Name);
