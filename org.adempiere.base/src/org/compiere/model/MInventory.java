@@ -293,6 +293,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 				return false;
 			}
 		}
+		
+		String docSubTypeInv = MDocType.get(getC_DocType_ID()).getDocSubTypeInv();
+		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
+		{
+			if (getC_Currency_ID() == 0)
+				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getC_Currency_ID()); 
+		}
+		
 		return true;
 	}	//	beforeSave
 	
