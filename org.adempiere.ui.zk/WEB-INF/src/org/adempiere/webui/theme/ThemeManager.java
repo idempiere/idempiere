@@ -231,4 +231,26 @@ public final class ThemeManager {
 		
 		return ZK_PREFIX_FOR_CLASSPATH_RESOURCE+zkResourceURL.substring(2);
 	}
+	
+	public static String getIconSclass(String imagePath) {
+		String iconSclass;
+		if (!Util.isEmpty(imagePath, true)) {
+			// remove path and extension
+			iconSclass = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
+			
+			// remove prefix m
+			if (iconSclass.length() > 2)
+				iconSclass = iconSclass.startsWith("m") && Character.isUpperCase(iconSclass.charAt(1)) ? iconSclass.substring(1) : iconSclass;
+			
+			// remove image size
+			iconSclass = iconSclass.replaceAll("(\\d\\d)$", "");
+			
+			iconSclass = "z-icon-" + iconSclass;
+		} else {
+			// fallback to generic image icon
+			iconSclass = "z-icon-file-image";
+		}
+		
+		return iconSclass;
+	}
 }

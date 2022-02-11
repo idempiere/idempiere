@@ -319,6 +319,9 @@
 .z-icon-UnprocessedDoc:before {	
 	content: "\f044";
 }
+.z-icon-Undo:before {
+	content: "\f0e2";
+}
 .z-icon-UnSort:before {
 	content: "\f074";
 }
