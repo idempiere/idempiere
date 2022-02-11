@@ -828,6 +828,18 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         	editor.setImage(ThemeManager.getThemeResource("images/Editor16.png"));
         editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
+
+		if (gridField.getDisplayType() == DisplayType.Color) {
+
+			editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
+			editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Reset")).intern());
+			if (ThemeManager.isUseFontIconForImage())
+				editor.setIconSclass("z-icon-Reset");
+			else
+				editor.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
+			editor.addEventListener(Events.ON_CLICK, popupMenu);
+			popupMenu.appendChild(editor);			
+		}
 	}
 	
 	public boolean isComponentOfEditor(Component comp) {
