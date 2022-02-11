@@ -233,7 +233,7 @@ public final class ThemeManager {
 	}
 	
 	public static String getIconSclass(String imagePath) {
-		String iconSclass;
+		String iconSclass = null;
 		if (!Util.isEmpty(imagePath, true)) {
 			// remove path and extension
 			iconSclass = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
@@ -246,9 +246,6 @@ public final class ThemeManager {
 			iconSclass = iconSclass.replaceAll("(\\d\\d)$", "");
 			
 			iconSclass = "z-icon-" + iconSclass;
-		} else {
-			// fallback to generic image icon
-			iconSclass = "z-icon-file-image";
 		}
 		
 		return iconSclass;
