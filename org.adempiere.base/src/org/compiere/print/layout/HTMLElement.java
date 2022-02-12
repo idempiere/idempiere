@@ -21,6 +21,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 /**
  *	HTML Form Print ELement.
@@ -141,13 +142,19 @@ public class HTMLElement extends PrintElement
 	{
 		if (content == null)
 			return false;
-		String s = content.toString();
-		if (s.length() < 20)	//	assumption
-			return false;
-		s = s.trim().toUpperCase();
-		if (s.startsWith("<HTML>"))
-			return true;
-		return false;
+		// code borrowed from https://denofdevelopers.com/how-to-detect-if-string-is-html-or-not-in-android/
+	    final String TAG_START = "<\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)>";
+	    final String TAG_END = "</\\w+>";
+	    final String TAG_SELF_CLOSING = "<\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/>";
+	    final String HTML_ENTITY = "&[a-zA-Z][a-zA-Z0-9]+;";
+	    final Pattern htmlPattern = Pattern
+	                        .compile("(" + TAG_START + ".*" + TAG_END + ")|(" + TAG_SELF_CLOSING + ")|(" + HTML_ENTITY + ")", Pattern.DOTALL);
+        boolean isHTML = false;
+		String htmlString = content.toString();
+        if (htmlString != null) {
+            isHTML = htmlPattern.matcher(htmlString).find();
+        }
+        return isHTML;
 	}	//	isHTML
 
 }	//	HTMLElement
