@@ -84,6 +84,7 @@ public final class Env
 	public static final String AD_PRINTTABLEFORMAT_ID = "#AD_PrintTableFormat_ID";
 	public static final String AD_ROLE_ID = "#AD_Role_ID";
 	public static final String AD_ROLE_NAME = "#AD_Role_Name";
+	public static final String AD_ROLE_TYPE = "#AD_Role_Type";
 	public static final String AD_SESSION_ID = "#AD_Session_ID";
 	public static final String AD_USER_ID = "#AD_User_ID";
 	public static final String AD_USER_NAME = "#AD_User_Name";
