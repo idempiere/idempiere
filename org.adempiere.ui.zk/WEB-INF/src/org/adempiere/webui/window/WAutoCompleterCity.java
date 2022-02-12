@@ -139,7 +139,7 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		}
 		//
 		this.removeAllItems();
-		this.setDict(cityValues);
+		this.setDict(cityValues, false);
 		this.setDescription(cityDesc);
 	}
 
