@@ -181,7 +181,10 @@ public class SystemIDs
 	public final static int TREE_MENUPRIMARY = 10;
 
 	public final static int USER_SUPERUSER = 100;
-	public final static int USER_SYSTEM = 0;
+	public final static int USER_SYSTEM = 10;
+	public final static int USER_SYSTEM_DEPRECATED = 0;
+
+	public final static int ROLE_SYSTEM = 0;
 
 	public final static int WINDOW_ACCOUNTCOMBINATION = 153;
 	public final static int WINDOW_ATTRIBUTESETINSTANCE = 358;

@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.compiere.Adempiere;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -93,7 +94,7 @@ public class RoleAccessUpdate extends SvrProcess
 				whereClause.append(" AND AD_Client_ID=? ");
 				params.add(p_AD_Client_ID);
 			}
-			if (p_AD_Role_ID == 0) // System Role
+			if (p_AD_Role_ID == SystemIDs.ROLE_SYSTEM) // System Role
 			{
 				whereClause.append(" AND AD_Role_ID=?");
 				params.add(p_AD_Role_ID);
