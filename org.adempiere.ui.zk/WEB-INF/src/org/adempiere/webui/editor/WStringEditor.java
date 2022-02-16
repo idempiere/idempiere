@@ -318,23 +318,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		}
 		else if (WEditorPopupMenu.RESET_EVENT.equals(evt.getContextEvent()))
 		{
-			adwindowContent = findADWindowContent();
-
-			if (adwindowContent.isPendingChanges())
-				adwindowContent.getActiveGridTab().dataSave(true);
-
-			boolean needSwitch = !adwindowContent.getADTab().getSelectedTabpanel().isGridView();
-			if (needSwitch)
-				adwindowContent.getADTab().getSelectedTabpanel().switchRowPresentation();
-
-			GenericPO gpo = new GenericPO(gridTab.getTableName(), Env.getCtx(), gridTab.getRecord_ID());
-			gpo.set_ValueNoCheck(gridField.getColumnName(), null);
-			gpo.saveEx();
-
-			gridTab.dataRefresh();
-
-			if (needSwitch)
-				adwindowContent.getADTab().getSelectedTabpanel().switchRowPresentation();
+			setValue(null);
 		}
 	}
     
