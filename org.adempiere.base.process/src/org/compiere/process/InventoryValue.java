@@ -165,8 +165,12 @@ public class InventoryValue extends SvrProcess
 		//  Update Constants
 		//  YYYY-MM-DD HH24:MI:SS.mmmm  JDBC Timestamp format
 		String myDate = p_DateValue.toString();
-		sql = new StringBuilder ("UPDATE T_InventoryValue SET ")
-			.append("DateValue=TO_DATE('").append(myDate.substring(0,10))
+		sql = new StringBuilder ("UPDATE T_InventoryValue SET DateValue=");
+		if (DB.isPostgreSQL())
+			sql.append("TO_TIMESTAMP('");
+		else
+			sql.append("TO_DATE('");
+		sql.append(myDate.substring(0,10))
 			.append(" 23:59:59','YYYY-MM-DD HH24:MI:SS'),")
 			.append("M_PriceList_Version_ID=").append(p_M_PriceList_Version_ID).append(",")
 			.append("C_Currency_ID=").append(p_C_Currency_ID)
