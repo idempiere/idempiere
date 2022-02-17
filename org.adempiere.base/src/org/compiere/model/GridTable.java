@@ -428,9 +428,9 @@ public class GridTable extends AbstractTableModel
 		}
 		
 		//IDEMPIERE-5193 Add Limit to Query
-		if(m_maxRows > 0)
+		if(m_maxRows > 0 && DB.getDatabase().isPagingSupported())
 		{
-			m_SQL += " FETCH FIRST " + m_maxRows + " ROWS ONLY ";
+			DB.getDatabase().addPagingSQL(m_SQL, 1, m_maxRows);
 		}
 		
 		//
