@@ -1176,8 +1176,11 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	{
 		Integer key = Integer.valueOf(AD_PrintFormat_ID);
 		MPrintFormat pf = null;
-		if (!readFromDisk)
+		if (!readFromDisk) {
 			pf = s_formats.get(ctx, key, e -> new MPrintFormat(ctx, e));
+			if(pf != null)
+				pf.reloadItems();
+		}
 		if (pf == null)
 		{
 			pf = new MPrintFormat (ctx, AD_PrintFormat_ID, (String)null);
