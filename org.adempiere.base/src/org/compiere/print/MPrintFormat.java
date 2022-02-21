@@ -46,7 +46,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -61,7 +61,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5693788724825608611L;
+	private static final long serialVersionUID = 7542581302442072662L;
 
 	/**
 	 *	Public Constructor.
@@ -1153,7 +1153,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 
 	/** Cached Formats						*/
-	static private ImmutableIntPOCache<Integer,MPrintFormat> s_formats = new ImmutableIntPOCache<Integer,MPrintFormat>(Table_Name, 30);
+	static private ImmutablePOCache<String,MPrintFormat> s_formats = new ImmutablePOCache<String,MPrintFormat>(Table_Name, 30);
 
 	/**
 	 * 	Get Format from cache (immutable)
@@ -1174,7 +1174,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	static public MPrintFormat get (Properties ctx, int AD_PrintFormat_ID, boolean readFromDisk)
 	{
-		Integer key = Integer.valueOf(AD_PrintFormat_ID);
+		String key = AD_PrintFormat_ID + "|" + MRole.getDefault().getAD_Role_ID();
 		MPrintFormat pf = null;
 		if (!readFromDisk)
 			pf = s_formats.get(ctx, key, e -> new MPrintFormat(ctx, e));
@@ -1235,7 +1235,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	static public void deleteFromCache (int AD_PrintFormat_ID)
 	{
-		Integer key = Integer.valueOf(AD_PrintFormat_ID);
+		String key = AD_PrintFormat_ID + "|" + MRole.getDefault().getAD_Role_ID();
 		s_formats.put(key, null);
 	}	//	deleteFromCache
 
