@@ -16,19 +16,17 @@
  *****************************************************************************/
 package org.compiere.apps;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MRule;
+import org.compiere.model.MPInstance.PInstanceInfo;
 import org.compiere.print.ReportCtl;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
@@ -108,7 +106,6 @@ public abstract class AbstractProcessCtl implements Runnable
 
 		//  Lock
 		lock();
-	//	try {System.out.println(">> sleeping ..");sleep(20000);System.out.println(".. sleeping <<");} catch (Exception e) {}
 
 		//	Get Process Information: Name, Procedure Name, ClassName, IsReport, IsDirectPrint
 		String 	ProcedureName = "";
@@ -119,61 +116,35 @@ public abstract class AbstractProcessCtl implements Runnable
 		boolean	IsDirectPrint = false;
 		boolean isPrintPreview = m_pi.isPrintPreview();
 
-		//
-		String sql = "SELECT p.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
-			+ " p.isReport,p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"		//	5..8
-			+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END," 	//	9
-			+ " p.JasperReport, p.AD_Process_UU "  	//	10..11
-			+ "FROM AD_Process p"
-			+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
-			+ "WHERE p.IsActive='Y'"
-			+ " AND i.AD_PInstance_ID=?";
-		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Process"))
-			sql = "SELECT t.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
-				+ " p.isReport, p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"	//	5..8
-				+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END," 	//	9
-				+ " p.JasperReport, p.AD_Process_UU " 	//	10..11
-				+ "FROM AD_Process p"
-				+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
-				+ " INNER JOIN AD_Process_Trl t ON (p.AD_Process_ID=t.AD_Process_ID"
-					+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "') "
-				+ "WHERE p.IsActive='Y'"
-				+ " AND i.AD_PInstance_ID=?";
-		//
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, 
-				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
-			pstmt.setInt(1, m_pi.getAD_PInstance_ID());
-			rs = pstmt.executeQuery();
-			if (rs.next())
+			PInstanceInfo info = MPInstance.getPInstanceInfo(m_pi.getAD_PInstance_ID());
+			if (info != null)
 			{
-				m_pi.setTitle (rs.getString(1));
+				m_pi.setTitle (info.name);
 				updateProgressWindowTitle(m_pi.getTitle());
-				ProcedureName = rs.getString(2);
-				m_pi.setClassName (rs.getString(3));
-				m_pi.setAD_Process_ID (rs.getInt(4));
-				m_pi.setAD_Process_UU(rs.getString(11));
+				ProcedureName = info.procedureName;
+				m_pi.setClassName (info.className);
+				m_pi.setAD_Process_ID (info.AD_Process_ID);
+				m_pi.setAD_Process_UU(info.AD_Process_UU);
 				//	Report
-				if ("Y".equals(rs.getString(5)))
+				if (info.isReport)
 				{
 					IsReport = true;
-					if ("Y".equals(rs.getString(6)) && !Ini.isPropertyBool(Ini.P_PRINTPREVIEW)
+					if (info.isDirectPrint && !Ini.isPropertyBool(Ini.P_PRINTPREVIEW)
 							&& !isPrintPreview )
 						IsDirectPrint = true;
 				}
-				AD_ReportView_ID = rs.getInt(7);
-				AD_Workflow_ID = rs.getInt(8);
+				AD_ReportView_ID = info.AD_ReportView_ID;
+				AD_Workflow_ID = info.AD_Workflow_ID;
 				//
-				int estimate = rs.getInt(9);
+				int estimate = info.estimate;
 				if (estimate != 0)
 				{
 					m_pi.setEstSeconds (estimate + 1);     //  admin overhead
 					updateProgressWindowTimerEstimate(m_pi.getEstSeconds());
 				}
-				JasperReport = rs.getString(10);
+				JasperReport = info.jasperReport;
 			}
 			else
 				log.log(Level.SEVERE, "No AD_PInstance_ID=" + m_pi.getAD_PInstance_ID());
@@ -184,11 +155,6 @@ public abstract class AbstractProcessCtl implements Runnable
 			unlock();
 			log.log(Level.SEVERE, "run", e);
 			return;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 
 		//  No PL/SQL Procedure
@@ -314,7 +280,6 @@ public abstract class AbstractProcessCtl implements Runnable
 			ProcessInfoUtil.setSummaryFromDB(m_pi);
 			unlock();
 		}			//	*** Process submission ***
-	//	if (log.isLoggable(Level.FINE)) log.fine(Log.l3_Util, "ProcessCtl.run - done");
 	}   //  run
 
 	protected abstract void updateProgressWindowTimerEstimate(int estSeconds);
