@@ -23,9 +23,12 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  *
@@ -75,7 +78,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		if (log.isLoggable(Level.INFO)) log.info("Initializing component");
 
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
-		addTextEditorMenu(popupMenu);
+		addColorEditorMenu(popupMenu);
 		addChangeLogMenu(popupMenu);
 	}
 
@@ -84,7 +87,15 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		if (WEditorPopupMenu.RESET_EVENT.equals(evt.getContextEvent()))
 		{
 			System.out.println("reset");
+			
+			getComponent().invalidate();
 			processNewValue("");
+			getComponent().setClientAttribute("type", "color");
+			
+		}
+		else if (WEditorPopupMenu.COLOR_PICKER_EVENT.equals(evt.getContextEvent()))
+		{
+			openColorPicker();
 		}
 	}
 
@@ -137,7 +148,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 
 		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
 		{
-			System.out.println("click");
+			openColorPicker();
 		}
 		else if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
 		{
@@ -150,6 +161,12 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		}
 
 		processNewValue(newValue);
+	}
+	
+	public void openColorPicker() { // TODO color picker is opening at upper left ; better to open it at center of screen
+		String uid = getComponent().getTextbox().getUuid();
+		String script = "var wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();";
+		Clients.response(new AuScript(script));		
 	}
 
 	protected void processNewValue(String newValue) {

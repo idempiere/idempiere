@@ -828,18 +828,28 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         	editor.setImage(ThemeManager.getThemeResource("images/Editor16.png"));
         editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
-
-		if (gridField.getDisplayType() == DisplayType.Color) {
-
-			editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
-			editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Reset")).intern());
-			if (ThemeManager.isUseFontIconForImage())
-				editor.setIconSclass("z-icon-Reset");
-			else
-				editor.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
-			editor.addEventListener(Events.ON_CLICK, popupMenu);
-			popupMenu.appendChild(editor);			
-		}
+	}
+	
+	protected void addColorEditorMenu(WEditorPopupMenu popupMenu) {
+		Menuitem editor = new Menuitem();
+		editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
+		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Reset")).intern());
+        if (ThemeManager.isUseFontIconForImage())
+        	editor.setIconSclass("z-icon-Edit");
+        else
+        	editor.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
+        editor.addEventListener(Events.ON_CLICK, popupMenu);
+		popupMenu.appendChild(editor);
+		
+		editor = new Menuitem();
+		editor.setAttribute("EVENT", WEditorPopupMenu.COLOR_PICKER_EVENT);
+		editor.setLabel("Color Picker"); // TODO translate
+        if (ThemeManager.isUseFontIconForImage())
+        	editor.setIconSclass("z-icon-pencil"); // should be same as WColorEditor
+        else
+        	editor.setImage(ThemeManager.getThemeResource("images/Process16.png"));
+        editor.addEventListener(Events.ON_CLICK, popupMenu);
+		popupMenu.appendChild(editor);
 	}
 	
 	public boolean isComponentOfEditor(Component comp) {
