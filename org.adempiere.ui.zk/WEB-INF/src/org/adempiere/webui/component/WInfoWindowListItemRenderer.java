@@ -37,6 +37,7 @@ import org.compiere.model.MStyle;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Util;
 import org.zkoss.zul.Listcell;
 
 public class WInfoWindowListItemRenderer extends WListItemRenderer
@@ -156,7 +157,15 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 					String zclass = styleStr.substring(MStyle.ZCLASS_PREFIX.length());
 					listcell.setZclass(zclass);
 				} else {
-					listcell.setStyle(listcell.getStyle() + ";" + styleStr);
+					
+					String prevStyle = listcell.getStyle();
+										
+					if(!Util.isEmpty(prevStyle)) {
+						listcell.setStyle(prevStyle + ";" + styleStr);
+					}
+					else {
+						listcell.setStyle(styleStr);
+					}
 				}
 			}
 		}
