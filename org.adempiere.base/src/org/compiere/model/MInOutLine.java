@@ -548,7 +548,26 @@ public class MInOutLine extends X_M_InOutLine
 		{
 			if (getM_Locator_ID() <= 0 && getC_Charge_ID() <= 0)
 			{
-				throw new FillMandatoryException(COLUMNNAME_M_Locator_ID);
+				// Try to load Default Locator
+
+				MWarehouse warehouse = MWarehouse.get(getM_Warehouse_ID());
+				
+				if(warehouse != null) {
+					
+					int m_Locator_ID = getProduct().getM_Locator_ID();
+					
+					if(m_Locator_ID > 0 && MLocator.get(m_Locator_ID).getM_Warehouse_ID() == warehouse.getM_Warehouse_ID()) {
+						setM_Locator_ID(m_Locator_ID);
+					} 
+					else {
+						MLocator defaultLocator = warehouse.getDefaultLocator();
+						if(defaultLocator != null) 
+							setM_Locator_ID(defaultLocator.getM_Locator_ID());
+					}
+				}
+
+				if (getM_Locator_ID() <= 0)
+					throw new FillMandatoryException(COLUMNNAME_M_Locator_ID);
 			}
 		}
 
