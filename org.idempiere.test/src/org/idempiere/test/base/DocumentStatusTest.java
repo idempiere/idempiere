@@ -56,7 +56,9 @@ public class DocumentStatusTest extends AbstractTestCase {
 	private static final int ROLE_GARDENWORLD_ADMIN_NOT_ADVANCED = 200001;
 
 	private static final int WINDOW_ID_INVOICE_CUSTOMER = 167;
-	private static final int WINDOW_ID_SALES_ORDER = 143;
+	private static final int WINDOW_ID_NOTICE = 193;
+	private static final int WINDOW_ID_REQUEST = 201;
+	private static final int WINDOW_ID_WF_ACTIVITIES = 298;
 
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4836
@@ -83,19 +85,19 @@ public class DocumentStatusTest extends AbstractTestCase {
 
 		/* Document Status with no user or role access, visible to all */
 		MDocumentStatus noticeDS = new MDocumentStatus(Env.getCtx(), 0,	getTrxName());
-		noticeDS.setName("order Document Status Unit Test");
+		noticeDS.setName("Notice Document Status Unit Test");
 		noticeDS.setEntityType(MEntityType.ENTITYTYPE_Dictionary);
 		noticeDS.setAD_Table_ID(MOrder.Table_ID);
-		noticeDS.setAD_Window_ID(WINDOW_ID_SALES_ORDER);
+		noticeDS.setAD_Window_ID(WINDOW_ID_NOTICE);
 		noticeDS.setSeqNo(20);
 		noticeDS.saveEx();
 
 		/* Document Status with specific user access */
 		MDocumentStatus requestDS = new MDocumentStatus(Env.getCtx(), 0, getTrxName());
-		requestDS.setName("Notice Document Status Unit Test");
+		requestDS.setName("Request Document Status Unit Test");
 		requestDS.setEntityType(MEntityType.ENTITYTYPE_Dictionary);
 		requestDS.setAD_Table_ID(MInvoice.Table_ID);
-		requestDS.setAD_Window_ID(WINDOW_ID_INVOICE_CUSTOMER);
+		requestDS.setAD_Window_ID(WINDOW_ID_REQUEST);
 		requestDS.setSeqNo(30);
 		requestDS.saveEx();
 
@@ -109,7 +111,7 @@ public class DocumentStatusTest extends AbstractTestCase {
 		WorkflowActivitiesDS.setName("Workflow Activities Document Status Unit Test");
 		WorkflowActivitiesDS.setEntityType(MEntityType.ENTITYTYPE_Dictionary);
 		WorkflowActivitiesDS.setAD_Table_ID(MInvoice.Table_ID);
-		WorkflowActivitiesDS.setAD_Window_ID(WINDOW_ID_INVOICE_CUSTOMER);
+		WorkflowActivitiesDS.setAD_Window_ID(WINDOW_ID_WF_ACTIVITIES);
 		WorkflowActivitiesDS.setSeqNo(40);
 		WorkflowActivitiesDS.saveEx();
 

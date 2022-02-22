@@ -117,7 +117,7 @@ public class DashboardController implements EventListener<Event> {
 	private boolean isShowInDashboard;
 	private int noOfCols;
 	
-	private final static int DEFAULT_DASHBOARD_WIDTH = 95;
+	private final static int DEFAULT_DASHBOARD_WIDTH = 99;
 	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
@@ -470,7 +470,10 @@ public class DashboardController implements EventListener<Event> {
     		//link to open performance detail
     		Div div = new Div();
     		Toolbarbutton link = new Toolbarbutton();
-            link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+    		if (ThemeManager.isUseFontIconForImage())
+    			link.setIconSclass("z-icon-Zoom");
+    		else
+    			link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
             link.setAttribute("PA_Goal_ID", PA_Goal_ID);
             link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {

@@ -22,6 +22,7 @@ import java.net.URI;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -95,15 +96,19 @@ public class WAppsAction
        m_button.setName("btn" + action);
        m_button.setId(action);
        
-       //Image only if image is available
-       if (large != null)
-       {
-           m_button.setImage(large.getPath());
-           m_button.setLabel(null);
-       }
-       else
-       {
-    	   m_button.setLabel(newToolTipText);
+       if (ThemeManager.isUseFontIconForImage()) {
+    	   m_button.setIconSclass(ThemeManager.getIconSclass(large.getPath()));
+       } else {
+	       //Image only if image is available
+	       if (large != null)
+	       {
+	           m_button.setImage(large.getPath());
+	           m_button.setLabel(null);
+	       }
+	       else
+	       {
+	    	   m_button.setLabel(newToolTipText);
+	       }
        }
        LayoutUtils.addSclass("img-btn", m_button);
    }   //  Action

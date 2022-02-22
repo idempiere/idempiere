@@ -23,6 +23,9 @@ UPDATE AD_Column SET FieldLength=0, AD_Reference_ID=14,Updated=TO_DATE('2022-01-
 ;
 
 -- Jan 30, 2022, 11:33:02 PM CET
+ALTER TABLE AD_AuthorizationAccount MODIFY AccessToken LONG DEFAULT NULL 
+;
+
 ALTER TABLE AD_AuthorizationAccount MODIFY AccessToken CLOB DEFAULT NULL 
 ;
 

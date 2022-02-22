@@ -126,10 +126,17 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void jbInit () throws Exception
 	{
-		bAddAll.setImage(ThemeManager.getThemeResource("images/FastBack24.png"));
-		bAdd.setImage(ThemeManager.getThemeResource("images/StepBack24.png"));
-		bDelete.setImage(ThemeManager.getThemeResource("images/StepForward24.png"));
-		bDeleteAll.setImage(ThemeManager.getThemeResource("images/FastForward24.png"));
+		if (ThemeManager.isUseFontIconForImage()) {
+			bAddAll.setIconSclass("z-icon-FastBack");
+			bAdd.setIconSclass("z-icon-StepBack");
+			bDelete.setIconSclass("z-icon-StepForward");
+			bDeleteAll.setIconSclass("z-icon-FastForward");
+		} else {
+			bAddAll.setImage(ThemeManager.getThemeResource("images/FastBack24.png"));
+			bAdd.setImage(ThemeManager.getThemeResource("images/StepBack24.png"));
+			bDelete.setImage(ThemeManager.getThemeResource("images/StepForward24.png"));
+			bDeleteAll.setImage(ThemeManager.getThemeResource("images/FastForward24.png"));
+		}
 		
 		ZKUpdateUtil.setWidth(form,"100%");
 		ZKUpdateUtil.setHeight(form, "100%");

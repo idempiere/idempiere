@@ -270,7 +270,7 @@ public class ModelValidationEngine
 		if (errors != null && !errors.isEmpty())
 			return errors.get(0);
 
-		if (AD_User_ID == 0 && AD_Role_ID == 0)
+		if ((AD_User_ID == SystemIDs.USER_SYSTEM || AD_User_ID == SystemIDs.USER_SUPERUSER) && AD_Role_ID == SystemIDs.ROLE_SYSTEM)
 			; // don't validate for user system on role system
 		else
 			if (! Util.isEmpty(missingModelValidationMessage)) {

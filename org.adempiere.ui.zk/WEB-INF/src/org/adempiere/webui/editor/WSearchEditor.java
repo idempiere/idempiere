@@ -192,7 +192,11 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-		if (columnName.equals("C_BPartner_ID"))
+
+		if (Util.isEmpty(m_tableName))
+			setTableAndKeyColumn();
+
+		if (m_tableName.equals("C_BPartner"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
 			if (ThemeManager.isUseFontIconForImage())
@@ -200,7 +204,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			else
 				imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 		}
-		else if (columnName.equals("M_Product_ID"))
+		else if (m_tableName.equals("M_Product"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
 			if (ThemeManager.isUseFontIconForImage())

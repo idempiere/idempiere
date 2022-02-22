@@ -131,7 +131,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (role == null || reload)
 		{
 			role = new MRole (ctx, AD_Role_ID, null);			
-			if (AD_Role_ID == 0)
+			if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
 			{
 				String trxName = null;
 				role.load(trxName);			//	special Handling
@@ -269,7 +269,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	{
 		super (ctx, AD_Role_ID, trxName);
 		//	ID=0 == System Administrator
-		if (AD_Role_ID == 0)
+		if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
 		{
 			setIsCanExport (true);
 			setIsCanReport (true);

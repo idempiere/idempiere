@@ -38,6 +38,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -728,7 +729,7 @@ public class DataEngine
 			}
 			//	Access Restriction
 			MRole role = MRole.getDefault(ctx, false);
-			if (role.getAD_Role_ID() == 0 && !Ini.isClient())
+			if (role.getAD_Role_ID() == SystemIDs.ROLE_SYSTEM && !Ini.isClient())
 				;	//	System Access
 			else
 				finalSQL = new StringBuilder (role.addAccessSQL (finalSQL.toString (), 
