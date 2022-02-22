@@ -426,6 +426,13 @@ public class GridTable extends AbstractTableModel
 		{
 			m_SQL += " ORDER BY " + m_orderClause;
 		}
+		
+		//IDEMPIERE-5193 Add Limit to Query
+		if(m_maxRows > 0 && DB.getDatabase().isPagingSupported())
+		{
+			m_SQL = DB.getDatabase().addPagingSQL(m_SQL, 1, m_maxRows);
+		}
+		
 		//
 		if (log.isLoggable(Level.FINE))
 			log.fine(m_SQL_Count);
