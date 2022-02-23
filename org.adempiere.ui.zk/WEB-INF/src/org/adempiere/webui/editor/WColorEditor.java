@@ -17,18 +17,22 @@ package org.adempiere.webui.editor;
 import java.util.logging.Level;
 
 import org.adempiere.webui.component.ColorBox;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Menuitem;
 
 /**
  *
@@ -42,7 +46,11 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	private static final CLogger log = CLogger.getCLogger(WColorEditor.class);
 
 	private String oldValue;
-
+	
+	private String placeHolder;
+	
+	private Textbox colorbox;
+	
 	/**
 	 * 
 	 * @param gridField
@@ -70,7 +78,21 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Process16.png")); // TODO find a brush 
 
 		if (gridField != null)
-			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
+			placeHolder = gridField.getPlaceholder();
+		if (Util.isEmpty(placeHolder, true))
+			placeHolder = "Please select a color"; //TODO: use AD_Message
+		getComponent().getTextbox().setPlaceholder(placeHolder);
+		getComponent().getTextbox().setReadonly(true);
+		
+		colorbox = new Textbox();
+		colorbox.setClientAttribute("type", "color");
+		colorbox.setStyle("position:absolute;top:0;left:0;height:0px !important;width:0px !important;"
+				+ "border:none !important;margin:0 !important;padding:0 !important;visibility:hidden;");
+		getComponent().appendChild(colorbox);
+		
+		colorbox.addEventListener(Events.ON_CHANGE, e -> {
+			processNewValue(colorbox.getValue());
+		});
 	}
 
 	private void init()
@@ -82,15 +104,34 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		addChangeLogMenu(popupMenu);
 	}
 
+	protected void addColorEditorMenu(WEditorPopupMenu popupMenu) {
+		Menuitem editor = new Menuitem();
+		editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
+		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Reset")).intern());
+        if (ThemeManager.isUseFontIconForImage())
+        	editor.setIconSclass("z-icon-Edit");
+        else
+        	editor.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
+        editor.addEventListener(Events.ON_CLICK, popupMenu);
+		popupMenu.appendChild(editor);
+		
+		editor = new Menuitem();
+		editor.setAttribute("EVENT", WEditorPopupMenu.COLOR_PICKER_EVENT);
+		editor.setLabel("Color Picker"); // TODO translate
+        if (ThemeManager.isUseFontIconForImage())
+        	editor.setIconSclass("z-icon-pencil"); // should be same as WColorEditor
+        else
+        	editor.setImage(ThemeManager.getThemeResource("images/Process16.png"));
+        editor.addEventListener(Events.ON_CLICK, popupMenu);
+		popupMenu.appendChild(editor);
+	}
+	
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.RESET_EVENT.equals(evt.getContextEvent()))
 		{
-			System.out.println("reset");
-			
-			getComponent().invalidate();
-			processNewValue("");
-			getComponent().setClientAttribute("type", "color");
+			processNewValue(null);
+			colorbox.setValue(oldValue);
 			
 		}
 		else if (WEditorPopupMenu.COLOR_PICKER_EVENT.equals(evt.getContextEvent()))
@@ -118,6 +159,21 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 			oldValue = String.valueOf(value);
 			getComponent().setText(oldValue);
 		}
+		colorbox.setValue(oldValue);
+		
+		fillTextbox();
+	}
+
+	private void fillTextbox() {
+		String style="background-color: transparent !important;";
+        if (!Util.isEmpty(oldValue, true))
+        	style = "background: linear-gradient(to right, rgba(255,0,0,0) 50%, "
+        			+ oldValue + " 50%) !important;";
+        String script = "jq('#"+getComponent().getTextbox().getUuid()+"').attr('style','"+style+"');";
+        if (Executions.getCurrent() != null)
+        	Clients.response(new AuScript(script));
+        else if (getComponent().getDesktop() != null)
+        	Executions.schedule(getComponent().getDesktop(), e -> Clients.response(new AuScript(script)), new Event("onFillTextBox"));
 	}
 
 	@Override
@@ -134,37 +190,33 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 
 	@Override
 	public boolean isReadWrite() {
-		return getComponent().isEnabled();
+		return getComponent().getButton().isEnabled();
 	}
 
 	@Override
 	public void setReadWrite(boolean readWrite) {
-		getComponent().setEnabled(readWrite);
+		getComponent().getButton().setEnabled(readWrite);
 	}
 
 	public void onEvent(Event event)
 	{
-		String newValue = null;
-
 		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
 		{
 			openColorPicker();
 		}
 		else if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
-		{
-			System.out.println("change/ok");
-			newValue = getComponent().getText();
-		}
+    	{
+	        String newValue = getComponent().getTextbox().getValue();
+	        processNewValue(newValue);
+    	}
 		else
 		{
 			return;
 		}
-
-		processNewValue(newValue);
 	}
 	
 	public void openColorPicker() { // TODO color picker is opening at upper left ; better to open it at center of screen
-		String uid = getComponent().getTextbox().getUuid();
+		String uid = colorbox.getUuid();
 		String script = "var wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();";
 		Clients.response(new AuScript(script));		
 	}
@@ -178,6 +230,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		}
 		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 		fireValueChange(changeEvent);
+        oldValue = getComponent().getTextbox().getValue();                
 	}
 
 	public String[] getEvents()
@@ -190,12 +243,6 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		super.setTableEditor(b);
 		getComponent().setTableEditorMode(b);
 	}
-
-	@Override
-	public Component getDisplayComponent() {
-		return new ColorBox();
-	}
-
 
 	@Override
 	public String getDisplayTextForGridView(Object value) {

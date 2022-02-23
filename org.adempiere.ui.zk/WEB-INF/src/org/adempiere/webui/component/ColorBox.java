@@ -27,6 +27,5 @@ public class ColorBox extends EditorBox
 	public ColorBox()
     {
         super();
-        getTextbox().setClientAttribute("type", "color");
     }
 }
