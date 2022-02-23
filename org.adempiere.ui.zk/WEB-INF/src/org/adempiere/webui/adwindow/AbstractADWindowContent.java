@@ -1795,6 +1795,17 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		adTabbox.getSelectedGridTab().isNew() ||
         		(adTabbox.getSelectedDetailADTabpanel() != null && adTabbox.getSelectedDetailADTabpanel().getGridTab().isNew()));
 
+        if (toolbar.isSaveEnable() && MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx()))) {
+        	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
+        	if (dirtyTabpanel != null && !dirtyTabpanel.getGridTab().isSortTab() 
+        		&& Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning(), true)
+        		&& Env.isAutoCommit(ctx, curWindowNo)) {
+        		if (dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
+        			Executions.schedule(getComponent().getDesktop(), event -> onSave(false, false, null), new Event("onAutoSave"));
+        		}
+        	}
+        }
+        
         //
         //  No Rows
         if (e.getTotalRows() == 0 && insertRecord && !detailTab && !tabPanel.getGridTab().isSortTab())
@@ -2397,7 +2408,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (result) {
 					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_SAVE.getName());
 			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, callback);
-				} else {
+				} else if (callback != null) {
 					callback.onCallback(result);
 				}
 			}

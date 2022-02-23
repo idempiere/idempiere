@@ -2536,6 +2536,54 @@ public class GridTable extends AbstractTableModel
 		return sb.toString();
 	}	//	getMandatory
 
+	/**
+	 * 
+	 * @return true if need save and all mandatory field has value
+	 */
+	public boolean isNeedSaveAndMandatoryFill() {
+		if (!m_open)
+		{
+			return false;
+		}
+		//	no need - not changed - row not positioned - no Value changed
+		if (m_rowChanged == -1)
+		{
+			return false;
+		}
+		//  Value not changed
+		if (m_rowData == null)
+		{
+			return false;
+		}
+
+		if (m_readOnly)
+		{
+			return false;
+		}
+
+		//	row not positioned - no Value changed
+		if (m_rowChanged == -1)
+		{
+			if (m_newRow != -1)     //  new row and nothing changed - might be OK
+				m_rowChanged = m_newRow;
+			else
+			{
+				return false;
+			}
+		}
+		
+		//	get updated row data
+		Object[] rowData = getDataAtRow(m_rowChanged);
+
+		//	Check Mandatory
+		String missingColumns = getMandatory(rowData);
+		if (missingColumns.length() != 0) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/*************************************************************************/
 
 	/**	LOB Info				*/
