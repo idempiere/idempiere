@@ -19,7 +19,6 @@ package org.adempiere.webui.editor;
 
 import java.util.List;
 
-import org.adempiere.model.GenericPO;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADWindow;
@@ -36,7 +35,6 @@ import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.I_R_MailText;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -55,8 +53,6 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     private String oldValue;
 
 	private AbstractADWindowContent adwindowContent;
-	
-	public static final String TYPE_COLOR = "color";
 
     /**
      * to ease porting of swing form
@@ -315,10 +311,6 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		else if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
 		{
 			actionRefresh();
-		}
-		else if (WEditorPopupMenu.RESET_EVENT.equals(evt.getContextEvent()))
-		{
-			setValue(null);
 		}
 	}
     

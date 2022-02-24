@@ -24,7 +24,6 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
-import org.adempiere.webui.component.ColorBox;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Textbox;
@@ -293,9 +292,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				component = editor.getDisplayComponent();
 				if (component instanceof Html){
 					((Html)component).setContent(text);
-				}
-				else if (component instanceof ColorBox) {
-					((ColorBox)component).setText(text);
 				}else{
 					throw new UnsupportedOperationException("neet a componet has setvalue function");
 				}
