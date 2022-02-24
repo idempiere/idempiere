@@ -73,14 +73,14 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		init();
 
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-pencil"); // TODO find a brush
+			getComponent().getButton().setIconSclass("z-icon-pencil");
 		else
-			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Process16.png")); // TODO find a brush 
+			getComponent().setButtonImage(ThemeManager.getThemeResource("images/ColorPicker16.png")); 
 
 		if (gridField != null)
 			placeHolder = gridField.getPlaceholder();
 		if (Util.isEmpty(placeHolder, true))
-			placeHolder = "Please select a color"; //TODO: use AD_Message
+			placeHolder = Msg.getMsg(Env.getCtx(), "ColorFieldPlaceholder");
 		getComponent().getTextbox().setPlaceholder(placeHolder);
 		getComponent().getTextbox().setReadonly(true);
 		
@@ -107,21 +107,21 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	protected void addColorEditorMenu(WEditorPopupMenu popupMenu) {
 		Menuitem editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
-		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Reset")).intern());
+		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Erase")).intern());
         if (ThemeManager.isUseFontIconForImage())
-        	editor.setIconSclass("z-icon-Edit");
+        	editor.setIconSclass("z-icon-eraser");
         else
-        	editor.setImage(ThemeManager.getThemeResource("images/Reset16.png"));
+        	editor.setImage(ThemeManager.getThemeResource("images/Erase16.png"));
         editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
 		
 		editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.COLOR_PICKER_EVENT);
-		editor.setLabel("Color Picker"); // TODO translate
+		editor.setLabel(Msg.getMsg(Env.getCtx(), "ColorPicker"));
         if (ThemeManager.isUseFontIconForImage())
-        	editor.setIconSclass("z-icon-pencil"); // should be same as WColorEditor
+        	editor.setIconSclass("z-icon-pencil");
         else
-        	editor.setImage(ThemeManager.getThemeResource("images/Process16.png"));
+        	editor.setImage(ThemeManager.getThemeResource("images/ColorPicker16.png"));
         editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
 	}
