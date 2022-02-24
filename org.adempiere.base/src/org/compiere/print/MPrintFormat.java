@@ -1164,12 +1164,13 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			if (cache.isEmpty() && nullList.isEmpty())
 				return 0;
 			
-			String key = Integer.valueOf(recordId)+"|";
+			StringBuilder key = new StringBuilder()
+					.append(recordId).append("|");
 			int removed = 0;
 			if (!nullList.isEmpty()) {
 				String[] nullKeys = nullList.toArray(new String[0]);
 				for(String nullKey : nullKeys) {
-					if (nullKey.startsWith(key)) {
+					if (nullKey.startsWith(key.toString())) {
 						if (nullList.remove(nullKey))
 							removed++;
 					}
@@ -1179,7 +1180,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			if (!cache.isEmpty()) {
 				String[] cacheKeys = cache.keySet().toArray(new String[0]);
 				for(String cacheKey : cacheKeys) {
-					if (cacheKey.startsWith(key)) {
+					if (cacheKey.startsWith(key.toString())) {
 						MPrintFormat v = cache.remove(cacheKey);
 						if (v != null)
 							removed++;
@@ -1210,16 +1211,18 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	static public MPrintFormat get (Properties ctx, int AD_PrintFormat_ID, boolean readFromDisk)
 	{
-		String key = AD_PrintFormat_ID + "|" + MRole.getDefault().getAD_Role_ID();
+		StringBuilder key = new StringBuilder()
+				.append(AD_PrintFormat_ID).append("|")
+				.append(MRole.getDefault().getAD_Role_ID());
 		MPrintFormat pf = null;
 		if (!readFromDisk)
-			pf = s_formats.get(ctx, key, e -> new MPrintFormat(ctx, e));
+			pf = s_formats.get(ctx, key.toString(), e -> new MPrintFormat(ctx, e));
 		if (pf == null)
 		{
 			pf = new MPrintFormat (ctx, AD_PrintFormat_ID, (String)null);
 			if (pf.get_ID() == AD_PrintFormat_ID)
 			{
-				s_formats.put(key, pf, e -> new MPrintFormat(Env.getCtx(), e));
+				s_formats.put(key.toString(), pf, e -> new MPrintFormat(Env.getCtx(), e));
 				return pf;
 			}
 			return null;
@@ -1271,8 +1274,10 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	static public void deleteFromCache (int AD_PrintFormat_ID)
 	{
-		String key = AD_PrintFormat_ID + "|" + MRole.getDefault().getAD_Role_ID();
-		s_formats.put(key, null);
+		StringBuilder key = new StringBuilder()
+				.append(AD_PrintFormat_ID).append("|")
+				.append(MRole.getDefault().getAD_Role_ID());
+		s_formats.put(key.toString(), null);
 	}	//	deleteFromCache
 
     //begin vpj-cd e-evolution
