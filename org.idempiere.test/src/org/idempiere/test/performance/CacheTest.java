@@ -97,6 +97,7 @@ import org.compiere.model.PaymentProcessor;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.model.X_C_AddressValidationCfg;
 import org.compiere.model.X_C_TaxProviderCfg;
+import org.compiere.print.MPrintFormat;
 import org.compiere.process.BPartnerValidate;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -127,6 +128,9 @@ import org.junit.jupiter.api.Test;
  */
 public class CacheTest extends AbstractTestCase {
 
+	private static final int ORDER_HEADER_PRINT_FORMAT_ID = 118;
+	private static final int SHIPMENT_HEADER_PRINT_FORMAT_ID = 122;
+		
 	public CacheTest() {
 	}
 	
@@ -701,5 +705,34 @@ public class CacheTest extends AbstractTestCase {
 			}
 		}
 		return null;
+	}
+		
+	@Test
+	public void testPrintFormatCacheReset() {
+		MPrintFormat cache = MPrintFormat.get(ORDER_HEADER_PRINT_FORMAT_ID);
+		String description = cache.getDescription();
+		MPrintFormat cache1 = MPrintFormat.get(SHIPMENT_HEADER_PRINT_FORMAT_ID);
+		MPrintFormat update = new MPrintFormat(Env.getCtx(), cache.get_ID(), null);
+		try {			
+			update.setDescription(update.getAD_PrintFormat_UU());
+			update.saveEx();
+			
+			//wait for async cache reset
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			
+			cache = MPrintFormat.get(ORDER_HEADER_PRINT_FORMAT_ID);
+			assertEquals(update.getDescription(), cache.getDescription(), "Expected cache reset doesn't happens");
+			
+			//shipment header shouldn't reload since only order header have been updated
+			cache = MPrintFormat.get(SHIPMENT_HEADER_PRINT_FORMAT_ID);
+			assertTrue(cache == cache1, "Unexpected cache reset for print format record that's not being updated");
+		} finally {
+			update.load((String)null);
+			update.setDescription(description);
+			update.saveEx();
+		}
 	}
 }

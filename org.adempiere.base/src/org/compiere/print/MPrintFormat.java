@@ -1153,7 +1153,43 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 
 	/** Cached Formats						*/
-	static private ImmutablePOCache<String,MPrintFormat> s_formats = new ImmutablePOCache<String,MPrintFormat>(Table_Name, 30);
+	static private ImmutablePOCache<String,MPrintFormat> s_formats = new ImmutablePOCache<String,MPrintFormat>(Table_Name, 30) {
+		private static final long serialVersionUID = 2428566381289874703L;
+
+		@Override
+		public int reset(int recordId) {
+			if (recordId <= 0)
+				return reset();
+			
+			if (cache.isEmpty() && nullList.isEmpty())
+				return 0;
+			
+			String key = Integer.valueOf(recordId)+"|";
+			int removed = 0;
+			if (!nullList.isEmpty()) {
+				String[] nullKeys = nullList.toArray(new String[0]);
+				for(String nullKey : nullKeys) {
+					if (nullKey.startsWith(key)) {
+						if (nullList.remove(nullKey))
+							removed++;
+					}
+				}
+			}
+			
+			if (!cache.isEmpty()) {
+				String[] cacheKeys = cache.keySet().toArray(new String[0]);
+				for(String cacheKey : cacheKeys) {
+					if (cacheKey.startsWith(key)) {
+						MPrintFormat v = cache.remove(cacheKey);
+						if (v != null)
+							removed++;
+					}
+				}
+			}
+			return removed;
+		}
+		
+	};
 
 	/**
 	 * 	Get Format from cache (immutable)
