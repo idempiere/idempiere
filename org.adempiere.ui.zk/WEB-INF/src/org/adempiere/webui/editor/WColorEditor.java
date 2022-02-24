@@ -1,15 +1,28 @@
-/******************************************************************************
- * Copyright (C) 2008 Low Heng Sin  All Rights Reserved.                      *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- *****************************************************************************/
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - Nicolas Micoud (TGI)		                                       *
+ * - Low Heng Sin		                                               *
+ **********************************************************************/
 
 package org.adempiere.webui.editor;
 
@@ -36,7 +49,7 @@ import org.zkoss.zul.Menuitem;
 
 /**
  *
- * @author Low Heng Sin
+ * @author Nicolas Micoud (TGI)
  *
  */
 public class WColorEditor extends WEditor implements ContextMenuListener
@@ -46,11 +59,11 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	private static final CLogger log = CLogger.getCLogger(WColorEditor.class);
 
 	private String oldValue;
-	
+
 	private String placeHolder;
-	
+
 	private Textbox colorbox;
-	
+
 	/**
 	 * 
 	 * @param gridField
@@ -83,13 +96,13 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 			placeHolder = Msg.getMsg(Env.getCtx(), "ColorFieldPlaceholder");
 		getComponent().getTextbox().setPlaceholder(placeHolder);
 		getComponent().getTextbox().setReadonly(true);
-		
+
 		colorbox = new Textbox();
 		colorbox.setClientAttribute("type", "color");
 		colorbox.setStyle("position:absolute;top:0;left:0;height:0px !important;width:0px !important;"
 				+ "border:none !important;margin:0 !important;padding:0 !important;visibility:hidden;");
 		getComponent().appendChild(colorbox);
-		
+
 		colorbox.addEventListener(Events.ON_CHANGE, e -> {
 			processNewValue(colorbox.getValue());
 		});
@@ -108,31 +121,31 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		Menuitem editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
 		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Erase")).intern());
-        if (ThemeManager.isUseFontIconForImage())
-        	editor.setIconSclass("z-icon-eraser");
-        else
-        	editor.setImage(ThemeManager.getThemeResource("images/Erase16.png"));
-        editor.addEventListener(Events.ON_CLICK, popupMenu);
+		if (ThemeManager.isUseFontIconForImage())
+			editor.setIconSclass("z-icon-eraser");
+		else
+			editor.setImage(ThemeManager.getThemeResource("images/Erase16.png"));
+		editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
-		
+
 		editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.COLOR_PICKER_EVENT);
 		editor.setLabel(Msg.getMsg(Env.getCtx(), "ColorPicker"));
-        if (ThemeManager.isUseFontIconForImage())
-        	editor.setIconSclass("z-icon-pencil");
-        else
-        	editor.setImage(ThemeManager.getThemeResource("images/ColorPicker16.png"));
-        editor.addEventListener(Events.ON_CLICK, popupMenu);
+		if (ThemeManager.isUseFontIconForImage())
+			editor.setIconSclass("z-icon-pencil");
+		else
+			editor.setImage(ThemeManager.getThemeResource("images/ColorPicker16.png"));
+		editor.addEventListener(Events.ON_CLICK, popupMenu);
 		popupMenu.appendChild(editor);
 	}
-	
+
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.RESET_EVENT.equals(evt.getContextEvent()))
 		{
 			processNewValue(null);
 			colorbox.setValue(oldValue);
-			
+
 		}
 		else if (WEditorPopupMenu.COLOR_PICKER_EVENT.equals(evt.getContextEvent()))
 		{
@@ -160,20 +173,20 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 			getComponent().setText(oldValue);
 		}
 		colorbox.setValue(oldValue);
-		
+
 		fillTextbox();
 	}
 
 	private void fillTextbox() {
 		String style="background-color: transparent !important;";
-        if (!Util.isEmpty(oldValue, true))
-        	style = "background: linear-gradient(to right, rgba(255,0,0,0) 50%, "
-        			+ oldValue + " 50%) !important;";
-        String script = "jq('#"+getComponent().getTextbox().getUuid()+"').attr('style','"+style+"');";
-        if (Executions.getCurrent() != null)
-        	Clients.response(new AuScript(script));
-        else if (getComponent().getDesktop() != null)
-        	Executions.schedule(getComponent().getDesktop(), e -> Clients.response(new AuScript(script)), new Event("onFillTextBox"));
+		if (!Util.isEmpty(oldValue, true))
+			style = "background: linear-gradient(to right, rgba(255,0,0,0) 50%, "
+					+ oldValue + " 50%) !important;";
+		String script = "jq('#"+getComponent().getTextbox().getUuid()+"').attr('style','"+style+"');";
+		if (Executions.getCurrent() != null)
+			Clients.response(new AuScript(script));
+		else if (getComponent().getDesktop() != null)
+			Executions.schedule(getComponent().getDesktop(), e -> Clients.response(new AuScript(script)), new Event("onFillTextBox"));
 	}
 
 	@Override
@@ -205,16 +218,16 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 			openColorPicker();
 		}
 		else if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
-    	{
-	        String newValue = getComponent().getTextbox().getValue();
-	        processNewValue(newValue);
-    	}
+		{
+			String newValue = getComponent().getTextbox().getValue();
+			processNewValue(newValue);
+		}
 		else
 		{
 			return;
 		}
 	}
-	
+
 	public void openColorPicker() { // TODO color picker is opening at upper left ; better to open it at center of screen
 		String uid = colorbox.getUuid();
 		String script = "var wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();";
@@ -230,7 +243,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		}
 		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 		fireValueChange(changeEvent);
-        oldValue = getComponent().getTextbox().getValue();                
+		oldValue = getComponent().getTextbox().getValue();                
 	}
 
 	public String[] getEvents()
