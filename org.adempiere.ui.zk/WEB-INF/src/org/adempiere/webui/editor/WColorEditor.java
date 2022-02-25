@@ -54,9 +54,9 @@ import org.zkoss.zul.Menuitem;
  */
 public class WColorEditor extends WEditor implements ContextMenuListener
 {
-	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_CHANGE, Events.ON_OK};
-
 	private static final CLogger log = CLogger.getCLogger(WColorEditor.class);
+	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
+    public static final String COLOR_PICKER_EVENT = "COLOR_PICKER";
 
 	private String oldValue;
 
@@ -129,7 +129,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		popupMenu.appendChild(editor);
 
 		editor = new Menuitem();
-		editor.setAttribute("EVENT", WEditorPopupMenu.COLOR_PICKER_EVENT);
+		editor.setAttribute("EVENT", COLOR_PICKER_EVENT);
 		editor.setLabel(Msg.getMsg(Env.getCtx(), "ColorPicker"));
 		if (ThemeManager.isUseFontIconForImage())
 			editor.setIconSclass("z-icon-pencil");
@@ -147,7 +147,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 			colorbox.setValue(oldValue);
 
 		}
-		else if (WEditorPopupMenu.COLOR_PICKER_EVENT.equals(evt.getContextEvent()))
+		else if (COLOR_PICKER_EVENT.equals(evt.getContextEvent()))
 		{
 			openColorPicker();
 		}
@@ -216,11 +216,6 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
 		{
 			openColorPicker();
-		}
-		else if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
-		{
-			String newValue = getComponent().getTextbox().getValue();
-			processNewValue(newValue);
 		}
 		else
 		{
