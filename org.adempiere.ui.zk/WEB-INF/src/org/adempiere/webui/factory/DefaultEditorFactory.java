@@ -21,6 +21,7 @@ import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WChartEditor;
 import org.adempiere.webui.editor.WChosenboxListEditor;
 import org.adempiere.webui.editor.WChosenboxSearchEditor;
+import org.adempiere.webui.editor.WColorEditor;
 import org.adempiere.webui.editor.WDashboardContentEditor;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WDatetimeEditor;
@@ -80,8 +81,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         }
 
         /** String (clear/password) */
-        if (displayType == DisplayType.String
-            || displayType == DisplayType.PrinterName || displayType == DisplayType.Color
+        if (displayType == DisplayType.String || displayType == DisplayType.PrinterName
             || displayType == DisplayType.Text || displayType == DisplayType.TextLong
             || displayType == DisplayType.Memo)
         {
@@ -96,10 +96,12 @@ public class DefaultEditorFactory implements IEditorFactory {
             	else
             		editor = new WStringEditor(gridField, tableEditor, editorConfiguration);
             }
-            //enable html5 color input type
-            if (displayType == DisplayType.Color)
-            	((WStringEditor)editor).getComponent().setClientAttribute("type", "color");
         }
+        /** Color */
+        else if (displayType == DisplayType.Color) {
+        	editor = new WColorEditor(gridField, tableEditor, editorConfiguration);
+        }
+        
         /** File */
         else if (displayType == DisplayType.FileName)
         {
