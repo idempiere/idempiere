@@ -29,7 +29,7 @@ package org.adempiere.webui.editor;
 
 import java.util.logging.Level;
 
-import org.adempiere.webui.component.ColorBox;
+import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -81,7 +81,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	 */
 	public WColorEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
 	{
-		super(new ColorBox(), gridField, tableEditor, editorConfiguration);
+		super(new EditorBox(), gridField, tableEditor, editorConfiguration);
 
 		init();
 
@@ -154,9 +154,9 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	}
 
 	@Override
-	public ColorBox getComponent()
+	public EditorBox getComponent()
 	{
-		return (ColorBox) component;
+		return (EditorBox) component;
 	}
 
 	@Override
