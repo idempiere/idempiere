@@ -61,7 +61,10 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	 */
 	public static synchronized MRefList get (Properties ctx, int AD_Reference_ID, String Value, String trxName)
 	{
-		String key = AD_Reference_ID + "|" + Value;
+		StringBuilder sb = new StringBuilder(AD_Reference_ID)
+								.append("|")
+								.append(Value);
+		String key = sb.toString();
 		MRefList rl = s_ref_value_cache.get(ctx, key, e -> new MRefList(ctx, e));
 		if (rl == null)
 		{
