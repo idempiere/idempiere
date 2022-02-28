@@ -1795,16 +1795,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		adTabbox.getSelectedGridTab().isNew() ||
         		(adTabbox.getSelectedDetailADTabpanel() != null && adTabbox.getSelectedDetailADTabpanel().getGridTab().isNew()));
 
-        if (toolbar.isSaveEnable() && MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx()))) {
-        	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
-        	if (dirtyTabpanel != null && !dirtyTabpanel.getGridTab().isSortTab() 
-        		&& Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning(), true)
-        		&& Env.isAutoCommit(ctx, curWindowNo)) {
-        		if (dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
-        			Executions.schedule(getComponent().getDesktop(), event -> onSave(false, false, null), new Event("onAutoSave"));
-        		}
-        	}
-        }
+        autoSaveChanges(e);
         
         //
         //  No Rows
@@ -1917,6 +1908,19 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableCustomize(adtab.isEnableCustomizeButton());
 
     }
+
+	private void autoSaveChanges(DataStatusEvent e) {
+		if (!e.isInitEdit() && toolbar.isSaveEnable() && MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx()))) {
+        	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
+        	if (dirtyTabpanel != null && !dirtyTabpanel.getGridTab().isSortTab() 
+        		&& Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning(), true)
+        		&& Env.isAutoCommit(ctx, curWindowNo)) {
+        		if (dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
+        			Executions.schedule(getComponent().getDesktop(), event -> onSave(false, false, null), new Event("onAutoSave"));
+        		}
+        	}
+        }
+	}
 
     /**
      * @return boolean
