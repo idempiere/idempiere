@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFormatItem
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_PrintFormatItem 
 {
@@ -63,6 +63,21 @@ public interface I_AD_PrintFormatItem
 	public int getAD_Column_ID();
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
+
+    /** Column name AD_FieldStyle_ID */
+    public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
+
+	/** Set Field Style.
+	  * Field CSS Style 
+	  */
+	public void setAD_FieldStyle_ID (int AD_FieldStyle_ID);
+
+	/** Get Field Style.
+	  * Field CSS Style 
+	  */
+	public int getAD_FieldStyle_ID();
+
+	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -122,21 +137,6 @@ public interface I_AD_PrintFormatItem
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormatChild() throws RuntimeException;
 
-    /** Column name AD_PrintFormat_ID */
-    public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
-
-	/** Set Print Format.
-	  * Data Print Format
-	  */
-	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID);
-
-	/** Get Print Format.
-	  * Data Print Format
-	  */
-	public int getAD_PrintFormat_ID();
-
-	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
-
     /** Column name AD_PrintFormatItem_ID */
     public static final String COLUMNNAME_AD_PrintFormatItem_ID = "AD_PrintFormatItem_ID";
 
@@ -158,6 +158,21 @@ public interface I_AD_PrintFormatItem
 
 	/** Get AD_PrintFormatItem_UU	  */
 	public String getAD_PrintFormatItem_UU();
+
+    /** Column name AD_PrintFormat_ID */
+    public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
+
+	/** Set Print Format.
+	  * Data Print Format
+	  */
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID);
+
+	/** Get Print Format.
+	  * Data Print Format
+	  */
+	public int getAD_PrintFormat_ID();
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_PrintGraph_ID */
     public static final String COLUMNNAME_AD_PrintGraph_ID = "AD_PrintGraph_ID";
@@ -538,19 +553,6 @@ public interface I_AD_PrintFormatItem
 	  */
 	public boolean isPrintBarcodeText();
 
-    /** Column name IsPrinted */
-    public static final String COLUMNNAME_IsPrinted = "IsPrinted";
-
-	/** Set Printed.
-	  * Indicates if this document / line is printed
-	  */
-	public void setIsPrinted (boolean IsPrinted);
-
-	/** Get Printed.
-	  * Indicates if this document / line is printed
-	  */
-	public boolean isPrinted();
-
     /** Column name IsPrintInstanceAttributes */
     public static final String COLUMNNAME_IsPrintInstanceAttributes = "IsPrintInstanceAttributes";
 
@@ -563,6 +565,19 @@ public interface I_AD_PrintFormatItem
 	  * Print each attributes as report column instead of printing the description of attribute set instance
 	  */
 	public boolean isPrintInstanceAttributes();
+
+    /** Column name IsPrinted */
+    public static final String COLUMNNAME_IsPrinted = "IsPrinted";
+
+	/** Set Printed.
+	  * Indicates if this document / line is printed
+	  */
+	public void setIsPrinted (boolean IsPrinted);
+
+	/** Get Printed.
+	  * Indicates if this document / line is printed
+	  */
+	public boolean isPrinted();
 
     /** Column name IsRelativePosition */
     public static final String COLUMNNAME_IsRelativePosition = "IsRelativePosition";
