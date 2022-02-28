@@ -66,7 +66,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	 * default constructor
 	 */
 	public WCtxHelpSuggestion(MCtxHelpMsg ctxHelpMsg) {
-		this.ctxHelpMsg = ctxHelpMsg;
+		this.ctxHelpMsg = new MCtxHelpMsg(ctxHelpMsg.getCtx(), ctxHelpMsg.getAD_CtxHelpMsg_ID(), ctxHelpMsg.get_TrxName());
 		layout();
 	}
 
