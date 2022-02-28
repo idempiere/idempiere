@@ -91,7 +91,7 @@ public class RfQResponseRank extends SvrProcess
 		{
 			responses[0].setIsSelectedWinner(true);
 			responses[0].saveEx();
-			return	Msg.getMsg(Env.getCtx(), "Only one RfQ Response");
+			return	Msg.getMsg(Env.getCtx(), "OnlyOneRfQResponse");
 		}
 			
 		//	Rank
