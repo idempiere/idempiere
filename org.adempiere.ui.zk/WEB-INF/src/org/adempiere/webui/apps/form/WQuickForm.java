@@ -103,6 +103,8 @@ public class WQuickForm extends Window implements IQuickForm
 		// To maintain parent-child Quick Form
 		prevQGV = adWinContent.getCurrQGV();
 		adWinContent.setCurrQGV(quickGridView);
+		
+		addCallback(AFTER_PAGE_DETACHED, t -> adWinContent.focusToLastFocusEditor());
 	}
 
 	protected void initForm( )
@@ -264,7 +266,7 @@ public class WQuickForm extends Window implements IQuickForm
 		ZKUpdateUtil.setWidth(quickGridView, getWidth());
 		ZKUpdateUtil.setHeight(quickGridView, getHeight());
 
-		CustomizeGridViewDialog.showCustomize(0, gridTab.getAD_Tab_ID(), columnsWidth, gridFieldIds, null, quickGridView, true);
+		CustomizeGridViewDialog.showCustomize(0, gridTab.getAD_Tab_ID(), columnsWidth, gridFieldIds, null, quickGridView, true, null);
 	} // onCustomize
 
 	public void onIgnore( )
