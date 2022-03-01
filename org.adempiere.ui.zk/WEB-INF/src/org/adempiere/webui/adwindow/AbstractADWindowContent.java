@@ -211,8 +211,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
 	 * Maintain no of quick form tabs open
 	 */
-	ArrayList <Integer>			quickFormOpenTabs	= new ArrayList <Integer>();
+	protected ArrayList <Integer>			quickFormOpenTabs	= new ArrayList <Integer>();
 
+	protected Component lastFocusEditor = null;
+	
 	/**
 	 * Constructor
 	 * @param ctx
@@ -246,6 +248,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         comp.addEventListener(ON_DEFER_SET_DETAILPANE_SELECTION_EVENT, this);
         comp.addEventListener(ON_FOCUS_DEFER_EVENT, this);
         comp.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, this);
+        
         return comp;
     }
 
@@ -946,6 +949,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	protected ADWindow adwindow;
 
+	protected boolean showingOnExitDialog;
+
 	/**
 	 *	@see ToolbarListener#onLock()
 	 */
@@ -1142,11 +1147,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @param callback
      */
-    public void onExit(Callback<Boolean> callback)
+    public synchronized void onExit(Callback<Boolean> callback)
     {
     	if (isPendingChanges())
     	{
-    		FDialog.ask(curWindowNo, null, "CloseUnSave?", callback);
+    		showingOnExitDialog = true;
+    		FDialog.ask(curWindowNo, null, "CloseUnSave?", b -> {
+    			showingOnExitDialog = false;
+    			callback.onCallback(b);
+    			if (!b)
+    			{
+    				//restore focus
+    				if (lastFocusEditor != null && lastFocusEditor instanceof HtmlBasedComponent && 
+    					lastFocusEditor.getPage() != null && LayoutUtils.isReallyVisible(lastFocusEditor))
+    					((HtmlBasedComponent)lastFocusEditor).focus();
+    			}
+    		});
     	}
     	else
     	{
@@ -1795,6 +1811,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		adTabbox.getSelectedGridTab().isNew() ||
         		(adTabbox.getSelectedDetailADTabpanel() != null && adTabbox.getSelectedDetailADTabpanel().getGridTab().isNew()));
 
+        if (!e.isError() && Util.isEmpty(adInfo)) {
+        	autoSaveChanges(e);
+        }
+        
         //
         //  No Rows
         if (e.getTotalRows() == 0 && insertRecord && !detailTab && !tabPanel.getGridTab().isSortTab())
@@ -1907,6 +1927,35 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     }
 
+	private synchronized void autoSaveChanges(DataStatusEvent e) {		
+		if (!e.isInitEdit() && toolbar.isSaveEnable() && MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx()))) {
+        	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
+        	if (dirtyTabpanel != null && !dirtyTabpanel.getGridTab().isSortTab() 
+        		&& Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning(), true)
+        		&& Env.isAutoCommit(ctx, curWindowNo)) {
+        		if (dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
+        			//sleep needed for onClose to show confirmation dialog
+        			try {
+						Thread.sleep(200);
+					} catch (InterruptedException e2) {
+					}
+        			if (!showingOnExitDialog)
+        				Executions.schedule(getComponent().getDesktop(), e1 -> asyncAutoSave(), new Event("onAutoSave"));
+        		}
+        	}
+        }
+	}
+
+	private synchronized void asyncAutoSave() {
+		//ensure still dirty and can save
+		if (toolbar.isSaveEnable() && !showingOnExitDialog) {
+        	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
+        	if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
+        		onSave(false, false, null);
+        	}
+        }
+	}
+	
     /**
      * @return boolean
      */
@@ -2397,7 +2446,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (result) {
 					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_SAVE.getName());
 			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, callback);
-				} else {
+				} else if (callback != null) {
 					callback.onCallback(result);
 				}
 			}
@@ -3895,5 +3944,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 */
 	public GridWindow getGridWindow() {
 		return gridWindow;
+	}
+	
+	/**
+	 * set component of last focus editor.
+	 * Use in onClose/Exit to restore focus
+	 * @param component
+	 */
+	public void setLastFocusEditor(Component component) {
+		lastFocusEditor = component;
 	}
 }

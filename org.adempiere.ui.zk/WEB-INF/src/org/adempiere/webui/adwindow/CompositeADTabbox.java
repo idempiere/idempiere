@@ -1094,6 +1094,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 					}
 					if (adtab.getGridTab().getCurrentRow() != currentRow)
 						adtab.getGridTab().setCurrentRow(currentRow, true);
+					Executions.schedule(getComponent().getDesktop(), e->((ADTabpanel)headerTab).focusToFirstEditor(), new Event("onFocusToHeaderTab"));
 					break;
 				}
 			}

@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
@@ -332,6 +333,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         
         component.addEventListener(INIT_EDIT_EVENT, this);
         component.setAttribute("idempiere.editor", this);
+        
+        component.addEventListener(Events.ON_FOCUS, e -> {
+        	ADWindow adwindow = ADWindow.findADWindow(component);
+        	if (adwindow != null) {
+        		adwindow.getADWindowContent().setLastFocusEditor(component);
+        	}
+        });
     }
 
     /**
