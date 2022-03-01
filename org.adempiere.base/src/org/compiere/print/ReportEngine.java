@@ -931,25 +931,27 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 							Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 									: m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							//set style
-                            MStyle style = MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID());
-                            X_AD_StyleLine[] lines = style.getStyleLines();
-                            StringBuilder styleBuilder = new StringBuilder();
-                            for (X_AD_StyleLine line : lines)
-                            {
-                                
-                                String inlineStyle = line.getInlineStyle().trim();
-                                String displayLogic = line.getDisplayLogic();
-                                if (!Util.isEmpty(displayLogic))
-                                {
-                                    if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
-                                        continue;
-                                }
-                                if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-                                    styleBuilder.append("; ");
-                                styleBuilder.append(inlineStyle);
-                            }
-                            if(styleBuilder != null)
-                                td.setStyle(styleBuilder.toString());
+							int AD_FieldStyle_ID = item.getAD_FieldStyle_ID();
+							if(AD_FieldStyle_ID > 0) {
+	                            MStyle style = MStyle.get(Env.getCtx(), AD_FieldStyle_ID);
+	                            X_AD_StyleLine[] lines = style.getStyleLines();
+	                            StringBuilder styleBuilder = new StringBuilder();
+	                            for (X_AD_StyleLine line : lines)
+	                            {
+	                                String inlineStyle = line.getInlineStyle().trim();
+	                                String displayLogic = line.getDisplayLogic();
+	                                if (!Util.isEmpty(displayLogic))
+	                                {
+	                                    if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
+	                                        continue;
+	                                }
+	                                if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
+	                                    styleBuilder.append("; ");
+	                                styleBuilder.append(inlineStyle);
+	                            }
+	                            if(styleBuilder.length() > 0)
+	                                td.setStyle(styleBuilder.toString());
+							}
                             //
 							if (obj == null || !isDisplayPFItem(item)){
 								td.addElement("&nbsp;");
