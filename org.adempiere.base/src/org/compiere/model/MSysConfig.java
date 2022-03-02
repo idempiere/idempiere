@@ -188,6 +188,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_DESKTOP_SHOW_TAB_LIST_BUTTON = "ZK_DESKTOP_SHOW_TAB_LIST_BUTTON";
     public static final String ZK_DESKTOP_TAB_AUTO_SHRINK_TO_FIT = "ZK_DESKTOP_TAB_AUTO_SHRINK_TO_FIT";
     public static final String ZK_DESKTOP_TAB_MAX_TITLE_LENGTH = "ZK_DESKTOP_TAB_MAX_TITLE_LENGTH";
+    public static final String ZK_FLAT_VIEW_MENU_TREE = "ZK_FLAT_VIEW_MENU_TREE";
     public static final String ZK_FOOTER_SERVER_DATETIME_FORMAT = "ZK_FOOTER_SERVER_DATETIME_FORMAT";
     public static final String ZK_FOOTER_SERVER_MSG = "ZK_FOOTER_SERVER_MSG";
     public static final String ZK_GRID_AFTER_FIND = "ZK_GRID_AFTER_FIND";
