@@ -560,7 +560,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	protected void onCustomize(Event e) {
 		if (getSelectedADTabpanel() instanceof ADTabpanel) {
 			ADTabpanel tabPanel = (ADTabpanel) getSelectedADTabpanel();
-			CustomizeGridViewDialog.onCustomize(tabPanel);
+			CustomizeGridViewDialog.onCustomize(tabPanel, b -> {
+				ADWindow adwindow = ADWindow.findADWindow(DetailPane.this);
+				if (adwindow != null)
+					adwindow.getADWindowContent().focusToLastFocusEditor();
+			});
 		}
 	}
 
