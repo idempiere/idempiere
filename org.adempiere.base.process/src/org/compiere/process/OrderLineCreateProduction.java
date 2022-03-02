@@ -108,7 +108,7 @@ public class OrderLineCreateProduction extends SvrProcess
 					p_C_OrderLine_ID);
 			if (docNo != null)
 			{
-			    throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "Productionhasalreadybeencreated", new String[] {docNo}));
+			    throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "ProductionHasAlreadyBeenCreated", new String[] {docNo}));
 			    
 			}
 		}
