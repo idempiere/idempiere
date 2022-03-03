@@ -354,7 +354,8 @@ public final class DataStatusEvent extends EventObject implements Serializable
 			   Util.equals(e.m_AD_Message, m_AD_Message) &&
 			   e.m_changedColumn == m_changedColumn &&
 			   Util.equals(e.m_columnName, m_columnName) &&
-			   e.m_currentRow == m_currentRow;
+			   e.m_currentRow == m_currentRow &&
+			   e.isInitEdit == isInitEdit;
 	}
 
 
