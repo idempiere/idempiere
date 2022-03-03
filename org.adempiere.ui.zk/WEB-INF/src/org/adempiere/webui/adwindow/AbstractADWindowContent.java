@@ -1170,11 +1170,30 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     /**
      * restore focus to last known focus editor (if any)
+     * @return true if there's last focus editor
      */
-	public void focusToLastFocusEditor() {
+	public boolean focusToLastFocusEditor() {
+		return focusToLastFocusEditor(false);
+	}
+	
+    /**
+     * restore focus to last known focus editor (if any)
+     * @param defer true to schedule for later/defer execution
+     * @return true if there's last focus editor
+     */
+	public boolean focusToLastFocusEditor(boolean defer) {
 		if (lastFocusEditor != null && lastFocusEditor instanceof HtmlBasedComponent && 
-			lastFocusEditor.getPage() != null && LayoutUtils.isReallyVisible(lastFocusEditor))
-			((HtmlBasedComponent)lastFocusEditor).focus();
+			lastFocusEditor.getPage() != null && LayoutUtils.isReallyVisible(lastFocusEditor)) {
+			if (defer) {
+				final HtmlBasedComponent editor = (HtmlBasedComponent) lastFocusEditor;
+				Executions.schedule(getComponent().getDesktop(), e -> editor.focus(), new Event("onScheduleFocusToLastFocusEditor"));
+			} else {
+				((HtmlBasedComponent)lastFocusEditor).focus();
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
