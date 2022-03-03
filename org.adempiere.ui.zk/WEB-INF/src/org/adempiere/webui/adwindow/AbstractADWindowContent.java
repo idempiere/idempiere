@@ -1939,13 +1939,26 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		&& Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning(), true)
         		&& Env.isAutoCommit(ctx, curWindowNo)) {
         		if (dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
-        			//sleep needed for onClose to show confirmation dialog
-        			try {
-						Thread.sleep(200);
-					} catch (InterruptedException e2) {
-					}
-        			if (!showingOnExitDialog)
-        				Executions.schedule(getComponent().getDesktop(), e1 -> asyncAutoSave(), new Event("onAutoSave"));
+            		String tabsExcluded = MSysConfig.getValue(MSysConfig.ZK_AUTO_SAVE_TABS_EXCLUDED, Env.getAD_Client_ID(Env.getCtx()));
+            		boolean isTabExcluded = false;
+            		if (!Util.isEmpty(tabsExcluded)) {
+            			String tabID = String.valueOf(dirtyTabpanel.getGridTab().getAD_Tab_ID());
+            			String tabUU = dirtyTabpanel.getGridTab().getAD_Tab_UU();
+            			for (String excl : tabsExcluded.split(",")) {
+           					if (excl.equals(tabID) || excl.equals(tabUU)) {
+           						isTabExcluded = true;
+            				}
+            			}
+            		}
+            		if (!isTabExcluded) {
+            			//sleep needed for onClose to show confirmation dialog
+            			try {
+    						Thread.sleep(200);
+    					} catch (InterruptedException e2) {
+    					}
+            			if (!showingOnExitDialog)
+            				Executions.schedule(getComponent().getDesktop(), e1 -> asyncAutoSave(), new Event("onAutoSave"));
+            		}
         		}
         	}
         }
