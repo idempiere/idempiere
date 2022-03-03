@@ -1416,7 +1416,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         } else {
         	if (activate) {
         		formContainer.setVisible(activate);
-        		if (!isMobile())
+        		if (!isMobile() && !isDetailPaneMode())
         			focusToFirstEditor();
         	}
         }
@@ -2329,6 +2329,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public void updateDetailToolbar(Toolbar toolbar)
 	{
 
+	}
+	
+	public AbstractADWindowContent getADWindowContent()
+	{
+		return windowPanel;
 	}
 
 }
