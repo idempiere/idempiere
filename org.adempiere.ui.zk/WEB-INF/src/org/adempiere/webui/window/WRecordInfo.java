@@ -349,28 +349,20 @@ public class WRecordInfo extends Window implements EventListener<Event>
 					m_permalink.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 						public void onEvent(Event event) throws Exception {
 							String ticketURL = AEnv.getZoomUrlTableID(po);
-							StringBuffer sb = new StringBuffer("idempiere.copyToClipboard(\"")
+							StringBuffer sb = new StringBuffer("navigator.clipboard.writeText(\"")
 								.append(ticketURL)
 								.append("\");");
 							Clients.evalJavaScript(sb.toString());
 						}
 					});
-					m_permalink.setVisible(true);
 				}
+				m_permalink.setVisible(po.get_KeyColumns().length == 1);
 				m_copySelect.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
-						StringBuffer query = new StringBuffer("idempiere.copyToClipboard(\"SELECT * FROM ")
+						StringBuffer query = new StringBuffer("navigator.clipboard.writeText(\"SELECT * FROM ")
 							.append(po.get_TableName())
-							.append(" WHERE ");
-						boolean addAnd = false;
-						for (String key : po.get_KeyColumns()) {
-							if (addAnd)
-								query.append(" AND ");
-							query.append(key)
-								.append("=")
-								.append(po.get_Value(key));
-							addAnd = true;
-						}
+							.append(" WHERE ")
+							.append(po.get_WhereClause(true));
 						query.append("\");");
 						Clients.evalJavaScript(query.toString());
 					}
