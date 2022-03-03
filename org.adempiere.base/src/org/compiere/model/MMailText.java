@@ -214,6 +214,13 @@ public class MMailText extends X_R_MailText
 		if (variable.contains("<") && variable.contains(">")) { // IDEMPIERE-3096
 			return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true);
 		}
+
+		String defaultValue = "";
+		if (variable.contains(":")) {
+			defaultValue = variable.substring(variable.indexOf(":") + 1, variable.length());
+			variable = variable.substring(0, variable.indexOf(":"));
+		}
+
 		// special default formatting cases for dates/times/boolean in mail text not covered by Env.parseVariable
 		int index = po.get_ColumnIndex(variable);
 		if (index == -1){
@@ -237,7 +244,7 @@ public class MMailText extends X_R_MailText
 			value = po.get_Value(index);
 		}
 		if (value == null)
-			return "";
+			return defaultValue;
 		return value.toString();
 	}	//	translate
 	
