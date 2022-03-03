@@ -990,6 +990,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						@Override
 						public void onEvent(Event event) throws Exception {
 							toolbar.lock(adTabbox.getSelectedGridTab().isLocked());
+							focusToLastFocusEditor();
 						}
 					});
 
@@ -2891,6 +2892,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			public void onCallback(Boolean result) {
 				if (result) {
 					onReport0();
+				} else {
+					focusToLastFocusEditor();
 				}
 			}
 		};
