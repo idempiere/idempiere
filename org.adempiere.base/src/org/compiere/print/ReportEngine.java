@@ -992,7 +992,23 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 											}
 											if (tableID > 0) {
 												MTable mTable = MTable.get(getCtx(), tableID);
-												String foreignColumnName = mTable.getTableName() + "_ID";
+												String tableName = mTable.getTableName();
+												
+												ArrayList<MColumn> list = new ArrayList<MColumn>();
+												for (String idColumnName : mTable.getIdentifierColumns()) {
+													MColumn column = mTable.getColumn(idColumnName);
+													list.add (column);
+												}
+												if(list.size() > 0) {
+													StringBuilder displayColumn = new StringBuilder(list.get(0).getColumnName());
+													StringBuilder sql = new StringBuilder("SELECT ");
+													sql.append(displayColumn.toString());
+													sql.append(" FROM ").append(tableName);
+													sql.append(" WHERE "+tableName+"."+tableName+"_ID=?");
+													
+													value = DB.getSQLValueStringEx(null, sql.toString(), Integer.parseInt(value));
+												}
+												String foreignColumnName = tableName + "_ID";
 												pde.setForeignColumnName(foreignColumnName);
 												isZoom = true;
 											}
