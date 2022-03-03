@@ -22,6 +22,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
@@ -48,6 +49,7 @@ public class MenuTreePanel extends AbstractMenuPanel
 	private ToolBarButton expandToggle;
 	private MenuTreeFilterPanel filterPanel;
 	private Toolbarbutton filterBtn;
+	private EventListener<Event> listener;
     
     public MenuTreePanel(Component parent)
     {
@@ -63,8 +65,10 @@ public class MenuTreePanel extends AbstractMenuPanel
      		expandAll();
      	// Auto Expand Tree - nmicoud IDEMPIERE 195
      	
-     	EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).subscribe(new EventListener<Event>() {
+     	listener = new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
+				if (getMenuTree() == null || getMenuTree().getPage() == null)
+					return;
 				if (event.getName() == Events.ON_CHECK)
 				{
 					Checkbox chk = (Checkbox) event.getData();
@@ -78,8 +82,9 @@ public class MenuTreePanel extends AbstractMenuPanel
 					}
 				}
 			}
-		});
-     }
+		};
+		EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).subscribe(listener);
+    }
     
     protected void initComponents()
     {
@@ -167,5 +172,14 @@ public class MenuTreePanel extends AbstractMenuPanel
 		else
 			collapseAll();
 	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		if (listener != null) {
+			EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).unsubscribe(listener);
+			listener = null;
+		}
+	}		
 	//
 }
