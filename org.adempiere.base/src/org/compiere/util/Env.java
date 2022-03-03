@@ -106,6 +106,7 @@ public final class Env
 	public static final String DB_TYPE = "#DBType";
 	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
 	public static final String HAS_ALIAS = "$HasAlias";
+	public static final String IS_CLIENT_ADMIN = "#IsClientAdmin";
 	/** Context Language identifier */
 	public static final String LANGUAGE = "#AD_Language";
 	public static final String LANGUAGE_NAME = "#LanguageName";

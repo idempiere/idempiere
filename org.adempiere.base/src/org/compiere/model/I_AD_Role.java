@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Role 
 {
@@ -386,6 +386,19 @@ public interface I_AD_Role
 	  * Maintain a log of changes
 	  */
 	public boolean isChangeLog();
+
+    /** Column name IsClientAdministrator */
+    public static final String COLUMNNAME_IsClientAdministrator = "IsClientAdministrator";
+
+	/** Set Client Administrator.
+	  * This role is a client administrator
+	  */
+	public void setIsClientAdministrator (boolean IsClientAdministrator);
+
+	/** Get Client Administrator.
+	  * This role is a client administrator
+	  */
+	public boolean isClientAdministrator();
 
     /** Column name IsDiscountAllowedOnTotal */
     public static final String COLUMNNAME_IsDiscountAllowedOnTotal = "IsDiscountAllowedOnTotal";
