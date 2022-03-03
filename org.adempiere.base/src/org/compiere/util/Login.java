@@ -469,7 +469,7 @@ public class Login
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
 		String sql = "SELECT DISTINCT r.UserLevel, r.ConnectionProfile, "	//	1/2
-			+ " c.AD_Client_ID,c.Name,r.RoleType "						//	3/4/5 
+			+ " c.AD_Client_ID,c.Name,r.RoleType,r.IsClientAdministrator "						//	3/4/5/6 
 			+ "FROM AD_Role r" 
 			+ " INNER JOIN AD_Client c ON (r.AD_Client_ID=c.AD_Client_ID) "
 			+ "WHERE r.AD_Role_ID=?"		//	#1
@@ -494,6 +494,7 @@ public class Login
 			Env.setContext(m_ctx, Env.AD_ROLE_ID, role.getKey());
 			Env.setContext(m_ctx, Env.AD_ROLE_NAME, role.getName());
 			Env.setContext(m_ctx, Env.AD_ROLE_TYPE, rs.getString("RoleType"));
+			Env.setContext(m_ctx, Env.IS_CLIENT_ADMIN, rs.getString("IsClientAdministrator"));
 			Ini.setProperty(Ini.P_ROLE, role.getName());
 			//	User Level
 			Env.setContext(m_ctx, Env.USER_LEVEL, rs.getString(1));  	//	Format 'SCO'
@@ -547,7 +548,7 @@ public class Login
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
 		//
-		String sql = " SELECT DISTINCT r.UserLevel, r.ConnectionProfile,o.AD_Org_ID,o.Name,o.IsSummary,r.RoleType "
+		String sql = " SELECT DISTINCT r.UserLevel, r.ConnectionProfile,o.AD_Org_ID,o.Name,o.IsSummary,r.RoleType,r.IsClientAdministrator "
 				+" FROM AD_Org o"
 				+" INNER JOIN AD_Role r on (r.AD_Role_ID=?)"
 				+" INNER JOIN AD_Client c on (c.AD_Client_ID=?)"
@@ -581,6 +582,7 @@ public class Login
 			Env.setContext(m_ctx, Env.AD_ROLE_ID, rol.getKey());
 			Env.setContext(m_ctx, Env.AD_ROLE_NAME, rol.getName());
 			Env.setContext(m_ctx, Env.AD_ROLE_TYPE, rs.getString("RoleType"));
+			Env.setContext(m_ctx, Env.IS_CLIENT_ADMIN, rs.getString("IsClientAdministrator"));
 			Ini.setProperty(Ini.P_ROLE, rol.getName());
 			//	User Level
 			Env.setContext(m_ctx, Env.USER_LEVEL, rs.getString(1));  	//	Format 'SCO'
