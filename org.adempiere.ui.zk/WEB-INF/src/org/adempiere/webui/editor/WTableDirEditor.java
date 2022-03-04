@@ -207,6 +207,16 @@ ContextMenuListener, IZoomableEditor
         	getComponent().addScrollSelectedIntoViewListener();
         }
 
+        //drop upon focus works better for auto save
+        if (MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx())))
+        {
+        	getComponent().addEventListener(Events.ON_FOCUS, e -> {
+        		if (isReadWrite() && !getComponent().isOpen() 
+        			&& ((isMandatory() && getComponent().getItemCount() > 0) || (!isMandatory() && getComponent().getItemCount() > 1)))
+        			getComponent().setOpen(true);
+        	});
+        }
+        
         boolean zoom= false;
         if (lookup != null)
         {
