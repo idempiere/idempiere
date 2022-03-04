@@ -86,7 +86,17 @@ import org.zkoss.zul.Menuitem;
 public class WTableDirEditor extends WEditor implements ListDataListener, 
 ContextMenuListener, IZoomableEditor
 {
-    public final static String[] LISTENER_EVENTS = {Events.ON_SELECT};
+    private static final String UP_PRESSED_OVERRIDE_SCRIPT = "function(evt) {"
+			+ "   if (!this.isOpen()) this.open();"
+			+ "   this.$upPressed_(evt);"
+			+ "}";
+
+	private static final String DOWN_PRESSED_OVERRIDE_SCRIPT = "function(evt) {"
+			+ "   if (!this.isOpen()) this.open();"
+			+ "   this.$dnPressed_(evt);"
+			+ "}";
+
+	public final static String[] LISTENER_EVENTS = {Events.ON_SELECT};
     
     @SuppressWarnings("unused")
 	private static final CLogger logger;
@@ -207,14 +217,11 @@ ContextMenuListener, IZoomableEditor
         	getComponent().addScrollSelectedIntoViewListener();
         }
 
-        //drop upon focus works better for auto save
+        //auto open for up/down key
         if (MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx())))
         {
-        	getComponent().addEventListener(Events.ON_FOCUS, e -> {
-        		if (isReadWrite() && !getComponent().isOpen() 
-        			&& ((isMandatory() && getComponent().getItemCount() > 0) || (!isMandatory() && getComponent().getItemCount() > 1)))
-        			getComponent().setOpen(true);
-        	});
+        	getComponent().setWidgetOverride("dnPressed_", DOWN_PRESSED_OVERRIDE_SCRIPT);
+        	getComponent().setWidgetOverride("upPressed_", UP_PRESSED_OVERRIDE_SCRIPT);
         }
         
         boolean zoom= false;
@@ -547,7 +554,7 @@ ContextMenuListener, IZoomableEditor
 		        			gridField.setLookupEditorSettingValue(false);
 		        	}
 		        }
-		        if (newValue != null)
+		        if (newValue != null && !MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx())))
 		        	focusNext();
     		} finally {
     			onselecting = false;
