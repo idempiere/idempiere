@@ -47,6 +47,7 @@ import org.compiere.model.X_M_InOut;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -269,7 +270,7 @@ public class Doc_MatchPO extends Doc
 			if (m_matchPO.getRef_MatchPO_ID() > 0)
 				return facts;
 			
-			p_Error = "No posting if not matched to Shipment";
+			p_Error = Msg.getMsg(Env.getCtx(), "NoPostingIfNotMatchedToShipment");
 			return null;
 		}
 
@@ -321,7 +322,7 @@ public class Doc_MatchPO extends Doc
 					m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
 				if (rate == null)
 				{
-					p_Error = "Purchase Order not convertible - " + as.getName();
+					p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getName()}); 							
 					return null;
 				}
 				amt = amt.multiply(rate);
@@ -354,7 +355,7 @@ public class Doc_MatchPO extends Doc
 				m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
 			if (rate == null)
 			{
-				p_Error = "Purchase Order not convertible - " + as.getName();
+				p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getName()});
 				return null;
 			}
 			poCost = poCost.multiply(rate);
@@ -399,8 +400,8 @@ public class Doc_MatchPO extends Doc
 					FactLine dr = fact.createLine(null,
 						getAccount(Doc.ACCTTYPE_PPVOffset, as), as.getC_Currency_ID(), Env.ONE);
 					if (!dr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE)) 
-					{
-						p_Error = "Failed to create reversal entry for ACCTTYPE_PPVOffset";
+					{						
+						p_Error = Msg.getMsg(Env.getCtx(), "FailedToCreateReversalEntryForACCTTYPE_PPVOffset");
 						return null;
 					}
 				}
@@ -416,8 +417,8 @@ public class Doc_MatchPO extends Doc
 						costs = BigDecimal.ZERO;
 					}
 					else
-					{
-						p_Error = "Resubmit - No Costs for " + product.getName();
+					{						
+						p_Error = Msg.getMsg(Env.getCtx(), "Resubmit - No Costs for") + product.getName();
 						log.log(Level.SEVERE, p_Error);
 						return null;
 					}
