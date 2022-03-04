@@ -89,6 +89,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
 import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_StyleLine;
@@ -1000,11 +1001,20 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 													list.add (column);
 												}
 												if(list.size() > 0) {
-													StringBuilder displayColumn = new StringBuilder(list.get(0).getColumnName());
+													StringBuilder displayColumn = new StringBuilder();
+													String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+													
+													for(int i = 0; i < list.size(); i++) {
+														if(i > 0)
+															displayColumn.append("||'").append(separator).append("'||");
+														
+														displayColumn.append(list.get(i).getColumnName());
+													}
 													StringBuilder sql = new StringBuilder("SELECT ");
 													sql.append(displayColumn.toString());
 													sql.append(" FROM ").append(tableName);
-													sql.append(" WHERE "+tableName+"."+tableName+"_ID=?");
+													sql.append(" WHERE ")
+														.append(tableName).append(".").append(tableName).append("_ID=?");
 													
 													value = DB.getSQLValueStringEx(null, sql.toString(), Integer.parseInt(value));
 												}
