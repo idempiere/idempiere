@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3851200335563922376L;
+	private static final long serialVersionUID = -4977677634921011590L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -175,6 +175,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
     public static final String ZK_ADVANCE_FIND_FILTER_COLUMN_LIST = "ZK_ADVANCE_FIND_FILTER_COLUMN_LIST";
     public static final String ZK_AUTO_SAVE_CHANGES = "ZK_AUTO_SAVE_CHANGES";
+    public static final String ZK_AUTO_SAVE_TABS_EXCLUDED = "ZK_AUTO_SAVE_TABS_EXCLUDED";
     public static final String ZK_BROWSER_ICON = "ZK_BROWSER_ICON";
     public static final String ZK_BROWSER_TITLE = "ZK_BROWSER_TITLE";
     public static final String ZK_BUTTON_STYLE = "ZK_BUTTON_STYLE";
