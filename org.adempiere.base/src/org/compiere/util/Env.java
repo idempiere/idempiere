@@ -106,6 +106,7 @@ public final class Env
 	public static final String DB_TYPE = "#DBType";
 	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
 	public static final String HAS_ALIAS = "$HasAlias";
+	public static final String IS_CLIENT_ADMIN = "#IsClientAdmin";
 	/** Context Language identifier */
 	public static final String LANGUAGE = "#AD_Language";
 	public static final String LANGUAGE_NAME = "#LanguageName";
@@ -1671,6 +1672,13 @@ public final class Env
 
 			token = inStr.substring(0, j);
 
+			String defaultValue = "";
+			int idx = token.indexOf(":");
+			if (token.contains(":")) {
+				defaultValue = token.substring(token.indexOf(":") + 1, token.length());
+				token = token.substring(0, idx);
+			}
+
 			//format string
 			String format = "";
 			int f = token.indexOf('<');
@@ -1757,6 +1765,8 @@ public final class Env
 							outStr.append(v.toString());
 						}
 					}
+					else if (!Util.isEmpty(defaultValue))
+						outStr.append(defaultValue);
 				} else if (keepUnparseable) {
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))

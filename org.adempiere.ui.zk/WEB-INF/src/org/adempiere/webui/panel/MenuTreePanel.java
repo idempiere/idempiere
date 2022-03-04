@@ -73,7 +73,7 @@ public class MenuTreePanel extends AbstractMenuPanel
      	
      	listener = new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
-				if (getMenuTree().getPage() == null)
+				if (getMenuTree() == null || getMenuTree().getPage() == null)
 					return;
 				if (event.getName() == Events.ON_CHECK)
 				{

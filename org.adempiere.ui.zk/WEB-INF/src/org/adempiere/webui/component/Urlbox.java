@@ -170,4 +170,9 @@ public class Urlbox extends Div
 		}
 			
 	}
+
+	@Override
+	public void focus() {
+		txt.focus();
+	}
 }

@@ -388,6 +388,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (tabPanel != headerTab && headerTab.getDetailPane() != null) {
 					if (b != null && b.booleanValue()) {
 						onActivateDetail(tabPanel);
+						if (headerTab instanceof ADTabpanel) {
+							if (!((ADTabpanel) headerTab).getADWindowContent().focusToLastFocusEditor(true))
+								((ADTabpanel) headerTab).getADWindowContent().focusToActivePanel();
+						}
 					}
 				}
 			}

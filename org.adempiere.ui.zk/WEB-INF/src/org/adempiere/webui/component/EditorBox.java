@@ -162,4 +162,9 @@ public class EditorBox extends Div {
 		}
 			
 	}
+
+	@Override
+	public void focus() {
+		txt.focus();
+	}
 }
