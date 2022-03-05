@@ -50,6 +50,6 @@ public class WUnknownEditor extends WStringEditor
     
     private void init()
     {
-        getComponent().setReadonly(true);
+        getComponent().getTextbox().setReadonly(true);
     }
 }

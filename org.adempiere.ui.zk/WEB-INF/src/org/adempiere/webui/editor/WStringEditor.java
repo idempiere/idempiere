@@ -24,7 +24,7 @@ import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.component.Combobox;
-import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.TextboxWithCopy;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -88,10 +88,10 @@ public class WStringEditor extends WEditor implements ContextMenuListener
      */
     public WStringEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(gridField.isAutocomplete() ? new Combobox() : new Textbox(), gridField, tableEditor, editorConfiguration);
+        super(gridField.isAutocomplete() ? new Combobox() : new TextboxWithCopy(), gridField, tableEditor, editorConfiguration);
 
         if (gridField.getVFormat() != null && !gridField.getVFormat().isEmpty())
-        	getComponent().setWidgetListener("onBind", "jq(this).mask('" + gridField.getVFormat() + "');");
+        	getComponent().getTextbox().setWidgetListener("onBind", "jq(this).mask('" + gridField.getVFormat() + "');");
 
         init(gridField.getObscureType());
     }
@@ -110,27 +110,31 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     public WStringEditor(String columnName, boolean mandatory, boolean isReadOnly, boolean isUpdateable,
     		int displayLength, int fieldLength, String wVFormat, String obscureType)
     {
-    	super(new Textbox(), columnName, null, null, mandatory, isReadOnly,isUpdateable);
+    	super(new TextboxWithCopy(), columnName, null, null, mandatory, isReadOnly,isUpdateable);
 
     	if (wVFormat != null &&  !wVFormat.isEmpty())
-    		getComponent().setWidgetListener("onBind", "jq(this).mask('" + wVFormat + "');");
+    		getComponent().getTextbox().setWidgetListener("onBind", "jq(this).mask('" + wVFormat + "');");
 
     	init(obscureType);
     }
 
     @Override
-    public org.zkoss.zul.Textbox getComponent() {
-    	return (org.zkoss.zul.Textbox) component;
+    public TextboxWithCopy getComponent() {
+    	return (TextboxWithCopy)component;
+    }
+
+    public Combobox getCombobox() {
+    	return (Combobox)component;
     }
 
     @Override
 	public boolean isReadWrite() {
-		return !getComponent().isReadonly();
+		return !getComponent().getTextbox().isReadonly();
 	}
 
 	@Override
 	public void setReadWrite(boolean readWrite) {
-		getComponent().setReadonly(!readWrite);
+		getComponent().getTextbox().setReadonly(!readWrite);
 	}
 
 	private void init(String obscureType)
@@ -138,33 +142,33 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		setChangeEventWhenEditing (true);
 		if (gridField != null)
 		{
-	        getComponent().setMaxlength(gridField.getFieldLength());
+	        getComponent().getTextbox().setMaxlength(gridField.getFieldLength());
 	        int displayLength = gridField.getDisplayLength();
 	        if (displayLength <= 0 || displayLength > MAX_DISPLAY_LENGTH)
 	        {
 	            displayLength = MAX_DISPLAY_LENGTH;
 	        }
 	        if (!tableEditor)
-	        	getComponent().setCols(displayLength);
+	        	getComponent().getTextbox().setCols(displayLength);
 	        if (gridField.getDisplayType() == DisplayType.Text)
 	        {
-	            getComponent().setMultiline(true);
+	            getComponent().getTextbox().setMultiline(true);
 	        }
 	        else if (gridField.getDisplayType() == DisplayType.TextLong)
 	        {
-	            getComponent().setMultiline(true);
+	            getComponent().getTextbox().setMultiline(true);
 	        }
 	        else if (gridField.getDisplayType() == DisplayType.Memo)
 	        {
-	            getComponent().setMultiline(true);
+	            getComponent().getTextbox().setMultiline(true);
 	        }
 	        else
-	            getComponent().setMultiline(false);
+	            getComponent().getTextbox().setMultiline(false);
 	        if (! gridField.isAutocomplete()) // avoid -> Combobox doesn't support multiple rows
-	        	getComponent().setRows(gridField.getNumLines() <= 0 || tableEditor ? 1 : gridField.getNumLines());
+	        	getComponent().getTextbox().setRows(gridField.getNumLines() <= 0 || tableEditor ? 1 : gridField.getNumLines());
 
-	        if (getComponent() instanceof Textbox)
-	        	((Textbox)getComponent()).setObscureType(obscureType);
+	        if (getComponent() instanceof TextboxWithCopy)
+	        	((TextboxWithCopy)getComponent()).getTextbox().setObscureType(obscureType);
 
 
 	        if(!(this instanceof WPasswordEditor)){ // check password field
@@ -174,7 +178,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 
 	        if (gridField.isAutocomplete()) {
-	        	Combobox combo = (Combobox)getComponent();
+	        	Combobox combo = (Combobox)getCombobox();
 	        	combo.setAutodrop(true);
 	        	combo.setAutocomplete(true);
 	        	combo.setButtonVisible(false);
@@ -184,9 +188,9 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        	}
 	        }
 	        if ("email".equalsIgnoreCase(gridField.getColumnName()))
-	        	getComponent().setClientAttribute("type", "email");
+	        	getComponent().getTextbox().setClientAttribute("type", "email");
 	        if (gridField != null)
-	        	getComponent().setPlaceholder(gridField.getPlaceholder());
+	        	getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 		}
     }
 
@@ -195,7 +199,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		boolean isStartEdit = INIT_EDIT_EVENT.equalsIgnoreCase (event.getName());
     	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()) || isStartEdit)
     	{
-	        String newValue = getComponent().getValue();
+	        String newValue = getComponent().getTextbox().getValue();
 	        if (!isStartEdit && oldValue != null && newValue != null && oldValue.equals(newValue)) {
 	    	    return;
 	    	}
@@ -208,20 +212,20 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        
 	        super.fireValueChange(changeEvent);	  
 	        if (!isStartEdit)
-	        	oldValue = getComponent().getValue(); // IDEMPIERE-963 - check again the value could be changed by callout
+	        	oldValue = getComponent().getTextbox().getValue(); // IDEMPIERE-963 - check again the value could be changed by callout
     	}
     }
 
     @Override
     public String getDisplay()
     {
-        return getComponent().getValue();
+        return getComponent().getTextbox().getValue();
     }
 
     @Override
     public Object getValue()
     {
-        return getComponent().getValue();
+        return getComponent().getTextbox().getValue();
     }
 
     @Override
@@ -229,24 +233,24 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     {
         if (value != null)
         {
-            getComponent().setValue(value.toString());
+            getComponent().getTextbox().setValue(value.toString());
         }
         else
         {
-            getComponent().setValue("");
+            getComponent().getTextbox().setValue("");
         }
-        oldValue = getComponent().getValue();
+        oldValue = getComponent().getTextbox().getValue();
     }
 
     protected void setTypePassword(boolean password)
     {
         if (password)
         {
-            getComponent().setType("password");
+            getComponent().getTextbox().setType("password");
         }
         else
         {
-            getComponent().setType("text");
+            getComponent().getTextbox().setType("text");
         }
     }
 
@@ -285,8 +289,8 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 						adwindowContent.hideBusyMask();
 					}
 					if (!dialog.isCancelled()) {
-						getComponent().setText(dialog.getText());
-						String newText = getComponent().getValue();
+						getComponent().getTextbox().setText(dialog.getText());
+						String newText = getComponent().getTextbox().getValue();
 				        ValueChangeEvent changeEvent = new ValueChangeEvent(WStringEditor.this, WStringEditor.this.getColumnName(), oldValue, newText);
 				        WStringEditor.super.fireValueChange(changeEvent);
 				        oldValue = newText;
@@ -324,7 +328,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	public void actionRefresh() {
 		//refresh auto complete list
 		if (gridField.isAutocomplete()) {
-			Combobox combo = (Combobox)getComponent();
+			Combobox combo = (Combobox)getCombobox();
 			List<String> items = gridField.getEntries();
 			combo.removeAllItems();
 			for(String s : items) {
@@ -334,7 +338,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	}
 
 	private AbstractADWindowContent findADWindowContent() {
-		Component parent = getComponent().getParent();
+		Component parent = getComponent().getTextbox().getParent();
 		while(parent != null) {
 			if (parent.getAttribute(ADWindow.AD_WINDOW_ATTRIBUTE_KEY) != null) {
 				ADWindow adwindow = (ADWindow) parent.getAttribute(ADWindow.AD_WINDOW_ATTRIBUTE_KEY);
