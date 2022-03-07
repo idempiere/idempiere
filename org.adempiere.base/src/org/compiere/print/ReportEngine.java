@@ -1005,10 +1005,15 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 													String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 													
 													for(int i = 0; i < list.size(); i++) {
+														MColumn identifierColumn = list.get(i);
 														if(i > 0)
 															displayColumn.append("||'").append(separator).append("'||");
 														
-														displayColumn.append(list.get(i).getColumnName());
+														displayColumn.append("NVL(")
+																	.append(DB.TO_CHAR(identifierColumn.getColumnName(), 
+																						identifierColumn.getAD_Reference_ID(), 
+																						Env.getAD_Language(Env.getCtx())))
+																	.append(",'')");
 													}
 													StringBuilder sql = new StringBuilder("SELECT ");
 													sql.append(displayColumn.toString());
