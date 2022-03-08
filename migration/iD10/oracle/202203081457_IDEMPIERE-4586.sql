@@ -174,14 +174,6 @@ UPDATE AD_Ref_List SET Description=REPLACE(Description, 'Client', 'Tenant') WHER
 
 UPDATE AD_Ref_List SET Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_Ref_List_ID<1000000 AND REGEXP_LIKE(Description,'(^|\W)Clients(\W|$)');
 
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'client', 'tenant') WHERE AD_Ref_List_ID<1000000 AND REGEXP_LIKE(Name,'(^|\W)client(\W|$)') AND Name NOT LIKE '%client-%';
-
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'clients', 'tenants') WHERE AD_Ref_List_ID<1000000 AND REGEXP_LIKE(Name,'(^|\W)clients(\W|$)');
-
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'Client', 'Tenant') WHERE AD_Ref_List_ID<1000000 AND REGEXP_LIKE(Name,'(^|\W)Client(\W|$)');
-
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'Clients', 'Tenants') WHERE AD_Ref_List_ID<1000000 AND REGEXP_LIKE(Name,'(^|\W)Clients(\W|$)');
-
 UPDATE AD_Tab SET Description=REPLACE(Description, 'client', 'tenant') WHERE AD_Tab_ID<1000000 AND REGEXP_LIKE(Description,'(^|\W)client(\W|$)') AND Description NOT LIKE '%client-%';
 
 UPDATE AD_Tab SET Description=REPLACE(Description, 'clients', 'tenants') WHERE AD_Tab_ID<1000000 AND REGEXP_LIKE(Description,'(^|\W)clients(\W|$)');

@@ -174,14 +174,6 @@ UPDATE AD_Ref_List SET Description=REPLACE(Description, 'Client', 'Tenant') WHER
 
 UPDATE AD_Ref_List SET Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_Ref_List_ID<1000000 AND Description~'\mClients\M';
 
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'client', 'tenant') WHERE AD_Ref_List_ID<1000000 AND Name~'\mclient\M' AND Name NOT LIKE '%client-%';
-
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'clients', 'tenants') WHERE AD_Ref_List_ID<1000000 AND Name~'\mclients\M';
-
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'Client', 'Tenant') WHERE AD_Ref_List_ID<1000000 AND Name~'\mClient\M';
-
-UPDATE AD_Ref_List SET Name=REPLACE(Name, 'Clients', 'Tenants') WHERE AD_Ref_List_ID<1000000 AND Name~'\mClients\M';
-
 UPDATE AD_Tab SET Description=REPLACE(Description, 'client', 'tenant') WHERE AD_Tab_ID<1000000 AND Description~'\mclient\M' AND Description NOT LIKE '%client-%';
 
 UPDATE AD_Tab SET Description=REPLACE(Description, 'clients', 'tenants') WHERE AD_Tab_ID<1000000 AND Description~'\mclients\M';
