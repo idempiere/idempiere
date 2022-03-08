@@ -808,13 +808,13 @@ public class MSysConfig extends X_AD_SysConfig
 				if (getAD_Org_ID() != 0 && 
 						(configLevel.equals(MSysConfig.CONFIGURATIONLEVEL_System) || 
 						 configLevel.equals(MSysConfig.CONFIGURATIONLEVEL_Client))) {
-					log.saveError( "Can't Save Org Level", "This is a system or client parameter, you can't save it as organization parameter" );
+					log.saveError( "Can't Save Org Level", "This is a system or tenant parameter, you can't save it as organization parameter" );
 					return false;
 				}
 
 				// Disallow saving client parameter if the system parameter is marked as 'S'
 				if (getAD_Client_ID() != 0 && configLevel.equals(MSysConfig.CONFIGURATIONLEVEL_System)) {
-					log.saveError( "Can't Save Client Level", "This is a system parameter, you can't save it as client parameter" );
+					log.saveError( "Can't Save Tenant Level", "This is a system parameter, you can't save it as tenant parameter" );
 					return false;
 				}
 

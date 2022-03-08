@@ -1553,7 +1553,7 @@ public class Login
 	 */
 	public KeyNamePair[] getRoles(String app_user, KeyNamePair client, String roleTypes) {
 		if (client == null)
-			throw new IllegalArgumentException("Client missing");
+			throw new IllegalArgumentException("Tenant missing");
 
 		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
 		ArrayList<KeyNamePair> rolesList = new ArrayList<KeyNamePair>();
