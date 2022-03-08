@@ -89,6 +89,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
 import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_StyleLine;
@@ -992,7 +993,37 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 											}
 											if (tableID > 0) {
 												MTable mTable = MTable.get(getCtx(), tableID);
-												String foreignColumnName = mTable.getTableName() + "_ID";
+												String tableName = mTable.getTableName();
+												
+												ArrayList<MColumn> list = new ArrayList<MColumn>();
+												for (String idColumnName : mTable.getIdentifierColumns()) {
+													MColumn column = mTable.getColumn(idColumnName);
+													list.add (column);
+												}
+												if(list.size() > 0) {
+													StringBuilder displayColumn = new StringBuilder();
+													String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+													
+													for(int i = 0; i < list.size(); i++) {
+														MColumn identifierColumn = list.get(i);
+														if(i > 0)
+															displayColumn.append("||'").append(separator).append("'||");
+														
+														displayColumn.append("NVL(")
+																	.append(DB.TO_CHAR(identifierColumn.getColumnName(), 
+																						identifierColumn.getAD_Reference_ID(), 
+																						Env.getAD_Language(Env.getCtx())))
+																	.append(",'')");
+													}
+													StringBuilder sql = new StringBuilder("SELECT ");
+													sql.append(displayColumn.toString());
+													sql.append(" FROM ").append(tableName);
+													sql.append(" WHERE ")
+														.append(tableName).append(".").append(tableName).append("_ID=?");
+													
+													value = DB.getSQLValueStringEx(null, sql.toString(), Integer.parseInt(value));
+												}
+												String foreignColumnName = tableName + "_ID";
 												pde.setForeignColumnName(foreignColumnName);
 												isZoom = true;
 											}
