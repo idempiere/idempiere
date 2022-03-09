@@ -113,6 +113,8 @@ import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
 import org.eevolution.model.X_PP_Order;
 
+import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+
 /**
  *	Report Engine.
  *  For a given PrintFormat,
@@ -697,7 +699,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			XhtmlDocument doc = null;
 					
 			if (onlyTable)
-				table.output(w);
+				w.print(compress(table.toString()));
 			else
 			{
 				doc = new XhtmlDocument();
@@ -784,15 +786,15 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				
 				styleBuild = new StringBuilder(styleBuild.toString().replaceAll(";", "!important;"));
 				appendInlineCss (doc, styleBuild);
-							
-				doc.output(w);
 				
-				w.println("<div class='"+cssPrefix+"-flex-container'>");
+				w.print(compress(doc.toString()));
+				
+				w.print("<div class='"+cssPrefix+"-flex-container'>");
 				String paraWrapId = null;
 				if (parameterTable != null) {
 					paraWrapId = cssPrefix + "-para-table-wrap";
-					w.println("<div id='" + paraWrapId + "'>");
-					parameterTable.output(w);
+					w.print("<div id='" + paraWrapId + "'>");
+					w.print(compress(parameterTable.toString()));
 					
 					tr tr = new tr();
 					tr.setClass("tr-parameter");
@@ -825,12 +827,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						tr.addElement(td);
 						td.addElement(query.getInfoDisplayAll(r));
 						
-						tr.output(w);
+						w.print(compress(tr.toString()));
 					}
-					
-					w.println();					
-					w.println("</table>");
-					w.println("</div>");
+										
+					w.print("</table>");
+					w.print("</div>");
 				}
 				
 				StringBuilder tableWrapDiv = new StringBuilder();
@@ -842,8 +843,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				}
 				tableWrapDiv.append(" >");
 				
-				w.println(tableWrapDiv.toString());
-				table.output(w);
+				w.print(compress(tableWrapDiv.toString()));
+				w.print(compress(table.toString()));
 			}
 			
 			thead thead = new thead();
@@ -1089,19 +1090,18 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				
 				/* output table header */
 				if (row == -1){
-					thead.output(w);
+					w.print(compress(thead.toString()));
 					// output open of tbody
-					tbody.output(w);
+					w.print(compress(tbody.toString()));
 				}else{
 					// output row by row 
-					tr.output(w);
+					w.print(compress(tr.toString()));
 				}
 				
 			}	//	for all rows
 			
-			w.println();
-			w.println("</tbody>");
-			w.println("</table>");
+			w.print("</tbody>");
+			w.print("</table>");
 			if (suppressMap.size() > 0) 
 			{
 				StringBuilder st = new StringBuilder();
@@ -1114,15 +1114,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				st.append(" {\n\t\tdisplay:none;\n\t}");
 				style styleTag = new style();
 				styleTag.addElement(st.toString());
-				styleTag.output(w);
-				w.println();
+				w.print(compress(styleTag.toString()));
 			}
 			if (!onlyTable)
 			{
-				w.println("</div>");
-				w.println("</div>");
-				w.println("</body>");
-				w.println("</html>");
+				w.print("</div>");
+				w.print("</div>");
+				w.print("</body>");
+				w.print("</html>");
 			}
 			w.flush();
 			w.close();
@@ -2577,4 +2576,27 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
 	}
 
+	public String compress(String src) {
+	    HtmlCompressor compressor = new HtmlCompressor();
+	    compressor.setEnabled(true);
+	    compressor.setCompressCss(true);
+	    compressor.setCompressJavaScript(true);
+	    compressor.setRemoveComments(true);
+	    compressor.setRemoveMultiSpaces(true);
+	    compressor.setRemoveIntertagSpaces(true);
+//	    compressor.setGenerateStatistics(false);
+//	    compressor.setRemoveQuotes(false);
+//	    compressor.setSimpleDoctype(false);
+//	    compressor.setRemoveScriptAttributes(false);
+//	    compressor.setRemoveStyleAttributes(false);
+//	    compressor.setRemoveLinkAttributes(false);
+//	    compressor.setRemoveFormAttributes(false);
+//	    compressor.setRemoveInputAttributes(false);
+//	    compressor.setSimpleBooleanAttributes(false);
+//	    compressor.setRemoveJavaScriptProtocol(false);
+//	    compressor.setRemoveHttpProtocol(false);
+//	    compressor.setRemoveHttpsProtocol(false);
+//	    compressor.setPreserveLineBreaks(false);
+	    return compressor.compress(src);
+	}
 }	//	ReportEngine
