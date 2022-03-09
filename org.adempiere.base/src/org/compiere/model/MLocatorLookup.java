@@ -92,7 +92,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	private int					m_only_Product_ID = 0;
 
 	/** Storage of data  MLookups		*/
-	private volatile LinkedHashMap<Integer,MLocator> m_lookup = new LinkedHashMap<Integer,MLocator>();
+	private volatile LinkedHashMap<Integer,KeyNamePair> m_lookup = new LinkedHashMap<Integer,KeyNamePair>();
 
 	/**
 	 *  Dispose
@@ -178,9 +178,9 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			return null;
 
 		//	try cache
-		MLocator loc = (MLocator) m_lookup.get(key);
+		NamePair loc = m_lookup.get(key);
 		if (loc != null)
-			return new KeyNamePair (loc.getM_Locator_ID(), loc.toString());
+			return loc;
 
 		//	Not found and waiting for loader
 		if (m_loader.isAlive())
@@ -188,10 +188,10 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			log.fine("Waiting for Loader");
 			loadComplete();
 			//	is most current
-			loc = (MLocator) m_lookup.get(key);
+			loc = m_lookup.get(key);
 		}
 		if (loc != null)
-			return new KeyNamePair (loc.getM_Locator_ID(), loc.toString());
+			return loc;
 
 		//	Try to get it directly
 		return getDirect(key, true, null);
@@ -244,9 +244,9 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			return null;
 		//
 		int key = loc.getM_Locator_ID();
+		KeyNamePair retValue = new KeyNamePair(key, loc.toString());
 		if (saveInCache)
-			m_lookup.put(Integer.valueOf(key), loc);
-		NamePair retValue = new KeyNamePair(key, loc.toString());
+			m_lookup.put(Integer.valueOf(key), retValue);
 		return retValue;
 	}	//	getDirect
 
@@ -294,9 +294,12 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		if (key == null)
 			return true;
 		//	try cache
-		MLocator loc = (MLocator) m_lookup.get(key);
-		if (loc == null)
+		KeyNamePair keyVal =  m_lookup.get(key);
+		MLocator loc = null;
+		if (keyVal == null)
 			loc = getMLocator(key, null);
+		else 
+			loc = MLocator.get(Integer.parseInt(key.toString()));
 		return isValid(loc);
 	}	//	isValid
 
@@ -372,7 +375,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 			int local_only_warehouse_id = getOnly_Warehouse_ID(); // [ 1674891 ] MLocatorLookup - weird error 
 			int local_only_product_id = getOnly_Product_ID();
 			
-			StringBuilder sql = new StringBuilder("SELECT M_Locator.M_Locator_ID FROM M_Locator ")
+			StringBuilder sql = new StringBuilder("SELECT M_Locator.M_Locator_ID, M_Locator.Value FROM M_Locator ")
 				.append(" INNER JOIN M_Warehouse wh ON (wh.M_Warehouse_ID=M_Locator.M_Warehouse_ID) ")
 				.append(" WHERE M_Locator.IsActive='Y' ")
 				.append(" AND wh.IsActive='Y'");
@@ -432,8 +435,8 @@ public final class MLocatorLookup extends Lookup implements Serializable
 				while (rs.next())
 				{
 					int M_Locator_ID = rs.getInt(1);
-					MLocator loc = MLocator.get(m_ctx, M_Locator_ID);
-					m_lookup.put(Integer.valueOf(M_Locator_ID), loc);
+					String Value = rs.getString(2);
+					m_lookup.put(Integer.valueOf(M_Locator_ID), new KeyNamePair(M_Locator_ID, Value));
 				}
 			}
 			catch (SQLException e)
@@ -455,7 +458,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 *	Return info as ArrayList containing Locator, waits for the loader to finish
 	 *  @return Collection of lookup values
 	 */
-	public Collection<MLocator> getData ()
+	public Collection<KeyNamePair> getData ()
 	{
 		if (m_loader.isAlive())
 		{
@@ -483,12 +486,13 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	public ArrayList<Object> getData (boolean mandatory, boolean onlyValidated, boolean onlyActive, boolean temporary, boolean shortlist) // IDEMPIERE 90
 	{
 		//	create list
-		Collection<MLocator> collection = getData();
-		ArrayList<Object> list = new ArrayList<Object>(collection.size());
-		Iterator<MLocator> it = collection.iterator();
+		Collection<KeyNamePair> collection = getData();
+		ArrayList<Object> list = new ArrayList<Object>(collection);
+		Iterator<KeyNamePair> it = collection.iterator();
 		while (it.hasNext())
 		{
-			MLocator loc = it.next();
+			KeyNamePair locPair = it.next();
+			MLocator loc = MLocator.get(locPair.getKey());
 			if (isValid(loc))				//	only valid warehouses
 				list.add(loc);
 		}
