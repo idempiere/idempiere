@@ -25,8 +25,11 @@ import java.util.logging.Level;
 
 import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -712,8 +715,34 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			if (info.getC_AcctSchema1_ID() == getC_AcctSchema_ID())
 				setAD_OrgOnly_ID(0);
 		}
+		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) 
+		{
+			String products = getProductsWithCost();
+			if (!Util.isEmpty(products)) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "ChangeCostingLevelError") + ". Products: " + products);
+				return false; 
+			}
+		}
 		return true;
 	}	//	beforeSave
+	
+	private String getProductsWithCost() {
+		StringBuilder products = new StringBuilder();
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT p.Value FROM M_Product p JOIN M_CostDetail d ON p.M_Product_ID=d.M_Product_ID");
+		sql.append(" JOIN M_Product_Category_Acct pc ON p.M_Product_Category_ID=pc.M_Product_Category_ID AND d.C_AcctSchema_ID=pc.C_AcctSchema_ID");
+		sql.append(" WHERE p.IsActive='Y' AND pc.IsActive='Y' AND pc.CostingLevel IS NULL AND d.C_AcctSchema_ID=?");
+		String query = DB.getDatabase().addPagingSQL(sql.toString(), 0, 50);
+		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), query, getC_AcctSchema_ID());
+		if (list != null) {
+			for(List<Object> entry : list) {
+				String value = (String) entry.get(0);
+				if (products.length() > 0)
+					products.append(",");
+				products.append(value);
+			}
+		}
+		return products.toString();
+	}
 	
 	@Override
 	public MAcctSchema markImmutable() 

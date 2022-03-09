@@ -17,9 +17,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
@@ -192,4 +196,41 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 		return sb.toString ();
 	}	//	toString
 
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) {
+			String newCostingLevel = getCostingLevel();
+			String oldCostingLevel = (String) get_ValueOld(COLUMNNAME_CostingLevel);
+			I_C_AcctSchema schema = getC_AcctSchema();
+			if (newCostingLevel == null)
+				newCostingLevel = schema.getCostingLevel();
+			if (oldCostingLevel == null)
+				oldCostingLevel = schema.getCostingLevel();
+			if (!newCostingLevel.equals(oldCostingLevel)) {
+				String products = getProductsWithCost();
+				if (!Util.isEmpty(products)) {
+					log.saveError("Error", Msg.getMsg(getCtx(), "ChangeCostingLevelError") + ". Products: " + products);
+					return false; 
+				}
+			}
+		}
+		return true;
+	}
+	
+	private String getProductsWithCost() {
+		StringBuilder products = new StringBuilder();
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT p.Value FROM M_Product p JOIN M_CostDetail d ON p.M_Product_ID=d.M_Product_ID");
+		sql.append(" WHERE p.IsActive='Y' AND p.M_Product_Category_ID=? AND d.C_AcctSchema_ID=?");
+		String query = DB.getDatabase().addPagingSQL(sql.toString(), 0, 50);
+		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), query, getM_Product_Category_ID(), getC_AcctSchema_ID());
+		if (list != null) {
+			for(List<Object> entry : list) {
+				String value = (String) entry.get(0);
+				if (products.length() > 0)
+					products.append(",");
+				products.append(value);
+			}
+		}
+		return products.toString();
+	}
 }	//	MProductCategoryAcct
